@@ -34,6 +34,8 @@ func spawn_pickup(world_position: Vector2, amount: int) -> void:
 
 
 func gain_experience(amount: int) -> void:
+	if amount <= 0:
+		return
 	current_experience += amount
 
 	if leveling_enabled:
@@ -44,6 +46,14 @@ func gain_experience(amount: int) -> void:
 			level_increased.emit(level)
 
 	progress_changed.emit(level, current_experience, required_experience)
+
+
+func get_run_snapshot() -> Dictionary:
+	return {
+		&"level": level,
+		&"current_experience": current_experience,
+		&"required_experience": required_experience,
+	}
 
 
 func _required_for_level(target_level: int) -> int:

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RunBuffCatalog" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://game/features/run_buffs/run_buff_catalog.gd" id="1_catalog"]
+[ext_resource type="Resource" path="res://game/features/run_buffs/definitions/vitality.tres" id="2_vitality"]
+[ext_resource type="Resource" path="res://game/features/run_buffs/definitions/mobility.tres" id="3_mobility"]
+[ext_resource type="Resource" path="res://game/features/run_buffs/definitions/overclock.tres" id="4_overclock"]
+[ext_resource type="Resource" path="res://game/features/run_buffs/definitions/rapid_cycle.tres" id="5_rapid"]
+[ext_resource type="Resource" path="res://game/features/run_buffs/definitions/plating.tres" id="6_plating"]
+
+[resource]
+script = ExtResource("1_catalog")
+buffs = Array[Resource]([ExtResource("2_vitality"), ExtResource("3_mobility"), ExtResource("4_overclock"), ExtResource("5_rapid"), ExtResource("6_plating")])

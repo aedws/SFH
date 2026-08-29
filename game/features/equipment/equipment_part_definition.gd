@@ -7,6 +7,7 @@ extends Resource
 @export var compatible_minor_tags: Array[StringName] = []
 @export var stat_modifiers: Array[EquipmentStatModifier] = []
 @export var special_feature_ids: Array[StringName] = []
+@export_range(1, 20, 1) var maximum_upgrade_level: int = 3
 
 
 func is_valid() -> bool:
@@ -15,6 +16,7 @@ func is_valid() -> bool:
 		and not display_name.is_empty()
 		and socket_id != &""
 		and not compatible_minor_tags.is_empty()
+		and maximum_upgrade_level > 0
 	)
 
 

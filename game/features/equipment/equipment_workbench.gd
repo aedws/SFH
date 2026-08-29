@@ -10,6 +10,7 @@ extends PanelContainer
 
 var equipment_provider: Node
 var inventory_provider: Node
+var upgrade_provider: Node
 var paused_before_open: bool = false
 
 
@@ -30,6 +31,7 @@ func _ready() -> void:
 	%WeaponEquipButton.pressed.connect(_equip_candidate.bind(&"weapon"))
 	%ArmorEquipButton.pressed.connect(_equip_candidate.bind(&"armor"))
 	%InstallPartButton.pressed.connect(_install_part)
+	%UpgradePartButton.pressed.connect(_upgrade_part)
 	%WeaponModuleButton.pressed.connect(_install_module.bind(true))
 	%ArmorModuleButton.pressed.connect(_install_module.bind(false))
 	%WeaponUpgradeButton.pressed.connect(_upgrade_module.bind(true))
@@ -40,11 +42,16 @@ func _ready() -> void:
 	%ArmorModifyButton.pressed.connect(_grant_matching_tag.bind(false))
 
 
-func configure(new_equipment_provider: Node, new_inventory_provider: Node) -> bool:
+func configure(
+	new_equipment_provider: Node,
+	new_inventory_provider: Node,
+	new_upgrade_provider: Node = null
+) -> bool:
 	if new_equipment_provider == null or new_inventory_provider == null:
 		return false
 	equipment_provider = new_equipment_provider
 	inventory_provider = new_inventory_provider
+	upgrade_provider = new_upgrade_provider
 	if equipment_provider.has_signal(&"customization_changed"):
 		equipment_provider.connect(&"customization_changed", Callable(self, &"_on_data_changed"))
 	if inventory_provider.has_signal(&"inventory_changed"):
@@ -148,10 +155,61 @@ func _upgrade_module(for_weapon: bool) -> void:
 	var state := equipment_provider.call(&"get_equipment_state", slot_id) as EquipmentItemState
 	if state != null:
 		for module_instance in state.installed_modules:
-			if equipment_provider.call(&"upgrade_module", slot_id, module_instance.instance_id):
-				_set_status("모듈 강화 완료 · 장착 코스트 감소")
+			var upgraded := false
+			if upgrade_provider != null:
+				var quote: Dictionary = upgrade_provider.call(
+					&"quote_upgrade", &"module", slot_id, module_instance.instance_id
+				)
+				if quote.is_empty():
+					continue
+				upgraded = bool(upgrade_provider.call(
+					&"upgrade", &"module", slot_id, module_instance.instance_id
+				))
+				if upgraded:
+					_set_status("모듈 강화 완료 · 동일 아이템 %d개 · 크레딧 %d 소모" % [
+						int(quote[&"material_quantity"]),
+						int(quote[&"credit_cost"]),
+					])
+			else:
+				upgraded = bool(equipment_provider.call(
+					&"upgrade_module", slot_id, module_instance.instance_id
+				))
+				if upgraded:
+					_set_status("모듈 강화 완료 · 장착 코스트 감소")
+			if upgraded:
 				return
-	_set_status("강화 가능한 장착 모듈이 없습니다.")
+	_set_status("강화 가능한 모듈, 동일 아이템 재료와 크레딧을 확인하세요.")
+
+
+func _upgrade_part() -> void:
+	if not _providers_are_ready():
+		return
+	var slot_id := _selected_slot(true)
+	var state := equipment_provider.call(&"get_equipment_state", slot_id) as EquipmentItemState
+	if state != null:
+		for part in state.installed_parts:
+			var upgraded := false
+			if upgrade_provider != null:
+				var quote: Dictionary = upgrade_provider.call(
+					&"quote_upgrade", &"part", slot_id, part.part_id
+				)
+				if quote.is_empty():
+					continue
+				upgraded = bool(upgrade_provider.call(
+					&"upgrade", &"part", slot_id, part.part_id
+				))
+				if upgraded:
+					_set_status("고유 파츠 강화 완료 · 동일 아이템 %d개 · 크레딧 %d 소모" % [
+						int(quote[&"material_quantity"]),
+						int(quote[&"credit_cost"]),
+					])
+			else:
+				upgraded = bool(equipment_provider.call(&"upgrade_part", slot_id, part.part_id))
+				if upgraded:
+					_set_status("고유 파츠 강화 완료")
+			if upgraded:
+				return
+	_set_status("강화 가능한 고유 파츠, 동일 아이템 재료와 크레딧을 확인하세요.")
 
 
 func _level_up(for_weapon: bool) -> void:

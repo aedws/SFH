@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EquipmentUpgradeCostPolicy" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment_upgrade/equipment_upgrade_cost_policy.gd" id="1_policy"]
+
+[resource]
+script = ExtResource("1_policy")
+module_credit_costs = PackedInt32Array(120, 240)
+part_credit_costs = PackedInt32Array(180, 360)
+material_quantity_per_upgrade = 1

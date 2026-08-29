@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RunBuffDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/run_buffs/run_buff_definition.gd" id="1_buff"]
+
+[resource]
+script = ExtResource("1_buff")
+buff_id = &"mobility"
+display_name = "기동 전술"
+description = "이동 속도 +8%"
+maximum_stacks = 5
+meta_target = 0
+player_modifiers = {&"movement_speed": {&"add": 0.0, &"multiply": 1.08}}

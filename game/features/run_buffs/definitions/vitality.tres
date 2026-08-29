@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RunBuffDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/run_buffs/run_buff_definition.gd" id="1_buff"]
+
+[resource]
+script = ExtResource("1_buff")
+buff_id = &"vitality"
+display_name = "생존 본능"
+description = "최대 체력 +15, 즉시 체력 15 회복"
+maximum_stacks = 5
+meta_target = 0
+player_modifiers = {&"max_health": {&"add": 15.0, &"multiply": 1.0}}
+heal_on_apply = 15.0

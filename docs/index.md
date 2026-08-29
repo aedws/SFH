@@ -54,7 +54,7 @@ hide:
   <div class="sfh-stat"><small>Core loop</small><strong>작전 가능</strong><span>선택 → 전투 → 파밍 → 탈출</span></div>
   <div class="sfh-stat"><small>World</small><strong>소·중·대형</strong><span>랜덤 방·복도·기둥·미니맵</span></div>
   <div class="sfh-stat"><small>Loadout</small><strong>장비 기반 완료</strong><span>무기·방어구·파츠·모듈</span></div>
-  <div class="sfh-stat"><small>Balance</small><strong>Sheet + CSV</strong><span>실시간 테스트·확정 데이터</span></div>
+  <div class="sfh-stat"><small>Growth</small><strong>Run + Meta</strong><span>임시 버프·세 계열 영구 레벨</span></div>
 </div>
 
 <div class="sfh-section-head">
@@ -62,24 +62,27 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>4 categories · 8 verified items</span><span>PR #6 · main merged</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>내부·외부 성장 + 강화 경제</span><span>자동 검증 PASS</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>Q 무기 교체와 Google Sheets 밸런스 파이프라인</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>로그라이크 내부·외부 성장과 장비 강화 경제</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
-      <strong>핵심 변경 · 4개 주제</strong>
+      <strong>핵심 변경 · 5개 주제</strong>
       <ul>
-        <li>Q로 메인 돌격소총과 보조 제식 권총을 즉시 교체합니다.</li>
-        <li>소총은 장거리 3점사, 권총은 고위력 단발과 1회 관통으로 역할을 분리했습니다.</li>
-        <li>작전 선택 화면에서 확정 CSV와 Google Sheet 실시간 테스트 모드를 버튼으로 전환합니다.</li>
-        <li>장비 상태·밸런스 출처·발사 실행을 독립 모듈 계약으로 연결했습니다.</li>
+        <li>한 판 안에서 레벨업하면 3개 선택지 중 임시 버프 하나를 고릅니다.</li>
+        <li>선택한 버프 수를 작전 종료 후 캐릭터·무기·방어구 외부 경험치로 정산합니다.</li>
+        <li>세 계열 영구 레벨 효과와 로컬 JSON 저장을 연결했습니다.</li>
+        <li>모듈과 고유 파츠는 동일 아이템과 크레딧을 소모해 별도로 강화합니다.</li>
+        <li>전체 기능 경계를 재감사하고 성장·강화 모듈 비활성화 폴백을 검증했습니다.</li>
       </ul>
-      <p class="sfh-intent"><b>개선 의도</b><span>에임이 없는 자동 전투에서도 무기 선택이 사거리와 발사 리듬, 관통 여부로 명확히 체감되게 합니다.</span></p>
+      <p class="sfh-intent"><b>개선 의도</b><span>한 판의 선택 재미와 장기 성장을 연결하되, 장비 강화 경제는 외부 레벨과 분리해 독립적으로 교체할 수 있게 합니다.</span></p>
     </div>
 
-    <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+    <div class="sfh-group"><h3>🆕 구현 · 4</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">내부 버프 선택과 외부 성장</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>내부 레벨업 선택, 버프 중첩, 종료 정산, 세 계열 영구 레벨과 저장을 연결했습니다.</p><a href="features/progression/">성장 설계 보기 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">모듈·고유 파츠 강화 비용</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>동일 아이템 재료와 휴대 크레딧을 확인·소비하는 독립 강화 서비스를 추가했습니다.</p><a href="features/equipment-upgrade-economy/">강화 경제 보기 →</a></div></details>
       <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Q 메인·보조 무기 교체</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비 시스템이 활성 슬롯을 관리하고 자동 무기가 변경 Signal을 받아 즉시 발사 프로필을 바꿉니다.</p><a href="features/weapon-balance/">상세 설계 보기 →</a></div></details>
       <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">밸런스 모드 선택 UI</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>작전 규모를 고르기 전에 확정 CSV와 Google Sheet 실시간 테스트를 화면 버튼으로 선택합니다.</p></div></details>
     </div>
@@ -112,6 +115,7 @@ hide:
   <a class="sfh-link-card" href="development-status/"><b>전체 업데이트</b><span>날짜와 구현·개선·수정·버그픽스 태그별 변경 내역을 확인합니다.</span><small>RELEASE NOTES →</small></a>
   <a class="sfh-link-card" href="architecture/module-rules/"><b>모듈 작성 규칙</b><span>기능을 독립적으로 켜고 끄기 위한 폴더·Signal·의존성 규칙입니다.</span><small>ARCHITECTURE →</small></a>
   <a class="sfh-link-card" href="features/weapon-balance/"><b>무기 밸런스</b><span>Google Sheets 실시간 테스트와 확정 CSV 운영 절차를 설명합니다.</span><small>BALANCE PIPELINE →</small></a>
+  <a class="sfh-link-card" href="features/progression/"><b>로그라이크 성장</b><span>한 판 임시 버프와 작전 종료 후 외부 성장 정산을 설명합니다.</span><small>RUN + META →</small></a>
   <a class="sfh-link-card" href="features/grid-inventory/"><b>격자 가방</b><span>아이템별 점유 크기와 I 키 인벤토리의 현재 구현을 확인합니다.</span><small>INVENTORY →</small></a>
   <a class="sfh-link-card" href="getting-started/edit-wiki-online/"><b>웹에서 위키 수정</b><span>GitHub 웹 편집과 자동 Pages 배포 흐름을 따라갑니다.</span><small>COLLABORATE →</small></a>
 </div>

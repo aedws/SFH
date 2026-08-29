@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/meta_progression/meta_progression_system.gd" id="1_meta"]
+
+[node name="MetaProgressionSystem" type="Node"]
+script = ExtResource("1_meta")

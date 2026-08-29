@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RunBuffDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/run_buffs/run_buff_definition.gd" id="1_buff"]
+
+[resource]
+script = ExtResource("1_buff")
+buff_id = &"rapid_cycle"
+display_name = "고속 순환"
+description = "무기 공격 간격 -10%"
+maximum_stacks = 5
+meta_target = 1
+weapon_modifiers = {&"fire_interval_multiply": 0.9}

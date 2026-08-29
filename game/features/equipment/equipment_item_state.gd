@@ -5,6 +5,7 @@ extends Resource
 @export var definition: Resource
 @export_range(1, 100, 1) var level: int = 1
 @export var installed_parts: Array[EquipmentPartDefinition] = []
+@export var part_upgrade_levels: Dictionary = {}
 @export var installed_modules: Array[EquipmentModuleInstance] = []
 @export var granted_module_tags: Array[StringName] = []
 
@@ -14,6 +15,7 @@ func configure(new_state_id: StringName, new_definition: Resource) -> void:
 	definition = new_definition
 	level = 1
 	installed_parts.clear()
+	part_upgrade_levels.clear()
 	installed_modules.clear()
 	granted_module_tags.clear()
 
@@ -63,6 +65,25 @@ func install_part(part: EquipmentPartDefinition) -> bool:
 	if not can_install_part(part):
 		return false
 	installed_parts.append(part)
+	part_upgrade_levels[part.part_id] = 1
+	return true
+
+
+func get_part(part_id: StringName) -> EquipmentPartDefinition:
+	for part in installed_parts:
+		if part.part_id == part_id:
+			return part
+	return null
+
+
+func upgrade_part(part_id: StringName) -> bool:
+	var part := get_part(part_id)
+	if part == null:
+		return false
+	var current_level := int(part_upgrade_levels.get(part_id, 1))
+	if current_level >= part.maximum_upgrade_level:
+		return false
+	part_upgrade_levels[part_id] = current_level + 1
 	return true
 
 
@@ -112,6 +133,39 @@ func upgrade_module(instance_id: StringName) -> bool:
 	return false
 
 
+func get_module_instance(instance_id: StringName) -> EquipmentModuleInstance:
+	for module_instance in installed_modules:
+		if module_instance.instance_id == instance_id:
+			return module_instance
+	return null
+
+
+func get_upgrade_context(target_kind: StringName, target_id: StringName) -> Dictionary:
+	if target_kind == &"part":
+		var part := get_part(target_id)
+		if part == null:
+			return {}
+		return {
+			&"target_kind": &"part",
+			&"target_id": part.part_id,
+			&"current_level": int(part_upgrade_levels.get(part.part_id, 1)),
+			&"maximum_level": part.maximum_upgrade_level,
+			&"material_resource": part,
+		}
+	if target_kind == &"module":
+		var module_instance := get_module_instance(target_id)
+		if module_instance == null or module_instance.definition == null:
+			return {}
+		return {
+			&"target_kind": &"module",
+			&"target_id": module_instance.instance_id,
+			&"current_level": module_instance.upgrade_level,
+			&"maximum_level": module_instance.definition.maximum_upgrade_level(),
+			&"material_resource": module_instance.definition,
+		}
+	return {}
+
+
 func level_up() -> bool:
 	if level >= maximum_level():
 		return false
@@ -135,7 +189,10 @@ func display_name() -> String:
 func snapshot() -> Dictionary:
 	var part_names := PackedStringArray()
 	for part in installed_parts:
-		part_names.append(part.display_name)
+		part_names.append("%s Lv.%d" % [
+			part.display_name,
+			int(part_upgrade_levels.get(part.part_id, 1)),
+		])
 	var module_lines := PackedStringArray()
 	var module_instance_ids := PackedStringArray()
 	var granted_tags := PackedStringArray()

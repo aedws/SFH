@@ -18,14 +18,20 @@ Game
 ├─ Modules
 │  ├─ EnemySpawner          # 실행 시 생성
 │  ├─ ProgressionSystem     # 실행 시 생성
+│  ├─ RunBuffSystem         # 한 판 임시 버프 선택·중첩
+│  ├─ MetaProgression       # 캐릭터·무기·방어구 외부 성장과 저장
 │  ├─ CharacterEquipment    # 무기·스킬·방어구 로드아웃 조립
 │  ├─ CreditLedger          # 휴대·회수·분실 계산
+│  ├─ EquipmentUpgrade      # 동일 아이템·크레딧 강화 비용 조정
 │  └─ LootSpawner           # 1회성 보급 상자 배치
 └─ UI
    ├─ HUDMargin
    ├─ TacticalMinimap      # 실행 시 설치되는 우측 상단 전술 지도
    ├─ InteractionLabel      # 탈출 범위의 F 안내
    ├─ RunSetupOverlay       # 소·중·대형 선택
+   ├─ RunBuffSelector       # 내부 레벨업 때 3개 버프 선택
+   ├─ InventoryWindow       # I 가방
+   ├─ EquipmentWorkbench    # U 장비·파츠·모듈 편집
    └─ GameOverOverlay
 ```
 
@@ -46,3 +52,6 @@ Game
 - `game/features/spawning/enemy_spawner.tscn`: 적 생성 기능
 - `game/features/weapons/auto_weapon.tscn`: 자동 공격 기능
 - `game/features/experience/progression_system.tscn`: 성장 기능
+- `game/features/run_buffs/run_buff_system.tscn`: 한 판 임시 버프
+- `game/features/meta_progression/meta_progression_system.tscn`: 외부 성장과 저장
+- `game/features/equipment_upgrade/equipment_upgrade_service.tscn`: 파츠·모듈 강화 경제

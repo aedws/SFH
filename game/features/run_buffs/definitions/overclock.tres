@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RunBuffDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/run_buffs/run_buff_definition.gd" id="1_buff"]
+
+[resource]
+script = ExtResource("1_buff")
+buff_id = &"overclock"
+display_name = "화력 과부하"
+description = "무기 피해 +15%"
+maximum_stacks = 5
+meta_target = 1
+weapon_modifiers = {&"damage_multiply": 1.15}

@@ -11,6 +11,14 @@ const INVENTORY_CATALOG_PATH := "res://game/features/inventory/catalogs/default_
 const WEAPON_BALANCE_SCENE_PATH := "res://game/features/weapon_balance/weapon_balance_service.tscn"
 const WEAPON_BALANCE_CONFIG_PATH := "res://game/features/weapon_balance/configs/default_weapon_balance.tres"
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
+const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
+const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
+const RUN_BUFF_SCENE_PATH := "res://game/features/run_buffs/run_buff_system.tscn"
+const RUN_BUFF_CATALOG_PATH := "res://game/features/run_buffs/configs/default_run_buffs.tres"
+const META_PROGRESSION_SCENE_PATH := "res://game/features/meta_progression/meta_progression_system.tscn"
+const CREDIT_LEDGER_SCENE_PATH := "res://game/features/credits/credit_ledger.tscn"
+const EQUIPMENT_UPGRADE_SCENE_PATH := "res://game/features/equipment_upgrade/equipment_upgrade_service.tscn"
+const EQUIPMENT_UPGRADE_POLICY_PATH := "res://game/features/equipment_upgrade/configs/default_upgrade_costs.tres"
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 var game_instance: Node
@@ -30,6 +38,10 @@ func _init() -> void:
 		return
 	if not await _verify_enemy_stats_modules():
 		return
+	if not _verify_roguelike_progression_modules():
+		return
+	if not _verify_equipment_upgrade_economy():
+		return
 
 	var game_scene := load(GAME_SCENE_PATH) as PackedScene
 	if game_scene == null:
@@ -42,6 +54,8 @@ func _init() -> void:
 	if not await _verify_optional_equipment_module(game_scene):
 		return
 	if not await _verify_optional_weapon_balance_module(game_scene):
+		return
+	if not await _verify_optional_progression_modules(game_scene):
 		return
 	if not await _verify_extraction_flow(game_scene):
 		return
@@ -106,6 +120,189 @@ func _verify_map_tiers() -> bool:
 		root.remove_child(generator)
 		generator.free()
 
+	return true
+
+
+func _verify_roguelike_progression_modules() -> bool:
+	var player_scene := load(PLAYER_SCENE_PATH) as PackedScene
+	var equipment_scene := load(EQUIPMENT_SCENE_PATH) as PackedScene
+	var weapon_scene := load(WEAPON_SCENE_PATH) as PackedScene
+	var buff_scene := load(RUN_BUFF_SCENE_PATH) as PackedScene
+	var meta_scene := load(META_PROGRESSION_SCENE_PATH) as PackedScene
+	var progression_scene := load(PROGRESSION_SCENE_PATH) as PackedScene
+	if (
+		player_scene == null
+		or equipment_scene == null
+		or weapon_scene == null
+		or buff_scene == null
+		or meta_scene == null
+		or progression_scene == null
+	):
+		_fail("로그라이크 성장 모듈 Scene을 불러오지 못했습니다.")
+		return false
+
+	var host := Node2D.new()
+	root.add_child(host)
+	var player := player_scene.instantiate()
+	host.add_child(player)
+	var equipment := equipment_scene.instantiate()
+	host.add_child(equipment)
+	if not equipment.call(
+		&"configure", load(EQUIPMENT_LOADOUT_PATH), player, true, true, true
+	):
+		_fail("성장 테스트용 장비 구성이 실패했습니다.")
+		return false
+	var projectiles := Node2D.new()
+	host.add_child(projectiles)
+	var weapon := weapon_scene.instantiate()
+	player.add_child(weapon)
+	weapon.call(&"configure", projectiles, equipment, null)
+	var buff_system := buff_scene.instantiate()
+	host.add_child(buff_system)
+	if not buff_system.call(
+		&"configure", player, weapon, load(RUN_BUFF_CATALOG_PATH)
+	):
+		_fail("런 버프 시스템 구성이 실패했습니다.")
+		return false
+	var previous_max_health := float(player.get("max_health"))
+	var choices: Array[Dictionary] = buff_system.call(&"prepare_choices", 1, 5)
+	var vitality_id: StringName = &""
+	for choice in choices:
+		if choice[&"buff_id"] == &"vitality":
+			vitality_id = choice[&"buff_id"]
+	if vitality_id == &"" or not buff_system.call(&"select_buff", vitality_id):
+		_fail("런 레벨업 선택지에서 임시 체력 버프를 적용하지 못했습니다.")
+		return false
+	if not is_equal_approx(float(player.get("max_health")), previous_max_health + 15.0):
+		_fail("임시 버프가 장비 스탯과 독립적으로 합산되지 않았습니다.")
+		return false
+	var run_snapshot: Dictionary = buff_system.call(&"get_snapshot")
+	if (
+		int(run_snapshot[&"selected_buff_count"]) != 1
+		or int(run_snapshot[&"meta_experience"][&"character"]) != 1
+	):
+		_fail("임시 버프 수량이 외부 경험치 분류로 변환되지 않았습니다.")
+		return false
+
+	var meta := meta_scene.instantiate()
+	host.add_child(meta)
+	meta.call(&"configure", "", false)
+	var settlement: Dictionary = meta.call(&"settle_run", {
+		&"character": 3,
+		&"weapon": 1,
+		&"armor": 1,
+	})
+	var meta_snapshot: Dictionary = settlement[&"snapshot"]
+	if (
+		int(meta_snapshot[&"levels"][&"character"]) != 2
+		or int(meta_snapshot[&"experience"][&"weapon"]) != 1
+		or int(meta_snapshot[&"experience"][&"armor"]) != 1
+	):
+		_fail("외부 경험치가 캐릭터·무기·방어구 트랙에 분리되지 않았습니다.")
+		return false
+	meta.call(&"apply_to_targets", player, weapon, equipment)
+	if float(player.get("max_health")) < previous_max_health + 20.0:
+		_fail("외부 캐릭터 레벨 보너스가 임시 버프와 함께 적용되지 않았습니다.")
+		return false
+
+	var progression := progression_scene.instantiate()
+	host.add_child(progression)
+	progression.call(&"configure", projectiles, true)
+	progression.call(&"gain_experience", 5)
+	if int(progression.call(&"get_run_snapshot")[&"level"]) != 2:
+		_fail("내부 경험치가 런 레벨 선택권을 생성하지 못했습니다.")
+		return false
+
+	root.remove_child(host)
+	host.free()
+	return true
+
+
+func _verify_equipment_upgrade_economy() -> bool:
+	var player_scene := load(PLAYER_SCENE_PATH) as PackedScene
+	var equipment_scene := load(EQUIPMENT_SCENE_PATH) as PackedScene
+	var inventory_scene := load(INVENTORY_SCENE_PATH) as PackedScene
+	var wallet_scene := load(CREDIT_LEDGER_SCENE_PATH) as PackedScene
+	var service_scene := load(EQUIPMENT_UPGRADE_SCENE_PATH) as PackedScene
+	if (
+		player_scene == null
+		or equipment_scene == null
+		or inventory_scene == null
+		or wallet_scene == null
+		or service_scene == null
+	):
+		_fail("장비 강화 경제 모듈 Scene을 불러오지 못했습니다.")
+		return false
+
+	var host := Node.new()
+	root.add_child(host)
+	var player := player_scene.instantiate()
+	host.add_child(player)
+	var equipment := equipment_scene.instantiate()
+	host.add_child(equipment)
+	equipment.call(&"configure", load(EQUIPMENT_LOADOUT_PATH), player, true, true, true)
+	var inventory := inventory_scene.instantiate()
+	host.add_child(inventory)
+	inventory.call(&"configure", load(INVENTORY_CATALOG_PATH))
+	var wallet := wallet_scene.instantiate()
+	host.add_child(wallet)
+	wallet.call(&"add_carried", 500)
+	var service := service_scene.instantiate()
+	host.add_child(service)
+	if not service.call(
+		&"configure",
+		equipment,
+		inventory,
+		wallet,
+		load(EQUIPMENT_UPGRADE_POLICY_PATH)
+	):
+		_fail("장비 강화 비용 서비스를 구성하지 못했습니다.")
+		return false
+
+	var module_item: Resource
+	var part_item: Resource
+	for entry in inventory.call(&"get_snapshot")[&"items"]:
+		var linked: Resource = entry[&"linked_resource"]
+		if linked == null:
+			continue
+		if linked.has_method(&"maximum_upgrade_level") and linked.get("module_id") == &"ballistic_core":
+			module_item = inventory.call(&"take_item", entry[&"instance_id"])
+			equipment.call(&"install_module", &"main", &"test_ballistic", linked)
+		elif linked.has_method(&"supports_weapon") and linked.get("part_id") == &"rifle_scope":
+			part_item = inventory.call(&"take_item", entry[&"instance_id"])
+			equipment.call(&"install_part", &"main", linked)
+	if module_item == null or part_item == null:
+		_fail("강화 테스트용 동일 모듈·고유 파츠 아이템을 찾지 못했습니다.")
+		return false
+	inventory.call(&"add_item", module_item)
+	inventory.call(&"add_item", part_item)
+	var module_quote: Dictionary = service.call(
+		&"quote_upgrade", &"module", &"main", &"test_ballistic"
+	)
+	if not bool(module_quote.get(&"can_upgrade", false)) or not service.call(
+		&"upgrade", &"module", &"main", &"test_ballistic"
+	):
+		_fail("동일 모듈 아이템과 크레딧을 사용한 강화가 실패했습니다.")
+		return false
+	var part_quote: Dictionary = service.call(
+		&"quote_upgrade", &"part", &"main", &"rifle_scope"
+	)
+	if not bool(part_quote.get(&"can_upgrade", false)) or not service.call(
+		&"upgrade", &"part", &"main", &"rifle_scope"
+	):
+		_fail("동일 고유 파츠 아이템과 크레딧을 사용한 강화가 실패했습니다.")
+		return false
+	var main_state = equipment.call(&"get_equipment_state", &"main")
+	if (
+		int(wallet.get("carried_credits")) != 200
+		or int(main_state.get("part_upgrade_levels").get(&"rifle_scope", 1)) != 2
+		or int(main_state.call(&"get_module_instance", &"test_ballistic").get("upgrade_level")) != 2
+	):
+		_fail("강화 레벨 또는 크레딧 차감 결과가 예상과 다릅니다.")
+		return false
+
+	root.remove_child(host)
+	host.free()
 	return true
 
 
@@ -398,6 +595,7 @@ func _verify_optional_equipment_module(game_scene: PackedScene) -> bool:
 	equipment_free_features.set("equipment_skills_enabled", false)
 	equipment_free_features.set("equipment_armor_enabled", false)
 	equipment_free_features.set("equipment_customization_enabled", false)
+	equipment_free_features.set("equipment_upgrade_economy_enabled", false)
 	equipment_free_features.set("run_setup_enabled", false)
 	equipment_free_game.set("features", equipment_free_features)
 	root.add_child(equipment_free_game)
@@ -442,6 +640,34 @@ func _verify_optional_weapon_balance_module(game_scene: PackedScene) -> bool:
 	await process_frame
 	if not failure_message.is_empty():
 		_fail("무기 밸런스 모듈 비활성화 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_optional_progression_modules(game_scene: PackedScene) -> bool:
+	var progression_free_game := game_scene.instantiate()
+	var progression_free_features = progression_free_game.get("features").duplicate(true)
+	progression_free_features.set("run_buffs_enabled", false)
+	progression_free_features.set("meta_progression_enabled", false)
+	progression_free_features.set("equipment_upgrade_economy_enabled", false)
+	progression_free_features.set("run_setup_enabled", false)
+	progression_free_game.set("features", progression_free_features)
+	root.add_child(progression_free_game)
+	await process_frame
+	var failure_message := ""
+	if progression_free_game.get("progression_system") == null:
+		failure_message = "내부 경험치 기반까지 함께 제거됐습니다."
+	elif progression_free_game.get("run_buff_system") != null:
+		failure_message = "비활성화했지만 런 버프 모듈이 설치됐습니다."
+	elif progression_free_game.get("meta_progression_system") != null:
+		failure_message = "비활성화했지만 외부 성장 모듈이 설치됐습니다."
+	elif progression_free_game.get("equipment_upgrade_service") != null:
+		failure_message = "비활성화했지만 장비 강화 경제 모듈이 설치됐습니다."
+	root.remove_child(progression_free_game)
+	progression_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("로그라이크 성장 모듈 비활성화 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -658,7 +884,19 @@ func _process(_delta: float) -> bool:
 		var map_generator = game_instance.get("map_generator")
 		var extraction_zone = game_instance.get("extraction_zone")
 		var equipment = game_instance.get("equipment_system")
-		if progression == null or weapon == null or map_generator == null or extraction_zone == null or equipment == null:
+		var run_buffs = game_instance.get("run_buff_system")
+		var meta_progression = game_instance.get("meta_progression_system")
+		var upgrade_economy = game_instance.get("equipment_upgrade_service")
+		if (
+			progression == null
+			or weapon == null
+			or map_generator == null
+			or extraction_zone == null
+			or equipment == null
+			or run_buffs == null
+			or meta_progression == null
+			or upgrade_economy == null
+		):
 			return _fail("맵, 탈출, 장비, 전투 또는 성장 모듈이 설치되지 않았습니다.")
 		var small_config = load(MAP_CONFIG_PATH_PATTERN % "small")
 		if map_generator.get("rooms").size() < int(small_config.get("minimum_rooms")):
@@ -699,6 +937,14 @@ func _process(_delta: float) -> bool:
 			return _fail("무기 교체가 자동 공격 런타임에 반영되지 않았습니다.")
 		if "고위력 관통" not in runtime_label.text or "확정 CSV" not in runtime_label.text:
 			return _fail("무기 특색 또는 밸런스 출처가 HUD에 표시되지 않았습니다.")
+		var selector = game_instance.get("run_buff_selector")
+		var run_buffs = game_instance.get("run_buff_system")
+		var offered_ids: PackedStringArray = run_buffs.get("offered_buff_ids")
+		if selector == null or not selector.visible or offered_ids.is_empty():
+			return _fail("런 레벨업 시 임시 버프 선택 화면이 열리지 않았습니다.")
+		game_instance.call(&"_on_run_buff_selected", StringName(offered_ids[0]))
+		if int(run_buffs.call(&"selected_buff_count")) != 1:
+			return _fail("선택한 임시 버프가 런 상태에 기록되지 않았습니다.")
 
 	if frame_count == 125:
 		if int(game_instance.get("defeated_enemies")) < 1:
@@ -717,9 +963,14 @@ func _process(_delta: float) -> bool:
 		var overlay := game_instance.get_node("UI/GameOverOverlay") as Control
 		if not paused or not overlay.visible:
 			return _fail("게임오버 상태가 적용되지 않았습니다.")
+		var result_summary := String(game_instance.get_node(
+			"UI/GameOverOverlay/Center/Panel/Margin/Content/GameOverSummary"
+		).text)
+		if "외부 성장" not in result_summary:
+			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map minimap equipment loadout weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade modification_tag equipment_optional realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
+		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map minimap equipment loadout weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

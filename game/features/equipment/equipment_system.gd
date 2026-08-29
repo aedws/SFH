@@ -19,6 +19,7 @@ var inactive_skill_ids := PackedStringArray()
 var aggregated_stat_modifiers: Dictionary = {}
 var equipment_states: Dictionary = {}
 var active_weapon_slot: StringName = &"main"
+var external_armor_level: int = 1
 
 
 func configure(
@@ -179,6 +180,37 @@ func upgrade_module(slot_id: StringName, instance_id: StringName) -> bool:
 	return true
 
 
+func upgrade_part(slot_id: StringName, part_id: StringName) -> bool:
+	var state := get_equipment_state(slot_id)
+	if state == null or not state.upgrade_part(part_id):
+		return false
+	_refresh_after_customization()
+	return true
+
+
+func get_upgrade_context(
+	target_kind: StringName,
+	slot_id: StringName,
+	target_id: StringName
+) -> Dictionary:
+	var state := get_equipment_state(slot_id)
+	return state.get_upgrade_context(target_kind, target_id) if state != null else {}
+
+
+func set_external_armor_level(level: int) -> bool:
+	external_armor_level = maxi(1, level)
+	if stats_target == null or not stats_target.has_method(&"set_runtime_modifier_source"):
+		return external_armor_level == 1
+	stats_target.call(&"set_runtime_modifier_source", &"meta_armor", {
+		&"defense": {
+			&"add": float(external_armor_level - 1) * 0.5,
+			&"multiply": 1.0,
+		},
+	})
+	equipment_changed.emit(get_summary())
+	return true
+
+
 func level_up_equipment(slot_id: StringName) -> bool:
 	var state := get_equipment_state(slot_id)
 	if state == null or not state.level_up():
@@ -212,6 +244,7 @@ func get_summary() -> Dictionary:
 		&"active_skill_ids": get_active_skill_ids(),
 		&"inactive_skill_ids": get_inactive_skill_ids(),
 		&"armor_count": loadout.armor.size() if loadout != null and armor_enabled else 0,
+		&"external_armor_level": external_armor_level,
 	}
 
 

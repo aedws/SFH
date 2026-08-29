@@ -15,6 +15,7 @@ var current_health: float
 var damage_enabled: bool = true
 var base_stats: Dictionary = {}
 var runtime_stats: Dictionary = {}
+var stat_modifier_sources: Dictionary = {}
 
 
 func _ready() -> void:
@@ -41,6 +42,26 @@ func configure_damage(is_enabled: bool) -> void:
 
 
 func apply_equipment_modifiers(modifiers: Dictionary) -> void:
+	set_runtime_modifier_source(&"equipment", modifiers)
+
+
+func set_runtime_modifier_source(source_id: StringName, modifiers: Dictionary) -> void:
+	if source_id == &"":
+		return
+	if modifiers.is_empty():
+		stat_modifier_sources.erase(source_id)
+	else:
+		stat_modifier_sources[source_id] = modifiers.duplicate(true)
+	_rebuild_runtime_stats()
+
+
+func remove_runtime_modifier_source(source_id: StringName) -> void:
+	if not stat_modifier_sources.erase(source_id):
+		return
+	_rebuild_runtime_stats()
+
+
+func _rebuild_runtime_stats() -> void:
 	var previous_max_health := max_health
 	var previous_health_ratio := (
 		current_health / previous_max_health
@@ -48,12 +69,27 @@ func apply_equipment_modifiers(modifiers: Dictionary) -> void:
 		else 1.0
 	)
 	runtime_stats = base_stats.duplicate(true)
-	for stat_id in modifiers:
-		var modifier_data: Dictionary = modifiers[stat_id]
+	var aggregated: Dictionary = {}
+	for source_id in stat_modifier_sources:
+		var source: Dictionary = stat_modifier_sources[source_id]
+		for stat_id in source:
+			var modifier_data: Dictionary = source[stat_id]
+			var entry: Dictionary = aggregated.get(
+				stat_id,
+				{&"add": 0.0, &"multiply": 1.0}
+			)
+			entry[&"add"] = float(entry[&"add"]) + float(modifier_data.get(&"add", 0.0))
+			entry[&"multiply"] = (
+				float(entry[&"multiply"])
+				* float(modifier_data.get(&"multiply", 1.0))
+			)
+			aggregated[stat_id] = entry
+	for stat_id in aggregated:
 		var base_value := float(runtime_stats.get(stat_id, 0.0))
-		var additive := float(modifier_data.get(&"add", 0.0))
-		var multiplier := float(modifier_data.get(&"multiply", 1.0))
-		runtime_stats[stat_id] = (base_value + additive) * multiplier
+		var entry: Dictionary = aggregated[stat_id]
+		runtime_stats[stat_id] = (
+			(base_value + float(entry[&"add"])) * float(entry[&"multiply"])
+		)
 
 	max_health = maxf(1.0, float(runtime_stats.get(&"max_health", max_health)))
 	defense = maxf(0.0, float(runtime_stats.get(&"defense", defense)))

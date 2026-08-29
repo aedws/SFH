@@ -27,6 +27,9 @@ extends Resource
 @export var damage_enabled: bool = true
 @export var experience_enabled: bool = true
 @export var leveling_enabled: bool = true
+@export var run_buffs_enabled: bool = true
+@export var meta_progression_enabled: bool = true
+@export var equipment_upgrade_economy_enabled: bool = true
 @export var game_over_enabled: bool = true
 
 @export_category("Run setup")
@@ -47,6 +50,17 @@ extends Resource
 @export_category("Inventory")
 @export_file("*.tres") var inventory_catalog_path: String = (
 	"res://game/features/inventory/catalogs/default_inventory.tres"
+)
+
+@export_category("Roguelike progression")
+@export_file("*.tres") var run_buff_catalog_path: String = (
+	"res://game/features/run_buffs/configs/default_run_buffs.tres"
+)
+@export var meta_progression_storage_path: String = "user://sfh_meta_progression.json"
+
+@export_category("Equipment upgrade economy")
+@export_file("*.tres") var equipment_upgrade_policy_path: String = (
+	"res://game/features/equipment_upgrade/configs/default_upgrade_costs.tres"
 )
 
 
@@ -99,6 +113,12 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"experience")
 	if leveling_enabled:
 		result.append(&"leveling")
+	if run_buffs_enabled:
+		result.append(&"run_buffs")
+	if meta_progression_enabled:
+		result.append(&"meta_progression")
+	if equipment_upgrade_economy_enabled:
+		result.append(&"equipment_upgrade_economy")
 	if game_over_enabled:
 		result.append(&"game_over")
 
@@ -165,6 +185,26 @@ func validation_errors() -> PackedStringArray:
 		errors.append("experience 모듈은 enemies 모듈이 필요합니다.")
 	if leveling_enabled and not experience_enabled:
 		errors.append("leveling 모듈은 experience 모듈이 필요합니다.")
+	if run_buffs_enabled and not leveling_enabled:
+		errors.append("run_buffs 모듈은 leveling 모듈이 필요합니다.")
+	if run_buffs_enabled and (
+		run_buff_catalog_path.is_empty()
+		or not ResourceLoader.exists(run_buff_catalog_path)
+	):
+		errors.append("run_buffs 카탈로그 Resource 경로가 유효하지 않습니다.")
+	if meta_progression_enabled and not run_buffs_enabled:
+		errors.append("meta_progression 모듈은 run_buffs 모듈이 필요합니다.")
+	if meta_progression_enabled and meta_progression_storage_path.is_empty():
+		errors.append("meta_progression 저장 경로가 필요합니다.")
+	if equipment_upgrade_economy_enabled and not equipment_customization_enabled:
+		errors.append("equipment_upgrade_economy는 equipment_customization 모듈이 필요합니다.")
+	if equipment_upgrade_economy_enabled and not credits_enabled:
+		errors.append("equipment_upgrade_economy는 credits 모듈이 필요합니다.")
+	if equipment_upgrade_economy_enabled and (
+		equipment_upgrade_policy_path.is_empty()
+		or not ResourceLoader.exists(equipment_upgrade_policy_path)
+	):
+		errors.append("장비 강화 비용 정책 Resource 경로가 유효하지 않습니다.")
 	if game_over_enabled and not damage_enabled:
 		errors.append("game_over 모듈은 damage 모듈이 필요합니다.")
 
