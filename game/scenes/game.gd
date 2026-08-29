@@ -98,6 +98,10 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var experience_bar: ProgressBar = %ExperienceBar
 @onready var experience_label: Label = %ExperienceLabel
 @onready var run_setup_overlay: Control = %RunSetupOverlay
+@onready var balance_mode_section: Control = %BalanceModeSection
+@onready var locked_balance_button: Button = %LockedBalanceButton
+@onready var live_balance_button: Button = %LiveBalanceButton
+@onready var balance_mode_description: Label = %BalanceModeDescription
 @onready var small_map_button: Button = %SmallMapButton
 @onready var medium_map_button: Button = %MediumMapButton
 @onready var large_map_button: Button = %LargeMapButton
@@ -122,6 +126,7 @@ var weapon_balance_service
 var progression_system
 var current_map_config: Resource
 var selected_map_size: String = "small"
+var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CSV
 var elapsed_time: float = 0.0
 var defeated_enemies: int = 0
 var run_started: bool = false
@@ -131,6 +136,12 @@ var run_ended: bool = false
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	restart_button.pressed.connect(_restart_run)
+	locked_balance_button.pressed.connect(
+		_select_balance_source_mode.bind(WeaponBalanceConfig.SourceMode.LOCKED_CSV)
+	)
+	live_balance_button.pressed.connect(
+		_select_balance_source_mode.bind(WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET)
+	)
 	small_map_button.pressed.connect(start_run.bind("small"))
 	medium_map_button.pressed.connect(start_run.bind("medium"))
 	large_map_button.pressed.connect(start_run.bind("large"))
@@ -138,6 +149,7 @@ func _ready() -> void:
 	map_label.visible = false
 	interaction_label.visible = false
 	game_over_overlay.visible = false
+	balance_mode_section.visible = false
 
 	if features == null:
 		_report_configuration_error("FeatureManifest가 지정되지 않았습니다.")
@@ -156,6 +168,7 @@ func _ready() -> void:
 	_configure_tier_button(small_map_button, "small")
 	_configure_tier_button(medium_map_button, "medium")
 	_configure_tier_button(large_map_button, "large")
+	_configure_balance_mode_selector()
 
 	if features.run_setup_enabled:
 		run_setup_overlay.visible = true
@@ -295,12 +308,59 @@ func _install_weapon_balance() -> bool:
 		_report_configuration_error("무기 밸런스 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
 	weapon_balance_service.connect(&"balance_error", Callable(self, &"_on_weapon_balance_error"))
-	if not weapon_balance_service.call(
-		&"configure", load(features.weapon_balance_config_path)
-	):
-		_report_configuration_error("확정 무기 밸런스 CSV를 불러오지 못했습니다.")
+	var balance_config := load(features.weapon_balance_config_path) as WeaponBalanceConfig
+	if balance_config == null:
+		_report_configuration_error("무기 밸런스 설정 Resource 형식이 올바르지 않습니다.")
+		return false
+	balance_config = balance_config.duplicate(true) as WeaponBalanceConfig
+	balance_config.source_mode = selected_balance_source_mode
+	if not weapon_balance_service.call(&"configure", balance_config):
+		_report_configuration_error("무기 밸런스 데이터를 불러오지 못했습니다.")
 		return false
 	return true
+
+
+func _configure_balance_mode_selector() -> void:
+	balance_mode_section.visible = features.weapon_balance_enabled
+	if not balance_mode_section.visible:
+		return
+	var balance_config := load(features.weapon_balance_config_path) as WeaponBalanceConfig
+	if balance_config == null:
+		live_balance_button.disabled = true
+		_select_balance_source_mode(WeaponBalanceConfig.SourceMode.LOCKED_CSV)
+		balance_mode_description.text = "밸런스 설정을 읽을 수 없어 확정 CSV만 선택할 수 있습니다."
+		return
+	live_balance_button.disabled = balance_config.live_csv_url.is_empty()
+	var initial_mode := int(balance_config.source_mode)
+	if (
+		initial_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET
+		and live_balance_button.disabled
+	):
+		initial_mode = WeaponBalanceConfig.SourceMode.LOCKED_CSV
+	_select_balance_source_mode(initial_mode)
+
+
+func _select_balance_source_mode(source_mode: int) -> void:
+	if (
+		source_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET
+		and live_balance_button.disabled
+	):
+		return
+	selected_balance_source_mode = source_mode
+	locked_balance_button.button_pressed = (
+		source_mode == WeaponBalanceConfig.SourceMode.LOCKED_CSV
+	)
+	live_balance_button.button_pressed = (
+		source_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET
+	)
+	if source_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET:
+		balance_mode_description.text = (
+			"Google Sheet를 기본 3초마다 다시 읽습니다. 네트워크 실패 시 확정 CSV로 복구합니다."
+		)
+	else:
+		balance_mode_description.text = (
+			"저장소에 확정된 CSV를 사용합니다. 배포와 일반 플레이에 권장됩니다."
+		)
 
 
 func _install_equipment() -> bool:

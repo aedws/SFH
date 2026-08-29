@@ -24,6 +24,8 @@ func _init() -> void:
 		return
 	if not await _verify_weapon_balance_modules():
 		return
+	if not await _verify_balance_mode_selector():
+		return
 	if not await _verify_equipment_modules():
 		return
 	if not await _verify_enemy_stats_modules():
@@ -289,6 +291,54 @@ func _verify_weapon_balance_modules() -> bool:
 	service.free()
 	if not failure_message.is_empty():
 		_fail("무기 밸런스 모듈 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_balance_mode_selector() -> bool:
+	var game_scene := load(GAME_SCENE_PATH) as PackedScene
+	if game_scene == null:
+		_fail("밸런스 모드 UI를 검증할 Game Scene을 불러오지 못했습니다.")
+		return false
+	var selector_game := game_scene.instantiate()
+	root.add_child(selector_game)
+	await process_frame
+	var locked_button := selector_game.get_node(
+		"UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/Buttons/LockedBalanceButton"
+	) as Button
+	var live_button := selector_game.get_node(
+		"UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/Buttons/LiveBalanceButton"
+	) as Button
+	var description := selector_game.get_node(
+		"UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/BalanceModeDescription"
+	) as Label
+	var failure_message := ""
+	if not locked_button.button_pressed or live_button.button_pressed:
+		failure_message = "작전 선택 화면의 기본 밸런스 모드가 확정 CSV가 아닙니다."
+	elif live_button.disabled:
+		failure_message = "Google Sheet URL이 있지만 실시간 테스트 버튼이 비활성화됐습니다."
+	else:
+		live_button.pressed.emit()
+		if (
+			int(selector_game.get("selected_balance_source_mode"))
+			!= WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET
+			or not live_button.button_pressed
+			or locked_button.button_pressed
+			or "3초" not in description.text
+		):
+			failure_message = "실시간 테스트 버튼이 선택 상태와 설명을 갱신하지 못했습니다."
+		locked_button.pressed.emit()
+		if (
+			int(selector_game.get("selected_balance_source_mode"))
+			!= WeaponBalanceConfig.SourceMode.LOCKED_CSV
+			or not locked_button.button_pressed
+			or live_button.button_pressed
+		):
+			failure_message = "확정 CSV 버튼으로 복귀하지 못했습니다."
+	root.remove_child(selector_game)
+	selector_game.free()
+	if not failure_message.is_empty():
+		_fail("밸런스 모드 UI 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -669,7 +719,7 @@ func _process(_delta: float) -> bool:
 			return _fail("게임오버 상태가 적용되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup tier_entry map minimap equipment loadout weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade modification_tag equipment_optional realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
+		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map minimap equipment loadout weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade modification_tag equipment_optional realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
 		quit(0)
 		return true
 

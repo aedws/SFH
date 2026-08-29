@@ -241,7 +241,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="UI/RunSetupOverlay/Center"]
-custom_minimum_size = Vector2(900, 430)
+custom_minimum_size = Vector2(900, 570)
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="UI/RunSetupOverlay/Center/Panel"]
@@ -268,6 +268,48 @@ text = "투자가 클수록 더 넓고 복잡한 전장에 진입합니다"
 horizontal_alignment = 1
 theme_override_colors/font_color = Color(0.62, 0.74, 0.78, 1)
 theme_override_font_sizes/font_size = 18
+
+[node name="BalanceModeSection" type="VBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection"]
+layout_mode = 2
+text = "무기 밸런스 데이터"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.72, 0.86, 0.9, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="Buttons" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="LockedBalanceButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+text = "확정 CSV"
+theme_override_font_sizes/font_size = 17
+
+[node name="LiveBalanceButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+toggle_mode = true
+text = "실시간 테스트"
+theme_override_font_sizes/font_size = 17
+
+[node name="BalanceModeDescription" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "저장소에 확정된 CSV를 사용합니다. 배포와 일반 플레이에 권장됩니다."
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.56, 0.68, 0.72, 1)
+theme_override_font_sizes/font_size = 14
 
 [node name="TierButtons" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content"]
 layout_mode = 2
