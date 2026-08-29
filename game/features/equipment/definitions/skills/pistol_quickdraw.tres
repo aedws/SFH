@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EquipmentSkillDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/skill_definition.gd" id="1_skill"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_tag_profile.gd" id="2_tags"]
+
+[sub_resource type="Resource" id="RequiredTags"]
+script = ExtResource("2_tags")
+major_tag = &"ranged"
+middle_tag = &"firearm"
+minor_tag = &"pistol"
+major_label = "원거리"
+middle_label = "화기"
+minor_label = "권총"
+
+[resource]
+script = ExtResource("1_skill")
+skill_id = &"pistol_quickdraw"
+display_name = "권총 속사"
+required_weapon_slot = 2
+required_tags = SubResource("RequiredTags")
+description = "보조 무기가 원거리·화기·권총일 때 활성화됩니다."
+activation_payload = {"effect_id": &"quickdraw"}

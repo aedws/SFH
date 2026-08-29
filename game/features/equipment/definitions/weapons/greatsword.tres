@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EquipmentWeaponDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/weapon_definition.gd" id="1_weapon"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_tag_profile.gd" id="2_tags"]
+
+[sub_resource type="Resource" id="TagProfile"]
+script = ExtResource("2_tags")
+major_tag = &"melee"
+middle_tag = &"cold_weapon"
+minor_tag = &"greatsword"
+major_label = "근접"
+middle_label = "냉병기"
+minor_label = "대검"
+
+[resource]
+script = ExtResource("1_weapon")
+weapon_id = &"greatsword"
+display_name = "중량 대검"
+tags = SubResource("TagProfile")
+description = "근접·냉병기·대검 확장 예시."

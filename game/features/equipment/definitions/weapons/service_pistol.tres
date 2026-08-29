@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EquipmentWeaponDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/weapon_definition.gd" id="1_weapon"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_tag_profile.gd" id="2_tags"]
+
+[sub_resource type="Resource" id="TagProfile"]
+script = ExtResource("2_tags")
+major_tag = &"ranged"
+middle_tag = &"firearm"
+minor_tag = &"pistol"
+major_label = "원거리"
+middle_label = "화기"
+minor_label = "권총"
+
+[resource]
+script = ExtResource("1_weapon")
+weapon_id = &"service_pistol"
+display_name = "제식 권총"
+tags = SubResource("TagProfile")
+description = "기본 보조 무기 정의."

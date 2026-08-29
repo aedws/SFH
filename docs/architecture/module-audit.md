@@ -34,6 +34,11 @@ tags:
 | 1회성·회수 검증 | 통과 | 같은 상자의 중복 획득 차단과 탈출 회수까지 자동 테스트함 |
 | 미니맵 경계 | 통과 | 미니맵은 맵 내부 객체 대신 복사된 지형 스냅샷만 소비함 |
 | 전체 티어 진입 | 통과 | 소·중·대형 버튼 입력부터 플레이어·맵·탈출·미니맵 설치까지 자동 검증함 |
+| 장비 데이터 분리 | 통과 | 무기·스킬·방어구·로드아웃을 독립 Resource로 정의함 |
+| 무기 태그 확장성 | 통과 | enum 대신 3단계 StringName ID를 사용해 새 분류를 데이터로 추가함 |
+| 스킬 호환성 | 통과 | 슬롯과 대·중·소분류가 모두 맞는 경우만 활성화하며 0~10개 제한을 검증함 |
+| 방어구 스탯 확장성 | 통과 | 범용 stat_id와 더하기·곱하기 수정자를 집계함 |
+| 장비 비활성화 | 통과 | 장비를 끄면 시스템·HUD·스탯 적용 없이 플레이어 기본값을 유지함 |
 
 ## 맵 모듈 공개 계약
 
@@ -83,10 +88,26 @@ tags:
 
 스냅샷에는 셀 경계, 셀 크기, 바닥·방해물 좌표, 시작·탈출 위치만 들어갑니다. 미니맵은 맵의 방 배열, 길찾기 객체, 구체 클래스에 접근하지 않습니다.
 
+## 캐릭터 장비 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 장비 | `configure(loadout, stats_target, weapons, skills, armor)` | `Game` 조립부 |
+| 장비 | `get_active_skill_ids`, `get_inactive_skill_ids` | HUD와 향후 스킬 실행기 |
+| 장비 | `get_stat_modifiers`, `get_summary` | HUD와 테스트 |
+| 장비 | `equipment_changed(summary)` | HUD |
+| 플레이어 | `apply_equipment_modifiers(modifiers)` | 장비 모듈 |
+
+장비 모듈은 플레이어의 내부 Node 경로나 구체 클래스를 참조하지 않습니다. 스탯 적용 대상이 공개 메서드 하나를 구현하면 플레이어 이외의 캐릭터에도 같은 방어구 집계를 사용할 수 있습니다.
+
+무기 태그와 스킬 요구 태그는 `WeaponTagProfile` 값 비교만 수행합니다. 스킬 효과는 `activation_payload`에 보관하되 현재 장비 시스템이 실행하지 않으므로, 향후 스킬 실행기와 작전 투입 비용 정책을 별도 모듈로 붙일 수 있습니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.
 - `EnemySpawner`는 기본 적 Scene을 참조합니다. 이는 `spawning → enemies` 선언 의존성입니다.
+- `Game`은 기본 장비 Scene과 선택된 로드아웃 Resource 경로를 알고, 장비는 플레이어의 스탯 적용 공개 메서드만 압니다.
+- 기존 `AutoWeapon`은 아직 장비 무기 정의의 공격 프로필을 소비하지 않습니다. 태그·장착 상태와 발사 동작을 분리한 과도기 구조입니다.
 - 플레이어, 적, 투사체는 생성 벽용 충돌 레이어 `16`을 공유합니다.
 - 맵 전용 스모크 테스트는 맵 기능 경로를 참조합니다. 맵 기능을 완전히 삭제하면 해당 테스트도 함께 제거하거나 교체해야 합니다.
 
@@ -99,7 +120,7 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `tier_entry`, `minimap`, `realistic_obstacles`, `loot`, `credits`, `health_ui`, `armor`, `status_bars`, `extraction_f`가 포함됩니다. 이는 세 등급 진입, 미니맵, 실내 장애물, 1회성 파밍·회수, 양측 체력 UI와 F 탈출 계약이 함께 검증됐다는 뜻입니다.
+성공하면 출력에 `tier_entry`, `minimap`, `equipment`, `weapon_tags`, `skills_0_10`, `armor_stats`, `equipment_optional`, `realistic_obstacles`, `loot`, `credits`, `health_ui`, `status_bars`, `extraction_f`가 포함됩니다. 이는 세 등급 진입, 미니맵, 장비 태그·제한·방어구 스탯·비활성화, 실내 장애물, 1회성 파밍·회수, 양측 체력 UI와 F 탈출 계약이 함께 검증됐다는 뜻입니다.
 
 ## 다음 개선 시점
 

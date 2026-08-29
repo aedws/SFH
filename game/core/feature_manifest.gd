@@ -15,6 +15,10 @@ extends Resource
 @export var enemies_enabled: bool = true
 @export var enemy_armor_enabled: bool = true
 @export var enemy_status_ui_enabled: bool = true
+@export var equipment_enabled: bool = true
+@export var equipment_weapons_enabled: bool = true
+@export var equipment_skills_enabled: bool = true
+@export var equipment_armor_enabled: bool = true
 @export var spawning_enabled: bool = true
 @export var weapons_enabled: bool = true
 @export var damage_enabled: bool = true
@@ -26,6 +30,11 @@ extends Resource
 @export var run_setup_enabled: bool = true
 @export_enum("small", "medium", "large") var map_size: String = "small"
 @export_range(0, 2147483647, 1) var map_seed: int = 0
+
+@export_category("Equipment")
+@export_file("*.tres") var equipment_loadout_path: String = (
+	"res://game/features/equipment/loadouts/default_loadout.tres"
+)
 
 
 func enabled_module_ids() -> Array[StringName]:
@@ -53,6 +62,14 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"enemy_armor")
 	if enemy_status_ui_enabled:
 		result.append(&"enemy_status_ui")
+	if equipment_enabled:
+		result.append(&"equipment")
+	if equipment_weapons_enabled:
+		result.append(&"equipment_weapons")
+	if equipment_skills_enabled:
+		result.append(&"equipment_skills")
+	if equipment_armor_enabled:
+		result.append(&"equipment_armor")
 	if spawning_enabled:
 		result.append(&"spawning")
 	if weapons_enabled:
@@ -94,6 +111,19 @@ func validation_errors() -> PackedStringArray:
 		errors.append("enemy_armor 모듈은 enemies 모듈이 필요합니다.")
 	if enemy_status_ui_enabled and not enemies_enabled:
 		errors.append("enemy_status_ui 모듈은 enemies 모듈이 필요합니다.")
+	if equipment_weapons_enabled and not equipment_enabled:
+		errors.append("equipment_weapons 모듈은 equipment 모듈이 필요합니다.")
+	if equipment_skills_enabled and not equipment_enabled:
+		errors.append("equipment_skills 모듈은 equipment 모듈이 필요합니다.")
+	if equipment_skills_enabled and not equipment_weapons_enabled:
+		errors.append("equipment_skills 모듈은 equipment_weapons 모듈이 필요합니다.")
+	if equipment_armor_enabled and not equipment_enabled:
+		errors.append("equipment_armor 모듈은 equipment 모듈이 필요합니다.")
+	if equipment_enabled and (
+		equipment_loadout_path.is_empty()
+		or not ResourceLoader.exists(equipment_loadout_path)
+	):
+		errors.append("equipment 로드아웃 Resource 경로가 유효하지 않습니다.")
 	if weapons_enabled and not enemies_enabled:
 		errors.append("weapons 모듈은 enemies 모듈이 필요합니다.")
 	if experience_enabled and not enemies_enabled:

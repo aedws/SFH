@@ -77,6 +77,7 @@ nav:
       - 작전 선택과 탈출: features/raid-setup-extraction.md
       - 크레딧 파밍과 회수: features/credit-loot.md
       - 플레이어: features/player.md
+      - 캐릭터 장비와 로드아웃: features/character-equipment.md
       - 적과 생성 시스템: features/enemies.md
       - 적 체력과 방어력: features/enemy-defense.md
       - 자동 무기: features/weapons.md

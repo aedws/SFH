@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EquipmentSkillDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/skill_definition.gd" id="1_skill"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_tag_profile.gd" id="2_tags"]
+
+[sub_resource type="Resource" id="RequiredTags"]
+script = ExtResource("2_tags")
+major_tag = &"ranged"
+middle_tag = &"firearm"
+minor_tag = &"rifle"
+major_label = "원거리"
+middle_label = "화기"
+minor_label = "소총"
+
+[resource]
+script = ExtResource("1_skill")
+skill_id = &"rifle_burst"
+display_name = "소총 점사"
+required_weapon_slot = 1
+required_tags = SubResource("RequiredTags")
+description = "메인 무기가 원거리·화기·소총일 때 활성화됩니다."
+activation_payload = {"effect_id": &"burst_fire"}

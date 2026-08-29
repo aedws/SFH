@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EquipmentArmorDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/armor_definition.gd" id="1_armor"]
+[ext_resource type="Script" path="res://game/features/equipment/stat_modifier.gd" id="2_modifier"]
+
+[sub_resource type="Resource" id="MaxHealth"]
+script = ExtResource("2_modifier")
+stat_id = &"max_health"
+operation = 0
+amount = 25.0
+
+[sub_resource type="Resource" id="Defense"]
+script = ExtResource("2_modifier")
+stat_id = &"defense"
+operation = 0
+amount = 3.0
+
+[resource]
+script = ExtResource("1_armor")
+armor_id = &"tactical_vest"
+display_name = "전술 방탄복"
+slot_id = &"body"
+stat_modifiers = [SubResource("MaxHealth"), SubResource("Defense")]
+description = "최대 체력과 고정 피해 감소를 올립니다."

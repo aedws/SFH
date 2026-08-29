@@ -18,6 +18,7 @@ Game
 ├─ Modules
 │  ├─ EnemySpawner          # 실행 시 생성
 │  ├─ ProgressionSystem     # 실행 시 생성
+│  ├─ CharacterEquipment    # 무기·스킬·방어구 로드아웃 조립
 │  ├─ CreditLedger          # 휴대·회수·분실 계산
 │  └─ LootSpawner           # 1회성 보급 상자 배치
 └─ UI
@@ -36,6 +37,7 @@ Game
 - `game/scenes/game.gd`: 모듈 설치 코드
 - `game/core/feature_manifest.tres`: 활성 기능 설정
 - `game/features/player/player.tscn`: 플레이어 기능 장면
+- `game/features/equipment/equipment_system.tscn`: 장비 로드아웃과 호환성·스탯 집계
 - `game/features/map_generation/map_generator.tscn`: 방, 복도, 벽, 길찾기 생성
 - `game/features/minimap/minimap.tscn`: 지형 스냅샷 기반 우측 상단 전술 지도
 - `game/features/extraction/extraction_zone.tscn`: F 상호작용 탈출 지점
