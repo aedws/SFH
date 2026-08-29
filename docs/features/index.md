@@ -4,8 +4,10 @@
 
 - [랜덤 맵 생성](map-generation.md)
 - [작전 선택과 탈출](raid-setup-extraction.md)
+- [크레딧 파밍과 회수](credit-loot.md)
 - [플레이어 이동](player.md)
 - [적과 생성 시스템](enemies.md)
+- [적 체력과 방어력](enemy-defense.md)
 - [자동 무기](weapons.md)
 - [경험치와 레벨](progression.md)
 - [게임 루프와 HUD](game-loop.md)

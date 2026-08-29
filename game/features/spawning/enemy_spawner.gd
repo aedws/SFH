@@ -15,6 +15,8 @@ var target: Node2D
 var enemy_parent: Node2D
 var map_provider: Node
 var contact_damage_enabled: bool = true
+var enemy_armor_enabled: bool = true
+var enemy_status_ui_enabled: bool = true
 var elapsed_time: float = 0.0
 var spawn_cooldown: float = 0.15
 
@@ -23,12 +25,16 @@ func configure(
 	new_target: Node2D,
 	new_enemy_parent: Node2D,
 	enable_contact_damage: bool,
-	new_map_provider: Node = null
+	new_map_provider: Node = null,
+	enable_enemy_armor: bool = true,
+	enable_enemy_status_ui: bool = true
 ) -> void:
 	target = new_target
 	enemy_parent = new_enemy_parent
 	contact_damage_enabled = enable_contact_damage
 	map_provider = new_map_provider if _supports_map_provider(new_map_provider) else null
+	enemy_armor_enabled = enable_enemy_armor
+	enemy_status_ui_enabled = enable_enemy_status_ui
 
 
 func _process(delta: float) -> void:
@@ -69,7 +75,14 @@ func _spawn_enemy() -> void:
 
 	enemy_parent.add_child(enemy)
 	enemy.global_position = spawn_position
-	enemy.call(&"configure", target, contact_damage_enabled, map_provider)
+	enemy.call(
+		&"configure",
+		target,
+		contact_damage_enabled,
+		map_provider,
+		enemy_armor_enabled,
+		enemy_status_ui_enabled
+	)
 	enemy_spawned.emit(enemy)
 
 

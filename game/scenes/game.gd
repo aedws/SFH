@@ -6,6 +6,9 @@ const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
 const EXTRACTION_SCENE_PATH := "res://game/features/extraction/extraction_zone.tscn"
+const CREDIT_LEDGER_SCENE_PATH := "res://game/features/credits/credit_ledger.tscn"
+const LOOT_SPAWNER_SCENE_PATH := "res://game/features/loot/loot_spawner.tscn"
+const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
 const SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
@@ -18,6 +21,8 @@ const MAP_GENERATOR_METHODS := [
 	&"get_world_path",
 ]
 const EXTRACTION_METHODS := [&"configure", &"request_extraction"]
+const CREDIT_LEDGER_METHODS := [&"add_carried", &"secure_carried", &"lose_carried"]
+const LOOT_SPAWNER_METHODS := [&"configure"]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 @export var features: FeatureManifest
@@ -33,6 +38,7 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var time_label: Label = %TimeLabel
 @onready var level_label: Label = %LevelLabel
 @onready var kills_label: Label = %KillsLabel
+@onready var credit_label: Label = %CreditLabel
 @onready var map_label: Label = %MapLabel
 @onready var interaction_label: Label = %InteractionLabel
 @onready var health_bar: ProgressBar = %HealthBar
@@ -51,9 +57,12 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 var player
 var map_generator
 var extraction_zone
+var credit_ledger
+var loot_spawner
 var enemy_spawner
 var auto_weapon
 var progression_system
+var current_map_config: Resource
 var selected_map_size: String = "small"
 var elapsed_time: float = 0.0
 var defeated_enemies: int = 0
@@ -75,6 +84,7 @@ func _ready() -> void:
 	if features == null:
 		_report_configuration_error("FeatureManifest가 지정되지 않았습니다.")
 		return
+	credit_label.visible = features.credits_enabled
 
 	var configuration_errors := features.validation_errors()
 	if not configuration_errors.is_empty():
@@ -125,8 +135,8 @@ func _assemble_game() -> void:
 					map_generator.connect(&"map_generated", Callable(self, &"_on_map_generated"))
 					var map_config_path := MAP_CONFIG_PATH_PATTERN % selected_map_size
 					if ResourceLoader.exists(map_config_path):
-						var map_config := load(map_config_path)
-						map_generator.call(&"generate", map_config, features.map_seed)
+						current_map_config = load(map_config_path)
+						map_generator.call(&"generate", current_map_config, features.map_seed)
 						player_spawn_position = map_generator.call(&"get_player_spawn_position")
 					else:
 						_report_configuration_error("맵 설정을 찾을 수 없습니다: %s" % map_config_path)
@@ -142,8 +152,18 @@ func _assemble_game() -> void:
 	player.connect(&"died", Callable(self, &"_on_player_died"))
 	_on_player_health_changed(float(player.get("current_health")), float(player.get("max_health")))
 
+	if features.credits_enabled:
+		_install_credit_ledger()
+
 	if features.extraction_enabled and map_generator != null:
 		_install_extraction_zone()
+	if (
+		features.loot_enabled
+		and map_generator != null
+		and credit_ledger != null
+		and current_map_config != null
+	):
+		_install_loot_spawner()
 
 	if features.experience_enabled:
 		progression_system = _instantiate_feature(PROGRESSION_SCENE_PATH, module_container, &"ProgressionSystem")
@@ -167,7 +187,9 @@ func _assemble_game() -> void:
 				player,
 				enemies_container,
 				features.damage_enabled,
-				map_generator
+				map_generator,
+				features.enemy_armor_enabled,
+				features.enemy_status_ui_enabled
 			)
 
 	status_label.text = "작전 진행 중 · F 상호작용"
@@ -189,6 +211,41 @@ func _install_extraction_zone() -> void:
 		Callable(self, &"_on_interaction_availability_changed")
 	)
 	extraction_zone.call(&"configure", map_generator.call(&"get_extraction_position"))
+
+
+func _install_credit_ledger() -> void:
+	credit_ledger = _instantiate_feature(CREDIT_LEDGER_SCENE_PATH, module_container, &"CreditLedger")
+	if credit_ledger == null:
+		return
+	if not _supports_credit_ledger(credit_ledger):
+		_report_configuration_error("크레딧 원장 모듈이 필수 공개 계약을 구현하지 않았습니다.")
+		credit_ledger.queue_free()
+		credit_ledger = null
+		return
+	credit_ledger.connect(&"credits_changed", Callable(self, &"_on_credits_changed"))
+	_on_credits_changed(0, 0)
+
+
+func _install_loot_spawner() -> void:
+	var loot_config_path := LOOT_CONFIG_PATH_PATTERN % selected_map_size
+	if not ResourceLoader.exists(loot_config_path):
+		_report_configuration_error("파밍 설정을 찾을 수 없습니다: %s" % loot_config_path)
+		return
+	var loot_config := load(loot_config_path)
+	loot_spawner = _instantiate_feature(LOOT_SPAWNER_SCENE_PATH, module_container, &"LootSpawner")
+	if loot_spawner == null:
+		return
+	if not _supports_loot_spawner(loot_spawner):
+		_report_configuration_error("파밍 모듈이 필수 공개 계약을 구현하지 않았습니다.")
+		loot_spawner.queue_free()
+		loot_spawner = null
+		return
+	loot_spawner.connect(&"credits_looted", Callable(self, &"_on_credits_looted"))
+	loot_spawner.connect(
+		&"interaction_availability_changed",
+		Callable(self, &"_on_interaction_availability_changed")
+	)
+	loot_spawner.call(&"configure", map_generator, pickups_container, loot_config)
 
 
 func _configure_tier_button(button: Button, tier_id: String) -> void:
@@ -267,6 +324,28 @@ func _supports_extraction_zone(candidate: Node) -> bool:
 	return true
 
 
+func _supports_credit_ledger(candidate: Node) -> bool:
+	if not is_instance_valid(candidate) or not candidate.has_signal(&"credits_changed"):
+		return false
+	for method_name in CREDIT_LEDGER_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+	return true
+
+
+func _supports_loot_spawner(candidate: Node) -> bool:
+	if (
+		not is_instance_valid(candidate)
+		or not candidate.has_signal(&"credits_looted")
+		or not candidate.has_signal(&"interaction_availability_changed")
+	):
+		return false
+	for method_name in LOOT_SPAWNER_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+	return true
+
+
 func _on_enemy_spawned(enemy: Node) -> void:
 	if enemy.has_signal(&"defeated"):
 		enemy.connect(&"defeated", Callable(self, &"_on_enemy_defeated"))
@@ -291,13 +370,26 @@ func _on_interaction_availability_changed(available: bool, prompt: String) -> vo
 	interaction_label.visible = available and not run_ended
 
 
+func _on_credits_looted(amount: int, _world_position: Vector2) -> void:
+	if credit_ledger != null:
+		credit_ledger.call(&"add_carried", amount)
+
+
+func _on_credits_changed(carried: int, _secured: int) -> void:
+	credit_label.text = "휴대 크레딧 %d" % carried
+
+
 func _on_extraction_completed(_actor: Node2D) -> void:
+	var recovered_credits := 0
+	if credit_ledger != null:
+		recovered_credits = int(credit_ledger.call(&"secure_carried"))
 	_finish_run(
 		"탈출 성공",
-		"%s 작전 · 생존 %s · 처치 %d" % [
+		"%s 작전 · 생존 %s · 처치 %d · 회수 %d 크레딧" % [
 			_selected_map_display_name(),
 			_format_time(elapsed_time),
 			defeated_enemies,
+			recovered_credits,
 		]
 	)
 
@@ -313,7 +405,24 @@ func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:
 func _on_player_health_changed(current: float, maximum: float) -> void:
 	health_bar.max_value = maximum
 	health_bar.value = current
-	health_label.text = "%d / %d" % [ceili(current), ceili(maximum)]
+	var ratio := current / maximum if maximum > 0.0 else 0.0
+	health_label.text = "%d / %d · %d%%" % [
+		ceili(current),
+		ceili(maximum),
+		roundi(ratio * 100.0),
+	]
+	var fill_style := health_bar.get_theme_stylebox(&"fill")
+	if fill_style is StyleBoxFlat:
+		var fill := fill_style as StyleBoxFlat
+		if ratio > 0.6:
+			fill.bg_color = Color(0.18, 0.82, 0.55, 1)
+			health_label.modulate = Color(0.76, 0.97, 0.86, 1)
+		elif ratio > 0.3:
+			fill.bg_color = Color(1.0, 0.66, 0.18, 1)
+			health_label.modulate = Color(1.0, 0.82, 0.48, 1)
+		else:
+			fill.bg_color = Color(0.95, 0.22, 0.2, 1)
+			health_label.modulate = Color(1.0, 0.5, 0.48, 1)
 
 
 func _on_progress_changed(level: int, current: int, required: int) -> void:
@@ -334,9 +443,16 @@ func _on_player_died() -> void:
 	if not features.game_over_enabled:
 		return
 
+	var lost_credits := 0
+	if credit_ledger != null:
+		lost_credits = int(credit_ledger.call(&"lose_carried"))
 	_finish_run(
 		"작전 실패",
-		"생존 %s · 처치 %d" % [_format_time(elapsed_time), defeated_enemies]
+		"생존 %s · 처치 %d · 분실 %d 크레딧" % [
+			_format_time(elapsed_time),
+			defeated_enemies,
+			lost_credits,
+		]
 	)
 
 

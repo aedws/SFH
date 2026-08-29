@@ -14,9 +14,12 @@ Game
 │  ├─ Enemies
 │  ├─ Projectiles
 │  └─ Pickups
+│     └─ CreditLootCache   # 등급에 따라 여러 개 생성
 ├─ Modules
 │  ├─ EnemySpawner          # 실행 시 생성
-│  └─ ProgressionSystem     # 실행 시 생성
+│  ├─ ProgressionSystem     # 실행 시 생성
+│  ├─ CreditLedger          # 휴대·회수·분실 계산
+│  └─ LootSpawner           # 1회성 보급 상자 배치
 └─ UI
    ├─ HUDMargin
    ├─ InteractionLabel      # 탈출 범위의 F 안내
@@ -34,6 +37,8 @@ Game
 - `game/features/player/player.tscn`: 플레이어 기능 장면
 - `game/features/map_generation/map_generator.tscn`: 방, 복도, 벽, 길찾기 생성
 - `game/features/extraction/extraction_zone.tscn`: F 상호작용 탈출 지점
+- `game/features/credits/credit_ledger.tscn`: 작전 크레딧 원장
+- `game/features/loot/loot_spawner.tscn`: 파밍 오브젝트 배치
 - `game/features/spawning/enemy_spawner.tscn`: 적 생성 기능
 - `game/features/weapons/auto_weapon.tscn`: 자동 공격 기능
 - `game/features/experience/progression_system.tscn`: 성장 기능

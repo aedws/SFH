@@ -1,8 +1,41 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://game/scenes/game.gd" id="1_game"]
 [ext_resource type="Resource" path="res://game/core/feature_manifest.tres" id="2_features"]
 [ext_resource type="Script" path="res://game/core/arena_grid.gd" id="3_grid"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_health_background"]
+bg_color = Color(0.025, 0.04, 0.05, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.23, 0.34, 0.37, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_health_fill"]
+bg_color = Color(0.18, 0.82, 0.55, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_xp_background"]
+bg_color = Color(0.025, 0.04, 0.05, 0.96)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_xp_fill"]
+bg_color = Color(0.22, 0.58, 0.95, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="Game" type="Node2D"]
 process_mode = 3
@@ -72,6 +105,11 @@ text = "레벨 1"
 unique_name_in_owner = true
 text = "처치 0"
 
+[node name="CreditLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow"]
+unique_name_in_owner = true
+text = "휴대 크레딧 0"
+theme_override_colors/font_color = Color(1, 0.77, 0.28, 1)
+
 [node name="MapLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow"]
 unique_name_in_owner = true
 text = "맵 생성 중..."
@@ -81,21 +119,27 @@ theme_override_colors/font_color = Color(1, 0.72, 0.36, 1)
 
 [node name="Caption" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/HealthRow"]
 custom_minimum_size = Vector2(72, 0)
-text = "체력"
+text = "HP"
+theme_override_colors/font_color = Color(0.5, 0.93, 0.73, 1)
+theme_override_font_sizes/font_size = 18
 
 [node name="HealthBar" type="ProgressBar" parent="UI/HUDMargin/Panel/Margin/Content/HealthRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 26)
 layout_mode = 2
 size_flags_horizontal = 3
 value = 100.0
 show_percentage = false
+theme_override_styles/background = SubResource("StyleBox_health_background")
+theme_override_styles/fill = SubResource("StyleBox_health_fill")
 
 [node name="HealthLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/HealthRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(86, 0)
-text = "100 / 100"
+custom_minimum_size = Vector2(150, 0)
+text = "100 / 100 · 100%"
 horizontal_alignment = 2
+theme_override_colors/font_color = Color(0.76, 0.97, 0.86, 1)
+theme_override_font_sizes/font_size = 17
 
 [node name="ExperienceRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content"]
 
@@ -110,6 +154,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 max_value = 5.0
 show_percentage = false
+theme_override_styles/background = SubResource("StyleBox_xp_background")
+theme_override_styles/fill = SubResource("StyleBox_xp_fill")
 
 [node name="ExperienceLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/ExperienceRow"]
 unique_name_in_owner = true

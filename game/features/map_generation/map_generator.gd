@@ -119,6 +119,36 @@ func get_enemy_spawn_position(origin: Vector2, minimum_distance: float) -> Vecto
 	return extraction_position
 
 
+func get_loot_spawn_positions(requested_count: int) -> PackedVector2Array:
+	var result := PackedVector2Array()
+	if requested_count <= 0 or rooms.size() <= 1:
+		return result
+
+	var used_cells: Dictionary = {}
+	var attempts := 0
+	var maximum_attempts := requested_count * 80
+	while result.size() < requested_count and attempts < maximum_attempts:
+		attempts += 1
+		var room_index := random.randi_range(1, rooms.size() - 1)
+		var room := rooms[room_index]
+		var cell := Vector2i(
+			random.randi_range(room.position.x + 2, room.end.x - 3),
+			random.randi_range(room.position.y + 2, room.end.y - 3)
+		)
+		if used_cells.has(cell) or not floor_cells.has(cell) or obstacle_cells.has(cell):
+			continue
+		var world_position := _cell_center(cell)
+		if world_position.distance_to(start_position) < cell_size * 5.0:
+			continue
+		if world_position.distance_to(extraction_position) < cell_size * 3.0:
+			continue
+
+		used_cells[cell] = true
+		result.append(world_position)
+
+	return result
+
+
 func get_world_path(from_world: Vector2, to_world: Vector2) -> PackedVector2Array:
 	var result := PackedVector2Array()
 	if astar_grid.region.size == Vector2i.ZERO:
@@ -253,19 +283,62 @@ func _generate_obstacles() -> void:
 		var room := rooms[room_index]
 		var desired_count := maxi(1, roundi(room.get_area() * tier_config.obstacle_density))
 		var attempts := 0
-		while desired_count > 0 and attempts < room.get_area() * 3:
+		var placed_count := 0
+		while placed_count < desired_count and attempts < room.get_area() * 3:
 			attempts += 1
-			var cell := Vector2i(
-				random.randi_range(room.position.x + 2, room.end.x - 3),
-				random.randi_range(room.position.y + 2, room.end.y - 3)
-			)
-			if not _cell_is_clear_for_obstacle(cell, room):
-				continue
-			obstacle_cells[cell] = true
-			desired_count -= 1
+			if random.randf() < 0.62:
+				var wall_cells_pattern := _random_interior_wall(room)
+				if _try_place_obstacle_pattern(wall_cells_pattern, &"wall", room):
+					placed_count += wall_cells_pattern.size()
+			else:
+				var pillar_cell := Vector2i(
+					random.randi_range(room.position.x + 2, room.end.x - 3),
+					random.randi_range(room.position.y + 2, room.end.y - 3)
+				)
+				var pillar_pattern: Array[Vector2i] = [pillar_cell]
+				if _try_place_obstacle_pattern(pillar_pattern, &"pillar", room):
+					placed_count += 1
 
 
-func _cell_is_clear_for_obstacle(cell: Vector2i, room: Rect2i) -> bool:
+func _random_interior_wall(room: Rect2i) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	var horizontal := random.randi_range(0, 1) == 0
+	var maximum_length := mini(5, (room.size.x if horizontal else room.size.y) - 5)
+	var length := random.randi_range(2, maxi(2, maximum_length))
+	if horizontal:
+		var start_x := random.randi_range(room.position.x + 2, room.end.x - length - 2)
+		var y := random.randi_range(room.position.y + 2, room.end.y - 3)
+		for offset in range(length):
+			result.append(Vector2i(start_x + offset, y))
+	else:
+		var x := random.randi_range(room.position.x + 2, room.end.x - 3)
+		var start_y := random.randi_range(room.position.y + 2, room.end.y - length - 2)
+		for offset in range(length):
+			result.append(Vector2i(x, start_y + offset))
+	return result
+
+
+func _try_place_obstacle_pattern(
+	pattern: Array[Vector2i],
+	kind: StringName,
+	room: Rect2i
+) -> bool:
+	var pattern_cells: Dictionary = {}
+	for cell in pattern:
+		pattern_cells[cell] = true
+	for cell in pattern:
+		if not _cell_is_clear_for_obstacle(cell, room, pattern_cells):
+			return false
+	for cell in pattern:
+		obstacle_cells[cell] = kind
+	return true
+
+
+func _cell_is_clear_for_obstacle(
+	cell: Vector2i,
+	room: Rect2i,
+	pattern_cells: Dictionary
+) -> bool:
 	var room_center := _room_center_cell(room)
 	if cell.x == room_center.x or cell.y == room_center.y:
 		return false
@@ -276,7 +349,8 @@ func _cell_is_clear_for_obstacle(cell: Vector2i, room: Rect2i) -> bool:
 	if obstacle_cells.has(cell):
 		return false
 	for direction in CARDINAL_DIRECTIONS:
-		if obstacle_cells.has(cell + direction):
+		var neighbor: Vector2i = cell + direction
+		if obstacle_cells.has(neighbor) and not pattern_cells.has(neighbor):
 			return false
 	return floor_cells.has(cell)
 
@@ -297,12 +371,18 @@ func _build_collision_bodies() -> void:
 		collision.shape = wall_shape
 		collision_body.add_child(collision)
 
-	var obstacle_shape := RectangleShape2D.new()
-	obstacle_shape.size = Vector2.ONE * (cell_size * 0.72)
+	var interior_wall_shape := RectangleShape2D.new()
+	interior_wall_shape.size = Vector2.ONE * (cell_size * 0.82)
+	var pillar_shape := CircleShape2D.new()
+	pillar_shape.radius = cell_size * 0.31
 	for cell in obstacle_cells:
 		var collision := CollisionShape2D.new()
 		collision.position = _cell_center(cell)
-		collision.shape = obstacle_shape
+		collision.shape = (
+			pillar_shape
+			if obstacle_cells[cell] == &"pillar"
+			else interior_wall_shape
+		)
 		collision_body.add_child(collision)
 
 
@@ -376,10 +456,16 @@ func _draw() -> void:
 		draw_rect(wall_rect.grow(-2.0), wall_color)
 
 	for cell in obstacle_cells:
-		var obstacle_rect := Rect2(Vector2(cell) * cell_size, Vector2.ONE * cell_size)
-		obstacle_rect = obstacle_rect.grow(-cell_size * 0.14)
-		draw_rect(obstacle_rect, obstacle_edge_color)
-		draw_rect(obstacle_rect.grow(-3.0), obstacle_color)
+		if obstacle_cells[cell] == &"pillar":
+			var center := _cell_center(cell)
+			draw_circle(center, cell_size * 0.34, obstacle_edge_color)
+			draw_circle(center, cell_size * 0.25, obstacle_color)
+			draw_circle(center - Vector2(3.0, 3.0), 2.0, Color(0.78, 0.63, 0.42, 0.8))
+		else:
+			var obstacle_rect := Rect2(Vector2(cell) * cell_size, Vector2.ONE * cell_size)
+			obstacle_rect = obstacle_rect.grow(-cell_size * 0.09)
+			draw_rect(obstacle_rect, obstacle_edge_color)
+			draw_rect(obstacle_rect.grow(-3.0), obstacle_color)
 
 	var marker_radius := cell_size * 0.32
 	draw_circle(start_position, marker_radius, start_color)

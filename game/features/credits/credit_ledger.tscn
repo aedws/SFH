@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/credits/credit_ledger.gd" id="1_ledger"]
+
+[node name="CreditLedger" type="Node"]
+script = ExtResource("1_ledger")

@@ -9,7 +9,11 @@ extends Resource
 @export var map_generation_enabled: bool = true
 @export var map_obstacles_enabled: bool = true
 @export var extraction_enabled: bool = true
+@export var credits_enabled: bool = true
+@export var loot_enabled: bool = true
 @export var enemies_enabled: bool = true
+@export var enemy_armor_enabled: bool = true
+@export var enemy_status_ui_enabled: bool = true
 @export var spawning_enabled: bool = true
 @export var weapons_enabled: bool = true
 @export var damage_enabled: bool = true
@@ -34,10 +38,18 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"map_obstacles")
 	if extraction_enabled:
 		result.append(&"extraction")
+	if credits_enabled:
+		result.append(&"credits")
+	if loot_enabled:
+		result.append(&"loot")
 	if run_setup_enabled:
 		result.append(&"run_setup")
 	if enemies_enabled:
 		result.append(&"enemies")
+	if enemy_armor_enabled:
+		result.append(&"enemy_armor")
+	if enemy_status_ui_enabled:
+		result.append(&"enemy_status_ui")
 	if spawning_enabled:
 		result.append(&"spawning")
 	if weapons_enabled:
@@ -65,10 +77,18 @@ func validation_errors() -> PackedStringArray:
 		errors.append("map_obstacles 모듈은 map_generation 모듈이 필요합니다.")
 	if extraction_enabled and not map_generation_enabled:
 		errors.append("extraction 모듈은 map_generation 모듈이 필요합니다.")
+	if loot_enabled and not map_generation_enabled:
+		errors.append("loot 모듈은 map_generation 모듈이 필요합니다.")
+	if loot_enabled and not credits_enabled:
+		errors.append("loot 모듈은 credits 모듈이 필요합니다.")
 	if run_setup_enabled and not map_generation_enabled:
 		errors.append("run_setup 모듈은 map_generation 모듈이 필요합니다.")
 	if spawning_enabled and not enemies_enabled:
 		errors.append("spawning 모듈은 enemies 모듈이 필요합니다.")
+	if enemy_armor_enabled and not enemies_enabled:
+		errors.append("enemy_armor 모듈은 enemies 모듈이 필요합니다.")
+	if enemy_status_ui_enabled and not enemies_enabled:
+		errors.append("enemy_status_ui 모듈은 enemies 모듈이 필요합니다.")
 	if weapons_enabled and not enemies_enabled:
 		errors.append("weapons 모듈은 enemies 모듈이 필요합니다.")
 	if experience_enabled and not enemies_enabled:

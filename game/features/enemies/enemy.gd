@@ -5,12 +5,16 @@ signal defeated(reward: int, world_position: Vector2)
 
 @export_range(0.0, 1000.0, 5.0) var move_speed: float = 90.0
 @export_range(1.0, 10000.0, 1.0) var max_health: float = 3.0
+@export_range(0.0, 10000.0, 1.0) var max_armor: float = 2.0
 @export_range(0.0, 1000.0, 1.0) var contact_damage: float = 10.0
 @export_range(0.1, 10.0, 0.1) var contact_interval: float = 0.75
 @export_range(0, 1000, 1) var experience_reward: int = 1
 
 @onready var contact_area: Area2D = $ContactArea
 @onready var heading: Polygon2D = $Heading
+@onready var health_component: HealthComponent = $HealthComponent
+@onready var armor_component: ArmorComponent = $ArmorComponent
+@onready var status_bars: EnemyStatusBars = $StatusBars
 
 var target: Node2D
 var navigation_provider: Node
@@ -24,13 +28,19 @@ var path_index: int = 0
 
 func _ready() -> void:
 	add_to_group(&"enemies")
-	current_health = max_health
+	health_component.depleted.connect(_on_health_depleted)
+	health_component.value_changed.connect(_on_health_value_changed)
+	health_component.configure(max_health)
+	armor_component.configure(max_armor)
+	status_bars.configure(health_component, armor_component)
 
 
 func configure(
 	new_target: Node2D,
 	contact_damage_enabled: bool,
-	new_navigation_provider: Node = null
+	new_navigation_provider: Node = null,
+	armor_enabled: bool = true,
+	status_ui_enabled: bool = true
 ) -> void:
 	target = new_target
 	damage_enabled = contact_damage_enabled
@@ -40,6 +50,8 @@ func configure(
 		and new_navigation_provider.has_method(&"get_world_path")
 		else null
 	)
+	armor_component.configure(max_armor if armor_enabled else 0.0)
+	status_bars.visible = status_ui_enabled
 
 
 func _physics_process(delta: float) -> void:
@@ -75,13 +87,20 @@ func _update_navigation_path() -> void:
 
 
 func take_damage(amount: float) -> void:
-	if current_health <= 0.0:
+	if health_component.current_value <= 0.0:
 		return
 
-	current_health = maxf(0.0, current_health - amount)
-	if is_zero_approx(current_health):
-		defeated.emit(experience_reward, global_position)
-		queue_free()
+	var remaining_damage := armor_component.absorb_damage(amount)
+	health_component.apply_damage(remaining_damage)
+
+
+func _on_health_value_changed(current: float, _maximum: float) -> void:
+	current_health = current
+
+
+func _on_health_depleted() -> void:
+	defeated.emit(experience_reward, global_position)
+	queue_free()
 
 
 func _try_contact_damage() -> void:

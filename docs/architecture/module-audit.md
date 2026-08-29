@@ -29,6 +29,9 @@ tags:
 | 데이터 분리 | 통과 | 비용, 방 수, 방 크기는 소·중·대형 `.tres` Resource에서 변경 가능 |
 | 자동 검증 | 통과 | 세 등급 연결성 및 맵 비활성화 조립을 스모크 테스트로 확인함 |
 | 하위 기능 토글 | 통과 | 방해물, 작전 선택, 탈출을 각각 Manifest에서 비활성화할 수 있음 |
+| 전투 상태 분리 | 통과 | 적 이동 코드와 체력·방어력·상태바 컴포넌트를 분리함 |
+| 파밍 데이터 분리 | 통과 | 맵 Resource가 아닌 LootTierConfig가 상자 수와 보상을 소유함 |
+| 1회성·회수 검증 | 통과 | 같은 상자의 중복 획득 차단과 탈출 회수까지 자동 테스트함 |
 
 ## 맵 모듈 공개 계약
 
@@ -57,6 +60,17 @@ tags:
 
 탈출 모듈은 맵의 내부 자료구조 대신 월드 좌표 하나만 전달받습니다.
 
+## 파밍과 크레딧 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 맵 | `get_loot_spawn_positions(count)` | `LootSpawner` |
+| 상자 | `credits_collected(amount, world_position)` | `LootSpawner` |
+| 파밍 | `credits_looted(amount, world_position)` | `Game` 조립부 |
+| 원장 | `add_carried`, `secure_carried`, `lose_carried` | `Game` 조립부 |
+
+맵은 파밍 보상 수치를 알지 않고, 파밍 모듈은 맵의 방 배열과 A* 자료구조를 알지 않습니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.
@@ -73,7 +87,7 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `run_setup`, `obstacles`, `map_optional`, `extraction_f`가 포함됩니다. 이는 선택 화면, 방해물, 맵 비활성화 폴백, F 탈출 계약이 함께 검증됐다는 뜻입니다.
+성공하면 출력에 `realistic_obstacles`, `loot`, `credits`, `health_ui`, `armor`, `status_bars`, `extraction_f`가 포함됩니다. 이는 실내 장애물, 1회성 파밍·회수, 양측 체력 UI와 F 탈출 계약이 함께 검증됐다는 뜻입니다.
 
 ## 다음 개선 시점
 
