@@ -29,8 +29,8 @@ func _ready() -> void:
 	current_health = max_health
 
 
-func _physics_process(_delta: float) -> void:
-	velocity = movement.get_velocity()
+func _physics_process(delta: float) -> void:
+	velocity = movement.get_velocity(velocity, delta)
 	move_and_slide()
 
 	if velocity != Vector2.ZERO:
@@ -101,6 +101,18 @@ func _rebuild_runtime_stats() -> void:
 
 func get_runtime_stats() -> Dictionary:
 	return runtime_stats.duplicate(true)
+
+
+func get_health_snapshot() -> Dictionary:
+	return {
+		&"current": current_health,
+		&"maximum": max_health,
+		&"ratio": current_health / max_health if max_health > 0.0 else 0.0,
+	}
+
+
+func get_movement_snapshot() -> Dictionary:
+	return movement.get_movement_snapshot()
 
 
 func take_damage(amount: float) -> void:

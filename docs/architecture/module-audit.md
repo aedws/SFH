@@ -11,6 +11,19 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-08-30 맵·페이싱·이동·회복 점검
+
+| 점검 대상 | 결과 | 근거 |
+|---|---|---|
+| 맵 규모 데이터 | 통과 | 세 등급의 방 수·면적·목표 시간·탈출 개방 시간을 `MapTierConfig` Resource로 관리 |
+| 약 10분 런 페이싱 | 통과 | 9/10/11분 목표와 같은 시각의 탈출 잠금 해제를 데이터로 검증 |
+| 탈출 시간 잠금 | 통과 | 탈출 Scene은 `set_locked()` 계약만 받고 등급 Resource나 Game 타이머를 모름 |
+| 반응형 이동 | 통과 | `PlayerMovement.step_velocity()`가 가속·제동·역선회·회피 상태를 독립 계산 |
+| 부분 체력 회복 | 통과 | 별도 Scene·설정 Resource·Manifest 토글, 체력 Signal과 공개 메서드만 소비 |
+| 자동 검증 | 통과 | 세 맵 상향 기준, 이동 응답, 회피 속도, 회복 지연·65% 상한, 조기 탈출 거부를 확인 |
+
+이동은 플레이어의 물리 충돌을 구현하지 않고 결과 속도만 반환합니다. 회복 모듈은 플레이어의 `current_health` 내부 필드나 장비를 직접 참조하지 않습니다. 따라서 이동 계산이나 회복 정책을 교체해도 맵·전투·장비 모듈은 유지됩니다.
+
 ## 2026-08-30 전체 기능 재점검
 
 현재 개발된 기능은 **FeatureManifest로 선택 가능하고 공개 메서드·Signal·Resource 경계가 드러난 모듈 구조**입니다. 이번 점검에서 내부 경험치, 임시 버프, 외부 성장, 장비 강화 경제를 각각 별도 폴더와 토글로 추가했으며, 강화 서비스가 크레딧 내부 변수를 직접 읽던 지점도 `get_snapshot()` 공개 계약으로 교체했습니다.
@@ -92,8 +105,18 @@ tags:
 | Signal | `interaction_availability_changed(available, prompt)` | HUD F 안내 |
 | Method | `configure(world_position)` | 탈출 위치 배치 |
 | Method | `request_extraction(actor)` | 범위와 플레이어 검사 |
+| Method | `set_locked(is_locked, prompt)` | 조립부에서 시간 잠금 상태 전달 |
 
 탈출 모듈은 맵의 내부 자료구조 대신 월드 좌표 하나만 전달받습니다.
+
+## 플레이어 이동·회복 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 이동 | `step_velocity(current, input, delta, dash_pressed)` | 플레이어 물리 이동·자동 테스트 |
+| 이동 | `get_movement_snapshot()` | 플레이어·향후 이동 HUD |
+| 플레이어 | `health_changed`, `get_health_snapshot()`, `heal()` | 부분 회복 모듈 |
+| 부분 회복 | `configure`, `advance`, `get_snapshot` | `Game` 조립부·자동 테스트 |
 
 ## 파밍과 크레딧 공개 계약
 

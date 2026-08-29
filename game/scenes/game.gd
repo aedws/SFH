@@ -22,6 +22,9 @@ const WEAPON_BALANCE_SCENE_PATH := (
 	"res://game/features/weapon_balance/weapon_balance_service.tscn"
 )
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
+const HEALTH_RECOVERY_SCENE_PATH := (
+	"res://game/features/health_recovery/health_recovery_system.tscn"
+)
 const RUN_BUFF_SCENE_PATH := "res://game/features/run_buffs/run_buff_system.tscn"
 const RUN_BUFF_SELECTOR_SCENE_PATH := "res://game/features/run_buffs/run_buff_selector.tscn"
 const META_PROGRESSION_SCENE_PATH := (
@@ -82,7 +85,7 @@ const INVENTORY_METHODS := [
 	&"get_snapshot",
 ]
 const PANEL_METHODS := [&"configure", &"open_panel", &"close_panel"]
-const EXTRACTION_METHODS := [&"configure", &"request_extraction"]
+const EXTRACTION_METHODS := [&"configure", &"request_extraction", &"set_locked"]
 const CREDIT_LEDGER_METHODS := [
 	&"add_carried",
 	&"secure_carried",
@@ -108,6 +111,7 @@ const META_PROGRESSION_METHODS := [
 	&"get_summary_line",
 ]
 const EQUIPMENT_UPGRADE_METHODS := [&"configure", &"quote_upgrade", &"upgrade"]
+const HEALTH_RECOVERY_METHODS := [&"configure", &"advance", &"get_snapshot"]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 @export var features: FeatureManifest
@@ -160,6 +164,7 @@ var enemy_spawner
 var auto_weapon
 var weapon_balance_service
 var progression_system
+var health_recovery_system
 var run_buff_system
 var run_buff_selector
 var meta_progression_system
@@ -168,6 +173,9 @@ var current_map_config: Resource
 var selected_map_size: String = "small"
 var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CSV
 var elapsed_time: float = 0.0
+var target_run_duration_seconds: float = 600.0
+var extraction_unlock_seconds: float = 600.0
+var extraction_unlocked: bool = false
 var defeated_enemies: int = 0
 var run_started: bool = false
 var run_ended: bool = false
@@ -258,6 +266,12 @@ func _assemble_game() -> bool:
 					var map_config_path := MAP_CONFIG_PATH_PATTERN % selected_map_size
 					if ResourceLoader.exists(map_config_path):
 						current_map_config = load(map_config_path)
+						target_run_duration_seconds = float(
+							current_map_config.get("target_run_duration_seconds")
+						)
+						extraction_unlock_seconds = float(
+							current_map_config.get("extraction_unlock_seconds")
+						)
 						map_generator.call(&"generate", current_map_config, features.map_seed)
 						player_spawn_position = map_generator.call(&"get_player_spawn_position")
 					else:
@@ -277,6 +291,8 @@ func _assemble_game() -> bool:
 	player.connect(&"died", Callable(self, &"_on_player_died"))
 	_on_player_health_changed(float(player.get("current_health")), float(player.get("max_health")))
 	if features.equipment_enabled and not _install_equipment():
+		return false
+	if features.health_recovery_enabled and not _install_health_recovery():
 		return false
 	if features.inventory_enabled and not _install_inventory():
 		return false
@@ -338,7 +354,28 @@ func _assemble_game() -> bool:
 				features.enemy_status_ui_enabled
 			)
 
-	status_label.text = "작전 진행 중 · Q 무기 교체 · F 상호작용 · I 가방 · U 장비"
+	status_label.text = (
+		"작전 진행 중 · Shift/Space 회피 · Q 무기 · F 상호작용 · I 가방 · U 장비"
+	)
+	_update_run_time_hud()
+	return true
+
+
+func _install_health_recovery() -> bool:
+	if not ResourceLoader.exists(features.health_recovery_config_path):
+		_report_configuration_error("부분 체력 회복 설정을 찾을 수 없습니다.")
+		return false
+	health_recovery_system = _instantiate_feature(
+		HEALTH_RECOVERY_SCENE_PATH, module_container, &"HealthRecovery"
+	)
+	if not _supports_methods(health_recovery_system, HEALTH_RECOVERY_METHODS):
+		_report_configuration_error("부분 체력 회복 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not health_recovery_system.call(
+		&"configure", player, load(features.health_recovery_config_path)
+	):
+		_report_configuration_error("부분 체력 회복 모듈을 구성하지 못했습니다.")
+		return false
 	return true
 
 
@@ -578,6 +615,12 @@ func _install_extraction_zone() -> void:
 		Callable(self, &"_on_interaction_availability_changed")
 	)
 	extraction_zone.call(&"configure", map_generator.call(&"get_extraction_position"))
+	extraction_unlocked = extraction_unlock_seconds <= 0.0
+	extraction_zone.call(
+		&"set_locked",
+		not extraction_unlocked,
+		"탈출 신호 대기 · HUD의 개방 시간을 확인하세요"
+	)
 
 
 func _install_credit_ledger() -> void:
@@ -631,8 +674,9 @@ func _configure_tier_button(button: Button, tier_id: String) -> void:
 		button.disabled = true
 		button.text = "%s 파밍 설정 없음" % config.get("display_name")
 		return
-	button.text = "%s 작전\n투자 %d · 방 %d~%d" % [
+	button.text = "%s 작전 · 목표 %d분\n투자 %d · 방 %d~%d" % [
 		config.get("display_name"),
+		roundi(float(config.get("target_run_duration_seconds")) / 60.0),
 		config.get("entry_cost"),
 		config.get("minimum_rooms"),
 		config.get("maximum_rooms"),
@@ -662,11 +706,36 @@ func _tier_resources_are_available(tier_id: String) -> bool:
 
 
 func _process(delta: float) -> void:
-	if not run_started or run_ended:
+	if not run_started or run_ended or get_tree().paused:
 		return
 
 	elapsed_time += delta
-	time_label.text = "시간 %s" % _format_time(elapsed_time)
+	if (
+		extraction_zone != null
+		and not extraction_unlocked
+		and elapsed_time >= extraction_unlock_seconds
+	):
+		extraction_unlocked = true
+		extraction_zone.call(&"set_locked", false)
+		status_label.text = "탈출 신호 활성 · 탈출 지점에서 F"
+	_update_run_time_hud()
+
+
+func _update_run_time_hud() -> void:
+	var extraction_state := "탈출 비활성"
+	if features.extraction_enabled:
+		extraction_state = (
+			"탈출 가능"
+			if extraction_unlocked
+			else "탈출 %s" % _format_time(
+				maxf(0.0, extraction_unlock_seconds - elapsed_time)
+			)
+		)
+	time_label.text = "생존 %s / 목표 %s · %s" % [
+		_format_time(elapsed_time),
+		_format_time(target_run_duration_seconds),
+		extraction_state,
+	]
 
 
 func _unhandled_input(event: InputEvent) -> void:

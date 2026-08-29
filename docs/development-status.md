@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>내부·외부 성장</span><span>자동 검증 PASS</span><span>배포 진행</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>확장 맵 · 10분 페이싱</span><span>이동·회복 검증 PASS</span><span>배포 진행</span></div>
 
 ## 기획 기준 진행도
 
@@ -47,7 +47,31 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>로그라이크 성장 · 강화 경제 · 모듈 전수 점검</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>확장 맵 · 10분 런 · 반응형 이동 · 부분 회복</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 4개 주제</strong>
+      <ul>
+        <li>소형 18~24방, 중형 30~40방, 대형 45~60방으로 맵 규모와 방 면적을 크게 상향했습니다.</li>
+        <li>소·중·대형 목표 시간을 9·10·11분으로 잡고 목표 시각에 탈출 신호가 열립니다.</li>
+        <li>가속·빠른 제동·강한 역선회와 Shift/Space 짧은 회피를 적용했습니다.</li>
+        <li>피격 4초 후 최대 체력 65%까지 초당 3을 회복하는 선택 모듈을 추가했습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>개선 의도</b><span>맵 탐색과 생존 시간을 늘리면서도 이동 조작은 즉각적이고 손맛 있게 만들고, 회복은 긴장감을 지우지 않는 안전선까지만 제공합니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">등급별 탈출 신호 잠금</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>9·10·11분 목표 전에는 F 요청을 거부하고 HUD에 신호 개방 카운트다운을 표시합니다.</p><a href="../features/raid-setup-extraction/">작전 페이싱 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">부분 체력 회복 모듈</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>피격 지연, 초당 회복, 회복 상한을 독립 Resource와 Manifest 토글로 관리합니다.</p><a href="../features/health-recovery/">회복 규칙 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>✨ 개선 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">소·중·대형 맵 대폭 확장</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>타일 32px는 유지하고 방 수와 각 방의 셀 면적을 동시에 상향했습니다.</p><a href="../features/map-generation/">맵 수치 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">FPS·플랫포머 감각의 탑다운 이동</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>정속 이동을 가속·제동·역선회·입력 버퍼 회피 방식으로 교체했습니다.</p><a href="../features/player/">이동 수치 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>로그라이크 성장 · 강화 경제 · 모듈 전수 점검</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>
@@ -152,8 +176,9 @@ tags:
 
 | 기능 | 상태 | 현재 완료 범위 | 다음 확장 |
 |---|---:|---|---|
-| 기본 작전 루프 | ✅ 플레이 가능 | 작전 선택 → 전투·파밍 → F 탈출 또는 사망 | 로비·반출 결과 |
-| 랜덤 맵·미니맵 | 🧱 기반 완료 | 3개 규모, 실내 벽·기둥, A*, 전체 지도 | 바이옴·특수 방 |
+| 기본 작전 루프 | ✅ 플레이 가능 | 9~11분 작전 선택 → 전투·파밍 → 신호 개방 후 F 탈출 또는 사망 | 로비·반출 결과 |
+| 랜덤 맵·미니맵 | 🧱 확장 완료 | 18~60방, 실내 벽·기둥, A*, 전체 지도 | 바이옴·특수 방 |
+| 이동·생존 | 🧱 기반 완료 | 가속·제동·역선회·회피, 지연형 65% 부분 회복 | 피격 연출·회피 무적 판정 |
 | 장비·스킬 | 🧱 기반 완료 | 태그, 파츠, 모듈, 강화, 개조 | 특수 효과 실행기 |
 | 로그라이크 성장 | 🧱 기반 완료 | 내부 XP·5종 버프·3계열 외부 레벨·저장 | 수치 정책·로비 성장 UI |
 | 격자 가방 | 🧱 기반 완료 | 가변 점유, I UI, 장비 연동 | 영속 창고·전리품 반출 |
@@ -164,7 +189,8 @@ tags:
 
 `./scripts/test-game.cmd`가 다음을 한 번에 확인합니다.
 
-- 소·중·대형 작전 진입과 연결된 맵
+- 소·중·대형 확장 맵과 9~11분 목표·시간 잠금 탈출
+- 가속·제동·역선회·회피 이동 응답과 부분 체력 회복 상한
 - Q 무기 교체, 소총 3점사, 권총 관통, 확정 CSV
 - I 가변 격자 가방과 U 파츠·모듈·강화·개조
 - 적 체력·방어력, 플레이어 HUD, 내부 XP와 버프 선택·중첩

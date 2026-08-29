@@ -18,6 +18,7 @@ Game
 ├─ Modules
 │  ├─ EnemySpawner          # 실행 시 생성
 │  ├─ ProgressionSystem     # 실행 시 생성
+│  ├─ HealthRecovery        # 지연·상한이 있는 부분 체력 회복
 │  ├─ RunBuffSystem         # 한 판 임시 버프 선택·중첩
 │  ├─ MetaProgression       # 캐릭터·무기·방어구 외부 성장과 저장
 │  ├─ CharacterEquipment    # 무기·스킬·방어구 로드아웃 조립
