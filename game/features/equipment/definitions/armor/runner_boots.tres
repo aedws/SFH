@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EquipmentArmorDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/armor_definition.gd" id="1_armor"]
+[ext_resource type="Script" path="res://game/features/equipment/stat_modifier.gd" id="2_modifier"]
+
+[sub_resource type="Resource" id="MovementSpeed"]
+script = ExtResource("2_modifier")
+stat_id = &"movement_speed"
+operation = 0
+amount = 20.0
+
+[resource]
+script = ExtResource("1_armor")
+armor_id = &"runner_boots"
+display_name = "기동 전투화"
+slot_id = &"feet"
+stat_modifiers = [SubResource("MovementSpeed")]
+description = "이동 속도를 올리는 범용 스탯 수정 예시입니다."

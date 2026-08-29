@@ -4,6 +4,9 @@ const GAME_SCENE_PATH := "res://game/scenes/game.tscn"
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
 const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
+const EQUIPMENT_SCENE_PATH := "res://game/features/equipment/equipment_system.tscn"
+const EQUIPMENT_LOADOUT_PATH := "res://game/features/equipment/loadouts/default_loadout.tres"
+const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 var game_instance: Node
@@ -12,6 +15,8 @@ var frame_count: int = 0
 
 func _init() -> void:
 	if not _verify_map_tiers():
+		return
+	if not await _verify_equipment_modules():
 		return
 	if not await _verify_enemy_stats_modules():
 		return
@@ -23,6 +28,8 @@ func _init() -> void:
 	if not await _verify_all_tier_entry(game_scene):
 		return
 	if not await _verify_optional_map_module(game_scene):
+		return
+	if not await _verify_optional_equipment_module(game_scene):
 		return
 	if not await _verify_extraction_flow(game_scene):
 		return
@@ -87,6 +94,111 @@ func _verify_map_tiers() -> bool:
 		root.remove_child(generator)
 		generator.free()
 
+	return true
+
+
+func _verify_equipment_modules() -> bool:
+	var loadout := load(EQUIPMENT_LOADOUT_PATH) as EquipmentLoadout
+	var equipment_scene := load(EQUIPMENT_SCENE_PATH) as PackedScene
+	var player_scene := load(PLAYER_SCENE_PATH) as PackedScene
+	if loadout == null or equipment_scene == null or player_scene == null:
+		_fail("장비 로드아웃, 장비 Scene 또는 플레이어 Scene을 불러오지 못했습니다.")
+		return false
+	if not loadout.validation_errors().is_empty():
+		_fail("기본 장비 로드아웃이 유효하지 않습니다: %s" % loadout.validation_errors())
+		return false
+	if loadout.skills.size() != 3 or loadout.armor.size() != 2:
+		_fail("기본 장비 로드아웃의 스킬 또는 방어구 수가 예상과 다릅니다.")
+		return false
+
+	var rifle_skill: EquipmentSkillDefinition = loadout.skills[0]
+	var dagger_skill: EquipmentSkillDefinition = loadout.skills[2]
+	if (
+		not rifle_skill.matches_weapon(loadout.main_weapon)
+		or rifle_skill.matches_weapon(loadout.secondary_weapon)
+		or dagger_skill.matches_weapon(loadout.main_weapon)
+		or dagger_skill.matches_weapon(loadout.secondary_weapon)
+	):
+		_fail("무기 대·중·소분류의 완전 일치 판정이 올바르지 않습니다.")
+		return false
+
+	var empty_skill_loadout := loadout.duplicate(true) as EquipmentLoadout
+	empty_skill_loadout.skills = []
+	if not empty_skill_loadout.validation_errors().is_empty():
+		_fail("스킬 0개 로드아웃이 거부됐습니다.")
+		return false
+	var overflow_loadout := loadout.duplicate(true) as EquipmentLoadout
+	overflow_loadout.skills = []
+	for _index in range(11):
+		overflow_loadout.skills.append(rifle_skill)
+	if "최대 10개" not in " / ".join(overflow_loadout.validation_errors()):
+		_fail("스킬 10개 초과 제한이 적용되지 않았습니다.")
+		return false
+
+	var player := player_scene.instantiate()
+	var equipment := equipment_scene.instantiate()
+	root.add_child(player)
+	root.add_child(equipment)
+	await process_frame
+	var configured := bool(equipment.call(&"configure", loadout, player, true, true, true))
+	var failure_message := ""
+	var active_ids: PackedStringArray = equipment.call(&"get_active_skill_ids")
+	var inactive_ids: PackedStringArray = equipment.call(&"get_inactive_skill_ids")
+	var modifiers: Dictionary = equipment.call(&"get_stat_modifiers")
+	if not configured:
+		failure_message = "기본 장비 로드아웃 조립이 실패했습니다."
+	elif active_ids.size() != 2 or &"rifle_burst" not in active_ids or &"pistol_quickdraw" not in active_ids:
+		failure_message = "호환 스킬 두 개가 활성화되지 않았습니다: %s" % active_ids
+	elif inactive_ids.size() != 1 or &"dagger_dash" not in inactive_ids:
+		failure_message = "비호환 단검 스킬이 비활성 목록에 없습니다: %s" % inactive_ids
+	elif not is_equal_approx(float(modifiers[&"max_health"][&"add"]), 25.0):
+		failure_message = "방어구 최대 체력 수정자가 집계되지 않았습니다."
+	elif not is_equal_approx(float(player.get("max_health")), 125.0):
+		failure_message = "장비 최대 체력이 플레이어에 적용되지 않았습니다."
+	elif not is_equal_approx(float(player.get("defense")), 3.0):
+		failure_message = "장비 방어력이 플레이어에 적용되지 않았습니다."
+	elif not is_equal_approx(float(player.get_node("Movement").get("speed")), 280.0):
+		failure_message = "장비 이동 속도가 플레이어에 적용되지 않았습니다."
+	else:
+		player.call(&"take_damage", 10.0)
+		if not is_equal_approx(float(player.get("current_health")), 118.0):
+			failure_message = "방어력 3이 피해 10에서 차감되지 않았습니다."
+
+	root.remove_child(equipment)
+	equipment.free()
+	root.remove_child(player)
+	player.free()
+	if not failure_message.is_empty():
+		_fail("장비 모듈 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_optional_equipment_module(game_scene: PackedScene) -> bool:
+	var equipment_free_game := game_scene.instantiate()
+	var equipment_free_features = equipment_free_game.get("features").duplicate(true)
+	equipment_free_features.set("equipment_enabled", false)
+	equipment_free_features.set("equipment_weapons_enabled", false)
+	equipment_free_features.set("equipment_skills_enabled", false)
+	equipment_free_features.set("equipment_armor_enabled", false)
+	equipment_free_features.set("run_setup_enabled", false)
+	equipment_free_game.set("features", equipment_free_features)
+	root.add_child(equipment_free_game)
+	await process_frame
+	var failure_message := ""
+	if equipment_free_game.get("equipment_system") != null:
+		failure_message = "비활성화했지만 장비 모듈이 설치됐습니다."
+	elif equipment_free_game.get_node("UI/HUDMargin/Panel/Margin/Content/EquipmentLabel").visible:
+		failure_message = "비활성화했지만 장비 HUD가 표시됩니다."
+	elif not is_equal_approx(float(equipment_free_game.get("player").get("max_health")), 100.0):
+		failure_message = "장비 비활성화 시 플레이어 기본 체력이 유지되지 않았습니다."
+
+	root.remove_child(equipment_free_game)
+	equipment_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("장비 모듈 비활성화 실패: %s" % failure_message)
+		return false
 	return true
 
 
@@ -291,8 +403,9 @@ func _process(_delta: float) -> bool:
 		var weapon = game_instance.get("auto_weapon")
 		var map_generator = game_instance.get("map_generator")
 		var extraction_zone = game_instance.get("extraction_zone")
-		if progression == null or weapon == null or map_generator == null or extraction_zone == null:
-			return _fail("맵, 탈출, 전투 또는 성장 모듈이 설치되지 않았습니다.")
+		var equipment = game_instance.get("equipment_system")
+		if progression == null or weapon == null or map_generator == null or extraction_zone == null or equipment == null:
+			return _fail("맵, 탈출, 장비, 전투 또는 성장 모듈이 설치되지 않았습니다.")
 		var small_config = load(MAP_CONFIG_PATH_PATTERN % "small")
 		if map_generator.get("rooms").size() < int(small_config.get("minimum_rooms")):
 			return _fail("소형 맵의 최소 방 수를 생성하지 못했습니다.")
@@ -308,6 +421,11 @@ func _process(_delta: float) -> bool:
 		) as ProgressBar
 		if "%" not in health_label.text or health_bar.custom_minimum_size.y < 26.0:
 			return _fail("플레이어 체력 HUD의 수치 또는 가독성 스타일이 적용되지 않았습니다.")
+		var equipment_label := game_instance.get_node(
+			"UI/HUDMargin/Panel/Margin/Content/EquipmentLabel"
+		) as Label
+		if "스킬 2/3 활성" not in equipment_label.text or "방어 3" not in equipment_label.text:
+			return _fail("장비 HUD에 무기·스킬·방어구 상태가 표시되지 않았습니다.")
 
 		enemies[0].call(&"take_damage", 9999.0)
 		progression.call(&"gain_experience", 5)
@@ -331,7 +449,7 @@ func _process(_delta: float) -> bool:
 			return _fail("게임오버 상태가 적용되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup tier_entry map minimap realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
+		print("SMOKE_TEST_OK run_setup tier_entry map minimap equipment loadout weapon_tags skills_0_10 armor_stats equipment_optional realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
 		quit(0)
 		return true
 

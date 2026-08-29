@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EquipmentSkillDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/skill_definition.gd" id="1_skill"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_tag_profile.gd" id="2_tags"]
+
+[sub_resource type="Resource" id="RequiredTags"]
+script = ExtResource("2_tags")
+major_tag = &"melee"
+middle_tag = &"cold_weapon"
+minor_tag = &"dagger"
+major_label = "근접"
+middle_label = "냉병기"
+minor_label = "단검"
+
+[resource]
+script = ExtResource("1_skill")
+skill_id = &"dagger_dash"
+display_name = "단검 쇄도"
+required_weapon_slot = 0
+required_tags = SubResource("RequiredTags")
+description = "메인 또는 보조 무기가 근접·냉병기·단검일 때 활성화됩니다."
+activation_payload = {"effect_id": &"dagger_dash"}

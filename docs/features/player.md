@@ -28,17 +28,20 @@ Player (CharacterBody2D)
 └─ Camera2D
 ```
 
-`PlayerCharacter`는 물리 이동을 담당하고, `PlayerMovement`는 입력을 속도 벡터로 바꾸는 역할만 담당합니다.
+`PlayerCharacter`는 물리 이동과 런타임 스탯 적용을 담당하고, `PlayerMovement`는 입력을 속도 벡터로 바꾸는 역할만 담당합니다.
 
 ## 설정
 
 `Player/Movement` Node를 선택하고 Inspector의 `Speed` 값을 변경합니다. 기본값은 초당 260픽셀입니다.
+
+기본 스탯은 최대 체력 100, 방어 0, 이동 속도 260입니다. [캐릭터 장비와 로드아웃](character-equipment.md)이 `apply_equipment_modifiers` 계약을 통해 작전 시작 시 수정합니다. 현재 기본 장비 적용 후 값은 최대 체력 125, 방어 3, 이동 속도 280입니다.
 
 ## 의존성
 
 - Godot 기본 `ui_left`, `ui_right`, `ui_up`, `ui_down` 입력
 - `game/scenes/game.gd`의 플레이어 설치 지점
 - `FeatureManifest.player_enabled`
+- 장비가 켜진 경우 `apply_equipment_modifiers(modifiers)` 공개 계약
 
 ## 비활성화
 

@@ -68,7 +68,7 @@ anchor_right = 1.0
 offset_left = 20.0
 offset_top = 20.0
 offset_right = -20.0
-offset_bottom = 174.0
+offset_bottom = 226.0
 grow_horizontal = 2
 
 [node name="Panel" type="PanelContainer" parent="UI/HUDMargin"]
@@ -176,6 +176,15 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 text = "모듈 확인 중..."
 theme_override_colors/font_color = Color(0.55, 0.72, 0.77, 1)
+
+[node name="EquipmentLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+text = "장비 로드아웃 준비 중..."
+theme_override_colors/font_color = Color(0.67, 0.84, 0.88, 1)
+theme_override_font_sizes/font_size = 13
+autowrap_mode = 2
 
 [node name="InteractionLabel" type="Label" parent="UI"]
 unique_name_in_owner = true

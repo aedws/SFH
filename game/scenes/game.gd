@@ -6,6 +6,7 @@ const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
 const MINIMAP_SCENE_PATH := "res://game/features/minimap/minimap.tscn"
+const EQUIPMENT_SCENE_PATH := "res://game/features/equipment/equipment_system.tscn"
 const EXTRACTION_SCENE_PATH := "res://game/features/extraction/extraction_zone.tscn"
 const CREDIT_LEDGER_SCENE_PATH := "res://game/features/credits/credit_ledger.tscn"
 const LOOT_SPAWNER_SCENE_PATH := "res://game/features/loot/loot_spawner.tscn"
@@ -23,6 +24,13 @@ const MAP_GENERATOR_METHODS := [
 ]
 const MINIMAP_PROVIDER_METHODS := [&"get_minimap_snapshot"]
 const MINIMAP_METHODS := [&"configure"]
+const EQUIPMENT_METHODS := [
+	&"configure",
+	&"get_active_skill_ids",
+	&"get_inactive_skill_ids",
+	&"get_stat_modifiers",
+	&"get_summary",
+]
 const EXTRACTION_METHODS := [&"configure", &"request_extraction"]
 const CREDIT_LEDGER_METHODS := [&"add_carried", &"secure_carried", &"lose_carried"]
 const LOOT_SPAWNER_METHODS := [&"configure"]
@@ -44,6 +52,7 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var kills_label: Label = %KillsLabel
 @onready var credit_label: Label = %CreditLabel
 @onready var map_label: Label = %MapLabel
+@onready var equipment_label: Label = %EquipmentLabel
 @onready var interaction_label: Label = %InteractionLabel
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var health_label: Label = %HealthLabel
@@ -61,6 +70,7 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 var player
 var map_generator
 var minimap
+var equipment_system
 var extraction_zone
 var credit_ledger
 var loot_spawner
@@ -90,6 +100,7 @@ func _ready() -> void:
 		_report_configuration_error("FeatureManifest가 지정되지 않았습니다.")
 		return
 	credit_label.visible = features.credits_enabled
+	equipment_label.visible = features.equipment_enabled
 
 	var configuration_errors := features.validation_errors()
 	if not configuration_errors.is_empty():
@@ -167,6 +178,8 @@ func _assemble_game() -> bool:
 	player.connect(&"health_changed", Callable(self, &"_on_player_health_changed"))
 	player.connect(&"died", Callable(self, &"_on_player_died"))
 	_on_player_health_changed(float(player.get("current_health")), float(player.get("max_health")))
+	if features.equipment_enabled and not _install_equipment():
+		return false
 
 	if features.credits_enabled:
 		_install_credit_ledger()
@@ -211,6 +224,34 @@ func _assemble_game() -> bool:
 			)
 
 	status_label.text = "작전 진행 중 · F 상호작용"
+	return true
+
+
+func _install_equipment() -> bool:
+	if not ResourceLoader.exists(features.equipment_loadout_path):
+		_report_configuration_error("장비 로드아웃을 찾을 수 없습니다: %s" % features.equipment_loadout_path)
+		return false
+	var loadout := load(features.equipment_loadout_path)
+	equipment_system = _instantiate_feature(EQUIPMENT_SCENE_PATH, module_container, &"CharacterEquipment")
+	if equipment_system == null:
+		return false
+	if not _supports_equipment(equipment_system):
+		_report_configuration_error("장비 모듈이 필수 공개 계약을 구현하지 않았습니다.")
+		equipment_system.queue_free()
+		equipment_system = null
+		return false
+	equipment_system.connect(&"equipment_changed", Callable(self, &"_on_equipment_changed"))
+	var configured := bool(equipment_system.call(
+		&"configure",
+		loadout,
+		player,
+		features.equipment_weapons_enabled,
+		features.equipment_skills_enabled,
+		features.equipment_armor_enabled
+	))
+	if not configured:
+		_report_configuration_error("장비 로드아웃 조립에 실패했습니다.")
+		return false
 	return true
 
 
@@ -396,6 +437,15 @@ func _supports_minimap(candidate: Node) -> bool:
 	return true
 
 
+func _supports_equipment(candidate: Node) -> bool:
+	if not is_instance_valid(candidate) or not candidate.has_signal(&"equipment_changed"):
+		return false
+	for method_name in EQUIPMENT_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+	return true
+
+
 func _supports_extraction_zone(candidate: Node) -> bool:
 	if (
 		not is_instance_valid(candidate)
@@ -464,6 +514,22 @@ func _on_credits_looted(amount: int, _world_position: Vector2) -> void:
 
 func _on_credits_changed(carried: int, _secured: int) -> void:
 	credit_label.text = "휴대 크레딧 %d" % carried
+
+
+func _on_equipment_changed(summary: Dictionary) -> void:
+	var defense_value := 0.0
+	if player != null and player.has_method(&"get_runtime_stats"):
+		defense_value = float(player.call(&"get_runtime_stats").get(&"defense", 0.0))
+	equipment_label.text = "M %s [%s] · S %s [%s]\n스킬 %d/%d 활성 · 방어구 %d · 방어 %.0f" % [
+		summary.get(&"main_weapon_name", "없음"),
+		summary.get(&"main_weapon_tags", "-"),
+		summary.get(&"secondary_weapon_name", "없음"),
+		summary.get(&"secondary_weapon_tags", "-"),
+		int(summary.get(&"active_skill_count", 0)),
+		int(summary.get(&"equipped_skill_count", 0)),
+		int(summary.get(&"armor_count", 0)),
+		defense_value,
+	]
 
 
 func _on_extraction_completed(_actor: Node2D) -> void:
