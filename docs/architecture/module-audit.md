@@ -45,6 +45,11 @@ tags:
 | 모듈 코스트·강화 | 통과 | 슬롯·코스트 초과 거부와 강화 단계별 코스트 감소를 검증함 |
 | 최고 레벨 개조 | 통과 | 최고 레벨에서만 태그를 부여하고 일치 모듈 코스트를 50%로 계산함 |
 | 장비 개조 의존성 | 통과 | `equipment_customization`이 `equipment`, `inventory`를 요구함 |
+| 활성 무기 상태 분리 | 통과 | 장비는 main/secondary 슬롯과 `weapon_id`만 공개하고 발사 로직을 모름 |
+| 밸런스 데이터 분리 | 통과 | `weapon_balance/`가 Google Sheets·확정 CSV 로드와 검증만 담당함 |
+| 실시간 실패 폴백 | 통과 | 잘못된 외부 CSV가 마지막 정상값을 덮지 않으며 확정 CSV로 복구 가능 |
+| 무기 특색 실행 | 통과 | `AutoWeapon`이 버스트·다중 투사체를, Projectile이 관통·유지율을 담당함 |
+| Q 교체 자동 검증 | 통과 | 장비 슬롯, 자동 공격 런타임, HUD가 같은 보조 권총 상태로 전환됨 |
 
 ## 맵 모듈 공개 계약
 
@@ -106,9 +111,23 @@ tags:
 | 장비 | `level_up_equipment`, `grant_module_tag` | 성장·개조 UI와 향후 경제 모듈 |
 | 장비 | `equipment_changed(summary)` | HUD |
 | 장비 | `customization_changed(snapshot)` | U 장비 상태 표시 |
+| 장비 | `get_active_weapon`, `switch_active_weapon` | Q 입력과 자동 무기 |
+| 장비 | `active_weapon_changed(slot, definition)` | 자동 무기와 HUD |
 | 플레이어 | `apply_equipment_modifiers(modifiers)` | 장비 모듈 |
 
 장비 모듈은 플레이어의 내부 Node 경로나 구체 클래스를 참조하지 않습니다. 스탯 적용 대상이 공개 메서드 하나를 구현하면 플레이어 이외의 캐릭터에도 같은 방어구 집계를 사용할 수 있습니다.
+
+## 무기 밸런스 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 밸런스 | `configure(config)`, `get_weapon_balance(weapon_id)` | `Game`, `AutoWeapon` |
+| 밸런스 | `balance_updated(snapshot, source_label)` | 자동 무기 런타임 갱신 |
+| 밸런스 | `balance_error(message)` | 경고와 확정 CSV 폴백 |
+| 자동 무기 | `configure(projectiles, equipment, balance)` | `Game` 조립부 |
+| 자동 무기 | `weapon_runtime_changed(snapshot)` | HUD |
+
+밸런스 서비스는 장비 Resource나 투사체 Scene을 참조하지 않습니다. 자동 무기는 `weapon_id`로 행을 조회할 뿐 Google Sheets URL·CSV 파일 경로를 알지 않으며, 투사체는 발사 순간 전달된 속도·피해·관통 값만 사용합니다.
 
 무기 태그와 스킬 요구 태그는 `WeaponTagProfile` 값 비교만 수행합니다. 스킬 효과는 `activation_payload`에 보관하되 현재 장비 시스템이 실행하지 않으므로, 향후 스킬 실행기와 작전 투입 비용 정책을 별도 모듈로 붙일 수 있습니다.
 
@@ -130,7 +149,7 @@ tags:
 - `EnemySpawner`는 기본 적 Scene을 참조합니다. 이는 `spawning → enemies` 선언 의존성입니다.
 - `Game`은 기본 장비 Scene과 선택된 로드아웃 Resource 경로를 알고, 장비는 플레이어의 스탯 적용 공개 메서드만 압니다.
 - `Game`은 인벤토리 카탈로그와 I/U 패널 Scene 경로를 알고, 가방과 장비 시스템은 서로의 내부 Node 경로를 참조하지 않습니다.
-- 기존 `AutoWeapon`은 아직 장비 무기 정의의 공격 프로필을 소비하지 않습니다. 태그·장착 상태와 발사 동작을 분리한 과도기 구조입니다.
+- `Game`은 장비, 밸런스, 자동 무기의 조립 순서를 알지만 각 모듈은 서로의 내부 Node 경로를 참조하지 않습니다.
 - 플레이어, 적, 투사체는 생성 벽용 충돌 레이어 `16`을 공유합니다.
 - 맵 전용 스모크 테스트는 맵 기능 경로를 참조합니다. 맵 기능을 완전히 삭제하면 해당 테스트도 함께 제거하거나 교체해야 합니다.
 
@@ -143,7 +162,7 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `inventory_grid`, `item_footprints`, `inventory_i`, `equipment_u`, `parts`, `module_cost`, `module_upgrade`, `modification_tag`가 기존 검증 항목과 함께 포함됩니다. 이는 가변 격자, I/U UI, 전용 파츠, 모듈 한도·강화, 최고 레벨 개조까지 자동 검증됐다는 뜻입니다.
+성공하면 출력에 `weapon_switch_q`, `weapon_balance_csv`, `rifle_burst`, `pistol_pierce`가 인벤토리·장비 검증 항목과 함께 포함됩니다. 이는 Q 교체, 확정 CSV, 소총 3점사, 권총 관통까지 자동 검증됐다는 뜻입니다.
 
 ## 다음 개선 시점
 

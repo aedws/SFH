@@ -23,6 +23,7 @@ extends Resource
 @export var equipment_customization_enabled: bool = true
 @export var spawning_enabled: bool = true
 @export var weapons_enabled: bool = true
+@export var weapon_balance_enabled: bool = true
 @export var damage_enabled: bool = true
 @export var experience_enabled: bool = true
 @export var leveling_enabled: bool = true
@@ -36,6 +37,11 @@ extends Resource
 @export_category("Equipment")
 @export_file("*.tres") var equipment_loadout_path: String = (
 	"res://game/features/equipment/loadouts/default_loadout.tres"
+)
+
+@export_category("Weapon balance")
+@export_file("*.tres") var weapon_balance_config_path: String = (
+	"res://game/features/weapon_balance/configs/default_weapon_balance.tres"
 )
 
 @export_category("Inventory")
@@ -85,6 +91,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"spawning")
 	if weapons_enabled:
 		result.append(&"weapons")
+	if weapon_balance_enabled:
+		result.append(&"weapon_balance")
 	if damage_enabled:
 		result.append(&"damage")
 	if experience_enabled:
@@ -146,6 +154,13 @@ func validation_errors() -> PackedStringArray:
 		errors.append("inventory 카탈로그 Resource 경로가 유효하지 않습니다.")
 	if weapons_enabled and not enemies_enabled:
 		errors.append("weapons 모듈은 enemies 모듈이 필요합니다.")
+	if weapon_balance_enabled and not weapons_enabled:
+		errors.append("weapon_balance 모듈은 weapons 모듈이 필요합니다.")
+	if weapon_balance_enabled and (
+		weapon_balance_config_path.is_empty()
+		or not ResourceLoader.exists(weapon_balance_config_path)
+	):
+		errors.append("weapon_balance 설정 Resource 경로가 유효하지 않습니다.")
 	if experience_enabled and not enemies_enabled:
 		errors.append("experience 모듈은 enemies 모듈이 필요합니다.")
 	if leveling_enabled and not experience_enabled:

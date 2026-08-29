@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="WeaponBalanceConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/weapon_balance/weapon_balance_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+source_mode = 0
+locked_csv_path = "res://game/features/weapon_balance/data/weapon_balance.csv"
+live_csv_url = ""
+live_refresh_seconds = 3.0
+fallback_to_locked_csv = true

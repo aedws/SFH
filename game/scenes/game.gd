@@ -18,6 +18,9 @@ const LOOT_SPAWNER_SCENE_PATH := "res://game/features/loot/loot_spawner.tscn"
 const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
 const SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
+const WEAPON_BALANCE_SCENE_PATH := (
+	"res://game/features/weapon_balance/weapon_balance_service.tscn"
+)
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
 const MAP_GENERATOR_METHODS := [
 	&"configure_obstacles",
@@ -44,6 +47,17 @@ const EQUIPMENT_METHODS := [
 	&"upgrade_module",
 	&"level_up_equipment",
 	&"grant_module_tag",
+	&"get_active_weapon_slot",
+	&"get_active_weapon",
+	&"switch_active_weapon",
+	&"set_active_weapon_slot",
+]
+const WEAPON_BALANCE_METHODS := [
+	&"configure",
+	&"request_live_balance",
+	&"load_csv_text",
+	&"get_weapon_balance",
+	&"get_snapshot",
 ]
 const INVENTORY_METHODS := [
 	&"configure",
@@ -77,6 +91,7 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var credit_label: Label = %CreditLabel
 @onready var map_label: Label = %MapLabel
 @onready var equipment_label: Label = %EquipmentLabel
+@onready var weapon_runtime_label: Label = %WeaponRuntimeLabel
 @onready var interaction_label: Label = %InteractionLabel
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var health_label: Label = %HealthLabel
@@ -103,6 +118,7 @@ var credit_ledger
 var loot_spawner
 var enemy_spawner
 var auto_weapon
+var weapon_balance_service
 var progression_system
 var current_map_config: Resource
 var selected_map_size: String = "small"
@@ -128,6 +144,7 @@ func _ready() -> void:
 		return
 	credit_label.visible = features.credits_enabled
 	equipment_label.visible = features.equipment_enabled
+	weapon_runtime_label.visible = features.weapons_enabled
 
 	var configuration_errors := features.validation_errors()
 	if not configuration_errors.is_empty():
@@ -236,9 +253,16 @@ func _assemble_game() -> bool:
 			_on_progress_changed(1, 0, 5)
 
 	if features.weapons_enabled:
+		if features.weapon_balance_enabled and not _install_weapon_balance():
+			return false
 		auto_weapon = _instantiate_feature(WEAPON_SCENE_PATH, player, &"AutoWeapon")
 		if auto_weapon != null:
-			auto_weapon.call(&"configure", projectiles_container)
+			auto_weapon.connect(
+				&"weapon_runtime_changed", Callable(self, &"_on_weapon_runtime_changed")
+			)
+			auto_weapon.call(
+				&"configure", projectiles_container, equipment_system, weapon_balance_service
+			)
 
 	if features.enemies_enabled and features.spawning_enabled:
 		enemy_spawner = _instantiate_feature(SPAWNER_SCENE_PATH, module_container, &"EnemySpawner")
@@ -254,7 +278,28 @@ func _assemble_game() -> bool:
 				features.enemy_status_ui_enabled
 			)
 
-	status_label.text = "작전 진행 중 · F 상호작용 · I 가방 · U 장비"
+	status_label.text = "작전 진행 중 · Q 무기 교체 · F 상호작용 · I 가방 · U 장비"
+	return true
+
+
+func _install_weapon_balance() -> bool:
+	if not ResourceLoader.exists(features.weapon_balance_config_path):
+		_report_configuration_error(
+			"무기 밸런스 설정을 찾을 수 없습니다: %s" % features.weapon_balance_config_path
+		)
+		return false
+	weapon_balance_service = _instantiate_feature(
+		WEAPON_BALANCE_SCENE_PATH, module_container, &"WeaponBalance"
+	)
+	if not _supports_weapon_balance(weapon_balance_service):
+		_report_configuration_error("무기 밸런스 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	weapon_balance_service.connect(&"balance_error", Callable(self, &"_on_weapon_balance_error"))
+	if not weapon_balance_service.call(
+		&"configure", load(features.weapon_balance_config_path)
+	):
+		_report_configuration_error("확정 무기 밸런스 CSV를 불러오지 못했습니다.")
+		return false
 	return true
 
 
@@ -514,6 +559,19 @@ func _supports_equipment(candidate: Node) -> bool:
 	return true
 
 
+func _supports_weapon_balance(candidate: Node) -> bool:
+	if (
+		not is_instance_valid(candidate)
+		or not candidate.has_signal(&"balance_updated")
+		or not candidate.has_signal(&"balance_error")
+	):
+		return false
+	for method_name in WEAPON_BALANCE_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+	return true
+
+
 func _supports_inventory(candidate: Node) -> bool:
 	if not is_instance_valid(candidate) or not candidate.has_signal(&"inventory_changed"):
 		return false
@@ -606,9 +664,14 @@ func _on_equipment_changed(summary: Dictionary) -> void:
 	var defense_value := 0.0
 	if player != null and player.has_method(&"get_runtime_stats"):
 		defense_value = float(player.call(&"get_runtime_stats").get(&"defense", 0.0))
-	equipment_label.text = "M %s [%s] · S %s [%s]\n스킬 %d/%d 활성 · 방어구 %d · 방어 %.0f" % [
+	var active_slot := String(summary.get(&"active_weapon_slot", &"main"))
+	var main_marker := "▶" if active_slot == "main" else " "
+	var secondary_marker := "▶" if active_slot == "secondary" else " "
+	equipment_label.text = "%sM %s [%s] · %sS %s [%s]\n스킬 %d/%d 활성 · 방어구 %d · 방어 %.0f" % [
+		main_marker,
 		summary.get(&"main_weapon_name", "없음"),
 		summary.get(&"main_weapon_tags", "-"),
+		secondary_marker,
 		summary.get(&"secondary_weapon_name", "없음"),
 		summary.get(&"secondary_weapon_tags", "-"),
 		int(summary.get(&"active_skill_count", 0)),
@@ -616,6 +679,25 @@ func _on_equipment_changed(summary: Dictionary) -> void:
 		int(summary.get(&"armor_count", 0)),
 		defense_value,
 	]
+
+
+func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:
+	var trait_labels := {
+		&"steady_burst": "안정 3점사",
+		&"heavy_piercing": "고위력 관통",
+	}
+	var trait_id: StringName = snapshot.get(&"trait_id", &"")
+	weapon_runtime_label.text = "Q 현재 %s · %s · 피해 %.1f · 사거리 %.0f · %s" % [
+		snapshot.get(&"display_name", "무기"),
+		trait_labels.get(trait_id, String(trait_id)),
+		float(snapshot.get(&"damage", 0.0)) + float(snapshot.get(&"level_damage_bonus", 0.0)),
+		float(snapshot.get(&"target_range_px", 0.0)),
+		snapshot.get(&"source_label", "내장 기본값"),
+	]
+
+
+func _on_weapon_balance_error(message: String) -> void:
+	push_warning(message)
 
 
 func _on_extraction_completed(_actor: Node2D) -> void:

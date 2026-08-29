@@ -28,7 +28,7 @@ tags:
 | 몸 방어구 | 전술 방탄복 | 최대 체력 +25, 방어 +3 |
 | 발 방어구 | 기동 전투화 | 이동 속도 +20 |
 
-HUD에는 메인·보조 무기의 세 단계 분류, 활성 스킬 수, 방어구 수와 방어력이 표시됩니다.
+HUD에는 메인·보조 무기의 세 단계 분류, 현재 활성 슬롯, 활성 스킬 수, 방어구 수와 방어력이 표시됩니다. 작전 중 `Q`로 활성 무기를 교체합니다.
 
 가방 점유 크기와 I 화면은 [격자 가방 인벤토리](grid-inventory.md), U 화면의 슬롯 태그·고유 파츠·모듈 강화·최고 레벨 개조는 [장비 파츠·모듈 개조](equipment-customization.md)에서 이어서 설명합니다.
 
@@ -56,7 +56,7 @@ game/features/equipment/definitions/weapons/
 
 `EquipmentLoadout`이 `main_weapon`과 `secondary_weapon` 슬롯을 소유합니다. 슬롯은 장비 배치만 정의하며 실제 공격 방식은 강제하지 않습니다.
 
-현재 `AutoWeapon`은 기존 MVP 자동 사격을 계속 담당하고, 장비 무기 Resource는 이름과 태그 판정에 사용합니다. 이후 무기별 발사 Scene과 피해 수치가 확정되면 `EquipmentWeaponDefinition.extension_data` 또는 별도 전투 프로필 Resource를 통해 전투 모듈에 전달할 수 있습니다.
+`AutoWeapon`은 장비 시스템의 활성 슬롯 변경 Signal을 받고, 같은 `weapon_id`를 가진 [무기 밸런스](weapon-balance.md) 행으로 발사 패턴을 바꿉니다. 장비 Resource는 분류·장착 규칙, 밸런스 CSV는 전투 수치를 담당합니다.
 
 ## 스킬 활성 조건
 
@@ -120,8 +120,11 @@ game/features/equipment/definitions/weapons/
 - `can_equip_definition(slot_id, definition)`과 `equip_definition(...)`
 - `install_part(...)`, `install_module(...)`, `upgrade_module(...)`
 - `level_up_equipment(...)`, `grant_module_tag(...)`
+- `get_active_weapon_slot()`, `get_active_weapon()`
+- `switch_active_weapon()`, `set_active_weapon_slot(slot_id)`
 - `equipment_changed(summary)` Signal
 - `customization_changed(snapshot)` Signal
+- `active_weapon_changed(slot_id, weapon_definition)` Signal
 
 방어구 적용 대상은 구체 플레이어 클래스를 요구하지 않고 `apply_equipment_modifiers(modifiers)` 메서드만 제공하면 됩니다.
 

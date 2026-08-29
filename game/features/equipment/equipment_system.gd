@@ -5,6 +5,7 @@ signal equipment_changed(summary: Dictionary)
 signal skill_activation_changed(active_skill_ids: PackedStringArray, inactive_skill_ids: PackedStringArray)
 signal stat_modifiers_changed(modifiers: Dictionary)
 signal customization_changed(snapshot: Dictionary)
+signal active_weapon_changed(slot_id: StringName, weapon_definition: EquipmentWeaponDefinition)
 
 const TARGET_METHOD := &"apply_equipment_modifiers"
 
@@ -17,6 +18,7 @@ var active_skill_ids := PackedStringArray()
 var inactive_skill_ids := PackedStringArray()
 var aggregated_stat_modifiers: Dictionary = {}
 var equipment_states: Dictionary = {}
+var active_weapon_slot: StringName = &"main"
 
 
 func configure(
@@ -43,6 +45,7 @@ func configure(
 	weapons_enabled = enable_weapons
 	skills_enabled = enable_skills
 	armor_enabled = enable_armor
+	active_weapon_slot = &"main"
 	_build_equipment_states()
 	_resolve_skills()
 	_resolve_stat_modifiers()
@@ -50,6 +53,7 @@ func configure(
 		stats_target.call(TARGET_METHOD, aggregated_stat_modifiers)
 	equipment_changed.emit(get_summary())
 	customization_changed.emit(get_customization_snapshot())
+	active_weapon_changed.emit(active_weapon_slot, get_active_weapon())
 	return true
 
 
@@ -61,6 +65,30 @@ func get_weapon(slot_id: StringName) -> EquipmentWeaponDefinition:
 	if slot_id == &"secondary":
 		return loadout.secondary_weapon
 	return null
+
+
+func get_active_weapon_slot() -> StringName:
+	return active_weapon_slot
+
+
+func get_active_weapon() -> EquipmentWeaponDefinition:
+	return get_weapon(active_weapon_slot)
+
+
+func switch_active_weapon() -> bool:
+	var next_slot := &"secondary" if active_weapon_slot == &"main" else &"main"
+	return set_active_weapon_slot(next_slot)
+
+
+func set_active_weapon_slot(slot_id: StringName) -> bool:
+	if slot_id not in [&"main", &"secondary"] or get_weapon(slot_id) == null:
+		return false
+	if active_weapon_slot == slot_id:
+		return true
+	active_weapon_slot = slot_id
+	active_weapon_changed.emit(active_weapon_slot, get_active_weapon())
+	equipment_changed.emit(get_summary())
+	return true
 
 
 func get_active_skill_ids() -> PackedStringArray:
@@ -118,6 +146,8 @@ func equip_definition(slot_id: StringName, definition: Resource) -> bool:
 		if not replaced:
 			loadout.armor.append(definition)
 	_refresh_after_customization()
+	if slot_id == active_weapon_slot and definition is EquipmentWeaponDefinition:
+		active_weapon_changed.emit(active_weapon_slot, definition)
 	return true
 
 
@@ -174,6 +204,9 @@ func get_summary() -> Dictionary:
 		&"main_weapon_tags": main_weapon.tags.display_text() if main_weapon != null else "-",
 		&"secondary_weapon_name": secondary_weapon.display_name if secondary_weapon != null else "없음",
 		&"secondary_weapon_tags": secondary_weapon.tags.display_text() if secondary_weapon != null else "-",
+		&"active_weapon_slot": active_weapon_slot,
+		&"active_weapon_id": get_active_weapon().weapon_id if get_active_weapon() != null else &"",
+		&"active_weapon_name": get_active_weapon().display_name if get_active_weapon() != null else "없음",
 		&"equipped_skill_count": loadout.skills.size() if loadout != null and skills_enabled else 0,
 		&"active_skill_count": active_skill_ids.size(),
 		&"active_skill_ids": get_active_skill_ids(),

@@ -13,6 +13,7 @@
 - [적과 생성 시스템](enemies.md)
 - [적 체력과 방어력](enemy-defense.md)
 - [자동 무기](weapons.md)
+- [Q 무기 교체와 Google Sheets 밸런스](weapon-balance.md)
 - [경험치와 레벨](progression.md)
 - [게임 루프와 HUD](game-loop.md)
 
@@ -21,6 +22,6 @@
 1. 진입 비용을 차감하는 로비 경제
 2. 작전 전후 영속 가방·창고와 전리품 보존
 3. 레벨업 선택지 화면
-4. 장비 무기 Resource와 실제 공격 Scene 연결
+4. 신규 무기 종류와 추가 발사 패턴
 5. 강화 재료·특수 모듈 효과 실행기
 6. 적 종류와 난이도 곡선
