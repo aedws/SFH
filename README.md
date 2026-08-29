@@ -35,6 +35,12 @@ Python 3가 설치된 PowerShell에서 다음 명령을 실행합니다. 스크�
 
 브라우저에서 `http://127.0.0.1:8000`을 열면 검색 가능한 개발 위키가 표시됩니다.
 
+## 온라인 위키
+
+배포된 위키는 [https://aedws.github.io/SFH/](https://aedws.github.io/SFH/)에서 확인합니다.
+
+문서 우측 상단의 연필 아이콘을 누르면 GitHub 웹 편집기로 이동합니다. 수정 사항이 `main` 브랜치에 반영되면 GitHub Actions가 위키를 자동으로 다시 배포합니다.
+
 ## 주요 경로
 
 ```text
