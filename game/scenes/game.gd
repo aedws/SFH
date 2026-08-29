@@ -1,40 +1,491 @@
 extends Node2D
 
-## 최상위 조립 지점입니다. 각 기능 장면을 직접 구현하지 않고 설치만 합니다.
+## 최상위 조립 지점입니다. 기능은 활성화됐을 때만 경로로 불러옵니다.
+
+const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
+const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
+const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
+const EXTRACTION_SCENE_PATH := "res://game/features/extraction/extraction_zone.tscn"
+const CREDIT_LEDGER_SCENE_PATH := "res://game/features/credits/credit_ledger.tscn"
+const LOOT_SPAWNER_SCENE_PATH := "res://game/features/loot/loot_spawner.tscn"
+const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
+const SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
+const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
+const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
+const MAP_GENERATOR_METHODS := [
+	&"configure_obstacles",
+	&"generate",
+	&"get_player_spawn_position",
+	&"get_extraction_position",
+	&"get_enemy_spawn_position",
+	&"get_world_path",
+]
+const EXTRACTION_METHODS := [&"configure", &"request_extraction"]
+const CREDIT_LEDGER_METHODS := [&"add_carried", &"secure_carried", &"lose_carried"]
+const LOOT_SPAWNER_METHODS := [&"configure"]
+const MAP_TIER_IDS := ["small", "medium", "large"]
 
 @export var features: FeatureManifest
-@export var player_scene: PackedScene
 
-@onready var module_container: Node2D = $Modules
+@onready var actors_container: Node2D = $World/Actors
+@onready var enemies_container: Node2D = $World/Enemies
+@onready var projectiles_container: Node2D = $World/Projectiles
+@onready var pickups_container: Node2D = $World/Pickups
+@onready var module_container: Node = $Modules
+@onready var world_container: Node2D = $World
+@onready var hud_margin: Control = $UI/HUDMargin
 @onready var status_label: Label = %StatusLabel
+@onready var time_label: Label = %TimeLabel
+@onready var level_label: Label = %LevelLabel
+@onready var kills_label: Label = %KillsLabel
+@onready var credit_label: Label = %CreditLabel
+@onready var map_label: Label = %MapLabel
+@onready var interaction_label: Label = %InteractionLabel
+@onready var health_bar: ProgressBar = %HealthBar
+@onready var health_label: Label = %HealthLabel
+@onready var experience_bar: ProgressBar = %ExperienceBar
+@onready var experience_label: Label = %ExperienceLabel
+@onready var run_setup_overlay: Control = %RunSetupOverlay
+@onready var small_map_button: Button = %SmallMapButton
+@onready var medium_map_button: Button = %MediumMapButton
+@onready var large_map_button: Button = %LargeMapButton
+@onready var game_over_overlay: Control = %GameOverOverlay
+@onready var end_title: Label = %EndTitle
+@onready var game_over_summary: Label = %GameOverSummary
+@onready var restart_button: Button = %RestartButton
+
+var player
+var map_generator
+var extraction_zone
+var credit_ledger
+var loot_spawner
+var enemy_spawner
+var auto_weapon
+var progression_system
+var current_map_config: Resource
+var selected_map_size: String = "small"
+var elapsed_time: float = 0.0
+var defeated_enemies: int = 0
+var run_started: bool = false
+var run_ended: bool = false
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	restart_button.pressed.connect(_restart_run)
+	small_map_button.pressed.connect(start_run.bind("small"))
+	medium_map_button.pressed.connect(start_run.bind("medium"))
+	large_map_button.pressed.connect(start_run.bind("large"))
+	hud_margin.visible = false
+	map_label.visible = false
+	interaction_label.visible = false
+	game_over_overlay.visible = false
+
 	if features == null:
-		push_error("FeatureManifest가 지정되지 않았습니다.")
-		status_label.text = "설정 오류: FeatureManifest 없음"
+		_report_configuration_error("FeatureManifest가 지정되지 않았습니다.")
+		return
+	credit_label.visible = features.credits_enabled
+
+	var configuration_errors := features.validation_errors()
+	if not configuration_errors.is_empty():
+		for message in configuration_errors:
+			push_error(message)
+		status_label.text = "설정 오류: %s" % " / ".join(configuration_errors)
 		return
 
+	_configure_tier_button(small_map_button, "small")
+	_configure_tier_button(medium_map_button, "medium")
+	_configure_tier_button(large_map_button, "large")
+
+	if features.run_setup_enabled:
+		run_setup_overlay.visible = true
+		status_label.text = "작전 규모를 선택하세요."
+	else:
+		run_setup_overlay.visible = false
+		start_run(features.map_size)
+
+
+func start_run(map_size: String) -> void:
+	if run_started:
+		return
+	if map_size not in MAP_TIER_IDS:
+		_report_configuration_error("지원하지 않는 맵 등급입니다: %s" % map_size)
+		return
+
+	selected_map_size = map_size
+	run_started = true
+	run_setup_overlay.visible = false
+	hud_margin.visible = true
+	map_label.visible = features.map_generation_enabled
+	_assemble_game()
+
+
+func _assemble_game() -> void:
+	var player_spawn_position := Vector2.ZERO
 	if features.player_enabled:
-		_install_player()
+		if features.map_generation_enabled:
+			map_generator = _instantiate_feature(MAP_GENERATOR_SCENE_PATH, world_container, &"GeneratedMap")
+			if map_generator != null:
+				if not _supports_map_generator(map_generator):
+					_report_configuration_error("맵 모듈이 필수 공개 계약을 구현하지 않았습니다.")
+					map_generator.queue_free()
+					map_generator = null
+				else:
+					map_generator.call(&"configure_obstacles", features.map_obstacles_enabled)
+					map_generator.connect(&"map_generated", Callable(self, &"_on_map_generated"))
+					var map_config_path := MAP_CONFIG_PATH_PATTERN % selected_map_size
+					if ResourceLoader.exists(map_config_path):
+						current_map_config = load(map_config_path)
+						map_generator.call(&"generate", current_map_config, features.map_seed)
+						player_spawn_position = map_generator.call(&"get_player_spawn_position")
+					else:
+						_report_configuration_error("맵 설정을 찾을 수 없습니다: %s" % map_config_path)
 
-	var enabled_names := PackedStringArray()
-	for module_id in features.enabled_module_ids():
-		enabled_names.append(String(module_id))
-
-	status_label.text = "활성 모듈: %s" % ", ".join(enabled_names)
-
-
-func _install_player() -> void:
-	if player_scene == null:
-		push_error("player_enabled가 켜져 있지만 Player Scene이 없습니다.")
-		return
-
-	var player := player_scene.instantiate() as Node2D
+		player = _instantiate_feature(PLAYER_SCENE_PATH, actors_container, &"Player")
 	if player == null:
-		push_error("Player Scene의 루트는 Node2D여야 합니다.")
+		_report_configuration_error("플레이어 모듈을 설치하지 못했습니다.")
 		return
 
-	player.name = "Player"
-	module_container.add_child(player)
-	player.global_position = get_viewport_rect().size * 0.5
+	player.global_position = player_spawn_position
+	player.call(&"configure_damage", features.damage_enabled)
+	player.connect(&"health_changed", Callable(self, &"_on_player_health_changed"))
+	player.connect(&"died", Callable(self, &"_on_player_died"))
+	_on_player_health_changed(float(player.get("current_health")), float(player.get("max_health")))
+
+	if features.credits_enabled:
+		_install_credit_ledger()
+
+	if features.extraction_enabled and map_generator != null:
+		_install_extraction_zone()
+	if (
+		features.loot_enabled
+		and map_generator != null
+		and credit_ledger != null
+		and current_map_config != null
+	):
+		_install_loot_spawner()
+
+	if features.experience_enabled:
+		progression_system = _instantiate_feature(PROGRESSION_SCENE_PATH, module_container, &"ProgressionSystem")
+		if progression_system != null:
+			progression_system.connect(&"progress_changed", Callable(self, &"_on_progress_changed"))
+			progression_system.connect(&"level_increased", Callable(self, &"_on_level_increased"))
+			progression_system.call(&"configure", pickups_container, features.leveling_enabled)
+			_on_progress_changed(1, 0, 5)
+
+	if features.weapons_enabled:
+		auto_weapon = _instantiate_feature(WEAPON_SCENE_PATH, player, &"AutoWeapon")
+		if auto_weapon != null:
+			auto_weapon.call(&"configure", projectiles_container)
+
+	if features.enemies_enabled and features.spawning_enabled:
+		enemy_spawner = _instantiate_feature(SPAWNER_SCENE_PATH, module_container, &"EnemySpawner")
+		if enemy_spawner != null:
+			enemy_spawner.connect(&"enemy_spawned", Callable(self, &"_on_enemy_spawned"))
+			enemy_spawner.call(
+				&"configure",
+				player,
+				enemies_container,
+				features.damage_enabled,
+				map_generator,
+				features.enemy_armor_enabled,
+				features.enemy_status_ui_enabled
+			)
+
+	status_label.text = "작전 진행 중 · F 상호작용"
+
+
+func _install_extraction_zone() -> void:
+	extraction_zone = _instantiate_feature(EXTRACTION_SCENE_PATH, world_container, &"ExtractionZone")
+	if extraction_zone == null:
+		return
+	if not _supports_extraction_zone(extraction_zone):
+		_report_configuration_error("탈출 모듈이 필수 공개 계약을 구현하지 않았습니다.")
+		extraction_zone.queue_free()
+		extraction_zone = null
+		return
+
+	extraction_zone.connect(&"extraction_completed", Callable(self, &"_on_extraction_completed"))
+	extraction_zone.connect(
+		&"interaction_availability_changed",
+		Callable(self, &"_on_interaction_availability_changed")
+	)
+	extraction_zone.call(&"configure", map_generator.call(&"get_extraction_position"))
+
+
+func _install_credit_ledger() -> void:
+	credit_ledger = _instantiate_feature(CREDIT_LEDGER_SCENE_PATH, module_container, &"CreditLedger")
+	if credit_ledger == null:
+		return
+	if not _supports_credit_ledger(credit_ledger):
+		_report_configuration_error("크레딧 원장 모듈이 필수 공개 계약을 구현하지 않았습니다.")
+		credit_ledger.queue_free()
+		credit_ledger = null
+		return
+	credit_ledger.connect(&"credits_changed", Callable(self, &"_on_credits_changed"))
+	_on_credits_changed(0, 0)
+
+
+func _install_loot_spawner() -> void:
+	var loot_config_path := LOOT_CONFIG_PATH_PATTERN % selected_map_size
+	if not ResourceLoader.exists(loot_config_path):
+		_report_configuration_error("파밍 설정을 찾을 수 없습니다: %s" % loot_config_path)
+		return
+	var loot_config := load(loot_config_path)
+	loot_spawner = _instantiate_feature(LOOT_SPAWNER_SCENE_PATH, module_container, &"LootSpawner")
+	if loot_spawner == null:
+		return
+	if not _supports_loot_spawner(loot_spawner):
+		_report_configuration_error("파밍 모듈이 필수 공개 계약을 구현하지 않았습니다.")
+		loot_spawner.queue_free()
+		loot_spawner = null
+		return
+	loot_spawner.connect(&"credits_looted", Callable(self, &"_on_credits_looted"))
+	loot_spawner.connect(
+		&"interaction_availability_changed",
+		Callable(self, &"_on_interaction_availability_changed")
+	)
+	loot_spawner.call(&"configure", map_generator, pickups_container, loot_config)
+
+
+func _configure_tier_button(button: Button, tier_id: String) -> void:
+	var config_path := MAP_CONFIG_PATH_PATTERN % tier_id
+	if not ResourceLoader.exists(config_path):
+		button.disabled = true
+		button.text = "%s 설정 없음" % tier_id
+		return
+
+	var config = load(config_path)
+	button.text = "%s 작전\n투자 %d · 방 %d~%d" % [
+		config.get("display_name"),
+		config.get("entry_cost"),
+		config.get("minimum_rooms"),
+		config.get("maximum_rooms"),
+	]
+
+
+func _process(delta: float) -> void:
+	if not run_started or run_ended:
+		return
+
+	elapsed_time += delta
+	time_label.text = "시간 %s" % _format_time(elapsed_time)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not run_ended or not event is InputEventKey:
+		return
+
+	var key_event := event as InputEventKey
+	if key_event.pressed and not key_event.echo:
+		if key_event.keycode == KEY_ENTER or key_event.keycode == KEY_SPACE:
+			_restart_run()
+
+
+func _instantiate_feature(path: String, parent: Node, display_name: StringName) -> Node:
+	if not ResourceLoader.exists(path):
+		_report_configuration_error("기능 장면을 찾을 수 없습니다: %s" % path)
+		return null
+
+	var resource := load(path)
+	if not resource is PackedScene:
+		_report_configuration_error("PackedScene이 아닙니다: %s" % path)
+		return null
+
+	var instance := (resource as PackedScene).instantiate()
+	instance.name = String(display_name)
+	parent.add_child(instance)
+	return instance
+
+
+func _supports_map_generator(candidate: Node) -> bool:
+	if not is_instance_valid(candidate) or not candidate.has_signal(&"map_generated"):
+		return false
+
+	for method_name in MAP_GENERATOR_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+
+	return true
+
+
+func _supports_extraction_zone(candidate: Node) -> bool:
+	if (
+		not is_instance_valid(candidate)
+		or not candidate.has_signal(&"extraction_completed")
+		or not candidate.has_signal(&"interaction_availability_changed")
+	):
+		return false
+
+	for method_name in EXTRACTION_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+
+	return true
+
+
+func _supports_credit_ledger(candidate: Node) -> bool:
+	if not is_instance_valid(candidate) or not candidate.has_signal(&"credits_changed"):
+		return false
+	for method_name in CREDIT_LEDGER_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+	return true
+
+
+func _supports_loot_spawner(candidate: Node) -> bool:
+	if (
+		not is_instance_valid(candidate)
+		or not candidate.has_signal(&"credits_looted")
+		or not candidate.has_signal(&"interaction_availability_changed")
+	):
+		return false
+	for method_name in LOOT_SPAWNER_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+	return true
+
+
+func _on_enemy_spawned(enemy: Node) -> void:
+	if enemy.has_signal(&"defeated"):
+		enemy.connect(&"defeated", Callable(self, &"_on_enemy_defeated"))
+
+
+func _on_map_generated(
+	display_name: String,
+	_entry_cost: int,
+	room_count: int,
+	maximum_rooms: int,
+	_used_seed: int
+) -> void:
+	map_label.text = "%s · 방 %d/%d" % [
+		display_name,
+		room_count,
+		maximum_rooms,
+	]
+
+
+func _on_interaction_availability_changed(available: bool, prompt: String) -> void:
+	interaction_label.text = prompt
+	interaction_label.visible = available and not run_ended
+
+
+func _on_credits_looted(amount: int, _world_position: Vector2) -> void:
+	if credit_ledger != null:
+		credit_ledger.call(&"add_carried", amount)
+
+
+func _on_credits_changed(carried: int, _secured: int) -> void:
+	credit_label.text = "휴대 크레딧 %d" % carried
+
+
+func _on_extraction_completed(_actor: Node2D) -> void:
+	var recovered_credits := 0
+	if credit_ledger != null:
+		recovered_credits = int(credit_ledger.call(&"secure_carried"))
+	_finish_run(
+		"탈출 성공",
+		"%s 작전 · 생존 %s · 처치 %d · 회수 %d 크레딧" % [
+			_selected_map_display_name(),
+			_format_time(elapsed_time),
+			defeated_enemies,
+			recovered_credits,
+		]
+	)
+
+
+func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:
+	defeated_enemies += 1
+	kills_label.text = "처치 %d" % defeated_enemies
+
+	if progression_system != null:
+		progression_system.call(&"spawn_pickup", world_position, reward)
+
+
+func _on_player_health_changed(current: float, maximum: float) -> void:
+	health_bar.max_value = maximum
+	health_bar.value = current
+	var ratio := current / maximum if maximum > 0.0 else 0.0
+	health_label.text = "%d / %d · %d%%" % [
+		ceili(current),
+		ceili(maximum),
+		roundi(ratio * 100.0),
+	]
+	var fill_style := health_bar.get_theme_stylebox(&"fill")
+	if fill_style is StyleBoxFlat:
+		var fill := fill_style as StyleBoxFlat
+		if ratio > 0.6:
+			fill.bg_color = Color(0.18, 0.82, 0.55, 1)
+			health_label.modulate = Color(0.76, 0.97, 0.86, 1)
+		elif ratio > 0.3:
+			fill.bg_color = Color(1.0, 0.66, 0.18, 1)
+			health_label.modulate = Color(1.0, 0.82, 0.48, 1)
+		else:
+			fill.bg_color = Color(0.95, 0.22, 0.2, 1)
+			health_label.modulate = Color(1.0, 0.5, 0.48, 1)
+
+
+func _on_progress_changed(level: int, current: int, required: int) -> void:
+	level_label.text = "레벨 %d" % level
+	experience_bar.max_value = required
+	experience_bar.value = current
+	experience_label.text = "%d / %d" % [current, required]
+
+
+func _on_level_increased(new_level: int) -> void:
+	if auto_weapon != null:
+		auto_weapon.call(&"apply_level", new_level)
+	if player != null:
+		player.call(&"heal", 12.0)
+
+
+func _on_player_died() -> void:
+	if not features.game_over_enabled:
+		return
+
+	var lost_credits := 0
+	if credit_ledger != null:
+		lost_credits = int(credit_ledger.call(&"lose_carried"))
+	_finish_run(
+		"작전 실패",
+		"생존 %s · 처치 %d · 분실 %d 크레딧" % [
+			_format_time(elapsed_time),
+			defeated_enemies,
+			lost_credits,
+		]
+	)
+
+
+func _finish_run(title: String, summary: String) -> void:
+	if run_ended:
+		return
+	run_ended = true
+	interaction_label.visible = false
+	end_title.text = title
+	game_over_summary.text = summary
+	restart_button.text = "새 작전 선택 (Enter)"
+	game_over_overlay.visible = true
+	get_tree().paused = true
+
+
+func _selected_map_display_name() -> String:
+	var config_path := MAP_CONFIG_PATH_PATTERN % selected_map_size
+	if ResourceLoader.exists(config_path):
+		return String(load(config_path).get("display_name"))
+	return selected_map_size
+
+
+func _restart_run() -> void:
+	get_tree().paused = false
+	get_tree().reload_current_scene()
+
+
+func _report_configuration_error(message: String) -> void:
+	push_error(message)
+	status_label.text = "설정 오류: %s" % message
+
+
+func _format_time(seconds: float) -> String:
+	var total_seconds := floori(seconds)
+	var minutes := floori(float(total_seconds) / 60.0)
+	return "%02d:%02d" % [minutes, total_seconds % 60]

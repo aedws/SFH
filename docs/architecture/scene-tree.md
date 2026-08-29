@@ -4,13 +4,30 @@
 
 ```text
 Game
+├─ World
+│  ├─ ArenaGrid
+│  ├─ GeneratedMap          # 등급 Resource에 따라 실행 시 생성
+│  ├─ ExtractionZone        # 최원거리 방에 실행 시 생성
+│  ├─ Actors
+│  │  └─ Player             # 실행 시 생성
+│  │     └─ AutoWeapon      # 실행 시 생성
+│  ├─ Enemies
+│  ├─ Projectiles
+│  └─ Pickups
+│     └─ CreditLootCache   # 등급에 따라 여러 개 생성
 ├─ Modules
-│  └─ Player       # 실행 시 FeatureManifest에 따라 생성
+│  ├─ EnemySpawner          # 실행 시 생성
+│  ├─ ProgressionSystem     # 실행 시 생성
+│  ├─ CreditLedger          # 휴대·회수·분실 계산
+│  └─ LootSpawner           # 1회성 보급 상자 배치
 └─ UI
-   └─ HelpPanel
+   ├─ HUDMargin
+   ├─ InteractionLabel      # 탈출 범위의 F 안내
+   ├─ RunSetupOverlay       # 소·중·대형 선택
+   └─ GameOverOverlay
 ```
 
-`Game` Scene은 플레이어의 이동 방식을 알지 않습니다. 플레이어 기능이 활성화됐을 때 `player.tscn`을 인스턴스화해 `Modules` 아래에 추가할 뿐입니다.
+`Game` Scene은 각 기능의 세부 동작을 구현하지 않습니다. `FeatureManifest`를 검사한 뒤 활성화된 Scene을 적절한 컨테이너에 설치하고 Signal을 연결합니다.
 
 ## 관련 파일
 
@@ -18,3 +35,10 @@ Game
 - `game/scenes/game.gd`: 모듈 설치 코드
 - `game/core/feature_manifest.tres`: 활성 기능 설정
 - `game/features/player/player.tscn`: 플레이어 기능 장면
+- `game/features/map_generation/map_generator.tscn`: 방, 복도, 벽, 길찾기 생성
+- `game/features/extraction/extraction_zone.tscn`: F 상호작용 탈출 지점
+- `game/features/credits/credit_ledger.tscn`: 작전 크레딧 원장
+- `game/features/loot/loot_spawner.tscn`: 파밍 오브젝트 배치
+- `game/features/spawning/enemy_spawner.tscn`: 적 생성 기능
+- `game/features/weapons/auto_weapon.tscn`: 자동 공격 기능
+- `game/features/experience/progression_system.tscn`: 성장 기능

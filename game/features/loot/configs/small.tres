@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="LootTierConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/loot/loot_tier_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+tier_id = &"small"
+minimum_cache_count = 4
+maximum_cache_count = 6
+minimum_cache_credits = 15
+maximum_cache_credits = 35
