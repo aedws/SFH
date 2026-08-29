@@ -6,6 +6,8 @@ const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.
 const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
 const EQUIPMENT_SCENE_PATH := "res://game/features/equipment/equipment_system.tscn"
 const EQUIPMENT_LOADOUT_PATH := "res://game/features/equipment/loadouts/default_loadout.tres"
+const INVENTORY_SCENE_PATH := "res://game/features/inventory/grid_inventory.tscn"
+const INVENTORY_CATALOG_PATH := "res://game/features/inventory/catalogs/default_inventory.tres"
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
@@ -15,6 +17,8 @@ var frame_count: int = 0
 
 func _init() -> void:
 	if not _verify_map_tiers():
+		return
+	if not _verify_inventory_modules():
 		return
 	if not await _verify_equipment_modules():
 		return
@@ -164,6 +168,57 @@ func _verify_equipment_modules() -> bool:
 		if not is_equal_approx(float(player.get("current_health")), 118.0):
 			failure_message = "방어력 3이 피해 10에서 차감되지 않았습니다."
 
+	if failure_message.is_empty():
+		var greatsword = load("res://game/features/equipment/definitions/weapons/greatsword.tres")
+		var rifle_scope = load("res://game/features/equipment/definitions/parts/rifle_scope.tres")
+		var pistol_part = load("res://game/features/equipment/definitions/parts/pistol_compensator.tres")
+		var ballistic = load("res://game/features/equipment/definitions/modules/ballistic_core.tres")
+		var vitality = load("res://game/features/equipment/definitions/modules/vitality_matrix.tres")
+		var mobility = load("res://game/features/equipment/definitions/modules/mobility_chip.tres")
+		var armor_plate = load("res://game/features/equipment/definitions/modules/armor_plate.tres")
+		if equipment.call(&"can_equip_definition", &"main", greatsword):
+			failure_message = "메인 슬롯이 소총 외 소분류 장비를 허용했습니다."
+		elif not equipment.call(&"install_part", &"main", rifle_scope):
+			failure_message = "소총 전용 optic 파츠를 장착하지 못했습니다."
+		elif equipment.call(&"install_part", &"main", pistol_part):
+			failure_message = "권총 전용 파츠가 소총에 장착됐습니다."
+		elif not equipment.call(&"install_module", &"main", &"ballistic_1", ballistic):
+			failure_message = "무기 모듈을 장착하지 못했습니다."
+		elif equipment.call(&"install_module", &"main", &"vitality_1", vitality):
+			failure_message = "무기 모듈 코스트 한도를 초과해 장착됐습니다."
+		elif not equipment.call(&"install_module", &"main", &"mobility_1", mobility):
+			failure_message = "남은 코스트 범위의 두 번째 모듈을 장착하지 못했습니다."
+		elif not equipment.call(&"upgrade_module", &"main", &"ballistic_1"):
+			failure_message = "모듈 강화가 거부됐습니다."
+		else:
+			var main_state := equipment.call(&"get_equipment_state", &"main") as EquipmentItemState
+			if main_state.used_module_cost() != 6:
+				failure_message = "모듈 강화 후 코스트가 감소하지 않았습니다."
+			elif not equipment.call(&"level_up_equipment", &"main"):
+				failure_message = "무기 레벨업 1단계가 실패했습니다."
+			elif not equipment.call(&"level_up_equipment", &"main"):
+				failure_message = "무기 최고 레벨 도달이 실패했습니다."
+			elif not equipment.call(&"grant_module_tag", &"main", &"ballistic"):
+				failure_message = "최고 레벨 무기의 개조 태그 부여가 실패했습니다."
+			elif main_state.used_module_cost() != 5:
+				failure_message = "일치 모듈 태그의 50% 코스트 규칙이 적용되지 않았습니다."
+			elif equipment.call(&"install_part", &"body", rifle_scope):
+				failure_message = "방어구가 무기 파츠를 허용했습니다."
+			elif not equipment.call(&"install_module", &"body", &"plate_1", armor_plate):
+				failure_message = "방어구 모듈을 장착하지 못했습니다."
+			elif not equipment.call(&"upgrade_module", &"body", &"plate_1"):
+				failure_message = "방어구 모듈 강화가 실패했습니다."
+			else:
+				for _index in range(3):
+					equipment.call(&"level_up_equipment", &"body")
+				var body_state := equipment.call(&"get_equipment_state", &"body") as EquipmentItemState
+				if not equipment.call(&"grant_module_tag", &"body", &"defense"):
+					failure_message = "최고 레벨 방어구 개조가 실패했습니다."
+				elif body_state.used_module_cost() != 2:
+					failure_message = "방어구 태그 일치 코스트가 절반으로 줄지 않았습니다."
+				elif not is_equal_approx(float(player.get("defense")), 5.0):
+					failure_message = "방어구 모듈 능력치가 플레이어에 반영되지 않았습니다."
+
 	root.remove_child(equipment)
 	equipment.free()
 	root.remove_child(player)
@@ -174,6 +229,53 @@ func _verify_equipment_modules() -> bool:
 	return true
 
 
+func _verify_inventory_modules() -> bool:
+	var inventory_scene := load(INVENTORY_SCENE_PATH) as PackedScene
+	var catalog := load(INVENTORY_CATALOG_PATH) as InventoryCatalog
+	if inventory_scene == null or catalog == null or not catalog.validation_errors().is_empty():
+		_fail("인벤토리 Scene 또는 기본 카탈로그가 유효하지 않습니다.")
+		return false
+	var inventory := inventory_scene.instantiate()
+	root.add_child(inventory)
+	if not inventory.call(&"configure", catalog):
+		_fail("기본 가방 아이템 자동 배치가 실패했습니다.")
+		return false
+	var snapshot: Dictionary = inventory.call(&"get_snapshot")
+	var sizes: Dictionary = {}
+	var entries: Array = snapshot[&"items"]
+	for index in range(entries.size()):
+		var entry: Dictionary = entries[index]
+		sizes[entry[&"grid_size"]] = true
+		if entry[&"item_type"] == &"module" and entry[&"grid_size"] != Vector2i.ONE:
+			_fail("모듈 아이템이 가방 한 칸보다 크게 정의됐습니다.")
+			return false
+		var rect := Rect2i(entry[&"position"], entry[&"grid_size"])
+		if not Rect2i(Vector2i.ZERO, snapshot[&"grid_size"]).encloses(rect):
+			_fail("가방 아이템이 격자 경계를 벗어났습니다.")
+			return false
+		for other_index in range(index + 1, entries.size()):
+			var other: Dictionary = entries[other_index]
+			if rect.intersects(Rect2i(other[&"position"], other[&"grid_size"])):
+				_fail("가방 아이템 패널이 서로 겹쳤습니다.")
+				return false
+	if sizes.size() < 4:
+		_fail("아이템별 가변 패널 크기가 충분히 구성되지 않았습니다.")
+		return false
+	var first: Dictionary = entries[0]
+	if inventory.call(&"move_item", first[&"instance_id"], Vector2i(-1, 0)):
+		_fail("가방 경계 밖 이동이 허용됐습니다.")
+		return false
+	if not _has_key_binding(&"toggle_inventory", KEY_I):
+		_fail("I 키가 가방 열기 입력에 연결되지 않았습니다.")
+		return false
+	if not _has_key_binding(&"toggle_equipment", KEY_U):
+		_fail("U 키가 장비 화면 입력에 연결되지 않았습니다.")
+		return false
+	root.remove_child(inventory)
+	inventory.free()
+	return true
+
+
 func _verify_optional_equipment_module(game_scene: PackedScene) -> bool:
 	var equipment_free_game := game_scene.instantiate()
 	var equipment_free_features = equipment_free_game.get("features").duplicate(true)
@@ -181,6 +283,7 @@ func _verify_optional_equipment_module(game_scene: PackedScene) -> bool:
 	equipment_free_features.set("equipment_weapons_enabled", false)
 	equipment_free_features.set("equipment_skills_enabled", false)
 	equipment_free_features.set("equipment_armor_enabled", false)
+	equipment_free_features.set("equipment_customization_enabled", false)
 	equipment_free_features.set("run_setup_enabled", false)
 	equipment_free_game.set("features", equipment_free_features)
 	root.add_child(equipment_free_game)
@@ -232,6 +335,12 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 				failure_message = "%s 작전의 플레이어 또는 맵이 설치되지 않았습니다." % tier_id
 			elif tier_game.get("extraction_zone") == null or minimap == null:
 				failure_message = "%s 작전의 탈출 또는 미니맵이 설치되지 않았습니다." % tier_id
+			elif (
+				tier_game.get("inventory_system") == null
+				or tier_game.get("inventory_window") == null
+				or tier_game.get("equipment_workbench") == null
+			):
+				failure_message = "%s 작전의 가방 또는 장비 개조 UI가 설치되지 않았습니다." % tier_id
 			elif generator.get("rooms").size() < int(config.get("minimum_rooms")):
 				failure_message = "%s 작전의 최소 방 수를 생성하지 못했습니다." % tier_id
 			else:
@@ -378,12 +487,16 @@ func _verify_extraction_flow(game_scene: PackedScene) -> bool:
 
 
 func _has_f_interaction_binding() -> bool:
-	if not InputMap.has_action(&"interact"):
+	return _has_key_binding(&"interact", KEY_F)
+
+
+func _has_key_binding(action_name: StringName, keycode: Key) -> bool:
+	if not InputMap.has_action(action_name):
 		return false
-	for event in InputMap.action_get_events(&"interact"):
+	for event in InputMap.action_get_events(action_name):
 		if event is InputEventKey:
 			var key_event := event as InputEventKey
-			if key_event.keycode == KEY_F or key_event.physical_keycode == KEY_F:
+			if key_event.keycode == keycode or key_event.physical_keycode == keycode:
 				return true
 	return false
 
@@ -449,7 +562,7 @@ func _process(_delta: float) -> bool:
 			return _fail("게임오버 상태가 적용되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup tier_entry map minimap equipment loadout weapon_tags skills_0_10 armor_stats equipment_optional realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
+		print("SMOKE_TEST_OK run_setup tier_entry map minimap equipment loadout weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u parts module_cost module_upgrade modification_tag equipment_optional realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
 		quit(0)
 		return true
 

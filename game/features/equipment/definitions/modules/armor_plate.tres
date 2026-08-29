@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EquipmentModuleDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/equipment_module_definition.gd" id="1_module"]
+[ext_resource type="Script" path="res://game/features/equipment/stat_modifier.gd" id="2_modifier"]
+
+[sub_resource type="Resource" id="DefenseModifier"]
+script = ExtResource("2_modifier")
+stat_id = &"defense"
+operation = 0
+amount = 2.0
+
+[resource]
+script = ExtResource("1_module")
+module_id = &"armor_plate"
+display_name = "복합 장갑판"
+module_tags = [&"defense"]
+cost_by_upgrade_level = PackedInt32Array(4, 3, 2, 1)
+stat_modifiers = [SubResource("DefenseModifier")]
+special_feature_ids = [&"damage_guard_candidate"]

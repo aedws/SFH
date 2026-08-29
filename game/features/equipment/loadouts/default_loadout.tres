@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EquipmentLoadout" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="EquipmentLoadout" load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://game/features/equipment/equipment_loadout.gd" id="1_loadout"]
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/assault_rifle.tres" id="2_main"]
@@ -8,6 +8,35 @@
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/skills/dagger_dash.tres" id="6_dagger_skill"]
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/tactical_vest.tres" id="7_vest"]
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/runner_boots.tres" id="8_boots"]
+[ext_resource type="Script" path="res://game/features/equipment/equipment_slot_rule.gd" id="9_rule"]
+
+[sub_resource type="Resource" id="MainRule"]
+script = ExtResource("9_rule")
+slot_id = &"main"
+item_kind = "weapon"
+allowed_major_tags = [&"ranged"]
+allowed_middle_tags = [&"firearm"]
+allowed_minor_tags = [&"rifle"]
+
+[sub_resource type="Resource" id="SecondaryRule"]
+script = ExtResource("9_rule")
+slot_id = &"secondary"
+item_kind = "weapon"
+allowed_major_tags = [&"ranged"]
+allowed_middle_tags = [&"firearm"]
+allowed_minor_tags = [&"pistol"]
+
+[sub_resource type="Resource" id="BodyRule"]
+script = ExtResource("9_rule")
+slot_id = &"body"
+item_kind = "armor"
+required_armor_slot = &"body"
+
+[sub_resource type="Resource" id="FeetRule"]
+script = ExtResource("9_rule")
+slot_id = &"feet"
+item_kind = "armor"
+required_armor_slot = &"feet"
 
 [resource]
 script = ExtResource("1_loadout")
@@ -17,4 +46,5 @@ main_weapon = ExtResource("2_main")
 secondary_weapon = ExtResource("3_secondary")
 skills = [ExtResource("4_rifle_skill"), ExtResource("5_pistol_skill"), ExtResource("6_dagger_skill")]
 armor = [ExtResource("7_vest"), ExtResource("8_boots")]
+slot_rules = [SubResource("MainRule"), SubResource("SecondaryRule"), SubResource("BodyRule"), SubResource("FeetRule")]
 extension_data = {"deployment_cost_policy": &"unassigned"}

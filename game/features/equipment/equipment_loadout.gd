@@ -9,6 +9,7 @@ const MAX_SKILLS := 10
 @export var secondary_weapon: EquipmentWeaponDefinition
 @export var skills: Array[EquipmentSkillDefinition] = []
 @export var armor: Array[EquipmentArmorDefinition] = []
+@export var slot_rules: Array[EquipmentSlotRule] = []
 @export var extension_data: Dictionary = {}
 
 
@@ -40,8 +41,24 @@ func validation_errors() -> PackedStringArray:
 		if armor_slots.has(armor_item.slot_id):
 			errors.append("방어구 슬롯이 중복됩니다: %s" % armor_item.slot_id)
 		armor_slots[armor_item.slot_id] = true
+
+	var rule_slots: Dictionary = {}
+	for rule in slot_rules:
+		if rule == null or rule.slot_id == &"":
+			errors.append("유효하지 않은 장비 슬롯 규칙이 있습니다.")
+			continue
+		if rule_slots.has(rule.slot_id):
+			errors.append("장비 슬롯 규칙이 중복됩니다: %s" % rule.slot_id)
+		rule_slots[rule.slot_id] = true
 	return errors
 
 
 func is_valid() -> bool:
 	return validation_errors().is_empty()
+
+
+func get_slot_rule(slot_id: StringName) -> EquipmentSlotRule:
+	for rule in slot_rules:
+		if rule.slot_id == slot_id:
+			return rule
+	return null

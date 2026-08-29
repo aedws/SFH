@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="InventoryItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/inventory/inventory_item_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/parts/greatsword_edge.tres" id="2_link"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"greatsword_edge_item"
+display_name = "대검 강화 날"
+item_type = &"part"
+grid_size = Vector2i(3, 1)
+panel_color = Color(0.56, 0.46, 0.64, 1)
+linked_resource = ExtResource("2_link")
+description = "대검 소분류의 blade 소켓 전용 파츠입니다."

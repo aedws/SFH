@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="InventoryItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/inventory/inventory_item_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/modules/mobility_chip.tres" id="2_link"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"mobility_chip_item"
+display_name = "기동 칩 모듈"
+item_type = &"module"
+grid_size = Vector2i(1, 1)
+panel_color = Color(0.34, 0.66, 0.74, 1)
+linked_resource = ExtResource("2_link")
+description = "기동 태그를 가진 확장형 능력치 모듈입니다."

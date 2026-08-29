@@ -1,0 +1,199 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/equipment_workbench.gd" id="1_workbench"]
+
+[sub_resource type="StyleBoxFlat" id="PanelStyle"]
+bg_color = Color(0.035, 0.045, 0.065, 0.99)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.42, 0.72, 0.95)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="EquipmentWorkbench" type="PanelContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -390.0
+offset_top = -280.0
+offset_right = 390.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("PanelStyle")
+script = ExtResource("1_workbench")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Margin/Content"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Margin/Content/Header"]
+layout_mode = 2
+text = "장비 · 파츠 · 모듈 개조"
+theme_override_font_sizes/font_size = 24
+
+[node name="Spacer" type="Control" parent="Margin/Content/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Hint" type="Label" parent="Margin/Content/Header"]
+layout_mode = 2
+text = "U 닫기 · I 가방"
+theme_override_colors/font_color = Color(0.72, 0.66, 0.88, 1)
+
+[node name="Tabs" type="TabContainer" parent="Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 430)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="무기" type="VBoxContainer" parent="Margin/Content/Tabs"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SlotRow" type="HBoxContainer" parent="Margin/Content/Tabs/무기"]
+layout_mode = 2
+
+[node name="Caption" type="Label" parent="Margin/Content/Tabs/무기/SlotRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "무기 슬롯"
+
+[node name="WeaponSlotOption" type="OptionButton" parent="Margin/Content/Tabs/무기/SlotRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 42)
+layout_mode = 2
+item_count = 2
+
+[node name="WeaponSummary" type="Label" parent="Margin/Content/Tabs/무기"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 170)
+layout_mode = 2
+text = "무기 상태"
+theme_override_colors/font_color = Color(0.78, 0.86, 0.94, 1)
+autowrap_mode = 2
+
+[node name="Actions" type="GridContainer" parent="Margin/Content/Tabs/무기"]
+layout_mode = 2
+columns = 3
+
+[node name="WeaponEquipButton" type="Button" parent="Margin/Content/Tabs/무기/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "가방 장비 장착"
+
+[node name="InstallPartButton" type="Button" parent="Margin/Content/Tabs/무기/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "고유 파츠 장착"
+
+[node name="WeaponModuleButton" type="Button" parent="Margin/Content/Tabs/무기/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "모듈 장착"
+
+[node name="WeaponUpgradeButton" type="Button" parent="Margin/Content/Tabs/무기/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "모듈 강화"
+
+[node name="WeaponLevelButton" type="Button" parent="Margin/Content/Tabs/무기/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "장비 레벨업"
+
+[node name="WeaponModifyButton" type="Button" parent="Margin/Content/Tabs/무기/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "최고 레벨 개조"
+
+[node name="방어구" type="VBoxContainer" parent="Margin/Content/Tabs"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SlotRow" type="HBoxContainer" parent="Margin/Content/Tabs/방어구"]
+layout_mode = 2
+
+[node name="Caption" type="Label" parent="Margin/Content/Tabs/방어구/SlotRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "방어구 슬롯"
+
+[node name="ArmorSlotOption" type="OptionButton" parent="Margin/Content/Tabs/방어구/SlotRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 42)
+layout_mode = 2
+item_count = 2
+
+[node name="ArmorSummary" type="Label" parent="Margin/Content/Tabs/방어구"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 170)
+layout_mode = 2
+text = "방어구 상태"
+theme_override_colors/font_color = Color(0.78, 0.86, 0.94, 1)
+autowrap_mode = 2
+
+[node name="Actions" type="GridContainer" parent="Margin/Content/Tabs/방어구"]
+layout_mode = 2
+columns = 2
+
+[node name="ArmorEquipButton" type="Button" parent="Margin/Content/Tabs/방어구/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 44)
+layout_mode = 2
+text = "가방 방어구 장착"
+
+[node name="ArmorModuleButton" type="Button" parent="Margin/Content/Tabs/방어구/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 44)
+layout_mode = 2
+text = "모듈 장착"
+
+[node name="ArmorUpgradeButton" type="Button" parent="Margin/Content/Tabs/방어구/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 44)
+layout_mode = 2
+text = "모듈 강화"
+
+[node name="ArmorLevelButton" type="Button" parent="Margin/Content/Tabs/방어구/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 44)
+layout_mode = 2
+text = "장비 레벨업"
+
+[node name="ArmorModifyButton" type="Button" parent="Margin/Content/Tabs/방어구/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 44)
+layout_mode = 2
+text = "최고 레벨 개조"
+
+[node name="WorkbenchStatus" type="Label" parent="Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+text = "가방의 아이템을 선택 슬롯 규칙에 맞춰 자동 장착합니다."
+theme_override_colors/font_color = Color(0.93, 0.74, 0.4, 1)
+vertical_alignment = 1
+autowrap_mode = 2

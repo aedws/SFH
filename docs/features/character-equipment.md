@@ -30,6 +30,8 @@ tags:
 
 HUD에는 메인·보조 무기의 세 단계 분류, 활성 스킬 수, 방어구 수와 방어력이 표시됩니다.
 
+가방 점유 크기와 I 화면은 [격자 가방 인벤토리](grid-inventory.md), U 화면의 슬롯 태그·고유 파츠·모듈 강화·최고 레벨 개조는 [장비 파츠·모듈 개조](equipment-customization.md)에서 이어서 설명합니다.
+
 ## 무기 분류 구조
 
 `WeaponTagProfile`은 세 개의 `StringName` ID로 무기를 분류합니다.
@@ -99,9 +101,11 @@ game/features/equipment/definitions/weapons/
 - `equipment_weapons_enabled`: 메인·보조 무기 슬롯
 - `equipment_skills_enabled`: 스킬 호환성 판정
 - `equipment_armor_enabled`: 방어구 스탯 적용
+- `inventory_enabled`: I 키 격자 가방
+- `equipment_customization_enabled`: U 키 파츠·모듈 개조 화면
 - `equipment_loadout_path`: 사용할 로드아웃 `.tres`
 
-스킬은 장착 무기가 필요하므로 `equipment_skills → equipment_weapons → equipment` 의존성을 가집니다. 방어구는 `equipment`에만 의존합니다.
+스킬은 장착 무기가 필요하므로 `equipment_skills → equipment_weapons → equipment` 의존성을 가집니다. 방어구는 `equipment`에만 의존하며, 장비 개조 화면은 `equipment_customization → equipment + inventory` 의존성을 가집니다.
 
 ## 공개 계약
 
@@ -112,7 +116,12 @@ game/features/equipment/definitions/weapons/
 - `get_inactive_skill_ids()`
 - `get_stat_modifiers()`
 - `get_summary()`
+- `get_equipment_state(slot_id)`
+- `can_equip_definition(slot_id, definition)`과 `equip_definition(...)`
+- `install_part(...)`, `install_module(...)`, `upgrade_module(...)`
+- `level_up_equipment(...)`, `grant_module_tag(...)`
 - `equipment_changed(summary)` Signal
+- `customization_changed(snapshot)` Signal
 
 방어구 적용 대상은 구체 플레이어 클래스를 요구하지 않고 `apply_equipment_modifiers(modifiers)` 메서드만 제공하면 됩니다.
 
@@ -125,4 +134,4 @@ game/features/equipment/definitions/weapons/
 
 ## 검색 별칭
 
-캐릭터 장비, 인벤토리, 로드아웃, 주무기, 부무기, 메인 무기, 보조 무기, 근접, 원거리, 냉병기, 화기, 단검, 대검, 권총, 소총, 스킬 슬롯, 방어구 스탯, 장비 모듈
+캐릭터 장비, 인벤토리, 로드아웃, 주무기, 부무기, 메인 무기, 보조 무기, 근접, 원거리, 냉병기, 화기, 단검, 대검, 권총, 소총, 스킬 슬롯, 방어구 스탯, 장비 모듈, 파츠, 강화, 개조

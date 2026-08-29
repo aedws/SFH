@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EquipmentPartDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/equipment_part_definition.gd" id="1_part"]
+[ext_resource type="Script" path="res://game/features/equipment/stat_modifier.gd" id="2_modifier"]
+
+[sub_resource type="Resource" id="RangeModifier"]
+script = ExtResource("2_modifier")
+stat_id = &"target_range"
+operation = 0
+amount = 80.0
+
+[resource]
+script = ExtResource("1_part")
+part_id = &"rifle_scope"
+display_name = "소총 전용 조준경"
+socket_id = &"optic"
+compatible_minor_tags = [&"rifle"]
+stat_modifiers = [SubResource("RangeModifier")]
+special_feature_ids = [&"precision_zoom"]

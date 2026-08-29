@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EquipmentModuleDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/equipment_module_definition.gd" id="1_module"]
+[ext_resource type="Script" path="res://game/features/equipment/stat_modifier.gd" id="2_modifier"]
+
+[sub_resource type="Resource" id="DamageModifier"]
+script = ExtResource("2_modifier")
+stat_id = &"projectile_damage"
+operation = 0
+amount = 1.0
+
+[resource]
+script = ExtResource("1_module")
+module_id = &"ballistic_core"
+display_name = "탄도 연산 코어"
+module_tags = [&"ballistic"]
+cost_by_upgrade_level = PackedInt32Array(4, 3, 2)
+stat_modifiers = [SubResource("DamageModifier")]
+special_feature_ids = [&"ricochet_candidate"]

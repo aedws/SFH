@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="InventoryItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/inventory/inventory_item_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/greatsword.tres" id="2_link"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"spare_greatsword"
+display_name = "예비 대검"
+item_type = &"weapon"
+grid_size = Vector2i(4, 2)
+panel_color = Color(0.42, 0.34, 0.56, 1)
+linked_resource = ExtResource("2_link")
+description = "크기는 같아도 현재 주·보조 슬롯 태그와 맞지 않는 냉병기입니다."

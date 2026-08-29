@@ -7,6 +7,11 @@ const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_genera
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
 const MINIMAP_SCENE_PATH := "res://game/features/minimap/minimap.tscn"
 const EQUIPMENT_SCENE_PATH := "res://game/features/equipment/equipment_system.tscn"
+const INVENTORY_SCENE_PATH := "res://game/features/inventory/grid_inventory.tscn"
+const INVENTORY_WINDOW_SCENE_PATH := "res://game/features/inventory/inventory_window.tscn"
+const EQUIPMENT_WORKBENCH_SCENE_PATH := (
+	"res://game/features/equipment/equipment_workbench.tscn"
+)
 const EXTRACTION_SCENE_PATH := "res://game/features/extraction/extraction_zone.tscn"
 const CREDIT_LEDGER_SCENE_PATH := "res://game/features/credits/credit_ledger.tscn"
 const LOOT_SPAWNER_SCENE_PATH := "res://game/features/loot/loot_spawner.tscn"
@@ -30,7 +35,26 @@ const EQUIPMENT_METHODS := [
 	&"get_inactive_skill_ids",
 	&"get_stat_modifiers",
 	&"get_summary",
+	&"get_equipment_state",
+	&"get_customization_snapshot",
+	&"can_equip_definition",
+	&"equip_definition",
+	&"install_part",
+	&"install_module",
+	&"upgrade_module",
+	&"level_up_equipment",
+	&"grant_module_tag",
 ]
+const INVENTORY_METHODS := [
+	&"configure",
+	&"add_item",
+	&"can_place",
+	&"move_item",
+	&"take_item",
+	&"get_items_by_type",
+	&"get_snapshot",
+]
+const PANEL_METHODS := [&"configure", &"open_panel", &"close_panel"]
 const EXTRACTION_METHODS := [&"configure", &"request_extraction"]
 const CREDIT_LEDGER_METHODS := [&"add_carried", &"secure_carried", &"lose_carried"]
 const LOOT_SPAWNER_METHODS := [&"configure"]
@@ -71,6 +95,9 @@ var player
 var map_generator
 var minimap
 var equipment_system
+var inventory_system
+var inventory_window
+var equipment_workbench
 var extraction_zone
 var credit_ledger
 var loot_spawner
@@ -180,6 +207,10 @@ func _assemble_game() -> bool:
 	_on_player_health_changed(float(player.get("current_health")), float(player.get("max_health")))
 	if features.equipment_enabled and not _install_equipment():
 		return false
+	if features.inventory_enabled and not _install_inventory():
+		return false
+	if features.equipment_customization_enabled and not _install_equipment_workbench():
+		return false
 
 	if features.credits_enabled:
 		_install_credit_ledger()
@@ -223,7 +254,7 @@ func _assemble_game() -> bool:
 				features.enemy_status_ui_enabled
 			)
 
-	status_label.text = "작전 진행 중 · F 상호작용"
+	status_label.text = "작전 진행 중 · F 상호작용 · I 가방 · U 장비"
 	return true
 
 
@@ -251,6 +282,43 @@ func _install_equipment() -> bool:
 	))
 	if not configured:
 		_report_configuration_error("장비 로드아웃 조립에 실패했습니다.")
+		return false
+	return true
+
+
+func _install_inventory() -> bool:
+	if not ResourceLoader.exists(features.inventory_catalog_path):
+		_report_configuration_error("인벤토리 카탈로그를 찾을 수 없습니다: %s" % features.inventory_catalog_path)
+		return false
+	inventory_system = _instantiate_feature(INVENTORY_SCENE_PATH, module_container, &"GridInventory")
+	if inventory_system == null or not _supports_inventory(inventory_system):
+		_report_configuration_error("가방 인벤토리 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not inventory_system.call(&"configure", load(features.inventory_catalog_path)):
+		_report_configuration_error("초기 가방 아이템을 배치하지 못했습니다.")
+		return false
+	inventory_window = _instantiate_feature(
+		INVENTORY_WINDOW_SCENE_PATH, ui_layer, &"GridInventoryWindow"
+	)
+	if inventory_window == null or not _supports_panel(inventory_window):
+		_report_configuration_error("가방 UI 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	inventory_window.call(&"configure", inventory_system)
+	return true
+
+
+func _install_equipment_workbench() -> bool:
+	if equipment_system == null or inventory_system == null:
+		_report_configuration_error("장비 개조 UI에는 장비와 가방 모듈이 모두 필요합니다.")
+		return false
+	equipment_workbench = _instantiate_feature(
+		EQUIPMENT_WORKBENCH_SCENE_PATH, ui_layer, &"EquipmentWorkbench"
+	)
+	if equipment_workbench == null or not _supports_panel(equipment_workbench):
+		_report_configuration_error("장비 개조 UI 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not equipment_workbench.call(&"configure", equipment_system, inventory_system):
+		_report_configuration_error("장비 개조 UI를 연결하지 못했습니다.")
 		return false
 	return true
 
@@ -441,6 +509,24 @@ func _supports_equipment(candidate: Node) -> bool:
 	if not is_instance_valid(candidate) or not candidate.has_signal(&"equipment_changed"):
 		return false
 	for method_name in EQUIPMENT_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+	return true
+
+
+func _supports_inventory(candidate: Node) -> bool:
+	if not is_instance_valid(candidate) or not candidate.has_signal(&"inventory_changed"):
+		return false
+	for method_name in INVENTORY_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+	return true
+
+
+func _supports_panel(candidate: Node) -> bool:
+	if not is_instance_valid(candidate):
+		return false
+	for method_name in PANEL_METHODS:
 		if not candidate.has_method(method_name):
 			return false
 	return true

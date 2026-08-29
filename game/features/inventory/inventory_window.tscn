@@ -1,0 +1,75 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/inventory/inventory_window.gd" id="1_window"]
+[ext_resource type="Script" path="res://game/features/inventory/inventory_grid_view.gd" id="2_grid"]
+
+[sub_resource type="StyleBoxFlat" id="PanelStyle"]
+bg_color = Color(0.025, 0.045, 0.06, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.58, 0.62, 0.95)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="InventoryWindow" type="PanelContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -286.0
+offset_top = -258.0
+offset_right = 286.0
+offset_bottom = 258.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("PanelStyle")
+script = ExtResource("1_window")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Margin/Content"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Margin/Content/Header"]
+layout_mode = 2
+text = "가방 인벤토리"
+theme_override_font_sizes/font_size = 24
+
+[node name="Spacer" type="Control" parent="Margin/Content/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Hint" type="Label" parent="Margin/Content/Header"]
+layout_mode = 2
+text = "I 닫기 · U 장비/개조"
+theme_override_colors/font_color = Color(0.62, 0.78, 0.8, 1)
+
+[node name="GridView" type="Control" parent="Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(456, 304)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 0
+script = ExtResource("2_grid")
+
+[node name="DetailLabel" type="Label" parent="Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+text = "아이템 패널을 선택하면 상세 정보가 표시됩니다."
+theme_override_colors/font_color = Color(0.72, 0.86, 0.87, 1)
+autowrap_mode = 2
