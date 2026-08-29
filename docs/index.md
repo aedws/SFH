@@ -64,7 +64,7 @@ hide:
       <ul>
         <li>Q로 메인 돌격소총과 보조 제식 권총을 즉시 교체합니다.</li>
         <li>소총은 장거리 3점사, 권총은 고위력 단발과 1회 관통으로 역할을 분리했습니다.</li>
-        <li>Weapon·Armor·Item 시트를 1행 변수명, 2행 설명, 3행 이후 데이터 구조로 통일했습니다.</li>
+        <li>작전 선택 화면에서 확정 CSV와 Google Sheet 실시간 테스트 모드를 버튼으로 전환합니다.</li>
         <li>장비 상태·밸런스 출처·발사 실행을 독립 모듈 계약으로 연결했습니다.</li>
       </ul>
       <p class="sfh-intent"><b>개선 의도</b><span>에임이 없는 자동 전투에서도 무기 선택이 사거리와 발사 리듬, 관통 여부로 명확히 체감되게 합니다.</span></p>
@@ -72,7 +72,7 @@ hide:
 
     <div class="sfh-group"><h3>🆕 구현 · 2</h3>
       <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Q 메인·보조 무기 교체</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비 시스템이 활성 슬롯을 관리하고 자동 무기가 변경 Signal을 받아 즉시 발사 프로필을 바꿉니다.</p><a href="features/weapon-balance/">상세 설계 보기 →</a></div></details>
-      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Google Sheets 실시간 테스트와 확정 CSV</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>공용 Weapon 시트를 3초 간격으로 읽고, runtime_enabled 무기만 검증된 배포 CSV로 확정합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">밸런스 모드 선택 UI</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>작전 규모를 고르기 전에 확정 CSV와 Google Sheet 실시간 테스트를 화면 버튼으로 선택합니다.</p></div></details>
     </div>
 
     <div class="sfh-group"><h3>✨ 개선 · 2</h3>
