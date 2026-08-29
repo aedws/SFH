@@ -1,124 +1,135 @@
 ---
 title: 개발 현황과 업데이트
-description: 공동 작업자를 위한 기능 진행 보드, 최신 변경 분류, 검증 상태와 다음 작업
+description: 날짜와 구현·개선·수정·버그픽스로 묶은 SFH 릴리스 노트와 기능 진행 상태
 tags:
   - 개발 현황
   - 진행률
   - 업데이트
-  - 변경 로그
+  - 릴리스 노트
   - 구현
   - 개선
   - 수정
   - 버그픽스
 ---
 
-# 개발 현황과 업데이트
+<div class="sfh-section-head">
+  <div><span class="sfh-kicker">RELEASE NOTES</span><h1>📢 SFH 업데이트</h1></div>
+  <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
+</div>
 
-이 문서는 코드 저장소를 열지 않아도 현재 구현 범위와 검증 여부를 판단하기 위한 공동 작업용 요약입니다.
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>2 days documented</span><span>자동 검증 PASS</span><span>main deployed</span></div>
 
-## 상태 표기
+<div class="sfh-notes">
+<details class="sfh-day" open>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>무기 밸런스 · 격자 가방 · 장비 개조</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 6개 주제</strong>
+      <ul>
+        <li>Q 키로 메인 돌격소총과 보조 제식 권총을 즉시 교체합니다.</li>
+        <li>소총 3점사와 권총 고위력 관통으로 무기별 전투 리듬을 분리했습니다.</li>
+        <li>Google Sheets 실시간 테스트와 검증된 확정 CSV 운영 경로를 추가했습니다.</li>
+        <li>12×8 가변 격자 가방과 I 키 인벤토리를 구현했습니다.</li>
+        <li>U 화면에서 무기·방어구, 고유 파츠, 모듈, 강화, 개조를 관리합니다.</li>
+        <li>새 무기·파츠·모듈·스탯을 데이터 Resource로 확장할 수 있습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>개선 의도</b><span>작전 안에서 전투 선택과 전리품 관리가 연결되면서도, 미확정 경제·강화 정책은 각 기능 내부에 고정하지 않습니다.</span></p>
+    </div>
 
-| 상태 | 의미 |
-|---|---|
-| ✅ 완료 | 현재 합의된 최소 구현과 자동 검증을 모두 충족 |
-| 🧱 기반 완료 | 확장 가능한 최소 구조가 동작하며 콘텐츠·정책 추가가 남음 |
-| 🚧 진행 중 | 일부 완료됐으나 현재 완료 조건을 충족하지 못함 |
-| ⏳ 예정 | 요구사항 또는 연결 정책이 아직 확정되지 않음 |
+    <div class="sfh-group"><h3>🆕 구현 · 6</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Q 메인·보조 무기 교체</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비 시스템의 활성 슬롯을 Q 입력으로 전환하고 자동 무기와 HUD가 같은 상태를 구독합니다.</p><a href="../features/weapon-balance/">무기 밸런스 문서 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">돌격소총과 제식 권총 특색</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>돌격소총은 긴 탐지 거리의 안정 3점사, 권총은 짧은 거리의 고위력 단발과 1회 관통을 사용합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Google Sheets 실시간 밸런스</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>웹에 게시한 Weapons CSV를 기본 3초마다 새로 읽고 정상 행만 런타임에 반영합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">12×8 가변 격자 가방</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>아이템마다 1×1부터 4×2까지 다른 칸을 차지하며 경계와 겹침을 검사합니다.</p><a href="../features/grid-inventory/">가방 설계 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">I 가방과 U 장비·개조 화면</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>I는 작전 가방, U는 무기·방어구 탭과 파츠·모듈 조작을 여는 상호 배타적 모달입니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">장비 레벨과 최고 레벨 개조 태그</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>최고 레벨에서 태그를 부여하면 같은 태그 모듈의 유효 코스트를 올림 처리한 절반으로 계산합니다.</p><a href="../features/equipment-customization/">개조 규칙 →</a></div></details>
+    </div>
 
-## 2026-08-30 · Q 무기 교체와 실시간 밸런스 기반
+    <div class="sfh-group"><h3>✨ 개선 · 5</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">에임 없는 SFH용 수치 체계</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>ADS·반동·조준 회복을 제외하고 탐지 거리·발사 패턴·치명타·관통을 핵심 수치로 재구성했습니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">밸런스 설명 워크북과 DPS 대시보드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>18개 필드 설명, 입력 범위, 이론 DPS 수식, 비교 차트와 확정 절차를 하나의 워크북으로 정리했습니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">모듈 강화 단계별 코스트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>강화 단계별 코스트 배열을 Resource로 분리해 모듈마다 다른 성장 곡선을 정의할 수 있습니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">데이터 기반 장비 확장</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>무기 소분류, 파츠 소켓, 모듈 태그와 스탯을 enum 변경 없이 Resource로 추가합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">전투·장비 상태 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>현재 슬롯, 무기 특색, 피해, 사거리, 밸런스 출처와 방어·스킬 상태를 함께 표시합니다.</p></div></details>
+    </div>
 
-**범위 진행률: 8/8 완료** · `Q키` `무기 특색` `Google Sheets` `CSV` `모듈화` `자동 테스트`
+    <div class="sfh-group"><h3>🧩 수정 · 4</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">장비·밸런스·발사 모듈 경계</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비는 활성 ID, 밸런스 서비스는 외부 데이터, 자동 무기는 발사 실행만 담당합니다.</p><a href="../architecture/module-audit/">모듈 감사 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">FeatureManifest 토글과 의존성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>inventory, equipment_customization, weapon_balance 토글과 Resource 경로 검사를 추가했습니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">장비 시스템 공개 계약 확장</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장착·교체·파츠·모듈·강화·레벨·개조 기능을 내부 Node 경로 대신 공개 메서드와 Signal로 연결합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">Q·I·U 조작 안내 통합</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>게임 HUD와 실행 문서에 무기 교체, 가방, 장비·개조 입력을 일관되게 표시합니다.</p></div></details>
+    </div>
 
-### 구현
+    <div class="sfh-group"><h3>🔧 버그픽스 · 4</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">외부 밸런스 실패 폴백</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>HTTP 오류나 잘못된 CSV가 마지막 정상값을 덮어쓰지 않으며 초기 실패는 확정 CSV로 복구합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">밸런스 CSV 입력 검증</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>필수 열 누락, 중복 ID, 잘못된 확률과 관통 유지율을 거부합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">U 화면 슬롯 선택 초기화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Godot 실제 화면에서 비어 있던 슬롯 선택기를 런타임에 명시적으로 초기화합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">선택 모듈 비활성화 조립</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비 또는 밸런스를 끈 테스트에서 남은 의존성이 조립을 막지 않으며 기본 스탯과 소총 폴백을 유지합니다.</p></div></details>
+    </div>
+  </div>
+</details>
 
-- Q 키로 메인 돌격소총과 보조 제식 권총의 활성 슬롯 전환
-- 돌격소총의 긴 자동 탐지 거리·안정 3점사와 권총의 고위력 단발·1회 관통
-- Google Sheets 웹 게시 CSV를 기본 3초마다 다시 읽는 실시간 개발 모드
-- 검증된 수치를 저장소 CSV로 동기화하는 `weapon-balance.cmd sync` 명령
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-29</b><small>랜덤 작전 맵 · 미니맵 · 탈출 · 파밍 · 장비 기반</small></span><em class="sfh-chevron">⌄</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>기반 구축 · 7개 주제</strong>
+      <ul>
+        <li>Godot 4 탑다운 이동과 가장 가까운 적을 공격하는 최소 전투 루프를 만들었습니다.</li>
+        <li>투자 등급에 따라 소·중·대형 랜덤 방 수와 맵 규모가 증가합니다.</li>
+        <li>얇은 벽, 복도, 내부 벽과 기둥, A* 적 길찾기를 연결했습니다.</li>
+        <li>우측 상단 미니맵과 F 상호작용 탈출을 추가했습니다.</li>
+        <li>1회성 크레딧 보급 상자와 탈출 회수·사망 분실 흐름을 구현했습니다.</li>
+        <li>플레이어·적 체력과 방어력 HUD를 개선했습니다.</li>
+        <li>무기 3단계 태그, 0~10개 스킬 호환, 범용 방어구 스탯 기반을 만들었습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>설계 원칙</b><span>최상위 Game은 조립만 담당하고, 맵·미니맵·탈출·파밍·장비는 공개 계약으로 교체할 수 있게 유지합니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 기반 구현 · 5</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">소·중·대형 로그라이크 작전 맵</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>투자 코스트 등급에 따라 방 수와 전체 경계가 증가하며 모든 방을 복도로 연결합니다.</p><a href="../features/map-generation/">맵 생성 문서 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">전술 미니맵과 전체 티어 진입</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>생성 스냅샷만 소비하는 미니맵을 우측 상단에 배치하고 중형·대형 진입 흐름을 검증했습니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">F 탈출과 크레딧 회수</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>최원거리 탈출 지점에서 F를 누르면 휴대 크레딧을 확보하고, 사망하면 분실합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">적 체력·방어력 컴포넌트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>적 전투 상태와 머리 위 체력·방어력 표시를 독립 컴포넌트로 분리했습니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">캐릭터 장비와 태그 호환</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>메인·보조 무기 대·중·소분류, 0~10개 스킬 완전 일치, 범용 방어구 스탯을 Resource로 구성합니다.</p></div></details>
+    </div>
+  </div>
+</details>
+</div>
 
-### 개선
+## 현재 기능 진행 보드
 
-- 수동 에임 프로젝트의 ADS·반동·조준 분산·회복을 제외하고 자동 탐지 거리·발사 패턴·관통·치명타 중심으로 수치 계약 재구성
-- HUD에서 현재 슬롯, 무기 특색, 피해, 사거리, `Google Sheets 실시간` 또는 `확정 CSV` 출처 확인
-- 필드 설명·이론 DPS 수식·차트·운영 절차를 포함한 Google Sheets용 워크북 작성
+| 기능 | 상태 | 현재 완료 범위 | 다음 확장 |
+|---|---:|---|---|
+| 기본 작전 루프 | ✅ 플레이 가능 | 작전 선택 → 전투·파밍 → F 탈출 또는 사망 | 로비·반출 결과 |
+| 랜덤 맵·미니맵 | 🧱 기반 완료 | 3개 규모, 실내 벽·기둥, A*, 전체 지도 | 바이옴·특수 방 |
+| 장비·스킬 | 🧱 기반 완료 | 태그, 파츠, 모듈, 강화, 개조 | 특수 효과 실행기 |
+| 격자 가방 | 🧱 기반 완료 | 가변 점유, I UI, 장비 연동 | 영속 창고·전리품 반출 |
+| 무기 밸런스 | 🧱 기반 완료 | Q 교체, 2종 특색, Sheet/CSV | 신규 무기·수치 확정 |
+| 경제·저장 | ⏳ 설계 대기 | 작전 내 휴대·회수 크레딧 | 로비 재화·저장 |
 
-### 수정
+## 자동 검증 기준
 
-- 장비 시스템은 활성 무기 ID만, 밸런스 서비스는 외부 데이터만, 자동 무기는 발사만 담당하도록 분리
-- `FeatureManifest`에 `weapon_balance_enabled`와 설정 Resource 경로·의존성 검사 추가
+`./scripts/test-game.cmd`가 다음을 한 번에 확인합니다.
 
-### 버그픽스
+- 소·중·대형 작전 진입과 연결된 맵
+- Q 무기 교체, 소총 3점사, 권총 관통, 확정 CSV
+- I 가변 격자 가방과 U 파츠·모듈·강화·개조
+- 적 체력·방어력, 플레이어 HUD, 경험치·레벨
+- 1회성 파밍, 크레딧 회수, F 탈출과 게임오버
+- 장비·맵·무기 밸런스 선택 모듈 비활성화 폴백
 
-- 네트워크 실패·HTTP 오류·잘못된 CSV가 현재 정상 밸런스를 덮어쓰지 않도록 폴백 처리
-- 필수 열 누락, 중복 무기 ID, 잘못된 확률·관통 유지율을 런타임과 동기화 명령 양쪽에서 거부
+성공하면 `SMOKE_TEST_OK`와 함께 `weapon_switch_q`, `weapon_balance_csv`, `weapon_balance_optional`, `rifle_burst`, `pistol_pierce` 등의 검증 토큰이 출력됩니다.
 
-### 자동 검증 완료 조건
-
-- `switch_weapon` 입력에 실제 Q 키가 연결됨
-- 초기 메인 슬롯에서 보조 권총으로 전환하고 다시 복귀 가능
-- 확정 CSV에서 소총·권총 두 행을 정상 로드
-- 소총의 버스트 수가 3이고 권총보다 탐지 거리가 김
-- 권총의 기본 피해가 더 높고 관통 횟수가 1임
-- 런타임 전환 후 HUD와 자동 공격이 권총 프로필을 사용함
-- 잘못된 CSV를 거부함
-- 장비 모듈을 꺼도 밸런스·자동 공격의 기본 소총 폴백이 유지됨
-
-## 2026-08-30 · 격자 가방과 장비 개조 기반
-
-**범위 진행률: 9/9 완료** · `인벤토리` `장비` `UI` `모듈화` `자동 테스트`
-
-### 구현
-
-- 아이템마다 `1×1`, `2×1`, `2×2`, `3×3`, `4×2`처럼 다른 칸 수를 차지하는 12×8 격자 가방
-- I 키 가방 화면과 U 키 장비·개조 화면
-- U 화면 내부의 무기 탭과 방어구 탭
-- 주무기·보조무기·신체·신발 슬롯별 태그 검증
-- 무기 소분류와 소켓이 모두 맞아야 장착되는 고유 파츠
-- 무기·방어구 공용 모듈 장착, 슬롯 수와 총 코스트 제한
-- 장비별 레벨과 최고 레벨 개조 태그
-
-### 개선
-
-- 모듈마다 강화 단계별 코스트 배열을 Resource로 분리
-- 모듈 강화 시 코스트 감소, 개조 태그 일치 시 유효 코스트를 올림 처리한 50%로 계산
-- 새 무기 소분류·파츠 소켓·모듈 태그·스탯을 enum 수정 없이 데이터로 추가 가능
-- I와 U 창을 상호 배타적인 일시정지 모달로 구성
-
-### 수정
-
-- `FeatureManifest`에 `inventory`, `equipment_customization` 토글과 카탈로그 경로 추가
-- `equipment_customization → equipment + inventory` 의존성 검사 추가
-- HUD 조작 안내에 `I 가방`, `U 장비/개조` 반영
-- 장비 시스템 공개 계약에 장착·파츠·모듈·강화·레벨·개조 API 추가
-
-### 버그픽스
-
-- 실제 Godot 화면 검사에서 비어 있던 U 화면 슬롯 선택기를 런타임 명시 초기화로 수정
-- 장비 모듈을 끄는 테스트에서 장비 개조 의존성이 남아 조립을 막던 문제 수정
-
-### 자동 검증 완료 조건
-
-- 모든 초기 아이템이 가방 경계 안에서 겹치지 않음
-- 모듈 아이템은 항상 1×1이며 가변 크기가 네 종류 이상 존재
-- I/U 입력 액션이 실제 키와 연결됨
-- 메인 소총 슬롯이 대검을 거부하고 권총 파츠가 소총을 거부함
-- 모듈 슬롯·코스트 초과가 거부됨
-- 강화 후 코스트가 감소함
-- 최고 레벨 장비의 일치 태그가 해당 모듈 코스트를 50%로 줄임
-- 방어구 모듈 스탯이 플레이어 런타임 스탯에 반영됨
-- 소·중·대형 작전에 가방과 장비 개조 UI가 모두 설치됨
-
-## 현재 의도적으로 남겨 둔 확장 지점
+## 의도적으로 남긴 확장 지점
 
 | 항목 | 현재 처리 | 연결 예정 모듈 |
 |---|---|---|
-| 강화 재료·비용 | 규칙과 강화 API만 구현 | 로비 경제·제작 |
-| 장비 경험치 획득 | 레벨 상승 API만 구현 | 전투 보상·숙련도 |
-| 특수 기능 | `special_feature_ids`로 선언만 보존 | 효과 실행기 |
+| 강화 재료·비용 | 규칙과 API만 구현 | 로비 경제·제작 |
+| 장비 경험치 | 레벨 상승 API만 구현 | 전투 보상·숙련도 |
+| 특수 기능 | `special_feature_ids`로 선언 | 효과 실행기 |
 | 영속 가방 | 작전 런타임 데이터 | 저장·창고·전리품 반출 |
-| 장비 교체 UX | Q로 메인·보조 즉시 전환, U는 첫 호환 아이템 선택 | 아이템 직접 선택·비교 UI |
-
-정책이 미확정인 부분을 장비나 가방 코드가 직접 결정하지 않도록 API와 확장 데이터까지만 열어 둔 상태입니다.
+| 장비 교체 UX | Q 즉시 전환, U 첫 호환 아이템 | 직접 선택·비교 UI |
+| 실시간 밸런스 | 공개 CSV 개발 모드 | 팀용 Google Sheet 권한 정책 |
 
 ## 다음 우선순위 후보
 
@@ -130,4 +141,4 @@ tags:
 
 ## 검색 별칭
 
-업데이트, 패치노트, 변경사항, 개발 진행률, 완료율, 작업 현황, 구현 내역, 개선 내역, 수정 내역, 버그 수정, 협업 현황, 다음 작업
+업데이트, 패치노트, 릴리스 노트, 변경사항, 개발 진행률, 완료율, 작업 현황, 구현 내역, 개선 내역, 수정 내역, 버그픽스, 협업 현황, 다음 작업
