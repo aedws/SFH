@@ -34,7 +34,12 @@ func configure(
 ) -> void:
 	target = new_target
 	damage_enabled = contact_damage_enabled
-	navigation_provider = new_navigation_provider
+	navigation_provider = (
+		new_navigation_provider
+		if is_instance_valid(new_navigation_provider)
+		and new_navigation_provider.has_method(&"get_world_path")
+		else null
+	)
 
 
 func _physics_process(delta: float) -> void:

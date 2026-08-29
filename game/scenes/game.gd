@@ -8,6 +8,12 @@ const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.
 const SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
+const MAP_GENERATOR_METHODS := [
+	&"generate",
+	&"get_player_spawn_position",
+	&"get_enemy_spawn_position",
+	&"get_world_path",
+]
 
 @export var features: FeatureManifest
 
@@ -47,6 +53,7 @@ func _ready() -> void:
 	if features == null:
 		_report_configuration_error("FeatureManifest가 지정되지 않았습니다.")
 		return
+	map_label.visible = features.map_generation_enabled
 
 	var configuration_errors := features.validation_errors()
 	if not configuration_errors.is_empty():
@@ -60,14 +67,19 @@ func _ready() -> void:
 		if features.map_generation_enabled:
 			map_generator = _instantiate_feature(MAP_GENERATOR_SCENE_PATH, world_container, &"GeneratedMap")
 			if map_generator != null:
-				map_generator.connect(&"map_generated", Callable(self, &"_on_map_generated"))
-				var map_config_path := MAP_CONFIG_PATH_PATTERN % features.map_size
-				if ResourceLoader.exists(map_config_path):
-					var map_config := load(map_config_path)
-					map_generator.call(&"generate", map_config, features.map_seed)
-					player_spawn_position = map_generator.call(&"get_player_spawn_position")
+				if not _supports_map_generator(map_generator):
+					_report_configuration_error("맵 모듈이 필수 공개 계약을 구현하지 않았습니다.")
+					map_generator.queue_free()
+					map_generator = null
 				else:
-					_report_configuration_error("맵 설정을 찾을 수 없습니다: %s" % map_config_path)
+					map_generator.connect(&"map_generated", Callable(self, &"_on_map_generated"))
+					var map_config_path := MAP_CONFIG_PATH_PATTERN % features.map_size
+					if ResourceLoader.exists(map_config_path):
+						var map_config := load(map_config_path)
+						map_generator.call(&"generate", map_config, features.map_seed)
+						player_spawn_position = map_generator.call(&"get_player_spawn_position")
+					else:
+						_report_configuration_error("맵 설정을 찾을 수 없습니다: %s" % map_config_path)
 
 		player = _instantiate_feature(PLAYER_SCENE_PATH, actors_container, &"Player")
 	if player == null:
@@ -143,6 +155,17 @@ func _instantiate_feature(path: String, parent: Node, display_name: StringName) 
 	instance.name = String(display_name)
 	parent.add_child(instance)
 	return instance
+
+
+func _supports_map_generator(candidate: Node) -> bool:
+	if not is_instance_valid(candidate) or not candidate.has_signal(&"map_generated"):
+		return false
+
+	for method_name in MAP_GENERATOR_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+
+	return true
 
 
 func _on_enemy_spawned(enemy: Node) -> void:

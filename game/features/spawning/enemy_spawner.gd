@@ -3,6 +3,8 @@ extends Node
 
 signal enemy_spawned(enemy: Node)
 
+const MAP_PROVIDER_METHODS := [&"get_enemy_spawn_position", &"get_world_path"]
+
 @export var enemy_scene: PackedScene
 @export_range(0.1, 10.0, 0.1) var initial_interval: float = 1.1
 @export_range(0.1, 10.0, 0.1) var minimum_interval: float = 0.3
@@ -26,7 +28,7 @@ func configure(
 	target = new_target
 	enemy_parent = new_enemy_parent
 	contact_damage_enabled = enable_contact_damage
-	map_provider = new_map_provider
+	map_provider = new_map_provider if _supports_map_provider(new_map_provider) else null
 
 
 func _process(delta: float) -> void:
@@ -69,3 +71,14 @@ func _spawn_enemy() -> void:
 	enemy.global_position = spawn_position
 	enemy.call(&"configure", target, contact_damage_enabled, map_provider)
 	enemy_spawned.emit(enemy)
+
+
+func _supports_map_provider(candidate: Node) -> bool:
+	if not is_instance_valid(candidate):
+		return false
+
+	for method_name in MAP_PROVIDER_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+
+	return true

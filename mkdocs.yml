@@ -67,6 +67,7 @@ nav:
   - 아키텍처:
       - architecture/index.md
       - 모듈 규칙: architecture/module-rules.md
+      - 모듈화 점검 기록: architecture/module-audit.md
       - 장면 트리: architecture/scene-tree.md
       - Signal 규칙: architecture/signals.md
   - 기능:

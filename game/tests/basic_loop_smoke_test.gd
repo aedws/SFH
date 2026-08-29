@@ -17,6 +17,8 @@ func _init() -> void:
 	if game_scene == null:
 		_fail("Game Scene을 불러오지 못했습니다.")
 		return
+	if not await _verify_optional_map_module(game_scene):
+		return
 
 	game_instance = game_scene.instantiate()
 	root.add_child(game_instance)
@@ -52,6 +54,41 @@ func _verify_map_tiers() -> bool:
 
 		root.remove_child(generator)
 		generator.free()
+
+	return true
+
+
+func _verify_optional_map_module(game_scene: PackedScene) -> bool:
+	var fallback_game := game_scene.instantiate()
+	var fallback_features = fallback_game.get("features").duplicate(true)
+	fallback_features.set("map_generation_enabled", false)
+	fallback_game.set("features", fallback_features)
+	root.add_child(fallback_game)
+	await process_frame
+
+	var fallback_player = fallback_game.get("player")
+	var fallback_spawner = fallback_game.get("enemy_spawner")
+	var map_label := fallback_game.get_node(
+		"UI/HUDMargin/Panel/Margin/Content/TopRow/MapLabel"
+	) as Label
+	var failure_message := ""
+	if fallback_game.get("map_generator") != null:
+		failure_message = "비활성화했지만 맵 생성기가 설치됐습니다."
+	elif fallback_player == null or fallback_player.global_position != Vector2.ZERO:
+		failure_message = "비활성화 폴백의 플레이어 시작 위치가 원점이 아닙니다: %s" % (
+			fallback_player.global_position if fallback_player != null else "player=null"
+		)
+	elif fallback_spawner == null or fallback_spawner.get("map_provider") != null:
+		failure_message = "비활성화 폴백의 적 생성기에 맵 제공자가 남아 있습니다."
+	elif map_label.visible:
+		failure_message = "비활성화했지만 맵 HUD가 표시됩니다."
+
+	root.remove_child(fallback_game)
+	fallback_game.free()
+
+	if not failure_message.is_empty():
+		_fail("맵 모듈 비활성화 실패: %s" % failure_message)
+		return false
 
 	return true
 
@@ -99,7 +136,7 @@ func _process(_delta: float) -> bool:
 			return _fail("게임오버 상태가 적용되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK map player enemies pathfinding weapon experience leveling game_over")
+		print("SMOKE_TEST_OK map map_optional player enemies pathfinding weapon experience leveling game_over")
 		quit(0)
 		return true
 
