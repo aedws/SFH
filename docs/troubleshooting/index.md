@@ -34,6 +34,16 @@ python -m pip install -r requirements-docs.txt
 python -m mkdocs serve
 ```
 
+## PowerShell에서 스크립트를 실행할 수 없음
+
+`PSSecurityException` 또는 `이 시스템에서 스크립트를 실행할 수 없습니다`라는 메시지가 나타나면 `.ps1`을 직접 실행하지 말고 다음 명령을 사용합니다.
+
+```powershell
+.\scripts\wiki.cmd serve
+```
+
+`wiki.cmd`는 저장소에 포함된 `wiki.ps1`만 별도 PowerShell 프로세스에서 실행합니다. Windows의 사용자 또는 시스템 실행 정책은 변경하지 않습니다.
+
 ## 해결되지 않을 때 기록할 정보
 
 - 실행한 단계

@@ -30,10 +30,16 @@ Godot 4 기반의 모듈형 탑다운 뱀서라이크 프로젝트입니다.
 Python 3가 설치된 PowerShell에서 다음 명령을 실행합니다. 스크립트가 프로젝트 전용 가상환경과 필요한 패키지를 자동으로 준비합니다.
 
 ```powershell
-.\scripts\wiki.ps1 serve
+.\scripts\wiki.cmd serve
 ```
 
 브라우저에서 `http://127.0.0.1:8000`을 열면 검색 가능한 개발 위키가 표시됩니다.
+
+## 온라인 위키
+
+배포된 위키는 [https://aedws.github.io/SFH/](https://aedws.github.io/SFH/)에서 확인합니다.
+
+문서 우측 상단의 연필 아이콘을 누르면 GitHub 웹 편집기로 이동합니다. 수정 사항이 `main` 브랜치에 반영되면 GitHub Actions가 위키를 자동으로 다시 배포합니다.
 
 ## 주요 경로
 
@@ -44,4 +50,4 @@ game/scenes/     여러 기능을 조립하는 최상위 장면
 docs/            개발 위키 원문
 ```
 
-문서의 링크와 검색 인덱스만 검증하려면 `.\scripts\wiki.ps1 build`를 실행합니다.
+문서의 링크와 검색 인덱스만 검증하려면 `.\scripts\wiki.cmd build`를 실행합니다.

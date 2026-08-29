@@ -16,6 +16,7 @@ SFH는 Godot 4로 만드는 모듈형 탑다운 뱀서라이크입니다.
 
 - [Godot 설치](getting-started/install.md)
 - [프로젝트 실행](getting-started/run-project.md)
+- [웹에서 위키 수정](getting-started/edit-wiki-online.md)
 - [최소 구현 범위](design/mvp-scope.md)
 - [모듈 작성 규칙](architecture/module-rules.md)
 - [플레이어 이동 기능](features/player.md)

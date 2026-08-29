@@ -32,6 +32,7 @@ theme:
     - search.share
     - content.code.copy
     - content.action.edit
+    - content.action.view
 
 plugins:
   - search:
@@ -58,6 +59,7 @@ nav:
       - 설치: getting-started/install.md
       - 편집기 기초: getting-started/editor-basics.md
       - 프로젝트 실행: getting-started/run-project.md
+      - 웹에서 위키 수정: getting-started/edit-wiki-online.md
   - 게임 설계:
       - design/index.md
       - 게임 개요: design/game-overview.md
