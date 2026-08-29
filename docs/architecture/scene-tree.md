@@ -22,6 +22,7 @@ Game
 │  └─ LootSpawner           # 1회성 보급 상자 배치
 └─ UI
    ├─ HUDMargin
+   ├─ TacticalMinimap      # 실행 시 설치되는 우측 상단 전술 지도
    ├─ InteractionLabel      # 탈출 범위의 F 안내
    ├─ RunSetupOverlay       # 소·중·대형 선택
    └─ GameOverOverlay
@@ -36,6 +37,7 @@ Game
 - `game/core/feature_manifest.tres`: 활성 기능 설정
 - `game/features/player/player.tscn`: 플레이어 기능 장면
 - `game/features/map_generation/map_generator.tscn`: 방, 복도, 벽, 길찾기 생성
+- `game/features/minimap/minimap.tscn`: 지형 스냅샷 기반 우측 상단 전술 지도
 - `game/features/extraction/extraction_zone.tscn`: F 상호작용 탈출 지점
 - `game/features/credits/credit_ledger.tscn`: 작전 크레딧 원장
 - `game/features/loot/loot_spawner.tscn`: 파밍 오브젝트 배치

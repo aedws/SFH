@@ -20,6 +20,8 @@ func _init() -> void:
 	if game_scene == null:
 		_fail("Game Scene을 불러오지 못했습니다.")
 		return
+	if not await _verify_all_tier_entry(game_scene):
+		return
 	if not await _verify_optional_map_module(game_scene):
 		return
 	if not await _verify_extraction_flow(game_scene):
@@ -88,6 +90,52 @@ func _verify_map_tiers() -> bool:
 	return true
 
 
+func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
+	var button_names := {
+		"small": "SmallMapButton",
+		"medium": "MediumMapButton",
+		"large": "LargeMapButton",
+	}
+	for tier_id in MAP_TIER_IDS:
+		var tier_game := game_scene.instantiate()
+		root.add_child(tier_game)
+		await process_frame
+		var button := tier_game.get_node(
+			"UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons/%s" % button_names[tier_id]
+		) as Button
+		var failure_message := ""
+		if button.disabled:
+			failure_message = "%s 작전 버튼이 비활성화됐습니다: %s" % [tier_id, button.text]
+		else:
+			button.pressed.emit()
+			await process_frame
+			var generator = tier_game.get("map_generator")
+			var minimap = tier_game.get("minimap")
+			var config = load(MAP_CONFIG_PATH_PATTERN % tier_id)
+			if not bool(tier_game.get("run_started")):
+				failure_message = "%s 작전이 시작 상태로 전환되지 않았습니다." % tier_id
+			elif String(tier_game.get("selected_map_size")) != tier_id:
+				failure_message = "%s 작전 선택값이 조립부에 전달되지 않았습니다." % tier_id
+			elif tier_game.get("player") == null or generator == null:
+				failure_message = "%s 작전의 플레이어 또는 맵이 설치되지 않았습니다." % tier_id
+			elif tier_game.get("extraction_zone") == null or minimap == null:
+				failure_message = "%s 작전의 탈출 또는 미니맵이 설치되지 않았습니다." % tier_id
+			elif generator.get("rooms").size() < int(config.get("minimum_rooms")):
+				failure_message = "%s 작전의 최소 방 수를 생성하지 못했습니다." % tier_id
+			else:
+				var map_view = minimap.get_node("Margin/Content/MapView")
+				if map_view.get("map_texture") == null:
+					failure_message = "%s 작전의 미니맵 텍스처가 생성되지 않았습니다." % tier_id
+
+		root.remove_child(tier_game)
+		tier_game.free()
+		await process_frame
+		if not failure_message.is_empty():
+			_fail("티어 진입 실패: %s" % failure_message)
+			return false
+	return true
+
+
 func _verify_enemy_stats_modules() -> bool:
 	var enemy_scene := load("res://game/features/enemies/enemy.tscn") as PackedScene
 	if enemy_scene == null:
@@ -122,6 +170,7 @@ func _verify_optional_map_module(game_scene: PackedScene) -> bool:
 	var fallback_features = fallback_game.get("features").duplicate(true)
 	fallback_features.set("map_generation_enabled", false)
 	fallback_features.set("map_obstacles_enabled", false)
+	fallback_features.set("minimap_enabled", false)
 	fallback_features.set("extraction_enabled", false)
 	fallback_features.set("run_setup_enabled", false)
 	fallback_features.set("loot_enabled", false)
@@ -145,6 +194,8 @@ func _verify_optional_map_module(game_scene: PackedScene) -> bool:
 		failure_message = "비활성화 폴백의 적 생성기에 맵 제공자가 남아 있습니다."
 	elif map_label.visible:
 		failure_message = "비활성화했지만 맵 HUD가 표시됩니다."
+	elif fallback_game.get("minimap") != null:
+		failure_message = "비활성화했지만 미니맵이 설치됐습니다."
 
 	root.remove_child(fallback_game)
 	fallback_game.free()
@@ -280,7 +331,7 @@ func _process(_delta: float) -> bool:
 			return _fail("게임오버 상태가 적용되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup map realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
+		print("SMOKE_TEST_OK run_setup tier_entry map minimap realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
 		quit(0)
 		return true
 

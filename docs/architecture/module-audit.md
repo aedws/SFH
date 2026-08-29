@@ -32,6 +32,8 @@ tags:
 | 전투 상태 분리 | 통과 | 적 이동 코드와 체력·방어력·상태바 컴포넌트를 분리함 |
 | 파밍 데이터 분리 | 통과 | 맵 Resource가 아닌 LootTierConfig가 상자 수와 보상을 소유함 |
 | 1회성·회수 검증 | 통과 | 같은 상자의 중복 획득 차단과 탈출 회수까지 자동 테스트함 |
+| 미니맵 경계 | 통과 | 미니맵은 맵 내부 객체 대신 복사된 지형 스냅샷만 소비함 |
+| 전체 티어 진입 | 통과 | 소·중·대형 버튼 입력부터 플레이어·맵·탈출·미니맵 설치까지 자동 검증함 |
 
 ## 맵 모듈 공개 계약
 
@@ -46,6 +48,7 @@ tags:
 | Method | `get_extraction_position()` | 탈출 모듈 배치 |
 | Method | `get_enemy_spawn_position(origin, minimum_distance)` | 적 생성기 |
 | Method | `get_world_path(from_world, to_world)` | 적 이동 |
+| Method | `get_minimap_snapshot()` | 전술 미니맵 조립부 |
 
 소비자는 구체 클래스 대신 `Node`와 위 메서드의 존재 여부를 사용합니다. 따라서 다른 알고리즘으로 맵 생성기를 교체할 때도 계약만 유지하면 됩니다.
 
@@ -71,6 +74,15 @@ tags:
 
 맵은 파밍 보상 수치를 알지 않고, 파밍 모듈은 맵의 방 배열과 A* 자료구조를 알지 않습니다.
 
+## 미니맵 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 맵 | `get_minimap_snapshot()` | `Game` 조립부 |
+| 미니맵 | `configure(snapshot, tracked_actor, display_name)` | `Game` 조립부 |
+
+스냅샷에는 셀 경계, 셀 크기, 바닥·방해물 좌표, 시작·탈출 위치만 들어갑니다. 미니맵은 맵의 방 배열, 길찾기 객체, 구체 클래스에 접근하지 않습니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.
@@ -87,7 +99,7 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `realistic_obstacles`, `loot`, `credits`, `health_ui`, `armor`, `status_bars`, `extraction_f`가 포함됩니다. 이는 실내 장애물, 1회성 파밍·회수, 양측 체력 UI와 F 탈출 계약이 함께 검증됐다는 뜻입니다.
+성공하면 출력에 `tier_entry`, `minimap`, `realistic_obstacles`, `loot`, `credits`, `health_ui`, `armor`, `status_bars`, `extraction_f`가 포함됩니다. 이는 세 등급 진입, 미니맵, 실내 장애물, 1회성 파밍·회수, 양측 체력 UI와 F 탈출 계약이 함께 검증됐다는 뜻입니다.
 
 ## 다음 개선 시점
 

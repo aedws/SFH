@@ -25,7 +25,7 @@ tags:
 
 `game/core/feature_manifest.tres`를 Godot Inspector에서 열고 원하는 항목을 켜거나 끕니다.
 
-현재 맵 생성, 맵 방해물, 작전 선택, 탈출, 크레딧, 파밍, 플레이어, 적 체력·방어력 UI, 생성, 무기, 피해, 경험치, 레벨, 게임오버 플래그가 실제 게임 조립에 연결되어 있습니다.
+현재 맵 생성, 맵 방해물, 미니맵, 작전 선택, 탈출, 크레딧, 파밍, 플레이어, 적 체력·방어력 UI, 생성, 무기, 피해, 경험치, 레벨, 게임오버 플래그가 실제 게임 조립에 연결되어 있습니다.
 
 `Game`은 활성화된 기능만 문자열 경로로 불러옵니다. 기능을 끄면 해당 Scene을 로드하지 않으므로, 비활성화 확인 후 관련 기능 폴더를 제거하는 흐름을 시험할 수 있습니다.
 
@@ -41,6 +41,7 @@ tags:
 - `leveling`은 `experience` 필요
 - `game_over`는 `damage` 필요
 - `map_obstacles`는 `map_generation` 필요
+- `minimap`은 `map_generation` 필요
 - `run_setup`은 `map_generation` 필요
 - `extraction`은 `map_generation` 필요
 - `loot`는 `map_generation`, `credits` 필요

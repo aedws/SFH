@@ -8,6 +8,7 @@ extends Resource
 @export var player_enabled: bool = true
 @export var map_generation_enabled: bool = true
 @export var map_obstacles_enabled: bool = true
+@export var minimap_enabled: bool = true
 @export var extraction_enabled: bool = true
 @export var credits_enabled: bool = true
 @export var loot_enabled: bool = true
@@ -36,6 +37,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"map_generation")
 	if map_obstacles_enabled:
 		result.append(&"map_obstacles")
+	if minimap_enabled:
+		result.append(&"minimap")
 	if extraction_enabled:
 		result.append(&"extraction")
 	if credits_enabled:
@@ -75,6 +78,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append("map_size는 small, medium, large 중 하나여야 합니다.")
 	if map_obstacles_enabled and not map_generation_enabled:
 		errors.append("map_obstacles 모듈은 map_generation 모듈이 필요합니다.")
+	if minimap_enabled and not map_generation_enabled:
+		errors.append("minimap 모듈은 map_generation 모듈이 필요합니다.")
 	if extraction_enabled and not map_generation_enabled:
 		errors.append("extraction 모듈은 map_generation 모듈이 필요합니다.")
 	if loot_enabled and not map_generation_enabled:

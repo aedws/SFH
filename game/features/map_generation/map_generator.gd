@@ -166,6 +166,24 @@ func get_world_path(from_world: Vector2, to_world: Vector2) -> PackedVector2Arra
 	return result
 
 
+func get_minimap_snapshot() -> Dictionary:
+	var floor_snapshot := PackedVector2Array()
+	var obstacle_snapshot := PackedVector2Array()
+	for cell in floor_cells:
+		floor_snapshot.append(Vector2(cell))
+	for cell in obstacle_cells:
+		obstacle_snapshot.append(Vector2(cell))
+
+	return {
+		&"cell_bounds": astar_grid.region,
+		&"cell_size": cell_size,
+		&"floor_cells": floor_snapshot,
+		&"obstacle_cells": obstacle_snapshot,
+		&"start_position": start_position,
+		&"extraction_position": extraction_position,
+	}
+
+
 func _reset_generated_content() -> void:
 	rooms.clear()
 	floor_cells.clear()

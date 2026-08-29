@@ -73,6 +73,7 @@ nav:
   - 기능:
       - features/index.md
       - 랜덤 맵 생성: features/map-generation.md
+      - 전술 미니맵: features/minimap.md
       - 작전 선택과 탈출: features/raid-setup-extraction.md
       - 크레딧 파밍과 회수: features/credit-loot.md
       - 플레이어: features/player.md
