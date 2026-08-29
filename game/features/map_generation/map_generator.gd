@@ -12,26 +12,36 @@ signal map_generated(
 const CARDINAL_DIRECTIONS := [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]
 const WALL_COLLISION_LAYER := 16
 
-@export_range(16.0, 128.0, 4.0) var cell_size: float = 48.0
-@export_range(1, 8, 1) var corridor_width: int = 2
-@export_range(1, 12, 1) var minimum_room_gap: int = 3
-@export_range(1, 16, 1) var maximum_room_gap: int = 6
+@export_range(16.0, 128.0, 4.0) var cell_size: float = 32.0
+@export_range(1, 8, 1) var corridor_width: int = 3
+@export_range(1, 12, 1) var minimum_room_gap: int = 5
+@export_range(1, 16, 1) var maximum_room_gap: int = 9
+@export var obstacles_enabled: bool = true
+@export_range(0.0, 8.0, 0.5) var tile_visual_inset: float = 1.5
 @export var floor_color := Color(0.075, 0.105, 0.14, 1)
 @export var alternate_floor_color := Color(0.088, 0.122, 0.158, 1)
-@export var wall_color := Color(0.2, 0.29, 0.35, 1)
+@export var wall_color := Color(0.17, 0.25, 0.3, 1)
+@export var wall_edge_color := Color(0.29, 0.4, 0.45, 1)
+@export var obstacle_color := Color(0.25, 0.2, 0.18, 1)
+@export var obstacle_edge_color := Color(0.48, 0.37, 0.26, 1)
 @export var start_color := Color(0.25, 0.88, 0.68, 0.9)
-@export var extraction_color := Color(1.0, 0.61, 0.2, 0.95)
 
 var tier_config: MapTierConfig
 var rooms: Array[Rect2i] = []
 var floor_cells: Dictionary = {}
 var wall_cells: Dictionary = {}
+var obstacle_cells: Dictionary = {}
 var used_seed: int = 0
 var start_position := Vector2.ZERO
 var extraction_position := Vector2.ZERO
+var extraction_room_index: int = 0
 var astar_grid := AStarGrid2D.new()
 var random := RandomNumberGenerator.new()
-var wall_body: StaticBody2D
+var collision_body: StaticBody2D
+
+
+func configure_obstacles(is_enabled: bool) -> void:
+	obstacles_enabled = is_enabled
 
 
 func generate(config: MapTierConfig, requested_seed: int = 0) -> void:
@@ -52,10 +62,15 @@ func generate(config: MapTierConfig, requested_seed: int = 0) -> void:
 	var target_room_count := random.randi_range(config.minimum_rooms, config.maximum_rooms)
 	_add_start_room()
 	_generate_connected_rooms(target_room_count)
-	_build_wall_cells()
-	_build_wall_collisions()
-	_build_pathfinding_grid()
 	_assign_landmarks()
+	if obstacles_enabled:
+		_generate_obstacles()
+	_build_wall_cells()
+	_build_pathfinding_grid()
+	if get_world_path(start_position, extraction_position).is_empty():
+		obstacle_cells.clear()
+		_build_pathfinding_grid()
+	_build_collision_bodies()
 	queue_redraw()
 
 	map_generated.emit(
@@ -76,7 +91,8 @@ func get_extraction_position() -> Vector2:
 
 
 func is_walkable_world_position(world_position: Vector2) -> bool:
-	return floor_cells.has(_world_to_cell(world_position))
+	var cell := _world_to_cell(world_position)
+	return floor_cells.has(cell) and not obstacle_cells.has(cell)
 
 
 func get_enemy_spawn_position(origin: Vector2, minimum_distance: float) -> Vector2:
@@ -89,14 +105,18 @@ func get_enemy_spawn_position(origin: Vector2, minimum_distance: float) -> Vecto
 	if candidates.is_empty():
 		return extraction_position
 
-	var room := candidates[random.randi_range(0, candidates.size() - 1)]
-	var minimum_cell := room.position + Vector2i.ONE
-	var maximum_cell := room.end - Vector2i(2, 2)
-	var cell := Vector2i(
-		random.randi_range(minimum_cell.x, maxi(minimum_cell.x, maximum_cell.x)),
-		random.randi_range(minimum_cell.y, maxi(minimum_cell.y, maximum_cell.y))
-	)
-	return _cell_center(cell)
+	for attempt in range(24):
+		var room := candidates[random.randi_range(0, candidates.size() - 1)]
+		var minimum_cell := room.position + Vector2i.ONE
+		var maximum_cell := room.end - Vector2i(2, 2)
+		var cell := Vector2i(
+			random.randi_range(minimum_cell.x, maxi(minimum_cell.x, maximum_cell.x)),
+			random.randi_range(minimum_cell.y, maxi(minimum_cell.y, maximum_cell.y))
+		)
+		if floor_cells.has(cell) and not obstacle_cells.has(cell):
+			return _cell_center(cell)
+
+	return extraction_position
 
 
 func get_world_path(from_world: Vector2, to_world: Vector2) -> PackedVector2Array:
@@ -120,11 +140,12 @@ func _reset_generated_content() -> void:
 	rooms.clear()
 	floor_cells.clear()
 	wall_cells.clear()
+	obstacle_cells.clear()
 	astar_grid = AStarGrid2D.new()
 
-	if is_instance_valid(wall_body):
-		wall_body.queue_free()
-	wall_body = null
+	if is_instance_valid(collision_body):
+		collision_body.queue_free()
+	collision_body = null
 
 
 func _add_start_room() -> void:
@@ -223,21 +244,66 @@ func _build_wall_cells() -> void:
 				wall_cells[neighbor] = true
 
 
-func _build_wall_collisions() -> void:
-	wall_body = StaticBody2D.new()
-	wall_body.name = "GeneratedWalls"
-	wall_body.collision_layer = WALL_COLLISION_LAYER
-	wall_body.collision_mask = 0
-	add_child(wall_body)
+func _generate_obstacles() -> void:
+	obstacle_cells.clear()
+	for room_index in range(rooms.size()):
+		if room_index == 0 or room_index == extraction_room_index:
+			continue
+
+		var room := rooms[room_index]
+		var desired_count := maxi(1, roundi(room.get_area() * tier_config.obstacle_density))
+		var attempts := 0
+		while desired_count > 0 and attempts < room.get_area() * 3:
+			attempts += 1
+			var cell := Vector2i(
+				random.randi_range(room.position.x + 2, room.end.x - 3),
+				random.randi_range(room.position.y + 2, room.end.y - 3)
+			)
+			if not _cell_is_clear_for_obstacle(cell, room):
+				continue
+			obstacle_cells[cell] = true
+			desired_count -= 1
+
+
+func _cell_is_clear_for_obstacle(cell: Vector2i, room: Rect2i) -> bool:
+	var room_center := _room_center_cell(room)
+	if cell.x == room_center.x or cell.y == room_center.y:
+		return false
+	if cell.distance_squared_to(_world_to_cell(start_position)) <= 9:
+		return false
+	if cell.distance_squared_to(_world_to_cell(extraction_position)) <= 9:
+		return false
+	if obstacle_cells.has(cell):
+		return false
+	for direction in CARDINAL_DIRECTIONS:
+		if obstacle_cells.has(cell + direction):
+			return false
+	return floor_cells.has(cell)
+
+
+func _build_collision_bodies() -> void:
+	collision_body = StaticBody2D.new()
+	collision_body.name = "GeneratedCollision"
+	collision_body.collision_layer = WALL_COLLISION_LAYER
+	collision_body.collision_mask = 0
+	add_child(collision_body)
 
 	var wall_shape := RectangleShape2D.new()
-	wall_shape.size = Vector2.ONE * cell_size
+	wall_shape.size = Vector2.ONE * (cell_size - tile_visual_inset * 2.0)
 
 	for cell in wall_cells:
 		var collision := CollisionShape2D.new()
 		collision.position = _cell_center(cell)
 		collision.shape = wall_shape
-		wall_body.add_child(collision)
+		collision_body.add_child(collision)
+
+	var obstacle_shape := RectangleShape2D.new()
+	obstacle_shape.size = Vector2.ONE * (cell_size * 0.72)
+	for cell in obstacle_cells:
+		var collision := CollisionShape2D.new()
+		collision.position = _cell_center(cell)
+		collision.shape = obstacle_shape
+		collision_body.add_child(collision)
 
 
 func _build_pathfinding_grid() -> void:
@@ -264,7 +330,10 @@ func _build_pathfinding_grid() -> void:
 	for x in range(astar_grid.region.position.x, astar_grid.region.end.x):
 		for y in range(astar_grid.region.position.y, astar_grid.region.end.y):
 			var cell := Vector2i(x, y)
-			astar_grid.set_point_solid(cell, not floor_cells.has(cell))
+			astar_grid.set_point_solid(
+				cell,
+				not floor_cells.has(cell) or obstacle_cells.has(cell)
+			)
 
 
 func _assign_landmarks() -> void:
@@ -278,6 +347,7 @@ func _assign_landmarks() -> void:
 		if distance > farthest_distance:
 			farthest_distance = distance
 			farthest_room = room
+			extraction_room_index = rooms.find(room)
 
 	extraction_position = _cell_center(_room_center_cell(farthest_room))
 
@@ -300,10 +370,17 @@ func _draw() -> void:
 		draw_rect(Rect2(Vector2(cell) * cell_size, Vector2.ONE * cell_size), color)
 
 	for cell in wall_cells:
-		draw_rect(Rect2(Vector2(cell) * cell_size, Vector2.ONE * cell_size), wall_color)
+		var wall_rect := Rect2(Vector2(cell) * cell_size, Vector2.ONE * cell_size)
+		wall_rect = wall_rect.grow(-tile_visual_inset)
+		draw_rect(wall_rect, wall_edge_color)
+		draw_rect(wall_rect.grow(-2.0), wall_color)
+
+	for cell in obstacle_cells:
+		var obstacle_rect := Rect2(Vector2(cell) * cell_size, Vector2.ONE * cell_size)
+		obstacle_rect = obstacle_rect.grow(-cell_size * 0.14)
+		draw_rect(obstacle_rect, obstacle_edge_color)
+		draw_rect(obstacle_rect.grow(-3.0), obstacle_color)
 
 	var marker_radius := cell_size * 0.32
 	draw_circle(start_position, marker_radius, start_color)
 	draw_arc(start_position, marker_radius, 0.0, TAU, 32, Color.WHITE, 2.0)
-	draw_circle(extraction_position, marker_radius, extraction_color)
-	draw_arc(extraction_position, marker_radius, 0.0, TAU, 32, Color.WHITE, 2.0)

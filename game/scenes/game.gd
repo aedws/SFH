@@ -5,15 +5,20 @@ extends Node2D
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
+const EXTRACTION_SCENE_PATH := "res://game/features/extraction/extraction_zone.tscn"
 const SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
 const MAP_GENERATOR_METHODS := [
+	&"configure_obstacles",
 	&"generate",
 	&"get_player_spawn_position",
+	&"get_extraction_position",
 	&"get_enemy_spawn_position",
 	&"get_world_path",
 ]
+const EXTRACTION_METHODS := [&"configure", &"request_extraction"]
+const MAP_TIER_IDS := ["small", "medium", "large"]
 
 @export var features: FeatureManifest
 
@@ -23,37 +28,53 @@ const MAP_GENERATOR_METHODS := [
 @onready var pickups_container: Node2D = $World/Pickups
 @onready var module_container: Node = $Modules
 @onready var world_container: Node2D = $World
+@onready var hud_margin: Control = $UI/HUDMargin
 @onready var status_label: Label = %StatusLabel
 @onready var time_label: Label = %TimeLabel
 @onready var level_label: Label = %LevelLabel
 @onready var kills_label: Label = %KillsLabel
 @onready var map_label: Label = %MapLabel
+@onready var interaction_label: Label = %InteractionLabel
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var health_label: Label = %HealthLabel
 @onready var experience_bar: ProgressBar = %ExperienceBar
 @onready var experience_label: Label = %ExperienceLabel
+@onready var run_setup_overlay: Control = %RunSetupOverlay
+@onready var small_map_button: Button = %SmallMapButton
+@onready var medium_map_button: Button = %MediumMapButton
+@onready var large_map_button: Button = %LargeMapButton
 @onready var game_over_overlay: Control = %GameOverOverlay
+@onready var end_title: Label = %EndTitle
 @onready var game_over_summary: Label = %GameOverSummary
 @onready var restart_button: Button = %RestartButton
 
 var player
 var map_generator
+var extraction_zone
 var enemy_spawner
 var auto_weapon
 var progression_system
+var selected_map_size: String = "small"
 var elapsed_time: float = 0.0
 var defeated_enemies: int = 0
+var run_started: bool = false
 var run_ended: bool = false
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	restart_button.pressed.connect(_restart_run)
+	small_map_button.pressed.connect(start_run.bind("small"))
+	medium_map_button.pressed.connect(start_run.bind("medium"))
+	large_map_button.pressed.connect(start_run.bind("large"))
+	hud_margin.visible = false
+	map_label.visible = false
+	interaction_label.visible = false
+	game_over_overlay.visible = false
 
 	if features == null:
 		_report_configuration_error("FeatureManifest가 지정되지 않았습니다.")
 		return
-	map_label.visible = features.map_generation_enabled
 
 	var configuration_errors := features.validation_errors()
 	if not configuration_errors.is_empty():
@@ -62,6 +83,34 @@ func _ready() -> void:
 		status_label.text = "설정 오류: %s" % " / ".join(configuration_errors)
 		return
 
+	_configure_tier_button(small_map_button, "small")
+	_configure_tier_button(medium_map_button, "medium")
+	_configure_tier_button(large_map_button, "large")
+
+	if features.run_setup_enabled:
+		run_setup_overlay.visible = true
+		status_label.text = "작전 규모를 선택하세요."
+	else:
+		run_setup_overlay.visible = false
+		start_run(features.map_size)
+
+
+func start_run(map_size: String) -> void:
+	if run_started:
+		return
+	if map_size not in MAP_TIER_IDS:
+		_report_configuration_error("지원하지 않는 맵 등급입니다: %s" % map_size)
+		return
+
+	selected_map_size = map_size
+	run_started = true
+	run_setup_overlay.visible = false
+	hud_margin.visible = true
+	map_label.visible = features.map_generation_enabled
+	_assemble_game()
+
+
+func _assemble_game() -> void:
 	var player_spawn_position := Vector2.ZERO
 	if features.player_enabled:
 		if features.map_generation_enabled:
@@ -72,8 +121,9 @@ func _ready() -> void:
 					map_generator.queue_free()
 					map_generator = null
 				else:
+					map_generator.call(&"configure_obstacles", features.map_obstacles_enabled)
 					map_generator.connect(&"map_generated", Callable(self, &"_on_map_generated"))
-					var map_config_path := MAP_CONFIG_PATH_PATTERN % features.map_size
+					var map_config_path := MAP_CONFIG_PATH_PATTERN % selected_map_size
 					if ResourceLoader.exists(map_config_path):
 						var map_config := load(map_config_path)
 						map_generator.call(&"generate", map_config, features.map_seed)
@@ -91,6 +141,9 @@ func _ready() -> void:
 	player.connect(&"health_changed", Callable(self, &"_on_player_health_changed"))
 	player.connect(&"died", Callable(self, &"_on_player_died"))
 	_on_player_health_changed(float(player.get("current_health")), float(player.get("max_health")))
+
+	if features.extraction_enabled and map_generator != null:
+		_install_extraction_zone()
 
 	if features.experience_enabled:
 		progression_system = _instantiate_feature(PROGRESSION_SCENE_PATH, module_container, &"ProgressionSystem")
@@ -117,14 +170,45 @@ func _ready() -> void:
 				map_generator
 			)
 
-	var enabled_names := PackedStringArray()
-	for module_id in features.enabled_module_ids():
-		enabled_names.append(String(module_id))
-	status_label.text = "활성 모듈: %s" % ", ".join(enabled_names)
+	status_label.text = "작전 진행 중 · F 상호작용"
+
+
+func _install_extraction_zone() -> void:
+	extraction_zone = _instantiate_feature(EXTRACTION_SCENE_PATH, world_container, &"ExtractionZone")
+	if extraction_zone == null:
+		return
+	if not _supports_extraction_zone(extraction_zone):
+		_report_configuration_error("탈출 모듈이 필수 공개 계약을 구현하지 않았습니다.")
+		extraction_zone.queue_free()
+		extraction_zone = null
+		return
+
+	extraction_zone.connect(&"extraction_completed", Callable(self, &"_on_extraction_completed"))
+	extraction_zone.connect(
+		&"interaction_availability_changed",
+		Callable(self, &"_on_interaction_availability_changed")
+	)
+	extraction_zone.call(&"configure", map_generator.call(&"get_extraction_position"))
+
+
+func _configure_tier_button(button: Button, tier_id: String) -> void:
+	var config_path := MAP_CONFIG_PATH_PATTERN % tier_id
+	if not ResourceLoader.exists(config_path):
+		button.disabled = true
+		button.text = "%s 설정 없음" % tier_id
+		return
+
+	var config = load(config_path)
+	button.text = "%s 작전\n투자 %d · 방 %d~%d" % [
+		config.get("display_name"),
+		config.get("entry_cost"),
+		config.get("minimum_rooms"),
+		config.get("maximum_rooms"),
+	]
 
 
 func _process(delta: float) -> void:
-	if run_ended:
+	if not run_started or run_ended:
 		return
 
 	elapsed_time += delta
@@ -168,6 +252,21 @@ func _supports_map_generator(candidate: Node) -> bool:
 	return true
 
 
+func _supports_extraction_zone(candidate: Node) -> bool:
+	if (
+		not is_instance_valid(candidate)
+		or not candidate.has_signal(&"extraction_completed")
+		or not candidate.has_signal(&"interaction_availability_changed")
+	):
+		return false
+
+	for method_name in EXTRACTION_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+
+	return true
+
+
 func _on_enemy_spawned(enemy: Node) -> void:
 	if enemy.has_signal(&"defeated"):
 		enemy.connect(&"defeated", Callable(self, &"_on_enemy_defeated"))
@@ -175,18 +274,32 @@ func _on_enemy_spawned(enemy: Node) -> void:
 
 func _on_map_generated(
 	display_name: String,
-	entry_cost: int,
+	_entry_cost: int,
 	room_count: int,
 	maximum_rooms: int,
-	used_seed: int
+	_used_seed: int
 ) -> void:
-	map_label.text = "%s 맵 · 투자 %d · 방 %d/%d · 시드 %d" % [
+	map_label.text = "%s · 방 %d/%d" % [
 		display_name,
-		entry_cost,
 		room_count,
 		maximum_rooms,
-		used_seed
 	]
+
+
+func _on_interaction_availability_changed(available: bool, prompt: String) -> void:
+	interaction_label.text = prompt
+	interaction_label.visible = available and not run_ended
+
+
+func _on_extraction_completed(_actor: Node2D) -> void:
+	_finish_run(
+		"탈출 성공",
+		"%s 작전 · 생존 %s · 처치 %d" % [
+			_selected_map_display_name(),
+			_format_time(elapsed_time),
+			defeated_enemies,
+		]
+	)
 
 
 func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:
@@ -221,10 +334,29 @@ func _on_player_died() -> void:
 	if not features.game_over_enabled:
 		return
 
+	_finish_run(
+		"작전 실패",
+		"생존 %s · 처치 %d" % [_format_time(elapsed_time), defeated_enemies]
+	)
+
+
+func _finish_run(title: String, summary: String) -> void:
+	if run_ended:
+		return
 	run_ended = true
-	game_over_summary.text = "생존 %s · 처치 %d" % [_format_time(elapsed_time), defeated_enemies]
+	interaction_label.visible = false
+	end_title.text = title
+	game_over_summary.text = summary
+	restart_button.text = "새 작전 선택 (Enter)"
 	game_over_overlay.visible = true
 	get_tree().paused = true
+
+
+func _selected_map_display_name() -> String:
+	var config_path := MAP_CONFIG_PATH_PATTERN % selected_map_size
+	if ResourceLoader.exists(config_path):
+		return String(load(config_path).get("display_name"))
+	return selected_map_size
 
 
 func _restart_run() -> void:

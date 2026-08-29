@@ -28,6 +28,7 @@ tags:
 | 대체 구현 계약 검사 | 통과 | `Game`과 `EnemySpawner`가 필요한 Signal·메서드 존재 여부를 검사함 |
 | 데이터 분리 | 통과 | 비용, 방 수, 방 크기는 소·중·대형 `.tres` Resource에서 변경 가능 |
 | 자동 검증 | 통과 | 세 등급 연결성 및 맵 비활성화 조립을 스모크 테스트로 확인함 |
+| 하위 기능 토글 | 통과 | 방해물, 작전 선택, 탈출을 각각 Manifest에서 비활성화할 수 있음 |
 
 ## 맵 모듈 공개 계약
 
@@ -36,12 +37,25 @@ tags:
 | 종류 | 이름 | 소비자 |
 |---|---|---|
 | Signal | `map_generated(display_name, entry_cost, room_count, maximum_rooms, used_seed)` | HUD |
+| Method | `configure_obstacles(is_enabled)` | 방해물 기능 토글 전달 |
 | Method | `generate(config, requested_seed)` | `Game` 조립부 |
 | Method | `get_player_spawn_position()` | 플레이어 배치 |
+| Method | `get_extraction_position()` | 탈출 모듈 배치 |
 | Method | `get_enemy_spawn_position(origin, minimum_distance)` | 적 생성기 |
 | Method | `get_world_path(from_world, to_world)` | 적 이동 |
 
 소비자는 구체 클래스 대신 `Node`와 위 메서드의 존재 여부를 사용합니다. 따라서 다른 알고리즘으로 맵 생성기를 교체할 때도 계약만 유지하면 됩니다.
+
+## 탈출 모듈 공개 계약
+
+| 종류 | 이름 | 소비자 |
+|---|---|---|
+| Signal | `extraction_completed(actor)` | 작전 결과 처리 |
+| Signal | `interaction_availability_changed(available, prompt)` | HUD F 안내 |
+| Method | `configure(world_position)` | 탈출 위치 배치 |
+| Method | `request_extraction(actor)` | 범위와 플레이어 검사 |
+
+탈출 모듈은 맵의 내부 자료구조 대신 월드 좌표 하나만 전달받습니다.
 
 ## 의도된 결합
 
@@ -59,7 +73,7 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `map_optional`이 포함됩니다. 이는 맵 기능이 켜진 구성뿐 아니라 꺼진 구성도 정상 조립됐다는 뜻입니다.
+성공하면 출력에 `run_setup`, `obstacles`, `map_optional`, `extraction_f`가 포함됩니다. 이는 선택 화면, 방해물, 맵 비활성화 폴백, F 탈출 계약이 함께 검증됐다는 뜻입니다.
 
 ## 다음 개선 시점
 

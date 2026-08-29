@@ -19,9 +19,18 @@ func _init() -> void:
 		return
 	if not await _verify_optional_map_module(game_scene):
 		return
+	if not await _verify_extraction_flow(game_scene):
+		return
 
 	game_instance = game_scene.instantiate()
 	root.add_child(game_instance)
+	await process_frame
+	var setup_overlay := game_instance.get_node("UI/RunSetupOverlay") as Control
+	if not setup_overlay.visible or game_instance.get("player") != null:
+		_fail("작전 규모 선택 화면이 게임 조립 전에 표시되지 않았습니다.")
+		return
+	game_instance.call(&"start_run", "small")
+	frame_count = 0
 
 
 func _verify_map_tiers() -> bool:
@@ -51,6 +60,12 @@ func _verify_map_tiers() -> bool:
 		if path.is_empty():
 			_fail("%s 맵의 시작점과 탈출 지점이 연결되지 않았습니다." % tier_id)
 			return false
+		if generator.get("obstacle_cells").is_empty():
+			_fail("%s 맵에 방해물이 생성되지 않았습니다." % tier_id)
+			return false
+		if not is_equal_approx(float(generator.get("cell_size")), 32.0):
+			_fail("맵 타일 크기가 32px로 조정되지 않았습니다.")
+			return false
 
 		root.remove_child(generator)
 		generator.free()
@@ -62,6 +77,9 @@ func _verify_optional_map_module(game_scene: PackedScene) -> bool:
 	var fallback_game := game_scene.instantiate()
 	var fallback_features = fallback_game.get("features").duplicate(true)
 	fallback_features.set("map_generation_enabled", false)
+	fallback_features.set("map_obstacles_enabled", false)
+	fallback_features.set("extraction_enabled", false)
+	fallback_features.set("run_setup_enabled", false)
 	fallback_game.set("features", fallback_features)
 	root.add_child(fallback_game)
 	await process_frame
@@ -93,6 +111,54 @@ func _verify_optional_map_module(game_scene: PackedScene) -> bool:
 	return true
 
 
+func _verify_extraction_flow(game_scene: PackedScene) -> bool:
+	var extraction_game := game_scene.instantiate()
+	root.add_child(extraction_game)
+	await process_frame
+
+	var setup_overlay := extraction_game.get_node("UI/RunSetupOverlay") as Control
+	if not setup_overlay.visible:
+		_fail("첫 실행 작전 규모 선택 화면이 표시되지 않았습니다.")
+		return false
+
+	extraction_game.call(&"start_run", "small")
+	await process_frame
+	var extraction_player = extraction_game.get("player")
+	var extraction_zone = extraction_game.get("extraction_zone")
+	var failure_message := ""
+	if extraction_player == null or extraction_zone == null:
+		failure_message = "플레이어 또는 탈출 모듈이 설치되지 않았습니다."
+	elif not _has_f_interaction_binding():
+		failure_message = "interact 입력에 F 키가 할당되지 않았습니다."
+	else:
+		extraction_player.global_position = extraction_zone.global_position
+		if not extraction_zone.call(&"request_extraction", extraction_player):
+			failure_message = "탈출 지점에서 상호작용 요청이 거부됐습니다."
+		elif not bool(extraction_game.get("run_ended")):
+			failure_message = "탈출 성공 후 작전이 종료되지 않았습니다."
+		elif String(extraction_game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/EndTitle").text) != "탈출 성공":
+			failure_message = "탈출 성공 결과 화면이 표시되지 않았습니다."
+
+	paused = false
+	root.remove_child(extraction_game)
+	extraction_game.free()
+	if not failure_message.is_empty():
+		_fail("탈출 흐름 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _has_f_interaction_binding() -> bool:
+	if not InputMap.has_action(&"interact"):
+		return false
+	for event in InputMap.action_get_events(&"interact"):
+		if event is InputEventKey:
+			var key_event := event as InputEventKey
+			if key_event.keycode == KEY_F or key_event.physical_keycode == KEY_F:
+				return true
+	return false
+
+
 func _process(_delta: float) -> bool:
 	frame_count += 1
 
@@ -107,10 +173,14 @@ func _process(_delta: float) -> bool:
 		var progression = game_instance.get("progression_system")
 		var weapon = game_instance.get("auto_weapon")
 		var map_generator = game_instance.get("map_generator")
-		if progression == null or weapon == null or map_generator == null:
-			return _fail("맵, 전투 또는 성장 모듈이 설치되지 않았습니다.")
-		if map_generator.get("rooms").size() < 5:
+		var extraction_zone = game_instance.get("extraction_zone")
+		if progression == null or weapon == null or map_generator == null or extraction_zone == null:
+			return _fail("맵, 탈출, 전투 또는 성장 모듈이 설치되지 않았습니다.")
+		var small_config = load(MAP_CONFIG_PATH_PATTERN % "small")
+		if map_generator.get("rooms").size() < int(small_config.get("minimum_rooms")):
 			return _fail("소형 맵의 최소 방 수를 생성하지 못했습니다.")
+		if map_generator.get("obstacle_cells").is_empty():
+			return _fail("소형 맵에 방해물이 생성되지 않았습니다.")
 		if not map_generator.call(&"is_walkable_world_position", player.global_position):
 			return _fail("플레이어가 걸을 수 없는 위치에 생성됐습니다.")
 
@@ -136,7 +206,7 @@ func _process(_delta: float) -> bool:
 			return _fail("게임오버 상태가 적용되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK map map_optional player enemies pathfinding weapon experience leveling game_over")
+		print("SMOKE_TEST_OK run_setup map obstacles map_optional player enemies pathfinding weapon experience leveling extraction_f game_over")
 		quit(0)
 		return true
 

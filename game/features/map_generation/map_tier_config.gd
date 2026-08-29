@@ -8,6 +8,7 @@ extends Resource
 @export_range(1, 100, 1) var maximum_rooms: int = 8
 @export var minimum_room_size := Vector2i(6, 5)
 @export var maximum_room_size := Vector2i(10, 8)
+@export_range(0.0, 0.2, 0.001) var obstacle_density: float = 0.02
 
 
 func is_valid() -> bool:
@@ -19,4 +20,6 @@ func is_valid() -> bool:
 		and minimum_room_size.y >= 3
 		and maximum_room_size.x >= minimum_room_size.x
 		and maximum_room_size.y >= minimum_room_size.y
+		and obstacle_density >= 0.0
+		and obstacle_density <= 0.2
 	)

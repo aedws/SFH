@@ -7,6 +7,8 @@ extends Resource
 @export_category("Core modules")
 @export var player_enabled: bool = true
 @export var map_generation_enabled: bool = true
+@export var map_obstacles_enabled: bool = true
+@export var extraction_enabled: bool = true
 @export var enemies_enabled: bool = true
 @export var spawning_enabled: bool = true
 @export var weapons_enabled: bool = true
@@ -16,6 +18,7 @@ extends Resource
 @export var game_over_enabled: bool = true
 
 @export_category("Run setup")
+@export var run_setup_enabled: bool = true
 @export_enum("small", "medium", "large") var map_size: String = "small"
 @export_range(0, 2147483647, 1) var map_seed: int = 0
 
@@ -27,6 +30,12 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"player")
 	if map_generation_enabled:
 		result.append(&"map_generation")
+	if map_obstacles_enabled:
+		result.append(&"map_obstacles")
+	if extraction_enabled:
+		result.append(&"extraction")
+	if run_setup_enabled:
+		result.append(&"run_setup")
 	if enemies_enabled:
 		result.append(&"enemies")
 	if spawning_enabled:
@@ -52,6 +61,12 @@ func validation_errors() -> PackedStringArray:
 		errors.append("다른 게임 기능을 사용하려면 player 모듈이 필요합니다.")
 	if map_generation_enabled and map_size not in ["small", "medium", "large"]:
 		errors.append("map_size는 small, medium, large 중 하나여야 합니다.")
+	if map_obstacles_enabled and not map_generation_enabled:
+		errors.append("map_obstacles 모듈은 map_generation 모듈이 필요합니다.")
+	if extraction_enabled and not map_generation_enabled:
+		errors.append("extraction 모듈은 map_generation 모듈이 필요합니다.")
+	if run_setup_enabled and not map_generation_enabled:
+		errors.append("run_setup 모듈은 map_generation 모듈이 필요합니다.")
 	if spawning_enabled and not enemies_enabled:
 		errors.append("spawning 모듈은 enemies 모듈이 필요합니다.")
 	if weapons_enabled and not enemies_enabled:

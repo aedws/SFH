@@ -7,6 +7,7 @@ Game
 ├─ World
 │  ├─ ArenaGrid
 │  ├─ GeneratedMap          # 등급 Resource에 따라 실행 시 생성
+│  ├─ ExtractionZone        # 최원거리 방에 실행 시 생성
 │  ├─ Actors
 │  │  └─ Player             # 실행 시 생성
 │  │     └─ AutoWeapon      # 실행 시 생성
@@ -18,6 +19,8 @@ Game
 │  └─ ProgressionSystem     # 실행 시 생성
 └─ UI
    ├─ HUDMargin
+   ├─ InteractionLabel      # 탈출 범위의 F 안내
+   ├─ RunSetupOverlay       # 소·중·대형 선택
    └─ GameOverOverlay
 ```
 
@@ -30,6 +33,7 @@ Game
 - `game/core/feature_manifest.tres`: 활성 기능 설정
 - `game/features/player/player.tscn`: 플레이어 기능 장면
 - `game/features/map_generation/map_generator.tscn`: 방, 복도, 벽, 길찾기 생성
+- `game/features/extraction/extraction_zone.tscn`: F 상호작용 탈출 지점
 - `game/features/spawning/enemy_spawner.tscn`: 적 생성 기능
 - `game/features/weapons/auto_weapon.tscn`: 자동 공격 기능
 - `game/features/experience/progression_system.tscn`: 성장 기능
