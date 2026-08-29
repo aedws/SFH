@@ -3,6 +3,7 @@
 구현된 기능:
 
 - [랜덤 맵 생성](map-generation.md)
+- [전술 미니맵](minimap.md)
 - [작전 선택과 탈출](raid-setup-extraction.md)
 - [크레딧 파밍과 회수](credit-loot.md)
 - [플레이어 이동](player.md)

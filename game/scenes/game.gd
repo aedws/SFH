@@ -5,6 +5,7 @@ extends Node2D
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
+const MINIMAP_SCENE_PATH := "res://game/features/minimap/minimap.tscn"
 const EXTRACTION_SCENE_PATH := "res://game/features/extraction/extraction_zone.tscn"
 const CREDIT_LEDGER_SCENE_PATH := "res://game/features/credits/credit_ledger.tscn"
 const LOOT_SPAWNER_SCENE_PATH := "res://game/features/loot/loot_spawner.tscn"
@@ -20,6 +21,8 @@ const MAP_GENERATOR_METHODS := [
 	&"get_enemy_spawn_position",
 	&"get_world_path",
 ]
+const MINIMAP_PROVIDER_METHODS := [&"get_minimap_snapshot"]
+const MINIMAP_METHODS := [&"configure"]
 const EXTRACTION_METHODS := [&"configure", &"request_extraction"]
 const CREDIT_LEDGER_METHODS := [&"add_carried", &"secure_carried", &"lose_carried"]
 const LOOT_SPAWNER_METHODS := [&"configure"]
@@ -33,6 +36,7 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var pickups_container: Node2D = $World/Pickups
 @onready var module_container: Node = $Modules
 @onready var world_container: Node2D = $World
+@onready var ui_layer: CanvasLayer = $UI
 @onready var hud_margin: Control = $UI/HUDMargin
 @onready var status_label: Label = %StatusLabel
 @onready var time_label: Label = %TimeLabel
@@ -56,6 +60,7 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 
 var player
 var map_generator
+var minimap
 var extraction_zone
 var credit_ledger
 var loot_spawner
@@ -105,22 +110,30 @@ func _ready() -> void:
 		start_run(features.map_size)
 
 
-func start_run(map_size: String) -> void:
+func start_run(map_size: String) -> bool:
 	if run_started:
-		return
+		return false
 	if map_size not in MAP_TIER_IDS:
 		_report_configuration_error("지원하지 않는 맵 등급입니다: %s" % map_size)
-		return
+		return false
+	if not _tier_resources_are_available(map_size):
+		return false
 
 	selected_map_size = map_size
 	run_started = true
 	run_setup_overlay.visible = false
 	hud_margin.visible = true
 	map_label.visible = features.map_generation_enabled
-	_assemble_game()
+	status_label.text = "%s 작전 생성 중..." % _selected_map_display_name()
+	if not _assemble_game():
+		run_started = false
+		hud_margin.visible = false
+		run_setup_overlay.visible = features.run_setup_enabled
+		return false
+	return true
 
 
-func _assemble_game() -> void:
+func _assemble_game() -> bool:
 	var player_spawn_position := Vector2.ZERO
 	if features.player_enabled:
 		if features.map_generation_enabled:
@@ -144,7 +157,10 @@ func _assemble_game() -> void:
 		player = _instantiate_feature(PLAYER_SCENE_PATH, actors_container, &"Player")
 	if player == null:
 		_report_configuration_error("플레이어 모듈을 설치하지 못했습니다.")
-		return
+		return false
+	if features.map_generation_enabled and map_generator == null:
+		_report_configuration_error("맵 모듈을 설치하지 못했습니다.")
+		return false
 
 	player.global_position = player_spawn_position
 	player.call(&"configure_damage", features.damage_enabled)
@@ -157,6 +173,8 @@ func _assemble_game() -> void:
 
 	if features.extraction_enabled and map_generator != null:
 		_install_extraction_zone()
+	if features.minimap_enabled and map_generator != null:
+		_install_minimap()
 	if (
 		features.loot_enabled
 		and map_generator != null
@@ -193,6 +211,27 @@ func _assemble_game() -> void:
 			)
 
 	status_label.text = "작전 진행 중 · F 상호작용"
+	return true
+
+
+func _install_minimap() -> void:
+	if not _supports_minimap_provider(map_generator):
+		_report_configuration_error("맵 모듈이 미니맵 스냅샷 계약을 구현하지 않았습니다.")
+		return
+	minimap = _instantiate_feature(MINIMAP_SCENE_PATH, ui_layer, &"TacticalMinimap")
+	if minimap == null:
+		return
+	if not _supports_minimap(minimap):
+		_report_configuration_error("미니맵 모듈이 필수 공개 계약을 구현하지 않았습니다.")
+		minimap.queue_free()
+		minimap = null
+		return
+	minimap.call(
+		&"configure",
+		map_generator.call(&"get_minimap_snapshot"),
+		player,
+		_selected_map_display_name()
+	)
 
 
 func _install_extraction_zone() -> void:
@@ -256,12 +295,42 @@ func _configure_tier_button(button: Button, tier_id: String) -> void:
 		return
 
 	var config = load(config_path)
+	if config == null or not config.has_method(&"is_valid") or not config.call(&"is_valid"):
+		button.disabled = true
+		button.text = "%s 설정 오류" % tier_id
+		return
+	if features.loot_enabled and not ResourceLoader.exists(LOOT_CONFIG_PATH_PATTERN % tier_id):
+		button.disabled = true
+		button.text = "%s 파밍 설정 없음" % config.get("display_name")
+		return
 	button.text = "%s 작전\n투자 %d · 방 %d~%d" % [
 		config.get("display_name"),
 		config.get("entry_cost"),
 		config.get("minimum_rooms"),
 		config.get("maximum_rooms"),
 	]
+
+
+func _tier_resources_are_available(tier_id: String) -> bool:
+	if features.map_generation_enabled:
+		var map_config_path := MAP_CONFIG_PATH_PATTERN % tier_id
+		if not ResourceLoader.exists(map_config_path):
+			_report_configuration_error("맵 설정을 찾을 수 없습니다: %s" % map_config_path)
+			return false
+		var map_config = load(map_config_path)
+		if (
+			map_config == null
+			or not map_config.has_method(&"is_valid")
+			or not map_config.call(&"is_valid")
+		):
+			_report_configuration_error("유효하지 않은 맵 설정입니다: %s" % map_config_path)
+			return false
+	if features.loot_enabled:
+		var loot_config_path := LOOT_CONFIG_PATH_PATTERN % tier_id
+		if not ResourceLoader.exists(loot_config_path):
+			_report_configuration_error("파밍 설정을 찾을 수 없습니다: %s" % loot_config_path)
+			return false
+	return true
 
 
 func _process(delta: float) -> void:
@@ -306,6 +375,24 @@ func _supports_map_generator(candidate: Node) -> bool:
 		if not candidate.has_method(method_name):
 			return false
 
+	return true
+
+
+func _supports_minimap_provider(candidate: Node) -> bool:
+	if not is_instance_valid(candidate):
+		return false
+	for method_name in MINIMAP_PROVIDER_METHODS:
+		if not candidate.has_method(method_name):
+			return false
+	return true
+
+
+func _supports_minimap(candidate: Node) -> bool:
+	if not is_instance_valid(candidate):
+		return false
+	for method_name in MINIMAP_METHODS:
+		if not candidate.has_method(method_name):
+			return false
 	return true
 
 
