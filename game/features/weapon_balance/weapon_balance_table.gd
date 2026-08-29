@@ -48,10 +48,16 @@ static func _parse_row_table(matrix: Array[PackedStringArray]) -> Dictionary:
 		return {&"data": {}, &"errors": errors}
 
 	var result: Dictionary = {}
+	var runtime_enabled_index := headers.find("runtime_enabled")
 	for line_index in range(1, matrix.size()):
 		var cells := matrix[line_index]
 		if cells.size() < headers.size():
 			errors.append("%d행의 열 수가 헤더보다 적습니다." % (line_index + 1))
+			continue
+		if (
+			runtime_enabled_index >= 0
+			and not _is_enabled(cells[runtime_enabled_index])
+		):
 			continue
 		var row: Dictionary = {}
 		for column_index in range(headers.size()):

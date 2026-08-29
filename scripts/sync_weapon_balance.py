@@ -75,9 +75,19 @@ def _normalize_rows(text: str) -> list[dict[str, str]]:
         return _read_transposed_rows(matrix)
 
     reader = csv.DictReader(io.StringIO(text.lstrip("\ufeff")))
-    if reader.fieldnames != COLUMNS:
-        raise ValueError("CSV 열 순서가 템플릿과 다릅니다: " + ", ".join(reader.fieldnames or []))
-    return list(reader)
+    fieldnames = reader.fieldnames or []
+    missing = [column for column in COLUMNS if column not in fieldnames]
+    if missing:
+        raise ValueError("필수 열이 없습니다: " + ", ".join(missing))
+    if fieldnames != COLUMNS and "runtime_enabled" not in fieldnames:
+        raise ValueError("CSV 열 순서가 템플릿과 다릅니다: " + ", ".join(fieldnames))
+    rows = list(reader)
+    if "runtime_enabled" in fieldnames:
+        rows = [row for row in rows if _is_enabled(row.get("runtime_enabled", ""))]
+    return [
+        {column: row.get(column, "").strip() for column in COLUMNS}
+        for row in rows
+    ]
 
 
 def validate(text: str) -> list[dict[str, str]]:

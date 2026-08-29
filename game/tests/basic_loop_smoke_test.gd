@@ -271,32 +271,18 @@ func _verify_weapon_balance_modules() -> bool:
 		elif service.call(&"load_csv_text", "weapon_id,damage\nbroken,1", "오류 테스트"):
 			failure_message = "필수 열이 없는 밸런스 CSV를 허용했습니다."
 		if failure_message.is_empty():
-			var transposed_csv := "\n".join(PackedStringArray([
-				"weapon_id,설명,assault_rifle,service_pistol,combat_dagger",
-				"display_name,표시 이름,돌격소총,제식 권총,전투 단검",
-				"runtime_enabled,런타임 반영,TRUE,TRUE,FALSE",
-				"trait_id,특색,steady_burst,heavy_piercing,",
-				"damage,피해,1.6,3.2,",
-				"fire_interval_sec,공격 주기,0.78,0.60,",
-				"projectile_speed_px_sec,투사체 속도,760,690,",
-				"target_range_px,탐지 거리,820,560,",
-				"projectiles_per_shot,투사체 수,1,1,",
-				"spread_angle_deg,분산각,0,0,",
-				"burst_count,점사 수,3,1,",
-				"burst_interval_sec,점사 간격,0.10,0.00,",
-				"critical_chance,치명타 확률,0.05,0.12,",
-				"critical_multiplier,치명타 배율,1.75,2.0,",
-				"pierce_count,관통 수,0,1,",
-				"pierce_damage_retention,관통 유지율,1.0,0.65,",
-				"projectile_lifetime_sec,수명,1.6,1.3,",
-				"projectile_color_hex,색상,#42D6C8,#F2B84B,",
-				"description,설명,테스트 소총,테스트 권총,",
+			var sheet_csv := "\n".join(PackedStringArray([
+				"weapon_id,display_name,runtime_enabled,trait_id,damage,fire_interval_sec,projectile_speed_px_sec,target_range_px,projectiles_per_shot,spread_angle_deg,burst_count,burst_interval_sec,critical_chance,critical_multiplier,pierce_count,pierce_damage_retention,projectile_lifetime_sec,projectile_color_hex,description",
+				"고유 ID,표시 이름,런타임 반영,특색,피해,공격 주기,투사체 속도,탐지 거리,투사체 수,분산각,점사 수,점사 간격,치명타 확률,치명타 배율,관통 수,관통 유지율,수명,색상,설명",
+				"assault_rifle,돌격소총,TRUE,steady_burst,1.6,0.78,760,820,1,0,3,0.10,0.05,1.75,0,1.0,1.6,#42D6C8,테스트 소총",
+				"service_pistol,제식 권총,TRUE,heavy_piercing,3.2,0.60,690,560,1,0,1,0.00,0.12,2.0,1,0.65,1.3,#F2B84B,테스트 권총",
+				"combat_dagger,전투 단검,FALSE,,,,,,,,,,,,,,,,",
 			]))
-			var transposed := WeaponBalanceTable.parse(transposed_csv)
-			var transposed_errors: PackedStringArray = transposed[&"errors"]
-			var transposed_data: Dictionary = transposed[&"data"]
-			if not transposed_errors.is_empty() or transposed_data.size() != 2:
-				failure_message = "가로형 Google Sheet CSV를 2개 런타임 무기로 변환하지 못했습니다."
+			var parsed_sheet := WeaponBalanceTable.parse(sheet_csv)
+			var sheet_errors: PackedStringArray = parsed_sheet[&"errors"]
+			var sheet_data: Dictionary = parsed_sheet[&"data"]
+			if not sheet_errors.is_empty() or sheet_data.size() != 2:
+				failure_message = "2행 설명을 포함한 Google Sheet CSV를 2개 런타임 무기로 읽지 못했습니다."
 	if not _has_key_binding(&"switch_weapon", KEY_Q):
 		failure_message = "switch_weapon 입력에 Q 키가 할당되지 않았습니다."
 	root.remove_child(service)

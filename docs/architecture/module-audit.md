@@ -46,7 +46,7 @@ tags:
 | 최고 레벨 개조 | 통과 | 최고 레벨에서만 태그를 부여하고 일치 모듈 코스트를 50%로 계산함 |
 | 장비 개조 의존성 | 통과 | `equipment_customization`이 `equipment`, `inventory`를 요구함 |
 | 활성 무기 상태 분리 | 통과 | 장비는 main/secondary 슬롯과 `weapon_id`만 공개하고 발사 로직을 모름 |
-| 밸런스 데이터 분리 | 통과 | `weapon_balance/`가 가로형 Google Sheets·세로형 확정 CSV 변환, 로드와 검증만 담당함 |
+| 밸런스 데이터 분리 | 통과 | `weapon_balance/`가 2행 설명을 포함한 Google Sheets·확정 CSV 로드와 검증만 담당함 |
 | 실시간 실패 폴백 | 통과 | 잘못된 외부 CSV가 마지막 정상값을 덮지 않으며 확정 CSV로 복구 가능 |
 | 무기 특색 실행 | 통과 | `AutoWeapon`이 버스트·다중 투사체를, Projectile이 관통·유지율을 담당함 |
 | Q 교체 자동 검증 | 통과 | 장비 슬롯, 자동 공격 런타임, HUD가 같은 보조 권총 상태로 전환됨 |
