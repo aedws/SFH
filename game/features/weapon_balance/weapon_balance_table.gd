@@ -27,7 +27,19 @@ static func parse(csv_text: String) -> Dictionary:
 	var lines := csv_text.replace("\r\n", "\n").replace("\r", "\n").split("\n", false)
 	if lines.is_empty():
 		return {&"data": {}, &"errors": PackedStringArray(["CSV가 비어 있습니다."])}
-	var headers := _parse_csv_line(lines[0])
+	var matrix: Array[PackedStringArray] = []
+	for line in lines:
+		if not line.strip_edges().is_empty():
+			matrix.append(_parse_csv_line(line))
+	if matrix.is_empty():
+		return {&"data": {}, &"errors": PackedStringArray(["CSV가 비어 있습니다."])}
+	if _is_transposed_sheet(matrix):
+		return _parse_transposed_sheet(matrix)
+	return _parse_row_table(matrix)
+
+
+static func _parse_row_table(matrix: Array[PackedStringArray]) -> Dictionary:
+	var headers := matrix[0]
 	var errors := PackedStringArray()
 	for required_column in REQUIRED_COLUMNS:
 		if required_column not in headers:
@@ -36,10 +48,8 @@ static func parse(csv_text: String) -> Dictionary:
 		return {&"data": {}, &"errors": errors}
 
 	var result: Dictionary = {}
-	for line_index in range(1, lines.size()):
-		if lines[line_index].strip_edges().is_empty():
-			continue
-		var cells := _parse_csv_line(lines[line_index])
+	for line_index in range(1, matrix.size()):
+		var cells := matrix[line_index]
 		if cells.size() < headers.size():
 			errors.append("%d행의 열 수가 헤더보다 적습니다." % (line_index + 1))
 			continue
@@ -57,6 +67,72 @@ static func parse(csv_text: String) -> Dictionary:
 			continue
 		result[weapon_id] = parsed
 	return {&"data": result, &"errors": errors}
+
+
+static func _is_transposed_sheet(matrix: Array[PackedStringArray]) -> bool:
+	if matrix[0].size() < 3 or matrix[0][0].strip_edges() != "weapon_id":
+		return false
+	return matrix[0][1].strip_edges() != "display_name"
+
+
+static func _parse_transposed_sheet(matrix: Array[PackedStringArray]) -> Dictionary:
+	var rows_by_variable: Dictionary = {}
+	var errors := PackedStringArray()
+	var maximum_columns := 0
+	for row_index in range(matrix.size()):
+		var cells := matrix[row_index]
+		maximum_columns = maxi(maximum_columns, cells.size())
+		if cells.is_empty():
+			continue
+		var variable_name := cells[0].strip_edges()
+		if variable_name.is_empty():
+			continue
+		if rows_by_variable.has(variable_name):
+			errors.append("변수명이 중복됩니다: %s" % variable_name)
+			continue
+		rows_by_variable[variable_name] = cells
+	for required_column in REQUIRED_COLUMNS:
+		if not rows_by_variable.has(required_column):
+			errors.append("필수 변수가 없습니다: %s" % required_column)
+	if not errors.is_empty():
+		return {&"data": {}, &"errors": errors}
+
+	var runtime_row: PackedStringArray = rows_by_variable.get(
+		"runtime_enabled", PackedStringArray()
+	)
+	var result: Dictionary = {}
+	for column_index in range(2, maximum_columns):
+		var id_row: PackedStringArray = rows_by_variable["weapon_id"]
+		var weapon_id_text := _cell_at(id_row, column_index).strip_edges()
+		if weapon_id_text.is_empty():
+			continue
+		if not runtime_row.is_empty() and not _is_enabled(_cell_at(runtime_row, column_index)):
+			continue
+		var row: Dictionary = {}
+		for required_column in REQUIRED_COLUMNS:
+			var variable_row: PackedStringArray = rows_by_variable[required_column]
+			row[StringName(required_column)] = _cell_at(variable_row, column_index).strip_edges()
+		var weapon_id := StringName(weapon_id_text)
+		if result.has(weapon_id):
+			errors.append("%d열의 weapon_id가 중복입니다: %s" % [column_index + 1, weapon_id])
+			continue
+		var parsed := _convert_row(row)
+		var row_error := _validate_row(parsed)
+		if not row_error.is_empty():
+			errors.append("%s: %s" % [weapon_id, row_error])
+			continue
+		result[weapon_id] = parsed
+	return {&"data": result, &"errors": errors}
+
+
+static func _cell_at(cells: PackedStringArray, index: int) -> String:
+	if index < 0 or index >= cells.size():
+		return ""
+	return cells[index]
+
+
+static func _is_enabled(value: String) -> bool:
+	return value.strip_edges().to_lower() in ["true", "1", "yes", "y", "on"]
 
 
 static func _parse_csv_line(line: String) -> PackedStringArray:

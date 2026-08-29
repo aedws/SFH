@@ -6,6 +6,6 @@
 script = ExtResource("1_config")
 source_mode = 0
 locked_csv_path = "res://game/features/weapon_balance/data/weapon_balance.csv"
-live_csv_url = ""
+live_csv_url = "https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/export?format=csv"
 live_refresh_seconds = 3.0
 fallback_to_locked_csv = true

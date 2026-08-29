@@ -37,7 +37,19 @@ tags:
 - `pierce_count`, `pierce_damage_retention`: 추가 관통 수와 관통 후 피해 유지율
 - `projectile_speed_px_sec`, `projectile_lifetime_sec`: 피하기 쉬운 정도와 최대 비행 거리
 
-전체 18개 열의 단위와 입력 설명은 Google Sheets용 `SFH_Weapon_Balance.xlsx`의 **Field Guide** 탭에 정리되어 있습니다. **Weapons** 탭 첫 행은 게임 CSV 계약이므로 이동하거나 이름을 바꾸지 않습니다.
+공용 [SFH_item_Balance Google Sheet](https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/edit?usp=sharing)는 사람이 비교하기 쉬운 가로형 구조를 사용합니다.
+
+| 열 | 역할 |
+|---|---|
+| A열 | 코드에서 사용하는 변수명. 이름을 바꾸면 동기화 검증이 실패함 |
+| B열 | 변수의 뜻, 단위, 입력 규칙 |
+| C열 이후 | 무기·방어구·아이템별 실제 데이터 |
+
+- `Weapon`: 무기 정의와 전투 수치만 기록합니다. `runtime_enabled`가 켜진 열만 실시간 전투와 확정 CSV에 반영됩니다.
+- `Armor`: 방어구 정의와 스탯만 기록합니다.
+- `Item`: 파츠·모듈·소비 아이템과 크레딧만 기록합니다. 무기·방어구는 넣지 않습니다.
+
+현재 런타임 실시간 연결 대상은 `Weapon`입니다. `Armor`와 `Item`은 데이터 원본으로 먼저 정리했으며, 각 로더가 추가될 때도 동일한 A/B/C 계약을 유지합니다.
 
 ## 두 가지 데이터 모드
 
@@ -52,26 +64,25 @@ tags:
 
 ## Google Sheets 준비
 
-1. 제공된 `SFH_Weapon_Balance.xlsx`를 Google Drive에 업로드하고 Google 스프레드시트로 변환합니다.
-2. **Weapons** 탭을 `파일 → 공유 → 웹에 게시`에서 CSV 형식으로 게시합니다.
-3. 생성된 `https://docs.google.com/spreadsheets/d/.../export?format=csv&gid=...` URL을 복사합니다.
-4. `game/features/weapon_balance/configs/default_weapon_balance.tres`에서 `source_mode = 1`로 바꾸고 `live_csv_url`에 URL을 입력합니다.
-5. Godot에서 작전을 시작한 뒤 시트 수치를 바꿉니다. 정상 공개된 CSV라면 기본 3초 안에 현재 무기 런타임 값이 갱신됩니다.
+1. 공용 시트의 `Weapon` 탭에서 C열 이후 무기 수치를 수정합니다. A열 변수명은 유지합니다.
+2. 전투에 연결할 무기 열의 `runtime_enabled` 체크박스를 켭니다.
+3. `game/features/weapon_balance/configs/default_weapon_balance.tres`에서 `source_mode = 1`로 바꿉니다. 이 문서의 공용 `Weapon` CSV URL은 이미 `live_csv_url`에 설정되어 있습니다.
+4. Godot에서 작전을 시작합니다. 공개 CSV가 정상이라면 기본 3초 안에 현재 무기 런타임 값이 갱신됩니다.
 
 !!! warning "공개 범위"
-    일반 공유 링크가 아니라 **웹에 게시한 CSV URL**이 필요합니다. 게시된 값은 링크를 아는 사람이 읽을 수 있으므로 비밀 값이나 계정 정보를 넣지 않습니다.
+    게임은 편집 링크가 아니라 공개 CSV 내보내기 URL을 읽습니다. 현재 공용 시트의 `Weapon` CSV 응답은 확인했으며, 시트에는 비밀 값이나 계정 정보를 넣지 않습니다.
 
 ## 테스트 수치를 확정 CSV로 잠그기
 
 실시간 테스트가 끝났으면 저장소 루트에서 다음 명령을 실행합니다.
 
 ```powershell
-.\scripts\weapon-balance.cmd sync "GOOGLE_SHEETS_CSV_URL"
+.\scripts\weapon-balance.cmd sync "https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/export?format=csv"
 .\scripts\weapon-balance.cmd check
 .\scripts\test-game.cmd
 ```
 
-`sync`는 18개 열의 이름·순서, 숫자 형식, 확률 범위, 중복 ID를 확인한 뒤에만 `game/features/weapon_balance/data/weapon_balance.csv`를 교체합니다. 그 다음 설정을 `source_mode = 0`으로 돌리면 확정 수치만 사용합니다.
+`sync`는 A열의 필수 변수명, 숫자 형식, 확률 범위, 중복 ID를 확인하고 `runtime_enabled`가 켜진 무기만 세로형 배포 CSV로 변환한 뒤 `game/features/weapon_balance/data/weapon_balance.csv`를 교체합니다. 그 다음 설정을 `source_mode = 0`으로 돌리면 확정 수치만 사용합니다.
 
 ## 모듈 경계와 제거
 
@@ -89,4 +100,4 @@ game.gd             위 세 계약을 조립하고 HUD에 표시
 
 ## 검색 별칭
 
-Q키, 무기 바꾸기, 주무기 교체, 부무기 교체, 실시간 밸런싱, 구글 스프레드시트, 시트 연동, CSV 내보내기, 수치 확정, 핫 리로드, 자동 조준, 에임 없음, 3점사, 관통탄
+Q키, 무기 바꾸기, 주무기 교체, 부무기 교체, 실시간 밸런싱, 구글 스프레드시트, Weapon 시트, Armor 시트, Item 시트, 변수명 1열, 설명 2열, CSV 내보내기, 수치 확정, 핫 리로드, 자동 조준, 에임 없음, 3점사, 관통탄

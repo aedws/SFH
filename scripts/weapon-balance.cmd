@@ -10,15 +10,21 @@ if not defined SFH_PYTHON (
   exit /b 1
 )
 if "%~1"=="" goto usage
-if /i "%~1"=="check" (
-  %SFH_PYTHON% scripts\sync_weapon_balance.py --check
-  exit /b %errorlevel%
-)
-if /i "%~1"=="sync" (
-  if "%~2"=="" goto usage
-  %SFH_PYTHON% scripts\sync_weapon_balance.py --url "%~2"
-  exit /b %errorlevel%
-)
+if /i "%~1"=="check" goto check
+if /i "%~1"=="sync" goto sync
+goto usage
+
+:check
+%SFH_PYTHON% scripts\sync_weapon_balance.py --check
+exit /b %errorlevel%
+
+:sync
+if "%~2"=="" goto usage
+set "SFH_BALANCE_URL=%~2"
+if not "%~3"=="" set "SFH_BALANCE_URL=%SFH_BALANCE_URL%=%~3"
+%SFH_PYTHON% scripts\sync_weapon_balance.py --url "%SFH_BALANCE_URL%"
+exit /b %errorlevel%
+
 :usage
 echo Usage: scripts\weapon-balance.cmd check
 echo        scripts\weapon-balance.cmd sync "GOOGLE_SHEETS_CSV_URL"
