@@ -8,6 +8,8 @@ const EQUIPMENT_SCENE_PATH := "res://game/features/equipment/equipment_system.ts
 const EQUIPMENT_LOADOUT_PATH := "res://game/features/equipment/loadouts/default_loadout.tres"
 const INVENTORY_SCENE_PATH := "res://game/features/inventory/grid_inventory.tscn"
 const INVENTORY_CATALOG_PATH := "res://game/features/inventory/catalogs/default_inventory.tres"
+const WEAPON_BALANCE_SCENE_PATH := "res://game/features/weapon_balance/weapon_balance_service.tscn"
+const WEAPON_BALANCE_CONFIG_PATH := "res://game/features/weapon_balance/configs/default_weapon_balance.tres"
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
@@ -19,6 +21,8 @@ func _init() -> void:
 	if not _verify_map_tiers():
 		return
 	if not _verify_inventory_modules():
+		return
+	if not await _verify_weapon_balance_modules():
 		return
 	if not await _verify_equipment_modules():
 		return
@@ -34,6 +38,8 @@ func _init() -> void:
 	if not await _verify_optional_map_module(game_scene):
 		return
 	if not await _verify_optional_equipment_module(game_scene):
+		return
+	if not await _verify_optional_weapon_balance_module(game_scene):
 		return
 	if not await _verify_extraction_flow(game_scene):
 		return
@@ -163,6 +169,14 @@ func _verify_equipment_modules() -> bool:
 		failure_message = "장비 방어력이 플레이어에 적용되지 않았습니다."
 	elif not is_equal_approx(float(player.get_node("Movement").get("speed")), 280.0):
 		failure_message = "장비 이동 속도가 플레이어에 적용되지 않았습니다."
+	elif equipment.call(&"get_active_weapon_slot") != &"main":
+		failure_message = "초기 활성 무기가 메인 슬롯이 아닙니다."
+	elif not equipment.call(&"switch_active_weapon"):
+		failure_message = "보조 무기로 교체하지 못했습니다."
+	elif equipment.call(&"get_active_weapon").weapon_id != &"service_pistol":
+		failure_message = "Q 교체용 활성 무기 상태가 권총으로 바뀌지 않았습니다."
+	elif not equipment.call(&"switch_active_weapon"):
+		failure_message = "메인 무기로 복귀하지 못했습니다."
 	else:
 		player.call(&"take_damage", 10.0)
 		if not is_equal_approx(float(player.get("current_health")), 118.0):
@@ -225,6 +239,43 @@ func _verify_equipment_modules() -> bool:
 	player.free()
 	if not failure_message.is_empty():
 		_fail("장비 모듈 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_weapon_balance_modules() -> bool:
+	var balance_scene := load(WEAPON_BALANCE_SCENE_PATH) as PackedScene
+	var balance_config := load(WEAPON_BALANCE_CONFIG_PATH) as WeaponBalanceConfig
+	if balance_scene == null or balance_config == null:
+		_fail("무기 밸런스 Scene 또는 Config를 불러오지 못했습니다.")
+		return false
+	var service := balance_scene.instantiate()
+	root.add_child(service)
+	await process_frame
+	var failure_message := ""
+	if not service.call(&"configure", balance_config):
+		failure_message = "확정 무기 밸런스 CSV 로드에 실패했습니다."
+	else:
+		var rifle: Dictionary = service.call(&"get_weapon_balance", &"assault_rifle")
+		var pistol: Dictionary = service.call(&"get_weapon_balance", &"service_pistol")
+		if rifle.is_empty() or pistol.is_empty():
+			failure_message = "소총 또는 권총 밸런스 행이 없습니다."
+		elif int(rifle.get(&"burst_count", 0)) != 3:
+			failure_message = "돌격소총 3점사 특색이 적용되지 않았습니다."
+		elif float(rifle.get(&"target_range_px", 0.0)) <= float(pistol.get(&"target_range_px", 0.0)):
+			failure_message = "돌격소총의 장거리 특색이 권총보다 낮습니다."
+		elif float(pistol.get(&"damage", 0.0)) <= float(rifle.get(&"damage", 0.0)):
+			failure_message = "권총의 고위력 단발 특색이 적용되지 않았습니다."
+		elif int(pistol.get(&"pierce_count", 0)) != 1:
+			failure_message = "권총의 1회 관통 특색이 적용되지 않았습니다."
+		elif service.call(&"load_csv_text", "weapon_id,damage\nbroken,1", "오류 테스트"):
+			failure_message = "필수 열이 없는 밸런스 CSV를 허용했습니다."
+	if not _has_key_binding(&"switch_weapon", KEY_Q):
+		failure_message = "switch_weapon 입력에 Q 키가 할당되지 않았습니다."
+	root.remove_child(service)
+	service.free()
+	if not failure_message.is_empty():
+		_fail("무기 밸런스 모듈 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -301,6 +352,33 @@ func _verify_optional_equipment_module(game_scene: PackedScene) -> bool:
 	await process_frame
 	if not failure_message.is_empty():
 		_fail("장비 모듈 비활성화 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_optional_weapon_balance_module(game_scene: PackedScene) -> bool:
+	var balance_free_game := game_scene.instantiate()
+	var balance_free_features = balance_free_game.get("features").duplicate(true)
+	balance_free_features.set("weapon_balance_enabled", false)
+	balance_free_features.set("run_setup_enabled", false)
+	balance_free_game.set("features", balance_free_features)
+	root.add_child(balance_free_game)
+	await process_frame
+	var failure_message := ""
+	var weapon = balance_free_game.get("auto_weapon")
+	if balance_free_game.get("weapon_balance_service") != null:
+		failure_message = "비활성화했지만 무기 밸런스 서비스가 설치됐습니다."
+	elif weapon == null:
+		failure_message = "밸런스 모듈과 함께 자동 무기까지 제거됐습니다."
+	else:
+		var snapshot: Dictionary = weapon.call(&"get_runtime_snapshot")
+		if snapshot.get(&"source_label", "") != "내장 기본값":
+			failure_message = "밸런스 비활성화 시 자동 무기 기본값으로 폴백하지 않았습니다."
+	root.remove_child(balance_free_game)
+	balance_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("무기 밸런스 모듈 비활성화 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -539,9 +617,25 @@ func _process(_delta: float) -> bool:
 		) as Label
 		if "스킬 2/3 활성" not in equipment_label.text or "방어 3" not in equipment_label.text:
 			return _fail("장비 HUD에 무기·스킬·방어구 상태가 표시되지 않았습니다.")
+		var balance = game_instance.get("weapon_balance_service")
+		if balance == null or balance.call(&"get_snapshot").size() != 2:
+			return _fail("무기 밸런스 모듈이 Game 조립 지점에 설치되지 않았습니다.")
+		if not equipment.call(&"switch_active_weapon"):
+			return _fail("런타임 Q 무기 교체 상태 전환이 실패했습니다.")
 
 		enemies[0].call(&"take_damage", 9999.0)
 		progression.call(&"gain_experience", 5)
+
+	if frame_count == 121:
+		var weapon = game_instance.get("auto_weapon")
+		var snapshot: Dictionary = weapon.call(&"get_runtime_snapshot")
+		var runtime_label := game_instance.get_node(
+			"UI/HUDMargin/Panel/Margin/Content/WeaponRuntimeLabel"
+		) as Label
+		if snapshot.get(&"active_weapon_id", &"") != &"service_pistol":
+			return _fail("무기 교체가 자동 공격 런타임에 반영되지 않았습니다.")
+		if "고위력 관통" not in runtime_label.text or "확정 CSV" not in runtime_label.text:
+			return _fail("무기 특색 또는 밸런스 출처가 HUD에 표시되지 않았습니다.")
 
 	if frame_count == 125:
 		if int(game_instance.get("defeated_enemies")) < 1:
@@ -562,7 +656,7 @@ func _process(_delta: float) -> bool:
 			return _fail("게임오버 상태가 적용되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup tier_entry map minimap equipment loadout weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u parts module_cost module_upgrade modification_tag equipment_optional realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
+		print("SMOKE_TEST_OK run_setup tier_entry map minimap equipment loadout weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade modification_tag equipment_optional realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon experience leveling extraction_f game_over")
 		quit(0)
 		return true
 

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/weapon_balance/weapon_balance_service.gd" id="1_service"]
+
+[node name="WeaponBalanceService" type="Node"]
+script = ExtResource("1_service")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+timeout = 10.0
