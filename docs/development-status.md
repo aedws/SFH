@@ -19,6 +19,32 @@ tags:
 
 <div class="sfh-release-stats"><span>최신 2026-08-30</span><span>2 days documented</span><span>자동 검증 PASS</span><span>main deployed</span></div>
 
+## 기획 기준 진행도
+
+<div class="sfh-progress-panel">
+  <div class="sfh-progress-heading">
+    <span><small>PLANNING PROGRESS · 2026-08-30</small><strong>현재 기획 진행도</strong></span>
+    <b>40%</b>
+  </div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><i style="width: 40%"></i></div>
+  <p>노션에서 명시적으로 확정된 전투 원칙을 가장 크게 반영하고, 저장소에서 실제로 확인되는 기능만 완료 또는 부분 완료로 계산합니다.</p>
+</div>
+
+기획 원본은 [SFH 프로젝트 노션](https://app.notion.com/p/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 현재 네 개 Phase 체크박스는 모두 미체크 상태이므로 체크 여부를 완료율로 간주하지 않고, 아래처럼 실제 빌드와 코드 계약을 대조했습니다.
+
+| 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
+|---|---:|---:|---|
+| 확정 전투 원칙 | ×3 | 70% | 수동 조준 없는 이동·자동 공격은 구현, 실제 스킬 트리거와 쿨타임·자원 운용은 미구현 |
+| 스마트 오토 타겟팅 `(미확정)` | ×1 | 20% | 가장 가까운 적 자동 공격만 구현, 최대 HP·등급·밀집도 규칙은 미구현 |
+| 코어 플레이 루프 | ×2 | 50% | 작전 선택·탐험·사냥·파밍·탈출·사망 흐름은 연결, 탈출 방어전과 영속 정산은 미구현 |
+| 로비 인베스트먼트·타겟 파밍 | ×1 | 30% | 소·중·대형 선택과 티어별 맵·보상 기반은 구현, 비용 지불·지역·난이도·보스·드랍 테이블은 미구현 |
+| 성장·순환형 해금 | ×1 | 15% | 기본 로드아웃과 작전 내 크레딧만 존재, 영구 해금 상점·소모성 로드아웃·저장은 미구현 |
+| 무기 태그·스킬 장착 | ×1 | 60% | 무기 3단계 태그와 스킬 호환·0~10개 제한은 구현, 스킬 실행·등급별 변형·연계 효과는 미구현 |
+| 페널티 모디파이어 | ×1 | 0% | 미구현 |
+| 조건부 랭킹 | ×1 | 0% | 미구현 |
+
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`이며 결과 `39.5%`를 정수로 반올림해 **40%**로 표시합니다. 이후 “진행도 체크” 요청이 들어오면 먼저 위 노션을 다시 읽고, 확정·미확정 표시와 Phase 상태를 확인한 뒤 저장소 검증 결과로 이 표를 갱신합니다.
+
 <div class="sfh-notes">
 <details class="sfh-day" open>
   <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>무기 밸런스 · 격자 가방 · 장비 개조</small></span><em class="sfh-chevron">⌃</em></summary>

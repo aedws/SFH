@@ -31,6 +31,15 @@ hide:
     </div>
   </div>
   <aside class="sfh-operation-card">
+    <div class="sfh-progress-summary">
+      <div class="sfh-progress-heading">
+        <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
+        <b>40%</b>
+      </div>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><i style="width: 40%"></i></div>
+      <p>확정 전투 원칙 3× · 코어 루프 2× · 기타 요구사항 1× 가중치</p>
+      <a href="development-status/#_1">산정 근거 확인 →</a>
+    </div>
     <header><strong>현재 빌드 상태</strong><b class="sfh-live">PLAYABLE</b></header>
     <p>작전 규모 선택부터 전투·파밍·탈출 또는 사망까지 최소 게임 루프가 연결되어 있습니다.</p>
     <div class="sfh-operation-grid">
