@@ -13,9 +13,13 @@ signal defeated(reward: int, world_position: Vector2)
 @onready var heading: Polygon2D = $Heading
 
 var target: Node2D
+var navigation_provider: Node
 var current_health: float
 var damage_enabled: bool = true
 var contact_cooldown: float = 0.0
+var repath_cooldown: float = 0.0
+var current_path := PackedVector2Array()
+var path_index: int = 0
 
 
 func _ready() -> void:
@@ -23,21 +27,46 @@ func _ready() -> void:
 	current_health = max_health
 
 
-func configure(new_target: Node2D, contact_damage_enabled: bool) -> void:
+func configure(
+	new_target: Node2D,
+	contact_damage_enabled: bool,
+	new_navigation_provider: Node = null
+) -> void:
 	target = new_target
 	damage_enabled = contact_damage_enabled
+	navigation_provider = new_navigation_provider
 
 
 func _physics_process(delta: float) -> void:
 	contact_cooldown = maxf(0.0, contact_cooldown - delta)
+	repath_cooldown = maxf(0.0, repath_cooldown - delta)
 
 	if is_instance_valid(target):
-		var direction := global_position.direction_to(target.global_position)
+		var destination := target.global_position
+		if is_instance_valid(navigation_provider):
+			_update_navigation_path()
+			if path_index < current_path.size():
+				destination = current_path[path_index]
+				if global_position.distance_to(destination) <= 12.0:
+					path_index += 1
+					if path_index < current_path.size():
+						destination = current_path[path_index]
+
+		var direction := global_position.direction_to(destination)
 		velocity = direction * move_speed
 		heading.rotation = direction.angle()
 		move_and_slide()
 
 	_try_contact_damage()
+
+
+func _update_navigation_path() -> void:
+	if repath_cooldown > 0.0 and path_index < current_path.size():
+		return
+
+	current_path = navigation_provider.call(&"get_world_path", global_position, target.global_position)
+	path_index = 1 if current_path.size() > 1 else 0
+	repath_cooldown = 0.45
 
 
 func take_damage(amount: float) -> void:

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MapTierConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/map_generation/map_tier_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+tier_id = &"medium"
+display_name = "중형"
+entry_cost = 300
+minimum_rooms = 9
+maximum_rooms = 14
+minimum_room_size = Vector2i(7, 6)
+maximum_room_size = Vector2i(12, 9)

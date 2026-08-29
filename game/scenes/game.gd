@@ -3,6 +3,8 @@ extends Node2D
 ## 최상위 조립 지점입니다. 기능은 활성화됐을 때만 경로로 불러옵니다.
 
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
+const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
+const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
 const SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
@@ -14,10 +16,12 @@ const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_syst
 @onready var projectiles_container: Node2D = $World/Projectiles
 @onready var pickups_container: Node2D = $World/Pickups
 @onready var module_container: Node = $Modules
+@onready var world_container: Node2D = $World
 @onready var status_label: Label = %StatusLabel
 @onready var time_label: Label = %TimeLabel
 @onready var level_label: Label = %LevelLabel
 @onready var kills_label: Label = %KillsLabel
+@onready var map_label: Label = %MapLabel
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var health_label: Label = %HealthLabel
 @onready var experience_bar: ProgressBar = %ExperienceBar
@@ -27,6 +31,7 @@ const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_syst
 @onready var restart_button: Button = %RestartButton
 
 var player
+var map_generator
 var enemy_spawner
 var auto_weapon
 var progression_system
@@ -50,13 +55,26 @@ func _ready() -> void:
 		status_label.text = "설정 오류: %s" % " / ".join(configuration_errors)
 		return
 
+	var player_spawn_position := Vector2.ZERO
 	if features.player_enabled:
+		if features.map_generation_enabled:
+			map_generator = _instantiate_feature(MAP_GENERATOR_SCENE_PATH, world_container, &"GeneratedMap")
+			if map_generator != null:
+				map_generator.connect(&"map_generated", Callable(self, &"_on_map_generated"))
+				var map_config_path := MAP_CONFIG_PATH_PATTERN % features.map_size
+				if ResourceLoader.exists(map_config_path):
+					var map_config := load(map_config_path)
+					map_generator.call(&"generate", map_config, features.map_seed)
+					player_spawn_position = map_generator.call(&"get_player_spawn_position")
+				else:
+					_report_configuration_error("맵 설정을 찾을 수 없습니다: %s" % map_config_path)
+
 		player = _instantiate_feature(PLAYER_SCENE_PATH, actors_container, &"Player")
 	if player == null:
 		_report_configuration_error("플레이어 모듈을 설치하지 못했습니다.")
 		return
 
-	player.global_position = Vector2.ZERO
+	player.global_position = player_spawn_position
 	player.call(&"configure_damage", features.damage_enabled)
 	player.connect(&"health_changed", Callable(self, &"_on_player_health_changed"))
 	player.connect(&"died", Callable(self, &"_on_player_died"))
@@ -79,7 +97,13 @@ func _ready() -> void:
 		enemy_spawner = _instantiate_feature(SPAWNER_SCENE_PATH, module_container, &"EnemySpawner")
 		if enemy_spawner != null:
 			enemy_spawner.connect(&"enemy_spawned", Callable(self, &"_on_enemy_spawned"))
-			enemy_spawner.call(&"configure", player, enemies_container, features.damage_enabled)
+			enemy_spawner.call(
+				&"configure",
+				player,
+				enemies_container,
+				features.damage_enabled,
+				map_generator
+			)
 
 	var enabled_names := PackedStringArray()
 	for module_id in features.enabled_module_ids():
@@ -124,6 +148,22 @@ func _instantiate_feature(path: String, parent: Node, display_name: StringName) 
 func _on_enemy_spawned(enemy: Node) -> void:
 	if enemy.has_signal(&"defeated"):
 		enemy.connect(&"defeated", Callable(self, &"_on_enemy_defeated"))
+
+
+func _on_map_generated(
+	display_name: String,
+	entry_cost: int,
+	room_count: int,
+	maximum_rooms: int,
+	used_seed: int
+) -> void:
+	map_label.text = "%s 맵 · 투자 %d · 방 %d/%d · 시드 %d" % [
+		display_name,
+		entry_cost,
+		room_count,
+		maximum_rooms,
+		used_seed
+	]
 
 
 func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:

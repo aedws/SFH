@@ -72,6 +72,11 @@ text = "레벨 1"
 unique_name_in_owner = true
 text = "처치 0"
 
+[node name="MapLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow"]
+unique_name_in_owner = true
+text = "맵 생성 중..."
+theme_override_colors/font_color = Color(1, 0.72, 0.36, 1)
+
 [node name="HealthRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content"]
 
 [node name="Caption" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/HealthRow"]

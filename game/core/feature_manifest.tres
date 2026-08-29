@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_manifest")
 player_enabled = true
+map_generation_enabled = true
 enemies_enabled = true
 spawning_enabled = true
 weapons_enabled = true
@@ -12,3 +13,5 @@ damage_enabled = true
 experience_enabled = true
 leveling_enabled = true
 game_over_enabled = true
+map_size = "small"
+map_seed = 0

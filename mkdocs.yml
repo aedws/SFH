@@ -71,6 +71,7 @@ nav:
       - Signal 규칙: architecture/signals.md
   - 기능:
       - features/index.md
+      - 랜덤 맵 생성: features/map-generation.md
       - 플레이어: features/player.md
       - 적과 생성 시스템: features/enemies.md
       - 자동 무기: features/weapons.md

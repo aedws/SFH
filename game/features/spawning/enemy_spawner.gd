@@ -11,15 +11,22 @@ signal enemy_spawned(enemy: Node)
 
 var target: Node2D
 var enemy_parent: Node2D
+var map_provider: Node
 var contact_damage_enabled: bool = true
 var elapsed_time: float = 0.0
 var spawn_cooldown: float = 0.15
 
 
-func configure(new_target: Node2D, new_enemy_parent: Node2D, enable_contact_damage: bool) -> void:
+func configure(
+	new_target: Node2D,
+	new_enemy_parent: Node2D,
+	enable_contact_damage: bool,
+	new_map_provider: Node = null
+) -> void:
 	target = new_target
 	enemy_parent = new_enemy_parent
 	contact_damage_enabled = enable_contact_damage
+	map_provider = new_map_provider
 
 
 func _process(delta: float) -> void:
@@ -50,7 +57,15 @@ func _spawn_enemy() -> void:
 
 	var angle := randf_range(0.0, TAU)
 	var distance := randf_range(spawn_radius * 0.85, spawn_radius * 1.15)
+	var spawn_position := target.global_position + Vector2.RIGHT.rotated(angle) * distance
+	if is_instance_valid(map_provider) and map_provider.has_method(&"get_enemy_spawn_position"):
+		spawn_position = map_provider.call(
+			&"get_enemy_spawn_position",
+			target.global_position,
+			spawn_radius * 0.5
+		)
+
 	enemy_parent.add_child(enemy)
-	enemy.global_position = target.global_position + Vector2.RIGHT.rotated(angle) * distance
-	enemy.call(&"configure", target, contact_damage_enabled)
+	enemy.global_position = spawn_position
+	enemy.call(&"configure", target, contact_damage_enabled, map_provider)
 	enemy_spawned.emit(enemy)
