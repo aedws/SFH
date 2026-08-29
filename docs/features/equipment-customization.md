@@ -55,7 +55,7 @@ tags:
 
 `cost_by_upgrade_level` 배열이 강화 단계별 코스트를 정의합니다. 예를 들어 `[4, 3, 2]`는 기본 코스트 4, 1강 3, 2강 2를 뜻합니다.
 
-강화 재료와 재화는 아직 확정되지 않아 `upgrade_module()`은 규칙 적용만 담당합니다. 이후 경제 모듈이 비용을 검증한 다음 이 API를 호출하도록 연결합니다.
+장비 자체의 `upgrade_module()`은 규칙 적용만 담당합니다. 별도 `EquipmentUpgradeService`가 동일 모듈 아이템과 휴대 크레딧을 확인·소비한 뒤 이 API를 호출합니다. 고유 파츠도 같은 방식으로 최대 3레벨까지 강화합니다. 현재 비용은 [모듈·고유 파츠 강화 경제](equipment-upgrade-economy.md)에서 확인합니다.
 
 ## 장비 레벨과 최고 레벨 개조
 
@@ -73,13 +73,13 @@ tags:
 
 - 파츠·모듈의 능력치는 `EquipmentStatModifier`로 집계
 - 특수 기능은 ID만 선언하고 향후 별도 실행기가 소비
-- 레벨 경험치·강화 재료·비용은 장비 시스템 밖에서 승인
+- 레벨 경험치는 외부 성장 모듈, 강화 재료·비용은 강화 경제 모듈에서 승인
 - 장비 변경 때 스킬 태그 호환성과 플레이어 스탯을 다시 계산
 - 모든 상태는 슬롯별 `EquipmentItemState`에 격리
 
 ## 기능 토글과 의존성
 
-`equipment_customization_enabled`는 `equipment_enabled`와 `inventory_enabled`가 모두 필요합니다. 끄면 U 화면만 설치되지 않고 기존 기본 로드아웃과 I 가방은 독립적으로 유지할 수 있습니다.
+`equipment_customization_enabled`는 `equipment_enabled`와 `inventory_enabled`가 모두 필요합니다. 유료 강화는 별도 `equipment_upgrade_economy_enabled`로 끌 수 있습니다. 장비 개조를 끄면 U 화면만 설치되지 않고 기존 기본 로드아웃과 I 가방은 독립적으로 유지할 수 있습니다.
 
 ## 검색 별칭
 

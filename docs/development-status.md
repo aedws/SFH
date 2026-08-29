@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>2 days documented</span><span>자동 검증 PASS</span><span>main deployed</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>내부·외부 성장</span><span>자동 검증 PASS</span><span>배포 진행</span></div>
 
 ## 기획 기준 진행도
 
@@ -47,7 +47,33 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>무기 밸런스 · 격자 가방 · 장비 개조</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>로그라이크 성장 · 강화 경제 · 모듈 전수 점검</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 5개 주제</strong>
+      <ul>
+        <li>내부 레벨업마다 최대 3개의 임시 버프 선택지를 표시합니다.</li>
+        <li>한 판에서 선택한 버프 수를 캐릭터·무기·방어구 외부 경험치로 분류합니다.</li>
+        <li>작전 종료 시 세 계열을 독립 레벨업하고 영구 효과와 JSON 저장을 적용합니다.</li>
+        <li>모듈·고유 파츠 강화에 동일 아이템과 크레딧 비용 정책을 연결했습니다.</li>
+        <li>전체 기능의 토글·공개 계약·비활성화 폴백을 다시 검증했습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>모듈 감사 결론</b><span>현재 기능은 모두 공개 계약과 Manifest 토글로 분리되어 있습니다. 중앙 Game 조립부는 다음 대규모 기능 전에 설치 객체로 나눌 권장 개선점이 남았습니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 3</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">한 판 임시 버프 선택</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>생존·기동·화력·공속·장갑 버프를 Resource 카탈로그로 제공하고 중첩 적용합니다.</p><a href="../features/progression/">성장 문서 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">세 계열 외부 레벨과 저장</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>선택 수량을 외부 XP로 바꾸고 캐릭터·무기·방어구 레벨을 독립 저장합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">별도 장비 강화 경제</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>모듈과 파츠가 동일 아이템 1개와 단계별 크레딧을 소비하도록 구성했습니다.</p><a href="../features/equipment-upgrade-economy/">강화 경제 문서 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>🧩 수정 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">출처별 스탯 합산</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비, 한 판 버프, 외부 레벨이 서로 덮어쓰지 않고 출처 ID별로 합산됩니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">공개 계약 전수 점검</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>크레딧 내부 필드 직접 조회를 스냅샷 계약으로 교체하고 신규 모듈 토글을 검증했습니다.</p><a href="../architecture/module-audit/">감사 결과 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>무기 밸런스 · 격자 가방 · 장비 개조</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 6개 주제</strong>
@@ -129,9 +155,10 @@ tags:
 | 기본 작전 루프 | ✅ 플레이 가능 | 작전 선택 → 전투·파밍 → F 탈출 또는 사망 | 로비·반출 결과 |
 | 랜덤 맵·미니맵 | 🧱 기반 완료 | 3개 규모, 실내 벽·기둥, A*, 전체 지도 | 바이옴·특수 방 |
 | 장비·스킬 | 🧱 기반 완료 | 태그, 파츠, 모듈, 강화, 개조 | 특수 효과 실행기 |
+| 로그라이크 성장 | 🧱 기반 완료 | 내부 XP·5종 버프·3계열 외부 레벨·저장 | 수치 정책·로비 성장 UI |
 | 격자 가방 | 🧱 기반 완료 | 가변 점유, I UI, 장비 연동 | 영속 창고·전리품 반출 |
 | 무기 밸런스 | 🧱 기반 완료 | Q 교체, 2종 특색, Sheet/CSV | 신규 무기·수치 확정 |
-| 경제·저장 | ⏳ 설계 대기 | 작전 내 휴대·회수 크레딧 | 로비 재화·저장 |
+| 경제·저장 | 🧱 기반 진행 | 작전 크레딧 회수, 파츠·모듈 강화 비용, 외부 성장 저장 | 로비 재화·창고 저장 |
 
 ## 자동 검증 기준
 
@@ -140,7 +167,9 @@ tags:
 - 소·중·대형 작전 진입과 연결된 맵
 - Q 무기 교체, 소총 3점사, 권총 관통, 확정 CSV
 - I 가변 격자 가방과 U 파츠·모듈·강화·개조
-- 적 체력·방어력, 플레이어 HUD, 경험치·레벨
+- 적 체력·방어력, 플레이어 HUD, 내부 XP와 버프 선택·중첩
+- 작전 종료 외부 XP 정산, 캐릭터·무기·방어구 레벨과 저장
+- 동일 아이템·크레딧을 소비하는 모듈·고유 파츠 강화
 - 1회성 파밍, 크레딧 회수, F 탈출과 게임오버
 - 장비·맵·무기 밸런스 선택 모듈 비활성화 폴백
 
@@ -150,8 +179,8 @@ tags:
 
 | 항목 | 현재 처리 | 연결 예정 모듈 |
 |---|---|---|
-| 강화 재료·비용 | 규칙과 API만 구현 | 로비 경제·제작 |
-| 장비 경험치 | 레벨 상승 API만 구현 | 전투 보상·숙련도 |
+| 강화 재료·비용 | 동일 아이템 + 작전 크레딧 최소 정책 | 로비 재화·제작·재료 다양화 |
+| 외부 성장 수치 | 고정 최소 정책과 JSON 저장 | 밸런스 시트·로비 성장 UI |
 | 특수 기능 | `special_feature_ids`로 선언 | 효과 실행기 |
 | 영속 가방 | 작전 런타임 데이터 | 저장·창고·전리품 반출 |
 | 장비 교체 UX | Q 즉시 전환, U 첫 호환 아이템 | 직접 선택·비교 UI |

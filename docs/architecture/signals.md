@@ -10,6 +10,9 @@ Signal 이름은 이미 발생한 사건처럼 작성합니다.
 signal health_changed(current: float, maximum: float)
 signal enemy_defeated(enemy_id: StringName)
 signal experience_collected(amount: int)
+signal buff_selected(buff_id: StringName, stacks: int)
+signal run_settled(result: Dictionary)
+signal upgrade_completed(result: Dictionary)
 ```
 
 ## 사용 기준

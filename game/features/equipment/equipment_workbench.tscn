@@ -105,6 +105,12 @@ custom_minimum_size = Vector2(220, 44)
 layout_mode = 2
 text = "고유 파츠 장착"
 
+[node name="UpgradePartButton" type="Button" parent="Margin/Content/Tabs/무기/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "고유 파츠 강화"
+
 [node name="WeaponModuleButton" type="Button" parent="Margin/Content/Tabs/무기/Actions"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 44)

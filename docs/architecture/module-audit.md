@@ -11,6 +11,22 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-08-30 전체 기능 재점검
+
+현재 개발된 기능은 **FeatureManifest로 선택 가능하고 공개 메서드·Signal·Resource 경계가 드러난 모듈 구조**입니다. 이번 점검에서 내부 경험치, 임시 버프, 외부 성장, 장비 강화 경제를 각각 별도 폴더와 토글로 추가했으며, 강화 서비스가 크레딧 내부 변수를 직접 읽던 지점도 `get_snapshot()` 공개 계약으로 교체했습니다.
+
+| 점검 대상 | 결과 | 독립 비활성화·교체 근거 |
+|---|---|---|
+| 기존 맵·전투·장비·인벤토리·경제 | 통과 | 기존 토글·폴백 스모크 테스트 유지 |
+| 내부 XP와 레벨 | 통과 | `experience`, `leveling` 토글과 `ProgressionSystem`으로 분리 |
+| 한 판 임시 버프 | 통과 | `run_buffs` 토글, 카탈로그 Resource, 플레이어·무기 수정자 출처 계약 사용 |
+| 외부 성장·저장 | 통과 | `meta_progression` 토글, 세 계열 스냅샷과 JSON 저장을 독립 담당 |
+| 모듈·고유 파츠 강화 경제 | 통과 | 비용 정책, 인벤토리 소비, 크레딧 소비, 장비 상태 변경을 네 계약으로 분리 |
+| 선택 모듈 조합 | 통과 | 성장 3개 모듈과 강화 경제를 끈 상태에서도 기본 경험치·장비 루프 유지 |
+| 자동 검증 | 통과 | 버프 선택·중첩·외부 정산·세 계열 효과·재료/크레딧 소비를 스모크 테스트로 확인 |
+
+`Game`은 여전히 모든 설치 순서를 아는 중앙 조립 지점입니다. 이는 의도된 결합이며 기능 구현은 포함하지 않습니다. 다만 설치 대상이 늘어 조립 코드가 커졌으므로 다음 대규모 기능 묶음을 추가하기 전에는 기능별 `install(context)` 설치 객체로 나누는 것이 권장됩니다. 현재 기능을 끄거나 교체하는 데 막히는 숨은 Node 경로 의존성은 발견되지 않았습니다.
+
 ## 2026-08-29 랜덤 맵 모듈
 
 결론은 **MVP 단계에서 교체 가능한 선택 모듈로 분리되어 있음**입니다. 맵의 생성 알고리즘과 등급 데이터는 한 기능 폴더 안에 있고, 플레이어·적·무기 모듈은 `MapTierConfig`나 방 배열을 직접 알지 않습니다.
@@ -143,6 +159,32 @@ tags:
 
 가방은 장비 클래스나 태그를 모르며 `InventoryItemDefinition.linked_resource`를 보존하기만 합니다. 장착 성공 여부와 아이템 제거 순서는 U 화면이 공개 계약을 통해 조정합니다.
 
+## 로그라이크 성장 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 내부 레벨 | `level_gained`, `get_run_snapshot` | `Game`, 버프 선택 흐름 |
+| 임시 버프 | `prepare_choices`, `select_buff`, `get_snapshot` | 선택 UI와 조립부 |
+| 임시 버프 | `get_meta_experience_breakdown` | 외부 성장 |
+| 플레이어 | `set_runtime_modifier_source(source, modifiers)` | 장비·임시 버프·외부 캐릭터 성장 |
+| 자동 무기 | `set_runtime_modifiers(source, modifiers)` | 임시 버프·외부 무기 성장 |
+| 외부 성장 | `settle_run`, `apply_to_targets`, `get_snapshot` | 작전 종료 조립부 |
+| 장비 | `set_external_armor_level(level)` | 외부 방어구 성장 |
+
+버프와 외부 성장은 서로의 구체 클래스를 참조하지 않습니다. 선택 수량을 `{ character, weapon, armor }` 스냅샷으로 넘기며, 효과는 출처 ID별 수정자로 합산됩니다.
+
+## 장비 강화 경제 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 장비 | `get_upgrade_context`, `upgrade_module`, `upgrade_part` | 강화 서비스 |
+| 인벤토리 | `find_instance_ids_by_resource`, `consume_linked_resource` | 강화 서비스 |
+| 크레딧 | `get_snapshot`, `can_spend_carried`, `spend_carried` | 강화 서비스 |
+| 비용 정책 | `quote`, `validation_errors` | 강화 서비스 |
+| 강화 서비스 | `quote_upgrade`, `upgrade` | U 장비 화면 |
+
+장비는 가격이나 가방을 모르고, 가방은 강화 단계나 장비 슬롯을 모릅니다. 따라서 비용표·재화 종류·재료 정책을 교체해도 장비 상태 모델을 유지할 수 있습니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.
@@ -150,6 +192,7 @@ tags:
 - `Game`은 기본 장비 Scene과 선택된 로드아웃 Resource 경로를 알고, 장비는 플레이어의 스탯 적용 공개 메서드만 압니다.
 - `Game`은 인벤토리 카탈로그와 I/U 패널 Scene 경로를 알고, 가방과 장비 시스템은 서로의 내부 Node 경로를 참조하지 않습니다.
 - `Game`은 장비, 밸런스, 자동 무기의 조립 순서를 알지만 각 모듈은 서로의 내부 Node 경로를 참조하지 않습니다.
+- `Game`은 내부 레벨 → 버프 선택 → 외부 정산 순서와 장비 → 가방·원장 → 강화 서비스 순서를 압니다.
 - 플레이어, 적, 투사체는 생성 벽용 충돌 레이어 `16`을 공유합니다.
 - 맵 전용 스모크 테스트는 맵 기능 경로를 참조합니다. 맵 기능을 완전히 삭제하면 해당 테스트도 함께 제거하거나 교체해야 합니다.
 
@@ -162,11 +205,11 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `weapon_switch_q`, `weapon_balance_csv`, `rifle_burst`, `pistol_pierce`가 인벤토리·장비 검증 항목과 함께 포함됩니다. 이는 Q 교체, 확정 CSV, 소총 3점사, 권총 관통까지 자동 검증됐다는 뜻입니다.
+성공하면 출력에 `run_experience`, `run_buffs`, `buff_choice`, `meta_experience`, `character_level`, `weapon_level`, `armor_level`, `part_upgrade`, `upgrade_materials`, `upgrade_credits`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
 
 ## 다음 개선 시점
 
-모듈이 더 늘어나 `Game`의 조립 코드가 커지면 기능마다 설치 객체를 두고 공통 `install(context)` 계약으로 옮깁니다. 현재 규모에서는 문자열 지연 로딩과 명시적 계약 검사가 더 단순하고 추적하기 쉽습니다.
+다음 대규모 기능 묶음을 추가하기 전 `Game`의 설치 코드를 기능별 설치 객체로 옮기고 공통 `install(context)` 계약을 도입합니다. 문자열 지연 로딩과 명시적 메서드 검사는 유지합니다.
 
 ## 검색 별칭
 

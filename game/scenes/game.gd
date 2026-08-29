@@ -22,6 +22,14 @@ const WEAPON_BALANCE_SCENE_PATH := (
 	"res://game/features/weapon_balance/weapon_balance_service.tscn"
 )
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
+const RUN_BUFF_SCENE_PATH := "res://game/features/run_buffs/run_buff_system.tscn"
+const RUN_BUFF_SELECTOR_SCENE_PATH := "res://game/features/run_buffs/run_buff_selector.tscn"
+const META_PROGRESSION_SCENE_PATH := (
+	"res://game/features/meta_progression/meta_progression_system.tscn"
+)
+const EQUIPMENT_UPGRADE_SCENE_PATH := (
+	"res://game/features/equipment_upgrade/equipment_upgrade_service.tscn"
+)
 const MAP_GENERATOR_METHODS := [
 	&"configure_obstacles",
 	&"generate",
@@ -51,6 +59,9 @@ const EQUIPMENT_METHODS := [
 	&"get_active_weapon",
 	&"switch_active_weapon",
 	&"set_active_weapon_slot",
+	&"upgrade_part",
+	&"get_upgrade_context",
+	&"set_external_armor_level",
 ]
 const WEAPON_BALANCE_METHODS := [
 	&"configure",
@@ -66,12 +77,37 @@ const INVENTORY_METHODS := [
 	&"move_item",
 	&"take_item",
 	&"get_items_by_type",
+	&"find_instance_ids_by_resource",
+	&"consume_linked_resource",
 	&"get_snapshot",
 ]
 const PANEL_METHODS := [&"configure", &"open_panel", &"close_panel"]
 const EXTRACTION_METHODS := [&"configure", &"request_extraction"]
-const CREDIT_LEDGER_METHODS := [&"add_carried", &"secure_carried", &"lose_carried"]
+const CREDIT_LEDGER_METHODS := [
+	&"add_carried",
+	&"secure_carried",
+	&"lose_carried",
+	&"can_spend_carried",
+	&"spend_carried",
+	&"get_snapshot",
+]
 const LOOT_SPAWNER_METHODS := [&"configure"]
+const RUN_BUFF_METHODS := [
+	&"configure",
+	&"prepare_choices",
+	&"select_buff",
+	&"selected_buff_count",
+	&"get_meta_experience_breakdown",
+	&"get_snapshot",
+]
+const META_PROGRESSION_METHODS := [
+	&"configure",
+	&"settle_run",
+	&"apply_to_targets",
+	&"get_snapshot",
+	&"get_summary_line",
+]
+const EQUIPMENT_UPGRADE_METHODS := [&"configure", &"quote_upgrade", &"upgrade"]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 @export var features: FeatureManifest
@@ -124,6 +160,10 @@ var enemy_spawner
 var auto_weapon
 var weapon_balance_service
 var progression_system
+var run_buff_system
+var run_buff_selector
+var meta_progression_system
+var equipment_upgrade_service
 var current_map_config: Resource
 var selected_map_size: String = "small"
 var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CSV
@@ -131,6 +171,7 @@ var elapsed_time: float = 0.0
 var defeated_enemies: int = 0
 var run_started: bool = false
 var run_ended: bool = false
+var pending_buff_levels: Array[int] = []
 
 
 func _ready() -> void:
@@ -239,11 +280,13 @@ func _assemble_game() -> bool:
 		return false
 	if features.inventory_enabled and not _install_inventory():
 		return false
-	if features.equipment_customization_enabled and not _install_equipment_workbench():
-		return false
 
 	if features.credits_enabled:
 		_install_credit_ledger()
+	if features.equipment_upgrade_economy_enabled and not _install_equipment_upgrade_service():
+		return false
+	if features.equipment_customization_enabled and not _install_equipment_workbench():
+		return false
 
 	if features.extraction_enabled and map_generator != null:
 		_install_extraction_zone()
@@ -277,6 +320,10 @@ func _assemble_game() -> bool:
 				&"configure", projectiles_container, equipment_system, weapon_balance_service
 			)
 
+	if features.run_buffs_enabled and not _install_run_buffs():
+		return false
+	if features.meta_progression_enabled and not _install_meta_progression():
+		return false
 	if features.enemies_enabled and features.spawning_enabled:
 		enemy_spawner = _instantiate_feature(SPAWNER_SCENE_PATH, module_container, &"EnemySpawner")
 		if enemy_spawner != null:
@@ -293,6 +340,71 @@ func _assemble_game() -> bool:
 
 	status_label.text = "작전 진행 중 · Q 무기 교체 · F 상호작용 · I 가방 · U 장비"
 	return true
+
+
+func _install_run_buffs() -> bool:
+	if not ResourceLoader.exists(features.run_buff_catalog_path):
+		_report_configuration_error("런 버프 카탈로그를 찾을 수 없습니다.")
+		return false
+	run_buff_system = _instantiate_feature(RUN_BUFF_SCENE_PATH, module_container, &"RunBuffs")
+	if not _supports_methods(run_buff_system, RUN_BUFF_METHODS):
+		_report_configuration_error("런 버프 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not run_buff_system.call(
+		&"configure", player, auto_weapon, load(features.run_buff_catalog_path)
+	):
+		_report_configuration_error("런 버프 모듈을 구성하지 못했습니다.")
+		return false
+	run_buff_selector = _instantiate_feature(
+		RUN_BUFF_SELECTOR_SCENE_PATH, ui_layer, &"RunBuffSelector"
+	)
+	if run_buff_selector == null or not run_buff_selector.has_signal(&"buff_selected"):
+		_report_configuration_error("런 버프 선택 UI를 구성하지 못했습니다.")
+		return false
+	run_buff_selector.connect(&"buff_selected", Callable(self, &"_on_run_buff_selected"))
+	return true
+
+
+func _install_meta_progression() -> bool:
+	meta_progression_system = _instantiate_feature(
+		META_PROGRESSION_SCENE_PATH, module_container, &"MetaProgression"
+	)
+	if not _supports_methods(meta_progression_system, META_PROGRESSION_METHODS):
+		_report_configuration_error("외부 성장 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	var persistence_enabled := not OS.get_cmdline_args().has("--script")
+	if not meta_progression_system.call(
+		&"configure", features.meta_progression_storage_path, persistence_enabled
+	):
+		return false
+	meta_progression_system.call(
+		&"apply_to_targets", player, auto_weapon, equipment_system
+	)
+	return true
+
+
+func _install_equipment_upgrade_service() -> bool:
+	if (
+		equipment_system == null
+		or inventory_system == null
+		or credit_ledger == null
+		or not ResourceLoader.exists(features.equipment_upgrade_policy_path)
+	):
+		_report_configuration_error("장비 강화 경제 모듈의 의존성이 준비되지 않았습니다.")
+		return false
+	equipment_upgrade_service = _instantiate_feature(
+		EQUIPMENT_UPGRADE_SCENE_PATH, module_container, &"EquipmentUpgradeEconomy"
+	)
+	if not _supports_methods(equipment_upgrade_service, EQUIPMENT_UPGRADE_METHODS):
+		_report_configuration_error("장비 강화 경제 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	return bool(equipment_upgrade_service.call(
+		&"configure",
+		equipment_system,
+		inventory_system,
+		credit_ledger,
+		load(features.equipment_upgrade_policy_path)
+	))
 
 
 func _install_weapon_balance() -> bool:
@@ -422,7 +534,9 @@ func _install_equipment_workbench() -> bool:
 	if equipment_workbench == null or not _supports_panel(equipment_workbench):
 		_report_configuration_error("장비 개조 UI 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
-	if not equipment_workbench.call(&"configure", equipment_system, inventory_system):
+	if not equipment_workbench.call(
+		&"configure", equipment_system, inventory_system, equipment_upgrade_service
+	):
 		_report_configuration_error("장비 개조 UI를 연결하지 못했습니다.")
 		return false
 	return true
@@ -687,6 +801,15 @@ func _supports_loot_spawner(candidate: Node) -> bool:
 	return true
 
 
+func _supports_methods(candidate: Node, methods: Array) -> bool:
+	if not is_instance_valid(candidate):
+		return false
+	for method_name in methods:
+		if not candidate.has_method(method_name):
+			return false
+	return true
+
+
 func _on_enemy_spawned(enemy: Node) -> void:
 	if enemy.has_signal(&"defeated"):
 		enemy.connect(&"defeated", Callable(self, &"_on_enemy_defeated"))
@@ -814,10 +937,34 @@ func _on_progress_changed(level: int, current: int, required: int) -> void:
 
 
 func _on_level_increased(new_level: int) -> void:
-	if auto_weapon != null:
-		auto_weapon.call(&"apply_level", new_level)
-	if player != null:
-		player.call(&"heal", 12.0)
+	if run_buff_system == null or run_buff_selector == null:
+		if auto_weapon != null:
+			auto_weapon.call(&"apply_level", new_level)
+		if player != null:
+			player.call(&"heal", 12.0)
+		return
+	pending_buff_levels.append(new_level)
+	_show_next_run_buff_choice()
+
+
+func _show_next_run_buff_choice() -> void:
+	if pending_buff_levels.is_empty() or run_ended or run_buff_selector.visible:
+		return
+	var run_level: int = pending_buff_levels.pop_front()
+	var choices: Array[Dictionary] = run_buff_system.call(&"prepare_choices", run_level, 3)
+	if choices.is_empty():
+		_show_next_run_buff_choice()
+		return
+	run_buff_selector.call(&"open_choices", run_level, choices)
+
+
+func _on_run_buff_selected(buff_id: StringName) -> void:
+	if run_buff_system != null and run_buff_system.call(&"select_buff", buff_id):
+		var snapshot: Dictionary = run_buff_system.call(&"get_snapshot")
+		status_label.text = "임시 버프 %d개 활성 · 작전 종료 시 외부 경험치 전환" % int(
+			snapshot[&"selected_buff_count"]
+		)
+	_show_next_run_buff_choice()
 
 
 func _on_player_died() -> void:
@@ -841,9 +988,23 @@ func _finish_run(title: String, summary: String) -> void:
 	if run_ended:
 		return
 	run_ended = true
+	if run_buff_selector != null and run_buff_selector.visible:
+		run_buff_selector.call(&"close_panel")
+	pending_buff_levels.clear()
+	var final_summary := summary
+	if meta_progression_system != null and run_buff_system != null:
+		var settlement: Dictionary = meta_progression_system.call(
+			&"settle_run", run_buff_system.call(&"get_meta_experience_breakdown")
+		)
+		meta_progression_system.call(
+			&"apply_to_targets", player, auto_weapon, equipment_system
+		)
+		final_summary += "\n" + String(meta_progression_system.call(
+			&"get_summary_line", settlement[&"gained_experience"]
+		))
 	interaction_label.visible = false
 	end_title.text = title
-	game_over_summary.text = summary
+	game_over_summary.text = final_summary
 	restart_button.text = "새 작전 선택 (Enter)"
 	game_over_overlay.visible = true
 	get_tree().paused = true

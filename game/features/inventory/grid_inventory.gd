@@ -100,6 +100,28 @@ func get_items_by_type(item_type: StringName) -> Array[Dictionary]:
 	return result
 
 
+func find_instance_ids_by_resource(linked_resource: Resource) -> PackedStringArray:
+	var result := PackedStringArray()
+	if linked_resource == null:
+		return result
+	for instance_id in items:
+		var definition := items[instance_id] as InventoryItemDefinition
+		if definition.linked_resource == linked_resource:
+			result.append(String(instance_id))
+	return result
+
+
+func consume_linked_resource(linked_resource: Resource, amount: int = 1) -> bool:
+	if amount <= 0:
+		return true
+	var instance_ids := find_instance_ids_by_resource(linked_resource)
+	if instance_ids.size() < amount:
+		return false
+	for index in range(amount):
+		take_item(instance_ids[index])
+	return true
+
+
 func get_snapshot() -> Dictionary:
 	var item_snapshots: Array[Dictionary] = []
 	for instance_id in items:
