@@ -13,6 +13,7 @@ signal experience_collected(amount: int)
 signal buff_selected(buff_id: StringName, stacks: int)
 signal run_settled(result: Dictionary)
 signal upgrade_completed(result: Dictionary)
+signal recovery_state_changed(snapshot: Dictionary)
 ```
 
 ## 사용 기준

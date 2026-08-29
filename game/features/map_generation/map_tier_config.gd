@@ -9,6 +9,8 @@ extends Resource
 @export var minimum_room_size := Vector2i(6, 5)
 @export var maximum_room_size := Vector2i(10, 8)
 @export_range(0.0, 0.2, 0.001) var obstacle_density: float = 0.02
+@export_range(60, 3600, 30) var target_run_duration_seconds: int = 600
+@export_range(0, 3600, 30) var extraction_unlock_seconds: int = 600
 
 
 func is_valid() -> bool:
@@ -22,4 +24,7 @@ func is_valid() -> bool:
 		and maximum_room_size.y >= minimum_room_size.y
 		and obstacle_density >= 0.0
 		and obstacle_density <= 0.2
+		and target_run_duration_seconds >= 60
+		and extraction_unlock_seconds >= 0
+		and extraction_unlock_seconds <= target_run_duration_seconds
 	)

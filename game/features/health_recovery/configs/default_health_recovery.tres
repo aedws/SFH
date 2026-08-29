@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="HealthRecoveryConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/health_recovery/health_recovery_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+delay_after_damage_seconds = 4.0
+healing_per_second = 3.0
+maximum_recovery_ratio = 0.65

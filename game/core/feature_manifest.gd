@@ -25,6 +25,7 @@ extends Resource
 @export var weapons_enabled: bool = true
 @export var weapon_balance_enabled: bool = true
 @export var damage_enabled: bool = true
+@export var health_recovery_enabled: bool = true
 @export var experience_enabled: bool = true
 @export var leveling_enabled: bool = true
 @export var run_buffs_enabled: bool = true
@@ -57,6 +58,11 @@ extends Resource
 	"res://game/features/run_buffs/configs/default_run_buffs.tres"
 )
 @export var meta_progression_storage_path: String = "user://sfh_meta_progression.json"
+
+@export_category("Health recovery")
+@export_file("*.tres") var health_recovery_config_path: String = (
+	"res://game/features/health_recovery/configs/default_health_recovery.tres"
+)
 
 @export_category("Equipment upgrade economy")
 @export_file("*.tres") var equipment_upgrade_policy_path: String = (
@@ -109,6 +115,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"weapon_balance")
 	if damage_enabled:
 		result.append(&"damage")
+	if health_recovery_enabled:
+		result.append(&"health_recovery")
 	if experience_enabled:
 		result.append(&"experience")
 	if leveling_enabled:
@@ -196,6 +204,11 @@ func validation_errors() -> PackedStringArray:
 		errors.append("meta_progression 모듈은 run_buffs 모듈이 필요합니다.")
 	if meta_progression_enabled and meta_progression_storage_path.is_empty():
 		errors.append("meta_progression 저장 경로가 필요합니다.")
+	if health_recovery_enabled and (
+		health_recovery_config_path.is_empty()
+		or not ResourceLoader.exists(health_recovery_config_path)
+	):
+		errors.append("부분 체력 회복 설정 Resource 경로가 유효하지 않습니다.")
 	if equipment_upgrade_economy_enabled and not equipment_customization_enabled:
 		errors.append("equipment_upgrade_economy는 equipment_customization 모듈이 필요합니다.")
 	if equipment_upgrade_economy_enabled and not credits_enabled:

@@ -7,6 +7,7 @@
 - [작전 선택과 탈출](raid-setup-extraction.md)
 - [크레딧 파밍과 회수](credit-loot.md)
 - [플레이어 이동](player.md)
+- [부분 체력 회복](health-recovery.md)
 - [캐릭터 장비와 로드아웃](character-equipment.md)
 - [격자 가방 인벤토리](grid-inventory.md)
 - [장비 파츠·모듈 개조](equipment-customization.md)

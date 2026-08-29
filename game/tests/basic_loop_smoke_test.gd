@@ -19,6 +19,8 @@ const META_PROGRESSION_SCENE_PATH := "res://game/features/meta_progression/meta_
 const CREDIT_LEDGER_SCENE_PATH := "res://game/features/credits/credit_ledger.tscn"
 const EQUIPMENT_UPGRADE_SCENE_PATH := "res://game/features/equipment_upgrade/equipment_upgrade_service.tscn"
 const EQUIPMENT_UPGRADE_POLICY_PATH := "res://game/features/equipment_upgrade/configs/default_upgrade_costs.tres"
+const HEALTH_RECOVERY_SCENE_PATH := "res://game/features/health_recovery/health_recovery_system.tscn"
+const HEALTH_RECOVERY_CONFIG_PATH := "res://game/features/health_recovery/configs/default_health_recovery.tres"
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 var game_instance: Node
@@ -27,6 +29,8 @@ var frame_count: int = 0
 
 func _init() -> void:
 	if not _verify_map_tiers():
+		return
+	if not await _verify_player_sustain_and_movement():
 		return
 	if not _verify_inventory_modules():
 		return
@@ -89,6 +93,20 @@ func _verify_map_tiers() -> bool:
 		if room_count < minimum_rooms or room_count > maximum_rooms:
 			_fail("%s 맵의 방 수가 범위를 벗어났습니다." % tier_id)
 			return false
+		var minimum_room_counts := {"small": 18, "medium": 30, "large": 45}
+		var target_durations := {"small": 540, "medium": 600, "large": 660}
+		if minimum_rooms < int(minimum_room_counts[tier_id]):
+			_fail("%s 맵 크기가 상향 기준에 미달합니다." % tier_id)
+			return false
+		if int(config.get("target_run_duration_seconds")) != int(target_durations[tier_id]):
+			_fail("%s 작전 목표 시간이 9~11분 페이싱과 다릅니다." % tier_id)
+			return false
+		if (
+			int(config.get("extraction_unlock_seconds"))
+			!= int(config.get("target_run_duration_seconds"))
+		):
+			_fail("%s 작전 탈출 개방 시간이 목표 시간과 다릅니다." % tier_id)
+			return false
 
 		var path: PackedVector2Array = generator.call(
 			&"get_world_path",
@@ -120,6 +138,64 @@ func _verify_map_tiers() -> bool:
 		root.remove_child(generator)
 		generator.free()
 
+	return true
+
+
+func _verify_player_sustain_and_movement() -> bool:
+	var player_scene := load(PLAYER_SCENE_PATH) as PackedScene
+	var recovery_scene := load(HEALTH_RECOVERY_SCENE_PATH) as PackedScene
+	var recovery_config := load(HEALTH_RECOVERY_CONFIG_PATH)
+	if player_scene == null or recovery_scene == null or recovery_config == null:
+		_fail("플레이어 이동 또는 부분 체력 회복 모듈을 불러오지 못했습니다.")
+		return false
+	var host := Node2D.new()
+	root.add_child(host)
+	var player := player_scene.instantiate()
+	host.add_child(player)
+	await process_frame
+	var movement = player.get_node("Movement")
+	var accelerated: Vector2 = movement.call(
+		&"step_velocity", Vector2.ZERO, Vector2.RIGHT, 0.05, false
+	)
+	var braked: Vector2 = movement.call(
+		&"step_velocity", Vector2.RIGHT * 260.0, Vector2.ZERO, 0.05, false
+	)
+	var counter_steered: Vector2 = movement.call(
+		&"step_velocity", Vector2.RIGHT * 260.0, Vector2.LEFT, 0.05, false
+	)
+	var dashed: Vector2 = movement.call(
+		&"step_velocity", Vector2.ZERO, Vector2.RIGHT, 0.016, true
+	)
+	if (
+		accelerated.x <= 0.0
+		or accelerated.x >= 260.0
+		or braked.length() >= 260.0
+		or counter_steered.x >= 260.0
+		or dashed.length() < 500.0
+	):
+		_fail("가속·제동·역선회·회피 이동 응답이 예상 범위를 벗어났습니다.")
+		return false
+
+	var recovery := recovery_scene.instantiate()
+	host.add_child(recovery)
+	recovery.set_process(false)
+	if not recovery.call(&"configure", player, recovery_config):
+		_fail("부분 체력 회복 모듈 구성에 실패했습니다.")
+		return false
+	player.call(&"take_damage", 50.0)
+	var damaged_health := float(player.call(&"get_health_snapshot")[&"current"])
+	if recovery.call(&"advance", 3.0) > 0.0:
+		_fail("피격 회복 대기 시간 전에 체력이 회복됐습니다.")
+		return false
+	recovery.call(&"advance", 2.0)
+	recovery.call(&"advance", 20.0)
+	var recovered_health := float(player.call(&"get_health_snapshot")[&"current"])
+	if recovered_health <= damaged_health or recovered_health > 65.01:
+		_fail("부분 회복이 적용되지 않았거나 최대 체력 65% 제한을 넘었습니다.")
+		return false
+
+	root.remove_child(host)
+	host.free()
 	return true
 
 
@@ -650,6 +726,7 @@ func _verify_optional_progression_modules(game_scene: PackedScene) -> bool:
 	progression_free_features.set("run_buffs_enabled", false)
 	progression_free_features.set("meta_progression_enabled", false)
 	progression_free_features.set("equipment_upgrade_economy_enabled", false)
+	progression_free_features.set("health_recovery_enabled", false)
 	progression_free_features.set("run_setup_enabled", false)
 	progression_free_game.set("features", progression_free_features)
 	root.add_child(progression_free_game)
@@ -663,11 +740,13 @@ func _verify_optional_progression_modules(game_scene: PackedScene) -> bool:
 		failure_message = "비활성화했지만 외부 성장 모듈이 설치됐습니다."
 	elif progression_free_game.get("equipment_upgrade_service") != null:
 		failure_message = "비활성화했지만 장비 강화 경제 모듈이 설치됐습니다."
+	elif progression_free_game.get("health_recovery_system") != null:
+		failure_message = "비활성화했지만 부분 체력 회복 모듈이 설치됐습니다."
 	root.remove_child(progression_free_game)
 	progression_free_game.free()
 	await process_frame
 	if not failure_message.is_empty():
-		_fail("로그라이크 성장 모듈 비활성화 실패: %s" % failure_message)
+		_fail("성장·회복 선택 모듈 비활성화 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -835,7 +914,16 @@ func _verify_extraction_flow(game_scene: PackedScene) -> bool:
 
 	if failure_message.is_empty():
 		extraction_player.global_position = extraction_zone.global_position
-		if not extraction_zone.call(&"request_extraction", extraction_player):
+		if extraction_zone.call(&"request_extraction", extraction_player):
+			failure_message = "작전 목표 시간 전에 탈출할 수 있습니다."
+		else:
+			extraction_game.set(
+				"elapsed_time", float(extraction_game.get("extraction_unlock_seconds"))
+			)
+			extraction_game.call(&"_process", 0.0)
+		if failure_message.is_empty() and not extraction_zone.call(
+			&"request_extraction", extraction_player
+		):
 			failure_message = "탈출 지점에서 상호작용 요청이 거부됐습니다."
 		elif not bool(extraction_game.get("run_ended")):
 			failure_message = "탈출 성공 후 작전이 종료되지 않았습니다."
@@ -887,6 +975,7 @@ func _process(_delta: float) -> bool:
 		var run_buffs = game_instance.get("run_buff_system")
 		var meta_progression = game_instance.get("meta_progression_system")
 		var upgrade_economy = game_instance.get("equipment_upgrade_service")
+		var health_recovery = game_instance.get("health_recovery_system")
 		if (
 			progression == null
 			or weapon == null
@@ -896,6 +985,7 @@ func _process(_delta: float) -> bool:
 			or run_buffs == null
 			or meta_progression == null
 			or upgrade_economy == null
+			or health_recovery == null
 		):
 			return _fail("맵, 탈출, 장비, 전투 또는 성장 모듈이 설치되지 않았습니다.")
 		var small_config = load(MAP_CONFIG_PATH_PATTERN % "small")
@@ -970,7 +1060,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map minimap equipment loadout weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles loot credits map_optional player health_ui enemies armor status_bars pathfinding weapon run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale run_pacing extraction_lock minimap equipment loadout weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles loot credits map_optional player responsive_movement dash health_recovery health_ui enemies armor status_bars pathfinding weapon run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 
