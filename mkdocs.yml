@@ -1,0 +1,77 @@
+site_name: SFH 개발 위키
+site_description: Godot 4 기반 모듈형 탑다운 뱀서라이크 개발 문서
+site_url: https://aedws.github.io/SFH/
+site_dir: .wiki-site
+repo_url: https://github.com/aedws/SFH
+repo_name: aedws/SFH
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: ko
+  palette:
+    - scheme: slate
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: 밝은 화면으로 전환
+    - scheme: default
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: 어두운 화면으로 전환
+  features:
+    - navigation.instant
+    - navigation.indexes
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.action.edit
+
+plugins:
+  - search:
+      lang:
+        - ko
+        - en
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+
+nav:
+  - 홈: index.md
+  - 시작하기:
+      - getting-started/index.md
+      - 설치: getting-started/install.md
+      - 편집기 기초: getting-started/editor-basics.md
+      - 프로젝트 실행: getting-started/run-project.md
+  - 게임 설계:
+      - design/index.md
+      - 게임 개요: design/game-overview.md
+      - MVP 범위: design/mvp-scope.md
+  - 아키텍처:
+      - architecture/index.md
+      - 모듈 규칙: architecture/module-rules.md
+      - 장면 트리: architecture/scene-tree.md
+      - Signal 규칙: architecture/signals.md
+  - 기능:
+      - features/index.md
+      - 플레이어: features/player.md
+  - 문제 해결:
+      - troubleshooting/index.md
+  - 결정 기록:
+      - decisions/index.md
+      - 0001 기술 스택: decisions/0001-technology-stack.md

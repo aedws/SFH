@@ -1,0 +1,24 @@
+# Godot 4 generated files
+.godot/
+*.translation
+
+# Exported builds
+build/
+exports/
+
+# Documentation build output
+.wiki-site/
+site/
+.cache/
+
+# Python virtual environments
+.venv/
+venv/
+__pycache__/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
