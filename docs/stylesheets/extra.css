@@ -261,6 +261,88 @@ body {
   background: color-mix(in srgb, var(--sfh-lime) 5%, var(--sfh-panel));
 }
 
+.sfh-progress-summary,
+.sfh-progress-panel {
+  padding: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--sfh-cyan) 32%, var(--sfh-line));
+  border-radius: 0.72rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--sfh-cyan) 8%, transparent), transparent 68%),
+    color-mix(in srgb, var(--sfh-panel-raised) 88%, transparent);
+}
+
+.sfh-progress-summary {
+  margin-bottom: 1rem;
+}
+
+.sfh-progress-panel {
+  margin: 0.8rem 0 1rem;
+}
+
+.sfh-progress-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sfh-progress-heading span,
+.sfh-progress-heading small,
+.sfh-progress-heading strong {
+  display: block;
+}
+
+.sfh-progress-heading small {
+  margin-bottom: 0.2rem;
+  color: var(--sfh-cyan);
+  font: 750 0.52rem var(--sfh-mono);
+  letter-spacing: 0.08em;
+}
+
+.sfh-progress-heading strong {
+  color: var(--sfh-text);
+  font-size: 0.75rem;
+}
+
+.sfh-progress-heading > b {
+  color: var(--sfh-lime);
+  font: 900 1.65rem var(--sfh-mono);
+  line-height: 1;
+}
+
+.sfh-progress-track {
+  height: 0.48rem;
+  margin-top: 0.65rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--sfh-cyan) 18%, var(--sfh-line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sfh-bg) 78%, transparent);
+}
+
+.sfh-progress-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--sfh-cyan), var(--sfh-lime));
+  box-shadow: 0 0 1rem color-mix(in srgb, var(--sfh-cyan) 35%, transparent);
+}
+
+.sfh-progress-summary > p,
+.sfh-progress-panel > p {
+  margin: 0.55rem 0 0;
+  color: var(--sfh-muted);
+  font-size: 0.62rem;
+  line-height: 1.55;
+}
+
+.md-typeset .sfh-progress-summary > a {
+  display: inline-block;
+  margin-top: 0.45rem;
+  color: var(--sfh-cyan);
+  font: 750 0.56rem var(--sfh-mono);
+  text-decoration: none;
+}
+
 .sfh-operation-card header {
   display: flex;
   align-items: center;
