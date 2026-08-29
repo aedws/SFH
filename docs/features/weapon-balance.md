@@ -37,19 +37,19 @@ tags:
 - `pierce_count`, `pierce_damage_retention`: 추가 관통 수와 관통 후 피해 유지율
 - `projectile_speed_px_sec`, `projectile_lifetime_sec`: 피하기 쉬운 정도와 최대 비행 거리
 
-공용 [SFH_item_Balance Google Sheet](https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/edit?usp=sharing)는 사람이 비교하기 쉬운 가로형 구조를 사용합니다.
+공용 [SFH_item_Balance Google Sheet](https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/edit?usp=sharing)는 무기·방어구·아이템을 행 단위로 비교하는 구조를 사용합니다.
 
-| 열 | 역할 |
+| 행 | 역할 |
 |---|---|
-| A열 | 코드에서 사용하는 변수명. 이름을 바꾸면 동기화 검증이 실패함 |
-| B열 | 변수의 뜻, 단위, 입력 규칙 |
-| C열 이후 | 무기·방어구·아이템별 실제 데이터 |
+| 1행 | 코드에서 사용하는 변수명. 이름을 바꾸면 동기화 검증이 실패함 |
+| 2행 | 각 변수의 뜻, 단위, 입력 규칙 |
+| 3행 이후 | 무기·방어구·아이템별 개별 데이터 |
 
-- `Weapon`: 무기 정의와 전투 수치만 기록합니다. `runtime_enabled`가 켜진 열만 실시간 전투와 확정 CSV에 반영됩니다.
+- `Weapon`: 무기 정의와 전투 수치만 기록합니다. `runtime_enabled`가 켜진 행만 실시간 전투와 확정 CSV에 반영됩니다.
 - `Armor`: 방어구 정의와 스탯만 기록합니다.
 - `Item`: 파츠·모듈·소비 아이템과 크레딧만 기록합니다. 무기·방어구는 넣지 않습니다.
 
-현재 런타임 실시간 연결 대상은 `Weapon`입니다. `Armor`와 `Item`은 데이터 원본으로 먼저 정리했으며, 각 로더가 추가될 때도 동일한 A/B/C 계약을 유지합니다.
+현재 런타임 실시간 연결 대상은 `Weapon`입니다. `Armor`와 `Item`은 데이터 원본으로 먼저 정리했으며, 각 로더가 추가될 때도 동일한 1행/2행/3행 계약을 유지합니다.
 
 ## 두 가지 데이터 모드
 
@@ -64,8 +64,8 @@ tags:
 
 ## Google Sheets 준비
 
-1. 공용 시트의 `Weapon` 탭에서 C열 이후 무기 수치를 수정합니다. A열 변수명은 유지합니다.
-2. 전투에 연결할 무기 열의 `runtime_enabled` 체크박스를 켭니다.
+1. 공용 시트의 `Weapon` 탭에서 3행 이후 무기 수치를 수정합니다. 1행 변수명은 유지합니다.
+2. 전투에 연결할 무기 행의 `runtime_enabled` 체크박스를 켭니다.
 3. `game/features/weapon_balance/configs/default_weapon_balance.tres`에서 `source_mode = 1`로 바꿉니다. 이 문서의 공용 `Weapon` CSV URL은 이미 `live_csv_url`에 설정되어 있습니다.
 4. Godot에서 작전을 시작합니다. 공개 CSV가 정상이라면 기본 3초 안에 현재 무기 런타임 값이 갱신됩니다.
 
@@ -82,7 +82,7 @@ tags:
 .\scripts\test-game.cmd
 ```
 
-`sync`는 A열의 필수 변수명, 숫자 형식, 확률 범위, 중복 ID를 확인하고 `runtime_enabled`가 켜진 무기만 세로형 배포 CSV로 변환한 뒤 `game/features/weapon_balance/data/weapon_balance.csv`를 교체합니다. 그 다음 설정을 `source_mode = 0`으로 돌리면 확정 수치만 사용합니다.
+`sync`는 1행의 필수 변수명, 숫자 형식, 확률 범위, 중복 ID를 확인하고 2행 설명을 건너뛴 뒤 `runtime_enabled`가 켜진 무기만 배포 CSV로 확정합니다. 그 다음 설정을 `source_mode = 0`으로 돌리면 확정 수치만 사용합니다.
 
 ## 모듈 경계와 제거
 
@@ -100,4 +100,4 @@ game.gd             위 세 계약을 조립하고 HUD에 표시
 
 ## 검색 별칭
 
-Q키, 무기 바꾸기, 주무기 교체, 부무기 교체, 실시간 밸런싱, 구글 스프레드시트, Weapon 시트, Armor 시트, Item 시트, 변수명 1열, 설명 2열, CSV 내보내기, 수치 확정, 핫 리로드, 자동 조준, 에임 없음, 3점사, 관통탄
+Q키, 무기 바꾸기, 주무기 교체, 부무기 교체, 실시간 밸런싱, 구글 스프레드시트, Weapon 시트, Armor 시트, Item 시트, 변수명 1행, 설명 2행, 데이터 3행, CSV 내보내기, 수치 확정, 핫 리로드, 자동 조준, 에임 없음, 3점사, 관통탄

@@ -64,7 +64,7 @@ hide:
       <ul>
         <li>Q로 메인 돌격소총과 보조 제식 권총을 즉시 교체합니다.</li>
         <li>소총은 장거리 3점사, 권총은 고위력 단발과 1회 관통으로 역할을 분리했습니다.</li>
-        <li>Weapon·Armor·Item 시트를 A열 변수명, B열 설명, C열 이후 데이터 구조로 통일했습니다.</li>
+        <li>Weapon·Armor·Item 시트를 1행 변수명, 2행 설명, 3행 이후 데이터 구조로 통일했습니다.</li>
         <li>장비 상태·밸런스 출처·발사 실행을 독립 모듈 계약으로 연결했습니다.</li>
       </ul>
       <p class="sfh-intent"><b>개선 의도</b><span>에임이 없는 자동 전투에서도 무기 선택이 사거리와 발사 리듬, 관통 여부로 명확히 체감되게 합니다.</span></p>
@@ -77,7 +77,7 @@ hide:
 
     <div class="sfh-group"><h3>✨ 개선 · 2</h3>
       <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">에임 없는 전투용 밸런스 필드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>ADS·반동·조준 회복 대신 자동 탐지 거리, 버스트, 다중 투사체, 치명타와 관통을 핵심 수치로 사용합니다.</p></div></details>
-      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">가로형 공용 밸런스 시트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>A열 변수명, B열 설명, C열 이후 개별 데이터로 고정하고 Weapon·Armor·Item 탭의 책임을 분리했습니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">행 기반 공용 밸런스 시트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>1행 변수명, 2행 설명, 3행 이후 개별 데이터로 고정하고 Weapon·Armor·Item 탭의 책임을 분리했습니다.</p></div></details>
     </div>
 
     <div class="sfh-group"><h3>🧩 수정 · 2</h3>
