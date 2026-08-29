@@ -27,11 +27,61 @@ FLOAT_COLUMNS = {
 }
 
 
-def validate(text: str) -> list[dict[str, str]]:
+def _is_enabled(value: str) -> bool:
+    return value.strip().lower() in {"true", "1", "yes", "y", "on"}
+
+
+def _read_transposed_rows(matrix: list[list[str]]) -> list[dict[str, str]]:
+    rows_by_variable: dict[str, list[str]] = {}
+    for row in matrix:
+        if not row or not row[0].strip():
+            continue
+        variable_name = row[0].strip()
+        if variable_name in rows_by_variable:
+            raise ValueError(f"변수명이 중복됩니다: {variable_name}")
+        rows_by_variable[variable_name] = row
+    missing = [column for column in COLUMNS if column not in rows_by_variable]
+    if missing:
+        raise ValueError("필수 변수가 없습니다: " + ", ".join(missing))
+
+    maximum_columns = max(len(row) for row in matrix)
+    runtime_row = rows_by_variable.get("runtime_enabled")
+    rows: list[dict[str, str]] = []
+    for column_index in range(2, maximum_columns):
+        weapon_id_row = rows_by_variable["weapon_id"]
+        weapon_id = weapon_id_row[column_index].strip() if column_index < len(weapon_id_row) else ""
+        if not weapon_id:
+            continue
+        if runtime_row is not None:
+            enabled = runtime_row[column_index] if column_index < len(runtime_row) else ""
+            if not _is_enabled(enabled):
+                continue
+        rows.append({
+            column: (
+                rows_by_variable[column][column_index].strip()
+                if column_index < len(rows_by_variable[column]) else ""
+            )
+            for column in COLUMNS
+        })
+    return rows
+
+
+def _normalize_rows(text: str) -> list[dict[str, str]]:
+    matrix = list(csv.reader(io.StringIO(text.lstrip("\ufeff"))))
+    matrix = [row for row in matrix if any(cell.strip() for cell in row)]
+    if not matrix:
+        raise ValueError("CSV가 비어 있습니다.")
+    if len(matrix[0]) >= 3 and matrix[0][0].strip() == "weapon_id" and matrix[0][1].strip() != "display_name":
+        return _read_transposed_rows(matrix)
+
     reader = csv.DictReader(io.StringIO(text.lstrip("\ufeff")))
     if reader.fieldnames != COLUMNS:
         raise ValueError("CSV 열 순서가 템플릿과 다릅니다: " + ", ".join(reader.fieldnames or []))
-    rows = list(reader)
+    return list(reader)
+
+
+def validate(text: str) -> list[dict[str, str]]:
+    rows = _normalize_rows(text)
     if not rows:
         raise ValueError("무기 데이터 행이 없습니다.")
     seen: set[str] = set()

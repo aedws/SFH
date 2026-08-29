@@ -1,3 +1,3 @@
 weapon_id,display_name,trait_id,damage,fire_interval_sec,projectile_speed_px_sec,target_range_px,projectiles_per_shot,spread_angle_deg,burst_count,burst_interval_sec,critical_chance,critical_multiplier,pierce_count,pierce_damage_retention,projectile_lifetime_sec,projectile_color_hex,description
-assault_rifle,돌격소총,steady_burst,1.6,0.78,760,820,1,0,3,0.10,0.05,1.75,0,1.0,1.6,#42D6C8,장거리 자동 탐지와 안정적인 3점사
-service_pistol,제식 권총,heavy_piercing,3.2,0.60,690,560,1,0,1,0.00,0.12,2.0,1,0.65,1.3,#F2B84B,짧은 탐지 거리와 느린 주기 대신 강한 단발 및 1회 관통
+assault_rifle,돌격소총,steady_burst,1.6,0.78,760,820,1,0,3,0.1,0.05,1.75,0,1,1.6,#42D6C8,장거리 자동 탐지와 안정적인 3점사
+service_pistol,제식 권총,heavy_piercing,3.2,0.6,690,560,1,0,1,0,0.12,2,1,0.65,1.3,#F2B84B,짧은 탐지 거리와 느린 주기 대신 강한 단발 및 1회 관통
