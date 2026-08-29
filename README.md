@@ -30,7 +30,7 @@ Godot 4 기반의 모듈형 탑다운 뱀서라이크 프로젝트입니다.
 Python 3가 설치된 PowerShell에서 다음 명령을 실행합니다. 스크립트가 프로젝트 전용 가상환경과 필요한 패키지를 자동으로 준비합니다.
 
 ```powershell
-.\scripts\wiki.ps1 serve
+.\scripts\wiki.cmd serve
 ```
 
 브라우저에서 `http://127.0.0.1:8000`을 열면 검색 가능한 개발 위키가 표시됩니다.
@@ -44,4 +44,4 @@ game/scenes/     여러 기능을 조립하는 최상위 장면
 docs/            개발 위키 원문
 ```
 
-문서의 링크와 검색 인덱스만 검증하려면 `.\scripts\wiki.ps1 build`를 실행합니다.
+문서의 링크와 검색 인덱스만 검증하려면 `.\scripts\wiki.cmd build`를 실행합니다.
