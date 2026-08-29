@@ -25,7 +25,19 @@ tags:
 
 `game/core/feature_manifest.tres`를 Godot Inspector에서 열고 원하는 항목을 켜거나 끕니다.
 
-현재 실제 설치가 구현된 항목은 `player_enabled`입니다. 미래 기능의 플래그는 계획을 명시하기 위해 꺼진 상태로 먼저 정의했습니다.
+현재 플레이어, 적, 생성, 무기, 피해, 경험치, 레벨, 게임오버 플래그가 실제 게임 조립에 연결되어 있습니다.
+
+`Game`은 활성화된 기능만 문자열 경로로 불러옵니다. 기능을 끄면 해당 Scene을 로드하지 않으므로, 비활성화 확인 후 관련 기능 폴더를 제거하는 흐름을 시험할 수 있습니다.
+
+## 의존성 검사
+
+`FeatureManifest.validation_errors()`가 잘못된 조합을 게임 시작 전에 검사합니다.
+
+- `spawning`은 `enemies` 필요
+- `weapons`는 `enemies` 필요
+- `experience`는 `enemies` 필요
+- `leveling`은 `experience` 필요
+- `game_over`는 `damage` 필요
 
 ## 제거 절차
 

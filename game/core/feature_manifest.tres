@@ -5,10 +5,10 @@
 [resource]
 script = ExtResource("1_manifest")
 player_enabled = true
-enemies_enabled = false
-spawning_enabled = false
-weapons_enabled = false
-damage_enabled = false
-experience_enabled = false
-leveling_enabled = false
-game_over_enabled = false
+enemies_enabled = true
+spawning_enabled = true
+weapons_enabled = true
+damage_enabled = true
+experience_enabled = true
+leveling_enabled = true
+game_over_enabled = true

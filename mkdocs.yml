@@ -72,6 +72,10 @@ nav:
   - 기능:
       - features/index.md
       - 플레이어: features/player.md
+      - 적과 생성 시스템: features/enemies.md
+      - 자동 무기: features/weapons.md
+      - 경험치와 레벨: features/progression.md
+      - 게임 루프와 HUD: features/game-loop.md
   - 문제 해결:
       - troubleshooting/index.md
   - 결정 기록:
