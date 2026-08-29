@@ -4,6 +4,7 @@ extends Node
 signal equipment_changed(summary: Dictionary)
 signal skill_activation_changed(active_skill_ids: PackedStringArray, inactive_skill_ids: PackedStringArray)
 signal stat_modifiers_changed(modifiers: Dictionary)
+signal customization_changed(snapshot: Dictionary)
 
 const TARGET_METHOD := &"apply_equipment_modifiers"
 
@@ -15,6 +16,7 @@ var armor_enabled: bool = true
 var active_skill_ids := PackedStringArray()
 var inactive_skill_ids := PackedStringArray()
 var aggregated_stat_modifiers: Dictionary = {}
+var equipment_states: Dictionary = {}
 
 
 func configure(
@@ -36,16 +38,18 @@ func configure(
 		push_error("방어구 스탯 대상이 apply_equipment_modifiers 계약을 구현하지 않았습니다.")
 		return false
 
-	loadout = new_loadout
+	loadout = new_loadout.duplicate(true) as EquipmentLoadout
 	stats_target = new_stats_target
 	weapons_enabled = enable_weapons
 	skills_enabled = enable_skills
 	armor_enabled = enable_armor
+	_build_equipment_states()
 	_resolve_skills()
 	_resolve_stat_modifiers()
 	if armor_enabled:
 		stats_target.call(TARGET_METHOD, aggregated_stat_modifiers)
 	equipment_changed.emit(get_summary())
+	customization_changed.emit(get_customization_snapshot())
 	return true
 
 
@@ -71,6 +75,96 @@ func get_stat_modifiers() -> Dictionary:
 	return aggregated_stat_modifiers.duplicate(true)
 
 
+func get_equipment_state(slot_id: StringName) -> EquipmentItemState:
+	return equipment_states.get(slot_id) as EquipmentItemState
+
+
+func get_customization_snapshot() -> Dictionary:
+	var result: Dictionary = {}
+	for slot_id in equipment_states:
+		result[slot_id] = (equipment_states[slot_id] as EquipmentItemState).snapshot()
+	return result
+
+
+func can_equip_definition(slot_id: StringName, definition: Resource) -> bool:
+	if loadout == null:
+		return false
+	var rule := loadout.get_slot_rule(slot_id)
+	if rule == null or not rule.accepts(definition):
+		return false
+	if rule.item_kind == "weapon":
+		return weapons_enabled
+	return armor_enabled
+
+
+func equip_definition(slot_id: StringName, definition: Resource) -> bool:
+	if not can_equip_definition(slot_id, definition):
+		return false
+	var state := EquipmentItemState.new()
+	state.configure(slot_id, definition)
+	equipment_states[slot_id] = state
+	if definition is EquipmentWeaponDefinition:
+		if slot_id == &"main":
+			loadout.main_weapon = definition
+		elif slot_id == &"secondary":
+			loadout.secondary_weapon = definition
+	else:
+		var replaced := false
+		for index in range(loadout.armor.size()):
+			if loadout.armor[index].slot_id == slot_id:
+				loadout.armor[index] = definition
+				replaced = true
+				break
+		if not replaced:
+			loadout.armor.append(definition)
+	_refresh_after_customization()
+	return true
+
+
+func install_part(slot_id: StringName, part: EquipmentPartDefinition) -> bool:
+	var state := get_equipment_state(slot_id)
+	if state == null or not state.install_part(part):
+		return false
+	_refresh_after_customization()
+	return true
+
+
+func install_module(
+	slot_id: StringName,
+	instance_id: StringName,
+	module_definition: EquipmentModuleDefinition
+) -> bool:
+	var state := get_equipment_state(slot_id)
+	if state == null or not state.install_module(instance_id, module_definition):
+		return false
+	_refresh_after_customization()
+	return true
+
+
+func upgrade_module(slot_id: StringName, instance_id: StringName) -> bool:
+	var state := get_equipment_state(slot_id)
+	if state == null or not state.upgrade_module(instance_id):
+		return false
+	_refresh_after_customization()
+	return true
+
+
+func level_up_equipment(slot_id: StringName) -> bool:
+	var state := get_equipment_state(slot_id)
+	if state == null or not state.level_up():
+		return false
+	_refresh_after_customization()
+	return true
+
+
+func grant_module_tag(slot_id: StringName, module_tag: StringName) -> bool:
+	var state := get_equipment_state(slot_id)
+	if state == null or not state.grant_module_tag(module_tag):
+		return false
+	_refresh_after_customization()
+	return true
+
+
 func get_summary() -> Dictionary:
 	var main_weapon := get_weapon(&"main")
 	var secondary_weapon := get_weapon(&"secondary")
@@ -86,6 +180,33 @@ func get_summary() -> Dictionary:
 		&"inactive_skill_ids": get_inactive_skill_ids(),
 		&"armor_count": loadout.armor.size() if loadout != null and armor_enabled else 0,
 	}
+
+
+func _build_equipment_states() -> void:
+	equipment_states.clear()
+	if weapons_enabled:
+		_add_equipment_state(&"main", loadout.main_weapon)
+		_add_equipment_state(&"secondary", loadout.secondary_weapon)
+	if armor_enabled:
+		for armor_item in loadout.armor:
+			_add_equipment_state(armor_item.slot_id, armor_item)
+
+
+func _add_equipment_state(slot_id: StringName, definition: Resource) -> void:
+	if definition == null:
+		return
+	var state := EquipmentItemState.new()
+	state.configure(slot_id, definition)
+	equipment_states[slot_id] = state
+
+
+func _refresh_after_customization() -> void:
+	_resolve_skills()
+	_resolve_stat_modifiers()
+	if armor_enabled:
+		stats_target.call(TARGET_METHOD, aggregated_stat_modifiers)
+	equipment_changed.emit(get_summary())
+	customization_changed.emit(get_customization_snapshot())
 
 
 func _resolve_skills() -> void:
@@ -126,15 +247,25 @@ func _resolve_stat_modifiers() -> void:
 		return
 
 	for armor_item in loadout.armor:
-		for modifier in armor_item.stat_modifiers:
-			var stat_id := modifier.stat_id
-			var entry: Dictionary = aggregated_stat_modifiers.get(
-				stat_id,
-				{&"add": 0.0, &"multiply": 1.0}
-			)
-			if modifier.operation == EquipmentStatModifier.Operation.ADD:
-				entry[&"add"] = float(entry[&"add"]) + modifier.amount
-			else:
-				entry[&"multiply"] = float(entry[&"multiply"]) * modifier.amount
-			aggregated_stat_modifiers[stat_id] = entry
+		_accumulate_modifiers(armor_item.stat_modifiers)
+	for slot_id in equipment_states:
+		var state := equipment_states[slot_id] as EquipmentItemState
+		for part in state.installed_parts:
+			_accumulate_modifiers(part.stat_modifiers)
+		for module_instance in state.installed_modules:
+			_accumulate_modifiers(module_instance.definition.stat_modifiers)
 	stat_modifiers_changed.emit(get_stat_modifiers())
+
+
+func _accumulate_modifiers(modifiers: Array[EquipmentStatModifier]) -> void:
+	for modifier in modifiers:
+		var stat_id := modifier.stat_id
+		var entry: Dictionary = aggregated_stat_modifiers.get(
+			stat_id,
+			{&"add": 0.0, &"multiply": 1.0}
+		)
+		if modifier.operation == EquipmentStatModifier.Operation.ADD:
+			entry[&"add"] = float(entry[&"add"]) + modifier.amount
+		else:
+			entry[&"multiply"] = float(entry[&"multiply"]) * modifier.amount
+		aggregated_stat_modifiers[stat_id] = entry

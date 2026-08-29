@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EquipmentModuleDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/equipment_module_definition.gd" id="1_module"]
+[ext_resource type="Script" path="res://game/features/equipment/stat_modifier.gd" id="2_modifier"]
+
+[sub_resource type="Resource" id="SpeedModifier"]
+script = ExtResource("2_modifier")
+stat_id = &"movement_speed"
+operation = 0
+amount = 10.0
+
+[resource]
+script = ExtResource("1_module")
+module_id = &"mobility_chip"
+display_name = "기동 보조 칩"
+module_tags = [&"mobility"]
+cost_by_upgrade_level = PackedInt32Array(3, 2, 1)
+stat_modifiers = [SubResource("SpeedModifier")]
+special_feature_ids = [&"dash_candidate"]

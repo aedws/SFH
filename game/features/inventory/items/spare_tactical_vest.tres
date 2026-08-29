@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="InventoryItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/inventory/inventory_item_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/tactical_vest.tres" id="2_link"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"spare_tactical_vest"
+display_name = "예비 전술 조끼"
+item_type = &"armor"
+grid_size = Vector2i(3, 3)
+panel_color = Color(0.3, 0.46, 0.32, 1)
+linked_resource = ExtResource("2_link")
+description = "신체 방어구 슬롯에만 장착할 수 있는 3×3 방어구입니다."

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="InventoryItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/inventory/inventory_item_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/assault_rifle.tres" id="2_link"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"spare_assault_rifle"
+display_name = "예비 돌격소총"
+item_type = &"weapon"
+grid_size = Vector2i(4, 2)
+panel_color = Color(0.22, 0.47, 0.58, 1)
+linked_resource = ExtResource("2_link")
+description = "주무기 슬롯 규칙에 맞는 4×2 예비 화기입니다."

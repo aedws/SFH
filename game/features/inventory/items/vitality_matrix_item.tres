@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="InventoryItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/inventory/inventory_item_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/modules/vitality_matrix.tres" id="2_link"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"vitality_matrix_item"
+display_name = "생존 매트릭스 모듈"
+item_type = &"module"
+grid_size = Vector2i(1, 1)
+panel_color = Color(0.35, 0.72, 0.5, 1)
+linked_resource = ExtResource("2_link")
+description = "모든 모듈 공통 규칙에 따라 가방 한 칸을 사용합니다."

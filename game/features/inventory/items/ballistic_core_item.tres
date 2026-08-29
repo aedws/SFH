@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="InventoryItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/inventory/inventory_item_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/modules/ballistic_core.tres" id="2_link"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"ballistic_core_item"
+display_name = "탄도 코어 모듈"
+item_type = &"module"
+grid_size = Vector2i(1, 1)
+panel_color = Color(0.78, 0.46, 0.22, 1)
+linked_resource = ExtResource("2_link")
+description = "장착 코스트를 소비합니다. 강화하면 코스트가 감소합니다."

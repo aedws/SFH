@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="InventoryCatalog" load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://game/features/inventory/inventory_catalog.gd" id="1_catalog"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/spare_assault_rifle.tres" id="2_rifle"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/spare_greatsword.tres" id="3_sword"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/spare_tactical_vest.tres" id="4_vest"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/rifle_scope_item.tres" id="5_scope"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/pistol_compensator_item.tres" id="6_comp"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/greatsword_edge_item.tres" id="7_edge"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/ballistic_core_item.tres" id="8_ballistic"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/vitality_matrix_item.tres" id="9_vitality"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/mobility_chip_item.tres" id="10_mobility"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/armor_plate_item.tres" id="11_plate"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/field_medkit.tres" id="12_medkit"]
+
+[resource]
+script = ExtResource("1_catalog")
+grid_size = Vector2i(12, 8)
+items = Array[InventoryItemDefinition]([ExtResource("2_rifle"), ExtResource("3_sword"), ExtResource("4_vest"), ExtResource("5_scope"), ExtResource("6_comp"), ExtResource("7_edge"), ExtResource("8_ballistic"), ExtResource("9_vitality"), ExtResource("10_mobility"), ExtResource("11_plate"), ExtResource("12_medkit")])

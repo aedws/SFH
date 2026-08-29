@@ -39,6 +39,12 @@ tags:
 | 스킬 호환성 | 통과 | 슬롯과 대·중·소분류가 모두 맞는 경우만 활성화하며 0~10개 제한을 검증함 |
 | 방어구 스탯 확장성 | 통과 | 범용 stat_id와 더하기·곱하기 수정자를 집계함 |
 | 장비 비활성화 | 통과 | 장비를 끄면 시스템·HUD·스탯 적용 없이 플레이어 기본값을 유지함 |
+| 격자 인벤토리 경계 | 통과 | 가변 크기 아이템의 경계·겹침·이동과 모듈 1×1 규칙을 독립 테스트함 |
+| 장비 슬롯 규칙 | 통과 | 메인·보조·신체·신발 슬롯이 태그와 방어구 위치를 검사함 |
+| 고유 파츠 격리 | 통과 | 무기 소분류와 소켓이 모두 맞는 경우만 파츠를 허용하고 방어구는 거부함 |
+| 모듈 코스트·강화 | 통과 | 슬롯·코스트 초과 거부와 강화 단계별 코스트 감소를 검증함 |
+| 최고 레벨 개조 | 통과 | 최고 레벨에서만 태그를 부여하고 일치 모듈 코스트를 50%로 계산함 |
+| 장비 개조 의존성 | 통과 | `equipment_customization`이 `equipment`, `inventory`를 요구함 |
 
 ## 맵 모듈 공개 계약
 
@@ -95,18 +101,35 @@ tags:
 | 장비 | `configure(loadout, stats_target, weapons, skills, armor)` | `Game` 조립부 |
 | 장비 | `get_active_skill_ids`, `get_inactive_skill_ids` | HUD와 향후 스킬 실행기 |
 | 장비 | `get_stat_modifiers`, `get_summary` | HUD와 테스트 |
+| 장비 | `can_equip_definition`, `equip_definition` | U 장비 화면 |
+| 장비 | `install_part`, `install_module`, `upgrade_module` | U 파츠·모듈 화면 |
+| 장비 | `level_up_equipment`, `grant_module_tag` | 성장·개조 UI와 향후 경제 모듈 |
 | 장비 | `equipment_changed(summary)` | HUD |
+| 장비 | `customization_changed(snapshot)` | U 장비 상태 표시 |
 | 플레이어 | `apply_equipment_modifiers(modifiers)` | 장비 모듈 |
 
 장비 모듈은 플레이어의 내부 Node 경로나 구체 클래스를 참조하지 않습니다. 스탯 적용 대상이 공개 메서드 하나를 구현하면 플레이어 이외의 캐릭터에도 같은 방어구 집계를 사용할 수 있습니다.
 
 무기 태그와 스킬 요구 태그는 `WeaponTagProfile` 값 비교만 수행합니다. 스킬 효과는 `activation_payload`에 보관하되 현재 장비 시스템이 실행하지 않으므로, 향후 스킬 실행기와 작전 투입 비용 정책을 별도 모듈로 붙일 수 있습니다.
 
+## 격자 인벤토리 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 가방 | `configure(catalog)` | `Game` 조립부 |
+| 가방 | `can_place`, `move_item`, `find_first_space` | 격자 UI와 향후 드래그 조작 |
+| 가방 | `add_item`, `take_item`, `get_items_by_type` | 파밍·장비·소비 시스템 |
+| 가방 | `get_snapshot`, `inventory_changed(snapshot)` | I 가방 UI와 U 장비 UI |
+| I/U 패널 | `configure`, `open_panel`, `close_panel` | `Game`과 모달 전환 |
+
+가방은 장비 클래스나 태그를 모르며 `InventoryItemDefinition.linked_resource`를 보존하기만 합니다. 장착 성공 여부와 아이템 제거 순서는 U 화면이 공개 계약을 통해 조정합니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.
 - `EnemySpawner`는 기본 적 Scene을 참조합니다. 이는 `spawning → enemies` 선언 의존성입니다.
 - `Game`은 기본 장비 Scene과 선택된 로드아웃 Resource 경로를 알고, 장비는 플레이어의 스탯 적용 공개 메서드만 압니다.
+- `Game`은 인벤토리 카탈로그와 I/U 패널 Scene 경로를 알고, 가방과 장비 시스템은 서로의 내부 Node 경로를 참조하지 않습니다.
 - 기존 `AutoWeapon`은 아직 장비 무기 정의의 공격 프로필을 소비하지 않습니다. 태그·장착 상태와 발사 동작을 분리한 과도기 구조입니다.
 - 플레이어, 적, 투사체는 생성 벽용 충돌 레이어 `16`을 공유합니다.
 - 맵 전용 스모크 테스트는 맵 기능 경로를 참조합니다. 맵 기능을 완전히 삭제하면 해당 테스트도 함께 제거하거나 교체해야 합니다.
@@ -120,7 +143,7 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `tier_entry`, `minimap`, `equipment`, `weapon_tags`, `skills_0_10`, `armor_stats`, `equipment_optional`, `realistic_obstacles`, `loot`, `credits`, `health_ui`, `status_bars`, `extraction_f`가 포함됩니다. 이는 세 등급 진입, 미니맵, 장비 태그·제한·방어구 스탯·비활성화, 실내 장애물, 1회성 파밍·회수, 양측 체력 UI와 F 탈출 계약이 함께 검증됐다는 뜻입니다.
+성공하면 출력에 `inventory_grid`, `item_footprints`, `inventory_i`, `equipment_u`, `parts`, `module_cost`, `module_upgrade`, `modification_tag`가 기존 검증 항목과 함께 포함됩니다. 이는 가변 격자, I/U UI, 전용 파츠, 모듈 한도·강화, 최고 레벨 개조까지 자동 검증됐다는 뜻입니다.
 
 ## 다음 개선 시점
 
@@ -128,4 +151,4 @@ tags:
 
 ## 검색 별칭
 
-모듈 감사, 의존성 검사, 플러그인 구조, 기능 제거, 기능 교체, 맵 인터페이스, 선택 모듈, 결합도
+모듈 감사, 의존성 검사, 플러그인 구조, 기능 제거, 기능 교체, 맵 인터페이스, 선택 모듈, 결합도, 인벤토리 계약, 장비 개조 계약

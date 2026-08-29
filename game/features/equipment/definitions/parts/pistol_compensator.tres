@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EquipmentPartDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/equipment_part_definition.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+part_id = &"pistol_compensator"
+display_name = "권총 전용 컴펜세이터"
+socket_id = &"muzzle"
+compatible_minor_tags = [&"pistol"]
+special_feature_ids = [&"recoil_control"]

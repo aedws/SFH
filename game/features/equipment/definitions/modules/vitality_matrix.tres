@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EquipmentModuleDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/equipment_module_definition.gd" id="1_module"]
+[ext_resource type="Script" path="res://game/features/equipment/stat_modifier.gd" id="2_modifier"]
+
+[sub_resource type="Resource" id="HealthModifier"]
+script = ExtResource("2_modifier")
+stat_id = &"max_health"
+operation = 0
+amount = 10.0
+
+[resource]
+script = ExtResource("1_module")
+module_id = &"vitality_matrix"
+display_name = "생체 강화 매트릭스"
+module_tags = [&"survival"]
+cost_by_upgrade_level = PackedInt32Array(5, 3, 2)
+stat_modifiers = [SubResource("HealthModifier")]
+special_feature_ids = [&"regeneration_candidate"]

@@ -166,7 +166,7 @@ horizontal_alignment = 2
 [node name="FooterRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content"]
 
 [node name="Hint" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/FooterRow"]
-text = "WASD/방향키 이동 · 자동 공격 · 탈출 지점에서 F"
+text = "이동 WASD/방향키 · F 상호작용 · I 가방 · U 장비/개조"
 
 [node name="FooterSpacer" type="Control" parent="UI/HUDMargin/Panel/Margin/Content/FooterRow"]
 layout_mode = 2

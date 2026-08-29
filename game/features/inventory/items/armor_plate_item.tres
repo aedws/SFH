@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="InventoryItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/inventory/inventory_item_definition.gd" id="1_item"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/modules/armor_plate.tres" id="2_link"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = &"armor_plate_item"
+display_name = "장갑판 모듈"
+item_type = &"module"
+grid_size = Vector2i(1, 1)
+panel_color = Color(0.55, 0.61, 0.34, 1)
+linked_resource = ExtResource("2_link")
+description = "방어 능력치를 추가하는 1×1 모듈입니다."
