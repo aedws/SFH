@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>SEARCH COMMAND</span><span>2 DAYS · 21 TOPICS</span><span>MODULAR PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>SEARCH COMMAND</span><span>2 DAYS · 22 TOPICS</span><span>MODULAR PASS</span></div>
 
 ## 기획 기준 진행도
 
@@ -95,17 +95,43 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>20 UPDATE BUNDLES &middot; BUILD 37 &middot; IMPROVE 28 &middot; CHANGE 17 &middot; FIX 7</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>21 UPDATE BUNDLES &middot; BUILD 39 &middot; IMPROVE 30 &middot; CHANGE 18 &middot; FIX 7</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>20</b><small>UPDATE BUNDLES</small></span>
-      <span><b>37</b><small>BUILD</small></span>
-      <span><b>28</b><small>IMPROVE</small></span>
-      <span><b>17</b><small>CHANGE</small></span>
+      <span><b>21</b><small>UPDATE BUNDLES</small></span>
+      <span><b>39</b><small>BUILD</small></span>
+      <span><b>30</b><small>IMPROVE</small></span>
+      <span><b>18</b><small>CHANGE</small></span>
       <span><b>7</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>플랫포머형 이동 응답 · 정지 스냅 · 급선회 그립</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 1</small><b>즉시 플레이 README · Godot Web · Pages 배포 게이트</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>핵심 변경 · GitHub 방문에서 첫 플레이까지 한 번의 클릭</strong>
+          <ul>
+            <li>README를 캐치프레이즈·게임 정체성·코어 루프·조작·현재 범위 순으로 전면 재구성했습니다.</li>
+            <li>‘조준은 자동으로. 판단은 끝까지.’라는 전투 노선과 SURVIVE · FIGHT · HAUL을 명시했습니다.</li>
+            <li>Godot 4.7.2 Web 내보내기를 /play/에 배포하고 main의 게임 변경도 자동 배포 조건에 포함했습니다.</li>
+            <li>게임과 위키를 독립 빌드한 뒤 HTML·WASM·PCK가 모두 있을 때만 Pages 아티팩트를 게시합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>검증 결과</b><span>Web 프리셋의 전체 프로젝트 PCK 내보내기, 게임 스모크, 위키 strict 빌드와 일일 묶음 검사를 수행합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">브라우저 플레이 빌드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>WebAssembly·PCK·HTML을 Godot 릴리스 프리셋으로 생성해 위키 아래에서 서비스합니다.</p><a href="../play/">SFH Web 실행 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">복합 Pages 검증 파이프라인</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>게임 export와 MkDocs build를 병렬 경계로 나누고 최종 아티팩트 직전에 결합합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>✨ 개선 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">제품 중심 GitHub 첫 화면</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>개발 항목 나열을 게임 정체성 5축과 실제 플레이 루프로 압축했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">온보딩 경로 단축</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>설치 없는 플레이, 개발 위키, 로컬 실행을 목적별 버튼과 짧은 절차로 분리했습니다.</p><a href="../getting-started/run-project/">실행 안내 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">README 역할 재정의</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>상세 구현 기록은 위키로 보내고 README는 게임 소개와 실행 진입점에 집중합니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 2</small><b>플랫포머형 이동 응답 · 정지 스냅 · 급선회 그립</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 탑다운 이동에 플랫포머의 단단한 입력감 적용</strong>
@@ -131,7 +157,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>거점 편집 로드아웃 · ESC 모달 · 무손실 반환</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 3</small><b>거점 편집 로드아웃 · ESC 모달 · 무손실 반환</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 거점 준비가 실제 작전에 연결</strong>
@@ -157,7 +183,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>전투 에너지 · 스킬 충전 · 처치 회복 드랍</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 4</small><b>전투 에너지 · 스킬 충전 · 처치 회복 드랍</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 확정 전투 자원 루프</strong>
@@ -182,7 +208,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 4</small><b>적 군중 분리 · 안전 생성 · 성능 제한</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 5</small><b>적 군중 분리 · 안전 생성 · 성능 제한</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 겹침 없는 핵앤슬래시 군중</strong>
@@ -203,7 +229,7 @@ tags:
       </div>
     </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 5</small><b>기획자 검색 허브 · 실시간 탐색 순위 · 검색 우선순위 데이터</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 6</small><b>기획자 검색 허브 · 실시간 탐색 순위 · 검색 우선순위 데이터</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 검색 전 추천과 입력 후 전체 검색</strong>
@@ -224,7 +250,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 6</small><b>하루 단위 업데이트 압축 · 일일 합계 · 중복 방지 검사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 7</small><b>하루 단위 업데이트 압축 · 일일 합계 · 중복 방지 검사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 날짜당 카드 하나</strong>
@@ -242,7 +268,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 7</small><b>거점 I·U/E·Q 로드아웃 확인</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 8</small><b>거점 I·U/E·Q 로드아웃 확인</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 거점 입력 4종</strong>
@@ -263,7 +289,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 8</small><b>지속 자기장 · 방 진입 봉쇄 · 전멸 보상</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 9</small><b>지속 자기장 · 방 진입 봉쇄 · 전멸 보상</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 2개 전투 모듈</strong>
@@ -284,7 +310,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 9</small><b>방·통로 안개 전환 · 7개 작전·영구 성장 시스템 통합</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 10</small><b>방·통로 안개 전환 · 7개 작전·영구 성장 시스템 통합</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 7개 시스템 + 안개 전환 개선</strong>
@@ -312,7 +338,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 10</small><b>전기 스킬 표현 · 대형 작전 성능 예산</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 11</small><b>전기 스킬 표현 · 대형 작전 성능 예산</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -335,7 +361,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 11</small><b>큰 시작 거점 · F 작전 게이트 · 전투 세션 복귀</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 12</small><b>큰 시작 거점 · F 작전 게이트 · 전투 세션 복귀</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -361,7 +387,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 12</small><b>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 13</small><b>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 4개 주제</strong>
@@ -383,7 +409,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 13</small><b>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 14</small><b>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -409,7 +435,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 14</small><b>방·통로 전장의 안개 최적화 · 정면 시야 확장</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 15</small><b>방·통로 전장의 안개 최적화 · 정면 시야 확장</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -433,7 +459,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 15</small><b>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 전체 결합 재점검</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 16</small><b>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 전체 결합 재점검</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -458,7 +484,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 16</small><b>화면 한 장급 방 · 전장의 안개 · 자원 회수 지점</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 17</small><b>화면 한 장급 방 · 전장의 안개 · 자원 회수 지점</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -483,7 +509,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 17</small><b>전체 화면 장비 · 모듈 인벤토리 UI</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 18</small><b>전체 화면 장비 · 모듈 인벤토리 UI</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 4개 주제</strong>
@@ -509,7 +535,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 18</small><b>확장 맵 · 10분 런 · 반응형 이동 · 부분 회복</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 19</small><b>확장 맵 · 10분 런 · 반응형 이동 · 부분 회복</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 4개 주제</strong>
@@ -532,7 +558,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 19</small><b>로그라이크 성장 · 강화 경제 · 모듈 전수 점검</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 20</small><b>로그라이크 성장 · 강화 경제 · 모듈 전수 점검</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -557,7 +583,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 20</small><b>무기 밸런스 · 격자 가방 · 장비 개조</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 21</small><b>무기 밸런스 · 격자 가방 · 장비 개조</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 6개 주제</strong>
