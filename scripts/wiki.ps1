@@ -30,6 +30,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Push-Location $repositoryRoot
 try {
+    & (Join-Path $PSScriptRoot "compress-wiki-release-days.ps1") -Check
     & $virtualPython -m mkdocs $Action --strict
 }
 finally {
