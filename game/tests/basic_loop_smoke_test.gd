@@ -1112,16 +1112,16 @@ func _verify_player_sustain_and_movement() -> bool:
 	var movement_snapshot: Dictionary = movement.call(&"get_movement_snapshot")
 	var base_speed := float(movement_snapshot[&"speed"])
 	var accelerated: Vector2 = movement.call(
-		&"step_velocity", Vector2.ZERO, Vector2.RIGHT, 0.05, false
+		&"step_velocity", Vector2.ZERO, Vector2.RIGHT, 0.016, false
 	)
 	var braked: Vector2 = movement.call(
-		&"step_velocity", Vector2.RIGHT * base_speed, Vector2.ZERO, 0.05, false
+		&"step_velocity", Vector2.RIGHT * base_speed, Vector2.ZERO, 0.016, false
 	)
 	var counter_steered: Vector2 = movement.call(
-		&"step_velocity", Vector2.RIGHT * base_speed, Vector2.LEFT, 0.05, false
+		&"step_velocity", Vector2.RIGHT * base_speed, Vector2.LEFT, 0.016, false
 	)
 	var cornered: Vector2 = movement.call(
-		&"step_velocity", Vector2.RIGHT * base_speed, Vector2.DOWN, 0.05, false
+		&"step_velocity", Vector2.RIGHT * base_speed, Vector2.DOWN, 0.016, false
 	)
 	var dashed: Vector2 = movement.call(
 		&"step_velocity", Vector2.ZERO, Vector2.RIGHT, 0.016, true
@@ -1134,18 +1134,18 @@ func _verify_player_sustain_and_movement() -> bool:
 		false
 	)
 	if (
-		accelerated.x <= 0.0
-		or accelerated.x < float(movement_snapshot[&"launch_speed"])
-		or accelerated.x >= base_speed
-		or braked.length() >= base_speed
+		accelerated.x < base_speed * 0.9
+		or accelerated.x > base_speed
+		or braked != Vector2.ZERO
 		or counter_steered.x >= 0.0
-		or cornered.y <= 0.0
+		or cornered.y < base_speed * 0.9
+		or absf(cornered.x) > base_speed * 0.1
 		or dashed.length() <= base_speed * 2.0
 		or dash_exit.length() <= base_speed
 		or dash_exit.length() >= dashed.length()
 		or not bool(movement.call(&"get_movement_snapshot")[&"dash_exit_active"])
 	):
-		_fail("초동 가속·제동·급선회·회피 후 관성 응답이 예상 범위를 벗어났습니다.")
+		_fail("플랫포머형 초동·즉시 제동·급선회·회피 후 짧은 관성 응답이 예상 범위를 벗어났습니다.")
 		return false
 
 	var recovery := recovery_scene.instantiate()
@@ -2539,7 +2539,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 
