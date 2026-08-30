@@ -38,6 +38,7 @@ extra_css:
 
 extra_javascript:
   - javascripts/search-dashboard.js
+  - javascripts/play-entry.js
 
 plugins:
   - search:

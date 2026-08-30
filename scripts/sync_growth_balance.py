@@ -11,6 +11,8 @@ import time
 import urllib.parse
 import urllib.request
 
+from locked_csv_payload import sync_payload, verify_payload
+
 
 SCHEMAS = {
     "run_buff": [
@@ -105,6 +107,14 @@ def main() -> int:
         "run_buff": data_dir / "run_buff_balance.csv",
         "upgrade": data_dir / "upgrade_balance.csv",
     }
+    payload_targets = {
+        "run_buff": data_dir / "run_buff_balance_payload.tres",
+        "upgrade": data_dir / "upgrade_balance_payload.tres",
+    }
+    source_paths = {
+        "run_buff": "res://game/features/growth_balance/data/run_buff_balance.csv",
+        "upgrade": "res://game/features/growth_balance/data/upgrade_balance.csv",
+    }
     if args.check:
         texts = {name: path.read_text(encoding="utf-8-sig") for name, path in targets.items()}
     elif args.spreadsheet_id:
@@ -131,6 +141,10 @@ def main() -> int:
     if not args.check:
         for name, rows in normalized.items():
             write_rows(targets[name], SCHEMAS[name], rows)
+            sync_payload(targets[name], payload_targets[name], source_paths[name])
+    else:
+        for name in targets:
+            verify_payload(targets[name], payload_targets[name], source_paths[name])
     print(
         "GROWTH_BALANCE_OK "
         f"run_buff_rows={counts['run_buff']} upgrade_rows={counts['upgrade']}"

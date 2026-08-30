@@ -210,8 +210,14 @@ func get_snapshot() -> Dictionary:
 
 
 func _load_locked_csvs() -> bool:
-	var run_buff_text := _read_file(config.locked_run_buff_csv_path)
-	var upgrade_text := _read_file(config.locked_upgrade_csv_path)
+	var run_buff_text := _read_file(
+		config.locked_run_buff_csv_path,
+		config.locked_run_buff_payload
+	)
+	var upgrade_text := _read_file(
+		config.locked_upgrade_csv_path,
+		config.locked_upgrade_payload
+	)
 	if run_buff_text.is_empty() or upgrade_text.is_empty():
 		growth_balance_error.emit("확정 성장 밸런스 CSV를 찾을 수 없습니다.")
 		return false
@@ -220,11 +226,13 @@ func _load_locked_csvs() -> bool:
 	return run_ok and upgrade_ok
 
 
-func _read_file(path: String) -> String:
-	if not FileAccess.file_exists(path):
-		return ""
+func _read_file(path: String, payload: Resource) -> String:
 	var file := FileAccess.open(path, FileAccess.READ)
-	return file.get_as_text() if file != null else ""
+	if file != null:
+		return file.get_as_text()
+	if payload != null and payload.call(&"is_valid_for", path):
+		return String(payload.call(&"get_csv_text"))
+	return ""
 
 
 func _emit_updated() -> void:

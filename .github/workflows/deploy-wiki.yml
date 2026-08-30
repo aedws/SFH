@@ -104,6 +104,9 @@ jobs:
       - name: Verify combined Pages artifact
         run: |
           test -s .wiki-site/index.html
+          test -s .wiki-site/javascripts/play-entry.js
+          grep -q 'class="sfh-operation-play" href="play/"' .wiki-site/index.html
+          grep -q 'data-sfh-global-play' .wiki-site/javascripts/play-entry.js
           test -s .wiki-site/play/index.html
           test -s .wiki-site/play/index.wasm
           test -s .wiki-site/play/index.pck

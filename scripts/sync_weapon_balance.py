@@ -11,6 +11,8 @@ import time
 import urllib.parse
 import urllib.request
 
+from locked_csv_payload import sync_payload, verify_payload
+
 
 COLUMNS = [
     "weapon_id", "display_name", "trait_id", "damage", "fire_interval_sec",
@@ -124,6 +126,8 @@ def download(url: str) -> str:
 def main() -> int:
     root = pathlib.Path(__file__).resolve().parents[1]
     default_output = root / "game/features/weapon_balance/data/weapon_balance.csv"
+    default_payload = root / "game/features/weapon_balance/data/weapon_balance_payload.tres"
+    source_path = "res://game/features/weapon_balance/data/weapon_balance.csv"
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", help="Google Sheets의 파일 > 공유 > 웹에 게시 CSV URL")
     parser.add_argument("--output", type=pathlib.Path, default=default_output)
@@ -147,6 +151,9 @@ def main() -> int:
             writer = csv.DictWriter(output_file, fieldnames=COLUMNS, lineterminator="\n")
             writer.writeheader()
             writer.writerows(rows)
+        sync_payload(args.output, default_payload, source_path)
+    elif args.output.resolve() == default_output.resolve():
+        verify_payload(args.output, default_payload, source_path)
     print(f"WEAPON_BALANCE_OK rows={len(rows)} output={args.output}")
     return 0
 

@@ -81,13 +81,23 @@ func get_snapshot() -> Dictionary:
 
 
 func _load_locked_csv() -> bool:
-	if config == null or not FileAccess.file_exists(config.locked_csv_path):
+	if config == null:
 		balance_error.emit("확정 무기 밸런스 CSV를 찾을 수 없습니다.")
 		return false
-	var file := FileAccess.open(config.locked_csv_path, FileAccess.READ)
-	if file == null:
+	var csv_text := _read_locked_text(config.locked_csv_path, config.locked_csv_payload)
+	if csv_text.is_empty():
+		balance_error.emit("확정 무기 밸런스 CSV를 찾을 수 없습니다.")
 		return false
-	return load_csv_text(file.get_as_text(), "확정 CSV")
+	return load_csv_text(csv_text, "확정 CSV")
+
+
+func _read_locked_text(path: String, payload: Resource) -> String:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file != null:
+		return file.get_as_text()
+	if payload != null and payload.call(&"is_valid_for", path):
+		return String(payload.call(&"get_csv_text"))
+	return ""
 
 
 func _on_request_completed(
