@@ -1,6 +1,8 @@
 class_name GridInventoryWindow
 extends PanelContainer
 
+signal panel_visibility_changed(is_open: bool)
+
 @onready var grid_view: Control = %GridView
 @onready var header_summary: Label = %HeaderSummary
 @onready var inventory_count: Label = %InventoryCount
@@ -57,6 +59,7 @@ func open_panel() -> void:
 	move_to_front()
 	visible = true
 	get_tree().paused = true
+	panel_visibility_changed.emit(true)
 
 
 func close_panel() -> void:
@@ -64,6 +67,7 @@ func close_panel() -> void:
 		return
 	visible = false
 	get_tree().paused = paused_before_open
+	panel_visibility_changed.emit(false)
 
 
 func _on_item_selected(entry: Dictionary) -> void:

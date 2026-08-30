@@ -439,12 +439,15 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 		elif setup_overlay.visible or not hub_hud.visible:
 			failure_message = "시작 시 작전 UI가 닫히거나 거점 안내 HUD가 표시되지 않았습니다."
 		elif (
-			setup_panel.custom_minimum_size.x < 1000.0
-			or setup_panel.custom_minimum_size.y < 580.0
-			or small_card.custom_minimum_size.x < 280.0
+			setup_panel.custom_minimum_size.x < 900.0
+			or setup_panel.custom_minimum_size.x > 1020.0
+			or setup_panel.custom_minimum_size.y < 540.0
+			or setup_panel.custom_minimum_size.y > 620.0
+			or small_card.custom_minimum_size.x < 260.0
+			or small_card.custom_minimum_size.x > 300.0
 			or not setup_close.visible
 		):
-			failure_message = "최적화된 세션 구성 패널·전장 카드·ESC 동선이 적용되지 않았습니다."
+			failure_message = "압축된 세션 구성 패널·전장 카드·ESC 동선이 적용되지 않았습니다."
 		elif not density_failure.is_empty():
 			failure_message = density_failure
 		else:
@@ -454,6 +457,8 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 			hub_inventory.call(&"_unhandled_input", inventory_event)
 			if not hub_inventory.visible or not paused:
 				failure_message = "거점 I 입력이 가방 조회 화면을 열지 못했습니다."
+			elif hub_hud.visible or setup_overlay.visible:
+				failure_message = "I 가방 뒤에 거점 또는 작전 HUD가 겹쳐 표시됩니다."
 			else:
 				var cancel_event := InputEventAction.new()
 				cancel_event.action = &"ui_cancel"
@@ -461,6 +466,8 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 				hub_inventory.call(&"_unhandled_input", cancel_event)
 				if hub_inventory.visible or paused:
 					failure_message = "거점 I 가방이 ESC로 닫히지 않았습니다."
+				elif not hub_hud.visible:
+					failure_message = "I 가방 종료 후 거점 HUD가 복원되지 않았습니다."
 			var equipment_event := InputEventAction.new()
 			equipment_event.action = &"toggle_equipment"
 			equipment_event.pressed = true
@@ -468,6 +475,8 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 				hub_workbench.call(&"_unhandled_input", equipment_event)
 				if not hub_workbench.visible or not paused:
 					failure_message = "거점 U/E 입력이 장비 편집 화면을 열지 못했습니다."
+				elif hub_hud.visible or setup_overlay.visible:
+					failure_message = "U/E 장비 화면 뒤에 거점 또는 작전 HUD가 겹쳐 표시됩니다."
 				else:
 					var cancel_event := InputEventAction.new()
 					cancel_event.action = &"ui_cancel"
@@ -516,10 +525,14 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 				failure_message = "작전 게이트의 F 상호작용 요청이 실패했습니다."
 			elif not setup_overlay.visible or not paused:
 				failure_message = "작전 게이트가 세션 구성 UI를 열지 못했습니다."
+			elif hub_hud.visible:
+				failure_message = "세션 구성 UI 뒤에 거점 HUD가 겹쳐 표시됩니다."
 			else:
 				setup_close.pressed.emit()
 				if setup_overlay.visible or paused:
 					failure_message = "ESC 복귀가 작전 UI를 닫지 못했습니다."
+				elif not hub_hud.visible:
+					failure_message = "세션 구성 UI 종료 후 거점 HUD가 복원되지 않았습니다."
 				elif not hub_game.call(&"start_run", "small"):
 					failure_message = "시작 거점에서 전투 세션으로 전환하지 못했습니다."
 				elif hub_game.get("start_hub") != null or hub_game.get("map_generator") == null:
@@ -568,11 +581,15 @@ func _hub_loadout_ui_density_failure(inventory_window: Node, workbench: Node) ->
 	var grid_size: Vector2 = inventory_density.get(&"grid_minimum_size", Vector2.ZERO)
 	var inventory_window_size: Vector2 = inventory_density.get(&"window_size", Vector2.ZERO)
 	if (
-		float(inventory_density.get(&"cell_pixel_size", 0.0)) < 50.0
-		or grid_size.x < 600.0
-		or grid_size.y < 400.0
-		or float(inventory_density.get(&"detail_minimum_width", 0.0)) < 330.0
-		or inventory_window_size.x > 1236.0
+		float(inventory_density.get(&"cell_pixel_size", 0.0)) < 38.0
+		or float(inventory_density.get(&"cell_pixel_size", 0.0)) > 44.0
+		or grid_size.x < 480.0
+		or grid_size.x > 520.0
+		or grid_size.y < 320.0
+		or grid_size.y > 350.0
+		or float(inventory_density.get(&"detail_minimum_width", 0.0)) < 280.0
+		or float(inventory_density.get(&"detail_minimum_width", 0.0)) > 310.0
+		or inventory_window_size.x > 1224.0
 		or inventory_window_size.y > 680.0
 	):
 		return "I 가방 밀도 기준 실패: grid=%s detail=%.0f cell=%.0f window=%s" % [
@@ -584,11 +601,11 @@ func _hub_loadout_ui_density_failure(inventory_window: Node, workbench: Node) ->
 	var workbench_density: Dictionary = workbench.call(&"get_density_snapshot")
 	var workbench_window_size: Vector2 = workbench_density.get(&"window_size", Vector2.ZERO)
 	if (
-		float(workbench_density.get(&"slot_rail_width", 0.0)) > 220.0
-		or float(workbench_density.get(&"slot_button_height", 0.0)) > 64.0
+		float(workbench_density.get(&"slot_rail_width", 0.0)) > 200.0
+		or float(workbench_density.get(&"slot_button_height", 0.0)) > 54.0
 		or int(workbench_density.get(&"equipment_columns", 0)) < 3
 		or int(workbench_density.get(&"modification_columns", 0)) < 3
-		or workbench_window_size.x > 1236.0
+		or workbench_window_size.x > 1224.0
 		or workbench_window_size.y > 680.0
 	):
 		return "U·E 밀도 기준 실패: rail=%.0f slot=%.0f equipment=%d modification=%d window=%s" % [
@@ -2617,8 +2634,29 @@ func _process(_delta: float) -> bool:
 		var health_bar := game_instance.get_node(
 			"UI/HUDMargin/Panel/Margin/Content/HealthRow/HealthBar"
 		) as ProgressBar
-		if "%" not in health_label.text or health_bar.custom_minimum_size.y < 26.0:
+		if "%" not in health_label.text or health_bar.custom_minimum_size.y < 18.0:
 			return _fail("플레이어 체력 HUD의 수치 또는 가독성 스타일이 적용되지 않았습니다.")
+		var tactical_minimap := game_instance.get("minimap") as Control
+		var skill_hud := game_instance.get("combat_skill_hud") as Control
+		var interaction_prompt := game_instance.get_node("UI/InteractionLabel") as Control
+		var combat_hud := game_instance.get_node("UI/HUDMargin") as Control
+		if (
+			combat_hud.size.y > 180.0
+			or tactical_minimap == null
+			or tactical_minimap.size.x > 220.0
+			or tactical_minimap.size.y > 180.0
+			or skill_hud == null
+			or skill_hud.size.x > 680.0
+			or skill_hud.size.y > 112.0
+			or combat_hud.get_global_rect().intersects(tactical_minimap.get_global_rect())
+			or skill_hud.get_global_rect().intersects(interaction_prompt.get_global_rect())
+		):
+			return _fail(
+				"전투 HUD 압축·비겹침 계약 실패: hud=%s map=%s skill=%s prompt=%s" % [
+					combat_hud.get_global_rect(), tactical_minimap.get_global_rect(),
+					skill_hud.get_global_rect(), interaction_prompt.get_global_rect(),
+				]
+			)
 		var equipment_label := game_instance.get_node(
 			"UI/HUDMargin/Panel/Margin/Content/EquipmentLabel"
 		) as Label

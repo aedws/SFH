@@ -325,6 +325,7 @@ var defeated_enemies: int = 0
 var run_started: bool = false
 var run_ended: bool = false
 var pending_buff_levels: Array[int] = []
+var modal_ui_visibility_snapshot: Dictionary = {}
 
 
 func _ready() -> void:
@@ -703,6 +704,7 @@ func _open_run_setup() -> void:
 	if run_started or start_hub == null:
 		return
 	run_setup_overlay.visible = true
+	start_hub_hud.visible = false
 	interaction_label.visible = false
 	get_tree().paused = true
 	_refresh_contract_setup_ui()
@@ -714,6 +716,7 @@ func _close_run_setup() -> void:
 	run_setup_overlay.visible = false
 	get_tree().paused = false
 	if start_hub != null and player != null:
+		start_hub_hud.visible = true
 		var is_near: bool = (
 			player.global_position.distance_to(start_hub.call(&"get_operation_position"))
 			<= float(start_hub.get("interaction_radius"))
@@ -1306,6 +1309,7 @@ func _install_inventory() -> bool:
 		_report_configuration_error("가방 UI 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
 	inventory_window.call(&"configure", inventory_system)
+	_connect_modal_panel(inventory_window)
 	return true
 
 
@@ -1331,7 +1335,52 @@ func _install_equipment_workbench(read_only: bool = false) -> bool:
 	):
 		_report_configuration_error("장비 개조 UI를 연결하지 못했습니다.")
 		return false
+	_connect_modal_panel(equipment_workbench)
 	return true
+
+
+func _connect_modal_panel(panel: Node) -> void:
+	if panel == null or not panel.has_signal(&"panel_visibility_changed"):
+		return
+	var callback := Callable(self, &"_on_modal_panel_visibility_changed")
+	if not panel.is_connected(&"panel_visibility_changed", callback):
+		panel.connect(&"panel_visibility_changed", callback)
+
+
+func _on_modal_panel_visibility_changed(is_open: bool) -> void:
+	if is_open:
+		if modal_ui_visibility_snapshot.is_empty():
+			modal_ui_visibility_snapshot = {
+				&"hud": hud_margin.visible,
+				&"hub": start_hub_hud.visible,
+				&"setup": run_setup_overlay.visible,
+				&"interaction": interaction_label.visible,
+				&"skills": is_instance_valid(combat_skill_hud) and combat_skill_hud.visible,
+				&"minimap": is_instance_valid(minimap) and minimap.visible,
+			}
+		hud_margin.visible = false
+		start_hub_hud.visible = false
+		run_setup_overlay.visible = false
+		interaction_label.visible = false
+		if is_instance_valid(combat_skill_hud):
+			combat_skill_hud.visible = false
+		if is_instance_valid(minimap):
+			minimap.visible = false
+		return
+	for panel in get_tree().get_nodes_in_group(&"game_modal_panel"):
+		if panel is CanvasItem and panel.visible:
+			return
+	if modal_ui_visibility_snapshot.is_empty():
+		return
+	hud_margin.visible = bool(modal_ui_visibility_snapshot.get(&"hud", false))
+	start_hub_hud.visible = bool(modal_ui_visibility_snapshot.get(&"hub", false))
+	run_setup_overlay.visible = bool(modal_ui_visibility_snapshot.get(&"setup", false))
+	interaction_label.visible = bool(modal_ui_visibility_snapshot.get(&"interaction", false))
+	if is_instance_valid(combat_skill_hud):
+		combat_skill_hud.visible = bool(modal_ui_visibility_snapshot.get(&"skills", false))
+	if is_instance_valid(minimap):
+		minimap.visible = bool(modal_ui_visibility_snapshot.get(&"minimap", false))
+	modal_ui_visibility_snapshot.clear()
 
 
 func _install_minimap() -> void:
@@ -1551,7 +1600,7 @@ func _configure_tier_button(button: Button, tier_id: String) -> void:
 		reward_multiplier = float(quote.get(&"reward_multiplier", 1.0))
 		if persistent_profile != null and not persistent_profile.call(&"can_spend", quoted_entry_cost):
 			button.disabled = true
-	button.text = "%s 작전 · 목표 %d분\n투입 %d C · 회수 ×%.2f · 방 %d~%d%s" % [
+	button.text = "%s · %d분\n투입 %d C · 회수 ×%.2f\n방 %d~%d%s" % [
 		config.get("display_name"),
 		roundi(float(config.get("target_run_duration_seconds")) / 60.0),
 		quoted_entry_cost,

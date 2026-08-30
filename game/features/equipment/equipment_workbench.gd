@@ -1,6 +1,8 @@
 class_name EquipmentWorkbench
 extends PanelContainer
 
+signal panel_visibility_changed(is_open: bool)
+
 const SLOT_LABELS := {
 	&"main": "01  메인 무기",
 	&"secondary": "02  보조 무기",
@@ -137,6 +139,7 @@ func open_panel() -> void:
 	visible = true
 	get_tree().paused = true
 	_refresh()
+	panel_visibility_changed.emit(true)
 
 
 func close_panel() -> void:
@@ -144,6 +147,7 @@ func close_panel() -> void:
 		return
 	visible = false
 	get_tree().paused = paused_before_open
+	panel_visibility_changed.emit(false)
 
 
 func show_weapon_tab() -> void:

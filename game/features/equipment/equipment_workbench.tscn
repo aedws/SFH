@@ -101,9 +101,9 @@ corner_radius_bottom_left = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 22.0
+offset_left = 28.0
 offset_top = 20.0
-offset_right = -22.0
+offset_right = -28.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -112,17 +112,17 @@ script = ExtResource("1_workbench")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
 
 [node name="Content" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="Header" type="HBoxContainer" parent="Margin/Content"]
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_constants/separation = 12
 
@@ -154,7 +154,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "캐릭터 장비 관리"
 theme_override_colors/font_color = Color(0.9, 0.96, 0.98, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
 
 [node name="HeaderSpacer" type="Control" parent="Margin/Content/Header"]
 layout_mode = 2
@@ -162,7 +162,7 @@ size_flags_horizontal = 3
 
 [node name="HeaderSummary" type="Label" parent="Margin/Content/Header"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(280, 0)
+custom_minimum_size = Vector2(240, 0)
 layout_mode = 2
 text = "장비 슬롯 4 · 모듈 시스템 온라인"
 theme_override_colors/font_color = Color(0.62, 0.7, 0.75, 1)
@@ -176,7 +176,7 @@ theme_override_constants/separation = 8
 
 [node name="SlotRail" type="PanelContainer" parent="Margin/Content/Main"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(220, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("RailPanel")
 
@@ -212,7 +212,7 @@ autowrap_mode = 2
 
 [node name="MainSlotButton" type="Button" parent="Margin/Content/Main/SlotRail/Margin/Slots"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
 toggle_mode = true
 button_group = null
@@ -226,7 +226,7 @@ alignment = 0
 
 [node name="SecondarySlotButton" type="Button" parent="Margin/Content/Main/SlotRail/Margin/Slots"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
 toggle_mode = true
 text = "02  보조 무기\n제식 권총"
@@ -239,7 +239,7 @@ alignment = 0
 
 [node name="BodySlotButton" type="Button" parent="Margin/Content/Main/SlotRail/Margin/Slots"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
 toggle_mode = true
 text = "03  신체 방어구\n전술 조끼"
@@ -252,7 +252,7 @@ alignment = 0
 
 [node name="FeetSlotButton" type="Button" parent="Margin/Content/Main/SlotRail/Margin/Slots"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
 toggle_mode = true
 text = "04  신발 방어구\n기동 부츠"
@@ -287,7 +287,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="DetailPanel" type="PanelContainer" parent="Margin/Content/Main/Tabs/장비_장착"]
-custom_minimum_size = Vector2(330, 0)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("SectionPanel")
 
@@ -314,11 +314,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "돌격소총"
 theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 20
 
 [node name="SelectedEquipmentMeta" type="Label" parent="Margin/Content/Main/Tabs/장비_장착/DetailPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 36)
+custom_minimum_size = Vector2(270, 32)
 layout_mode = 2
 text = "장비 Lv.1/3 · 원거리 / 화기 / 소총"
 theme_override_colors/font_color = Color(0.65, 0.72, 0.77, 1)
@@ -337,7 +337,7 @@ layout_mode = 2
 
 [node name="EquipmentStats" type="Label" parent="Margin/Content/Main/Tabs/장비_장착/DetailPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 150)
+custom_minimum_size = Vector2(270, 120)
 layout_mode = 2
 size_flags_vertical = 3
 text = "장비 상세 수치"
@@ -449,7 +449,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="InstalledPanel" type="PanelContainer" parent="Margin/Content/Main/Tabs/모듈_파츠"]
-custom_minimum_size = Vector2(380, 0)
+custom_minimum_size = Vector2(340, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("SectionPanel")
 
@@ -492,7 +492,7 @@ theme_override_font_sizes/font_size = 14
 
 [node name="InstalledModuleGrid" type="GridContainer" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 88)
+custom_minimum_size = Vector2(0, 72)
 layout_mode = 2
 columns = 3
 theme_override_constants/h_separation = 7
@@ -506,7 +506,7 @@ theme_override_font_sizes/font_size = 14
 
 [node name="InstalledPartGrid" type="GridContainer" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 68)
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 columns = 2
 theme_override_constants/h_separation = 7
@@ -514,7 +514,7 @@ theme_override_constants/v_separation = 7
 
 [node name="InstalledSelectionDetail" type="Label" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(350, 0)
+custom_minimum_size = Vector2(310, 0)
 layout_mode = 2
 size_flags_vertical = 3
 text = "장착된 모듈 또는 파츠를 선택하면 강화 비용을 확인합니다."
@@ -621,7 +621,7 @@ theme_override_styles/normal = SubResource("ButtonNormal")
 theme_override_styles/pressed = SubResource("ButtonPressed")
 
 [node name="ModificationScroll" type="ScrollContainer" parent="Margin/Content/Main/Tabs/모듈_파츠/ModificationInventoryPanel/Margin/Content"]
-custom_minimum_size = Vector2(0, 220)
+custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
@@ -636,7 +636,7 @@ theme_override_constants/v_separation = 8
 
 [node name="ModificationCandidateDetail" type="Label" parent="Margin/Content/Main/Tabs/모듈_파츠/ModificationInventoryPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(540, 56)
+custom_minimum_size = Vector2(480, 48)
 layout_mode = 2
 text = "모듈 또는 파츠 카드를 선택하세요."
 theme_override_colors/font_color = Color(0.7, 0.77, 0.81, 1)

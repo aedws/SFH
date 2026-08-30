@@ -64,9 +64,9 @@ corner_radius_bottom_left = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 22.0
+offset_left = 28.0
 offset_top = 20.0
-offset_right = -22.0
+offset_right = -28.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -75,17 +75,17 @@ script = ExtResource("1_window")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
 
 [node name="Content" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="Header" type="HBoxContainer" parent="Margin/Content"]
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_constants/separation = 10
 
@@ -114,7 +114,7 @@ theme_override_font_sizes/font_size = 10
 layout_mode = 2
 text = "가방 인벤토리"
 theme_override_colors/font_color = Color(0.9, 0.96, 0.98, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
 
 [node name="HeaderSpacer" type="Control" parent="Margin/Content/Header"]
 layout_mode = 2
@@ -122,7 +122,7 @@ size_flags_horizontal = 3
 
 [node name="HeaderSummary" type="Label" parent="Margin/Content/Header"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "아이템 0개 · 사용 0/96칸"
 theme_override_colors/font_color = Color(0.62, 0.7, 0.75, 1)
@@ -141,10 +141,10 @@ theme_override_styles/panel = SubResource("GridPanel")
 
 [node name="Margin" type="MarginContainer" parent="Margin/Content/Main/GridPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
 
 [node name="Content" type="VBoxContainer" parent="Margin/Content/Main/GridPanel/Margin"]
 layout_mode = 2
@@ -180,11 +180,11 @@ size_flags_vertical = 3
 
 [node name="GridView" type="Control" parent="Margin/Content/Main/GridPanel/Margin/Content/GridCenter"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(600, 400)
+custom_minimum_size = Vector2(504, 336)
 layout_mode = 2
 mouse_filter = 0
 script = ExtResource("2_grid")
-cell_pixel_size = 50.0
+cell_pixel_size = 42.0
 
 [node name="CapacityLabel" type="Label" parent="Margin/Content/Main/GridPanel/Margin/Content"]
 unique_name_in_owner = true
@@ -202,16 +202,16 @@ theme_override_styles/fill = SubResource("ProgressFill")
 
 [node name="DetailPanel" type="PanelContainer" parent="Margin/Content/Main"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(330, 0)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("DetailPanel")
 
 [node name="Margin" type="MarginContainer" parent="Margin/Content/Main/DetailPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 14
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 14
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
 
 [node name="Content" type="VBoxContainer" parent="Margin/Content/Main/DetailPanel/Margin"]
 layout_mode = 2
@@ -226,16 +226,16 @@ theme_override_font_sizes/font_size = 10
 
 [node name="SelectedName" type="Label" parent="Margin/Content/Main/DetailPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(280, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 text = "아이템 선택"
 theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 20
 autowrap_mode = 2
 
 [node name="SelectedMeta" type="Label" parent="Margin/Content/Main/DetailPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(280, 40)
+custom_minimum_size = Vector2(250, 34)
 layout_mode = 2
 text = "가방 카드의 종류와 점유 공간을 확인합니다."
 theme_override_colors/font_color = Color(0.62, 0.72, 0.77, 1)
@@ -246,7 +246,7 @@ layout_mode = 2
 
 [node name="SelectedDescription" type="Label" parent="Margin/Content/Main/DetailPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(280, 150)
+custom_minimum_size = Vector2(250, 126)
 layout_mode = 2
 size_flags_vertical = 3
 text = "아이템을 선택하면 설명과 배치 정보를 이 영역에 집중해서 표시합니다."
