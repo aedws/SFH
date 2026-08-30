@@ -836,6 +836,7 @@ func _verify_combat_resource_modules() -> bool:
 			var states: Array = skill_system.call(&"get_skill_states")
 			var hud := (load(COMBAT_SKILL_HUD_SCENE_PATH) as PackedScene).instantiate()
 			sandbox.add_child(hud)
+			var has_web_safe_energy_label := false
 			if (
 				int(states[0].get(&"energy_current", -1)) != 30
 				or int(states[0].get(&"current_charges", -1)) != 1
@@ -845,6 +846,15 @@ func _verify_combat_resource_modules() -> bool:
 			):
 				failure_message = "스킬 HUD에 에너지와 충전 상태가 표시되지 않았습니다."
 			else:
+				for status_label in hud.get("status_labels"):
+					var status_text := String((status_label as Label).text)
+					if "⚡" in status_text:
+						failure_message = "Web 폰트에 없는 에너지 이모지가 HUD에 남아 있습니다."
+						break
+					has_web_safe_energy_label = has_web_safe_energy_label or "EN " in status_text
+				if failure_message.is_empty() and not has_web_safe_energy_label:
+					failure_message = "Web-safe 에너지 비용 표기가 HUD에 없습니다."
+			if failure_message.is_empty():
 				states[0][&"energy_current"] = 10.0
 				hud.call(&"_on_skill_states_changed", states)
 				if "CRITICAL" not in String(
@@ -883,6 +893,11 @@ func _verify_combat_skill_modules() -> bool:
 	enemy.set("max_armor", 2.0)
 	enemy.global_position = Vector2(100.0, 0.0)
 	enemies.add_child(enemy)
+	var off_path_enemy := (load(ENEMY_SCENE_PATH) as PackedScene).instantiate()
+	off_path_enemy.set("max_health", 100.0)
+	off_path_enemy.set("max_armor", 0.0)
+	off_path_enemy.global_position = Vector2(100.0, 100.0)
+	enemies.add_child(off_path_enemy)
 	var system := (load(COMBAT_SKILL_SYSTEM_SCENE_PATH) as PackedScene).instantiate()
 	sandbox.add_child(system)
 	var loadout: Resource = load(COMBAT_SKILL_LOADOUT_PATH)
@@ -901,6 +916,16 @@ func _verify_combat_skill_modules() -> bool:
 		):
 			failure_message = "전기 이펙트 프로필 또는 선분·갱신 예산이 유효하지 않습니다."
 			break
+		if skill_index == 0:
+			var path_policy: Resource = effect.get("path_damage_policy")
+			if (
+				path_policy == null
+				or not bool(path_policy.call(&"is_valid"))
+				or float(path_policy.get("damage")) <= 0.0
+				or float(path_policy.get("half_width")) <= 0.0
+			):
+				failure_message = "점멸 경로 피해 정책의 데이터가 유효하지 않습니다."
+				break
 	if failure_message.is_empty() and not system.call(
 		&"configure", player, enemies, effects, loadout, true
 	):
@@ -917,10 +942,16 @@ func _verify_combat_skill_modules() -> bool:
 			failure_message = "기본 전투 스킬 세 종류가 순서대로 로드되지 않았습니다."
 		else:
 			var start_position: Vector2 = player.global_position
+			var path_health_before := float(enemy.get("current_health"))
+			var off_path_health_before := float(off_path_enemy.get("current_health"))
 			if not system.call(&"try_activate", 0):
 				failure_message = "1번 점멸 스킬이 발동하지 않았습니다."
 			elif player.global_position.distance_to(start_position) < 300.0:
 				failure_message = "점멸이 충분한 전방 이동 거리를 제공하지 않습니다."
+			elif float(enemy.get("current_health")) >= path_health_before:
+				failure_message = "점멸 경로에 있는 적에게 피해가 적용되지 않았습니다."
+			elif float(off_path_enemy.get("current_health")) < off_path_health_before:
+				failure_message = "점멸 경로 밖의 적에게 피해가 적용됐습니다."
 			elif system.call(&"try_activate", 0):
 				failure_message = "점멸 쿨타임 중 재발동이 허용됐습니다."
 			else:

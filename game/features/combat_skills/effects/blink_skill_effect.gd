@@ -9,6 +9,7 @@ const ELECTRIC_EFFECT_SCRIPT := preload(
 @export_range(0.0, 64.0, 1.0) var wall_clearance: float = 24.0
 @export_range(0, 4294967295, 1) var obstacle_collision_mask: int = 16
 @export var electric_profile: Resource
+@export var path_damage_policy: Resource
 
 
 func activate(player: Node2D, context: Dictionary) -> Dictionary:
@@ -31,17 +32,40 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 			destination = Vector2(collision[&"position"]) - direction * wall_clearance
 	if start.distance_to(destination) < 24.0:
 		return {&"success": false, &"status": "앞이 막혀 점멸할 수 없습니다."}
+	var damage_snapshot := {
+		&"damage": 0.0,
+		&"half_width": 0.0,
+		&"maximum_targets": 0,
+		&"hit_count": 0,
+	}
+	if (
+		path_damage_policy != null
+		and path_damage_policy.has_method(&"apply")
+	):
+		damage_snapshot = path_damage_policy.call(
+			&"apply",
+			context.get(&"target_container"),
+			start,
+			destination,
+			bool(context.get(&"damage_enabled", true))
+		)
 	player.global_position = destination
 	_spawn_electric_trail(context.get(&"effect_parent"), start, destination)
 	return {
 		&"success": true,
 		&"status": "전방 %.0fpx 점멸" % start.distance_to(destination),
 		&"distance": start.distance_to(destination),
+		&"path_damage": float(damage_snapshot.get(&"damage", 0.0)),
+		&"path_width": float(damage_snapshot.get(&"half_width", 0.0)) * 2.0,
+		&"hit_count": int(damage_snapshot.get(&"hit_count", 0)),
 	}
 
 
 func get_parameters() -> Dictionary:
-	return {&"distance": distance, &"wall_clearance": wall_clearance}
+	var parameters := {&"distance": distance, &"wall_clearance": wall_clearance}
+	if path_damage_policy != null and path_damage_policy.has_method(&"get_snapshot"):
+		parameters[&"path_damage"] = path_damage_policy.call(&"get_snapshot")
+	return parameters
 
 
 func _spawn_electric_trail(parent: Variant, start: Vector2, destination: Vector2) -> void:
