@@ -354,9 +354,9 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 		hub_inventory == null
 		or hub_workbench == null
 		or hub_equipment == null
-		or not bool(hub_workbench.get("read_only"))
+		or bool(hub_workbench.get("read_only"))
 	):
-		failure_message = "거점 조회용 가방 또는 장비 화면이 설치되지 않았습니다."
+		failure_message = "거점 편집 가능한 가방 또는 장비 화면이 설치되지 않았습니다."
 	elif (
 		not _has_key_binding(&"toggle_inventory", KEY_I)
 		or not _has_key_binding(&"toggle_equipment", KEY_U)
@@ -390,20 +390,28 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 			if not hub_inventory.visible or not paused:
 				failure_message = "거점 I 입력이 가방 조회 화면을 열지 못했습니다."
 			else:
-				hub_inventory.call(&"close_panel")
+				var cancel_event := InputEventAction.new()
+				cancel_event.action = &"ui_cancel"
+				cancel_event.pressed = true
+				hub_inventory.call(&"_unhandled_input", cancel_event)
+				if hub_inventory.visible or paused:
+					failure_message = "거점 I 가방이 ESC로 닫히지 않았습니다."
 			var equipment_event := InputEventAction.new()
 			equipment_event.action = &"toggle_equipment"
 			equipment_event.pressed = true
 			if failure_message.is_empty():
 				hub_workbench.call(&"_unhandled_input", equipment_event)
-				var state = hub_equipment.call(&"get_equipment_state", &"main")
-				var level_before := int(state.get("level"))
-				hub_workbench.call(&"_level_up_selected")
 				if not hub_workbench.visible or not paused:
-					failure_message = "거점 U/E 입력이 장비 조회 화면을 열지 못했습니다."
-				elif int(state.get("level")) != level_before:
-					failure_message = "거점 조회 전용 장비 화면에서 장비가 변경됐습니다."
-				hub_workbench.call(&"close_panel")
+					failure_message = "거점 U/E 입력이 장비 편집 화면을 열지 못했습니다."
+				else:
+					var cancel_event := InputEventAction.new()
+					cancel_event.action = &"ui_cancel"
+					cancel_event.pressed = true
+					hub_workbench.call(&"_unhandled_input", cancel_event)
+					if hub_workbench.visible or paused:
+						failure_message = "거점 U/E 장비 화면이 ESC로 닫히지 않았습니다."
+			if failure_message.is_empty():
+				failure_message = _hub_loadout_editing_failure(hub_game)
 			var switch_event := InputEventAction.new()
 			switch_event.action = &"switch_weapon"
 			switch_event.pressed = true
@@ -427,6 +435,10 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 					failure_message = "전투 세션 전환 후 거점과 작전 맵 상태가 분리되지 않았습니다."
 				elif hub_game.get("equipment_system").call(&"get_active_weapon_slot") != &"secondary":
 					failure_message = "거점 Q 선택 무기가 전투 세션에 유지되지 않았습니다."
+				elif int(hub_game.get("equipment_system").call(
+					&"get_equipment_state", &"main"
+				).get("level")) != 2:
+					failure_message = "거점에서 편집한 장비 상태가 전투 세션에 유지되지 않았습니다."
 				else:
 					hub_game.call(&"_finish_run", "테스트 종료", "거점 복귀 검증")
 					if "시작 거점" not in String(
@@ -444,6 +456,10 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 							or bool(hub_game.get("run_started"))
 						):
 							failure_message = "전투 종료 후 시작 거점으로 복귀하지 못했습니다."
+						elif int(hub_game.get("equipment_system").call(
+							&"get_equipment_state", &"main"
+						).get("level")) != 2:
+							failure_message = "작전 복귀 후 준비 장비 상태가 유실됐습니다."
 	paused = false
 	root.remove_child(hub_game)
 	hub_game.free()
@@ -452,6 +468,126 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 		_fail("시작 거점 흐름 실패: %s" % failure_message)
 		return false
 	return true
+
+
+func _hub_loadout_editing_failure(hub_game: Node) -> String:
+	var workbench = hub_game.get("equipment_workbench")
+	var equipment = hub_game.get("equipment_system")
+	var inventory = hub_game.get("inventory_system")
+	workbench.call(&"_select_slot", &"main")
+	workbench.call(&"_level_up_selected")
+	if int(equipment.call(&"get_equipment_state", &"main").get("level")) != 2:
+		return "거점에서 장비 레벨과 편집 동작을 변경하지 못했습니다."
+	var fresh_weapon: Dictionary = {}
+	for entry in inventory.call(&"get_items_by_type", &"weapon"):
+		if (
+			bool(equipment.call(&"can_equip_definition", &"main", entry.get(&"linked_resource")))
+			and (entry.get(&"runtime_payload", {}) as Dictionary).is_empty()
+		):
+			fresh_weapon = entry
+			break
+	if fresh_weapon.is_empty():
+		return "거점 교체 검증용 메인 무기를 찾지 못했습니다."
+	workbench.call(&"_select_inventory_candidate", fresh_weapon, &"equipment")
+	workbench.call(&"_equip_selected_candidate")
+	if int(equipment.call(&"get_equipment_state", &"main").get("level")) != 1:
+		return "거점 장비 교체가 새 장비 상태를 적용하지 못했습니다."
+	var saved_weapon: Dictionary = {}
+	for entry in inventory.call(&"get_items_by_type", &"weapon"):
+		var payload: Dictionary = entry.get(&"runtime_payload", {})
+		var saved_state := payload.get(&"equipment_state") as EquipmentItemState
+		if saved_state != null and saved_state.level == 2:
+			saved_weapon = entry
+			break
+	if saved_weapon.is_empty():
+		return "교체된 기존 장비와 레벨 상태가 가방에 반환되지 않았습니다."
+	workbench.call(&"_select_inventory_candidate", saved_weapon, &"equipment")
+	workbench.call(&"_equip_selected_candidate")
+	if int(equipment.call(&"get_equipment_state", &"main").get("level")) != 2:
+		return "가방에 보관한 장비 상태를 다시 장착하지 못했습니다."
+
+	(workbench.get("tabs") as TabContainer).current_tab = 1
+	var module_count_before: int = inventory.call(&"get_items_by_type", &"module").size()
+	var module_entry: Dictionary = {}
+	for entry in inventory.call(&"get_items_by_type", &"module"):
+		if workbench.call(
+			&"_can_install_entry", equipment.call(&"get_equipment_state", &"main"), entry
+		):
+			module_entry = entry
+			break
+	if module_entry.is_empty():
+		return "거점 장착 검증용 호환 모듈을 찾지 못했습니다."
+	workbench.call(&"_select_inventory_candidate", module_entry, &"modification")
+	workbench.call(&"_install_selected_modification")
+	var main_state: EquipmentItemState = equipment.call(&"get_equipment_state", &"main")
+	if main_state.installed_modules.size() != 1:
+		return "거점에서 모듈을 장착하지 못했습니다."
+	workbench.call(
+		&"_select_installed", &"module", main_state.installed_modules[0].instance_id
+	)
+	var replacement_module: Dictionary = {}
+	for entry in inventory.call(&"get_items_by_type", &"module"):
+		if workbench.call(&"_can_install_entry", main_state, entry):
+			replacement_module = entry
+			break
+	if replacement_module.is_empty():
+		return "거점 교체 검증용 두 번째 호환 모듈을 찾지 못했습니다."
+	var replacement_definition: Resource = replacement_module.get(&"linked_resource")
+	workbench.call(&"_select_inventory_candidate", replacement_module, &"modification")
+	workbench.call(&"_install_selected_modification")
+	if (
+		main_state.installed_modules.size() != 1
+		or main_state.installed_modules[0].definition != replacement_definition
+	):
+		return "거점에서 장착 모듈을 다른 모듈로 교체하지 못했습니다."
+	workbench.call(
+		&"_select_installed", &"module", main_state.installed_modules[0].instance_id
+	)
+	workbench.call(&"_uninstall_selected_modification")
+	if (
+		main_state.installed_modules.size() != 0
+		or inventory.call(&"get_items_by_type", &"module").size() != module_count_before
+	):
+		return "거점에서 모듈을 해제해 가방으로 반환하지 못했습니다."
+
+	var part_count_before: int = inventory.call(&"get_items_by_type", &"part").size()
+	var part_entry: Dictionary = {}
+	for entry in inventory.call(&"get_items_by_type", &"part"):
+		if workbench.call(&"_can_install_entry", main_state, entry):
+			part_entry = entry
+			break
+	if part_entry.is_empty():
+		return "거점 장착 검증용 호환 고유 파츠를 찾지 못했습니다."
+	workbench.call(&"_select_inventory_candidate", part_entry, &"modification")
+	workbench.call(&"_install_selected_modification")
+	if main_state.installed_parts.size() != 1:
+		return "거점에서 고유 파츠를 장착하지 못했습니다."
+	workbench.call(&"_select_installed", &"part", main_state.installed_parts[0].part_id)
+	workbench.call(&"_uninstall_selected_modification")
+	if (
+		main_state.installed_parts.size() != 0
+		or inventory.call(&"get_items_by_type", &"part").size() != part_count_before
+	):
+		return "거점에서 고유 파츠를 해제해 가방으로 반환하지 못했습니다."
+
+	(workbench.get("tabs") as TabContainer).current_tab = 0
+	workbench.call(&"_select_slot", &"body")
+	workbench.call(&"_unequip_selected_equipment")
+	if equipment.call(&"get_equipment_state", &"body") != null:
+		return "거점에서 방어구 아이템을 해제하지 못했습니다."
+	var returned_armor: Dictionary = {}
+	for entry in inventory.call(&"get_items_by_type", &"armor"):
+		var payload: Dictionary = entry.get(&"runtime_payload", {})
+		if payload.get(&"equipment_state") is EquipmentItemState:
+			returned_armor = entry
+			break
+	if returned_armor.is_empty():
+		return "해제한 방어구가 가방에 반환되지 않았습니다."
+	workbench.call(&"_select_inventory_candidate", returned_armor, &"equipment")
+	workbench.call(&"_equip_selected_candidate")
+	if equipment.call(&"get_equipment_state", &"body") == null:
+		return "거점에서 반환된 방어구를 다시 장착하지 못했습니다."
+	return ""
 
 
 func _verify_combat_resource_modules() -> bool:
@@ -2403,7 +2539,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i hub_equipment_u_e hub_loadout_read_only hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

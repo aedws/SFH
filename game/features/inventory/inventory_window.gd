@@ -19,6 +19,10 @@ func configure(inventory_provider: Node) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if visible and event.is_action_pressed(&"ui_cancel") and not event.is_echo():
+		close_panel()
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed(&"toggle_inventory") and not event.is_echo():
 		toggle_panel()
 		get_viewport().set_input_as_handled()

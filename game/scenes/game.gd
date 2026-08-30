@@ -106,8 +106,12 @@ const EQUIPMENT_METHODS := [
 	&"get_customization_snapshot",
 	&"can_equip_definition",
 	&"equip_definition",
+	&"equip_state",
+	&"take_equipment_state",
 	&"install_part",
 	&"install_module",
+	&"uninstall_part",
+	&"uninstall_module",
 	&"upgrade_module",
 	&"level_up_equipment",
 	&"grant_module_tag",
@@ -120,6 +124,8 @@ const EQUIPMENT_METHODS := [
 	&"set_external_armor_level",
 	&"set_upgrade_balance_provider",
 	&"get_active_weapon_upgrade_modifiers",
+	&"export_runtime_state",
+	&"restore_runtime_state",
 ]
 const WEAPON_BALANCE_METHODS := [
 	&"configure",
@@ -144,10 +150,16 @@ const INVENTORY_METHODS := [
 	&"can_place",
 	&"move_item",
 	&"take_item",
+	&"take_item_entry",
+	&"add_linked_resource",
+	&"can_add_linked_resource",
+	&"get_runtime_payload",
 	&"get_items_by_type",
 	&"find_instance_ids_by_resource",
 	&"consume_linked_resource",
 	&"get_snapshot",
+	&"export_runtime_state",
+	&"restore_runtime_state",
 ]
 const PANEL_METHODS := [&"configure", &"open_panel", &"close_panel"]
 const EXTRACTION_METHODS := [
@@ -303,6 +315,8 @@ var current_map_config: Resource
 var selected_map_size: String = "small"
 var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CSV
 var preferred_weapon_slot: StringName = &"main"
+var prepared_equipment_state: Dictionary = {}
+var prepared_inventory_state: Dictionary = {}
 var elapsed_time: float = 0.0
 var target_run_duration_seconds: float = 600.0
 var extraction_unlock_seconds: float = 600.0
@@ -614,6 +628,7 @@ func start_run(map_size: String) -> bool:
 
 	selected_map_size = map_size
 	get_tree().paused = false
+	_capture_prepared_loadout()
 	_clear_start_hub()
 	run_started = true
 	run_setup_overlay.visible = false
@@ -670,7 +685,7 @@ func _install_start_hub() -> bool:
 	hud_margin.visible = false
 	start_hub_hud.visible = true
 	interaction_label.visible = false
-	status_label.text = "거점 준비 · I 가방 · U/E 장비 · Q 무기 확인 · F 작전 게이트"
+	status_label.text = "거점 준비 · I 가방 · U/E 장비 편집 · Q 무기 전환 · F 작전 게이트"
 	return true
 
 
@@ -679,7 +694,7 @@ func _install_hub_loadout_views() -> bool:
 		return false
 	if features.inventory_enabled and not _install_inventory():
 		return false
-	if features.equipment_customization_enabled and not _install_equipment_workbench(true):
+	if features.equipment_customization_enabled and not _install_equipment_workbench(false):
 		return false
 	return true
 
@@ -722,6 +737,7 @@ func _clear_start_hub() -> void:
 
 
 func _return_to_start_hub() -> void:
+	_capture_prepared_loadout()
 	get_tree().paused = false
 	game_over_overlay.visible = false
 	run_setup_overlay.visible = false
@@ -1252,6 +1268,12 @@ func _install_equipment() -> bool:
 	if not configured:
 		_report_configuration_error("장비 로드아웃 조립에 실패했습니다.")
 		return false
+	if (
+		not prepared_equipment_state.is_empty()
+		and not equipment_system.call(&"restore_runtime_state", prepared_equipment_state)
+	):
+		_report_configuration_error("준비한 장비 로드아웃을 복구하지 못했습니다.")
+		return false
 	equipment_system.connect(
 		&"active_weapon_changed", Callable(self, &"_on_active_weapon_changed")
 	)
@@ -1271,6 +1293,12 @@ func _install_inventory() -> bool:
 	if not inventory_system.call(&"configure", load(features.inventory_catalog_path)):
 		_report_configuration_error("초기 가방 아이템을 배치하지 못했습니다.")
 		return false
+	if (
+		not prepared_inventory_state.is_empty()
+		and not inventory_system.call(&"restore_runtime_state", prepared_inventory_state)
+	):
+		_report_configuration_error("준비한 가방 상태를 복구하지 못했습니다.")
+		return false
 	inventory_window = _instantiate_feature(
 		INVENTORY_WINDOW_SCENE_PATH, ui_layer, &"GridInventoryWindow"
 	)
@@ -1279,6 +1307,13 @@ func _install_inventory() -> bool:
 		return false
 	inventory_window.call(&"configure", inventory_system)
 	return true
+
+
+func _capture_prepared_loadout() -> void:
+	if is_instance_valid(equipment_system) and equipment_system.has_method(&"export_runtime_state"):
+		prepared_equipment_state = equipment_system.call(&"export_runtime_state")
+	if is_instance_valid(inventory_system) and inventory_system.has_method(&"export_runtime_state"):
+		prepared_inventory_state = inventory_system.call(&"export_runtime_state")
 
 
 func _install_equipment_workbench(read_only: bool = false) -> bool:
@@ -1856,7 +1891,7 @@ func _on_equipment_changed(summary: Dictionary) -> void:
 func _on_active_weapon_changed(slot_id: StringName, weapon_definition: Resource) -> void:
 	preferred_weapon_slot = slot_id
 	if not run_started:
-		status_label.text = "거점 무기 확인 · %s · U/E에서 상세 정보" % (
+		status_label.text = "거점 무기 전환 · %s · U/E에서 장비 편집" % (
 		weapon_definition.get("display_name") if weapon_definition != null else String(slot_id)
 		)
 

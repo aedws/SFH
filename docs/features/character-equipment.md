@@ -30,6 +30,8 @@ tags:
 
 HUD에는 메인·보조 무기의 세 단계 분류, 현재 활성 슬롯, 활성 스킬 수, 방어구 수와 방어력이 표시됩니다. 작전 중 `Q`로 활성 무기를 교체합니다.
 
+거점의 U/E 화면에서는 무기·방어구를 직접 장착·교체·해제합니다. `EquipmentItemState`를 장비 정의와 함께 가방에 반환하므로 장비 레벨, 개조 태그, 장착 모듈·파츠가 교체 과정에서 사라지지 않습니다. 준비 상태는 전투 세션 진입과 거점 귀환 사이에 유지됩니다.
+
 가방 점유 크기와 I 화면은 [격자 가방 인벤토리](grid-inventory.md), U 화면의 슬롯 태그·고유 파츠·모듈 강화·최고 레벨 개조는 [장비 파츠·모듈 개조](equipment-customization.md)에서 이어서 설명합니다.
 
 ## 무기 분류 구조
@@ -117,8 +119,10 @@ game/features/equipment/definitions/weapons/
 - `get_stat_modifiers()`
 - `get_summary()`
 - `get_equipment_state(slot_id)`
-- `can_equip_definition(slot_id, definition)`과 `equip_definition(...)`
-- `install_part(...)`, `install_module(...)`, `upgrade_module(...)`
+- `can_equip_definition(slot_id, definition)`, `equip_definition(...)`, `equip_state(...)`
+- `take_equipment_state(slot_id)`
+- `install/uninstall_part(...)`, `install/uninstall_module(...)`, `upgrade_module(...)`
+- `export_runtime_state()`, `restore_runtime_state(...)`
 - `level_up_equipment(...)`, `grant_module_tag(...)`
 - `get_active_weapon_slot()`, `get_active_weapon()`
 - `switch_active_weapon()`, `set_active_weapon_slot(slot_id)`
