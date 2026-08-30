@@ -73,14 +73,14 @@ hide:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 33 &middot; IMPROVE 29 &middot; CHANGE 12 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 33 &middot; IMPROVE 30 &middot; CHANGE 12 &middot; FIX 7</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>18</b><small>UPDATE BUNDLES</small></span>
       <span><b>33</b><small>BUILD</small></span>
-      <span><b>29</b><small>IMPROVE</small></span>
+      <span><b>30</b><small>IMPROVE</small></span>
       <span><b>12</b><small>CHANGE</small></span>
-      <span><b>6</b><small>FIX</small></span>
+      <span><b>7</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>브라우저 즉시 플레이 · 게임 정체성 README · 통합 배포</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -95,6 +95,7 @@ hide:
             <li>OFL 한글 폰트를 전역 자산으로 포함해 Web에서 네모 글리프로 깨지던 한글 UI를 복구했습니다.</li>
             <li>Web에서 확정 CSV를 열 수 없을 때 동일 원문의 내장 Resource로 전환해 작전 시작 직후 거점으로 돌아오던 실패를 해결했습니다.</li>
             <li>홈 빌드 카드와 모든 위키 화면의 고정 버튼에서 브라우저 플레이를 즉시 열 수 있습니다.</li>
+            <li>전투 HUD·미니맵·스킬바와 I·U·E 화면의 점유 면적을 줄이고 상태별 UI를 배타적으로 표시합니다.</li>
           </ul>
           <p class="sfh-intent"><b>배포 경계</b><span>게임은 Godot Web 프리셋, 문서는 MkDocs로 각각 빌드한 뒤 하나의 검증된 Pages 아티팩트에서만 결합합니다.</span></p>
         </div>
@@ -102,18 +103,20 @@ hide:
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Godot Web 자동 내보내기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>main의 게임 변경마다 4.7.2 릴리스 템플릿으로 브라우저 빌드를 생성합니다.</p><a href="play/">브라우저에서 플레이 →</a></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">위키·게임 통합 Pages 게이트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>문서와 게임을 독립 빌드하고 필수 산출물 검증 뒤 /play/에 결합합니다.</p></div></details>
         </div>
-        <div class="sfh-group"><h3>✨ 개선 · 4</h3>
+        <div class="sfh-group"><h3>✨ 개선 · 5</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">게임 정체성 중심 README</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>캐치프레이즈, 핵심 노선, 코어 루프와 플레이 범위를 저장소 첫 화면에 압축했습니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">설치 없는 첫 플레이 동선</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>README와 실행 문서의 첫 행동을 브라우저 플레이로 통일했습니다.</p><a href="getting-started/run-project/">실행 방법 →</a></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">현재 빌드 플레이 카드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>우측 빌드 상태 블록을 큰 브라우저 플레이 버튼과 압축 상태 지표로 재구성했습니다.</p><a href="play/">브라우저로 플레이 →</a></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">전역 플레이 바로가기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>위키의 어느 문서에서도 상단 고정 헤더 버튼으로 현재 Web 빌드에 진입합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">게임 UI 화면 점유 압축</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>상단 HUD·미니맵·스킬바·작전 구성·성장 선택과 I·U·E 화면을 축소해 전장 가시 영역을 넓혔습니다.</p></div></details>
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">README 정보 구조 전환</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>긴 구현 목록 중심에서 게임 소개→즉시 플레이→상세 개발 문서 순서로 바꿨습니다.</p></div></details>
         </div>
-        <div class="sfh-group"><h3>🩹 버그픽스 · 2</h3>
+        <div class="sfh-group"><h3>🩹 버그픽스 · 3</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web 한글 글리프 복구</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Nanum Gothic을 전역 폰트로 포함하고 한글 글리프 계약을 자동 검사해 브라우저의 네모 글자 표시를 막았습니다.</p><a href="getting-started/run-project/">Web 실행 기준 →</a></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web 작전 시작 회귀</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>브라우저가 확정 CSV 스트림을 제공하지 못하면 원본과 자동 동기화된 내장 Resource를 읽어 성장 데이터 조립 실패와 자동 거점 복귀를 차단합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">HUD·모달 UI 중첩</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>작전 구성 및 I·U·E 화면을 열 때 거점·전투 HUD를 숨기고 닫을 때 이전 상태만 복원합니다.</p></div></details>
         </div>
       </div>
     </details>
