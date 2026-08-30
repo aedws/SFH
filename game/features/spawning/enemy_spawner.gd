@@ -22,6 +22,7 @@ var reinforcement_count: int = 0
 var initial_fill_complete: bool = false
 var spawn_budget_is_exhausted: bool = false
 var tracked_enemies: Array[Node] = []
+var enemy_stat_multipliers: Dictionary = {}
 var random := RandomNumberGenerator.new()
 
 
@@ -36,7 +37,8 @@ func configure(
 	new_map_provider: Node = null,
 	enable_enemy_armor: bool = true,
 	enable_enemy_status_ui: bool = true,
-	new_spawn_config: Resource = null
+	new_spawn_config: Resource = null,
+	new_enemy_stat_multipliers: Dictionary = {}
 ) -> bool:
 	if (
 		not is_instance_valid(new_target)
@@ -54,6 +56,7 @@ func configure(
 	enemy_armor_enabled = enable_enemy_armor
 	enemy_status_ui_enabled = enable_enemy_status_ui
 	spawn_config = new_spawn_config
+	enemy_stat_multipliers = new_enemy_stat_multipliers.duplicate(true)
 	for enemy in tracked_enemies:
 		if is_instance_valid(enemy):
 			enemy.queue_free()
@@ -152,7 +155,8 @@ func _spawn_enemy() -> bool:
 		contact_damage_enabled,
 		map_provider,
 		enemy_armor_enabled,
-		enemy_status_ui_enabled
+		enemy_status_ui_enabled,
+		enemy_stat_multipliers
 	)
 	tracked_enemies.append(enemy)
 	enemy.tree_exited.connect(_on_enemy_tree_exited.bind(enemy), CONNECT_ONE_SHOT)
@@ -184,6 +188,7 @@ func get_snapshot() -> Dictionary:
 			if spawn_config != null else 0
 		),
 		&"spawn_budget_exhausted": spawn_budget_is_exhausted,
+		&"enemy_stat_multipliers": enemy_stat_multipliers.duplicate(true),
 	}
 
 

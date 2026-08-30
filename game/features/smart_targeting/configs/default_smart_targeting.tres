@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SmartTargetingPolicy" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/smart_targeting/smart_targeting_policy.gd" id="1_policy"]
+
+[resource]
+script = ExtResource("1_policy")
+proximity_weight = 0.45
+execute_weight = 0.2
+priority_weight = 0.2
+density_weight = 0.15
+density_radius = 180.0
+maximum_priority_rank = 5.0
+reference_density_count = 8.0

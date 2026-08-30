@@ -14,6 +14,9 @@ func _init() -> void:
 
 
 func _run() -> void:
+	for path in ["user://sfh_profile.json", "user://sfh_rankings.json"]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	var game_scene := load(GAME_SCENE_PATH) as PackedScene
 	if game_scene == null:
 		_fail("Game Scene을 불러오지 못했습니다.")

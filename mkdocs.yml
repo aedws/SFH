@@ -82,11 +82,17 @@ nav:
       - 전장의 안개: features/fog-of-war.md
       - 전술 미니맵: features/minimap.md
       - 작전 선택과 탈출: features/raid-setup-extraction.md
+      - 탈출 방어전과 결과 정산: features/extraction-defense-results.md
+      - 투입 비용·지역·난이도 계약: features/operation-contracts.md
       - 시작 거점과 전투 세션 전환: features/start-hub.md
+      - 영구 해금·상점·창고·소모품: features/hub-economy.md
       - 크레딧 파밍과 회수: features/credit-loot.md
       - 플레이어: features/player.md
       - 부분 체력 회복: features/health-recovery.md
       - 전투 스킬과 쿨타임 HUD: features/combat-skills.md
+      - 스마트 자동 타게팅: features/smart-targeting.md
+      - 도면 제작과 랜덤 옵션: features/blueprint-crafting.md
+      - 페널티 변형과 조건부 랭킹: features/penalty-ranking.md
       - 캐릭터 장비와 로드아웃: features/character-equipment.md
       - 격자 가방 인벤토리: features/grid-inventory.md
       - 장비 파츠·모듈 개조: features/equipment-customization.md

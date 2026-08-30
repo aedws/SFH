@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CraftingConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/crafting/crafting_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+recipes = Array[Dictionary]([{
+"blueprint_id": &"assault_rifle_blueprint", "credit_cost": 400, "display_name": "제작 돌격소총", "materials": {&"scrap": 5}, "maximum_affixes": 2, "minimum_affixes": 1, "result_id": &"crafted_assault_rifle"
+}, {
+"blueprint_id": &"tactical_vest_blueprint", "credit_cost": 350, "display_name": "제작 전술 조끼", "materials": {&"scrap": 4}, "maximum_affixes": 2, "minimum_affixes": 1, "result_id": &"crafted_tactical_vest"
+}])
+affixes = Array[Dictionary]([{
+"affix_id": &"damage_percent", "display_name": "화력", "maximum_value": 0.12, "minimum_value": 0.05, "stat_id": &"damage_multiply", "weight": 1.0
+}, {
+"affix_id": &"cycle_percent", "display_name": "순환", "maximum_value": 0.1, "minimum_value": 0.04, "stat_id": &"fire_interval_reduction", "weight": 0.9
+}, {
+"affix_id": &"vitality_flat", "display_name": "생명력", "maximum_value": 16.0, "minimum_value": 6.0, "stat_id": &"max_health", "weight": 1.0
+}, {
+"affix_id": &"armor_flat", "display_name": "장갑", "maximum_value": 8.0, "minimum_value": 3.0, "stat_id": &"defense", "weight": 1.0
+}])

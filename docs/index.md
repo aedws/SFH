@@ -41,7 +41,7 @@ hide:
       <a href="development-status/#_1">산정 근거 확인 →</a>
     </div>
     <header><strong>현재 빌드 상태</strong><b class="sfh-live">PLAYABLE</b></header>
-    <p>큰 시작 거점에서 작전 게이트로 진입하고 전투·파밍·탈출 또는 사망 뒤 다시 거점으로 복귀합니다.</p>
+    <p>거점에서 지역·난이도·페널티·소모품을 준비하고, 투입 비용을 지불해 전투·파밍·탈출 방어·영구 정산 뒤 복귀합니다.</p>
     <div class="sfh-operation-grid">
       <span><b>3</b><small>MAP TIERS</small></span>
       <span><b>1·2·3·⇧·Q·F</b><small>ACTIVE INPUTS</small></span>
@@ -62,11 +62,37 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>ELECTRIC SKILLS</span><span>6.887ms LARGE RAID</span><span>기획 진행도 51%</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>7 META SYSTEMS</span><span>6.890ms LARGE RAID</span><span>기획 진행도 51% · 재확인 대기</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>전기 스킬 이펙트 · 대형 작전 성능 최적화</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>탈출 방어 · 영구 경제 · 스마트 타게팅 · 제작 · 변형 · 랭킹</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 7개 시스템</strong>
+      <ul>
+        <li>탈출 지점 F 상호작용을 15~35초 구역 유지형 방어전과 성공·실패 영구 정산으로 확장했습니다.</li>
+        <li>지역·난이도·맵·페널티가 실제 투입 비용, 적 스탯, 회수·도면 배율에 연결됩니다.</li>
+        <li>영구 크레딧·지역 해금·상점·창고·최대 3칸 소모품 로드아웃을 저장합니다.</li>
+        <li>거리 45%·처형 20%·등급 20%·밀집 15%의 스마트 자동 타게팅을 적용했습니다.</li>
+        <li>도면·고철·크레딧 제작과 중복 없는 1~2개 랜덤 옵션을 구현했습니다.</li>
+        <li>적 강화와 회수 배율을 함께 올리는 페널티 변형 3종을 구현했습니다.</li>
+        <li>지역·난이도·맵·페널티가 같은 기록만 비교하는 조건부 랭킹을 저장합니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>모듈 감사 결론</b><span>8개 신규 기능 토글을 모두 끈 폴백과 비용·제작·랭킹·카운트다운 계약을 자동 검증했습니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 5</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">작전 계약과 탈출 방어 정산</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>실제 투입비 차감부터 카운트다운, 반출·사망 정산까지 한 작전 수명주기로 연결했습니다.</p><a href="features/extraction-defense-results/">탈출·정산 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">영구 해금·상점·창고</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전투 세션 밖 프로필에 재화·해금·아이템·소모품·제작품을 저장합니다.</p><a href="features/hub-economy/">거점 경제 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">스마트 자동 타게팅</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>거리 외 체력 비율·등급·밀집도를 함께 계산합니다.</p><a href="features/smart-targeting/">타게팅 규칙 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">도면 제작·랜덤 옵션</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>도면과 재료를 소비해 중복 없는 옵션 장비를 영구 생성합니다.</p><a href="features/blueprint-crafting/">제작 정책 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">페널티·조건부 랭킹</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>선택 위험과 동일 조건 점수표를 독립 저장합니다.</p><a href="features/penalty-ranking/">변형·랭킹 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>전기 스킬 이펙트 · 대형 작전 성능 최적화</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>

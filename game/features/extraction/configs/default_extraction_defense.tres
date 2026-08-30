@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ExtractionDefenseConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/extraction/extraction_defense_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+tier_base_seconds = {&"large": 25.0, &"medium": 20.0, &"small": 15.0}
+difficulty_multipliers = {&"nightmare": 1.4, &"standard": 1.0, &"veteran": 1.2}

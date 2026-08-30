@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ConditionalRankingPolicy" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/conditional_ranking/conditional_ranking_policy.gd" id="1_policy"]
+
+[resource]
+script = ExtResource("1_policy")
+maximum_entries_per_condition = 20
+recovered_value_weight = 1.0
+kill_weight = 10.0
+reward_multiplier_weight = 100.0
+elapsed_seconds_penalty = 0.25

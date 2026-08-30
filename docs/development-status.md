@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>ELECTRIC SKILLS</span><span>6.887ms LARGE RAID</span><span>MODULAR PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>7 META SYSTEMS</span><span>6.890ms LARGE RAID</span><span>MODULAR PASS</span></div>
 
 ## 기획 기준 진행도
 
@@ -30,20 +30,32 @@ tags:
   <p>노션에서 명시적으로 확정된 전투 원칙을 가장 크게 반영하고, 저장소에서 실제로 확인되는 기능만 완료 또는 부분 완료로 계산합니다.</p>
 </div>
 
-기획 원본은 [SFH 프로젝트 노션](https://app.notion.com/p/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 현재 네 개 Phase 체크박스는 모두 미체크 상태이므로 체크 여부를 완료율로 간주하지 않고, 아래처럼 실제 빌드와 코드 계약을 대조했습니다.
+기획 원본은 [SFH 프로젝트 노션](https://app.notion.com/p/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 아래 표와 51%는 마지막으로 원문을 읽을 수 있었을 때 계산한 **기획 기준선**입니다. 이번 구현 시점에는 연결된 Notion API가 페이지 접근 권한을 반환하지 않아 수치를 동결했고, 그 뒤 실제 저장소 구현은 다음 별도 표에 기록했습니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
 | 확정 전투 원칙 | ×3 | 90% | 수동 조준 없는 이동·자동 공격·1~3 직접 스킬·쿨타임 HUD 구현, 별도 에너지/충전 자원은 후속 확장 |
-| 스마트 오토 타겟팅 `(미확정)` | ×1 | 20% | 가장 가까운 적 자동 공격만 구현, 최대 HP·등급·밀집도 규칙은 미구현 |
-| 코어 플레이 루프 | ×2 | 65% | 시작 거점→전투 세션→탈출·사망→거점 복귀까지 연결, 탈출 방어전과 전리품 영속 정산은 미구현 |
-| 로비 인베스트먼트·타겟 파밍 | ×1 | 40% | 이동 가능한 거점·작전 게이트와 소·중·대형 선택은 구현, 비용 지불·지역·난이도·보스·드랍 테이블은 미구현 |
-| 성장·순환형 해금 | ×1 | 35% | 내부 버프, 외부 캐릭터·무기·방어구 성장 저장과 장비 강화는 구현, 영구 해금 상점·소모성 로드아웃은 미구현 |
+| 스마트 오토 타겟팅 `(미확정)` | ×1 | 20% | 당시 최근접 자동 공격까지만 확인 |
+| 코어 플레이 루프 | ×2 | 65% | 당시 시작 거점→전투 세션→탈출·사망→거점 복귀까지 확인 |
+| 로비 인베스트먼트·타겟 파밍 | ×1 | 40% | 당시 거점·작전 게이트와 소·중·대형 선택까지 확인 |
+| 성장·순환형 해금 | ×1 | 35% | 당시 내부 버프와 외부 장비 성장·강화까지 확인 |
 | 무기 태그·스킬 장착 | ×1 | 70% | 무기 3단계 태그·호환·0~10개 제한과 기본 전투 효과 실행 구현, 장비 스킬 ID 연결·등급별 변형은 미구현 |
-| 페널티 모디파이어 | ×1 | 0% | 미구현 |
-| 조건부 랭킹 | ×1 | 0% | 미구현 |
+| 페널티 모디파이어 | ×1 | 0% | 당시 미구현 |
+| 조건부 랭킹 | ×1 | 0% | 당시 미구현 |
 
 계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`이며 현재 결과는 `(90×3 + 20 + 65×2 + 40 + 35 + 70) ÷ 11 ≈ 51%`입니다. 이번 수치는 2026-08-30에 확인한 동일 Notion 기준에 새 스킬 구현 검증만 반영했습니다. 이후 “진행도 체크” 요청이 들어오면 먼저 위 노션을 다시 읽고, 확정·미확정 표시와 Phase 상태를 확인한 뒤 저장소 검증 결과로 이 표를 갱신합니다.
+
+이번 7개 시스템 구현 시점에는 연결된 Notion API가 원본 페이지 접근 권한을 반환하지 않아 진행도 퍼센트는 임의 변경하지 않았습니다. 저장소 구현·검증 상태는 아래 최신 릴리스에 반영했으며, 권한 복구 후 확정/미확정 표기를 다시 읽고 가중치를 재계산합니다.
+
+| 이번 요청의 저장소 구현 상태 | 상태 | 자동 검증 |
+|---|---|---|
+| 탈출 방어전·성공/실패 정산 | 완료 | 카운트다운 지속·완료·선택 비활성 폴백 |
+| 투입 비용·지역·난이도 데이터 | 완료 | 최종 비용 173 C와 적·보상 합성 배율 |
+| 영구 해금·상점·창고·소모품 | 완료 | 구매·해금·출격 소비·JSON 왕복 |
+| 스마트 자동 타게팅 | 완료 | 거리 외 처형·등급·밀집 정책과 최근접 폴백 |
+| 도면 제작·랜덤 옵션 | 완료 | 비용 소비·옵션 1~2개·중복 방지 |
+| 페널티 변형 | 완료 | 최대 3개 선택 계약과 적·보상 배율 합성 |
+| 조건부 랭킹 | 완료 | 성공만 제출·동일 조건 격리·정렬·JSON 왕복 |
 
 ### 2026-08-30 Notion 변경 확인
 
@@ -57,18 +69,42 @@ tags:
 
 | 우선순위 | 작업 | 기획 상태 | 완료 조건 |
 |---:|---|---|---|
-| 1 | 탈출 카운트다운 방어전과 전리품 성공/사망 정산 | Phase 2 | 구역 활성화 후 방어전, 성공 보관·사망 소실이 자동 검증됨 |
-| 2 | 실제 작전 투자 비용·지역·난이도 선택 | Phase 3 | 거점 계약 UI에서 크레딧 차감, 지역별 드랍 테이블과 난이도 보정 적용 |
-| 3 | 영구 해금 상점·창고·소모성 로드아웃 | Phase 3 | 회수품이 거점 저장소에 남고 다음 작전 장착 비용에 연결됨 |
-| 4 | 장비 스킬 ID와 전투 효과·추가 자원 연결 | 확정 전투 원칙 | 0~10개 장착 결과가 하단 슬롯을 구성하고 에너지/충전 정책을 선택 가능 |
-| 5 | 최대 HP·등급·밀집도 스마트 타겟팅 | 미확정 | 단일·범위 스킬 대상 정책을 Resource로 선택 가능 |
-| 6 | 도면 제작과 확률 추가 옵션 방향 결정 | 새 논의·미확정 | 직접 드랍/도면 제작 중 정책 확정 후 데이터·저장 계약 설계 |
-| 7 | 페널티 모디파이어와 보상 배율 | Phase 4 | 거점에서 페널티 선택, 작전 적용, 최종 보상 배율 정산 |
-| 8 | 조건부 랭킹 | 후순위 요구 | 동일 조건별 가치·시간·처치 기록 저장과 비교 |
+| 1 | 제작 장비를 장비 카탈로그·U 화면에 실제 장착 | 구현 후속 | 제작 인스턴스와 랜덤 옵션이 장비 스탯 집계에 연결됨 |
+| 2 | 전용 상점·창고·제작·랭킹 전체 화면 UI | UX 후속 | 작전 계약 화면의 최소 버튼을 독립 거점 시설 UI로 분리 |
+| 3 | 탈출 방어전 전용 적 웨이브·경보 연출 | 전투 후속 | 카운트다운 단계별 증원과 시각·음향 경보 적용 |
+| 4 | 장비 스킬 ID와 전투 효과·추가 자원 연결 | 확정 전투 원칙 | 0~10개 장착 결과가 하단 슬롯을 구성하고 에너지/충전 정책 선택 가능 |
+| 5 | 도면·옵션·지역 드랍 수치 Google Sheets 연동 | 데이터 후속 | 제작식·옵션 가중치·드랍률 실시간/확정 모드 제공 |
+| 6 | 온라인 조건부 랭킹 백엔드 | 서비스 후속 | 로컬 제출 계약을 인증·부정행위 검증 서버로 교체 |
+| 7 | 저사양 실기 인증과 그래픽 옵션 | 최적화 후속 | 최소 PC 10분 대형 작전의 1% low·GPU·메모리 기록 |
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>전기 스킬 표현 · 대형 작전 성능 예산</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>7개 작전·영구 성장 시스템 통합</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 7개 시스템</strong>
+      <ul>
+        <li>탈출 카운트다운 방어전과 성공·실패 영구 결과 정산</li>
+        <li>실제 투입비·지역·난이도·적 스탯·회수 배율 계약</li>
+        <li>영구 해금·상점·창고·최대 3개 소모품 로드아웃</li>
+        <li>거리·처형·등급·밀집도 스마트 자동 타게팅</li>
+        <li>도면·고철·크레딧 제작과 중복 없는 랜덤 옵션</li>
+        <li>적 강화·보상 증가 페널티 변형</li>
+        <li>지역·난이도·맵·페널티별 조건부 랭킹</li>
+      </ul>
+      <p class="sfh-intent"><b>검증 결과</b><span>신규 정책 수치, 영구 소비·정산, 선택 모듈 폴백과 적 72명 성능 예산을 모두 통과했습니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 7</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">탈출 방어·결과 정산</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>15~35초 구역 유지 뒤 영구 크레딧·고철·도면·랭킹을 정산합니다.</p><a href="../features/extraction-defense-results/">상세 규칙 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">작전 계약·거점 경제</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>실제 비용 차감, 지역 해금, 상점·창고·소모품을 영구 프로필에 연결했습니다.</p><a href="../features/operation-contracts/">계약 데이터 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">스마트 타게팅·도면 제작</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>가중 대상 정책과 도면 기반 랜덤 옵션 제작을 독립 Resource로 구성했습니다.</p><a href="../features/smart-targeting/">타게팅 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">페널티·조건부 랭킹</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>위험 배율과 동일 조건 점수표를 분리 저장합니다.</p><a href="../features/penalty-ranking/">변형·랭킹 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>전기 스킬 표현 · 대형 작전 성능 예산</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>
