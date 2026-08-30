@@ -62,24 +62,26 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>확장 맵 + 반응형 이동</span><span>자동 검증 PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>U 장비 + 모듈 카드 UI</span><span>자동·시각 검증 PASS</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>확장 맵 · 10분 런 · 반응형 이동 · 부분 회복</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>U 장비 · 모듈 인벤토리 UI 개편</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
-      <strong>핵심 변경 · 4개 주제</strong>
+      <strong>핵심 변경 · 5개 주제</strong>
       <ul>
-        <li>맵을 소형 18~24방, 중형 30~40방, 대형 45~60방으로 확장했습니다.</li>
-        <li>9·10·11분 목표 시각에 탈출 신호가 개방되도록 적용했습니다.</li>
-        <li>가속·제동·역선회와 Shift/Space 회피 이동을 구현했습니다.</li>
-        <li>피격 4초 후 최대 체력 65%까지만 회복하는 모듈을 추가했습니다.</li>
+        <li>U 화면을 장비 슬롯 레일, 선택 장비 상세, 아이템 카드 인벤토리의 3영역으로 개편했습니다.</li>
+        <li>모듈 슬롯·코스트 막대와 전체/모듈/고유 파츠 필터를 추가했습니다.</li>
+        <li>가방에서 원하는 장비·모듈·파츠 카드를 직접 선택해 장착합니다.</li>
+        <li>호환 여부, 장착 레벨, 강화 재료와 크레딧 견적을 카드에서 확인합니다.</li>
+        <li>U 화면이 미니맵보다 앞에 표시되도록 모달 순서를 수정했습니다.</li>
       </ul>
-      <p class="sfh-intent"><b>개선 의도</b><span>탐색과 생존 시간을 약 10분으로 늘리고, 긴 런에서도 조작과 제한 회복이 전투 리듬을 유지하게 합니다.</span></p>
+      <p class="sfh-intent"><b>개선 의도</b><span>장비와 개조 정보를 한 화면에서 빠르게 비교하고, 자동 선택 없이 원하는 아이템을 정확히 장착하게 합니다.</span></p>
     </div>
 
-    <div class="sfh-group"><h3>🆕 구현 · 6</h3>
+    <div class="sfh-group"><h3>🆕 구현 · 7</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">U 장비·모듈 카드 인벤토리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>4개 슬롯 레일, 선택 장비 상세, 장착 모듈 보드와 직접 선택 인벤토리를 연결했습니다.</p><a href="features/equipment-customization/">장비 UI 보기 →</a></div></details>
       <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">시간 잠금 탈출과 10분 페이싱</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>등급별 목표와 신호 개방 시간을 HUD·탈출 계약에 연결했습니다.</p><a href="features/raid-setup-extraction/">페이싱 보기 →</a></div></details>
       <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">부분 체력 회복</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>피격 지연 후 65%까지만 회복하는 독립 생존 모듈을 추가했습니다.</p><a href="features/health-recovery/">회복 보기 →</a></div></details>
       <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">내부 버프 선택과 외부 성장</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>내부 레벨업 선택, 버프 중첩, 종료 정산, 세 계열 영구 레벨과 저장을 연결했습니다.</p><a href="features/progression/">성장 설계 보기 →</a></div></details>
