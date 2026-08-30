@@ -294,6 +294,7 @@ var consumed_run_items: Array[StringName] = []
 var current_map_config: Resource
 var selected_map_size: String = "small"
 var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CSV
+var preferred_weapon_slot: StringName = &"main"
 var elapsed_time: float = 0.0
 var target_run_duration_seconds: float = 600.0
 var extraction_unlock_seconds: float = 600.0
@@ -649,6 +650,8 @@ func _install_start_hub() -> bool:
 		return false
 	player.global_position = start_hub.call(&"get_spawn_position")
 	player.call(&"configure_damage", false)
+	if not _install_hub_loadout_views():
+		return false
 	start_hub.connect(&"operation_requested", Callable(self, &"_open_run_setup"))
 	start_hub.connect(
 		&"interaction_availability_changed",
@@ -659,7 +662,17 @@ func _install_start_hub() -> bool:
 	hud_margin.visible = false
 	start_hub_hud.visible = true
 	interaction_label.visible = false
-	status_label.text = "작전 게이트로 이동하세요."
+	status_label.text = "거점 준비 · I 가방 · U/E 장비 · Q 무기 확인 · F 작전 게이트"
+	return true
+
+
+func _install_hub_loadout_views() -> bool:
+	if features.equipment_enabled and not _install_equipment():
+		return false
+	if features.inventory_enabled and not _install_inventory():
+		return false
+	if features.equipment_customization_enabled and not _install_equipment_workbench(true):
+		return false
 	return true
 
 
@@ -688,6 +701,12 @@ func _close_run_setup() -> void:
 func _clear_start_hub() -> void:
 	start_hub_hud.visible = false
 	interaction_label.visible = false
+	for node in [inventory_window, equipment_workbench, equipment_system, inventory_system]:
+		_free_feature_node(node)
+	inventory_window = null
+	equipment_workbench = null
+	equipment_system = null
+	inventory_system = null
 	_free_feature_node(start_hub)
 	start_hub = null
 	_free_feature_node(player)
@@ -1188,6 +1207,11 @@ func _install_equipment() -> bool:
 	if not configured:
 		_report_configuration_error("장비 로드아웃 조립에 실패했습니다.")
 		return false
+	equipment_system.connect(
+		&"active_weapon_changed", Callable(self, &"_on_active_weapon_changed")
+	)
+	if not equipment_system.call(&"set_active_weapon_slot", preferred_weapon_slot):
+		preferred_weapon_slot = &"main"
 	return true
 
 
@@ -1212,7 +1236,7 @@ func _install_inventory() -> bool:
 	return true
 
 
-func _install_equipment_workbench() -> bool:
+func _install_equipment_workbench(read_only: bool = false) -> bool:
 	if equipment_system == null or inventory_system == null:
 		_report_configuration_error("장비 개조 UI에는 장비와 가방 모듈이 모두 필요합니다.")
 		return false
@@ -1223,7 +1247,7 @@ func _install_equipment_workbench() -> bool:
 		_report_configuration_error("장비 개조 UI 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
 	if not equipment_workbench.call(
-		&"configure", equipment_system, inventory_system, equipment_upgrade_service
+		&"configure", equipment_system, inventory_system, equipment_upgrade_service, read_only
 	):
 		_report_configuration_error("장비 개조 UI를 연결하지 못했습니다.")
 		return false
@@ -1535,6 +1559,16 @@ func _update_run_time_hud() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if (
+		event.is_action_pressed(&"switch_weapon")
+		and not event.is_echo()
+		and not run_started
+		and not run_setup_overlay.visible
+		and equipment_system != null
+	):
+		equipment_system.call(&"switch_active_weapon")
+		get_viewport().set_input_as_handled()
+		return
 	if not event is InputEventKey:
 		return
 
@@ -1772,6 +1806,14 @@ func _on_equipment_changed(summary: Dictionary) -> void:
 		int(summary.get(&"armor_count", 0)),
 		defense_value,
 	]
+
+
+func _on_active_weapon_changed(slot_id: StringName, weapon_definition: Resource) -> void:
+	preferred_weapon_slot = slot_id
+	if not run_started:
+		status_label.text = "거점 무기 확인 · %s · U/E에서 상세 정보" % (
+		weapon_definition.get("display_name") if weapon_definition != null else String(slot_id)
+		)
 
 
 func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:

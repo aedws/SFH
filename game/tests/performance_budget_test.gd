@@ -37,6 +37,9 @@ func _run() -> void:
 	var room_encounters = game.get("room_encounter_system")
 	var generated_map = game.get("map_generator")
 	if room_encounters != null and generated_map != null:
+		var maximum_room_values: Dictionary = room_encounters.get("tier_values").duplicate(true)
+		maximum_room_values[&"minimum_enemies"] = maximum_room_values[&"maximum_enemies"]
+		room_encounters.set("tier_values", maximum_room_values)
 		for room: Dictionary in generated_map.call(&"get_room_encounter_snapshot"):
 			if not bool(room[&"is_start_room"]) and not bool(room[&"is_extraction_room"]):
 				room_encounters.call(&"try_start_room", int(room[&"room_index"]))
