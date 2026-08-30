@@ -95,14 +95,14 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>21 UPDATE BUNDLES &middot; BUILD 40 &middot; IMPROVE 37 &middot; CHANGE 18 &middot; FIX 10</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>21 UPDATE BUNDLES &middot; BUILD 41 &middot; IMPROVE 37 &middot; CHANGE 18 &middot; FIX 11</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>21</b><small>UPDATE BUNDLES</small></span>
-      <span><b>40</b><small>BUILD</small></span>
+      <span><b>41</b><small>BUILD</small></span>
       <span><b>37</b><small>IMPROVE</small></span>
       <span><b>18</b><small>CHANGE</small></span>
-      <span><b>10</b><small>FIX</small></span>
+      <span><b>11</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>즉시 플레이 README · Godot Web · Pages 배포 게이트</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -361,9 +361,11 @@ tags:
           <summary><span><small>UPDATE 11</small><b>전기 스킬 표현 · 대형 작전 성능 예산</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
-              <strong>핵심 변경 · 5개 주제</strong>
+              <strong>핵심 변경 · 7개 주제</strong>
               <ul>
                 <li><code>1</code> 점멸은 전기 잔상, <code>2</code> 자기장은 원형 전기장, <code>3</code> 가속은 추적형 전기 방출을 표시합니다.</li>
+                <li>점멸의 실제 이동 선분에 폭 80px·12 피해·최대 24타격 경로 정책을 주입했습니다.</li>
+                <li>Web 폰트에서 깨지던 번개 이모지를 고정 `EN` 에너지 표기로 교체했습니다.</li>
                 <li>공용 전기 렌더러와 세 프로필을 분리해 패턴·색·수명·밀도·갱신률을 데이터로 교체합니다.</li>
                 <li>형상 10~20Hz 캐시, HUD 10Hz, one-shot Timer로 매 프레임 갱신과 할당을 줄였습니다.</li>
                 <li>연속 맵 충돌체 병합, 적 A* 0.7초 분산 갱신과 생성 목록 Signal 정리를 적용했습니다.</li>
@@ -371,12 +373,16 @@ tags:
               </ul>
               <p class="sfh-intent"><b>검증 결과</b><span>기능 스모크 테스트와 별도 대형 작전 성능 게이트를 통과했으며 실제 최소 사양은 저사양 GPU 실기 인증 전까지 임시 목표로 관리합니다.</span></p>
             </div>
-            <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+            <div class="sfh-group"><h3>🆕 구현 · 3</h3>
               <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">공용 전기 아크와 스킬별 프로필</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>점멸·자기장·가속이 같은 렌더러에 독립 Resource를 주입합니다.</p><a href="../features/combat-skills/">스킬 계약 →</a></div></details>
+              <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">점멸 경로 피해 정책</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>벽으로 잘린 실제 점멸 경로만 검사하고 피해량·폭·최대 대상 수를 Resource로 교체합니다.</p><a href="../features/combat-skills/">점멸 공격 계약 →</a></div></details>
               <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">성능 예산 자동 테스트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>대형 작전 240프레임의 평균·최대 시간과 SceneTree 예산을 검사합니다.</p><a href="../performance/minimum-requirements/">사양·성능 예산 →</a></div></details>
             </div>
             <div class="sfh-group"><h3>🧩 수정 · 1</h3>
               <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">충돌·경로·UI 핫패스 최적화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>기능 경계를 유지하면서 반복 Node·배열·경로 계산만 각 소유 모듈 안에서 줄였습니다.</p><a href="../architecture/module-audit/">모듈 감사 →</a></div></details>
+            </div>
+            <div class="sfh-group"><h3>🩹 버그픽스 · 1</h3>
+              <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web 스킬 비용 글리프</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>내장 폰트에 없는 번개 이모지를 제거하고 EN 20·35·25 표기로 통일했습니다.</p></div></details>
             </div>
           </div>
         </details>

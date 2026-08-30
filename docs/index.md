@@ -73,14 +73,14 @@ hide:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 34 &middot; IMPROVE 31 &middot; CHANGE 12 &middot; FIX 7</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 35 &middot; IMPROVE 31 &middot; CHANGE 12 &middot; FIX 8</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>18</b><small>UPDATE BUNDLES</small></span>
-      <span><b>34</b><small>BUILD</small></span>
+      <span><b>35</b><small>BUILD</small></span>
       <span><b>31</b><small>IMPROVE</small></span>
       <span><b>12</b><small>CHANGE</small></span>
-      <span><b>7</b><small>FIX</small></span>
+      <span><b>8</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>브라우저 즉시 플레이 · 게임 정체성 README · 통합 배포</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -338,9 +338,11 @@ hide:
           <summary><span><small>UPDATE 11</small><b>전기 스킬 이펙트 · 대형 작전 성능 최적화</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
-              <strong>핵심 변경 · 5개 주제</strong>
+              <strong>핵심 변경 · 7개 주제</strong>
               <ul>
                 <li>점멸·자기장·기동 가속에 전기 잔상·고리·방사형 오라를 적용했습니다.</li>
+                <li>점멸 이동 경로 폭 80px 안의 적에게 12 피해를 주는 교체형 경로 정책을 연결했습니다.</li>
+                <li>Web에서 깨지는 번개 이모지 대신 고정 `EN` 에너지 비용 표기를 사용합니다.</li>
                 <li>공용 렌더러와 스킬별 프로필을 분리해 패턴·색·밀도·갱신률을 교체할 수 있습니다.</li>
                 <li>전기 형상 10~20Hz 캐시와 쿨타임 HUD 10Hz 제한으로 매 프레임 할당을 줄였습니다.</li>
                 <li>대형 맵 벽·설비 충돌체를 병합하고 적 A* 재탐색을 분산했습니다.</li>
@@ -348,10 +350,14 @@ hide:
               </ul>
               <p class="sfh-intent"><b>검증 결론</b><span>전기 표현은 스킬 규칙과 독립된 Resource이며 대형 작전 CPU·Node·충돌체·이펙트 예산을 자동 회귀 테스트로 고정했습니다.</span></p>
             </div>
-            <div class="sfh-group"><h3>🆕 구현 · 3</h3>
+            <div class="sfh-group"><h3>🆕 구현 · 4</h3>
               <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">모듈형 전기 스킬 표현</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>trail·ring·burst 프로필을 스킬별로 주입해 전기 표현만 독립 교체합니다.</p><a href="features/combat-skills/">전투 스킬 보기 →</a></div></details>
+              <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">점멸 경로 피해 정책</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>출발점부터 벽 앞 도착점까지 폭 80px 선분의 적 최대 24명에게 12 피해를 적용합니다.</p><a href="features/combat-skills/">점멸 수치·계약 →</a></div></details>
               <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">대형 작전 엄격 최적화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>충돌체 병합, A* 캐시, HUD 갱신 제한을 적용하고 60 FPS CPU 예산을 통과했습니다.</p><a href="performance/minimum-requirements/">사양·성능 예산 →</a></div></details>
               <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">성능 예산 자동 게이트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>평균·최대 프레임, Node, 충돌체 압축률과 동시 전기 효과의 상한을 자동 검사합니다.</p><a href="architecture/module-audit/">모듈 감사 →</a></div></details>
+            </div>
+            <div class="sfh-group"><h3>🩹 버그픽스 · 1</h3>
+              <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web 스킬 비용 글리프 깨짐</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>번개 이모지 의존성을 제거하고 모든 브라우저 빌드에서 동일한 EN 텍스트를 표시합니다.</p></div></details>
             </div>
           </div>
         </details>

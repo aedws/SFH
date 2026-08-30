@@ -1,20 +1,28 @@
-[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1_definition"]
 [ext_resource type="Script" path="res://game/features/combat_skills/effects/blink_skill_effect.gd" id="2_effect"]
 [ext_resource type="Resource" path="res://game/features/combat_skills/effects/profiles/blink_electric.tres" id="3_electric"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/path_damage_policy.gd" id="4_path"]
+
+[sub_resource type="Resource" id="PathDamagePolicy"]
+script = ExtResource("4_path")
+damage = 12.0
+half_width = 40.0
+maximum_targets = 24
 
 [sub_resource type="Resource" id="BlinkEffect"]
 script = ExtResource("2_effect")
 distance = 360.0
 wall_clearance = 24.0
 electric_profile = ExtResource("3_electric")
+path_damage_policy = SubResource("PathDamagePolicy")
 
 [resource]
 script = ExtResource("1_definition")
 skill_id = &"blink"
 display_name = "점멸"
-description = "바라보는 방향으로 순간 이동"
+description = "바라보는 방향으로 이동하며 경로 피해"
 input_action = &"combat_skill_1"
 input_label = "1"
 cooldown_seconds = 5.0

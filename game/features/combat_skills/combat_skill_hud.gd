@@ -75,7 +75,7 @@ func _on_skill_states_changed(states: Array[Dictionary]) -> void:
 		if maximum_charges < 0:
 			status_labels[index].text = "READY" if ready else "재사용 %.1fs" % remaining
 		elif ready:
-			status_labels[index].text = "READY · ⚡%d · %d/%d" % [
+			status_labels[index].text = "READY · EN %d · %d/%d" % [
 				roundi(float(state.get(&"energy_cost", 0.0))), current_charges, maximum_charges,
 			]
 		elif remaining > 0.0:
@@ -87,7 +87,7 @@ func _on_skill_states_changed(states: Array[Dictionary]) -> void:
 				state.get(&"charge_recovery_remaining", 0.0)
 			)
 		else:
-			status_labels[index].text = "에너지 부족 · ⚡%d" % roundi(
+			status_labels[index].text = "에너지 부족 · EN %d" % roundi(
 				float(state.get(&"energy_cost", 0.0))
 			)
 		status_labels[index].modulate = (
