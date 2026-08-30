@@ -11,6 +11,19 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-08-30 방·통로 방향성 시야 점검
+
+| 점검 대상 | 결과 | 근거 |
+|---|---|---|
+| 플레이어 정면 방향 | 통과 | 화면용 Heading 내부 Node 대신 `get_facing_direction()` 계약 사용 |
+| 방 전체 공개 | 통과 | 현재 좌표의 방 경계 복사본만 Shader에 전달하고 방 배열은 비공개 유지 |
+| 통로 방향 시야 | 통과 | 170px 주변 시야와 정면 780px·반각 62도 원뿔을 안개 모듈에서 계산 |
+| 다른 방 차단 | 통과 | 통로 Shader가 화면과 겹치는 방 사각형만 선별해 내부를 시야에서 제외 |
+| 미니맵 독립성 | 통과 | 안개 CanvasLayer와 전체 지형 미니맵 데이터·UI 레이어 분리 유지 |
+| 자동·실제 렌더 검증 | 통과 | 세 등급 방/통로 판정과 1280×720 방·통로 화면을 각각 확인 |
+
+맵은 `get_visibility_region()`과 `get_visibility_room_rects()`만 추가했으며 안개 Shader나 플레이어 방향을 알지 않습니다. 안개는 맵의 `rooms`, `floor_cells`, A* 객체에 접근하지 않고 복사된 `Rect2`만 화면 좌표로 변환합니다. 맵 제공자가 없으면 통로 원뿔 시야 폴백을 유지합니다.
+
 ## 2026-08-30 증원 전투·배치 가치·전체 결합 재점검
 
 | 점검 대상 | 발견 내용 | 조치 | 결과 |
@@ -134,6 +147,8 @@ tags:
 | Method | `get_player_spawn_position()` | 플레이어 배치 |
 | Method | `get_extraction_position()` | 탈출 모듈 배치 |
 | Method | `get_enemy_spawn_position(origin, minimum_distance)` | 적 생성기 |
+| Method | `get_visibility_region(world_position)` | 방·통로 안개 모드 |
+| Method | `get_visibility_room_rects()` | 다른 방 차단 마스크 |
 | Method | `get_loot_spawn_points(count)` | 파밍 위치·벽 방향·배치 유형 제공 |
 | Method | `get_world_path(from_world, to_world)` | 적 이동 |
 | Method | `get_minimap_snapshot()` | 전술 미니맵 조립부 |
@@ -189,11 +204,12 @@ tags:
 
 | 제공자 | 계약 | 소비자 |
 |---|---|---|
-| 안개 | `configure(tracked_actor)` | `Game` 조립부 |
+| 안개 | `configure(tracked_actor, visibility_provider)` | `Game` 조립부 |
 | 안개 | `get_snapshot()` | 자동 테스트·향후 옵션 UI |
-| 플레이어 | `Node2D` 화면 좌표 | 안개 Shader 초점 |
+| 플레이어 | `Node2D` 화면 좌표, `get_facing_direction()` | 안개 Shader 초점·정면 방향 |
+| 맵 | `get_visibility_region`, `get_visibility_room_rects` | 방 전체 공개·다른 방 차단 |
 
-안개는 CanvasLayer 0, HUD·미니맵은 별도 UI CanvasLayer에 있어 월드 시야 제한이 전체 미니맵 데이터나 모달 UI를 가리지 않습니다.
+안개는 CanvasLayer 0, HUD·미니맵은 별도 UI CanvasLayer에 있어 방·통로 월드 시야 제한이 전체 미니맵 데이터나 모달 UI를 가리지 않습니다.
 
 ## 미니맵 공개 계약
 
