@@ -9,6 +9,8 @@ var cooldown_bars: Array[ProgressBar] = []
 var latest_states: Array[Dictionary] = []
 
 @onready var skill_slots: HBoxContainer = %SkillSlots
+@onready var energy_bar: ProgressBar = %EnergyBar
+@onready var energy_label: Label = %EnergyLabel
 
 
 func configure(new_skill_system: Node) -> bool:
@@ -36,13 +38,43 @@ func _on_skill_states_changed(states: Array[Dictionary]) -> void:
 	latest_states = states.duplicate(true)
 	if title_labels.size() != states.size():
 		_rebuild_slots(states)
+	if states.is_empty() or float(states[0].get(&"energy_maximum", 0.0)) <= 0.0:
+		energy_bar.visible = false
+		energy_label.text = "에너지 자원 비활성"
+	else:
+		energy_bar.visible = true
+		energy_bar.max_value = float(states[0][&"energy_maximum"])
+		energy_bar.value = float(states[0][&"energy_current"])
+		energy_label.text = "에너지 %d / %d" % [
+			roundi(float(states[0][&"energy_current"])),
+			roundi(float(states[0][&"energy_maximum"])),
+		]
 	for index in states.size():
 		var state := states[index]
 		title_labels[index].text = "[%s]  %s" % [state[&"input_label"], state[&"display_name"]]
 		description_labels[index].text = String(state[&"description"])
 		var remaining := float(state[&"cooldown_remaining"])
 		var ready := bool(state[&"ready"])
-		status_labels[index].text = "READY" if ready else "재사용 %.1fs" % remaining
+		var current_charges := int(state.get(&"current_charges", -1))
+		var maximum_charges := int(state.get(&"maximum_charges", -1))
+		if maximum_charges < 0:
+			status_labels[index].text = "READY" if ready else "재사용 %.1fs" % remaining
+		elif ready:
+			status_labels[index].text = "READY · ⚡%d · %d/%d" % [
+				roundi(float(state.get(&"energy_cost", 0.0))), current_charges, maximum_charges,
+			]
+		elif remaining > 0.0:
+			status_labels[index].text = "재사용 %.1fs · %d/%d" % [
+				remaining, current_charges, maximum_charges,
+			]
+		elif current_charges <= 0:
+			status_labels[index].text = "충전 %.1fs" % float(
+				state.get(&"charge_recovery_remaining", 0.0)
+			)
+		else:
+			status_labels[index].text = "에너지 부족 · ⚡%d" % roundi(
+				float(state.get(&"energy_cost", 0.0))
+			)
 		status_labels[index].modulate = (
 			Color(0.48, 1.0, 0.72, 1.0) if ready else Color(1.0, 0.7, 0.35, 1.0)
 		)
@@ -86,10 +118,10 @@ func _rebuild_slots(states: Array[Dictionary]) -> void:
 		var footer := HBoxContainer.new()
 		content.add_child(footer)
 		var status := Label.new()
-		status.custom_minimum_size = Vector2(88.0, 0.0)
+		status.custom_minimum_size = Vector2(150.0, 0.0)
 		footer.add_child(status)
 		var bar := ProgressBar.new()
-		bar.custom_minimum_size = Vector2(112.0, 10.0)
+		bar.custom_minimum_size = Vector2(72.0, 10.0)
 		bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		bar.show_percentage = false
 		footer.add_child(bar)

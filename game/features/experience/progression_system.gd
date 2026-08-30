@@ -5,17 +5,28 @@ signal progress_changed(level: int, current: int, required: int)
 signal level_increased(level: int)
 
 @export var pickup_scene: PackedScene
+@export_range(0.0, 1000.0, 1.0) var level_up_heal_amount: float = 12.0
 
 var pickup_parent: Node2D
 var leveling_enabled: bool = true
+var recovery_target: Node
 var level: int = 1
 var current_experience: int = 0
 var required_experience: int = 5
 
 
-func configure(new_pickup_parent: Node2D, enable_leveling: bool) -> void:
+func configure(
+	new_pickup_parent: Node2D,
+	enable_leveling: bool,
+	new_recovery_target: Node = null
+) -> void:
 	pickup_parent = new_pickup_parent
 	leveling_enabled = enable_leveling
+	recovery_target = (
+		new_recovery_target
+		if is_instance_valid(new_recovery_target) and new_recovery_target.has_method(&"heal")
+		else null
+	)
 	progress_changed.emit(level, current_experience, required_experience)
 
 
@@ -43,6 +54,8 @@ func gain_experience(amount: int) -> void:
 			current_experience -= required_experience
 			level += 1
 			required_experience = _required_for_level(level)
+			if is_instance_valid(recovery_target) and level_up_heal_amount > 0.0:
+				recovery_target.call(&"heal", level_up_heal_amount)
 			level_increased.emit(level)
 
 	progress_changed.emit(level, current_experience, required_experience)
@@ -53,6 +66,7 @@ func get_run_snapshot() -> Dictionary:
 		&"level": level,
 		&"current_experience": current_experience,
 		&"required_experience": required_experience,
+		&"level_up_heal_amount": level_up_heal_amount,
 	}
 
 

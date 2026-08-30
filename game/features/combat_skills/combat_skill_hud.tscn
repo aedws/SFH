@@ -21,7 +21,7 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -384.0
-offset_top = -128.0
+offset_top = -156.0
 offset_right = 384.0
 offset_bottom = -18.0
 grow_horizontal = 2
@@ -40,7 +40,29 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="SkillSlots" type="HBoxContainer" parent="Panel/Margin"]
+[node name="Content" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ResourceRow" type="HBoxContainer" parent="Panel/Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="EnergyLabel" type="Label" parent="Panel/Margin/Content/ResourceRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(132, 0)
+layout_mode = 2
+text = "에너지 100 / 100"
+
+[node name="EnergyBar" type="ProgressBar" parent="Panel/Margin/Content/ResourceRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+show_percentage = false
+
+[node name="SkillSlots" type="HBoxContainer" parent="Panel/Margin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 8

@@ -14,6 +14,7 @@
 - [플레이어 이동](player.md)
 - [부분 체력 회복](health-recovery.md)
 - [전투 스킬과 쿨타임 HUD](combat-skills.md)
+- [전투 에너지·충전·회복 드랍](combat-resources.md)
 - [스마트 자동 타게팅](smart-targeting.md)
 - [도면 제작과 랜덤 옵션](blueprint-crafting.md)
 - [페널티 변형과 조건부 랭킹](penalty-ranking.md)

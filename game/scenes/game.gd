@@ -30,6 +30,9 @@ const COMBAT_SKILL_SYSTEM_SCENE_PATH := (
 const COMBAT_SKILL_HUD_SCENE_PATH := (
 	"res://game/features/combat_skills/combat_skill_hud.tscn"
 )
+const COMBAT_RESOURCE_SCENE_PATH := (
+	"res://game/features/combat_resources/combat_resource_system.tscn"
+)
 const WEAPON_BALANCE_SCENE_PATH := (
 	"res://game/features/weapon_balance/weapon_balance_service.tscn"
 )
@@ -189,6 +192,10 @@ const COMBAT_SKILL_METHODS := [
 	&"get_skill_states", &"get_snapshot",
 ]
 const COMBAT_SKILL_HUD_METHODS := [&"configure", &"get_snapshot"]
+const COMBAT_RESOURCE_METHODS := [
+	&"configure", &"can_activate", &"consume_for_skill", &"restore_energy",
+	&"spawn_enemy_drops", &"get_skill_resource_snapshot", &"get_snapshot",
+]
 const PERSISTENT_PROFILE_METHODS := [
 	&"configure", &"can_spend", &"spend", &"add_credits", &"get_snapshot",
 	&"is_unlocked", &"unlock", &"add_warehouse_item", &"has_warehouse_item",
@@ -274,6 +281,7 @@ var room_encounter_system
 var auto_weapon
 var combat_skill_system
 var combat_skill_hud
+var combat_resource_system
 var weapon_balance_service
 var growth_balance_service
 var progression_system
@@ -771,6 +779,7 @@ func _reset_run_references() -> void:
 	auto_weapon = null
 	combat_skill_system = null
 	combat_skill_hud = null
+	combat_resource_system = null
 	weapon_balance_service = null
 	growth_balance_service = null
 	progression_system = null
@@ -883,13 +892,17 @@ func _assemble_game() -> bool:
 	):
 		if not _install_loot_spawner():
 			return false
+	if features.combat_resources_enabled and not _install_combat_resources():
+		return false
 
 	if features.experience_enabled:
 		progression_system = _instantiate_feature(PROGRESSION_SCENE_PATH, module_container, &"ProgressionSystem")
 		if progression_system != null:
 			progression_system.connect(&"progress_changed", Callable(self, &"_on_progress_changed"))
 			progression_system.connect(&"level_increased", Callable(self, &"_on_level_increased"))
-			progression_system.call(&"configure", pickups_container, features.leveling_enabled)
+			progression_system.call(
+				&"configure", pickups_container, features.leveling_enabled, player
+			)
 			_on_progress_changed(1, 0, 5)
 
 	if features.weapons_enabled:
@@ -988,7 +1001,8 @@ func _install_combat_skills() -> bool:
 		enemies_container,
 		world_container,
 		skill_loadout,
-		features.damage_enabled
+		features.damage_enabled,
+		combat_resource_system
 	):
 		_report_configuration_error("전투 스킬 실행기를 구성하지 못했습니다.")
 		return false
@@ -1002,6 +1016,37 @@ func _install_combat_skills() -> bool:
 	):
 		_report_configuration_error("전투 스킬 HUD를 구성하지 못했습니다.")
 		return false
+	return true
+
+
+func _install_combat_resources() -> bool:
+	if (
+		not ResourceLoader.exists(features.combat_resource_config_path)
+		or not ResourceLoader.exists(features.combat_skill_loadout_path)
+	):
+		_report_configuration_error("전투 자원 설정 또는 스킬 로드아웃을 찾을 수 없습니다.")
+		return false
+	combat_resource_system = _instantiate_feature(
+		COMBAT_RESOURCE_SCENE_PATH, module_container, &"CombatResources"
+	)
+	if (
+		not _supports_methods(combat_resource_system, COMBAT_RESOURCE_METHODS)
+		or not combat_resource_system.has_signal(&"resources_changed")
+		or not combat_resource_system.has_signal(&"pickup_collected")
+	):
+		_report_configuration_error("전투 자원 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not combat_resource_system.call(
+		&"configure", player, pickups_container,
+		load(features.combat_skill_loadout_path),
+		load(features.combat_resource_config_path),
+		features.map_seed
+	):
+		_report_configuration_error("에너지·충전·회복 드랍 정책을 구성하지 못했습니다.")
+		return false
+	combat_resource_system.connect(
+		&"pickup_collected", Callable(self, &"_on_combat_resource_pickup_collected")
+	)
 	return true
 
 
@@ -1905,6 +1950,8 @@ func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:
 
 	if progression_system != null:
 		progression_system.call(&"spawn_pickup", world_position, reward)
+	if combat_resource_system != null:
+		combat_resource_system.call(&"spawn_enemy_drops", world_position)
 
 
 func _on_room_encounter_started(room_index: int, enemy_count: int) -> void:
@@ -1955,11 +2002,19 @@ func _on_level_increased(new_level: int) -> void:
 	if run_buff_system == null or run_buff_selector == null:
 		if auto_weapon != null:
 			auto_weapon.call(&"apply_level", new_level)
-		if player != null:
-			player.call(&"heal", 12.0)
 		return
 	pending_buff_levels.append(new_level)
 	_show_next_run_buff_choice()
+
+
+func _on_combat_resource_pickup_collected(resource_id: StringName, amount: float) -> void:
+	if amount <= 0.0:
+		return
+	status_label.text = (
+		"에너지 자원 회수 · +%d" % roundi(amount)
+		if resource_id == &"energy"
+		else "체력 자원 회수 · +%d HP" % roundi(amount)
+	)
 
 
 func _show_next_run_buff_choice() -> void:
