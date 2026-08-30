@@ -34,10 +34,10 @@ hide:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>51%</b>
+        <b>71%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="51"><i style="width: 51%"></i></div>
-      <p>확정 전투 원칙 3× · 코어 루프 2× · 기타 요구사항 1× 가중치</p>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="71"><i style="width: 71%"></i></div>
+      <p>제공된 기획 원문 재대조 · 확정 전투 3× · 코어 루프 2× · 기타 1×</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
     </div>
     <header><strong>현재 빌드 상태</strong><b class="sfh-live">PLAYABLE</b></header>
@@ -62,7 +62,7 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>7 META SYSTEMS</span><span>6.890ms LARGE RAID</span><span>기획 진행도 51% · 재확인 대기</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>7 META SYSTEMS</span><span>6.890ms LARGE RAID</span><span>기획 진행도 71% · 원문 재대조</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
