@@ -76,6 +76,8 @@ func _init() -> void:
 		return
 	if not await _verify_enemy_spawn_budget():
 		return
+	if not await _verify_enemy_crowd_separation():
+		return
 	if not _verify_roguelike_progression_modules():
 		return
 	if not _verify_equipment_upgrade_economy():
@@ -1899,6 +1901,83 @@ func _verify_enemy_spawn_budget() -> bool:
 	host.free()
 	if not valid:
 		_fail("적 처치 후 총 생성 예산을 넘어서 재생성됩니다.")
+		return false
+	return true
+
+
+func _verify_enemy_crowd_separation() -> bool:
+	var spawner_scene := load(ENEMY_SPAWNER_SCENE_PATH) as PackedScene
+	var base_config = load(SPAWN_CONFIG_PATH_PATTERN % "small")
+	if spawner_scene == null or base_config == null:
+		_fail("적 군중 분리 검증 리소스를 불러오지 못했습니다.")
+		return false
+	var host := Node2D.new()
+	var target := Node2D.new()
+	var enemy_parent := Node2D.new()
+	root.add_child(host)
+	host.add_child(target)
+	host.add_child(enemy_parent)
+	target.global_position = Vector2(500.0, 0.0)
+	var spawner := spawner_scene.instantiate()
+	host.add_child(spawner)
+	var config = base_config.duplicate(true)
+	config.set("minimum_active_enemies", 2)
+	config.set("maximum_active_enemies", 2)
+	config.set("maximum_total_spawns", 2)
+	config.set("minimum_reinforcement_batch", 1)
+	config.set("maximum_reinforcement_batch", 2)
+	if not spawner.call(&"configure", target, enemy_parent, false, null, false, false, config):
+		root.remove_child(host)
+		host.free()
+		_fail("적 군중 분리 모듈 구성에 실패했습니다.")
+		return false
+	var first: Node2D = spawner.call(&"spawn_enemy_at", Vector2.ZERO)
+	var second: Node2D = spawner.call(&"spawn_enemy_at", Vector2.ZERO)
+	var snapshot: Dictionary = spawner.call(&"get_snapshot")
+	var minimum_spacing := float(snapshot.get(&"minimum_spawn_spacing", 0.0))
+	var spawn_distance := (
+		first.global_position.distance_to(second.global_position)
+		if is_instance_valid(first) and is_instance_valid(second) else 0.0
+	)
+	var failure_message := ""
+	if (
+		not bool(snapshot.get(&"crowd_separation_enabled", false))
+		or minimum_spacing < 32.0
+		or spawn_distance + 0.01 < minimum_spacing
+	):
+		failure_message = "동일 생성 요청 위치가 적 최소 간격으로 보정되지 않았습니다."
+	else:
+		first.global_position = Vector2.ZERO
+		second.global_position = Vector2.ZERO
+		var first_vector: Vector2 = spawner.call(
+			&"get_separation_vector", first, first.global_position, 44.0, 8
+		)
+		var second_vector: Vector2 = spawner.call(
+			&"get_separation_vector", second, second.global_position, 44.0, 8
+		)
+		if (
+			first_vector.length() < 0.9
+			or second_vector.length() < 0.9
+			or first_vector.dot(second_vector) > -0.9
+		):
+			failure_message = "완전히 겹친 적에게 서로 반대인 분리 조향이 제공되지 않았습니다."
+		else:
+			for _step in range(12):
+				await physics_frame
+			if first.global_position.distance_to(second.global_position) < 8.0:
+				failure_message = "추적 이동 중 적 분리 조향이 실제 겹침을 해소하지 못했습니다."
+	var crowd_config: Resource = spawner.get("crowd_config")
+	if failure_message.is_empty() and crowd_config != null:
+		crowd_config.set("enabled", false)
+		if spawner.call(
+			&"get_separation_vector", first, first.global_position, 44.0, 8
+		) != Vector2.ZERO:
+			failure_message = "군중 분리 정책 비활성화 후에도 분리 조향이 남아 있습니다."
+		crowd_config.set("enabled", true)
+	root.remove_child(host)
+	host.free()
+	if not failure_message.is_empty():
+		_fail("적 군중 분리 실패: %s" % failure_message)
 		return false
 	return true
 

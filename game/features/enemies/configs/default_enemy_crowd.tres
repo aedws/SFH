@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EnemyCrowdConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/enemies/enemy_crowd_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+enabled = true
+separation_radius = 44.0
+separation_strength = 1.25
+steering_update_interval = 0.08
+maximum_neighbors = 8
+minimum_spawn_spacing = 40.0
+spawn_search_attempts = 20

@@ -8,6 +8,7 @@ signal spawn_budget_exhausted(total_spawned: int, maximum_total_spawns: int)
 const MAP_PROVIDER_METHODS := [&"get_enemy_spawn_position", &"get_world_path"]
 
 @export var enemy_scene: PackedScene
+@export var crowd_config: Resource
 var target: Node2D
 var enemy_parent: Node2D
 var map_provider: Node
@@ -49,6 +50,11 @@ func configure(
 		or not new_spawn_config.call(&"is_valid")
 	):
 		push_error("EnemySpawner 구성에 대상, 적 부모, 유효한 등급 정책이 필요합니다.")
+		return false
+	if crowd_config != null and (
+		not crowd_config.has_method(&"is_valid") or not bool(crowd_config.call(&"is_valid"))
+	):
+		push_error("EnemySpawner의 적 군중 분리 정책이 유효하지 않습니다.")
 		return false
 	target = new_target
 	enemy_parent = new_enemy_parent
@@ -147,6 +153,9 @@ func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"") -> 
 	if total_spawned >= int(spawn_config.get("maximum_total_spawns")):
 		_mark_spawn_budget_exhausted()
 		return null
+	var resolved_position := _resolve_spawn_position(world_position)
+	if not resolved_position.is_finite():
+		return null
 	var enemy := enemy_scene.instantiate() as Node2D
 	if enemy == null:
 		push_error("Enemy Scene의 루트는 Node2D여야 합니다.")
@@ -157,7 +166,7 @@ func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"") -> 
 		return null
 
 	enemy_parent.add_child(enemy)
-	enemy.global_position = world_position
+	enemy.global_position = resolved_position
 	enemy.set_meta(&"room_encounter_id", encounter_id)
 	enemy.call(
 		&"configure",
@@ -166,7 +175,9 @@ func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"") -> 
 		map_provider,
 		enemy_armor_enabled,
 		enemy_status_ui_enabled,
-		enemy_stat_multipliers
+		enemy_stat_multipliers,
+		self,
+		crowd_config
 	)
 	tracked_enemies.append(enemy)
 	enemy.tree_exited.connect(_on_enemy_tree_exited.bind(enemy), CONNECT_ONE_SHOT)
@@ -216,7 +227,60 @@ func get_snapshot() -> Dictionary:
 		&"reinforcement_paused": not reinforcement_pause_sources.is_empty(),
 		&"reinforcement_pause_sources": reinforcement_pause_sources.keys(),
 		&"enemy_stat_multipliers": enemy_stat_multipliers.duplicate(true),
+		&"crowd_separation_enabled": _crowd_separation_enabled(),
+		&"minimum_spawn_spacing": (
+			float(crowd_config.get("minimum_spawn_spacing"))
+			if _crowd_separation_enabled() else 0.0
+		),
 	}
+
+
+func get_separation_vector(
+	requester: Node2D,
+	world_position: Vector2,
+	radius: float,
+	maximum_neighbors: int
+) -> Vector2:
+	if not _crowd_separation_enabled() or not is_instance_valid(requester):
+		return Vector2.ZERO
+	_prune_invalid_enemies()
+	var nearby_enemies: Array[Node2D] = []
+	var nearby_distances := PackedFloat32Array()
+	var radius_squared := radius * radius
+	for candidate in tracked_enemies:
+		if candidate == requester or not candidate is Node2D:
+			continue
+		var offset := world_position - (candidate as Node2D).global_position
+		var distance_squared := offset.length_squared()
+		if distance_squared >= radius_squared:
+			continue
+		var insert_index := nearby_distances.size()
+		for index in nearby_distances.size():
+			if distance_squared < nearby_distances[index]:
+				insert_index = index
+				break
+		nearby_enemies.insert(insert_index, candidate as Node2D)
+		nearby_distances.insert(insert_index, distance_squared)
+		if nearby_enemies.size() > maximum_neighbors:
+			nearby_enemies.pop_back()
+			nearby_distances.remove_at(nearby_distances.size() - 1)
+	var steering := Vector2.ZERO
+	var urgent_steering := Vector2.ZERO
+	var minimum_spacing := float(crowd_config.get("minimum_spawn_spacing"))
+	for other in nearby_enemies:
+		var offset := world_position - other.global_position
+		var distance := offset.length()
+		var direction := (
+			offset / distance
+			if distance > 0.01 else _stable_pair_direction(requester, other)
+		)
+		var proximity := 1.0 - clampf(distance / radius, 0.0, 1.0)
+		steering += direction * proximity * proximity
+		if distance < minimum_spacing:
+			urgent_steering += direction * (1.0 - clampf(distance / minimum_spacing, 0.0, 1.0))
+	if not urgent_steering.is_zero_approx():
+		return urgent_steering.normalized()
+	return steering.limit_length(1.0)
 
 
 func get_active_targets() -> Array[Node2D]:
@@ -257,3 +321,56 @@ func _supports_map_provider(candidate: Node) -> bool:
 			return false
 
 	return true
+
+
+func _resolve_spawn_position(requested_position: Vector2) -> Vector2:
+	if not _crowd_separation_enabled():
+		return requested_position
+	_prune_invalid_enemies()
+	var spacing := float(crowd_config.get("minimum_spawn_spacing"))
+	if _spawn_position_is_available(requested_position, spacing):
+		return requested_position
+	var attempts := int(crowd_config.get("spawn_search_attempts"))
+	var golden_angle := PI * (3.0 - sqrt(5.0))
+	for attempt in range(1, attempts + 1):
+		var ring := 1 + int((attempt - 1) / 6)
+		var angle := golden_angle * float(attempt + total_spawned * 3)
+		var candidate := requested_position + Vector2.RIGHT.rotated(angle) * spacing * ring
+		if _spawn_position_is_available(candidate, spacing):
+			return candidate
+	return Vector2.INF
+
+
+func _spawn_position_is_available(candidate: Vector2, spacing: float) -> bool:
+	if (
+		is_instance_valid(map_provider)
+		and map_provider.has_method(&"is_walkable_world_position")
+		and not bool(map_provider.call(&"is_walkable_world_position", candidate))
+	):
+		return false
+	var spacing_squared := spacing * spacing
+	for enemy in tracked_enemies:
+		if (
+			enemy is Node2D
+			and candidate.distance_squared_to((enemy as Node2D).global_position) < spacing_squared
+		):
+			return false
+	return true
+
+
+func _crowd_separation_enabled() -> bool:
+	return (
+		crowd_config != null
+		and bool(crowd_config.get("enabled"))
+		and crowd_config.has_method(&"is_valid")
+		and bool(crowd_config.call(&"is_valid"))
+	)
+
+
+func _stable_pair_direction(requester: Node, other: Node) -> Vector2:
+	var first_id := mini(requester.get_instance_id(), other.get_instance_id())
+	var second_id := maxi(requester.get_instance_id(), other.get_instance_id())
+	var angle_seed := (first_id % 360) * 31 + (second_id % 360) * 17
+	var angle := fmod(float(angle_seed), 360.0) * PI / 180.0
+	var axis := Vector2.RIGHT.rotated(angle)
+	return axis if requester.get_instance_id() == first_id else -axis

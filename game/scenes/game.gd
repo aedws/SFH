@@ -161,7 +161,7 @@ const CREDIT_LEDGER_METHODS := [
 const LOOT_SPAWNER_METHODS := [&"configure", &"get_spawn_snapshot"]
 const ENEMY_SPAWNER_METHODS := [
 	&"configure", &"get_snapshot", &"get_active_targets", &"spawn_enemy_at",
-	&"set_reinforcement_paused", &"get_remaining_spawn_budget",
+	&"set_reinforcement_paused", &"get_remaining_spawn_budget", &"get_separation_vector",
 ]
 const ROOM_ENCOUNTER_METHODS := [&"configure", &"try_start_room", &"get_snapshot"]
 const RUN_BUFF_METHODS := [
