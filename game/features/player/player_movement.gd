@@ -125,6 +125,8 @@ func step_velocity(
 
 
 func get_movement_snapshot() -> Dictionary:
+	var safe_cooldown := maxf(0.001, dash_cooldown)
+	var cooldown_remaining := clampf(dash_cooldown_remaining, 0.0, safe_cooldown)
 	return {
 		&"speed": speed,
 		&"acceleration": acceleration,
@@ -138,6 +140,10 @@ func get_movement_snapshot() -> Dictionary:
 		&"dash_speed": speed * dash_speed_multiplier,
 		&"dash_duration": dash_duration,
 		&"dash_cooldown": dash_cooldown,
+		&"dash_cooldown_remaining": cooldown_remaining,
+		&"dash_ready_ratio": 1.0 - (cooldown_remaining / safe_cooldown),
+		&"dash_active": dash_time_remaining > 0.0,
+		&"dash_buffered": buffered_dash_remaining > 0.0,
 		&"dash_exit_speed": speed * dash_exit_speed_multiplier,
 		&"dash_exit_momentum_duration": dash_exit_momentum_duration,
 		&"dash_exit_active": dash_exit_time_remaining > 0.0,

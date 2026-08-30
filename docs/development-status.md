@@ -95,12 +95,12 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>21 UPDATE BUNDLES &middot; BUILD 39 &middot; IMPROVE 36 &middot; CHANGE 18 &middot; FIX 10</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>21 UPDATE BUNDLES &middot; BUILD 40 &middot; IMPROVE 37 &middot; CHANGE 18 &middot; FIX 10</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>21</b><small>UPDATE BUNDLES</small></span>
-      <span><b>39</b><small>BUILD</small></span>
-      <span><b>36</b><small>IMPROVE</small></span>
+      <span><b>40</b><small>BUILD</small></span>
+      <span><b>37</b><small>IMPROVE</small></span>
       <span><b>18</b><small>CHANGE</small></span>
       <span><b>10</b><small>FIX</small></span>
     </div>
@@ -151,12 +151,14 @@ tags:
             <li>16ms 첫 입력에서 기본 속도의 90% 이상으로 진입하고 입력 해제 시 정확히 정지합니다.</li>
             <li>90도 전환은 횡속도를 제거하고 180도 전환은 이전 속도를 18%만 보존합니다.</li>
             <li>대시 종료 관성을 0.08초·1.08배로 줄이고 Camera2D 추적 응답을 18로 높였습니다.</li>
+            <li>독립 대시 카드에서 READY·사용 중·남은 재사용 시간과 준비 게이지를 표시합니다.</li>
             <li>스냅·그립·반전·가속·대시 종료 정책을 각각 export 값으로 노출했습니다.</li>
           </ul>
           <p class="sfh-intent"><b>검증 결과</b><span>16ms 초동·완전 정지·역선회·90도 횡미끄러짐 10% 이하·대시 종료와 기존 전체 스모크를 통과했습니다.</span></p>
         </div>
-        <div class="sfh-group"><h3>🆕 구현 · 1</h3>
+        <div class="sfh-group"><h3>🆕 구현 · 2</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">플랫포머 응답 정책</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>정지 스냅, 횡그립, 반전 속도 보존율을 PlayerMovement의 독립 파라미터로 추가했습니다.</p><a href="../features/player/">이동 설정과 검증 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">대시 준비·재사용 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Shift/Space 입력 상태를 이동 스냅샷으로 읽어 준비·사용·재사용을 왼쪽 아래에 표시합니다.</p><a href="../features/player/">대시 HUD 계약 →</a></div></details>
         </div>
         <div class="sfh-group"><h3>✨ 개선 · 3</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">초동·제동 응답</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>느린 가속과 정지 직전의 미끄러지는 속도 꼬리를 제거했습니다.</p></div></details>
@@ -207,7 +209,7 @@ tags:
           <ul>
             <li>공용 에너지 100과 점멸 2회·자기장 1회·가속 2회의 독립 충전을 구현했습니다.</li>
             <li>적 처치 시 에너지 20·체력 15 결정을 확률 생성하고 최소 1개 드랍을 보정합니다.</li>
-            <li>HUD에서 전체 에너지, 스킬별 소비량과 충전 수·부족 원인을 확인합니다.</li>
+            <li>HUD에서 굵은 에너지 게이지, 현재/최대·백분율·LOW/CRITICAL 상태와 스킬별 소비량·충전을 확인합니다.</li>
             <li>레벨업 HP 12 회복을 버프 선택 모듈과 분리해 원상 복구했습니다.</li>
           </ul>
           <p class="sfh-intent"><b>검증 결과</b><span>소비·차단·충전 복구·2종 회수·레벨업 회복·모듈 비활성 폴백과 대형 작전 평균 6.889ms 예산을 통과했습니다.</span></p>
@@ -216,8 +218,9 @@ tags:
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">전투 에너지·충전 모듈</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>자원 은행을 스킬 실행기와 제공자 계약으로 연결해 비용·충전을 데이터로 교체합니다.</p><a href="../features/combat-resources/">전투 자원 설계 →</a></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">에너지·체력 Pickup</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>드랍률·양·최소 보정·자석 반경을 독립 설정 Resource로 관리합니다.</p></div></details>
         </div>
-        <div class="sfh-group"><h3>✨ 개선 · 1</h3>
+        <div class="sfh-group"><h3>✨ 개선 · 2</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">에너지·충전 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>쿨타임 외 발동 조건을 전투 중 한눈에 읽을 수 있습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">에너지 임계 상태 표시</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>13px 게이지와 수치를 함께 표시하고 35% 이하 LOW, 15% 이하 CRITICAL을 색으로 경고합니다.</p><a href="../features/combat-resources/">자원 HUD 기준 →</a></div></details>
         </div>
         <div class="sfh-group"><h3>🐛 버그픽스 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">레벨업 회복 누락 수정</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>임시 버프 선택기가 설치된 일반 플레이에서도 HP 12 회복이 적용됩니다.</p></div></details>
@@ -683,7 +686,7 @@ tags:
 |---|---:|---|---|
 | 기본 작전 루프 | ✅ 플레이 가능 | 9~11분 작전 선택 → 전투·파밍 → 신호 개방 후 F 탈출 또는 사망 | 로비·반출 결과 |
 | 랜덤 맵·미니맵 | 🧱 확장 완료 | 18~60방, 실내 벽·기둥, A*, 전체 지도 | 바이옴·특수 방 |
-| 이동·생존 | 🧱 기반 완료 | 가속·제동·역선회·회피, 지연형 65% 부분 회복 | 피격 연출·회피 무적 판정 |
+| 이동·생존 | 🧱 기반 완료 | 가속·제동·역선회·회피·대시 HUD, 지연형 65% 부분 회복 | 피격 연출·회피 무적 판정 |
 | 장비·스킬 | 🧱 기반 완료 | 태그, 파츠, 모듈, 강화, 개조 | 특수 효과 실행기 |
 | 로그라이크 성장 | 🧱 기반 완료 | 내부 XP·5종 버프·3계열 외부 레벨·저장 | 수치 정책·로비 성장 UI |
 | 격자 가방 | 🧱 기반 완료 | 가변 점유, I UI, 장비 연동 | 영속 창고·전리품 반출 |
@@ -695,7 +698,7 @@ tags:
 `./scripts/test-game.cmd`가 다음을 한 번에 확인합니다.
 
 - 소·중·대형 확장 맵과 9~11분 목표·시간 잠금 탈출
-- 가속·제동·역선회·회피 이동 응답과 부분 체력 회복 상한
+- 가속·제동·역선회·회피 이동 응답, 대시 재사용 HUD와 부분 체력 회복 상한
 - Q 무기 교체, 소총 3점사, 권총 관통, 확정 CSV
 - I 가변 격자 가방과 U 파츠·모듈·강화·개조
 - 적 체력·방어력, 플레이어 HUD, 내부 XP와 버프 선택·중첩
