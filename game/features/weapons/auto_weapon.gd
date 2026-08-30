@@ -10,6 +10,7 @@ var projectile_parent: Node2D
 var equipment_provider: Node
 var balance_provider: Node
 var target_provider: Node
+var targeting_policy: Resource
 var current_balance: Dictionary = {}
 var active_weapon_id: StringName = &"assault_rifle"
 var active_weapon_slot: StringName = &"main"
@@ -62,6 +63,20 @@ func set_target_provider(new_target_provider: Node) -> bool:
 		target_provider = null
 		return false
 	target_provider = new_target_provider
+	return true
+
+
+func set_targeting_policy(new_policy: Resource) -> bool:
+	if (
+		new_policy == null
+		or not new_policy.has_method(&"is_valid")
+		or not new_policy.has_method(&"select_target")
+		or not bool(new_policy.call(&"is_valid"))
+	):
+		targeting_policy = null
+		return false
+	targeting_policy = new_policy
+	_emit_runtime_snapshot()
 	return true
 
 
@@ -137,16 +152,23 @@ func get_runtime_snapshot() -> Dictionary:
 	result[&"source_label"] = (
 		balance_provider.get("current_source_label") if balance_provider != null else "내장 기본값"
 	)
+	result[&"targeting_mode"] = &"smart_weighted" if targeting_policy != null else &"nearest"
+	result[&"targeting_policy"] = (
+		targeting_policy.call(&"get_snapshot") if targeting_policy != null else {}
+	)
 	return result
 
 
 func _find_nearest_enemy() -> Node2D:
-	var nearest: Node2D
 	var target_range := _modified_target_range(
 		float(current_balance.get(&"target_range_px", 760.0))
 	)
+	var candidates := _target_candidates()
+	if targeting_policy != null:
+		return targeting_policy.call(&"select_target", global_position, candidates, target_range)
+	var nearest: Node2D
 	var nearest_distance_squared := target_range * target_range
-	for candidate in _target_candidates():
+	for candidate in candidates:
 		if not candidate is Node2D:
 			continue
 		var candidate_2d := candidate as Node2D

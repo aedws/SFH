@@ -29,6 +29,22 @@ const COMBAT_SKILL_SYSTEM_SCENE_PATH := "res://game/features/combat_skills/comba
 const COMBAT_SKILL_HUD_SCENE_PATH := "res://game/features/combat_skills/combat_skill_hud.tscn"
 const COMBAT_SKILL_LOADOUT_PATH := "res://game/features/combat_skills/configs/default_combat_skills.tres"
 const ENEMY_SCENE_PATH := "res://game/features/enemies/enemy.tscn"
+const PROFILE_SCENE_PATH := "res://game/features/persistent_profile/persistent_profile.tscn"
+const HUB_ECONOMY_SCENE_PATH := "res://game/features/hub_economy/hub_economy_system.tscn"
+const HUB_ECONOMY_CONFIG_PATH := "res://game/features/hub_economy/configs/default_hub_economy.tres"
+const CONTRACT_SCENE_PATH := "res://game/features/operation_contract/operation_contract_service.tscn"
+const CONTRACT_CONFIG_PATH := "res://game/features/operation_contract/configs/default_operation_contracts.tres"
+const PENALTY_SCENE_PATH := "res://game/features/penalty_modifiers/penalty_system.tscn"
+const PENALTY_CONFIG_PATH := "res://game/features/penalty_modifiers/configs/default_penalties.tres"
+const CRAFTING_SCENE_PATH := "res://game/features/crafting/crafting_system.tscn"
+const CRAFTING_CONFIG_PATH := "res://game/features/crafting/configs/default_crafting.tres"
+const RANKING_SCENE_PATH := "res://game/features/conditional_ranking/conditional_ranking_system.tscn"
+const RANKING_POLICY_PATH := "res://game/features/conditional_ranking/configs/default_conditional_ranking.tres"
+const RESULT_SCENE_PATH := "res://game/features/operation_results/operation_result_service.tscn"
+const RESULT_CONFIG_PATH := "res://game/features/operation_results/configs/default_operation_results.tres"
+const SMART_TARGETING_PATH := "res://game/features/smart_targeting/configs/default_smart_targeting.tres"
+const EXTRACTION_SCENE_PATH := "res://game/features/extraction/extraction_zone.tscn"
+const EXTRACTION_DEFENSE_CONFIG_PATH := "res://game/features/extraction/configs/default_extraction_defense.tres"
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 var game_instance: Node
@@ -36,6 +52,7 @@ var frame_count: int = 0
 
 
 func _init() -> void:
+	_reset_persistent_test_data()
 	if not _verify_map_tiers():
 		return
 	if not await _verify_player_sustain_and_movement():
@@ -60,6 +77,8 @@ func _init() -> void:
 		return
 	if not _verify_equipment_upgrade_economy():
 		return
+	if not await _verify_meta_operation_modules():
+		return
 
 	var game_scene := load(GAME_SCENE_PATH) as PackedScene
 	if game_scene == null:
@@ -83,6 +102,8 @@ func _init() -> void:
 		return
 	if not await _verify_optional_progression_modules(game_scene):
 		return
+	if not await _verify_optional_meta_operation_modules(game_scene):
+		return
 	if not await _verify_extraction_flow(game_scene):
 		return
 
@@ -99,6 +120,195 @@ func _init() -> void:
 		return
 	game_instance.call(&"start_run", "small")
 	frame_count = 0
+
+
+func _reset_persistent_test_data() -> void:
+	for path in ["user://sfh_profile.json", "user://sfh_rankings.json"]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
+func _verify_meta_operation_modules() -> bool:
+	var sandbox := Node2D.new()
+	root.add_child(sandbox)
+	var profile := (load(PROFILE_SCENE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(profile)
+	profile.call(&"configure", "", false)
+	var economy := (load(HUB_ECONOMY_SCENE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(economy)
+	var contracts := (load(CONTRACT_SCENE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(contracts)
+	var penalties := (load(PENALTY_SCENE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(penalties)
+	var crafting := (load(CRAFTING_SCENE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(crafting)
+	var ranking := (load(RANKING_SCENE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(ranking)
+	var results := (load(RESULT_SCENE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(results)
+	var failure_message := ""
+	if not economy.call(&"configure", profile, load(HUB_ECONOMY_CONFIG_PATH)):
+		failure_message = "상점·창고 시스템 구성이 실패했습니다."
+	elif not contracts.call(&"configure", profile, load(CONTRACT_CONFIG_PATH)):
+		failure_message = "작전 계약 시스템 구성이 실패했습니다."
+	elif not penalties.call(&"configure", load(PENALTY_CONFIG_PATH)):
+		failure_message = "페널티 시스템 구성이 실패했습니다."
+	elif not crafting.call(&"configure", profile, load(CRAFTING_CONFIG_PATH), 4242):
+		failure_message = "도면 제작 시스템 구성이 실패했습니다."
+	elif not ranking.call(&"configure", "", load(RANKING_POLICY_PATH), false):
+		failure_message = "조건부 랭킹 시스템 구성이 실패했습니다."
+	elif not results.call(&"configure", profile, ranking, load(RESULT_CONFIG_PATH), 4242):
+		failure_message = "작전 결과 정산 시스템 구성이 실패했습니다."
+	elif not bool(economy.call(&"purchase", &"unlock_industrial").get(&"success", false)):
+		failure_message = "상점 구매가 산업 지구 영구 해금을 적용하지 못했습니다."
+	elif not contracts.call(&"select_region", &"industrial_district"):
+		failure_message = "해금한 산업 지구를 작전 지역으로 선택하지 못했습니다."
+	elif not contracts.call(&"select_difficulty", &"veteran"):
+		failure_message = "베테랑 난이도를 선택하지 못했습니다."
+	elif not penalties.call(&"toggle", &"reinforced_armor"):
+		failure_message = "강화 장갑 페널티를 선택하지 못했습니다."
+	else:
+		var penalty_snapshot: Dictionary = penalties.call(&"get_snapshot")
+		var small_config: Resource = load(MAP_CONFIG_PATH_PATTERN % "small")
+		var quote: Dictionary = contracts.call(&"quote", small_config, penalty_snapshot)
+		if int(quote.get(&"entry_cost", 0)) != 173:
+			failure_message = "지역·난이도 투입 비용이 실제 데이터 배율과 일치하지 않습니다."
+		elif not is_equal_approx(float(quote.get(&"reward_multiplier", 0.0)), 2.325):
+			failure_message = "지역·난이도·페널티 회수 배율이 합성되지 않았습니다."
+		elif float(quote.get(&"enemy_modifiers", {}).get(&"armor_multiplier", 0.0)) != 1.875:
+			failure_message = "난이도와 페널티 적 장갑 배율이 합성되지 않았습니다."
+		else:
+			var before_invest := int(profile.call(&"get_snapshot")[&"banked_credits"])
+			var invested: Dictionary = contracts.call(&"invest", small_config, penalty_snapshot)
+			if not bool(invested.get(&"success", false)):
+				failure_message = "작전 투입 비용을 차감하지 못했습니다."
+			elif int(profile.call(&"get_snapshot")[&"banked_credits"]) != before_invest - 173:
+				failure_message = "작전 투입 비용이 영구 크레딧에서 정확히 차감되지 않았습니다."
+	if failure_message.is_empty():
+		var test_loadout: Array[StringName] = [&"field_medkit"]
+		if not economy.call(&"set_consumable_loadout", test_loadout):
+			failure_message = "창고 응급키트를 소모품 로드아웃에 장착하지 못했습니다."
+		else:
+			var medkits_before := int(profile.call(&"get_snapshot")[&"warehouse"].get(&"field_medkit", 0))
+			var consumed: Array = profile.call(&"consume_loadout_for_run")
+			if &"field_medkit" not in consumed:
+				failure_message = "출격 시 소모품 로드아웃을 소비하지 않았습니다."
+			elif int(profile.call(&"get_snapshot")[&"warehouse"].get(&"field_medkit", 0)) != medkits_before - 1:
+				failure_message = "소모품 소비량이 창고 수량에 반영되지 않았습니다."
+	if failure_message.is_empty():
+		var crafted: Dictionary = crafting.call(&"craft", &"assault_rifle_blueprint")
+		var affixes: Array = crafted.get(&"item", {}).get(&"affixes", [])
+		var affix_ids := {}
+		for affix in affixes:
+			affix_ids[affix.get(&"affix_id", &"")] = true
+		if not bool(crafted.get(&"success", false)):
+			failure_message = "도면·고철·크레딧을 사용하는 장비 제작이 실패했습니다."
+		elif affixes.size() < 1 or affixes.size() > 2 or affix_ids.size() != affixes.size():
+			failure_message = "제작 장비 랜덤 옵션 수량 또는 중복 방지 정책이 올바르지 않습니다."
+	if failure_message.is_empty():
+		var smart_policy: Resource = load(SMART_TARGETING_PATH)
+		var near_target := (load(ENEMY_SCENE_PATH) as PackedScene).instantiate()
+		near_target.position = Vector2(100.0, 0.0)
+		near_target.set("priority_rank", 1)
+		sandbox.add_child(near_target)
+		var elite_target := (load(ENEMY_SCENE_PATH) as PackedScene).instantiate()
+		elite_target.position = Vector2(200.0, 0.0)
+		elite_target.set("priority_rank", 5)
+		sandbox.add_child(elite_target)
+		var selected = smart_policy.call(
+			&"select_target", Vector2.ZERO, [near_target, elite_target], 800.0
+		)
+		if selected != elite_target:
+			failure_message = "스마트 타게팅이 거리만 보지 않고 우선 등급을 합성하지 못했습니다."
+	if failure_message.is_empty():
+		var first_rank: Dictionary = ranking.call(&"submit_run", {
+			&"success": true, &"condition_key": "city|standard|small|",
+			&"recovered_value": 100, &"kills": 10, &"elapsed_seconds": 300.0,
+		})
+		var second_rank: Dictionary = ranking.call(&"submit_run", {
+			&"success": true, &"condition_key": "city|standard|small|",
+			&"recovered_value": 300, &"kills": 20, &"elapsed_seconds": 240.0,
+		})
+		ranking.call(&"submit_run", {
+			&"success": true, &"condition_key": "lab|veteran|large|armor",
+			&"recovered_value": 50, &"kills": 1, &"elapsed_seconds": 600.0,
+		})
+		if not bool(first_rank.get(&"accepted", false)) or int(second_rank.get(&"rank", 0)) != 1:
+			failure_message = "조건부 랭킹이 동일 조건 점수를 내림차순 정렬하지 못했습니다."
+		elif ranking.call(&"get_entries", "city|standard|small|").size() != 2:
+			failure_message = "서로 다른 작전 조건의 랭킹이 섞였습니다."
+	if failure_message.is_empty():
+		var settlement: Dictionary = results.call(&"settle_success", {
+			&"carried_credits": 100, &"kills": 24, &"elapsed_seconds": 500.0,
+		}, {
+			&"reward_multiplier": 2.0, &"blueprint_drop_multiplier": 0.0,
+			&"ranking_condition_key": "test|standard|small|", &"region_id": &"ruined_city",
+		})
+		if int(settlement.get(&"recovered_credits", 0)) != 200 or int(settlement.get(&"salvage", 0)) != 2:
+			failure_message = "성공 결과의 회수 배수·고철 정산이 영구 프로필에 반영되지 않았습니다."
+	if failure_message.is_empty():
+		var defense_config: Resource = load(EXTRACTION_DEFENSE_CONFIG_PATH)
+		if not is_equal_approx(float(defense_config.call(&"duration_for", &"large", &"nightmare")), 35.0):
+			failure_message = "탈출 방어 시간의 맵 규모·난이도 정책이 설정 데이터와 일치하지 않습니다."
+	if failure_message.is_empty():
+		var extraction := (load(EXTRACTION_SCENE_PATH) as PackedScene).instantiate()
+		sandbox.add_child(extraction)
+		var actor := Node2D.new()
+		actor.add_to_group(&"player")
+		sandbox.add_child(actor)
+		extraction.call(&"configure", Vector2.ZERO, 5.0)
+		if not extraction.call(&"request_extraction", actor):
+			failure_message = "탈출 방어 카운트다운을 시작하지 못했습니다."
+		else:
+			extraction.call(&"advance", 4.0)
+			if not bool(extraction.call(&"get_snapshot")[&"defense_active"]):
+				failure_message = "카운트다운 종료 전에 탈출 방어가 완료됐습니다."
+			extraction.call(&"advance", 1.1)
+			if bool(extraction.call(&"get_snapshot")[&"defense_active"]):
+				failure_message = "카운트다운 종료 후 탈출 방어가 완료되지 않았습니다."
+	if failure_message.is_empty():
+		var profile_test_path := "user://sfh_profile_roundtrip_test.json"
+		var ranking_test_path := "user://sfh_ranking_roundtrip_test.json"
+		for path in [profile_test_path, ranking_test_path]:
+			if FileAccess.file_exists(path):
+				DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+		var stored_profile := (load(PROFILE_SCENE_PATH) as PackedScene).instantiate()
+		sandbox.add_child(stored_profile)
+		stored_profile.call(&"configure", profile_test_path, true)
+		stored_profile.call(&"add_credits", 123)
+		stored_profile.call(&"add_crafted_item", {
+			&"instance_id": "roundtrip", &"definition_id": &"test", &"affixes": [],
+		})
+		var loaded_profile := (load(PROFILE_SCENE_PATH) as PackedScene).instantiate()
+		sandbox.add_child(loaded_profile)
+		loaded_profile.call(&"configure", profile_test_path, true)
+		var loaded_snapshot: Dictionary = loaded_profile.call(&"get_snapshot")
+		if (
+			int(loaded_snapshot.get(&"banked_credits", 0)) != 5123
+			or (loaded_snapshot.get(&"crafted_items", []) as Array).size() != 1
+		):
+			failure_message = "영구 프로필 JSON 저장·복원이 값을 보존하지 못했습니다."
+		var stored_ranking := (load(RANKING_SCENE_PATH) as PackedScene).instantiate()
+		sandbox.add_child(stored_ranking)
+		stored_ranking.call(&"configure", ranking_test_path, load(RANKING_POLICY_PATH), true)
+		stored_ranking.call(&"submit_run", {
+			&"success": true, &"condition_key": "roundtrip", &"recovered_value": 100,
+		})
+		var loaded_ranking := (load(RANKING_SCENE_PATH) as PackedScene).instantiate()
+		sandbox.add_child(loaded_ranking)
+		loaded_ranking.call(&"configure", ranking_test_path, load(RANKING_POLICY_PATH), true)
+		if loaded_ranking.call(&"get_entries", "roundtrip").size() != 1:
+			failure_message = "조건부 랭킹 JSON 저장·복원이 기록을 보존하지 못했습니다."
+		for path in [profile_test_path, ranking_test_path]:
+			if FileAccess.file_exists(path):
+				DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	root.remove_child(sandbox)
+	sandbox.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("작전·메타 시스템 실패: %s" % failure_message)
+		return false
+	return true
 
 
 func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
@@ -1223,6 +1433,47 @@ func _verify_optional_progression_modules(game_scene: PackedScene) -> bool:
 	return true
 
 
+func _verify_optional_meta_operation_modules(game_scene: PackedScene) -> bool:
+	var fallback_game := game_scene.instantiate()
+	var fallback_features = fallback_game.get("features").duplicate(true)
+	for property_name in [
+		"persistent_profile_enabled", "operation_contracts_enabled",
+		"extraction_defense_enabled", "hub_economy_enabled", "smart_targeting_enabled",
+		"crafting_enabled", "penalty_modifiers_enabled", "conditional_ranking_enabled",
+	]:
+		fallback_features.set(property_name, false)
+	fallback_features.set("run_setup_enabled", false)
+	fallback_game.set("features", fallback_features)
+	root.add_child(fallback_game)
+	await process_frame
+	var failure_message := ""
+	if not bool(fallback_game.get("run_started")):
+		failure_message = "메타·계약 모듈 비활성화 상태에서 기본 작전을 시작하지 못했습니다."
+	elif (
+		fallback_game.get("persistent_profile") != null
+		or fallback_game.get("operation_contract_service") != null
+		or fallback_game.get("hub_economy_system") != null
+		or fallback_game.get("crafting_system") != null
+		or fallback_game.get("penalty_system") != null
+		or fallback_game.get("conditional_ranking_system") != null
+	):
+		failure_message = "비활성화한 메타·계약 Node가 설치됐습니다."
+	else:
+		var weapon = fallback_game.get("auto_weapon")
+		var extraction = fallback_game.get("extraction_zone")
+		if weapon == null or weapon.call(&"get_runtime_snapshot").get(&"targeting_mode") != &"nearest":
+			failure_message = "스마트 타게팅 비활성화가 최근접 대상 폴백을 유지하지 못했습니다."
+		elif extraction == null or float(extraction.get("defense_duration_seconds")) != 0.0:
+			failure_message = "탈출 방어전 비활성화가 즉시 탈출 폴백을 유지하지 못했습니다."
+	root.remove_child(fallback_game)
+	fallback_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("메타·계약 선택 모듈 실패: %s" % failure_message)
+		return false
+	return true
+
+
 func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 	var button_names := {
 		"small": "SmallMapButton",
@@ -1488,6 +1739,7 @@ func _verify_optional_map_module(game_scene: PackedScene) -> bool:
 	fallback_features.set("fog_of_war_enabled", false)
 	fallback_features.set("minimap_enabled", false)
 	fallback_features.set("extraction_enabled", false)
+	fallback_features.set("extraction_defense_enabled", false)
 	fallback_features.set("run_setup_enabled", false)
 	fallback_features.set("loot_enabled", false)
 	fallback_game.set("features", fallback_features)
@@ -1584,7 +1836,14 @@ func _verify_extraction_flow(game_scene: PackedScene) -> bool:
 			&"request_extraction", extraction_player
 		):
 			failure_message = "탈출 지점에서 상호작용 요청이 거부됐습니다."
-		elif not bool(extraction_game.get("run_ended")):
+		elif not bool(extraction_zone.call(&"get_snapshot").get(&"defense_active", false)):
+			failure_message = "탈출 상호작용이 카운트다운 방어전을 시작하지 않았습니다."
+		else:
+			extraction_zone.call(
+				&"advance",
+				float(extraction_zone.get("defense_duration_seconds")) + 0.1
+			)
+		if failure_message.is_empty() and not bool(extraction_game.get("run_ended")):
 			failure_message = "탈출 성공 후 작전이 종료되지 않았습니다."
 		elif int(credit_ledger.get("secured_credits")) <= 0:
 			failure_message = "탈출 성공 후 크레딧이 회수 처리되지 않았습니다."
@@ -1736,7 +1995,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

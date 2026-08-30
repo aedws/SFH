@@ -25,7 +25,7 @@ tags:
 
 `game/core/feature_manifest.tres`를 Godot Inspector에서 열고 원하는 항목을 켜거나 끕니다.
 
-현재 시작 거점과 전투 세션 전환, 맵 생성, 맵 방해물, 미니맵, 작전 선택, 시간 잠금 탈출, 크레딧, 2.5~5배 목표 가치 파밍, 동적 플레이어 이동·회피, 부분 체력 회복, 독립 전투 스킬·쿨타임 HUD, 캐릭터 장비·무기 슬롯·스킬·방어구, 격자 인벤토리, 장비 개조·강화 경제, 적 체력·방어력 UI, 등급별 유한 증원 생성, 자동 무기, 무기 밸런스, Google Sheets 성장 밸런스, 피해, 내부 경험치·버프 선택, 외부 성장, 게임오버 플래그가 실제 게임 조립에 연결되어 있습니다.
+현재 시작 거점과 전투 세션 전환, 맵 생성, 맵 방해물, 미니맵, 작전 계약·투입비, 탈출 방어·결과 정산, 영구 프로필·상점·창고·소모품, 도면 제작·랜덤 옵션, 페널티·조건부 랭킹, 크레딧 파밍, 동적 이동·회피, 부분 회복, 전투 스킬·HUD, 장비·인벤토리·강화, 적 체력·방어력·증원, 스마트 자동 무기, Sheets 밸런스, 내부·외부 성장이 실제 게임 조립에 연결되어 있습니다.
 
 `Game`은 활성화된 기능만 문자열 경로로 불러옵니다. 기능을 끄면 해당 Scene을 로드하지 않으므로, 비활성화 확인 후 관련 기능 폴더를 제거하는 흐름을 시험할 수 있습니다.
 
@@ -57,6 +57,11 @@ tags:
 - `equipment_skills`는 `equipment`, `equipment_weapons` 필요
 - `equipment_customization`은 `equipment`, `inventory` 필요
 - `equipment_upgrade_economy`는 `equipment_customization`, `credits` 필요
+- `operation_contracts`는 `persistent_profile` 필요
+- `extraction_defense`는 `extraction` 필요
+- `hub_economy`, `crafting`은 `persistent_profile` 필요
+- `smart_targeting`은 `weapons` 필요
+- `penalty_modifiers`, `conditional_ranking`은 `operation_contracts` 필요
 
 맵 생성이 켜지면 플레이어와 적은 생성된 바닥 셀 안에서 생성됩니다. 맵 생성을 끄면 기존의 자유 이동 필드와 직선 추적 방식으로 돌아갑니다.
 
@@ -69,6 +74,10 @@ tags:
 밸런스 데이터도 같은 규칙을 따릅니다. `growth_balance`는 CSV를 파싱해 카탈로그·수정자·견적만 공개하고 장비 상태나 내부 버프 선택을 직접 변경하지 않습니다. 소비 모듈은 제공자가 없으면 기존 Resource 값으로 폴백합니다.
 
 전투 스킬도 입력·쿨타임을 실행기, 수치를 정의 Resource, 실제 행동을 효과 Resource, 표현을 HUD Scene으로 나눕니다. 효과는 Player나 Enemy의 내부 필드를 읽지 않고 방향·수정자·피해 공개 계약만 사용합니다.
+
+영구 상태는 런타임 Node에 보관하지 않습니다. `PersistentProfile`은 값과 저장만 담당하고 상점 가격, 제작식, 작전 배율, 점수식은 각 정책 모듈이 소유합니다. 출격 조립 실패에는 공개 보상 계약으로 트랜잭션을 되돌립니다.
+
+지역·난이도·페널티·스마트 타게팅·제작 옵션처럼 자주 조정할 규칙은 Resource로 둡니다. 소비자는 최종 스냅샷 사본만 받고 다른 모듈의 설정 배열을 직접 수정하지 않습니다.
 
 ## 제거 절차
 

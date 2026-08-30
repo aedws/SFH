@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="OperationResultConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/operation_results/operation_result_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+base_blueprint_chance = 0.12
+kills_per_salvage = 12
+minimum_salvage = 1
+blueprint_by_region = {&"industrial_district": &"assault_rifle_blueprint", &"research_complex": &"tactical_vest_blueprint", &"ruined_city": &"assault_rifle_blueprint"}

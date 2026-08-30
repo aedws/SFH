@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="HubEconomyConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/hub_economy/hub_economy_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+offers = Array[Dictionary]([{
+"display_name": "현장 응급키트", "offer_id": &"buy_field_medkit", "offer_type": &"item", "price": 120, "quantity": 1, "target_id": &"field_medkit"
+}, {
+"display_name": "제작용 고철 묶음", "offer_id": &"buy_scrap_bundle", "offer_type": &"item", "price": 180, "quantity": 3, "target_id": &"scrap"
+}, {
+"display_name": "산업 지구 접근권", "offer_id": &"unlock_industrial", "offer_type": &"unlock", "price": 600, "quantity": 1, "target_id": &"region_industrial_district"
+}, {
+"display_name": "연구 단지 접근권", "offer_id": &"unlock_research", "offer_type": &"unlock", "price": 1200, "quantity": 1, "required_unlock_id": &"region_industrial_district", "target_id": &"region_research_complex"
+}])
+consumable_effects = {
+&"field_medkit": {"heal": 15.0, "player_modifiers": {&"max_health": {"add": 15.0, "multiply": 1.0}}}
+}

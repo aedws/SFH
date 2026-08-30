@@ -45,6 +45,21 @@ const META_PROGRESSION_SCENE_PATH := (
 const EQUIPMENT_UPGRADE_SCENE_PATH := (
 	"res://game/features/equipment_upgrade/equipment_upgrade_service.tscn"
 )
+const PERSISTENT_PROFILE_SCENE_PATH := (
+	"res://game/features/persistent_profile/persistent_profile.tscn"
+)
+const OPERATION_CONTRACT_SCENE_PATH := (
+	"res://game/features/operation_contract/operation_contract_service.tscn"
+)
+const HUB_ECONOMY_SCENE_PATH := "res://game/features/hub_economy/hub_economy_system.tscn"
+const CRAFTING_SCENE_PATH := "res://game/features/crafting/crafting_system.tscn"
+const PENALTY_SCENE_PATH := "res://game/features/penalty_modifiers/penalty_system.tscn"
+const RANKING_SCENE_PATH := (
+	"res://game/features/conditional_ranking/conditional_ranking_system.tscn"
+)
+const OPERATION_RESULT_SCENE_PATH := (
+	"res://game/features/operation_results/operation_result_service.tscn"
+)
 const MAP_GENERATOR_METHODS := [
 	&"configure_obstacles",
 	&"generate",
@@ -127,7 +142,9 @@ const INVENTORY_METHODS := [
 	&"get_snapshot",
 ]
 const PANEL_METHODS := [&"configure", &"open_panel", &"close_panel"]
-const EXTRACTION_METHODS := [&"configure", &"request_extraction", &"set_locked"]
+const EXTRACTION_METHODS := [
+	&"configure", &"request_extraction", &"set_locked", &"advance", &"get_snapshot",
+]
 const CREDIT_LEDGER_METHODS := [
 	&"add_carried",
 	&"secure_carried",
@@ -163,6 +180,26 @@ const COMBAT_SKILL_METHODS := [
 	&"get_skill_states", &"get_snapshot",
 ]
 const COMBAT_SKILL_HUD_METHODS := [&"configure", &"get_snapshot"]
+const PERSISTENT_PROFILE_METHODS := [
+	&"configure", &"can_spend", &"spend", &"add_credits", &"get_snapshot",
+	&"is_unlocked", &"unlock", &"add_warehouse_item", &"has_warehouse_item",
+	&"take_warehouse_item", &"add_blueprint", &"consume_blueprint",
+	&"add_crafted_item", &"set_consumable_loadout", &"consume_loadout_for_run",
+]
+const OPERATION_CONTRACT_METHODS := [
+	&"configure", &"select_region", &"select_difficulty", &"cycle_region",
+	&"cycle_difficulty", &"quote", &"invest", &"get_snapshot", &"clear_active_contract",
+]
+const HUB_ECONOMY_METHODS := [
+	&"configure", &"quote", &"purchase", &"set_consumable_loadout",
+	&"get_consumable_effects", &"get_snapshot",
+]
+const CRAFTING_METHODS := [&"configure", &"quote", &"craft"]
+const PENALTY_METHODS := [
+	&"configure", &"toggle", &"cycle_single", &"get_snapshot",
+]
+const RANKING_METHODS := [&"configure", &"submit_run", &"get_entries", &"get_snapshot"]
+const OPERATION_RESULT_METHODS := [&"configure", &"settle_success", &"settle_failure"]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 @export var features: FeatureManifest
@@ -198,6 +235,14 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var small_map_button: Button = %SmallMapButton
 @onready var medium_map_button: Button = %MediumMapButton
 @onready var large_map_button: Button = %LargeMapButton
+@onready var region_button: Button = %RegionButton
+@onready var difficulty_button: Button = %DifficultyButton
+@onready var penalty_button: Button = %PenaltyButton
+@onready var contract_summary: Label = %ContractSummary
+@onready var profile_summary: Label = %ProfileSummary
+@onready var shop_button: Button = %ShopButton
+@onready var craft_button: Button = %CraftButton
+@onready var loadout_button: Button = %LoadoutButton
 @onready var game_over_overlay: Control = %GameOverOverlay
 @onready var end_title: Label = %EndTitle
 @onready var game_over_summary: Label = %GameOverSummary
@@ -227,6 +272,15 @@ var run_buff_system
 var run_buff_selector
 var meta_progression_system
 var equipment_upgrade_service
+var persistent_profile
+var operation_contract_service
+var hub_economy_system
+var crafting_system
+var penalty_system
+var conditional_ranking_system
+var operation_result_service
+var active_contract: Dictionary = {}
+var consumed_run_items: Array[StringName] = []
 var current_map_config: Resource
 var selected_map_size: String = "small"
 var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CSV
@@ -253,6 +307,12 @@ func _ready() -> void:
 	small_map_button.pressed.connect(start_run.bind("small"))
 	medium_map_button.pressed.connect(start_run.bind("medium"))
 	large_map_button.pressed.connect(start_run.bind("large"))
+	region_button.pressed.connect(_cycle_region)
+	difficulty_button.pressed.connect(_cycle_difficulty)
+	penalty_button.pressed.connect(_cycle_penalty)
+	shop_button.pressed.connect(_purchase_medkit)
+	craft_button.pressed.connect(_craft_default_item)
+	loadout_button.pressed.connect(_toggle_medkit_loadout)
 	hud_margin.visible = false
 	map_label.visible = false
 	interaction_label.visible = false
@@ -273,11 +333,14 @@ func _ready() -> void:
 			push_error(message)
 		status_label.text = "설정 오류: %s" % " / ".join(configuration_errors)
 		return
+	if not _install_persistent_services():
+		return
 
 	_configure_tier_button(small_map_button, "small")
 	_configure_tier_button(medium_map_button, "medium")
 	_configure_tier_button(large_map_button, "large")
 	_configure_balance_mode_selector()
+	_refresh_contract_setup_ui()
 
 	if features.run_setup_enabled:
 		if features.start_hub_enabled:
@@ -292,6 +355,221 @@ func _ready() -> void:
 		start_run(features.map_size)
 
 
+func _install_persistent_services() -> bool:
+	if features.persistent_profile_enabled:
+		persistent_profile = _instantiate_feature(
+			PERSISTENT_PROFILE_SCENE_PATH, self, &"PersistentProfile"
+		)
+		if not _supports_methods(persistent_profile, PERSISTENT_PROFILE_METHODS):
+			_report_configuration_error("영구 프로필 모듈의 공개 계약이 올바르지 않습니다.")
+			return false
+		persistent_profile.call(
+			&"configure", features.persistent_profile_storage_path, true
+		)
+		persistent_profile.connect(&"profile_changed", Callable(self, &"_on_profile_changed"))
+	if features.conditional_ranking_enabled:
+		conditional_ranking_system = _instantiate_feature(
+			RANKING_SCENE_PATH, self, &"ConditionalRanking"
+		)
+		if (
+			not _supports_methods(conditional_ranking_system, RANKING_METHODS)
+			or not conditional_ranking_system.call(
+				&"configure", features.conditional_ranking_storage_path,
+				load(features.conditional_ranking_policy_path), true
+			)
+		):
+			_report_configuration_error("조건부 랭킹 모듈을 구성하지 못했습니다.")
+			return false
+	if features.penalty_modifiers_enabled:
+		penalty_system = _instantiate_feature(PENALTY_SCENE_PATH, self, &"PenaltyModifiers")
+		if (
+			not _supports_methods(penalty_system, PENALTY_METHODS)
+			or not penalty_system.call(&"configure", load(features.penalty_config_path))
+		):
+			_report_configuration_error("페널티 변형 모듈을 구성하지 못했습니다.")
+			return false
+		penalty_system.connect(&"selection_changed", Callable(self, &"_on_contract_changed"))
+	if features.operation_contracts_enabled:
+		operation_contract_service = _instantiate_feature(
+			OPERATION_CONTRACT_SCENE_PATH, self, &"OperationContracts"
+		)
+		if (
+			not _supports_methods(operation_contract_service, OPERATION_CONTRACT_METHODS)
+			or not operation_contract_service.call(
+				&"configure", persistent_profile, load(features.operation_contract_config_path)
+			)
+		):
+			_report_configuration_error("작전 계약 모듈을 구성하지 못했습니다.")
+			return false
+		operation_contract_service.connect(
+			&"contract_changed", Callable(self, &"_on_contract_changed")
+		)
+	if features.hub_economy_enabled:
+		hub_economy_system = _instantiate_feature(
+			HUB_ECONOMY_SCENE_PATH, self, &"HubEconomy"
+		)
+		if (
+			not _supports_methods(hub_economy_system, HUB_ECONOMY_METHODS)
+			or not hub_economy_system.call(
+				&"configure", persistent_profile, load(features.hub_economy_config_path)
+			)
+		):
+			_report_configuration_error("거점 경제 모듈을 구성하지 못했습니다.")
+			return false
+	if features.crafting_enabled:
+		crafting_system = _instantiate_feature(CRAFTING_SCENE_PATH, self, &"Crafting")
+		if (
+			not _supports_methods(crafting_system, CRAFTING_METHODS)
+			or not crafting_system.call(
+				&"configure", persistent_profile, load(features.crafting_config_path), features.map_seed
+			)
+		):
+			_report_configuration_error("도면 제작 모듈을 구성하지 못했습니다.")
+			return false
+	if persistent_profile != null:
+		operation_result_service = _instantiate_feature(
+			OPERATION_RESULT_SCENE_PATH, self, &"OperationResults"
+		)
+		if (
+			not _supports_methods(operation_result_service, OPERATION_RESULT_METHODS)
+			or not operation_result_service.call(
+				&"configure", persistent_profile, conditional_ranking_system,
+				load(features.operation_result_config_path), features.map_seed
+			)
+		):
+			_report_configuration_error("작전 결과 정산 모듈을 구성하지 못했습니다.")
+			return false
+	return true
+
+
+func _cycle_region() -> void:
+	if operation_contract_service != null:
+		operation_contract_service.call(&"cycle_region", 1)
+	_refresh_contract_setup_ui()
+
+
+func _cycle_difficulty() -> void:
+	if operation_contract_service != null:
+		operation_contract_service.call(&"cycle_difficulty", 1)
+	_refresh_contract_setup_ui()
+
+
+func _cycle_penalty() -> void:
+	if penalty_system != null:
+		penalty_system.call(&"cycle_single")
+	_refresh_contract_setup_ui()
+
+
+func _purchase_medkit() -> void:
+	if hub_economy_system == null:
+		return
+	var profile_snapshot: Dictionary = persistent_profile.call(&"get_snapshot")
+	var unlocks: Array = profile_snapshot.get(&"unlock_ids", [])
+	var offer_id: StringName = &"buy_field_medkit"
+	if &"region_industrial_district" not in unlocks:
+		offer_id = &"unlock_industrial"
+	elif &"region_research_complex" not in unlocks:
+		offer_id = &"unlock_research"
+	var result: Dictionary = hub_economy_system.call(&"purchase", offer_id)
+	status_label.text = (
+		"거점 구매 완료 · %s" % result.get(&"target_id", offer_id)
+		if bool(result.get(&"success", false))
+		else "거점 구매 실패 · %s" % result.get(&"reason", "확인 필요")
+	)
+	_refresh_contract_setup_ui()
+
+
+func _craft_default_item() -> void:
+	if crafting_system == null:
+		return
+	var result: Dictionary = crafting_system.call(&"craft", &"assault_rifle_blueprint")
+	status_label.text = (
+		"제작 완료 · 랜덤 옵션 %d개" % int(result.get(&"affix_count", 0))
+		if bool(result.get(&"success", false))
+		else "제작 실패 · %s" % result.get(&"reason", "재료 확인")
+	)
+	_refresh_contract_setup_ui()
+
+
+func _toggle_medkit_loadout() -> void:
+	if hub_economy_system == null:
+		return
+	var profile_snapshot: Dictionary = persistent_profile.call(&"get_snapshot")
+	var current: Array = profile_snapshot.get(&"consumable_loadout", [])
+	var next: Array[StringName] = [] if not current.is_empty() else [&"field_medkit"]
+	var applied: bool = hub_economy_system.call(&"set_consumable_loadout", next)
+	status_label.text = "소모품 로드아웃 %s" % (
+		("응급키트 장착" if current.is_empty() else "해제") if applied else "실패"
+	)
+	_refresh_contract_setup_ui()
+
+
+func _on_profile_changed(_snapshot: Dictionary) -> void:
+	_refresh_contract_setup_ui()
+
+
+func _on_contract_changed(_snapshot: Dictionary) -> void:
+	_refresh_contract_setup_ui()
+
+
+func _refresh_contract_setup_ui() -> void:
+	if not is_instance_valid(profile_summary):
+		return
+	var profile_snapshot: Dictionary = (
+		persistent_profile.call(&"get_snapshot") if persistent_profile != null else {}
+	)
+	var contract_snapshot: Dictionary = (
+		operation_contract_service.call(&"get_snapshot")
+		if operation_contract_service != null else {}
+	)
+	var penalty_snapshot: Dictionary = (
+		penalty_system.call(&"get_snapshot") if penalty_system != null else {}
+	)
+	region_button.disabled = operation_contract_service == null
+	difficulty_button.disabled = operation_contract_service == null
+	penalty_button.disabled = penalty_system == null
+	region_button.text = "지역 · %s" % contract_snapshot.get(&"selected_region_name", "기본")
+	difficulty_button.text = "난이도 · %s" % contract_snapshot.get(&"selected_difficulty_name", "표준")
+	var penalty_names: PackedStringArray = penalty_snapshot.get(&"display_names", PackedStringArray())
+	penalty_button.text = "페널티 · %s" % (
+		"없음" if penalty_names.is_empty() else ", ".join(penalty_names)
+	)
+	profile_summary.text = "보유 %d C · 창고 고철 %d / 응급키트 %d · 도면 %d · 제작 장비 %d" % [
+		int(profile_snapshot.get(&"banked_credits", 0)),
+		int(profile_snapshot.get(&"warehouse", {}).get(&"scrap", 0)),
+		int(profile_snapshot.get(&"warehouse", {}).get(&"field_medkit", 0)),
+		(profile_snapshot.get(&"blueprints", {}) as Dictionary).values().reduce(
+			func(total, value): return int(total) + int(value), 0
+		),
+		(profile_snapshot.get(&"crafted_items", []) as Array).size(),
+	]
+	var loadout: Array = profile_snapshot.get(&"consumable_loadout", [])
+	loadout_button.text = "소모품 · %s" % ("응급키트" if not loadout.is_empty() else "비어 있음")
+	var unlocks: Array = profile_snapshot.get(&"unlock_ids", [])
+	shop_button.text = (
+		"상점 · 산업 지구 해금"
+		if &"region_industrial_district" not in unlocks
+		else "상점 · 연구 단지 해금"
+		if &"region_research_complex" not in unlocks
+		else "상점 · 응급키트"
+	)
+	var selected_tier := selected_map_size if selected_map_size in MAP_TIER_IDS else features.map_size
+	var tier_path := MAP_CONFIG_PATH_PATTERN % selected_tier
+	var quote: Dictionary = {}
+	if operation_contract_service != null and ResourceLoader.exists(tier_path):
+		quote = operation_contract_service.call(
+			&"quote", load(tier_path), penalty_snapshot
+		)
+	contract_summary.text = "선택 계약 · 투입 %d C · 회수 보정 ×%.2f" % [
+		int(quote.get(&"entry_cost", 0)), float(quote.get(&"reward_multiplier", 1.0))
+	]
+	for tier_id in MAP_TIER_IDS:
+		_configure_tier_button(
+			{"small": small_map_button, "medium": medium_map_button, "large": large_map_button}[tier_id],
+			tier_id
+		)
+
+
 func start_run(map_size: String) -> bool:
 	if run_started:
 		return false
@@ -300,6 +578,20 @@ func start_run(map_size: String) -> bool:
 		return false
 	if not _tier_resources_are_available(map_size):
 		return false
+	var pending_config: Resource = load(MAP_CONFIG_PATH_PATTERN % map_size)
+	if operation_contract_service != null:
+		var penalty_snapshot: Dictionary = (
+			penalty_system.call(&"get_snapshot") if penalty_system != null else {}
+		)
+		active_contract = operation_contract_service.call(
+			&"invest", pending_config, penalty_snapshot
+		)
+		if not bool(active_contract.get(&"success", false)):
+			status_label.text = "작전 투입 실패 · %s" % active_contract.get(&"reason", "크레딧 부족")
+			_refresh_contract_setup_ui()
+			return false
+	if persistent_profile != null:
+		consumed_run_items = persistent_profile.call(&"consume_loadout_for_run")
 
 	selected_map_size = map_size
 	get_tree().paused = false
@@ -310,6 +602,7 @@ func start_run(map_size: String) -> bool:
 	map_label.visible = features.map_generation_enabled
 	status_label.text = "%s 작전 생성 중..." % _selected_map_display_name()
 	if not _assemble_game():
+		_rollback_operation_investment()
 		run_started = false
 		hud_margin.visible = false
 		if features.start_hub_enabled and features.run_setup_enabled:
@@ -318,6 +611,17 @@ func start_run(map_size: String) -> bool:
 			run_setup_overlay.visible = features.run_setup_enabled
 		return false
 	return true
+
+
+func _rollback_operation_investment() -> void:
+	if persistent_profile != null and not active_contract.is_empty():
+		persistent_profile.call(&"add_credits", int(active_contract.get(&"entry_cost", 0)))
+	for item_id in consumed_run_items:
+		persistent_profile.call(&"add_warehouse_item", item_id, 1)
+	consumed_run_items.clear()
+	if operation_contract_service != null:
+		operation_contract_service.call(&"clear_active_contract")
+	active_contract.clear()
 
 
 func _install_start_hub() -> bool:
@@ -355,6 +659,7 @@ func _open_run_setup() -> void:
 	run_setup_overlay.visible = true
 	interaction_label.visible = false
 	get_tree().paused = true
+	_refresh_contract_setup_ui()
 
 
 func _close_run_setup() -> void:
@@ -454,6 +759,8 @@ func _reset_run_state() -> void:
 	extraction_unlocked = false
 	defeated_enemies = 0
 	pending_buff_levels.clear()
+	active_contract.clear()
+	consumed_run_items.clear()
 	hud_margin.visible = false
 	map_label.visible = false
 	time_label.text = "시간 00:00"
@@ -508,6 +815,7 @@ func _assemble_game() -> bool:
 
 	player.global_position = player_spawn_position
 	player.call(&"configure_damage", features.damage_enabled)
+	_apply_consumable_loadout()
 	player.connect(&"health_changed", Callable(self, &"_on_player_health_changed"))
 	player.connect(&"died", Callable(self, &"_on_player_died"))
 	var health_snapshot: Dictionary = player.call(&"get_health_snapshot")
@@ -565,6 +873,15 @@ func _assemble_game() -> bool:
 			auto_weapon.call(
 				&"configure", projectiles_container, equipment_system, weapon_balance_service
 			)
+			if features.smart_targeting_enabled:
+				if (
+					not auto_weapon.has_method(&"set_targeting_policy")
+					or not auto_weapon.call(
+						&"set_targeting_policy", load(features.smart_targeting_policy_path)
+					)
+				):
+					_report_configuration_error("스마트 자동 타게팅 정책을 구성하지 못했습니다.")
+					return false
 
 	if features.run_buffs_enabled and not _install_run_buffs():
 		return false
@@ -581,6 +898,20 @@ func _assemble_game() -> bool:
 	)
 	_update_run_time_hud()
 	return true
+
+
+func _apply_consumable_loadout() -> void:
+	if hub_economy_system == null or player == null:
+		return
+	var effects: Dictionary = hub_economy_system.call(
+		&"get_consumable_effects", consumed_run_items
+	)
+	var modifiers: Dictionary = effects.get(&"player_modifiers", {})
+	if not modifiers.is_empty() and player.has_method(&"set_runtime_modifier_source"):
+		player.call(&"set_runtime_modifier_source", &"consumable_loadout", modifiers)
+	var healing := float(effects.get(&"heal", 0.0))
+	if healing > 0.0 and player.has_method(&"heal"):
+		player.call(&"heal", healing)
 
 
 func _install_health_recovery() -> bool:
@@ -921,7 +1252,16 @@ func _install_extraction_zone() -> void:
 		&"interaction_availability_changed",
 		Callable(self, &"_on_interaction_availability_changed")
 	)
-	extraction_zone.call(&"configure", map_generator.call(&"get_extraction_position"))
+	extraction_zone.connect(
+		&"extraction_defense_started", Callable(self, &"_on_extraction_defense_started")
+	)
+	extraction_zone.connect(
+		&"extraction_defense_cancelled", Callable(self, &"_on_extraction_defense_cancelled")
+	)
+	extraction_zone.call(
+		&"configure", map_generator.call(&"get_extraction_position"),
+		_extraction_defense_duration()
+	)
 	extraction_unlocked = extraction_unlock_seconds <= 0.0
 	extraction_zone.call(
 		&"set_locked",
@@ -967,7 +1307,7 @@ func _install_loot_spawner() -> bool:
 		map_generator,
 		pickups_container,
 		loot_config,
-		int(current_map_config.get("entry_cost"))
+		int(active_contract.get(&"entry_cost", current_map_config.get("entry_cost")))
 	):
 		_report_configuration_error("파밍 모듈이 선택된 회수 배수 목표를 충족하지 못했습니다.")
 		return false
@@ -1000,7 +1340,8 @@ func _install_enemy_spawner() -> bool:
 		map_generator,
 		features.enemy_armor_enabled,
 		features.enemy_status_ui_enabled,
-		spawn_config
+		spawn_config,
+		active_contract.get(&"enemy_modifiers", {})
 	):
 		_report_configuration_error("적 생성 모듈을 등급 정책으로 구성하지 못했습니다.")
 		return false
@@ -1012,6 +1353,7 @@ func _install_enemy_spawner() -> bool:
 
 
 func _configure_tier_button(button: Button, tier_id: String) -> void:
+	button.disabled = false
 	if not features.map_generation_enabled:
 		button.disabled = true
 		button.text = "%s · 맵 기능 비활성" % tier_id
@@ -1044,10 +1386,21 @@ func _configure_tier_button(button: Button, tier_id: String) -> void:
 			spawn_config.get("minimum_active_enemies"),
 			spawn_config.get("maximum_active_enemies"),
 		]
-	button.text = "%s 작전 · 목표 %d분\n투자 %d · 방 %d~%d%s" % [
+	var quoted_entry_cost := int(config.get("entry_cost"))
+	var reward_multiplier := 1.0
+	if operation_contract_service != null:
+		var quote: Dictionary = operation_contract_service.call(
+			&"quote", config, penalty_system.call(&"get_snapshot") if penalty_system != null else {}
+		)
+		quoted_entry_cost = int(quote.get(&"entry_cost", quoted_entry_cost))
+		reward_multiplier = float(quote.get(&"reward_multiplier", 1.0))
+		if persistent_profile != null and not persistent_profile.call(&"can_spend", quoted_entry_cost):
+			button.disabled = true
+	button.text = "%s 작전 · 목표 %d분\n투입 %d C · 회수 ×%.2f · 방 %d~%d%s" % [
 		config.get("display_name"),
 		roundi(float(config.get("target_run_duration_seconds")) / 60.0),
-		config.get("entry_cost"),
+		quoted_entry_cost,
+		reward_multiplier,
 		config.get("minimum_rooms"),
 		config.get("maximum_rooms"),
 		enemy_range,
@@ -1108,13 +1461,21 @@ func _process(delta: float) -> void:
 func _update_run_time_hud() -> void:
 	var extraction_state := "탈출 비활성"
 	if features.extraction_enabled:
-		extraction_state = (
-			"탈출 가능"
-			if extraction_unlocked
-			else "탈출 %s" % _format_time(
-				maxf(0.0, extraction_unlock_seconds - elapsed_time)
-			)
+		var extraction_snapshot: Dictionary = (
+			extraction_zone.call(&"get_snapshot") if extraction_zone != null else {}
 		)
+		if bool(extraction_snapshot.get(&"defense_active", false)):
+			extraction_state = "방어 %.1f초" % float(
+				extraction_snapshot.get(&"defense_remaining_seconds", 0.0)
+			)
+		else:
+			extraction_state = (
+				"탈출 방어 가능"
+				if extraction_unlocked
+				else "탈출 %s" % _format_time(
+					maxf(0.0, extraction_unlock_seconds - elapsed_time)
+				)
+			)
 	time_label.text = "생존 %s / 목표 %s · %s" % [
 		_format_time(elapsed_time),
 		_format_time(target_run_duration_seconds),
@@ -1397,18 +1758,52 @@ func _on_growth_balance_updated(_snapshot: Dictionary, _source_label: String) ->
 
 
 func _on_extraction_completed(_actor: Node2D) -> void:
-	var recovered_credits := 0
+	var carried_credits := 0
 	if credit_ledger != null:
-		recovered_credits = int(credit_ledger.call(&"secure_carried"))
+		carried_credits = int(credit_ledger.call(&"secure_carried"))
+	var settlement := {&"recovered_credits": carried_credits, &"salvage": 0, &"ranking": {}}
+	if operation_result_service != null:
+		settlement = operation_result_service.call(&"settle_success", {
+			&"carried_credits": carried_credits,
+			&"elapsed_seconds": elapsed_time,
+			&"kills": defeated_enemies,
+		}, active_contract)
+	var ranking: Dictionary = settlement.get(&"ranking", {})
+	var blueprint_label := ""
+	if StringName(settlement.get(&"blueprint_id", &"")) != &"":
+		blueprint_label = " · 도면 획득"
 	_finish_run(
 		"탈출 성공",
-		"%s 작전 · 생존 %s · 처치 %d · 회수 %d 크레딧" % [
+		"%s 작전 · 생존 %s · 처치 %d · 정산 %d C · 고철 %d%s · 조건 랭크 #%d" % [
 			_selected_map_display_name(),
 			_format_time(elapsed_time),
 			defeated_enemies,
-			recovered_credits,
+			int(settlement.get(&"recovered_credits", carried_credits)),
+			int(settlement.get(&"salvage", 0)),
+			blueprint_label,
+			int(ranking.get(&"rank", 0)),
 		]
 	)
+
+
+func _on_extraction_defense_started(_actor: Node2D, duration_seconds: float) -> void:
+	status_label.text = "탈출 방어전 시작 · %.0f초 동안 구역을 지키세요." % duration_seconds
+
+
+func _on_extraction_defense_cancelled() -> void:
+	status_label.text = "탈출 방어 중단 · 구역으로 돌아가 F를 누르세요."
+
+
+func _extraction_defense_duration() -> float:
+	if not features.extraction_defense_enabled:
+		return 0.0
+	var defense_config: Resource = load(features.extraction_defense_config_path)
+	if defense_config == null or not defense_config.has_method(&"duration_for"):
+		return 0.0
+	return float(defense_config.call(
+		&"duration_for", StringName(selected_map_size),
+		StringName(active_contract.get(&"difficulty_id", &"standard"))
+	))
 
 
 func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:
@@ -1487,6 +1882,12 @@ func _on_player_died() -> void:
 	var lost_credits := 0
 	if credit_ledger != null:
 		lost_credits = int(credit_ledger.call(&"lose_carried"))
+	if operation_result_service != null:
+		operation_result_service.call(&"settle_failure", {
+			&"carried_credits": lost_credits,
+			&"elapsed_seconds": elapsed_time,
+			&"kills": defeated_enemies,
+		}, active_contract)
 	_finish_run(
 		"작전 실패",
 		"생존 %s · 처치 %d · 분실 %d 크레딧" % [

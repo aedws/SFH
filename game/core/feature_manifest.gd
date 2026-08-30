@@ -35,6 +35,14 @@ extends Resource
 @export var run_buffs_enabled: bool = true
 @export var meta_progression_enabled: bool = true
 @export var equipment_upgrade_economy_enabled: bool = true
+@export var persistent_profile_enabled: bool = true
+@export var operation_contracts_enabled: bool = true
+@export var extraction_defense_enabled: bool = true
+@export var hub_economy_enabled: bool = true
+@export var smart_targeting_enabled: bool = true
+@export var crafting_enabled: bool = true
+@export var penalty_modifiers_enabled: bool = true
+@export var conditional_ranking_enabled: bool = true
 @export var game_over_enabled: bool = true
 
 @export_category("Run setup")
@@ -70,6 +78,34 @@ extends Resource
 	"res://game/features/run_buffs/configs/default_run_buffs.tres"
 )
 @export var meta_progression_storage_path: String = "user://sfh_meta_progression.json"
+@export var persistent_profile_storage_path: String = "user://sfh_profile.json"
+@export var conditional_ranking_storage_path: String = "user://sfh_rankings.json"
+
+@export_category("Operation and meta systems")
+@export_file("*.tres") var operation_contract_config_path: String = (
+	"res://game/features/operation_contract/configs/default_operation_contracts.tres"
+)
+@export_file("*.tres") var hub_economy_config_path: String = (
+	"res://game/features/hub_economy/configs/default_hub_economy.tres"
+)
+@export_file("*.tres") var smart_targeting_policy_path: String = (
+	"res://game/features/smart_targeting/configs/default_smart_targeting.tres"
+)
+@export_file("*.tres") var crafting_config_path: String = (
+	"res://game/features/crafting/configs/default_crafting.tres"
+)
+@export_file("*.tres") var penalty_config_path: String = (
+	"res://game/features/penalty_modifiers/configs/default_penalties.tres"
+)
+@export_file("*.tres") var extraction_defense_config_path: String = (
+	"res://game/features/extraction/configs/default_extraction_defense.tres"
+)
+@export_file("*.tres") var operation_result_config_path: String = (
+	"res://game/features/operation_results/configs/default_operation_results.tres"
+)
+@export_file("*.tres") var conditional_ranking_policy_path: String = (
+	"res://game/features/conditional_ranking/configs/default_conditional_ranking.tres"
+)
 
 @export_category("Health recovery")
 @export_file("*.tres") var health_recovery_config_path: String = (
@@ -147,6 +183,22 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"meta_progression")
 	if equipment_upgrade_economy_enabled:
 		result.append(&"equipment_upgrade_economy")
+	if persistent_profile_enabled:
+		result.append(&"persistent_profile")
+	if operation_contracts_enabled:
+		result.append(&"operation_contracts")
+	if extraction_defense_enabled:
+		result.append(&"extraction_defense")
+	if hub_economy_enabled:
+		result.append(&"hub_economy")
+	if smart_targeting_enabled:
+		result.append(&"smart_targeting")
+	if crafting_enabled:
+		result.append(&"crafting")
+	if penalty_modifiers_enabled:
+		result.append(&"penalty_modifiers")
+	if conditional_ranking_enabled:
+		result.append(&"conditional_ranking")
 	if game_over_enabled:
 		result.append(&"game_over")
 
@@ -258,7 +310,45 @@ func validation_errors() -> PackedStringArray:
 		or not ResourceLoader.exists(equipment_upgrade_policy_path)
 	):
 		errors.append("장비 강화 비용 정책 Resource 경로가 유효하지 않습니다.")
+	if persistent_profile_enabled and persistent_profile_storage_path.is_empty():
+		errors.append("영구 프로필 저장 경로가 필요합니다.")
+	if operation_contracts_enabled and not persistent_profile_enabled:
+		errors.append("operation_contracts는 persistent_profile 모듈이 필요합니다.")
+	if operation_contracts_enabled and not _resource_exists(operation_contract_config_path):
+		errors.append("작전 계약 설정 Resource 경로가 유효하지 않습니다.")
+	if extraction_defense_enabled and not extraction_enabled:
+		errors.append("extraction_defense는 extraction 모듈이 필요합니다.")
+	if extraction_defense_enabled and not _resource_exists(extraction_defense_config_path):
+		errors.append("탈출 방어 설정 Resource 경로가 유효하지 않습니다.")
+	if hub_economy_enabled and not persistent_profile_enabled:
+		errors.append("hub_economy는 persistent_profile 모듈이 필요합니다.")
+	if hub_economy_enabled and not _resource_exists(hub_economy_config_path):
+		errors.append("거점 경제 설정 Resource 경로가 유효하지 않습니다.")
+	if smart_targeting_enabled and not weapons_enabled:
+		errors.append("smart_targeting은 weapons 모듈이 필요합니다.")
+	if smart_targeting_enabled and not _resource_exists(smart_targeting_policy_path):
+		errors.append("스마트 타게팅 정책 Resource 경로가 유효하지 않습니다.")
+	if crafting_enabled and not persistent_profile_enabled:
+		errors.append("crafting은 persistent_profile 모듈이 필요합니다.")
+	if crafting_enabled and not _resource_exists(crafting_config_path):
+		errors.append("제작 설정 Resource 경로가 유효하지 않습니다.")
+	if penalty_modifiers_enabled and not operation_contracts_enabled:
+		errors.append("penalty_modifiers는 operation_contracts 모듈이 필요합니다.")
+	if penalty_modifiers_enabled and not _resource_exists(penalty_config_path):
+		errors.append("페널티 설정 Resource 경로가 유효하지 않습니다.")
+	if conditional_ranking_enabled and not operation_contracts_enabled:
+		errors.append("conditional_ranking은 operation_contracts 모듈이 필요합니다.")
+	if conditional_ranking_enabled and conditional_ranking_storage_path.is_empty():
+		errors.append("조건부 랭킹 저장 경로가 필요합니다.")
+	if conditional_ranking_enabled and not _resource_exists(conditional_ranking_policy_path):
+		errors.append("조건부 랭킹 정책 Resource 경로가 유효하지 않습니다.")
+	if persistent_profile_enabled and not _resource_exists(operation_result_config_path):
+		errors.append("작전 결과 설정 Resource 경로가 유효하지 않습니다.")
 	if game_over_enabled and not damage_enabled:
 		errors.append("game_over 모듈은 damage 모듈이 필요합니다.")
 
 	return errors
+
+
+func _resource_exists(path: String) -> bool:
+	return not path.is_empty() and ResourceLoader.exists(path)
