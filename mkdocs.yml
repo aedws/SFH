@@ -80,6 +80,7 @@ nav:
       - 전장의 안개: features/fog-of-war.md
       - 전술 미니맵: features/minimap.md
       - 작전 선택과 탈출: features/raid-setup-extraction.md
+      - 시작 거점과 전투 세션 전환: features/start-hub.md
       - 크레딧 파밍과 회수: features/credit-loot.md
       - 플레이어: features/player.md
       - 부분 체력 회복: features/health-recovery.md

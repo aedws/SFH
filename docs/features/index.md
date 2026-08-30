@@ -6,6 +6,7 @@
 - [전장의 안개](fog-of-war.md)
 - [전술 미니맵](minimap.md)
 - [작전 선택과 탈출](raid-setup-extraction.md)
+- [시작 거점과 전투 세션 전환](start-hub.md)
 - [크레딧 파밍과 회수](credit-loot.md)
 - [플레이어 이동](player.md)
 - [부분 체력 회복](health-recovery.md)

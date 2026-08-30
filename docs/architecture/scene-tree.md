@@ -7,6 +7,7 @@ Game
 ├─ BattlefieldFogOfWar     # 방 전체/통로 정면 시야를 전환하고 HUD·미니맵은 유지
 ├─ World
 │  ├─ ArenaGrid
+│  ├─ StartHub              # 비전투 시 큰 단일 방과 작전 게이트
 │  ├─ GeneratedMap          # 등급 Resource에 따라 실행 시 생성
 │  ├─ ExtractionZone        # 최원거리 방에 실행 시 생성
 │  ├─ Actors
@@ -28,6 +29,7 @@ Game
 │  ├─ EquipmentUpgrade      # 동일 아이템·크레딧 강화 비용 조정
 │  └─ LootSpawner           # 1회성 회수 지점과 투입 코스트 2.5~5배 목표 배치
 └─ UI
+   ├─ StartHubHUD           # 거점 목표와 조작 안내
    ├─ HUDMargin
    ├─ TacticalMinimap      # 실행 시 설치되는 우측 상단 전술 지도
    ├─ InteractionLabel      # 탈출 범위의 F 안내
@@ -43,6 +45,7 @@ Game
 ## 관련 파일
 
 - `game/scenes/game.tscn`: 최상위 장면
+- `game/features/start_hub/start_hub.tscn`: 시작 거점 방·경계·작전 게이트
 - `game/scenes/game.gd`: 모듈 설치 코드
 - `game/core/feature_manifest.tres`: 활성 기능 설정
 - `game/features/player/player.tscn`: 플레이어 기능 장면
