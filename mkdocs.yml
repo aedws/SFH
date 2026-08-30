@@ -87,7 +87,7 @@ nav:
       - 격자 가방 인벤토리: features/grid-inventory.md
       - 장비 파츠·모듈 개조: features/equipment-customization.md
       - 모듈·고유 파츠 강화 경제: features/equipment-upgrade-economy.md
-      - 적과 생성 시스템: features/enemies.md
+      - 적과 증원형 생성 시스템: features/enemies.md
       - 적 체력과 방어력: features/enemy-defense.md
       - 자동 무기: features/weapons.md
       - Q 무기 교체와 Google Sheets 밸런스: features/weapon-balance.md

@@ -17,7 +17,7 @@ Game
 │  └─ Pickups
 │     └─ CreditLootCache   # 금고·자재함·회수 단말기 유형으로 여러 개 생성
 ├─ Modules
-│  ├─ EnemySpawner          # 실행 시 생성
+│  ├─ EnemySpawner          # 등급별 목표 수량과 묶음 증원
 │  ├─ ProgressionSystem     # 실행 시 생성
 │  ├─ HealthRecovery        # 지연·상한이 있는 부분 체력 회복
 │  ├─ RunBuffSystem         # 한 판 임시 버프 선택·중첩
@@ -25,7 +25,7 @@ Game
 │  ├─ CharacterEquipment    # 무기·스킬·방어구 로드아웃 조립
 │  ├─ CreditLedger          # 휴대·회수·분실 계산
 │  ├─ EquipmentUpgrade      # 동일 아이템·크레딧 강화 비용 조정
-│  └─ LootSpawner           # 1회성 자원 회수 지점 배치
+│  └─ LootSpawner           # 1회성 회수 지점과 투입 코스트 2.5배 가치 보정
 └─ UI
    ├─ HUDMargin
    ├─ TacticalMinimap      # 실행 시 설치되는 우측 상단 전술 지도

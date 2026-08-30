@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemySpawnTierConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/spawning/enemy_spawn_tier_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+tier_id = &"medium"
+minimum_active_enemies = 36
+maximum_active_enemies = 54
+minimum_reinforcement_batch = 8
+maximum_reinforcement_batch = 12
+reinforcement_interval_seconds = 1.0
+reinforcement_trigger_ratio = 0.75
+spawn_radius = 700.0
+initial_delay_seconds = 0.15

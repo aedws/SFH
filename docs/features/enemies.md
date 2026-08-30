@@ -1,46 +1,58 @@
 ---
-title: 적과 생성 시스템
+title: 적과 증원형 생성 시스템
+description: 맵 등급별 목표 개체 수를 유지하는 핵앤슬래시 증원 구조
 tags:
   - 적
   - 추적
   - 스폰
+  - 증원
+  - 핵앤슬래시
   - 난이도
 ---
 
-# 적과 생성 시스템
+# 적과 증원형 생성 시스템
 
-## 목적
+## 플레이 흐름
 
-적이 플레이어 주변에서 생성되고 플레이어를 향해 이동합니다. 시간이 지날수록 생성 간격이 짧아집니다.
+작전을 시작하면 맵 등급의 최소~최대 범위에서 이번 판의 **목표 동시 개체 수**를 하나 무작위로 정합니다. 적 수가 목표의 75% 이하로 감소하면 일정 수량을 묶음으로 증원하며, 목표 수량을 넘기지 않습니다.
 
-## 모듈 구성
+한 마리씩 계속 생성하던 방식과 달리 교전 사이에 적 무리가 다시 진입하므로 워프레임·퍼스트 디센던트 계열의 일정 밀도 핵앤슬래시 흐름에 가깝습니다.
 
-- `game/features/enemies/`: 적의 이동, 체력, 접촉 피해
-- `game/features/spawning/`: 생성 위치, 간격, 최대 적 수
+## 등급별 수량
 
-두 폴더를 분리한 이유는 적의 종류와 생성 규칙을 서로 독립적으로 교체하기 위해서입니다.
+| 작전 | 목표 동시 개체 수 | 1회 증원 | 증원 간격 | 생성 반경 |
+|---|---:|---:|---:|---:|
+| 소형 | 24~36 중 무작위 | 6~10 | 1.2초 | 620px |
+| 중형 | 36~54 중 무작위 | 8~12 | 1.0초 | 700px |
+| 대형 | 52~72 중 무작위 | 10~16 | 0.85초 | 780px |
 
-## 조정 가능한 값
+수치는 `game/features/spawning/configs/`의 `EnemySpawnTierConfig` Resource에서 변경합니다. 적 체력·방어력·이동 속도 같은 개체 능력치는 `game/features/enemies/`에 남아 있으므로 생성 밀도와 적 밸런스를 따로 조정할 수 있습니다.
 
-`enemy.tscn`의 Enemy Inspector:
+## 모듈 경계
 
-- `Move Speed`: 추적 속도
-- `Max Health`: 적 체력
-- `Contact Damage`: 접촉 피해
-- `Contact Interval`: 반복 피해 간격
-- `Experience Reward`: 사망 시 경험치
+- 생성 정책: 최소·최대 개체 수, 증원 묶음, 간격, 반경
+- `EnemySpawner`: 이번 판 목표 선택, 자신이 생성한 적 추적, 증원 실행
+- 맵: 걸을 수 있고 플레이어에게서 충분히 떨어진 생성 위치 제공
+- 적: 이동, 길찾기, 체력·방어력, 접촉 피해와 사망 Signal
+- 자동 무기: `get_active_targets()`로 전달받은 후보만 조준
+- `Game`: 정책과 제공자를 연결하지만 수량 계산은 수행하지 않음
 
-`enemy_spawner.tscn`의 Inspector:
+생성기는 더 이상 SceneTree 전체의 `enemies` 그룹 개수를 세지 않습니다. 자신이 생성한 인스턴스만 추적하므로 다른 생성기, 보스, 훈련용 표적이 수량 계산에 섞이지 않습니다.
 
-- `Initial Interval`: 최초 생성 간격
-- `Minimum Interval`: 최소 생성 간격
-- `Spawn Radius`: 플레이어와 생성 지점 사이 거리
-- `Maximum Enemies`: 동시에 존재할 수 있는 적 수
+## 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 적 생성기 | `configure(...)` | `Game` 조립부 |
+| 적 생성기 | `get_snapshot()` | HUD·자동 테스트 |
+| 적 생성기 | `get_active_targets()` | 자동 무기 |
+| 적 생성기 | `enemy_spawned`, `reinforcement_dispatched` | 전투 흐름·향후 연출 |
+| 맵 | `get_enemy_spawn_position(origin, distance)` | 적 생성기 |
 
 ## 활성화와 의존성
 
-`FeatureManifest`에서 `Enemies Enabled`와 `Spawning Enabled`를 사용합니다. `spawning`만 단독으로 켤 수는 없습니다.
+`FeatureManifest`의 `enemies_enabled`와 `spawning_enabled`로 분리합니다. `spawning`은 `enemies`가 필요하며, 맵 생성을 끄면 같은 증원 정책을 유지하면서 플레이어 주변 원형 위치를 사용합니다.
 
 ## 검색 별칭
 
-몬스터, 좀비, 추적 AI, 적 생성, 스폰 속도, 웨이브, 접촉 피해
+몬스터, 좀비, 적 생성, 스폰 속도, 웨이브, 리스폰, 증원군, 동시 적 수, 핵앤슬래시, 워프레임, 퍼스트 디센던트

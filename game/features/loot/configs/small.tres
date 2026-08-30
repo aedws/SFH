@@ -9,3 +9,4 @@ minimum_cache_count = 8
 maximum_cache_count = 12
 minimum_cache_credits = 15
 maximum_cache_credits = 35
+minimum_deployment_value_multiplier = 2.5
