@@ -16,6 +16,7 @@ var damage_enabled: bool = true
 var base_stats: Dictionary = {}
 var runtime_stats: Dictionary = {}
 var stat_modifier_sources: Dictionary = {}
+var facing_direction := Vector2.RIGHT
 
 
 func _ready() -> void:
@@ -34,7 +35,8 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	if velocity != Vector2.ZERO:
-		heading.rotation = velocity.angle()
+		facing_direction = velocity.normalized()
+		heading.rotation = facing_direction.angle()
 
 
 func configure_damage(is_enabled: bool) -> void:
@@ -113,6 +115,10 @@ func get_health_snapshot() -> Dictionary:
 
 func get_movement_snapshot() -> Dictionary:
 	return movement.get_movement_snapshot()
+
+
+func get_facing_direction() -> Vector2:
+	return facing_direction
 
 
 func take_damage(amount: float) -> void:

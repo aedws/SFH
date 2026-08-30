@@ -123,6 +123,25 @@ func _verify_map_tiers() -> bool:
 		if path.is_empty():
 			_fail("%s 맵의 시작점과 탈출 지점이 연결되지 않았습니다." % tier_id)
 			return false
+		var room_visibility_rects: Array = generator.call(&"get_visibility_room_rects")
+		var start_visibility: Dictionary = generator.call(
+			&"get_visibility_region", generator.call(&"get_player_spawn_position")
+		)
+		var corridor_position := _find_corridor_position(generator)
+		var corridor_visibility: Dictionary = generator.call(
+			&"get_visibility_region", corridor_position
+		)
+		if (
+			room_visibility_rects.size() != room_count
+			or start_visibility.get(&"mode") != &"room"
+			or not (start_visibility.get(&"world_rect", Rect2()) as Rect2).has_point(
+				generator.call(&"get_player_spawn_position")
+			)
+			or corridor_position == Vector2.INF
+			or corridor_visibility.get(&"mode") != &"corridor"
+		):
+			_fail("%s 맵의 방·통로 시야 영역 계약이 올바르지 않습니다." % tier_id)
+			return false
 		if generator.get("obstacle_cells").is_empty():
 			_fail("%s 맵에 방해물이 생성되지 않았습니다." % tier_id)
 			return false
@@ -188,6 +207,16 @@ func _verify_map_tiers() -> bool:
 		generator.free()
 
 	return true
+
+
+func _find_corridor_position(generator: Node) -> Vector2:
+	var cell_size := float(generator.get("cell_size"))
+	for cell in generator.get("floor_cells"):
+		var world_position := (Vector2(cell) + Vector2.ONE * 0.5) * cell_size
+		var context: Dictionary = generator.call(&"get_visibility_region", world_position)
+		if context.get(&"mode", &"room") == &"corridor":
+			return world_position
+	return Vector2.INF
 
 
 func _verify_player_sustain_and_movement() -> bool:
@@ -834,7 +863,7 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 				failure_message = "%s 작전의 플레이어 또는 맵이 설치되지 않았습니다." % tier_id
 			elif tier_game.get("extraction_zone") == null or minimap == null:
 				failure_message = "%s 작전의 탈출 또는 미니맵이 설치되지 않았습니다." % tier_id
-			elif fog == null or not bool(fog.call(&"get_snapshot").get(&"tracks_actor", false)):
+			elif fog == null or not _verify_room_and_corridor_fog(fog, generator, tier_game.get("player")):
 				failure_message = "%s 작전의 전장의 안개가 플레이어를 추적하지 않습니다." % tier_id
 			elif enemy_spawner == null or loot_spawner == null:
 				failure_message = "%s 작전의 적 생성 또는 파밍 모듈이 설치되지 않았습니다." % tier_id
@@ -868,6 +897,35 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 			_fail("티어 진입 실패: %s" % failure_message)
 			return false
 	return true
+
+
+func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -> bool:
+	var room_snapshot: Dictionary = fog.call(&"get_snapshot")
+	if (
+		not bool(room_snapshot.get(&"tracks_actor", false))
+		or not bool(room_snapshot.get(&"has_visibility_provider", false))
+		or room_snapshot.get(&"visibility_mode") != &"room"
+		or int(room_snapshot.get(&"active_room_index", -1)) < 0
+		or int(room_snapshot.get(&"room_rect_count", 0)) != generator.get("rooms").size()
+	):
+		return false
+	var corridor_position := _find_corridor_position(generator)
+	if corridor_position == Vector2.INF:
+		return false
+	var original_position := player.global_position
+	player.global_position = corridor_position
+	fog.call(&"_process", 0.0)
+	var corridor_snapshot: Dictionary = fog.call(&"get_snapshot")
+	player.global_position = original_position
+	fog.call(&"_process", 0.0)
+	return (
+		corridor_snapshot.get(&"visibility_mode") == &"corridor"
+		and int(corridor_snapshot.get(&"active_room_index", -1)) == -1
+		and float(corridor_snapshot.get(&"corridor_forward_distance", 0.0))
+		> float(corridor_snapshot.get(&"corridor_near_radius", 0.0))
+		and (corridor_snapshot.get(&"facing_direction", Vector2.ZERO) as Vector2)
+		== player.call(&"get_facing_direction")
+	)
 
 
 func _verify_tier_population_and_value(
@@ -1201,7 +1259,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery deployment_value_2_5 loot credits map_optional player responsive_movement dash health_recovery health_ui enemies reinforcement_population armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery deployment_value_2_5 loot credits map_optional player responsive_movement dash health_recovery health_ui enemies reinforcement_population armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

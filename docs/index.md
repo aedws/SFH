@@ -52,7 +52,7 @@ hide:
 
 <div class="sfh-stats">
   <div class="sfh-stat"><small>Core loop</small><strong>9–11 MIN</strong><span>전투 → 파밍 → 신호 개방 → 탈출</span></div>
-  <div class="sfh-stat"><small>World</small><strong>FULL-SCREEN ROOMS</strong><span>전장의 안개 · 전체 미니맵 · 실내 구조</span></div>
+  <div class="sfh-stat"><small>World</small><strong>ROOM + CONE VISION</strong><span>방 전체 공개 · 통로 정면 시야 · 전체 미니맵</span></div>
   <div class="sfh-stat"><small>Loadout</small><strong>장비 기반 완료</strong><span>무기·방어구·파츠·모듈</span></div>
   <div class="sfh-stat"><small>Growth</small><strong>Run + Meta</strong><span>임시 버프·세 계열 영구 레벨</span></div>
 </div>
@@ -62,11 +62,34 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>증원형 핵앤슬래시 전투</span><span>투입 코스트 ×2.5 배치 보정</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>방 전체 공개 + 통로 정면 시야</span><span>실제 렌더 검증 PASS</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 모듈 전수 감사</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>방 전체 공개 · 통로 정면 원뿔 시야 · 다른 방 차단</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 4개 주제</strong>
+      <ul>
+        <li>방에 들어가면 현재 방과 경계 벽의 전장의 안개를 모두 제거합니다.</li>
+        <li>통로에서는 주변 170px와 바라보는 방향 780px·약 124도 시야를 제공합니다.</li>
+        <li>통로 정면이 다른 방을 향해도 해당 방 내부는 계속 가립니다.</li>
+        <li>HUD와 FULL MAP 미니맵은 시야 모드와 관계없이 전체 정보를 유지합니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>개선 의도</b><span>방 안의 핵앤슬래시 교전은 답답하지 않게 열고, 방 사이 이동은 정면 확인과 매복 위험이 공존하도록 탐색 리듬을 분리합니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>✨ 개선 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">방 전체 가시성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>현재 방 바닥과 벽은 완전히 밝히고 방을 나가면 다시 통로 시야로 전환합니다.</p><a href="features/fog-of-war/">시야 규칙 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">캐릭터 정면 확장 시야</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>이동 방향을 바라보는 방향 계약으로 공개하고 넓은 통로 원뿔 시야에 연결했습니다.</p></div></details>
+    </div>
+    <div class="sfh-group"><h3>🧩 수정 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">방·통로 가시성 계약 분리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>안개가 맵 내부 배열을 읽지 않고 현재 영역과 방 경계 복사본만 받도록 모듈 경계를 유지했습니다.</p><a href="architecture/module-audit/">모듈 감사 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 모듈 전수 감사</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>
@@ -98,7 +121,7 @@ hide:
       <ul>
         <li>가장 작은 방도 42×25셀로 확장해 기본 화면 한 장보다 크게 만들었습니다.</li>
         <li>긴 실내 칸막이, 설비 블록과 다중 기둥이 건물 내부 구조를 만듭니다.</li>
-        <li>플레이어 주변만 보이는 전장의 안개를 적용했습니다.</li>
+        <li>초기 원형 전장의 안개를 적용했고 후속 업데이트에서 방·통로 방향성 시야로 개선했습니다.</li>
         <li>우측 미니맵은 `FULL MAP` 전체 지형을 계속 표시합니다.</li>
         <li>벽면 금고·자재함·회수 단말기에서 F로 크레딧 자원을 확보합니다.</li>
       </ul>

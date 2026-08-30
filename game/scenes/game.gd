@@ -41,10 +41,18 @@ const MAP_GENERATOR_METHODS := [
 	&"get_player_spawn_position",
 	&"get_extraction_position",
 	&"get_enemy_spawn_position",
+	&"get_visibility_region",
+	&"get_visibility_room_rects",
 	&"get_loot_spawn_points",
 	&"get_world_path",
 ]
-const PLAYER_METHODS := [&"configure_damage", &"get_health_snapshot", &"get_runtime_stats", &"heal"]
+const PLAYER_METHODS := [
+	&"configure_damage",
+	&"get_health_snapshot",
+	&"get_runtime_stats",
+	&"get_facing_direction",
+	&"heal",
+]
 const FOG_OF_WAR_METHODS := [&"configure", &"get_snapshot"]
 const MINIMAP_PROVIDER_METHODS := [&"get_minimap_snapshot"]
 const MINIMAP_METHODS := [&"configure"]
@@ -868,7 +876,7 @@ func _install_fog_of_war() -> bool:
 	if not _supports_methods(fog_of_war, FOG_OF_WAR_METHODS):
 		_report_configuration_error("전장의 안개 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
-	if not fog_of_war.call(&"configure", player):
+	if not fog_of_war.call(&"configure", player, map_generator):
 		_report_configuration_error("전장의 안개가 플레이어를 추적하지 못했습니다.")
 		return false
 	return true

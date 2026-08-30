@@ -4,7 +4,7 @@
 
 ```text
 Game
-├─ BattlefieldFogOfWar     # 월드만 가리고 HUD·미니맵은 유지하는 CanvasLayer
+├─ BattlefieldFogOfWar     # 방 전체/통로 정면 시야를 전환하고 HUD·미니맵은 유지
 ├─ World
 │  ├─ ArenaGrid
 │  ├─ GeneratedMap          # 등급 Resource에 따라 실행 시 생성

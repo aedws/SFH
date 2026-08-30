@@ -119,6 +119,30 @@ func get_enemy_spawn_position(origin: Vector2, minimum_distance: float) -> Vecto
 	return extraction_position
 
 
+func get_visibility_region(world_position: Vector2) -> Dictionary:
+	var cell := _world_to_cell(world_position)
+	for room_index in range(rooms.size()):
+		var room := rooms[room_index]
+		if room.has_point(cell):
+			return {
+				&"mode": &"room",
+				&"room_index": room_index,
+				&"world_rect": _room_world_rect(room),
+			}
+	return {
+		&"mode": &"corridor",
+		&"room_index": -1,
+		&"world_rect": Rect2(),
+	}
+
+
+func get_visibility_room_rects() -> Array[Rect2]:
+	var result: Array[Rect2] = []
+	for room in rooms:
+		result.append(_room_world_rect(room, false))
+	return result
+
+
 func get_loot_spawn_positions(requested_count: int) -> PackedVector2Array:
 	var result := PackedVector2Array()
 	for point in get_loot_spawn_points(requested_count):
@@ -551,6 +575,14 @@ func _room_center_cell(room: Rect2i) -> Vector2i:
 
 func _cell_center(cell: Vector2i) -> Vector2:
 	return (Vector2(cell) + Vector2.ONE * 0.5) * cell_size
+
+
+func _room_world_rect(room: Rect2i, include_boundary_walls: bool = true) -> Rect2:
+	var result := Rect2(
+		Vector2(room.position) * cell_size,
+		Vector2(room.size) * cell_size
+	)
+	return result.grow(cell_size) if include_boundary_walls else result
 
 
 func _world_to_cell(world_position: Vector2) -> Vector2i:

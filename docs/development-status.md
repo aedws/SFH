@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>증원형 핵앤슬래시 전투</span><span>투입 코스트 ×2.5 배치</span><span>모듈 감사 PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>방 전체 공개</span><span>통로 정면 원뿔 시야</span><span>자동·렌더 검증 PASS</span></div>
 
 ## 기획 기준 진행도
 
@@ -47,7 +47,32 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 전체 결합 재점검</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>방·통로 전장의 안개 최적화 · 정면 시야 확장</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 5개 주제</strong>
+      <ul>
+        <li>현재 방에 진입하면 방 바닥과 외곽 벽 전체를 밝힙니다.</li>
+        <li>통로에서는 주변 170px와 정면 780px·반각 62도 시야를 사용합니다.</li>
+        <li>통로에서 다른 방 내부는 시야 원뿔과 겹쳐도 별도 마스크로 차단합니다.</li>
+        <li>플레이어 방향과 맵 방 경계를 공개 메서드로 전달해 내부 Node·배열 결합을 피했습니다.</li>
+        <li>세 맵 등급 자동 테스트와 1280×720 방·통로 실제 렌더를 확인했습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>개선 의도</b><span>방 안에서는 다수 적 교전 가시성을 확보하고, 통로에서는 정면 탐색과 다른 방의 불확실성을 유지합니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>✨ 개선 · 3</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">방 단위 안개 제거</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>방 진입·이탈을 매 프레임 판정해 전체 방 시야와 통로 시야를 자동 전환합니다.</p><a href="../features/fog-of-war/">전장의 안개 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">정면 124도 확장 시야</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>캐릭터가 마지막으로 이동한 방향을 기준으로 넓고 긴 원뿔 시야를 제공합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">다른 방 완전 차단</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>통로에서는 전체 방 경계 마스크를 적용해 다음 방 내부를 미리 볼 수 없습니다.</p></div></details>
+    </div>
+    <div class="sfh-group"><h3>🧩 수정 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">가시성 제공자 계약</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>맵은 복사된 Rect2, 플레이어는 방향 Vector2만 제공하며 Shader 세부 구현은 안개 모듈에 유지합니다.</p><a href="../architecture/module-audit/">모듈 점검 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 전체 결합 재점검</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>
@@ -87,7 +112,7 @@ tags:
       <p class="sfh-intent"><b>개선 의도</b><span>각 방을 독립 전투·탐색 구역처럼 만들고, 제한된 월드 시야와 전체 전술 지도를 함께 사용해 익스트랙션 탐색 긴장감과 방향성을 동시에 확보합니다.</span></p>
     </div>
     <div class="sfh-group"><h3>🆕 구현 · 2</h3>
-      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">월드 전장의 안개</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>플레이어 중심 410px 시야와 150px 부드러운 경계를 독립 CanvasLayer로 적용했습니다.</p><a href="../features/fog-of-war/">안개 설계 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">월드 전장의 안개</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>초기 원형 시야를 독립 CanvasLayer로 적용했고, 후속 업데이트에서 방·통로 방향성 시야로 개선했습니다.</p><a href="../features/fog-of-war/">안개 설계 →</a></div></details>
       <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">세 종류 자원 회수 지점</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>벽면 금고, 자재함, 회수 단말기가 배치 유형별 외형과 F 상호작용 문구를 사용합니다.</p><a href="../features/credit-loot/">자원 회수 →</a></div></details>
     </div>
     <div class="sfh-group"><h3>✨ 개선 · 3</h3>
