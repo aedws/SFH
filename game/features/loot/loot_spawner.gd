@@ -30,11 +30,11 @@ func configure(map_provider: Node, loot_parent: Node2D, config: LootTierConfig) 
 	var minimum_count := config.minimum_cache_count
 	var maximum_count := config.maximum_cache_count
 	var cache_count := random.randi_range(minimum_count, maximum_count)
-	var positions: PackedVector2Array = map_provider.call(&"get_loot_spawn_positions", cache_count)
-	for world_position in positions:
+	var spawn_points: Array = map_provider.call(&"get_loot_spawn_points", cache_count)
+	for point in spawn_points:
 		_spawn_cache(
 			loot_parent,
-			world_position,
+			point,
 			random.randi_range(
 				config.minimum_cache_credits,
 				config.maximum_cache_credits
@@ -42,7 +42,7 @@ func configure(map_provider: Node, loot_parent: Node2D, config: LootTierConfig) 
 		)
 
 
-func _spawn_cache(parent: Node2D, world_position: Vector2, credit_amount: int) -> void:
+func _spawn_cache(parent: Node2D, point: Dictionary, credit_amount: int) -> void:
 	if loot_cache_scene == null:
 		push_error("LootSpawner에 Loot Cache Scene이 지정되지 않았습니다.")
 		return
@@ -50,8 +50,13 @@ func _spawn_cache(parent: Node2D, world_position: Vector2, credit_amount: int) -
 	if cache == null:
 		return
 	parent.add_child(cache)
-	cache.global_position = world_position
-	cache.call(&"configure", credit_amount)
+	cache.global_position = point.get(&"position", Vector2.ZERO)
+	cache.call(
+		&"configure",
+		credit_amount,
+		point.get(&"placement_kind", &"wall_safe"),
+		point.get(&"facing", Vector2.DOWN)
+	)
 	cache.connect(&"credits_collected", Callable(self, &"_on_credits_collected"))
 	cache.connect(
 		&"interaction_availability_changed",

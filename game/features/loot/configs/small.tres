@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_config")
 tier_id = &"small"
-minimum_cache_count = 4
-maximum_cache_count = 6
+minimum_cache_count = 8
+maximum_cache_count = 12
 minimum_cache_credits = 15
 maximum_cache_credits = 35

@@ -5,6 +5,7 @@ extends Node2D
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
+const FOG_OF_WAR_SCENE_PATH := "res://game/features/fog_of_war/fog_of_war.tscn"
 const MINIMAP_SCENE_PATH := "res://game/features/minimap/minimap.tscn"
 const EQUIPMENT_SCENE_PATH := "res://game/features/equipment/equipment_system.tscn"
 const INVENTORY_SCENE_PATH := "res://game/features/inventory/grid_inventory.tscn"
@@ -39,8 +40,10 @@ const MAP_GENERATOR_METHODS := [
 	&"get_player_spawn_position",
 	&"get_extraction_position",
 	&"get_enemy_spawn_position",
+	&"get_loot_spawn_points",
 	&"get_world_path",
 ]
+const FOG_OF_WAR_METHODS := [&"configure", &"get_snapshot"]
 const MINIMAP_PROVIDER_METHODS := [&"get_minimap_snapshot"]
 const MINIMAP_METHODS := [&"configure"]
 const EQUIPMENT_METHODS := [
@@ -152,6 +155,7 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 
 var player
 var map_generator
+var fog_of_war
 var minimap
 var equipment_system
 var inventory_system
@@ -290,6 +294,8 @@ func _assemble_game() -> bool:
 	player.connect(&"health_changed", Callable(self, &"_on_player_health_changed"))
 	player.connect(&"died", Callable(self, &"_on_player_died"))
 	_on_player_health_changed(float(player.get("current_health")), float(player.get("max_health")))
+	if features.fog_of_war_enabled and not _install_fog_of_war():
+		return false
 	if features.equipment_enabled and not _install_equipment():
 		return false
 	if features.health_recovery_enabled and not _install_health_recovery():
@@ -772,6 +778,17 @@ func _supports_map_generator(candidate: Node) -> bool:
 		if not candidate.has_method(method_name):
 			return false
 
+	return true
+
+
+func _install_fog_of_war() -> bool:
+	fog_of_war = _instantiate_feature(FOG_OF_WAR_SCENE_PATH, self, &"BattlefieldFogOfWar")
+	if not _supports_methods(fog_of_war, FOG_OF_WAR_METHODS):
+		_report_configuration_error("전장의 안개 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not fog_of_war.call(&"configure", player):
+		_report_configuration_error("전장의 안개가 플레이어를 추적하지 못했습니다.")
+		return false
 	return true
 
 

@@ -44,6 +44,7 @@ tags:
 - `meta_progression`은 `run_buffs` 필요
 - `game_over`는 `damage` 필요
 - `map_obstacles`는 `map_generation` 필요
+- `fog_of_war`는 `player` 필요
 - `minimap`은 `map_generation` 필요
 - `run_setup`은 `map_generation` 필요
 - `extraction`은 `map_generation` 필요

@@ -40,7 +40,7 @@ tags:
 
 ## 활성화와 의존성
 
-`damage_enabled`가 접촉 피해를 허용합니다. `health_recovery_enabled`는 [부분 체력 회복](health-recovery.md)을 독립 설치합니다. `game_over_enabled`는 체력이 0일 때 게임 정지와 재시작 화면을 담당하며 `damage`에 의존합니다. `minimap_enabled`는 전술 지도를 설치하며 `map_generation`에 의존합니다. 장비 하위 기능의 의존성은 [캐릭터 장비와 로드아웃](character-equipment.md)에 정리되어 있습니다.
+`damage_enabled`가 접촉 피해를 허용합니다. `health_recovery_enabled`는 [부분 체력 회복](health-recovery.md)을 독립 설치합니다. `game_over_enabled`는 체력이 0일 때 게임 정지와 재시작 화면을 담당하며 `damage`에 의존합니다. `fog_of_war_enabled`는 플레이어 중심 월드 시야를 제한하고, `minimap_enabled`는 안개와 별개인 전체 전술 지도를 설치합니다. 장비 하위 기능의 의존성은 [캐릭터 장비와 로드아웃](character-equipment.md)에 정리되어 있습니다.
 
 ## 검색 별칭
 
