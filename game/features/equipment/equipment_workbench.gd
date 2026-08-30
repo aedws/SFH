@@ -10,6 +10,8 @@ const SLOT_LABELS := {
 const WEAPON_SLOTS := [&"main", &"secondary"]
 
 @onready var tabs: TabContainer = %Tabs
+@onready var key_badge: Label = %KeyBadge
+@onready var window_title: Label = %WindowTitle
 @onready var header_summary: Label = %HeaderSummary
 @onready var character_summary: Label = %CharacterSummary
 @onready var selected_slot_caption: Label = %SelectedSlotCaption
@@ -108,6 +110,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed(&"toggle_equipment") and not event.is_echo():
+		var requested_tab := _tab_for_key_event(event)
+		if requested_tab >= 0:
+			if visible and tabs.current_tab != requested_tab:
+				tabs.current_tab = requested_tab
+				get_viewport().set_input_as_handled()
+				return
+			tabs.current_tab = requested_tab
 		toggle_panel()
 		get_viewport().set_input_as_handled()
 
@@ -149,6 +158,11 @@ func show_armor_tab() -> void:
 	open_panel()
 
 
+func show_modification_tab() -> void:
+	tabs.current_tab = 1
+	open_panel()
+
+
 func _select_slot(slot_id: StringName) -> void:
 	selected_slot_id = slot_id
 	selected_inventory_entry.clear()
@@ -164,9 +178,23 @@ func _set_modification_filter(filter_id: StringName) -> void:
 	_refresh_modification_inventory()
 
 
-func _on_tab_changed(_tab: int) -> void:
+func _on_tab_changed(tab: int) -> void:
 	selected_inventory_entry.clear()
+	key_badge.text = "U" if tab == 0 else "E"
+	window_title.text = "캐릭터 장비 관리" if tab == 0 else "모듈 · 파츠 관리"
 	_refresh()
+
+
+func _tab_for_key_event(event: InputEvent) -> int:
+	if not event is InputEventKey:
+		return -1
+	var key_event := event as InputEventKey
+	var pressed_key := key_event.physical_keycode if key_event.physical_keycode != 0 else key_event.keycode
+	if pressed_key == KEY_U:
+		return 0
+	if pressed_key == KEY_E:
+		return 1
+	return -1
 
 
 func _on_data_changed(_snapshot: Dictionary) -> void:
@@ -287,7 +315,7 @@ func _refresh_equipment_inventory() -> void:
 			entry.get(&"panel_color", Color(0.2, 0.8, 0.7)),
 			selected,
 			compatible,
-			Vector2(190, 92)
+			Vector2(190, 78)
 		)
 		card.tooltip_text = String(entry.get(&"description", ""))
 		card.pressed.connect(_select_inventory_candidate.bind(entry, &"equipment"))
@@ -333,7 +361,7 @@ func _refresh_installed_customization() -> void:
 			Color(0.35, 0.88, 0.76),
 			selected,
 			true,
-			Vector2(125, 82)
+			Vector2(110, 68)
 		)
 		card.pressed.connect(_select_installed.bind(&"module", module_instance.instance_id))
 		installed_module_grid.add_child(card)
@@ -350,7 +378,7 @@ func _refresh_installed_customization() -> void:
 				Color(0.86, 0.58, 0.22),
 				selected,
 				true,
-				Vector2(185, 72)
+				Vector2(165, 60)
 			)
 			card.pressed.connect(_select_installed.bind(&"part", part.part_id))
 			installed_part_grid.add_child(card)
@@ -393,7 +421,7 @@ func _refresh_modification_inventory() -> void:
 			entry.get(&"panel_color", Color(0.2, 0.8, 0.7)),
 			selected,
 			compatible,
-			Vector2(170, 92)
+			Vector2(160, 78)
 		)
 		card.tooltip_text = String(entry.get(&"description", ""))
 		card.pressed.connect(_select_inventory_candidate.bind(entry, &"modification"))
@@ -906,7 +934,7 @@ func _make_card(
 
 
 func _add_empty_card(parent: Control, card_text: String) -> void:
-	var card := _make_card(card_text, Color(0.18, 0.24, 0.28), false, false, Vector2(125, 72))
+	var card := _make_card(card_text, Color(0.18, 0.24, 0.28), false, false, Vector2(110, 60))
 	card.disabled = true
 	parent.add_child(card)
 
@@ -938,6 +966,19 @@ func _refresh_filter_buttons() -> void:
 	%AllModificationFilter.button_pressed = modification_filter == &"all"
 	%ModuleFilter.button_pressed = modification_filter == &"module"
 	%PartFilter.button_pressed = modification_filter == &"part"
+
+
+func get_density_snapshot() -> Dictionary:
+	return {
+		&"window_size": size,
+		&"slot_rail_width": %SlotRail.custom_minimum_size.x,
+		&"slot_button_height": %MainSlotButton.custom_minimum_size.y,
+		&"equipment_columns": equipment_inventory_grid.columns,
+		&"modification_columns": modification_inventory_grid.columns,
+		&"equipment_card_size": Vector2(190, 78),
+		&"modification_card_size": Vector2(160, 78),
+		&"active_tab": tabs.current_tab,
+	}
 
 
 func _slot_display_name(slot_id: StringName) -> String:

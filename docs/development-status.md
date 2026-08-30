@@ -95,12 +95,12 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>21 UPDATE BUNDLES &middot; BUILD 39 &middot; IMPROVE 30 &middot; CHANGE 18 &middot; FIX 8</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>21 UPDATE BUNDLES &middot; BUILD 39 &middot; IMPROVE 33 &middot; CHANGE 18 &middot; FIX 8</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>21</b><small>UPDATE BUNDLES</small></span>
       <span><b>39</b><small>BUILD</small></span>
-      <span><b>30</b><small>IMPROVE</small></span>
+      <span><b>33</b><small>IMPROVE</small></span>
       <span><b>18</b><small>CHANGE</small></span>
       <span><b>8</b><small>FIX</small></span>
     </div>
@@ -161,7 +161,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>거점 편집 로드아웃 · ESC 모달 · 무손실 반환</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 3</small><b>고밀도 I·U·E · 거점 편집 로드아웃 · 무손실 반환</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 거점 준비가 실제 작전에 연결</strong>
@@ -170,6 +170,8 @@ tags:
             <li>무기·방어구와 모듈·고유 파츠의 장착·교체·해제를 거점에 열었습니다.</li>
             <li>장비 상태·강화 단계·가방 공간을 보존하는 반환·롤백 계약을 추가했습니다.</li>
             <li>거점 편집 상태가 작전 진입과 귀환 후에도 유지됩니다.</li>
+            <li>I 가방은 50px 12×8 격자·용량·선택 상세를, U/E는 압축 슬롯 레일과 3열 후보 카드를 표시합니다.</li>
+            <li>U와 E가 장비·모듈 탭을 각각 직접 열고 열린 창에서는 즉시 상호 전환합니다.</li>
           </ul>
           <p class="sfh-intent"><b>자동 검증</b><span>ESC 2종, 장비 교체·해제, 모듈 장착·교체·해제, 파츠 장착·해제와 양방향 세션 보존을 검사합니다.</span></p>
         </div>
@@ -177,9 +179,12 @@ tags:
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">로드아웃 반출입 트랜잭션</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비·가방 제공자가 상태를 반환하고 공간 부족이나 장착 실패 시 원상 복구합니다.</p><a href="../features/equipment-customization/">장비 편집 설계 →</a></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">세션 준비 상태 스냅샷</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Node 수명과 별개로 장비·가방 상태를 거점과 작전 사이에 전달합니다.</p></div></details>
         </div>
-        <div class="sfh-group"><h3>✨ 개선 · 2</h3>
+        <div class="sfh-group"><h3>✨ 개선 · 5</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">I·U·E ESC 닫기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>열린 준비 패널을 동일한 취소 입력으로 닫습니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">장착·교체·해제 UI</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비와 모듈·파츠의 변경 결과와 실패 원인을 표시합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">I 가방 정보 계층</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>점유 격자·사용률·선택 아이템 정보를 중앙과 상세 패널로 분리했습니다.</p><a href="../features/grid-inventory/">격자 가방 설계 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">U·E 고밀도 카드 레이아웃</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>현재 슬롯·적용 수치·장착 항목·보유 후보를 화면 이탈 없이 비교합니다.</p><a href="../features/equipment-customization/">장비 편집 설계 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">U·E 직접 탭 라우팅</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>키 의미에 맞는 탭을 바로 열고 다른 탭 키 입력은 창을 유지한 채 전환합니다.</p></div></details>
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">거점 조회 전용 제한 제거</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>거점 Workbench를 실제 출격 준비 편집 모드로 바꿨습니다.</p></div></details>

@@ -1,75 +1,278 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://game/features/inventory/inventory_window.gd" id="1_window"]
 [ext_resource type="Script" path="res://game/features/inventory/inventory_grid_view.gd" id="2_grid"]
 
-[sub_resource type="StyleBoxFlat" id="PanelStyle"]
-bg_color = Color(0.025, 0.045, 0.06, 0.98)
+[sub_resource type="StyleBoxFlat" id="RootPanel"]
+bg_color = Color(0.018, 0.024, 0.035, 0.985)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.25, 0.58, 0.62, 0.95)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+border_color = Color(0.12, 0.78, 0.68, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.65)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="GridPanel"]
+bg_color = Color(0.026, 0.035, 0.048, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.15, 0.22, 0.27, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="DetailPanel"]
+bg_color = Color(0.032, 0.043, 0.058, 0.98)
+border_width_left = 3
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.72, 0.65, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="ProgressBackground"]
+bg_color = Color(0.018, 0.025, 0.032, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.16, 0.22, 0.26, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="ProgressFill"]
+bg_color = Color(0.18, 0.86, 0.68, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [node name="InventoryWindow" type="PanelContainer"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -286.0
-offset_top = -258.0
-offset_right = 286.0
-offset_bottom = 258.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 22.0
+offset_top = 20.0
+offset_right = -22.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("PanelStyle")
+theme_override_styles/panel = SubResource("RootPanel")
 script = ExtResource("1_window")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 22
-theme_override_constants/margin_top = 18
-theme_override_constants/margin_right = 22
-theme_override_constants/margin_bottom = 18
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
 
 [node name="Content" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 8
 
 [node name="Header" type="HBoxContainer" parent="Margin/Content"]
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
+theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="Margin/Content/Header"]
+[node name="KeyBadge" type="Label" parent="Margin/Content/Header"]
+custom_minimum_size = Vector2(38, 34)
+layout_mode = 2
+text = "I"
+theme_override_colors/font_color = Color(0.08, 0.12, 0.12, 1)
+theme_override_colors/font_outline_color = Color(0.24, 1, 0.82, 1)
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TitleBlock" type="VBoxContainer" parent="Margin/Content/Header"]
+layout_mode = 2
+theme_override_constants/separation = -3
+
+[node name="Kicker" type="Label" parent="Margin/Content/Header/TitleBlock"]
+layout_mode = 2
+text = "OPERATION STORAGE / 12 × 8 GRID"
+theme_override_colors/font_color = Color(0.24, 0.9, 0.76, 1)
+theme_override_font_sizes/font_size = 10
+
+[node name="Title" type="Label" parent="Margin/Content/Header/TitleBlock"]
 layout_mode = 2
 text = "가방 인벤토리"
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.9, 0.96, 0.98, 1)
+theme_override_font_sizes/font_size = 22
 
-[node name="Spacer" type="Control" parent="Margin/Content/Header"]
+[node name="HeaderSpacer" type="Control" parent="Margin/Content/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Hint" type="Label" parent="Margin/Content/Header"]
-layout_mode = 2
-text = "I 닫기 · U 장비/개조"
-theme_override_colors/font_color = Color(0.62, 0.78, 0.8, 1)
-
-[node name="GridView" type="Control" parent="Margin/Content"]
+[node name="HeaderSummary" type="Label" parent="Margin/Content/Header"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(456, 304)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-size_flags_horizontal = 4
+text = "아이템 0개 · 사용 0/96칸"
+theme_override_colors/font_color = Color(0.62, 0.7, 0.75, 1)
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Main" type="HBoxContainer" parent="Margin/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="GridPanel" type="PanelContainer" parent="Margin/Content/Main"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("GridPanel")
+
+[node name="Margin" type="MarginContainer" parent="Margin/Content/Main/GridPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="Margin/Content/Main/GridPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="GridHeader" type="HBoxContainer" parent="Margin/Content/Main/GridPanel/Margin/Content"]
+layout_mode = 2
+
+[node name="GridTitle" type="Label" parent="Margin/Content/Main/GridPanel/Margin/Content/GridHeader"]
+layout_mode = 2
+text = "작전 가방"
+theme_override_font_sizes/font_size = 18
+
+[node name="GridSpacer" type="Control" parent="Margin/Content/Main/GridPanel/Margin/Content/GridHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InventoryCount" type="Label" parent="Margin/Content/Main/GridPanel/Margin/Content/GridHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 ITEMS"
+theme_override_colors/font_color = Color(0.32, 0.88, 0.74, 1)
+
+[node name="GridHint" type="Label" parent="Margin/Content/Main/GridPanel/Margin/Content"]
+layout_mode = 2
+text = "크기가 다른 아이템은 실제 점유 칸만큼 배치됩니다 · 카드를 선택해 상세 확인"
+theme_override_colors/font_color = Color(0.48, 0.58, 0.63, 1)
+theme_override_font_sizes/font_size = 11
+
+[node name="GridCenter" type="CenterContainer" parent="Margin/Content/Main/GridPanel/Margin/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridView" type="Control" parent="Margin/Content/Main/GridPanel/Margin/Content/GridCenter"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(600, 400)
+layout_mode = 2
 mouse_filter = 0
 script = ExtResource("2_grid")
+cell_pixel_size = 50.0
 
-[node name="DetailLabel" type="Label" parent="Margin/Content"]
+[node name="CapacityLabel" type="Label" parent="Margin/Content/Main/GridPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-text = "아이템 패널을 선택하면 상세 정보가 표시됩니다."
-theme_override_colors/font_color = Color(0.72, 0.86, 0.87, 1)
+text = "공간 사용 0 / 96칸"
+theme_override_colors/font_color = Color(0.62, 0.72, 0.76, 1)
+
+[node name="CapacityBar" type="ProgressBar" parent="Margin/Content/Main/GridPanel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+show_percentage = false
+theme_override_styles/background = SubResource("ProgressBackground")
+theme_override_styles/fill = SubResource("ProgressFill")
+
+[node name="DetailPanel" type="PanelContainer" parent="Margin/Content/Main"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("DetailPanel")
+
+[node name="Margin" type="MarginContainer" parent="Margin/Content/Main/DetailPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="Content" type="VBoxContainer" parent="Margin/Content/Main/DetailPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SelectedType" type="Label" parent="Margin/Content/Main/DetailPanel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "ITEM DETAIL / NO SELECTION"
+theme_override_colors/font_color = Color(0.25, 0.88, 0.74, 1)
+theme_override_font_sizes/font_size = 10
+
+[node name="SelectedName" type="Label" parent="Margin/Content/Main/DetailPanel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+text = "아이템 선택"
+theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
 autowrap_mode = 2
+
+[node name="SelectedMeta" type="Label" parent="Margin/Content/Main/DetailPanel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 40)
+layout_mode = 2
+text = "가방 카드의 종류와 점유 공간을 확인합니다."
+theme_override_colors/font_color = Color(0.62, 0.72, 0.77, 1)
+autowrap_mode = 2
+
+[node name="Rule" type="HSeparator" parent="Margin/Content/Main/DetailPanel/Margin/Content"]
+layout_mode = 2
+
+[node name="SelectedDescription" type="Label" parent="Margin/Content/Main/DetailPanel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 150)
+layout_mode = 2
+size_flags_vertical = 3
+text = "아이템을 선택하면 설명과 배치 정보를 이 영역에 집중해서 표시합니다."
+theme_override_colors/font_color = Color(0.76, 0.84, 0.88, 1)
+theme_override_font_sizes/font_size = 14
+autowrap_mode = 2
+
+[node name="ControlGuide" type="Label" parent="Margin/Content/Main/DetailPanel/Margin/Content"]
+layout_mode = 2
+text = "빠른 이동\nU  장비 장착 화면\nE  모듈 · 파츠 화면\nESC  현재 창 닫기"
+theme_override_colors/font_color = Color(0.5, 0.61, 0.66, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="Footer" type="HBoxContainer" parent="Margin/Content"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Status" type="Label" parent="Margin/Content/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "◆ 가방 배치와 장비 편집 상태는 거점과 작전 사이에 유지됩니다."
+theme_override_colors/font_color = Color(0.7, 0.8, 0.82, 1)
+vertical_alignment = 1
+
+[node name="CloseHint" type="Label" parent="Margin/Content/Footer"]
+layout_mode = 2
+text = "I / ESC 닫기 · U/E 장비 관리"
+theme_override_colors/font_color = Color(0.45, 0.55, 0.6, 1)
+vertical_alignment = 1
