@@ -74,7 +74,6 @@ func _process(delta: float) -> void:
 	if not is_instance_valid(target) or not is_instance_valid(enemy_parent):
 		return
 
-	_prune_invalid_enemies()
 	reinforcement_cooldown -= delta
 	if reinforcement_cooldown > 0.0 or spawn_config == null:
 		return

@@ -1,9 +1,8 @@
 class_name TimedStatModifier
-extends Node
+extends Timer
 
 var target: Node
 var source_id: StringName
-var remaining_seconds: float = 0.0
 
 
 func configure(
@@ -22,15 +21,12 @@ func configure(
 		return false
 	target = new_target
 	source_id = new_source_id
-	remaining_seconds = duration_seconds
+	wait_time = duration_seconds
+	one_shot = true
+	timeout.connect(queue_free)
 	target.call(&"set_runtime_modifier_source", source_id, modifiers)
+	start()
 	return true
-
-
-func _process(delta: float) -> void:
-	remaining_seconds = maxf(0.0, remaining_seconds - maxf(0.0, delta))
-	if remaining_seconds <= 0.0:
-		queue_free()
 
 
 func _exit_tree() -> void:

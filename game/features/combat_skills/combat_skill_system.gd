@@ -4,6 +4,8 @@ extends Node
 signal skill_states_changed(states: Array[Dictionary])
 signal skill_activated(slot_index: int, skill_id: StringName, result: Dictionary)
 
+@export_range(0.05, 0.5, 0.01) var hud_refresh_interval_seconds: float = 0.1
+
 var player: Node2D
 var target_container: Node
 var effect_parent: Node2D
@@ -11,6 +13,8 @@ var loadout
 var damage_enabled: bool = true
 var activation_enabled: bool = true
 var cooldowns: Array[float] = []
+var hud_refresh_accumulator: float = 0.0
+var state_emission_count: int = 0
 
 
 func configure(
@@ -33,6 +37,8 @@ func configure(
 	effect_parent = new_effect_parent
 	loadout = new_loadout
 	damage_enabled = new_damage_enabled
+	hud_refresh_accumulator = 0.0
+	state_emission_count = 0
 	cooldowns.clear()
 	for _skill in loadout.skills:
 		cooldowns.append(0.0)
@@ -41,7 +47,7 @@ func configure(
 
 
 func _process(delta: float) -> void:
-	advance(delta)
+	_advance_cooldowns(delta, false)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -80,14 +86,26 @@ func try_activate(slot_index: int) -> bool:
 
 
 func advance(delta: float) -> void:
+	_advance_cooldowns(delta, true)
+
+
+func _advance_cooldowns(delta: float, force_emit: bool) -> void:
 	if loadout == null or delta <= 0.0:
 		return
 	var changed := false
+	var became_ready := false
 	for index in cooldowns.size():
 		var previous := cooldowns[index]
 		cooldowns[index] = maxf(0.0, previous - delta)
 		changed = changed or not is_equal_approx(previous, cooldowns[index])
-	if changed:
+		became_ready = became_ready or (previous > 0.0 and cooldowns[index] <= 0.0)
+	if not changed:
+		return
+	hud_refresh_accumulator += delta
+	if force_emit or became_ready or hud_refresh_accumulator >= hud_refresh_interval_seconds:
+		hud_refresh_accumulator = fmod(
+			hud_refresh_accumulator, hud_refresh_interval_seconds
+		) if not force_emit else 0.0
 		_emit_states()
 
 
@@ -118,9 +136,15 @@ func get_snapshot() -> Dictionary:
 	return {
 		&"skill_count": loadout.skills.size() if loadout != null else 0,
 		&"activation_enabled": activation_enabled,
+		&"hud_refresh_hz": 1.0 / hud_refresh_interval_seconds,
+		&"state_emission_count": state_emission_count,
+		&"active_electric_effects": get_tree().get_node_count_in_group(
+			&"combat_skill_electric_effect"
+		) if is_inside_tree() else 0,
 		&"states": get_skill_states(),
 	}
 
 
 func _emit_states() -> void:
+	state_emission_count += 1
 	skill_states_changed.emit(get_skill_states())

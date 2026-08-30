@@ -201,9 +201,25 @@ func _verify_combat_skill_modules() -> bool:
 	sandbox.add_child(system)
 	var loadout: Resource = load(COMBAT_SKILL_LOADOUT_PATH)
 	var failure_message := ""
-	if not system.call(&"configure", player, enemies, effects, loadout, true):
+	var expected_patterns := ["trail", "ring", "burst"]
+	var loadout_skills: Array = loadout.get("skills")
+	for skill_index in loadout_skills.size():
+		var effect: Resource = loadout_skills[skill_index].get("effect")
+		var electric_profile: Resource = effect.get("electric_profile")
+		if (
+			electric_profile == null
+			or not bool(electric_profile.call(&"is_valid"))
+			or String(electric_profile.get("pattern")) != expected_patterns[skill_index]
+			or int(electric_profile.call(&"estimated_line_segments")) > 128
+			or float(electric_profile.get("geometry_refresh_hz")) > 20.0
+		):
+			failure_message = "전기 이펙트 프로필 또는 선분·갱신 예산이 유효하지 않습니다."
+			break
+	if failure_message.is_empty() and not system.call(
+		&"configure", player, enemies, effects, loadout, true
+	):
 		failure_message = "전투 스킬 실행기 구성이 실패했습니다."
-	else:
+	elif failure_message.is_empty():
 		var initial: Dictionary = system.call(&"get_snapshot")
 		var states: Array = initial.get(&"states", [])
 		if (
@@ -252,6 +268,31 @@ func _verify_combat_skill_modules() -> bool:
 					or hud.get_node("Panel/Margin/SkillSlots").get_child_count() != 3
 				):
 					failure_message = "스킬 HUD에 세 개 슬롯과 쿨타임 상태가 표시되지 않았습니다."
+		if failure_message.is_empty():
+			var electric_effects := get_nodes_in_group(&"combat_skill_electric_effect")
+			if electric_effects.size() != 3:
+				failure_message = "세 스킬이 각각 전기 이펙트 인스턴스를 생성하지 않았습니다."
+			else:
+				for electric in electric_effects:
+					var electric_snapshot: Dictionary = electric.call(&"get_snapshot")
+					if (
+						int(electric_snapshot.get(&"line_segments", 999)) > 128
+						or float(electric_snapshot.get(&"geometry_refresh_hz", 999.0)) > 20.0
+						or int(electric_snapshot.get(&"cached_arc_count", 0)) <= 0
+					):
+						failure_message = "전기 이펙트가 런타임 연산 예산을 벗어났습니다."
+						break
+		if failure_message.is_empty():
+			var emissions_before := int(system.call(&"get_snapshot").get(&"state_emission_count", 0))
+			for _step in 6:
+				system.call(&"_process", 1.0 / 60.0)
+			var optimized_snapshot: Dictionary = system.call(&"get_snapshot")
+			var emitted_updates := int(optimized_snapshot.get(&"state_emission_count", 0)) - emissions_before
+			if (
+				float(optimized_snapshot.get(&"hud_refresh_hz", 999.0)) > 10.01
+				or emitted_updates > 2
+			):
+				failure_message = "쿨타임 HUD가 10Hz 예산보다 자주 상태를 갱신합니다."
 	root.remove_child(sandbox)
 	sandbox.free()
 	await process_frame
@@ -1695,7 +1736,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK combat_skills combat_skills_optional skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

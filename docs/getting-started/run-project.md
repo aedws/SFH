@@ -52,6 +52,14 @@ tags:
 
 시작 거점, 작전 게이트, 전투 세션 진입·복귀, 화면 크기 방, 전장의 안개, 미니맵, 자원 회수와 기존 전투·장비·성장 기능이 정상이라면 `SMOKE_TEST_OK`가 표시됩니다.
 
+## 자동 성능 예산 테스트
+
+```powershell
+.\scripts\test-performance.ps1
+```
+
+대형 작전의 프레임 시간, Node 수, 충돌체 압축률과 동시 전기 이펙트 수가 예산 안이면 `PERFORMANCE_BUDGET_OK`가 표시됩니다. 이 테스트는 개발 PC의 CPU 회귀 검사용이며 실제 최소 사양은 [최소·권장 사양과 성능 예산](../performance/minimum-requirements.md)의 실기 절차로 별도 인증합니다.
+
 ## 실행되지 않을 때
 
 [문제 해결](../troubleshooting/index.md)의 `프로젝트가 실행되지 않음` 항목을 확인합니다.
