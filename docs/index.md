@@ -62,10 +62,33 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>회수 목표 2.5~5배</span><span>유한 증원 120~360</span><span>동적 이동 검증 PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>성장 시트 2개</span><span>런 버프 5개</span><span>강화 스펙 25개</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 4개 주제</strong>
+      <ul>
+        <li><code>RunBuff</code> 탭에서 한 판 내부 레벨업 선택지 5개와 중첩·효과를 관리합니다.</li>
+        <li><code>Upgrade</code> 탭에서 무기·방어구·모듈의 레벨별 누적 효과와 비용 25개를 관리합니다.</li>
+        <li>작전 시작 UI의 확정 CSV/실시간 테스트 모드가 세 성장 데이터에도 함께 적용됩니다.</li>
+        <li>잘못된 행이나 네트워크 오류에는 마지막 정상값 또는 확정 CSV로 복구합니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>모듈 감사 결론</b><span>성장 서비스는 데이터만 제공하고 버프 선택, 장비 상태, 발사, 크레딧 소비는 기존 기능의 공개 계약에 맡깁니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">RunBuff 실시간 성장 데이터</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>최대 체력·방어력·이동 속도와 무기 피해·주기·거리 효과를 행 단위로 편집합니다.</p><a href="features/growth-balance/">성장 시트 계약 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">장비·모듈 강화 스펙 연동</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>ID와 레벨로 누적 스탯, 최대 레벨, 모듈 코스트와 다음 강화 비용을 조회합니다.</p><a href="features/equipment-upgrade-economy/">강화 경제 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>🧩 수정 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">Resource 폴백을 보존한 제공자 계약</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>시트 기능을 끄면 기존 버프 카탈로그와 강화 비용 Resource로 자동 복귀합니다.</p><a href="architecture/module-audit/">모듈 점검 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
   <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">

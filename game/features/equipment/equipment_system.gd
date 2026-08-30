@@ -6,6 +6,7 @@ signal skill_activation_changed(active_skill_ids: PackedStringArray, inactive_sk
 signal stat_modifiers_changed(modifiers: Dictionary)
 signal customization_changed(snapshot: Dictionary)
 signal active_weapon_changed(slot_id: StringName, weapon_definition: EquipmentWeaponDefinition)
+signal weapon_upgrade_modifiers_changed(modifiers: Dictionary)
 
 const TARGET_METHOD := &"apply_equipment_modifiers"
 
@@ -20,6 +21,7 @@ var aggregated_stat_modifiers: Dictionary = {}
 var equipment_states: Dictionary = {}
 var active_weapon_slot: StringName = &"main"
 var external_armor_level: int = 1
+var upgrade_balance_provider: Node
 
 
 func configure(
@@ -88,6 +90,7 @@ func set_active_weapon_slot(slot_id: StringName) -> bool:
 		return true
 	active_weapon_slot = slot_id
 	active_weapon_changed.emit(active_weapon_slot, get_active_weapon())
+	weapon_upgrade_modifiers_changed.emit(get_active_weapon_upgrade_modifiers())
 	equipment_changed.emit(get_summary())
 	return true
 
@@ -115,6 +118,41 @@ func get_customization_snapshot() -> Dictionary:
 	return result
 
 
+func set_upgrade_balance_provider(provider: Node) -> bool:
+	if provider != null:
+		for method_name in [
+			&"get_maximum_level", &"get_module_capacity_cost",
+			&"get_player_modifiers", &"get_weapon_modifiers",
+		]:
+			if not provider.has_method(method_name):
+				return false
+	upgrade_balance_provider = provider
+	for state in equipment_states.values():
+		(state as EquipmentItemState).set_upgrade_balance_provider(provider)
+	_refresh_after_customization()
+	return true
+
+
+func get_active_weapon_upgrade_modifiers() -> Dictionary:
+	var state := get_equipment_state(active_weapon_slot)
+	if state == null or not state.is_weapon() or upgrade_balance_provider == null:
+		return {}
+	var result: Dictionary = upgrade_balance_provider.call(
+		&"get_weapon_modifiers", &"weapon", state.definition_id(), state.level
+	)
+	for module_instance in state.installed_modules:
+		_accumulate_weapon_modifier_dictionary(
+			result,
+			upgrade_balance_provider.call(
+				&"get_weapon_modifiers",
+				&"module",
+				module_instance.definition.module_id,
+				module_instance.upgrade_level
+			)
+		)
+	return result
+
+
 func can_equip_definition(slot_id: StringName, definition: Resource) -> bool:
 	if loadout == null:
 		return false
@@ -131,6 +169,7 @@ func equip_definition(slot_id: StringName, definition: Resource) -> bool:
 		return false
 	var state := EquipmentItemState.new()
 	state.configure(slot_id, definition)
+	state.set_upgrade_balance_provider(upgrade_balance_provider)
 	equipment_states[slot_id] = state
 	if definition is EquipmentWeaponDefinition:
 		if slot_id == &"main":
@@ -263,6 +302,7 @@ func _add_equipment_state(slot_id: StringName, definition: Resource) -> void:
 		return
 	var state := EquipmentItemState.new()
 	state.configure(slot_id, definition)
+	state.set_upgrade_balance_provider(upgrade_balance_provider)
 	equipment_states[slot_id] = state
 
 
@@ -273,6 +313,7 @@ func _refresh_after_customization() -> void:
 		stats_target.call(TARGET_METHOD, aggregated_stat_modifiers)
 	equipment_changed.emit(get_summary())
 	customization_changed.emit(get_customization_snapshot())
+	weapon_upgrade_modifiers_changed.emit(get_active_weapon_upgrade_modifiers())
 
 
 func _resolve_skills() -> void:
@@ -316,10 +357,21 @@ func _resolve_stat_modifiers() -> void:
 		_accumulate_modifiers(armor_item.stat_modifiers)
 	for slot_id in equipment_states:
 		var state := equipment_states[slot_id] as EquipmentItemState
+		if upgrade_balance_provider != null and state.is_armor():
+			_accumulate_modifier_dictionary(upgrade_balance_provider.call(
+				&"get_player_modifiers", &"armor", state.definition_id(), state.level
+			))
 		for part in state.installed_parts:
 			_accumulate_modifiers(part.stat_modifiers)
 		for module_instance in state.installed_modules:
 			_accumulate_modifiers(module_instance.definition.stat_modifiers)
+			if upgrade_balance_provider != null:
+				_accumulate_modifier_dictionary(upgrade_balance_provider.call(
+					&"get_player_modifiers",
+					&"module",
+					module_instance.definition.module_id,
+					module_instance.upgrade_level
+				))
 	stat_modifiers_changed.emit(get_stat_modifiers())
 
 
@@ -335,3 +387,26 @@ func _accumulate_modifiers(modifiers: Array[EquipmentStatModifier]) -> void:
 		else:
 			entry[&"multiply"] = float(entry[&"multiply"]) * modifier.amount
 		aggregated_stat_modifiers[stat_id] = entry
+
+
+func _accumulate_modifier_dictionary(modifiers: Dictionary) -> void:
+	for stat_id in modifiers:
+		var source: Dictionary = modifiers[stat_id]
+		var entry: Dictionary = aggregated_stat_modifiers.get(
+			stat_id, {&"add": 0.0, &"multiply": 1.0}
+		)
+		entry[&"add"] = float(entry[&"add"]) + float(source.get(&"add", 0.0))
+		entry[&"multiply"] = (
+			float(entry[&"multiply"]) * float(source.get(&"multiply", 1.0))
+		)
+		aggregated_stat_modifiers[stat_id] = entry
+
+
+func _accumulate_weapon_modifier_dictionary(target: Dictionary, source: Dictionary) -> void:
+	for modifier_id in source:
+		var neutral := 0.0 if modifier_id == &"damage_add" else 1.0
+		var current := float(target.get(modifier_id, neutral))
+		if modifier_id == &"damage_add":
+			target[modifier_id] = current + float(source[modifier_id])
+		else:
+			target[modifier_id] = current * float(source[modifier_id])

@@ -33,7 +33,7 @@ tags:
 | 고속 순환 | 공격 간격 -10% | 무기 | 5 |
 | 임시 장갑 | 방어력 +1 | 방어구 | 5 |
 
-버프는 `.tres` Resource이므로 새 효과, 표시 문구, 최대 중첩, 외부 성장 계열을 코드 수정 없이 추가할 수 있습니다. 장비·외부 레벨과 충돌하지 않도록 플레이어와 무기는 `equipment`, `run_buffs`, `meta_*` 같은 출처별 수정자를 합산합니다.
+버프의 확정값은 저장소 CSV에 있고, 실시간 테스트에서는 Google Sheets `RunBuff` 탭을 읽습니다. 새 효과, 표시 문구, 최대 중첩, 외부 성장 계열을 코드 수정 없이 추가할 수 있습니다. 장비·외부 레벨과 충돌하지 않도록 플레이어와 무기는 `equipment`, `run_buffs`, `meta_*` 같은 출처별 수정자를 합산합니다. 열 계약과 확정 절차는 [내부 성장·장비 강화 Google Sheets 연동](growth-balance.md)을 참고합니다.
 
 ## 외부 성장
 
@@ -49,7 +49,7 @@ tags:
 | 무기 | 레벨당 기본 피해 +0.5 |
 | 방어구 | 레벨당 방어력 +0.5 |
 
-현재 수치는 최소 구현용 기본값입니다. 추후 Google Sheets나 별도 성장 정책 Resource로 옮길 수 있도록 적용 지점은 공개 계약으로 분리했습니다.
+현재 수치는 최소 구현용 기본값입니다. 내부 버프와 장비 강화 수치는 Google Sheets로 연결됐고, 외부 경험치 요구량과 영구 계열 효과는 계속 `MetaProgressionSystem`의 독립 정책으로 남아 있습니다.
 
 ## 모듈 구성과 계약
 
@@ -58,6 +58,7 @@ tags:
 | `experience` | 결정 생성과 획득 | `experience_collected` |
 | `leveling` | 한 판 XP·레벨 | `level_gained`, `get_run_snapshot` |
 | `run_buffs` | 선택지·중첩·임시 효과·정산 분류 | `prepare_choices`, `select_buff`, `get_meta_experience_breakdown` |
+| `growth_balance` | RunBuff·Upgrade CSV 검증, 실시간 갱신, 확정값 폴백 | `get_run_buff_catalog`, `get_*_modifiers`, `quote_upgrade` |
 | `meta_progression` | 세 계열 외부 XP·레벨·저장 | `settle_run`, `apply_to_targets`, `get_snapshot` |
 
 `run_buffs`를 끄면 기존 자동 무기 강화·소량 회복 폴백으로 동작합니다. `meta_progression`만 끄면 한 판 버프는 유지되지만 종료 후 영구 성장은 정산하지 않습니다.

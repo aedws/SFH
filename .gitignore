@@ -16,7 +16,7 @@ site/
 venv/
 __pycache__/
 outputs/
-game/features/weapon_balance/data/*.csv.import
+game/features/*/data/*.csv.import
 
 # Editors and operating systems
 .idea/

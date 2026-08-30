@@ -25,6 +25,7 @@ extends Resource
 @export var spawning_enabled: bool = true
 @export var weapons_enabled: bool = true
 @export var weapon_balance_enabled: bool = true
+@export var growth_balance_enabled: bool = true
 @export var damage_enabled: bool = true
 @export var health_recovery_enabled: bool = true
 @export var experience_enabled: bool = true
@@ -47,6 +48,9 @@ extends Resource
 @export_category("Weapon balance")
 @export_file("*.tres") var weapon_balance_config_path: String = (
 	"res://game/features/weapon_balance/configs/default_weapon_balance.tres"
+)
+@export_file("*.tres") var growth_balance_config_path: String = (
+	"res://game/features/growth_balance/configs/default_growth_balance.tres"
 )
 
 @export_category("Inventory")
@@ -116,6 +120,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"weapons")
 	if weapon_balance_enabled:
 		result.append(&"weapon_balance")
+	if growth_balance_enabled:
+		result.append(&"growth_balance")
 	if damage_enabled:
 		result.append(&"damage")
 	if health_recovery_enabled:
@@ -194,6 +200,15 @@ func validation_errors() -> PackedStringArray:
 		or not ResourceLoader.exists(weapon_balance_config_path)
 	):
 		errors.append("weapon_balance 설정 Resource 경로가 유효하지 않습니다.")
+	if growth_balance_enabled and not run_buffs_enabled:
+		errors.append("growth_balance 모듈은 run_buffs 모듈이 필요합니다.")
+	if growth_balance_enabled and not equipment_enabled:
+		errors.append("growth_balance 모듈은 equipment 모듈이 필요합니다.")
+	if growth_balance_enabled and (
+		growth_balance_config_path.is_empty()
+		or not ResourceLoader.exists(growth_balance_config_path)
+	):
+		errors.append("growth_balance 설정 Resource 경로가 유효하지 않습니다.")
 	if experience_enabled and not enemies_enabled:
 		errors.append("experience 모듈은 enemies 모듈이 필요합니다.")
 	if leveling_enabled and not experience_enabled:

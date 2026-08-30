@@ -21,6 +21,7 @@ Game
 │  ├─ ProgressionSystem     # 실행 시 생성
 │  ├─ HealthRecovery        # 지연·상한이 있는 부분 체력 회복
 │  ├─ RunBuffSystem         # 한 판 임시 버프 선택·중첩
+│  ├─ GrowthBalance         # RunBuff·Upgrade 실시간/확정 CSV와 수정자 제공
 │  ├─ MetaProgression       # 캐릭터·무기·방어구 외부 성장과 저장
 │  ├─ CharacterEquipment    # 무기·스킬·방어구 로드아웃 조립
 │  ├─ CreditLedger          # 휴대·회수·분실 계산
@@ -56,5 +57,6 @@ Game
 - `game/features/weapons/auto_weapon.tscn`: 자동 공격 기능
 - `game/features/experience/progression_system.tscn`: 성장 기능
 - `game/features/run_buffs/run_buff_system.tscn`: 한 판 임시 버프
+- `game/features/growth_balance/growth_balance_service.tscn`: 내부 성장·장비 강화 밸런스 제공
 - `game/features/meta_progression/meta_progression_system.tscn`: 외부 성장과 저장
 - `game/features/equipment_upgrade/equipment_upgrade_service.tscn`: 파츠·모듈 강화 경제

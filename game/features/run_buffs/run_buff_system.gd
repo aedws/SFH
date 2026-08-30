@@ -38,6 +38,25 @@ func configure(
 	return true
 
 
+func set_catalog(new_catalog: Resource) -> bool:
+	if (
+		new_catalog == null
+		or not new_catalog.has_method(&"validation_errors")
+		or not new_catalog.call(&"validation_errors").is_empty()
+	):
+		return false
+	catalog = new_catalog
+	for buff_id in selected_stacks.keys():
+		var buff: Resource = catalog.call(&"get_buff", buff_id)
+		if buff == null:
+			selected_stacks.erase(buff_id)
+		elif int(selected_stacks[buff_id]) > int(buff.get("maximum_stacks")):
+			selected_stacks[buff_id] = int(buff.get("maximum_stacks"))
+	offered_buff_ids.clear()
+	_apply_aggregated_modifiers()
+	return true
+
+
 func prepare_choices(run_level: int, choice_count: int = 3) -> Array[Dictionary]:
 	var candidates: Array[Resource] = []
 	for buff in catalog.get("buffs"):

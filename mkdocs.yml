@@ -91,6 +91,7 @@ nav:
       - 적 체력과 방어력: features/enemy-defense.md
       - 자동 무기: features/weapons.md
       - Q 무기 교체와 Google Sheets 밸런스: features/weapon-balance.md
+      - 내부 성장·장비 강화 Google Sheets 연동: features/growth-balance.md
       - 내부·외부 로그라이크 성장: features/progression.md
       - 게임 루프와 HUD: features/game-loop.md
   - 문제 해결:
