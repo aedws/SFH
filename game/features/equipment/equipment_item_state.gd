@@ -85,12 +85,27 @@ func can_install_part(part: EquipmentPartDefinition) -> bool:
 	return true
 
 
-func install_part(part: EquipmentPartDefinition) -> bool:
+func install_part(part: EquipmentPartDefinition, upgrade_level: int = 1) -> bool:
 	if not can_install_part(part):
 		return false
 	installed_parts.append(part)
-	part_upgrade_levels[part.part_id] = 1
+	part_upgrade_levels[part.part_id] = clampi(upgrade_level, 1, part.maximum_upgrade_level)
 	return true
+
+
+func remove_part(part_id: StringName) -> Dictionary:
+	for index in range(installed_parts.size()):
+		var part := installed_parts[index]
+		if part.part_id != part_id:
+			continue
+		var result := {
+			&"definition": part,
+			&"upgrade_level": int(part_upgrade_levels.get(part.part_id, 1)),
+		}
+		installed_parts.remove_at(index)
+		part_upgrade_levels.erase(part.part_id)
+		return result
+	return {}
 
 
 func get_part(part_id: StringName) -> EquipmentPartDefinition:
@@ -141,13 +156,34 @@ func can_install_module(module_definition: EquipmentModuleDefinition) -> bool:
 	return used_module_cost() + effective_module_cost(candidate) <= module_cost_limit()
 
 
-func install_module(instance_id: StringName, module_definition: EquipmentModuleDefinition) -> bool:
+func install_module(
+	instance_id: StringName,
+	module_definition: EquipmentModuleDefinition,
+	upgrade_level: int = 1
+) -> bool:
 	if not can_install_module(module_definition):
 		return false
 	var module_instance := EquipmentModuleInstance.new()
 	module_instance.configure(instance_id, module_definition)
+	module_instance.upgrade_level = clampi(
+		upgrade_level, 1, module_definition.maximum_upgrade_level()
+	)
 	installed_modules.append(module_instance)
 	return true
+
+
+func remove_module(instance_id: StringName) -> Dictionary:
+	for index in range(installed_modules.size()):
+		var module_instance := installed_modules[index]
+		if module_instance.instance_id != instance_id:
+			continue
+		var result := {
+			&"definition": module_instance.definition,
+			&"upgrade_level": module_instance.upgrade_level,
+		}
+		installed_modules.remove_at(index)
+		return result
+	return {}
 
 
 func upgrade_module(instance_id: StringName) -> bool:

@@ -63,21 +63,47 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>SEARCH COMMAND</span><span>1 DAY · 15 TOPICS</span><span>기획 진행도 74% · 원문 재대조</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>SEARCH COMMAND</span><span>1 DAY · 16 TOPICS</span><span>기획 진행도 74% · 원문 재대조</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>15 UPDATE BUNDLES &middot; BUILD 28 &middot; IMPROVE 17 &middot; CHANGE 9 &middot; FIX 4</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>16 UPDATE BUNDLES &middot; BUILD 30 &middot; IMPROVE 19 &middot; CHANGE 10 &middot; FIX 4</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>15</b><small>UPDATE BUNDLES</small></span>
-      <span><b>28</b><small>BUILD</small></span>
-      <span><b>17</b><small>IMPROVE</small></span>
-      <span><b>9</b><small>CHANGE</small></span>
+      <span><b>16</b><small>UPDATE BUNDLES</small></span>
+      <span><b>30</b><small>BUILD</small></span>
+      <span><b>19</b><small>IMPROVE</small></span>
+      <span><b>10</b><small>CHANGE</small></span>
       <span><b>4</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>전투 에너지 · 스킬 충전 · 처치 회복 드랍</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 1</small><b>거점 로드아웃 편집 · ESC 닫기 · 세션 상태 유지</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>핵심 변경 · 거점에서 출격 장비를 완성</strong>
+          <ul>
+            <li>I·U·E 패널을 모두 ESC로 닫고 기존 일시정지 상태로 복귀합니다.</li>
+            <li>거점에서 무기·방어구·모듈·고유 파츠를 장착·교체·해제합니다.</li>
+            <li>해제한 장비와 강화 상태를 가방에 반환하며 공간 부족 시 변경 전 차단합니다.</li>
+            <li>준비 로드아웃과 가방 배치를 작전 진입·거점 귀환 사이에 유지합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>모듈 감사 결론</b><span>Workbench는 공개 반출입 계약만 조정하고, Game은 불투명 런타임 스냅샷만 세션 사이에 전달합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">장비·모듈·파츠 반환 트랜잭션</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장착 상태와 강화 단계를 보존해 가방으로 반환하고 실패 시 원래 상태로 롤백합니다.</p><a href="features/equipment-customization/">거점 편집 규칙 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">거점↔작전 준비 상태 전달</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비와 가방 제공자의 export/restore 계약으로 Scene 교체 후에도 상태를 복구합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>✨ 개선 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">I·U·E 공통 ESC 닫기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>열린 모달을 ESC 한 번으로 닫습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">교체·해제 전용 버튼과 상태 문구</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비와 장착 모듈·파츠의 반환 동선을 UI에서 명확히 표시합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">거점 조회 전용 정책 해제</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>시작 거점의 Workbench를 실제 출격 준비 편집 모드로 전환했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 2</small><b>전투 에너지 · 스킬 충전 · 처치 회복 드랍</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 처치로 다시 이어가는 자원 전투</strong>
@@ -102,7 +128,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>적 군중 분리 · 생성 간격 · 좁은 통로 흐름</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 3</small><b>적 군중 분리 · 생성 간격 · 좁은 통로 흐름</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 겹치지 않되 서로 막지 않는 적 무리</strong>
@@ -123,7 +149,7 @@ hide:
       </div>
     </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 3</small><b>기획자 검색 허브 · 실시간 탐색 순위 · 빠른 영역 검색</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 4</small><b>기획자 검색 허브 · 실시간 탐색 순위 · 빠른 영역 검색</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 검색 전부터 찾을 수 있는 위키</strong>
@@ -144,7 +170,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 4</small><b>하루 단위 업데이트 압축 · 일일 합계 · 중복 방지 검사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 5</small><b>하루 단위 업데이트 압축 · 일일 합계 · 중복 방지 검사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 날짜당 카드 하나</strong>
@@ -162,7 +188,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 5</small><b>거점 I 가방 · U/E 장비 조회 · Q 무기 선택 유지</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 6</small><b>거점 I 가방 · U/E 장비 조회 · Q 무기 선택 유지</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 거점 준비 단축키</strong>
@@ -183,7 +209,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 6</small><b>지속 원형 자기장 · 방 진입 봉쇄 전투 · 전멸 보상</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 7</small><b>지속 원형 자기장 · 방 진입 봉쇄 전투 · 전멸 보상</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 전투 흐름 2개 개선</strong>
@@ -202,7 +228,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 7</small><b>방·통로 안개 전환 · 탈출 방어 · 영구 경제 · 스마트 타게팅 · 제작 · 랭킹</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 8</small><b>방·통로 안개 전환 · 탈출 방어 · 영구 경제 · 스마트 타게팅 · 제작 · 랭킹</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 7개 시스템 + 안개 전환 개선</strong>
@@ -231,7 +257,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 8</small><b>전기 스킬 이펙트 · 대형 작전 성능 최적화</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 9</small><b>전기 스킬 이펙트 · 대형 작전 성능 최적화</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -252,7 +278,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 9</small><b>큰 시작 거점 · 작전 게이트 · 전투 세션 복귀</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 10</small><b>큰 시작 거점 · 작전 게이트 · 전투 세션 복귀</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -275,7 +301,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 10</small><b>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 11</small><b>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 4개 주제</strong>
@@ -297,7 +323,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 11</small><b>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 12</small><b>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -323,7 +349,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 12</small><b>방 전체 공개 · 통로 정면 원뿔 시야 · 다른 방 차단</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 13</small><b>방 전체 공개 · 통로 정면 원뿔 시야 · 다른 방 차단</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 4개 주제</strong>
@@ -345,7 +371,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 13</small><b>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 모듈 전수 감사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 14</small><b>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 모듈 전수 감사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -369,7 +395,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 14</small><b>화면 크기 방 · 안개 · 금고형 자원 회수</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 15</small><b>화면 크기 방 · 안개 · 금고형 자원 회수</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -393,7 +419,7 @@ hide:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 15</small><b>U 장비 · 모듈 인벤토리 UI 개편</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 16</small><b>U 장비 · 모듈 인벤토리 UI 개편</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>

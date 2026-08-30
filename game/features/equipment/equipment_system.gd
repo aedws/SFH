@@ -169,8 +169,45 @@ func equip_definition(slot_id: StringName, definition: Resource) -> bool:
 		return false
 	var state := EquipmentItemState.new()
 	state.configure(slot_id, definition)
+	return equip_state(slot_id, state)
+
+
+func equip_state(slot_id: StringName, saved_state: EquipmentItemState) -> bool:
+	if saved_state == null or not can_equip_definition(slot_id, saved_state.definition):
+		return false
+	var state := saved_state.duplicate(true) as EquipmentItemState
+	state.state_id = slot_id
 	state.set_upgrade_balance_provider(upgrade_balance_provider)
 	equipment_states[slot_id] = state
+	_assign_definition_to_loadout(slot_id, state.definition)
+	_refresh_after_customization()
+	if slot_id == active_weapon_slot and state.definition is EquipmentWeaponDefinition:
+		active_weapon_changed.emit(active_weapon_slot, state.definition)
+	return true
+
+
+func take_equipment_state(slot_id: StringName) -> EquipmentItemState:
+	var state := get_equipment_state(slot_id)
+	if state == null:
+		return null
+	equipment_states.erase(slot_id)
+	if slot_id == &"main":
+		loadout.main_weapon = null
+	elif slot_id == &"secondary":
+		loadout.secondary_weapon = null
+	else:
+		for index in range(loadout.armor.size() - 1, -1, -1):
+			if loadout.armor[index].slot_id == slot_id:
+				loadout.armor.remove_at(index)
+	if slot_id == active_weapon_slot:
+		var fallback := &"secondary" if slot_id == &"main" else &"main"
+		active_weapon_slot = fallback if get_weapon(fallback) != null else slot_id
+	_refresh_after_customization()
+	active_weapon_changed.emit(active_weapon_slot, get_active_weapon())
+	return state
+
+
+func _assign_definition_to_loadout(slot_id: StringName, definition: Resource) -> void:
 	if definition is EquipmentWeaponDefinition:
 		if slot_id == &"main":
 			loadout.main_weapon = definition
@@ -185,15 +222,15 @@ func equip_definition(slot_id: StringName, definition: Resource) -> bool:
 				break
 		if not replaced:
 			loadout.armor.append(definition)
-	_refresh_after_customization()
-	if slot_id == active_weapon_slot and definition is EquipmentWeaponDefinition:
-		active_weapon_changed.emit(active_weapon_slot, definition)
-	return true
 
 
-func install_part(slot_id: StringName, part: EquipmentPartDefinition) -> bool:
+func install_part(
+	slot_id: StringName,
+	part: EquipmentPartDefinition,
+	upgrade_level: int = 1
+) -> bool:
 	var state := get_equipment_state(slot_id)
-	if state == null or not state.install_part(part):
+	if state == null or not state.install_part(part, upgrade_level):
 		return false
 	_refresh_after_customization()
 	return true
@@ -202,12 +239,64 @@ func install_part(slot_id: StringName, part: EquipmentPartDefinition) -> bool:
 func install_module(
 	slot_id: StringName,
 	instance_id: StringName,
-	module_definition: EquipmentModuleDefinition
+	module_definition: EquipmentModuleDefinition,
+	upgrade_level: int = 1
 ) -> bool:
 	var state := get_equipment_state(slot_id)
-	if state == null or not state.install_module(instance_id, module_definition):
+	if state == null or not state.install_module(instance_id, module_definition, upgrade_level):
 		return false
 	_refresh_after_customization()
+	return true
+
+
+func uninstall_part(slot_id: StringName, part_id: StringName) -> Dictionary:
+	var state := get_equipment_state(slot_id)
+	var removed := state.remove_part(part_id) if state != null else {}
+	if not removed.is_empty():
+		_refresh_after_customization()
+	return removed
+
+
+func uninstall_module(slot_id: StringName, instance_id: StringName) -> Dictionary:
+	var state := get_equipment_state(slot_id)
+	var removed := state.remove_module(instance_id) if state != null else {}
+	if not removed.is_empty():
+		_refresh_after_customization()
+	return removed
+
+
+func export_runtime_state() -> Dictionary:
+	var saved_states: Dictionary = {}
+	for slot_id in equipment_states:
+		saved_states[slot_id] = (equipment_states[slot_id] as EquipmentItemState).duplicate(true)
+	return {
+		&"loadout": loadout.duplicate(true) if loadout != null else null,
+		&"equipment_states": saved_states,
+		&"active_weapon_slot": active_weapon_slot,
+		&"external_armor_level": external_armor_level,
+	}
+
+
+func restore_runtime_state(saved: Dictionary) -> bool:
+	var saved_loadout := saved.get(&"loadout") as EquipmentLoadout
+	var saved_states: Dictionary = saved.get(&"equipment_states", {})
+	if saved_loadout == null:
+		return false
+	loadout = saved_loadout.duplicate(true) as EquipmentLoadout
+	equipment_states.clear()
+	for slot_id in saved_states:
+		var state := (saved_states[slot_id] as EquipmentItemState).duplicate(true) as EquipmentItemState
+		if state == null or not can_equip_definition(slot_id, state.definition):
+			return false
+		state.state_id = slot_id
+		state.set_upgrade_balance_provider(upgrade_balance_provider)
+		equipment_states[slot_id] = state
+	external_armor_level = maxi(1, int(saved.get(&"external_armor_level", 1)))
+	active_weapon_slot = StringName(saved.get(&"active_weapon_slot", &"main"))
+	if get_weapon(active_weapon_slot) == null:
+		active_weapon_slot = &"main" if get_weapon(&"main") != null else &"secondary"
+	_refresh_after_customization()
+	active_weapon_changed.emit(active_weapon_slot, get_active_weapon())
 	return true
 
 

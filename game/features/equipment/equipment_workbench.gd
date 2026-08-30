@@ -21,6 +21,7 @@ const WEAPON_SLOTS := [&"main", &"secondary"]
 @onready var equipment_inventory_grid: GridContainer = %EquipmentInventoryGrid
 @onready var equipment_candidate_detail: Label = %EquipmentCandidateDetail
 @onready var equip_selected_button: Button = %EquipSelectedButton
+@onready var unequip_equipment_button: Button = %UnequipEquipmentButton
 @onready var selected_module_equipment: Label = %SelectedModuleEquipment
 @onready var module_capacity_label: Label = %ModuleCapacityLabel
 @onready var module_cost_bar: ProgressBar = %ModuleCostBar
@@ -31,6 +32,7 @@ const WEAPON_SLOTS := [&"main", &"secondary"]
 @onready var modification_inventory_grid: GridContainer = %ModificationInventoryGrid
 @onready var modification_candidate_detail: Label = %ModificationCandidateDetail
 @onready var install_selected_modification_button: Button = %InstallSelectedModificationButton
+@onready var uninstall_selected_button: Button = %UninstallSelectedButton
 @onready var status_label: Label = %WorkbenchStatus
 
 var equipment_provider: Node
@@ -65,7 +67,9 @@ func _ready() -> void:
 	%ModuleFilter.pressed.connect(_set_modification_filter.bind(&"module"))
 	%PartFilter.pressed.connect(_set_modification_filter.bind(&"part"))
 	equip_selected_button.pressed.connect(_equip_selected_candidate)
+	unequip_equipment_button.pressed.connect(_unequip_selected_equipment)
 	install_selected_modification_button.pressed.connect(_install_selected_modification)
+	uninstall_selected_button.pressed.connect(_uninstall_selected_modification)
 	%LevelUpButton.pressed.connect(_level_up_selected)
 	%ModifyButton.pressed.connect(_grant_selected_module_tag)
 	%UpgradeInstalledButton.pressed.connect(_upgrade_selected_module)
@@ -99,6 +103,10 @@ func configure(
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if visible and event.is_action_pressed(&"ui_cancel") and not event.is_echo():
+		close_panel()
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed(&"toggle_equipment") and not event.is_echo():
 		toggle_panel()
 		get_viewport().set_input_as_handled()
@@ -181,7 +189,9 @@ func _apply_read_only_state() -> void:
 		return
 	for button in [
 		equip_selected_button,
+		unequip_equipment_button,
 		install_selected_modification_button,
+		uninstall_selected_button,
 		%LevelUpButton,
 		%ModifyButton,
 		%UpgradeInstalledButton,
@@ -233,6 +243,7 @@ func _refresh_equipment_detail() -> void:
 		equipment_stats.text = "이 슬롯에 장비를 장착하면 레벨, 태그, 모듈 용량과 장비 효과를 확인할 수 있습니다."
 		%LevelUpButton.disabled = true
 		%ModifyButton.disabled = true
+		unequip_equipment_button.disabled = true
 		return
 	var snapshot := state.snapshot()
 	selected_equipment_name.text = state.display_name()
@@ -250,6 +261,7 @@ func _refresh_equipment_detail() -> void:
 		or int(snapshot[&"level"]) < int(snapshot[&"maximum_level"])
 		or state.installed_modules.is_empty()
 	)
+	unequip_equipment_button.disabled = read_only
 
 
 func _refresh_equipment_inventory() -> void:
@@ -400,7 +412,7 @@ func _select_inventory_candidate(entry: Dictionary, candidate_kind: StringName) 
 func _select_installed(kind: StringName, target_id: StringName) -> void:
 	selected_installed_kind = kind
 	selected_installed_id = target_id
-	_refresh_installed_customization()
+	_refresh()
 
 
 func _refresh_inventory_candidate_detail() -> void:
@@ -439,6 +451,7 @@ func _refresh_installed_selection_detail() -> void:
 	%UpgradeInstalledButton.disabled = true
 	%UpgradeInstalledPartButton.disabled = true
 	%ModuleModifyButton.disabled = true
+	uninstall_selected_button.disabled = true
 	if state == null or selected_installed_kind == &"" or selected_installed_id == &"":
 		installed_selection_detail.text = "장착된 모듈 또는 파츠를 선택하면 강화 비용을 확인합니다."
 		return
@@ -466,6 +479,7 @@ func _refresh_installed_selection_detail() -> void:
 			or (not quote.is_empty() and not bool(quote.get(&"can_upgrade", false)))
 		)
 		%ModuleModifyButton.disabled = read_only or state.level < state.maximum_level()
+		uninstall_selected_button.disabled = read_only
 	else:
 		var part := state.get_part(selected_installed_id)
 		if part == null:
@@ -485,6 +499,7 @@ func _refresh_installed_selection_detail() -> void:
 			or current_level >= part.maximum_upgrade_level
 			or (not quote.is_empty() and not bool(quote.get(&"can_upgrade", false)))
 		)
+		uninstall_selected_button.disabled = read_only
 
 
 func _equip_selected_candidate() -> void:
@@ -494,14 +509,77 @@ func _equip_selected_candidate() -> void:
 	if selected_inventory_entry.is_empty() or not _providers_are_ready():
 		return
 	var definition: Resource = selected_inventory_entry.get(&"linked_resource")
-	if not equipment_provider.call(&"equip_definition", selected_slot_id, definition):
+	var candidate_id: StringName = selected_inventory_entry.get(&"instance_id", &"")
+	var old_state := _get_state(selected_slot_id)
+	var active_slot_before: StringName = equipment_provider.call(&"get_active_weapon_slot")
+	if (
+		old_state != null
+		and not inventory_provider.call(
+			&"can_add_linked_resource", old_state.definition, candidate_id
+		)
+	):
+		_set_status("교체 실패 · 기존 장비를 돌려놓을 가방 공간이 필요합니다.")
+		return
+	var candidate_entry: Dictionary = inventory_provider.call(&"take_item_entry", candidate_id)
+	if candidate_entry.is_empty():
+		_set_status("선택한 장비가 가방에 없습니다.")
+		return
+	var removed_state: EquipmentItemState = equipment_provider.call(
+		&"take_equipment_state", selected_slot_id
+	)
+	var payload: Dictionary = candidate_entry.get(&"runtime_payload", {})
+	var saved_state := payload.get(&"equipment_state") as EquipmentItemState
+	var equipped := bool(
+		equipment_provider.call(&"equip_state", selected_slot_id, saved_state)
+		if saved_state != null
+		else equipment_provider.call(&"equip_definition", selected_slot_id, definition)
+	)
+	if not equipped:
+		inventory_provider.call(
+			&"add_linked_resource", definition, payload
+		)
+		if removed_state != null:
+			equipment_provider.call(&"equip_state", selected_slot_id, removed_state)
 		_set_status("선택 장비가 이 슬롯의 태그 규칙과 맞지 않습니다.")
 		return
 	var item_name: String = selected_inventory_entry.get(&"display_name", "장비")
-	var instance_id: StringName = selected_inventory_entry.get(&"instance_id", &"")
-	inventory_provider.call(&"take_item", instance_id)
+	if removed_state != null:
+		inventory_provider.call(&"add_linked_resource", removed_state.definition, {
+			&"equipment_state": removed_state,
+		})
+	if selected_slot_id == active_slot_before:
+		equipment_provider.call(&"set_active_weapon_slot", selected_slot_id)
 	selected_inventory_entry.clear()
-	_set_status("%s에 %s 장착 완료" % [_slot_display_name(selected_slot_id), item_name])
+	_set_status("%s에 %s %s 완료" % [
+		_slot_display_name(selected_slot_id),
+		item_name,
+		"교체" if removed_state != null else "장착",
+	])
+
+
+func _unequip_selected_equipment() -> void:
+	if read_only:
+		_apply_read_only_state()
+		return
+	var state := _get_state(selected_slot_id)
+	if state == null:
+		_set_status("해제할 장비가 없습니다.")
+		return
+	if not inventory_provider.call(&"can_add_linked_resource", state.definition):
+		_set_status("해제 실패 · 가방 공간이 부족합니다.")
+		return
+	var removed: EquipmentItemState = equipment_provider.call(
+		&"take_equipment_state", selected_slot_id
+	)
+	if removed == null or inventory_provider.call(&"add_linked_resource", removed.definition, {
+		&"equipment_state": removed,
+	}) == &"":
+		if removed != null:
+			equipment_provider.call(&"equip_state", selected_slot_id, removed)
+		_set_status("장비 해제에 실패했습니다.")
+		return
+	selected_inventory_entry.clear()
+	_set_status("%s 장비 해제 · 가방으로 이동" % _slot_display_name(selected_slot_id))
 
 
 func _install_selected_modification() -> void:
@@ -512,23 +590,127 @@ func _install_selected_modification() -> void:
 		return
 	var item_type: StringName = selected_inventory_entry.get(&"item_type", &"")
 	var definition: Resource = selected_inventory_entry.get(&"linked_resource")
+	var candidate_id: StringName = selected_inventory_entry.get(&"instance_id", &"")
+	var replacing := (
+		(selected_installed_kind == &"module" and item_type == &"module")
+		or (selected_installed_kind == &"part" and item_type == &"part")
+	)
+	var state := _get_state(selected_slot_id)
+	var removed_preview: Resource
+	if replacing and selected_installed_kind == &"module":
+		var old_module := state.get_module_instance(selected_installed_id) if state != null else null
+		removed_preview = old_module.definition if old_module != null else null
+	elif replacing and selected_installed_kind == &"part":
+		removed_preview = state.get_part(selected_installed_id) if state != null else null
+	if (
+		removed_preview != null
+		and not inventory_provider.call(
+			&"can_add_linked_resource", removed_preview, candidate_id
+		)
+	):
+		_set_status("교체 실패 · 해제될 모듈/파츠를 돌려놓을 공간이 없습니다.")
+		return
+	var candidate_entry: Dictionary = inventory_provider.call(&"take_item_entry", candidate_id)
+	if candidate_entry.is_empty():
+		_set_status("선택한 모듈/파츠가 가방에 없습니다.")
+		return
+	var payload: Dictionary = candidate_entry.get(&"runtime_payload", {})
+	var removed: Dictionary = {}
+	var removed_target_id := selected_installed_id
+	if replacing:
+		removed = equipment_provider.call(
+			&"uninstall_module" if item_type == &"module" else &"uninstall_part",
+			selected_slot_id,
+			selected_installed_id
+		)
 	var installed := false
 	if item_type == &"module":
 		installed = bool(equipment_provider.call(
 			&"install_module",
 			selected_slot_id,
-			selected_inventory_entry.get(&"instance_id", &""),
-			definition
+			candidate_id,
+			definition,
+			int(payload.get(&"upgrade_level", 1))
 		))
 	elif item_type == &"part":
-		installed = bool(equipment_provider.call(&"install_part", selected_slot_id, definition))
+		installed = bool(equipment_provider.call(
+			&"install_part", selected_slot_id, definition,
+			int(payload.get(&"upgrade_level", 1))
+		))
 	if not installed:
+		inventory_provider.call(&"add_linked_resource", definition, payload)
+		_restore_removed_modification(item_type, removed, removed_target_id)
 		_set_status("장착 실패 · 호환 태그, 중복, 슬롯과 코스트를 확인하세요.")
 		return
 	var item_name: String = selected_inventory_entry.get(&"display_name", "아이템")
-	inventory_provider.call(&"take_item", selected_inventory_entry.get(&"instance_id", &""))
+	if not removed.is_empty():
+		inventory_provider.call(&"add_linked_resource", removed.get(&"definition"), {
+			&"upgrade_level": int(removed.get(&"upgrade_level", 1)),
+		})
 	selected_inventory_entry.clear()
-	_set_status("%s에 %s 장착 완료" % [_slot_display_name(selected_slot_id), item_name])
+	selected_installed_kind = &""
+	selected_installed_id = &""
+	_set_status("%s에 %s %s 완료" % [
+		_slot_display_name(selected_slot_id), item_name,
+		"교체" if not removed.is_empty() else "장착",
+	])
+
+
+func _uninstall_selected_modification() -> void:
+	if read_only:
+		_apply_read_only_state()
+		return
+	var state := _get_state(selected_slot_id)
+	if state == null or selected_installed_kind == &"" or selected_installed_id == &"":
+		_set_status("해제할 모듈 또는 파츠를 먼저 선택하세요.")
+		return
+	var selected_kind := selected_installed_kind
+	var selected_id := selected_installed_id
+	var definition: Resource
+	if selected_kind == &"module":
+		var module_instance := state.get_module_instance(selected_id)
+		definition = module_instance.definition if module_instance != null else null
+	else:
+		definition = state.get_part(selected_id)
+	if definition == null or not inventory_provider.call(&"can_add_linked_resource", definition):
+		_set_status("해제 실패 · 가방 공간이 부족합니다.")
+		return
+	var removed: Dictionary = equipment_provider.call(
+		&"uninstall_module" if selected_kind == &"module" else &"uninstall_part",
+		selected_slot_id,
+		selected_id
+	)
+	if removed.is_empty() or inventory_provider.call(
+		&"add_linked_resource", removed.get(&"definition"), {
+			&"upgrade_level": int(removed.get(&"upgrade_level", 1)),
+		}
+	) == &"":
+		_restore_removed_modification(selected_kind, removed, selected_id)
+		_set_status("모듈/파츠 해제에 실패했습니다.")
+		return
+	var kind_label := "모듈" if selected_kind == &"module" else "고유 파츠"
+	selected_installed_kind = &""
+	selected_installed_id = &""
+	_set_status("%s 해제 · 가방으로 이동" % kind_label)
+
+
+func _restore_removed_modification(
+	kind: StringName,
+	removed: Dictionary,
+	target_id: StringName
+) -> void:
+	if removed.is_empty():
+		return
+	if kind == &"module":
+		equipment_provider.call(
+			&"install_module", selected_slot_id, target_id,
+			removed.get(&"definition"), int(removed.get(&"upgrade_level", 1))
+		)
+	else:
+		equipment_provider.call(
+			&"install_part", selected_slot_id, removed.get(&"definition"),
+			int(removed.get(&"upgrade_level", 1))
+		)
 
 
 func _level_up_selected() -> void:
@@ -604,9 +786,19 @@ func _can_install_entry(state: EquipmentItemState, entry: Dictionary) -> bool:
 	var item_type: StringName = entry.get(&"item_type", &"")
 	var definition: Resource = entry.get(&"linked_resource")
 	if item_type == &"module" and definition is EquipmentModuleDefinition:
-		return state.can_install_module(definition)
+		if state.can_install_module(definition):
+			return true
+		if selected_installed_kind == &"module" and selected_installed_id != &"":
+			var preview := state.duplicate(true) as EquipmentItemState
+			preview.remove_module(selected_installed_id)
+			return preview.can_install_module(definition)
 	if item_type == &"part" and definition is EquipmentPartDefinition:
-		return state.can_install_part(definition)
+		if state.can_install_part(definition):
+			return true
+		if selected_installed_kind == &"part" and selected_installed_id != &"":
+			var preview := state.duplicate(true) as EquipmentItemState
+			preview.remove_part(selected_installed_id)
+			return preview.can_install_part(definition)
 	return false
 
 

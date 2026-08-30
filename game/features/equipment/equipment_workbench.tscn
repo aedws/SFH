@@ -361,6 +361,14 @@ text = "최고 레벨 개조"
 theme_override_styles/normal = SubResource("ButtonNormal")
 theme_override_styles/hover = SubResource("ButtonHover")
 
+[node name="UnequipEquipmentButton" type="Button" parent="Margin/Content/Main/Tabs/장비_장착/DetailPanel/Margin/Content/DetailActions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 42)
+layout_mode = 2
+text = "선택 장비 해제"
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/hover = SubResource("ButtonHover")
+
 [node name="EquipmentInventoryPanel" type="PanelContainer" parent="Margin/Content/Main/Tabs/장비_장착"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -427,7 +435,7 @@ autowrap_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-text = "선택 장비 장착"
+text = "선택 장비 장착 / 교체"
 theme_override_colors/font_color = Color(0.015, 0.08, 0.065, 1)
 theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = SubResource("AccentButton")
@@ -528,6 +536,14 @@ text = "선택 파츠 강화"
 theme_override_styles/normal = SubResource("ButtonNormal")
 theme_override_styles/hover = SubResource("ButtonHover")
 
+[node name="UninstallSelectedButton" type="Button" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content/InstalledActions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(195, 42)
+layout_mode = 2
+text = "선택 모듈 / 파츠 해제"
+theme_override_styles/normal = SubResource("ButtonNormal")
+theme_override_styles/hover = SubResource("ButtonHover")
+
 [node name="ModuleModifyButton" type="Button" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
@@ -625,7 +641,7 @@ autowrap_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-text = "선택 모듈 / 파츠 장착"
+text = "선택 모듈 / 파츠 장착 / 교체"
 theme_override_colors/font_color = Color(0.015, 0.08, 0.065, 1)
 theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = SubResource("AccentButton")
