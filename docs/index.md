@@ -67,14 +67,14 @@ hide:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 33 &middot; IMPROVE 24 &middot; CHANGE 12 &middot; FIX 4</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 33 &middot; IMPROVE 24 &middot; CHANGE 12 &middot; FIX 5</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>18</b><small>UPDATE BUNDLES</small></span>
       <span><b>33</b><small>BUILD</small></span>
       <span><b>24</b><small>IMPROVE</small></span>
       <span><b>12</b><small>CHANGE</small></span>
-      <span><b>4</b><small>FIX</small></span>
+      <span><b>5</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>브라우저 즉시 플레이 · 게임 정체성 README · 통합 배포</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -86,6 +86,7 @@ hide:
             <li>No-Aim Action, Invest & Extract, Room Hacking, 장비 빌드, 모듈 우선의 다섯 노선을 압축했습니다.</li>
             <li>Godot Web 빌드를 개발 위키의 /play/ 경로에 결합해 설치 없이 브라우저에서 실행합니다.</li>
             <li>게임 내보내기와 HTML·WASM·PCK 검증 실패 시 Pages 배포를 중단해 마지막 정상 빌드를 유지합니다.</li>
+            <li>OFL 한글 폰트를 전역 자산으로 포함해 Web에서 네모 글리프로 깨지던 한글 UI를 복구했습니다.</li>
           </ul>
           <p class="sfh-intent"><b>배포 경계</b><span>게임은 Godot Web 프리셋, 문서는 MkDocs로 각각 빌드한 뒤 하나의 검증된 Pages 아티팩트에서만 결합합니다.</span></p>
         </div>
@@ -99,6 +100,9 @@ hide:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">README 정보 구조 전환</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>긴 구현 목록 중심에서 게임 소개→즉시 플레이→상세 개발 문서 순서로 바꿨습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🩹 버그픽스 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web 한글 글리프 복구</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Nanum Gothic을 전역 폰트로 포함하고 한글 글리프 계약을 자동 검사해 브라우저의 네모 글자 표시를 막았습니다.</p><a href="getting-started/run-project/">Web 실행 기준 →</a></div></details>
         </div>
       </div>
     </details>

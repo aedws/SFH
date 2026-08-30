@@ -48,6 +48,12 @@ jobs:
           mkdir -p ~/.local/share/godot/export_templates
           mv /root/.local/share/godot/export_templates/4.7.2.stable ~/.local/share/godot/export_templates/4.7.2.stable
 
+      - name: Test game contracts
+        run: |
+          test -s "$GITHUB_WORKSPACE/game/assets/fonts/nanum-gothic/OFL.txt"
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
+          grep -q "SMOKE_TEST_OK web_korean_font" /tmp/sfh-smoke.log
+
       - name: Export browser game
         run: |
           mkdir -p "$GITHUB_WORKSPACE/game-web"
