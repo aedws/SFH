@@ -11,6 +11,22 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-08-30 증원 전투·배치 가치·전체 결합 재점검
+
+| 점검 대상 | 발견 내용 | 조치 | 결과 |
+|---|---|---|---|
+| 적 수량 계산 | SceneTree 전체 `enemies` 그룹을 직접 집계 | 생성기가 자신이 만든 인스턴스만 추적하고 스냅샷으로 공개 | 통과 |
+| 생성 밸런스 | 최대 수량·간격이 Scene export 상수에 고정 | 등급별 `EnemySpawnTierConfig` Resource로 이동 | 통과 |
+| 자동 무기 대상 | 자동 무기가 전역 적 그룹을 직접 검색 | 생성기의 `get_active_targets()` 제공자 계약을 주입 | 통과 |
+| 플레이어 체력 초기화 | 조립부가 `current_health` 내부 필드를 읽음 | `get_health_snapshot()` 공개 계약 사용 | 통과 |
+| 파밍 맵 계약 | 검사 메서드와 실제 호출 메서드가 달랐음 | `get_loot_spawn_points()`로 계약을 단일화 | 통과 |
+| 배치 경제 | 무작위 총액이 투입 코스트보다 낮을 수 있었음 | `LootTierConfig`의 2.5배 정책과 부족분 분배·스냅샷 추가 | 통과 |
+| 선택 기능 폴백 | 맵·장비·밸런스·성장 기능 비활성화 조합 | 기존 자동 테스트 유지, 맵 없이도 증원 정책은 원형 스폰으로 동작 | 통과 |
+
+현재 구현된 기능에서 발견된 숨은 전역 집계와 내부 필드 접근은 제거했습니다. `Game`은 기능별 `_install_*()` 함수에서 Scene을 지연 로딩하고 공개 메서드·Signal을 검사한 뒤 제공자를 연결하는 조립부만 담당합니다. 수량 정책, 가치 보정, 전투 실행은 각 기능 폴더 안에 남습니다.
+
+`game_modal_panel` 그룹은 I/U 창이 서로를 닫기 위한 명시적 UI 조정 프로토콜이며 도메인 상태를 읽지 않습니다. 자동 무기의 `fallback_target_group`은 Scene 단독 실행용 공개 폴백이고, 실제 게임 조립에서는 적 생성 제공자가 주입됩니다.
+
 ## 2026-08-30 화면 크기 방·전장의 안개·자원 회수 점검
 
 | 점검 대상 | 결과 | 근거 |
@@ -64,7 +80,7 @@ tags:
 | 선택 모듈 조합 | 통과 | 성장 3개 모듈과 강화 경제를 끈 상태에서도 기본 경험치·장비 루프 유지 |
 | 자동 검증 | 통과 | 버프 선택·중첩·외부 정산·세 계열 효과·재료/크레딧 소비를 스모크 테스트로 확인 |
 
-`Game`은 여전히 모든 설치 순서를 아는 중앙 조립 지점입니다. 이는 의도된 결합이며 기능 구현은 포함하지 않습니다. 다만 설치 대상이 늘어 조립 코드가 커졌으므로 다음 대규모 기능 묶음을 추가하기 전에는 기능별 `install(context)` 설치 객체로 나누는 것이 권장됩니다. 현재 기능을 끄거나 교체하는 데 막히는 숨은 Node 경로 의존성은 발견되지 않았습니다.
+`Game`은 설치 순서를 아는 중앙 조립 지점이며 기능별 `_install_*()` 함수와 계약 검사로 구획되어 있습니다. 이는 의도된 결합이고 기능 구현은 포함하지 않습니다. 현재 기능을 끄거나 교체하는 데 막히는 숨은 Node 경로 의존성은 발견되지 않았습니다.
 
 ## 2026-08-29 랜덤 맵 모듈
 
@@ -124,6 +140,18 @@ tags:
 
 소비자는 구체 클래스 대신 `Node`와 위 메서드의 존재 여부를 사용합니다. 따라서 다른 알고리즘으로 맵 생성기를 교체할 때도 계약만 유지하면 됩니다.
 
+## 적 생성·대상 제공 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 생성 정책 | 최소·최대 동시 수량, 증원 묶음·간격·반경 | `EnemySpawner` |
+| 적 생성기 | `configure`, `get_snapshot` | `Game`, 자동 테스트 |
+| 적 생성기 | `get_active_targets` | 자동 무기 |
+| 적 생성기 | `enemy_spawned`, `reinforcement_dispatched` | 전투 조립·향후 증원 연출 |
+| 자동 무기 | `set_target_provider` | `Game` 조립부 |
+
+생성기는 맵 등급의 문자열 ID로 정책 Resource만 선택하며 맵 방 배열을 읽지 않습니다. 자동 무기는 생성기 내부 추적 배열이 아닌 복사된 대상 목록만 받습니다.
+
 ## 탈출 모듈 공개 계약
 
 | 종류 | 이름 | 소비자 |
@@ -152,6 +180,7 @@ tags:
 | 맵 | `get_loot_spawn_points(count)` | `LootSpawner` |
 | 회수 지점 | `configure(amount, kind, facing)`, `credits_collected` | `LootSpawner` |
 | 파밍 | `credits_looted(amount, world_position)` | `Game` 조립부 |
+| 파밍 | `get_spawn_snapshot()` | 조립부·자동 테스트 |
 | 원장 | `add_carried`, `secure_carried`, `lose_carried` | `Game` 조립부 |
 
 맵은 파밍 보상 수치를 알지 않고, 파밍 모듈은 맵의 방 배열과 A* 자료구조를 알지 않습니다.
@@ -265,11 +294,11 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `screen_sized_rooms`, `indoor_structures`, `fog_of_war`, `minimap_full_map`, `resource_recovery`, `run_experience`, `run_buffs`, `meta_experience`, `part_upgrade`, `upgrade_credits`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
+성공하면 출력에 `screen_sized_rooms`, `indoor_structures`, `fog_of_war`, `minimap_full_map`, `resource_recovery`, `deployment_value_2_5`, `reinforcement_population`, `target_provider`, `run_experience`, `run_buffs`, `meta_experience`, `part_upgrade`, `upgrade_credits`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
 
 ## 다음 개선 시점
 
-다음 대규모 기능 묶음을 추가하기 전 `Game`의 설치 코드를 기능별 설치 객체로 옮기고 공통 `install(context)` 계약을 도입합니다. 문자열 지연 로딩과 명시적 메서드 검사는 유지합니다.
+조립부가 파일 단위 유지보수 한계를 넘을 때 `_install_*()` 함수들을 별도 설치 객체로 이동할 수 있습니다. 이는 현재 모듈 교체를 막는 결함이 아니라 코드 크기 관리 단계이며, 이동하더라도 문자열 지연 로딩과 명시적 메서드 검사는 유지합니다.
 
 ## 검색 별칭
 

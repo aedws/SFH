@@ -4,6 +4,7 @@ const GAME_SCENE_PATH := "res://game/scenes/game.tscn"
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
 const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
+const SPAWN_CONFIG_PATH_PATTERN := "res://game/features/spawning/configs/%s.tres"
 const EQUIPMENT_SCENE_PATH := "res://game/features/equipment/equipment_system.tscn"
 const EQUIPMENT_LOADOUT_PATH := "res://game/features/equipment/loadouts/default_loadout.tres"
 const INVENTORY_SCENE_PATH := "res://game/features/inventory/grid_inventory.tscn"
@@ -81,6 +82,8 @@ func _verify_map_tiers() -> bool:
 		_fail("Map Generator Scene을 불러오지 못했습니다.")
 		return false
 
+	var previous_minimum_enemies := 0
+	var previous_maximum_enemies := 0
 	for tier_id in MAP_TIER_IDS:
 		var config = load(MAP_CONFIG_PATH_PATTERN % tier_id)
 		var generator := generator_scene.instantiate()
@@ -132,6 +135,34 @@ func _verify_map_tiers() -> bool:
 			_fail("%s 맵에 칸막이·설비 블록·기둥 패턴이 모두 생성되지 않았습니다." % tier_id)
 			return false
 		var loot_config = load(LOOT_CONFIG_PATH_PATTERN % tier_id)
+		var spawn_config = load(SPAWN_CONFIG_PATH_PATTERN % tier_id)
+		if (
+			spawn_config == null
+			or not spawn_config.call(&"is_valid")
+			or int(spawn_config.get("minimum_active_enemies")) <= previous_minimum_enemies
+			or int(spawn_config.get("maximum_active_enemies")) <= previous_maximum_enemies
+		):
+			_fail("%s 맵의 핵앤슬래시 적 수량 정책이 맵 크기에 비례하지 않습니다." % tier_id)
+			return false
+		previous_minimum_enemies = int(spawn_config.get("minimum_active_enemies"))
+		previous_maximum_enemies = int(spawn_config.get("maximum_active_enemies"))
+		if not is_equal_approx(
+			float(loot_config.get("minimum_deployment_value_multiplier")),
+			2.5
+		):
+			_fail("%s 작전의 최소 자원 배치 보정이 투입 코스트 2.5배가 아닙니다." % tier_id)
+			return false
+		var minimum_placement_value := ceili(
+			float(config.get("entry_cost"))
+			* float(loot_config.get("minimum_deployment_value_multiplier"))
+		)
+		if (
+			int(loot_config.get("maximum_cache_count"))
+			* int(loot_config.get("maximum_cache_credits"))
+			< minimum_placement_value
+		):
+			_fail("%s 작전의 파밍 설정으로 최소 배치 가치를 충족할 수 없습니다." % tier_id)
+			return false
 		var loot_points: Array = generator.call(
 			&"get_loot_spawn_points",
 			int(loot_config.get("minimum_cache_count"))
@@ -791,6 +822,9 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 			var generator = tier_game.get("map_generator")
 			var minimap = tier_game.get("minimap")
 			var fog = tier_game.get("fog_of_war")
+			var enemy_spawner = tier_game.get("enemy_spawner")
+			var loot_spawner = tier_game.get("loot_spawner")
+			var auto_weapon = tier_game.get("auto_weapon")
 			var config = load(MAP_CONFIG_PATH_PATTERN % tier_id)
 			if not bool(tier_game.get("run_started")):
 				failure_message = "%s 작전이 시작 상태로 전환되지 않았습니다." % tier_id
@@ -802,6 +836,12 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 				failure_message = "%s 작전의 탈출 또는 미니맵이 설치되지 않았습니다." % tier_id
 			elif fog == null or not bool(fog.call(&"get_snapshot").get(&"tracks_actor", false)):
 				failure_message = "%s 작전의 전장의 안개가 플레이어를 추적하지 않습니다." % tier_id
+			elif enemy_spawner == null or loot_spawner == null:
+				failure_message = "%s 작전의 적 생성 또는 파밍 모듈이 설치되지 않았습니다." % tier_id
+			elif auto_weapon == null or auto_weapon.get("target_provider") != enemy_spawner:
+				failure_message = "%s 작전의 자동 무기에 적 대상 제공자가 연결되지 않았습니다." % tier_id
+			elif not _verify_tier_population_and_value(enemy_spawner, loot_spawner, config, tier_id):
+				failure_message = "%s 작전의 증원 수량 또는 최소 배치 가치가 올바르지 않습니다." % tier_id
 			elif (
 				tier_game.get("inventory_system") == null
 				or tier_game.get("inventory_window") == null
@@ -828,6 +868,40 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 			_fail("티어 진입 실패: %s" % failure_message)
 			return false
 	return true
+
+
+func _verify_tier_population_and_value(
+	enemy_spawner: Node,
+	loot_spawner: Node,
+	map_config: Resource,
+	tier_id: String
+) -> bool:
+	var spawn_config = load(SPAWN_CONFIG_PATH_PATTERN % tier_id)
+	var population: Dictionary = enemy_spawner.call(&"get_snapshot")
+	var target_count := int(population.get(&"target_active_enemies", 0))
+	if (
+		target_count < int(spawn_config.get("minimum_active_enemies"))
+		or target_count > int(spawn_config.get("maximum_active_enemies"))
+	):
+		return false
+	for _reinforcement in range(20):
+		enemy_spawner.call(&"_process", 30.0)
+		if bool(enemy_spawner.call(&"get_snapshot").get(&"initial_fill_complete", false)):
+			break
+	population = enemy_spawner.call(&"get_snapshot")
+	if (
+		int(population.get(&"active_enemies", 0)) != target_count
+		or int(population.get(&"reinforcement_count", 0)) <= 1
+		or not bool(population.get(&"initial_fill_complete", false))
+	):
+		return false
+	var loot_snapshot: Dictionary = loot_spawner.call(&"get_spawn_snapshot")
+	var expected_minimum := ceili(float(map_config.get("entry_cost")) * 2.5)
+	return (
+		int(loot_snapshot.get(&"minimum_total_credits", 0)) == expected_minimum
+		and int(loot_snapshot.get(&"total_placed_credits", 0)) >= expected_minimum
+		and bool(loot_snapshot.get(&"minimum_value_satisfied", false))
+	)
 
 
 func _verify_loadout_workbench_ui(tier_game: Node) -> bool:
@@ -1127,7 +1201,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery loot credits map_optional player responsive_movement dash health_recovery health_ui enemies armor status_bars pathfinding weapon run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery deployment_value_2_5 loot credits map_optional player responsive_movement dash health_recovery health_ui enemies reinforcement_population armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

@@ -18,6 +18,7 @@ const CREDIT_LEDGER_SCENE_PATH := "res://game/features/credits/credit_ledger.tsc
 const LOOT_SPAWNER_SCENE_PATH := "res://game/features/loot/loot_spawner.tscn"
 const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
 const SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
+const SPAWN_CONFIG_PATH_PATTERN := "res://game/features/spawning/configs/%s.tres"
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const WEAPON_BALANCE_SCENE_PATH := (
 	"res://game/features/weapon_balance/weapon_balance_service.tscn"
@@ -43,6 +44,7 @@ const MAP_GENERATOR_METHODS := [
 	&"get_loot_spawn_points",
 	&"get_world_path",
 ]
+const PLAYER_METHODS := [&"configure_damage", &"get_health_snapshot", &"get_runtime_stats", &"heal"]
 const FOG_OF_WAR_METHODS := [&"configure", &"get_snapshot"]
 const MINIMAP_PROVIDER_METHODS := [&"get_minimap_snapshot"]
 const MINIMAP_METHODS := [&"configure"]
@@ -97,7 +99,8 @@ const CREDIT_LEDGER_METHODS := [
 	&"spend_carried",
 	&"get_snapshot",
 ]
-const LOOT_SPAWNER_METHODS := [&"configure"]
+const LOOT_SPAWNER_METHODS := [&"configure", &"get_spawn_snapshot"]
+const ENEMY_SPAWNER_METHODS := [&"configure", &"get_snapshot", &"get_active_targets"]
 const RUN_BUFF_METHODS := [
 	&"configure",
 	&"prepare_choices",
@@ -281,9 +284,16 @@ func _assemble_game() -> bool:
 					else:
 						_report_configuration_error("맵 설정을 찾을 수 없습니다: %s" % map_config_path)
 
-		player = _instantiate_feature(PLAYER_SCENE_PATH, actors_container, &"Player")
+	player = _instantiate_feature(PLAYER_SCENE_PATH, actors_container, &"Player")
 	if player == null:
 		_report_configuration_error("플레이어 모듈을 설치하지 못했습니다.")
+		return false
+	if (
+		not _supports_methods(player, PLAYER_METHODS)
+		or not player.has_signal(&"health_changed")
+		or not player.has_signal(&"died")
+	):
+		_report_configuration_error("플레이어 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
 	if features.map_generation_enabled and map_generator == null:
 		_report_configuration_error("맵 모듈을 설치하지 못했습니다.")
@@ -293,7 +303,11 @@ func _assemble_game() -> bool:
 	player.call(&"configure_damage", features.damage_enabled)
 	player.connect(&"health_changed", Callable(self, &"_on_player_health_changed"))
 	player.connect(&"died", Callable(self, &"_on_player_died"))
-	_on_player_health_changed(float(player.get("current_health")), float(player.get("max_health")))
+	var health_snapshot: Dictionary = player.call(&"get_health_snapshot")
+	_on_player_health_changed(
+		float(health_snapshot.get(&"current", 0.0)),
+		float(health_snapshot.get(&"maximum", 1.0))
+	)
 	if features.fog_of_war_enabled and not _install_fog_of_war():
 		return false
 	if features.equipment_enabled and not _install_equipment():
@@ -320,7 +334,8 @@ func _assemble_game() -> bool:
 		and credit_ledger != null
 		and current_map_config != null
 	):
-		_install_loot_spawner()
+		if not _install_loot_spawner():
+			return false
 
 	if features.experience_enabled:
 		progression_system = _instantiate_feature(PROGRESSION_SCENE_PATH, module_container, &"ProgressionSystem")
@@ -347,18 +362,8 @@ func _assemble_game() -> bool:
 	if features.meta_progression_enabled and not _install_meta_progression():
 		return false
 	if features.enemies_enabled and features.spawning_enabled:
-		enemy_spawner = _instantiate_feature(SPAWNER_SCENE_PATH, module_container, &"EnemySpawner")
-		if enemy_spawner != null:
-			enemy_spawner.connect(&"enemy_spawned", Callable(self, &"_on_enemy_spawned"))
-			enemy_spawner.call(
-				&"configure",
-				player,
-				enemies_container,
-				features.damage_enabled,
-				map_generator,
-				features.enemy_armor_enabled,
-				features.enemy_status_ui_enabled
-			)
+		if not _install_enemy_spawner():
+			return false
 
 	status_label.text = (
 		"작전 진행 중 · Shift/Space 회피 · Q 무기 · F 상호작용 · I 가방 · U 장비"
@@ -642,29 +647,79 @@ func _install_credit_ledger() -> void:
 	_on_credits_changed(0, 0)
 
 
-func _install_loot_spawner() -> void:
+func _install_loot_spawner() -> bool:
 	var loot_config_path := LOOT_CONFIG_PATH_PATTERN % selected_map_size
 	if not ResourceLoader.exists(loot_config_path):
 		_report_configuration_error("파밍 설정을 찾을 수 없습니다: %s" % loot_config_path)
-		return
+		return false
 	var loot_config := load(loot_config_path)
 	loot_spawner = _instantiate_feature(LOOT_SPAWNER_SCENE_PATH, module_container, &"LootSpawner")
 	if loot_spawner == null:
-		return
+		return false
 	if not _supports_loot_spawner(loot_spawner):
 		_report_configuration_error("파밍 모듈이 필수 공개 계약을 구현하지 않았습니다.")
 		loot_spawner.queue_free()
 		loot_spawner = null
-		return
+		return false
 	loot_spawner.connect(&"credits_looted", Callable(self, &"_on_credits_looted"))
 	loot_spawner.connect(
 		&"interaction_availability_changed",
 		Callable(self, &"_on_interaction_availability_changed")
 	)
-	loot_spawner.call(&"configure", map_generator, pickups_container, loot_config)
+	if not loot_spawner.call(
+		&"configure",
+		map_generator,
+		pickups_container,
+		loot_config,
+		int(current_map_config.get("entry_cost"))
+	):
+		_report_configuration_error("파밍 모듈이 최소 배치 가치 보정을 충족하지 못했습니다.")
+		return false
+	return true
+
+
+func _install_enemy_spawner() -> bool:
+	var spawn_config_path := SPAWN_CONFIG_PATH_PATTERN % selected_map_size
+	if not ResourceLoader.exists(spawn_config_path):
+		_report_configuration_error("적 생성 설정을 찾을 수 없습니다: %s" % spawn_config_path)
+		return false
+	var spawn_config := load(spawn_config_path)
+	if (
+		spawn_config == null
+		or not spawn_config.has_method(&"is_valid")
+		or not spawn_config.call(&"is_valid")
+	):
+		_report_configuration_error("적 생성 설정이 유효하지 않습니다: %s" % spawn_config_path)
+		return false
+	enemy_spawner = _instantiate_feature(SPAWNER_SCENE_PATH, module_container, &"EnemySpawner")
+	if not _supports_enemy_spawner(enemy_spawner):
+		_report_configuration_error("적 생성 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	enemy_spawner.connect(&"enemy_spawned", Callable(self, &"_on_enemy_spawned"))
+	if not enemy_spawner.call(
+		&"configure",
+		player,
+		enemies_container,
+		features.damage_enabled,
+		map_generator,
+		features.enemy_armor_enabled,
+		features.enemy_status_ui_enabled,
+		spawn_config
+	):
+		_report_configuration_error("적 생성 모듈을 등급 정책으로 구성하지 못했습니다.")
+		return false
+	if auto_weapon != null and auto_weapon.has_method(&"set_target_provider"):
+		if not auto_weapon.call(&"set_target_provider", enemy_spawner):
+			_report_configuration_error("자동 무기에 적 대상 제공자를 연결하지 못했습니다.")
+			return false
+	return true
 
 
 func _configure_tier_button(button: Button, tier_id: String) -> void:
+	if not features.map_generation_enabled:
+		button.disabled = true
+		button.text = "%s · 맵 기능 비활성" % tier_id
+		return
 	var config_path := MAP_CONFIG_PATH_PATTERN % tier_id
 	if not ResourceLoader.exists(config_path):
 		button.disabled = true
@@ -680,12 +735,26 @@ func _configure_tier_button(button: Button, tier_id: String) -> void:
 		button.disabled = true
 		button.text = "%s 파밍 설정 없음" % config.get("display_name")
 		return
-	button.text = "%s 작전 · 목표 %d분\n투자 %d · 방 %d~%d" % [
+	if features.spawning_enabled and not ResourceLoader.exists(SPAWN_CONFIG_PATH_PATTERN % tier_id):
+		button.disabled = true
+		button.text = "%s 적 생성 설정 없음" % config.get("display_name")
+		return
+	var spawn_config: Resource
+	if features.spawning_enabled:
+		spawn_config = load(SPAWN_CONFIG_PATH_PATTERN % tier_id)
+	var enemy_range := ""
+	if features.spawning_enabled and spawn_config != null:
+		enemy_range = " · 적 %d~%d" % [
+			spawn_config.get("minimum_active_enemies"),
+			spawn_config.get("maximum_active_enemies"),
+		]
+	button.text = "%s 작전 · 목표 %d분\n투자 %d · 방 %d~%d%s" % [
 		config.get("display_name"),
 		roundi(float(config.get("target_run_duration_seconds")) / 60.0),
 		config.get("entry_cost"),
 		config.get("minimum_rooms"),
 		config.get("maximum_rooms"),
+		enemy_range,
 	]
 
 
@@ -707,6 +776,19 @@ func _tier_resources_are_available(tier_id: String) -> bool:
 		var loot_config_path := LOOT_CONFIG_PATH_PATTERN % tier_id
 		if not ResourceLoader.exists(loot_config_path):
 			_report_configuration_error("파밍 설정을 찾을 수 없습니다: %s" % loot_config_path)
+			return false
+	if features.spawning_enabled:
+		var spawn_config_path := SPAWN_CONFIG_PATH_PATTERN % tier_id
+		if not ResourceLoader.exists(spawn_config_path):
+			_report_configuration_error("적 생성 설정을 찾을 수 없습니다: %s" % spawn_config_path)
+			return false
+		var spawn_config = load(spawn_config_path)
+		if (
+			spawn_config == null
+			or not spawn_config.has_method(&"is_valid")
+			or not spawn_config.call(&"is_valid")
+		):
+			_report_configuration_error("유효하지 않은 적 생성 설정입니다: %s" % spawn_config_path)
 			return false
 	return true
 
@@ -885,6 +967,16 @@ func _supports_loot_spawner(candidate: Node) -> bool:
 		if not candidate.has_method(method_name):
 			return false
 	return true
+
+
+func _supports_enemy_spawner(candidate: Node) -> bool:
+	if (
+		not is_instance_valid(candidate)
+		or not candidate.has_signal(&"enemy_spawned")
+		or not candidate.has_signal(&"reinforcement_dispatched")
+	):
+		return false
+	return _supports_methods(candidate, ENEMY_SPAWNER_METHODS)
 
 
 func _supports_methods(candidate: Node, methods: Array) -> bool:

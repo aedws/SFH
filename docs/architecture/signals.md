@@ -14,6 +14,7 @@ signal buff_selected(buff_id: StringName, stacks: int)
 signal run_settled(result: Dictionary)
 signal upgrade_completed(result: Dictionary)
 signal recovery_state_changed(snapshot: Dictionary)
+signal reinforcement_dispatched(spawned_count: int, active_count: int, target_count: int)
 ```
 
 ## 사용 기준

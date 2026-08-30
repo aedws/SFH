@@ -62,11 +62,36 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>화면 크기 방 + 전장의 안개</span><span>자동·시각 검증 PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>증원형 핵앤슬래시 전투</span><span>투입 코스트 ×2.5 배치 보정</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>화면 크기 방 · 안개 · 금고형 자원 회수</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 모듈 전수 감사</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 5개 주제</strong>
+      <ul>
+        <li>소형 24~36, 중형 36~54, 대형 52~72명 중 이번 판의 목표 동시 적 수를 무작위로 정합니다.</li>
+        <li>적 수가 목표의 75% 이하가 되면 등급별 묶음 단위로 증원합니다.</li>
+        <li>회수 가능 자원의 최소 배치 총액을 투입 코스트의 2.5배로 보정합니다.</li>
+        <li>적 생성기가 자신이 만든 적만 추적하고 자동 무기에 대상 목록을 제공합니다.</li>
+        <li>전역 집계·플레이어 내부 필드 접근·파밍 계약 불일치를 제거했습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>개선 의도</b><span>맵이 클수록 더 많은 적이 일정 밀도로 재투입되는 핵앤슬래시 흐름을 만들고, 작전 투자 대비 탐색할 기본 자원 가치를 보장합니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">등급별 목표 수량 + 묶음 증원</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>작전마다 최소~최대 사이 목표를 뽑고 75% 이하에서 증원 묶음을 투입합니다.</p><a href="features/enemies/">적 생성 설계 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">투입 코스트 2.5배 최소 배치</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>무작위 회수 지점 총액이 최소값에 미달하면 개별 최대값 안에서 부족분을 자동 분배합니다.</p><a href="features/credit-loot/">경제 보정 보기 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>🧩 수정 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">생성기 소유 적만 추적</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전역 enemies 그룹 수량 대신 생성기별 인스턴스 목록과 공개 스냅샷을 사용합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">대상·체력·파밍 계약 정리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>자동 무기 대상 제공자, 플레이어 체력 스냅샷, 파밍 배치 스냅샷을 명시적 계약으로 연결했습니다.</p><a href="architecture/module-audit/">모듈 감사 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>화면 크기 방 · 안개 · 금고형 자원 회수</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>

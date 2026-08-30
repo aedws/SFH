@@ -13,7 +13,7 @@
 - [격자 가방 인벤토리](grid-inventory.md)
 - [장비 파츠·모듈 개조](equipment-customization.md)
 - [모듈·고유 파츠 강화 경제](equipment-upgrade-economy.md)
-- [적과 생성 시스템](enemies.md)
+- [적과 증원형 생성 시스템](enemies.md)
 - [적 체력과 방어력](enemy-defense.md)
 - [자동 무기](weapons.md)
 - [Q 무기 교체와 Google Sheets 밸런스](weapon-balance.md)

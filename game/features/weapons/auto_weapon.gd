@@ -4,10 +4,12 @@ extends Node2D
 signal weapon_runtime_changed(snapshot: Dictionary)
 
 @export var projectile_scene: PackedScene
+@export var fallback_target_group: StringName = &"enemies"
 
 var projectile_parent: Node2D
 var equipment_provider: Node
 var balance_provider: Node
+var target_provider: Node
 var current_balance: Dictionary = {}
 var active_weapon_id: StringName = &"assault_rifle"
 var active_weapon_slot: StringName = &"main"
@@ -37,6 +39,17 @@ func configure(
 	if balance_provider != null and balance_provider.has_signal(&"balance_updated"):
 		balance_provider.connect(&"balance_updated", Callable(self, &"_on_balance_updated"))
 	_refresh_balance()
+
+
+func set_target_provider(new_target_provider: Node) -> bool:
+	if (
+		not is_instance_valid(new_target_provider)
+		or not new_target_provider.has_method(&"get_active_targets")
+	):
+		target_provider = null
+		return false
+	target_provider = new_target_provider
+	return true
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -120,7 +133,7 @@ func _find_nearest_enemy() -> Node2D:
 		float(current_balance.get(&"target_range_px", 760.0))
 	)
 	var nearest_distance_squared := target_range * target_range
-	for candidate in get_tree().get_nodes_in_group(&"enemies"):
+	for candidate in _target_candidates():
 		if not candidate is Node2D:
 			continue
 		var candidate_2d := candidate as Node2D
@@ -129,6 +142,12 @@ func _find_nearest_enemy() -> Node2D:
 			nearest = candidate_2d
 			nearest_distance_squared = distance_squared
 	return nearest
+
+
+func _target_candidates() -> Array:
+	if is_instance_valid(target_provider):
+		return target_provider.call(&"get_active_targets")
+	return get_tree().get_nodes_in_group(fallback_target_group)
 
 
 func _fire_pattern(base_direction: Vector2) -> void:
