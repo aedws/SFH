@@ -73,12 +73,12 @@ hide:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 33 &middot; IMPROVE 30 &middot; CHANGE 12 &middot; FIX 7</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 34 &middot; IMPROVE 31 &middot; CHANGE 12 &middot; FIX 7</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>18</b><small>UPDATE BUNDLES</small></span>
-      <span><b>33</b><small>BUILD</small></span>
-      <span><b>30</b><small>IMPROVE</small></span>
+      <span><b>34</b><small>BUILD</small></span>
+      <span><b>31</b><small>IMPROVE</small></span>
       <span><b>12</b><small>CHANGE</small></span>
       <span><b>7</b><small>FIX</small></span>
     </div>
@@ -129,12 +129,14 @@ hide:
             <li>입력 첫 프레임에 기본 속도의 90% 이상으로 진입하고 손을 떼면 저속 꼬리 없이 정지합니다.</li>
             <li>90도 선회에서 옆 방향 관성을 제거하고, 180도 반전은 이전 속도를 18%만 보존합니다.</li>
             <li>대시 종료 관성을 0.08초·1.08배로 줄이고 카메라 추적 응답을 높였습니다.</li>
+            <li>왼쪽 아래 전용 카드에서 대시 READY·사용 중·남은 재사용 시간과 준비 게이지를 표시합니다.</li>
             <li>초동·스냅·횡그립·반전 보존·대시 종료 값은 이동 컴포넌트에서 각각 교체 가능합니다.</li>
           </ul>
           <p class="sfh-intent"><b>모듈 감사 결론</b><span>속도 정책은 PlayerMovement의 순수 계산 경계 안에 있고 맵·전투·장비 모듈을 참조하지 않습니다.</span></p>
         </div>
-        <div class="sfh-group"><h3>🆕 구현 · 1</h3>
+        <div class="sfh-group"><h3>🆕 구현 · 2</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">플랫포머형 이동 응답 정책</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>정지 스냅, 횡그립과 반전 속도 보존을 독립 이동 파라미터로 추가했습니다.</p><a href="features/player/">플레이어 이동 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">대시 준비·재사용 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Shift/Space 대시의 READY·DASH·남은 시간과 충전 게이지를 독립 카드로 표시합니다.</p><a href="features/player/">대시 HUD 계약 →</a></div></details>
         </div>
         <div class="sfh-group"><h3>✨ 개선 · 3</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">즉시 초동과 완전 정지</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>가속 응답을 높이고 50px/s 이하의 남은 속도를 0으로 스냅합니다.</p></div></details>
@@ -185,7 +187,7 @@ hide:
           <ul>
             <li>공용 에너지 100과 스킬별 충전 횟수·복구 시간을 추가했습니다.</li>
             <li>적 처치 시 에너지·체력 결정을 떨어뜨리고 최소 1개 드랍을 보정합니다.</li>
-            <li>하단 스킬 HUD에 에너지 막대, 소비량과 현재 충전을 표시합니다.</li>
+            <li>하단 스킬 HUD에 굵은 에너지 막대, 현재/최대·백분율·LOW/CRITICAL 상태와 현재 충전을 표시합니다.</li>
             <li>레벨업 시 HP 12 회복을 임시 버프 여부와 무관하게 원상 복구했습니다.</li>
           </ul>
           <p class="sfh-intent"><b>모듈 감사 결론</b><span>드랍 정책·자원 상태·Pickup·스킬 실행·레벨업 회복을 독립 계약으로 연결하고 대형 작전 평균 6.889ms 예산을 통과했습니다.</span></p>
@@ -194,8 +196,9 @@ hide:
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">에너지·충전 자원 은행</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>세 스킬의 에너지 소비와 슬롯별 충전 복구를 교체 가능한 Resource 정의로 연결했습니다.</p><a href="features/combat-resources/">전투 자원 보기 →</a></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">적 처치 회복 결정</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>에너지와 체력 결정을 독립 확률로 생성하고 자석 회수 후 실제 수치에 반영합니다.</p></div></details>
         </div>
-        <div class="sfh-group"><h3>✨ 개선 · 1</h3>
+        <div class="sfh-group"><h3>✨ 개선 · 2</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">스킬 자원 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>에너지 부족과 충전 대기를 슬롯에서 즉시 구분합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">에너지 판독 상태</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>13px 게이지와 현재/최대·백분율을 함께 표시하고 35%·15% 임계값을 색으로 구분합니다.</p><a href="features/combat-resources/">에너지 UI 규칙 →</a></div></details>
         </div>
         <div class="sfh-group"><h3>🐛 버그픽스 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">레벨업 HP 회복 원상 복구</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>버프 선택 UI가 활성화돼도 레벨마다 HP 12가 정확히 한 번 회복됩니다.</p></div></details>

@@ -27,6 +27,9 @@ const UPGRADE_BALANCE_PAYLOAD_PATH := (
 	"res://game/features/growth_balance/data/upgrade_balance_payload.tres"
 )
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
+const DASH_COOLDOWN_HUD_SCENE_PATH := (
+	"res://game/features/movement_hud/dash_cooldown_hud.tscn"
+)
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
 const RUN_BUFF_SCENE_PATH := "res://game/features/run_buffs/run_buff_system.tscn"
@@ -838,8 +841,16 @@ func _verify_combat_resource_modules() -> bool:
 				or int(states[0].get(&"current_charges", -1)) != 1
 				or not hud.call(&"configure", skill_system)
 				or "30 / 100" not in String(hud.get_node("Panel/Margin/Content/ResourceRow/EnergyLabel").text)
+				or "LOW" not in String(hud.get_node("Panel/Margin/Content/ResourceRow/EnergyStateLabel").text)
 			):
 				failure_message = "스킬 HUD에 에너지와 충전 상태가 표시되지 않았습니다."
+			else:
+				states[0][&"energy_current"] = 10.0
+				hud.call(&"_on_skill_states_changed", states)
+				if "CRITICAL" not in String(
+					hud.get_node("Panel/Margin/Content/ResourceRow/EnergyStateLabel").text
+				):
+					failure_message = "스킬 HUD가 에너지 위험 임계값을 표시하지 않습니다."
 	root.remove_child(sandbox)
 	sandbox.free()
 	await process_frame
@@ -1281,6 +1292,7 @@ func _verify_player_sustain_and_movement() -> bool:
 		float(movement_snapshot[&"dash_duration"]) + 0.01,
 		false
 	)
+	var dash_snapshot: Dictionary = movement.call(&"get_movement_snapshot")
 	if (
 		accelerated.x < base_speed * 0.9
 		or accelerated.x > base_speed
@@ -1291,9 +1303,29 @@ func _verify_player_sustain_and_movement() -> bool:
 		or dashed.length() <= base_speed * 2.0
 		or dash_exit.length() <= base_speed
 		or dash_exit.length() >= dashed.length()
-		or not bool(movement.call(&"get_movement_snapshot")[&"dash_exit_active"])
+		or not bool(dash_snapshot[&"dash_exit_active"])
+		or float(dash_snapshot.get(&"dash_cooldown_remaining", 0.0)) <= 0.0
+		or float(dash_snapshot.get(&"dash_ready_ratio", 1.0)) >= 1.0
 	):
 		_fail("플랫포머형 초동·즉시 제동·급선회·회피 후 짧은 관성 응답이 예상 범위를 벗어났습니다.")
+		return false
+	var dash_hud_scene := load(DASH_COOLDOWN_HUD_SCENE_PATH) as PackedScene
+	var dash_hud = dash_hud_scene.instantiate() if dash_hud_scene != null else null
+	if dash_hud == null:
+		_fail("대시 쿨타임 HUD 장면을 불러오지 못했습니다.")
+		return false
+	host.add_child(dash_hud)
+	if not dash_hud.call(&"configure", player):
+		_fail("대시 쿨타임 HUD가 이동 스냅샷 제공자에 연결되지 않았습니다.")
+		return false
+	dash_hud.call(&"_refresh_state")
+	var dash_hud_snapshot: Dictionary = dash_hud.call(&"get_snapshot")
+	if (
+		String(dash_hud_snapshot.get(&"status", "")) != "재사용"
+		or float(dash_hud_snapshot.get(&"bar_value", 100.0)) >= 100.0
+		or float(dash_hud_snapshot.get(&"refresh_hz", 0.0)) > 20.0
+	):
+		_fail("대시 HUD가 남은 시간·준비 게이지를 제한 주기로 표시하지 못했습니다.")
 		return false
 
 	var recovery := recovery_scene.instantiate()
@@ -2601,6 +2633,7 @@ func _process(_delta: float) -> bool:
 		var health_recovery = game_instance.get("health_recovery_system")
 		var combat_skills = game_instance.get("combat_skill_system")
 		var combat_skill_hud = game_instance.get("combat_skill_hud")
+		var dash_cooldown_hud = game_instance.get("dash_cooldown_hud")
 		if (
 			progression == null
 			or weapon == null
@@ -2614,6 +2647,7 @@ func _process(_delta: float) -> bool:
 			or health_recovery == null
 			or combat_skills == null
 			or combat_skill_hud == null
+			or dash_cooldown_hud == null
 		):
 			return _fail("맵, 탈출, 장비, 전투 스킬 또는 성장 모듈이 설치되지 않았습니다.")
 		if (
@@ -2638,6 +2672,7 @@ func _process(_delta: float) -> bool:
 			return _fail("플레이어 체력 HUD의 수치 또는 가독성 스타일이 적용되지 않았습니다.")
 		var tactical_minimap := game_instance.get("minimap") as Control
 		var skill_hud := game_instance.get("combat_skill_hud") as Control
+		var dash_hud := game_instance.get("dash_cooldown_hud") as Control
 		var interaction_prompt := game_instance.get_node("UI/InteractionLabel") as Control
 		var combat_hud := game_instance.get_node("UI/HUDMargin") as Control
 		if (
@@ -2648,7 +2683,11 @@ func _process(_delta: float) -> bool:
 			or skill_hud == null
 			or skill_hud.size.x > 680.0
 			or skill_hud.size.y > 112.0
+			or dash_hud == null
+			or dash_hud.size.x > 200.0
+			or dash_hud.size.y > 76.0
 			or combat_hud.get_global_rect().intersects(tactical_minimap.get_global_rect())
+			or dash_hud.get_global_rect().intersects(skill_hud.get_global_rect())
 			or skill_hud.get_global_rect().intersects(interaction_prompt.get_global_rect())
 		):
 			return _fail(
@@ -2657,6 +2696,18 @@ func _process(_delta: float) -> bool:
 					skill_hud.get_global_rect(), interaction_prompt.get_global_rect(),
 				]
 			)
+		var energy_bar := skill_hud.get_node(
+			"Panel/Margin/Content/ResourceRow/EnergyBar"
+		) as ProgressBar
+		var energy_state := skill_hud.get_node(
+			"Panel/Margin/Content/ResourceRow/EnergyStateLabel"
+		) as Label
+		if (
+			energy_bar.custom_minimum_size.y < 12.0
+			or "%" not in energy_state.text
+			or "AVAILABLE" not in energy_state.text
+		):
+			return _fail("에너지 HUD가 굵은 게이지와 현재 가용 상태를 표시하지 않습니다.")
 		var equipment_label := game_instance.get_node(
 			"UI/HUDMargin/Panel/Margin/Content/EquipmentLabel"
 		) as Label

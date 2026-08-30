@@ -7,10 +7,12 @@ var description_labels: Array[Label] = []
 var status_labels: Array[Label] = []
 var cooldown_bars: Array[ProgressBar] = []
 var latest_states: Array[Dictionary] = []
+var energy_state_band: StringName = &""
 
 @onready var skill_slots: HBoxContainer = %SkillSlots
 @onready var energy_bar: ProgressBar = %EnergyBar
 @onready var energy_label: Label = %EnergyLabel
+@onready var energy_state_label: Label = %EnergyStateLabel
 
 
 func configure(new_skill_system: Node) -> bool:
@@ -40,15 +42,28 @@ func _on_skill_states_changed(states: Array[Dictionary]) -> void:
 		_rebuild_slots(states)
 	if states.is_empty() or float(states[0].get(&"energy_maximum", 0.0)) <= 0.0:
 		energy_bar.visible = false
-		energy_label.text = "에너지 자원 비활성"
+		energy_label.text = "비활성"
+		energy_state_label.text = "NO RESOURCE"
 	else:
 		energy_bar.visible = true
-		energy_bar.max_value = float(states[0][&"energy_maximum"])
-		energy_bar.value = float(states[0][&"energy_current"])
-		energy_label.text = "에너지 %d / %d" % [
-			roundi(float(states[0][&"energy_current"])),
-			roundi(float(states[0][&"energy_maximum"])),
-		]
+		var energy_maximum := float(states[0][&"energy_maximum"])
+		var energy_current := float(states[0][&"energy_current"])
+		var energy_ratio := clampf(energy_current / energy_maximum, 0.0, 1.0)
+		energy_bar.max_value = energy_maximum
+		energy_bar.value = energy_current
+		energy_label.text = "%d / %d" % [roundi(energy_current), roundi(energy_maximum)]
+		if energy_ratio <= 0.15:
+			energy_state_label.text = "CRITICAL · %d%%" % roundi(energy_ratio * 100.0)
+			energy_state_label.modulate = Color(1.0, 0.42, 0.38, 1.0)
+			_set_energy_fill_color(&"critical", Color(1.0, 0.32, 0.28, 1.0))
+		elif energy_ratio <= 0.35:
+			energy_state_label.text = "LOW · %d%%" % roundi(energy_ratio * 100.0)
+			energy_state_label.modulate = Color(1.0, 0.74, 0.32, 1.0)
+			_set_energy_fill_color(&"low", Color(1.0, 0.62, 0.2, 1.0))
+		else:
+			energy_state_label.text = "AVAILABLE · %d%%" % roundi(energy_ratio * 100.0)
+			energy_state_label.modulate = Color(0.48, 1.0, 0.72, 1.0)
+			_set_energy_fill_color(&"available", Color(0.12, 0.84, 0.88, 1.0))
 	for index in states.size():
 		var state := states[index]
 		title_labels[index].text = "[%s]  %s" % [state[&"input_label"], state[&"display_name"]]
@@ -79,6 +94,17 @@ func _on_skill_states_changed(states: Array[Dictionary]) -> void:
 			Color(0.48, 1.0, 0.72, 1.0) if ready else Color(1.0, 0.7, 0.35, 1.0)
 		)
 		cooldown_bars[index].value = (1.0 - float(state[&"cooldown_ratio"])) * 100.0
+
+
+func _set_energy_fill_color(state_band: StringName, color: Color) -> void:
+	if energy_state_band == state_band:
+		return
+	energy_state_band = state_band
+	var style := energy_bar.get_theme_stylebox(&"fill").duplicate() as StyleBoxFlat
+	if style == null:
+		return
+	style.bg_color = color
+	energy_bar.add_theme_stylebox_override(&"fill", style)
 
 
 func _rebuild_slots(states: Array[Dictionary]) -> void:

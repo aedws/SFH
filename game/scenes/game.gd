@@ -30,6 +30,9 @@ const COMBAT_SKILL_SYSTEM_SCENE_PATH := (
 const COMBAT_SKILL_HUD_SCENE_PATH := (
 	"res://game/features/combat_skills/combat_skill_hud.tscn"
 )
+const DASH_COOLDOWN_HUD_SCENE_PATH := (
+	"res://game/features/movement_hud/dash_cooldown_hud.tscn"
+)
 const COMBAT_RESOURCE_SCENE_PATH := (
 	"res://game/features/combat_resources/combat_resource_system.tscn"
 )
@@ -82,6 +85,7 @@ const MAP_GENERATOR_METHODS := [
 const PLAYER_METHODS := [
 	&"configure_damage",
 	&"get_health_snapshot",
+	&"get_movement_snapshot",
 	&"get_runtime_stats",
 	&"get_facing_direction",
 	&"heal",
@@ -204,6 +208,7 @@ const COMBAT_SKILL_METHODS := [
 	&"get_skill_states", &"get_snapshot",
 ]
 const COMBAT_SKILL_HUD_METHODS := [&"configure", &"get_snapshot"]
+const DASH_COOLDOWN_HUD_METHODS := [&"configure", &"get_snapshot"]
 const COMBAT_RESOURCE_METHODS := [
 	&"configure", &"can_activate", &"consume_for_skill", &"restore_energy",
 	&"spawn_enemy_drops", &"get_skill_resource_snapshot", &"get_snapshot",
@@ -293,6 +298,7 @@ var room_encounter_system
 var auto_weapon
 var combat_skill_system
 var combat_skill_hud
+var dash_cooldown_hud
 var combat_resource_system
 var weapon_balance_service
 var growth_balance_service
@@ -747,7 +753,7 @@ func _return_to_start_hub() -> void:
 	interaction_label.visible = false
 	for node in [
 		fog_of_war, minimap, inventory_window, equipment_workbench,
-		run_buff_selector, combat_skill_hud,
+		run_buff_selector, combat_skill_hud, dash_cooldown_hud,
 	]:
 		_free_feature_node(node)
 	for container in [
@@ -798,6 +804,7 @@ func _reset_run_references() -> void:
 	auto_weapon = null
 	combat_skill_system = null
 	combat_skill_hud = null
+	dash_cooldown_hud = null
 	combat_resource_system = null
 	weapon_balance_service = null
 	growth_balance_service = null
@@ -881,6 +888,8 @@ func _assemble_game() -> bool:
 		float(health_snapshot.get(&"current", 0.0)),
 		float(health_snapshot.get(&"maximum", 1.0))
 	)
+	if not _install_dash_cooldown_hud():
+		return false
 	if features.fog_of_war_enabled and not _install_fog_of_war():
 		return false
 	if features.equipment_enabled and not _install_equipment():
@@ -1034,6 +1043,19 @@ func _install_combat_skills() -> bool:
 		or not combat_skill_hud.call(&"configure", combat_skill_system)
 	):
 		_report_configuration_error("전투 스킬 HUD를 구성하지 못했습니다.")
+		return false
+	return true
+
+
+func _install_dash_cooldown_hud() -> bool:
+	dash_cooldown_hud = _instantiate_feature(
+		DASH_COOLDOWN_HUD_SCENE_PATH, ui_layer, &"DashCooldownHud"
+	)
+	if (
+		not _supports_methods(dash_cooldown_hud, DASH_COOLDOWN_HUD_METHODS)
+		or not dash_cooldown_hud.call(&"configure", player)
+	):
+		_report_configuration_error("대시 쿨타임 HUD를 구성하지 못했습니다.")
 		return false
 	return true
 
@@ -1356,6 +1378,7 @@ func _on_modal_panel_visibility_changed(is_open: bool) -> void:
 				&"setup": run_setup_overlay.visible,
 				&"interaction": interaction_label.visible,
 				&"skills": is_instance_valid(combat_skill_hud) and combat_skill_hud.visible,
+				&"dash": is_instance_valid(dash_cooldown_hud) and dash_cooldown_hud.visible,
 				&"minimap": is_instance_valid(minimap) and minimap.visible,
 			}
 		hud_margin.visible = false
@@ -1364,6 +1387,8 @@ func _on_modal_panel_visibility_changed(is_open: bool) -> void:
 		interaction_label.visible = false
 		if is_instance_valid(combat_skill_hud):
 			combat_skill_hud.visible = false
+		if is_instance_valid(dash_cooldown_hud):
+			dash_cooldown_hud.visible = false
 		if is_instance_valid(minimap):
 			minimap.visible = false
 		return
@@ -1378,6 +1403,8 @@ func _on_modal_panel_visibility_changed(is_open: bool) -> void:
 	interaction_label.visible = bool(modal_ui_visibility_snapshot.get(&"interaction", false))
 	if is_instance_valid(combat_skill_hud):
 		combat_skill_hud.visible = bool(modal_ui_visibility_snapshot.get(&"skills", false))
+	if is_instance_valid(dash_cooldown_hud):
+		dash_cooldown_hud.visible = bool(modal_ui_visibility_snapshot.get(&"dash", false))
 	if is_instance_valid(minimap):
 		minimap.visible = bool(modal_ui_visibility_snapshot.get(&"minimap", false))
 	modal_ui_visibility_snapshot.clear()
