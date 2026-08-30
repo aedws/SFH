@@ -30,7 +30,7 @@ tags:
   <p>2026-08-30에 사용자가 제공한 기획 원문을 기준으로, 저장소에서 실제 확인되는 범위만 완료 또는 부분 완료로 계산했습니다.</p>
 </div>
 
-기획 원본은 [SFH 프로젝트 노션](https://app.notion.com/p/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 연결 API는 여전히 원본 페이지 권한을 받지 못하지만, 사용자가 이번 대화에 제공한 전체 본문을 권위 있는 스냅샷으로 사용해 저장소와 다시 대조했습니다. Phase 체크박스는 모두 미체크이므로 완료 증거로 사용하지 않고 실제 코드·자동 테스트만 판정 근거로 삼았습니다.
+기획 원본은 로그인 없이 열리는 [게시된 SFH 프로젝트 노션](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-08-30에 공개 페이지의 실제 렌더링 본문을 직접 읽어 기존 기획 스냅샷과 일치함을 확인했습니다. 앞으로 진행도 점검은 이 공개 주소를 먼저 읽고 저장소 구현과 대조합니다. Phase 체크박스는 모두 미체크이므로 완료 증거로 사용하지 않고 실제 코드·자동 테스트만 판정 근거로 삼습니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
@@ -68,7 +68,7 @@ tags:
 
 ### 2026-08-30 기획 원문 재대조
 
-[SFH 프로젝트 노션](https://app.notion.com/p/SFH-6b45b728004082af8a4a811ef0a1c5e9)의 본문을 사용자가 대화에 직접 제공했으며 다음 상태를 확인했습니다.
+[게시된 SFH 프로젝트 노션](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)의 렌더링 본문을 직접 확인했으며 다음 상태를 확인했습니다.
 
 - `수동 조준 배제`는 확정 사항이며 현재 구현과 일치합니다.
 - 스마트 자동 타게팅, 시간 경과 위험 증가, 장비·스킬 상점 영구 등록은 `(미확정)` 상태입니다.
@@ -99,11 +99,15 @@ tags:
         <li>I 가방과 U/E 장비 화면을 거점 플레이어 조립 단계에 추가했습니다.</li>
         <li>조회 전용 플래그로 장착·성장·강화·개조를 차단하면서 슬롯·태그·모듈 상세는 유지합니다.</li>
         <li>거점 Q 선택 슬롯을 조립 경계 값으로 보존해 출격과 귀환 사이에 유지합니다.</li>
+        <li>향후 진행도 점검의 기준을 로그인 없이 읽을 수 있는 게시된 Notion 주소로 변경했습니다.</li>
       </ul>
       <p class="sfh-intent"><b>모듈 감사 결론</b><span>별도 복제 UI 없이 기존 가방·장비 Scene을 표시 모드만 바꿔 재사용했습니다.</span></p>
     </div>
     <div class="sfh-group"><h3>✨ 개선 · 1</h3>
       <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">전초기지 로드아웃 조회</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>I·U/E·Q 입력과 현재 활성 무기 표시를 거점에 연결했습니다.</p><a href="../features/start-hub/">거점 흐름 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>🧩 수정 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">공개 기획 원본 고정</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>게시된 Notion 본문을 직접 대조하고 향후 진행도 점검의 권위 있는 주소로 지정했습니다.</p><a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a></div></details>
     </div>
   </div>
 </details>
