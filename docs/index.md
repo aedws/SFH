@@ -34,10 +34,10 @@ hide:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>74%</b>
+        <b>69%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="74"><i style="width: 74%"></i></div>
-      <p>제공된 기획 원문 재대조 · 확정 전투 3× · 코어 루프 2× · 기타 1×</p>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="69"><i style="width: 69%"></i></div>
+      <p>공개 기획 원문 재대조 · 입력·전투 3× · 타게팅·탈출 2× · 기타 1×</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
       <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
     </div>
@@ -69,11 +69,41 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>SEARCH COMMAND</span><span>1 DAY · 18 TOPICS</span><span>기획 진행도 74% · 원문 재대조</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 19 TOPICS</span><span>기획 진행도 69% · 원문 재대조</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 35 &middot; IMPROVE 31 &middot; CHANGE 12 &middot; FIX 8</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>1 UPDATE BUNDLES &middot; BUILD 0 &middot; IMPROVE 0 &middot; CHANGE 1 &middot; FIX 0</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-daily-overview">
+      <span><b>1</b><small>UPDATE BUNDLE</small></span>
+      <span><b>0</b><small>BUILD</small></span>
+      <span><b>0</b><small>IMPROVE</small></span>
+      <span><b>1</b><small>CHANGE</small></span>
+      <span><b>0</b><small>FIX</small></span>
+    </div>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 1</small><b>공개 기획 재대조 · 진행률 69% · 남은 작업 재정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>핵심 변경 · 기능 보유 여부가 아니라 최신 수용 기준으로 다시 계산</strong>
+          <ul>
+            <li>2026-08-31 공개 Notion 본문을 읽고 저장소 코드와 직접 대조했습니다.</li>
+            <li>좌클릭 연속 기본기, 1~9 슬롯, 스킬 유형별 타게팅, 탈출 일시정지·재개를 최우선 차이로 확인했습니다.</li>
+            <li>서로 겹치지 않는 다섯 기획 묶음에 확정 중요도 가중치를 적용해 진행률을 69%로 재산정했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>판정 원칙</b><span>Notion 체크박스가 아니라 실제 코드·데이터·검증으로 완료 여부를 판정합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">최신 기획 기준 진행률·개발 순서</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>새로 명시된 입력·타게팅·탈출 조건을 반영하고 남은 작업을 플레이 규격 차이부터 정렬했습니다.</p><a href="development-status/#_1">상세 산정 근거 →</a></div></details>
+        </div>
+      </div>
+    </details>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>18 UPDATE BUNDLES &middot; BUILD 35 &middot; IMPROVE 31 &middot; CHANGE 12 &middot; FIX 8</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>18</b><small>UPDATE BUNDLES</small></span>
