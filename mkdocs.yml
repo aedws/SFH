@@ -27,7 +27,6 @@ theme:
     - navigation.indexes
     - navigation.sections
     - navigation.top
-    - search.suggest
     - search.highlight
     - search.share
     - content.code.copy
@@ -36,6 +35,9 @@ theme:
 
 extra_css:
   - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/search-dashboard.js
 
 plugins:
   - search:
@@ -64,6 +66,7 @@ nav:
       - 편집기 기초: getting-started/editor-basics.md
       - 프로젝트 실행: getting-started/run-project.md
       - 웹에서 위키 수정: getting-started/edit-wiki-online.md
+      - 위키 실시간 검색: getting-started/search-wiki.md
   - 게임 설계:
       - design/index.md
       - 게임 개요: design/game-overview.md
