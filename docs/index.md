@@ -62,11 +62,29 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>ROOM COMBAT</span><span>6.890ms LARGE ROOM</span><span>기획 진행도 71% · 원문 재대조</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>HUB LOADOUT</span><span>I · U/E · Q</span><span>기획 진행도 71% · 원문 재대조</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>지속 원형 자기장 · 방 진입 봉쇄 전투 · 전멸 보상</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>거점 I 가방 · U/E 장비 조회 · Q 무기 선택 유지</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 거점 준비 단축키</strong>
+      <ul>
+        <li>거점에서도 I 가방과 U/E 장비·모듈·파츠 화면을 열어 현재 구성을 확인합니다.</li>
+        <li>거점 장비 화면은 조회 전용으로 장착·레벨업·강화·개조 변경을 차단합니다.</li>
+        <li>Q로 선택한 메인·보조 무기 슬롯은 전투 세션에 유지되고 귀환 후에도 다시 확인할 수 있습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>검증 결론</b><span>키 매핑, 패널 열기, 조회 전용 차단, 출격 선택 유지와 귀환 재설치를 자동 검증했습니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>✨ 개선 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">거점 로드아웃 조회</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>I·U/E·Q 준비 동선을 전초기지에 연결하고 전투 UI 모듈을 조회 모드로 재사용합니다.</p><a href="features/start-hub/">거점 단축키 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>지속 원형 자기장 · 방 진입 봉쇄 전투 · 전멸 보상</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 전투 흐름 2개 개선</strong>

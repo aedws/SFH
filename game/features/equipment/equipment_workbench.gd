@@ -43,6 +43,7 @@ var selected_installed_kind: StringName = &""
 var selected_installed_id: StringName = &""
 var modification_filter: StringName = &"all"
 var slot_buttons: Dictionary = {}
+var read_only: bool = false
 
 
 func _ready() -> void:
@@ -76,13 +77,15 @@ func _ready() -> void:
 func configure(
 	new_equipment_provider: Node,
 	new_inventory_provider: Node,
-	new_upgrade_provider: Node = null
+	new_upgrade_provider: Node = null,
+	new_read_only: bool = false
 ) -> bool:
 	if new_equipment_provider == null or new_inventory_provider == null:
 		return false
 	equipment_provider = new_equipment_provider
 	inventory_provider = new_inventory_provider
 	upgrade_provider = new_upgrade_provider
+	read_only = new_read_only
 	if equipment_provider.has_signal(&"customization_changed"):
 		var customization_callback := Callable(self, &"_on_data_changed")
 		if not equipment_provider.is_connected(&"customization_changed", customization_callback):
@@ -170,16 +173,35 @@ func _refresh() -> void:
 	_refresh_equipment_inventory()
 	_refresh_installed_customization()
 	_refresh_modification_inventory()
+	_apply_read_only_state()
+
+
+func _apply_read_only_state() -> void:
+	if not read_only:
+		return
+	for button in [
+		equip_selected_button,
+		install_selected_modification_button,
+		%LevelUpButton,
+		%ModifyButton,
+		%UpgradeInstalledButton,
+		%UpgradeInstalledPartButton,
+		%ModuleModifyButton,
+	]:
+		(button as Button).disabled = true
+	status_label.text = "거점 조회 전용 · 장착과 강화는 작전 준비 기능 확장 후 지원"
 
 
 func _refresh_slot_rail() -> void:
 	var equipped_count := 0
 	var installed_module_count := 0
+	var active_weapon_slot: StringName = equipment_provider.call(&"get_active_weapon_slot")
 	for slot_id in SLOT_LABELS:
 		var state := _get_state(slot_id)
 		var button := slot_buttons[slot_id] as Button
 		button.button_pressed = slot_id == selected_slot_id
-		button.text = "%s\n%s" % [
+		button.text = "%s%s\n%s" % [
+			"▶ " if slot_id == active_weapon_slot else "  ",
 			SLOT_LABELS[slot_id],
 			state.display_name() if state != null else "비어 있음",
 		]
@@ -222,9 +244,10 @@ func _refresh_equipment_detail() -> void:
 	equipment_level_bar.max_value = maxi(1, int(snapshot[&"maximum_level"]))
 	equipment_level_bar.value = int(snapshot[&"level"])
 	equipment_stats.text = _equipment_stats_text(state)
-	%LevelUpButton.disabled = int(snapshot[&"level"]) >= int(snapshot[&"maximum_level"])
+	%LevelUpButton.disabled = read_only or int(snapshot[&"level"]) >= int(snapshot[&"maximum_level"])
 	%ModifyButton.disabled = (
-		int(snapshot[&"level"]) < int(snapshot[&"maximum_level"])
+		read_only
+		or int(snapshot[&"level"]) < int(snapshot[&"maximum_level"])
 		or state.installed_modules.is_empty()
 	)
 
@@ -398,7 +421,7 @@ func _refresh_inventory_candidate_detail() -> void:
 			selected_inventory_entry.get(&"description", "설명 없음"),
 			"현재 슬롯에 장착할 수 있습니다." if compatible else "현재 슬롯 태그와 맞지 않습니다.",
 		]
-		equip_selected_button.disabled = not compatible
+		equip_selected_button.disabled = read_only or not compatible
 		install_selected_modification_button.disabled = true
 	else:
 		var compatible := _can_install_entry(_get_state(selected_slot_id), selected_inventory_entry)
@@ -407,7 +430,7 @@ func _refresh_inventory_candidate_detail() -> void:
 			_modification_detail(definition),
 			"현재 장비에 장착할 수 있습니다." if compatible else "슬롯, 중복 또는 코스트 조건을 확인하세요.",
 		]
-		install_selected_modification_button.disabled = not compatible
+		install_selected_modification_button.disabled = read_only or not compatible
 		equip_selected_button.disabled = true
 
 
@@ -438,10 +461,11 @@ func _refresh_installed_selection_detail() -> void:
 			quote
 		)
 		%UpgradeInstalledButton.disabled = (
-			module_instance.upgrade_level >= module_instance.definition.maximum_upgrade_level()
+			read_only
+			or module_instance.upgrade_level >= module_instance.definition.maximum_upgrade_level()
 			or (not quote.is_empty() and not bool(quote.get(&"can_upgrade", false)))
 		)
-		%ModuleModifyButton.disabled = state.level < state.maximum_level()
+		%ModuleModifyButton.disabled = read_only or state.level < state.maximum_level()
 	else:
 		var part := state.get_part(selected_installed_id)
 		if part == null:
@@ -457,12 +481,16 @@ func _refresh_installed_selection_detail() -> void:
 			quote
 		)
 		%UpgradeInstalledPartButton.disabled = (
-			current_level >= part.maximum_upgrade_level
+			read_only
+			or current_level >= part.maximum_upgrade_level
 			or (not quote.is_empty() and not bool(quote.get(&"can_upgrade", false)))
 		)
 
 
 func _equip_selected_candidate() -> void:
+	if read_only:
+		_apply_read_only_state()
+		return
 	if selected_inventory_entry.is_empty() or not _providers_are_ready():
 		return
 	var definition: Resource = selected_inventory_entry.get(&"linked_resource")
@@ -477,6 +505,9 @@ func _equip_selected_candidate() -> void:
 
 
 func _install_selected_modification() -> void:
+	if read_only:
+		_apply_read_only_state()
+		return
 	if selected_inventory_entry.is_empty() or not _providers_are_ready():
 		return
 	var item_type: StringName = selected_inventory_entry.get(&"item_type", &"")
@@ -501,6 +532,9 @@ func _install_selected_modification() -> void:
 
 
 func _level_up_selected() -> void:
+	if read_only:
+		_apply_read_only_state()
+		return
 	if equipment_provider.call(&"level_up_equipment", selected_slot_id):
 		_set_status("%s 장비 레벨 상승" % _slot_display_name(selected_slot_id))
 	else:
@@ -516,6 +550,9 @@ func _upgrade_selected_part() -> void:
 
 
 func _upgrade_selected(kind: StringName) -> void:
+	if read_only:
+		_apply_read_only_state()
+		return
 	if selected_installed_kind != kind or selected_installed_id == &"":
 		_set_status("강화할 %s 카드를 먼저 선택하세요." % ("모듈" if kind == &"module" else "파츠"))
 		return
@@ -542,6 +579,9 @@ func _upgrade_selected(kind: StringName) -> void:
 
 
 func _grant_selected_module_tag() -> void:
+	if read_only:
+		_apply_read_only_state()
+		return
 	var state := _get_state(selected_slot_id)
 	if state == null:
 		return

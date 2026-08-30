@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>ROOM COMBAT</span><span>6.890ms LARGE ROOM</span><span>MODULAR PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>HUB LOADOUT</span><span>I · U/E · Q</span><span>MODULAR PASS</span></div>
 
 ## 기획 기준 진행도
 
@@ -91,7 +91,25 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>지속 자기장 · 방 진입 봉쇄 · 전멸 보상</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>거점 I·U/E·Q 로드아웃 확인</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 거점 입력 4종</strong>
+      <ul>
+        <li>I 가방과 U/E 장비 화면을 거점 플레이어 조립 단계에 추가했습니다.</li>
+        <li>조회 전용 플래그로 장착·성장·강화·개조를 차단하면서 슬롯·태그·모듈 상세는 유지합니다.</li>
+        <li>거점 Q 선택 슬롯을 조립 경계 값으로 보존해 출격과 귀환 사이에 유지합니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>모듈 감사 결론</b><span>별도 복제 UI 없이 기존 가방·장비 Scene을 표시 모드만 바꿔 재사용했습니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>✨ 개선 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">전초기지 로드아웃 조회</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>I·U/E·Q 입력과 현재 활성 무기 표시를 거점에 연결했습니다.</p><a href="../features/start-hub/">거점 흐름 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>지속 자기장 · 방 진입 봉쇄 · 전멸 보상</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 2개 전투 모듈</strong>
@@ -99,7 +117,7 @@ tags:
         <li>2번 자기장이 플레이어를 따라 5초 동안 유지되며 0.5초 고정 틱으로 피해를 누적합니다.</li>
         <li>일반 방 안쪽 진입 시 적을 생성하고, 생성 성공 뒤에만 모든 출입문을 봉쇄합니다.</li>
         <li>해당 방 적의 수명만 추적해 전멸을 판정하고 문 개방과 내부 경험치 보상을 실행합니다.</li>
-        <li>대형 방 적 14기·전기 효과 3개에서 평균 6.890ms, 최대 7.731ms를 확인했습니다.</li>
+        <li>대형 방 적 14기·전기 효과 3개에서 평균 6.884ms, 최대 8.385ms를 확인했습니다.</li>
       </ul>
       <p class="sfh-intent"><b>모듈 감사 결론</b><span>맵 스냅샷·위치 지정 생성·문·보상 계약을 분리했고 비활성 폴백 자동 검증을 통과했습니다.</span></p>
     </div>
