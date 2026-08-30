@@ -5,6 +5,9 @@ const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_genera
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
 const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
 const SPAWN_CONFIG_PATH_PATTERN := "res://game/features/spawning/configs/%s.tres"
+const ROOM_ENCOUNTER_CONFIG_PATH := (
+	"res://game/features/room_encounters/configs/default_room_encounters.tres"
+)
 const ENEMY_SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
 const EQUIPMENT_SCENE_PATH := "res://game/features/equipment/equipment_system.tscn"
 const EQUIPMENT_LOADOUT_PATH := "res://game/features/equipment/loadouts/default_loadout.tres"
@@ -90,6 +93,8 @@ func _init() -> void:
 		return
 	if not await _verify_optional_combat_skill_module(game_scene):
 		return
+	if not await _verify_optional_room_encounter_module(game_scene):
+		return
 	if not await _verify_all_tier_entry(game_scene):
 		return
 	if not await _verify_optional_map_module(game_scene):
@@ -119,6 +124,13 @@ func _init() -> void:
 		_fail("첫 실행이 이동 가능한 시작 거점으로 진입하지 않았습니다.")
 		return
 	game_instance.call(&"start_run", "small")
+	var room_encounters = game_instance.get("room_encounter_system")
+	var map_generator = game_instance.get("map_generator")
+	if room_encounters != null and map_generator != null:
+		for room: Dictionary in map_generator.call(&"get_room_encounter_snapshot"):
+			if not bool(room[&"is_start_room"]) and not bool(room[&"is_extraction_room"]):
+				room_encounters.call(&"try_start_room", int(room[&"room_index"]))
+				break
 	frame_count = 0
 
 
@@ -458,6 +470,15 @@ func _verify_combat_skill_modules() -> bool:
 				failure_message = "2번 원형 자기장 스킬이 발동하지 않았습니다."
 			elif float(enemy.get("current_health")) >= health_before:
 				failure_message = "원형 자기장이 범위 내 적에게 피해를 주지 않았습니다."
+			else:
+				var health_after_first_tick := float(enemy.get("current_health"))
+				var runtime_fields := get_nodes_in_group(&"combat_skill_runtime_effect")
+				if runtime_fields.size() != 1:
+					failure_message = "원형 자기장이 독립 지속 효과를 하나만 생성하지 않았습니다."
+				else:
+					runtime_fields[0].call(&"advance", 1.0)
+					if float(enemy.get("current_health")) >= health_after_first_tick:
+						failure_message = "원형 자기장이 고정 주기로 누적 피해를 주지 않았습니다."
 		if failure_message.is_empty():
 			var speed_before := float(player.call(&"get_runtime_stats").get(&"movement_speed", 0.0))
 			if not system.call(&"try_activate", 2):
@@ -534,6 +555,32 @@ func _verify_optional_combat_skill_module(game_scene: PackedScene) -> bool:
 	await process_frame
 	if not failure_message.is_empty():
 		_fail("전투 스킬 선택 모듈 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_optional_room_encounter_module(game_scene: PackedScene) -> bool:
+	var encounter_free_game := game_scene.instantiate()
+	var encounter_free_features = encounter_free_game.get("features").duplicate(true)
+	encounter_free_features.set("room_encounters_enabled", false)
+	encounter_free_features.set("run_setup_enabled", false)
+	encounter_free_features.set("start_hub_enabled", false)
+	encounter_free_game.set("features", encounter_free_features)
+	root.add_child(encounter_free_game)
+	await process_frame
+	var spawner = encounter_free_game.get("enemy_spawner")
+	var failure_message := ""
+	if not bool(encounter_free_game.get("run_started")):
+		failure_message = "방 전투 비활성 구성에서 작전을 시작하지 못했습니다."
+	elif encounter_free_game.get("room_encounter_system") != null:
+		failure_message = "비활성화했지만 방 전투 실행기가 설치됐습니다."
+	elif spawner == null or bool(spawner.call(&"get_snapshot").get(&"reinforcement_paused", true)):
+		failure_message = "방 전투 제거 후 기존 전역 증원 폴백이 복구되지 않았습니다."
+	root.remove_child(encounter_free_game)
+	encounter_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("방 전투 선택 모듈 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -1497,6 +1544,7 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 			var minimap = tier_game.get("minimap")
 			var fog = tier_game.get("fog_of_war")
 			var enemy_spawner = tier_game.get("enemy_spawner")
+			var room_encounters = tier_game.get("room_encounter_system")
 			var loot_spawner = tier_game.get("loot_spawner")
 			var auto_weapon = tier_game.get("auto_weapon")
 			var config = load(MAP_CONFIG_PATH_PATTERN % tier_id)
@@ -1510,12 +1558,16 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 				failure_message = "%s 작전의 탈출 또는 미니맵이 설치되지 않았습니다." % tier_id
 			elif fog == null or not _verify_room_and_corridor_fog(fog, generator, tier_game.get("player")):
 				failure_message = "%s 작전의 전장의 안개가 플레이어를 추적하지 않습니다." % tier_id
-			elif enemy_spawner == null or loot_spawner == null:
+			elif enemy_spawner == null or room_encounters == null or loot_spawner == null:
 				failure_message = "%s 작전의 적 생성 또는 파밍 모듈이 설치되지 않았습니다." % tier_id
 			elif auto_weapon == null or auto_weapon.get("target_provider") != enemy_spawner:
 				failure_message = "%s 작전의 자동 무기에 적 대상 제공자가 연결되지 않았습니다." % tier_id
 			elif not _verify_tier_population_and_value(enemy_spawner, loot_spawner, config, tier_id):
 				failure_message = "%s 작전의 증원 수량 또는 최소 배치 가치가 올바르지 않습니다." % tier_id
+			elif not _verify_room_encounter_flow(
+				room_encounters, enemy_spawner, generator, tier_game.get("progression_system"), tier_id
+			):
+				failure_message = "%s 작전의 방 봉쇄·섬멸·보상 흐름이 올바르지 않습니다." % tier_id
 			elif (
 				tier_game.get("inventory_system") == null
 				or tier_game.get("inventory_window") == null
@@ -1607,15 +1659,10 @@ func _verify_tier_population_and_value(
 		or target_count > int(spawn_config.get("maximum_active_enemies"))
 	):
 		return false
-	for _reinforcement in range(20):
-		enemy_spawner.call(&"_process", 30.0)
-		if bool(enemy_spawner.call(&"get_snapshot").get(&"initial_fill_complete", false)):
-			break
-	population = enemy_spawner.call(&"get_snapshot")
 	if (
-		int(population.get(&"active_enemies", 0)) != target_count
-		or int(population.get(&"reinforcement_count", 0)) <= 1
-		or not bool(population.get(&"initial_fill_complete", false))
+		not bool(population.get(&"reinforcement_paused", false))
+		or int(population.get(&"active_enemies", 0)) != 0
+		or int(population.get(&"reinforcement_count", 0)) != 0
 	):
 		return false
 	var loot_snapshot: Dictionary = loot_spawner.call(&"get_spawn_snapshot")
@@ -1636,6 +1683,58 @@ func _verify_tier_population_and_value(
 		and bool(loot_snapshot.get(&"maximum_value_respected", false))
 		and bool(loot_snapshot.get(&"target_value_satisfied", false))
 	)
+
+
+func _verify_room_encounter_flow(
+	room_encounters: Node,
+	enemy_spawner: Node,
+	generator: Node,
+	progression: Node,
+	tier_id: String
+) -> bool:
+	var room_index := -1
+	for room: Dictionary in generator.call(&"get_room_encounter_snapshot"):
+		if not bool(room[&"is_start_room"]) and not bool(room[&"is_extraction_room"]):
+			room_index = int(room[&"room_index"])
+			if not (room.get(&"doorways", []) as Array).is_empty():
+				break
+	if room_index < 0 or not room_encounters.call(&"try_start_room", room_index):
+		return false
+	var active: Dictionary = room_encounters.call(&"get_snapshot")
+	var config: Resource = load(ROOM_ENCOUNTER_CONFIG_PATH)
+	var tier_values: Dictionary = config.call(&"values_for", StringName(tier_id))
+	var enemy_count := int(active.get(&"active_enemy_count", 0))
+	if (
+		int(active.get(&"active_room_index", -1)) != room_index
+		or enemy_count < int(tier_values[&"minimum_enemies"])
+		or enemy_count > int(tier_values[&"maximum_enemies"])
+		or int(active.get(&"locked_door_count", 0)) <= 0
+		or active.get(&"reinforcement_mode") != &"room_triggered"
+	):
+		return false
+	for enemy in enemy_spawner.call(&"get_active_targets"):
+		if enemy.get_meta(&"room_encounter_id", &"") == StringName("room_%d" % room_index):
+			enemy.free()
+	room_encounters.call(&"_process", 0.0)
+	var cleared: Dictionary = room_encounters.call(&"get_snapshot")
+	if (
+		int(cleared.get(&"active_room_index", -2)) != -1
+		or int(cleared.get(&"locked_door_count", -1)) != 0
+		or int(cleared.get(&"completed_encounters", 0)) != 1
+	):
+		return false
+	var rewards := get_nodes_in_group(&"room_encounter_reward")
+	if rewards.size() != 1:
+		return false
+	var experience_before := 0
+	if progression != null:
+		experience_before = int(progression.call(&"get_run_snapshot").get(&"current_experience", 0))
+	rewards[0].call(&"collect")
+	if progression != null:
+		var after: Dictionary = progression.call(&"get_run_snapshot")
+		if int(after.get(&"current_experience", 0)) == experience_before:
+			return false
+	return true
 
 
 func _verify_loadout_workbench_ui(tier_game: Node) -> bool:
@@ -1755,6 +1854,7 @@ func _verify_optional_map_module(game_scene: PackedScene) -> bool:
 	var fallback_game := game_scene.instantiate()
 	var fallback_features = fallback_game.get("features").duplicate(true)
 	fallback_features.set("map_generation_enabled", false)
+	fallback_features.set("room_encounters_enabled", false)
 	fallback_features.set("map_obstacles_enabled", false)
 	fallback_features.set("fog_of_war_enabled", false)
 	fallback_features.set("minimap_enabled", false)
@@ -2015,7 +2115,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

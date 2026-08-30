@@ -24,6 +24,7 @@ extends Resource
 @export var inventory_enabled: bool = true
 @export var equipment_customization_enabled: bool = true
 @export var spawning_enabled: bool = true
+@export var room_encounters_enabled: bool = true
 @export var weapons_enabled: bool = true
 @export var combat_skills_enabled: bool = true
 @export var weapon_balance_enabled: bool = true
@@ -66,6 +67,11 @@ extends Resource
 @export_category("Combat skills")
 @export_file("*.tres") var combat_skill_loadout_path: String = (
 	"res://game/features/combat_skills/configs/default_combat_skills.tres"
+)
+
+@export_category("Room encounters")
+@export_file("*.tres") var room_encounter_config_path: String = (
+	"res://game/features/room_encounters/configs/default_room_encounters.tres"
 )
 
 @export_category("Inventory")
@@ -161,6 +167,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"equipment_customization")
 	if spawning_enabled:
 		result.append(&"spawning")
+	if room_encounters_enabled:
+		result.append(&"room_encounters")
 	if weapons_enabled:
 		result.append(&"weapons")
 	if combat_skills_enabled:
@@ -230,6 +238,12 @@ func validation_errors() -> PackedStringArray:
 		errors.append("run_setup 모듈은 map_generation 모듈이 필요합니다.")
 	if spawning_enabled and not enemies_enabled:
 		errors.append("spawning 모듈은 enemies 모듈이 필요합니다.")
+	if room_encounters_enabled and not spawning_enabled:
+		errors.append("room_encounters 모듈은 spawning 모듈이 필요합니다.")
+	if room_encounters_enabled and not map_generation_enabled:
+		errors.append("room_encounters 모듈은 map_generation 모듈이 필요합니다.")
+	if room_encounters_enabled and not _resource_exists(room_encounter_config_path):
+		errors.append("방 전투 설정 Resource 경로가 유효하지 않습니다.")
 	if enemy_armor_enabled and not enemies_enabled:
 		errors.append("enemy_armor 모듈은 enemies 모듈이 필요합니다.")
 	if enemy_status_ui_enabled and not enemies_enabled:

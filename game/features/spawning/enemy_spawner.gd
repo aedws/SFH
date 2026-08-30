@@ -23,6 +23,7 @@ var initial_fill_complete: bool = false
 var spawn_budget_is_exhausted: bool = false
 var tracked_enemies: Array[Node] = []
 var enemy_stat_multipliers: Dictionary = {}
+var reinforcement_pause_sources: Dictionary = {}
 var random := RandomNumberGenerator.new()
 
 
@@ -65,6 +66,7 @@ func configure(
 	initial_fill_complete = false
 	spawn_budget_is_exhausted = false
 	tracked_enemies.clear()
+	reinforcement_pause_sources.clear()
 	target_active_enemies = random.randi_range(
 		int(spawn_config.get("minimum_active_enemies")),
 		int(spawn_config.get("maximum_active_enemies"))
@@ -75,6 +77,8 @@ func configure(
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(target) or not is_instance_valid(enemy_parent):
+		return
+	if not reinforcement_pause_sources.is_empty():
 		return
 
 	reinforcement_cooldown -= delta
@@ -123,19 +127,6 @@ func _process(delta: float) -> void:
 
 
 func _spawn_enemy() -> bool:
-	if enemy_scene == null:
-		push_error("EnemySpawner에 Enemy Scene이 지정되지 않았습니다.")
-		return false
-
-	var enemy := enemy_scene.instantiate() as Node2D
-	if enemy == null:
-		push_error("Enemy Scene의 루트는 Node2D여야 합니다.")
-		return false
-	if not enemy.has_method(&"configure") or not enemy.has_signal(&"defeated"):
-		push_error("Enemy Scene이 생성기 공개 계약을 구현하지 않았습니다.")
-		enemy.free()
-		return false
-
 	var angle := random.randf_range(0.0, TAU)
 	var configured_radius := float(spawn_config.get("spawn_radius"))
 	var distance := random.randf_range(configured_radius * 0.85, configured_radius * 1.15)
@@ -146,9 +137,28 @@ func _spawn_enemy() -> bool:
 			target.global_position,
 			configured_radius * 0.5
 		)
+	return spawn_enemy_at(spawn_position) != null
+
+
+func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"") -> Node2D:
+	if enemy_scene == null or spawn_config == null:
+		push_error("EnemySpawner에 Enemy Scene 또는 등급 정책이 지정되지 않았습니다.")
+		return null
+	if total_spawned >= int(spawn_config.get("maximum_total_spawns")):
+		_mark_spawn_budget_exhausted()
+		return null
+	var enemy := enemy_scene.instantiate() as Node2D
+	if enemy == null:
+		push_error("Enemy Scene의 루트는 Node2D여야 합니다.")
+		return null
+	if not enemy.has_method(&"configure") or not enemy.has_signal(&"defeated"):
+		push_error("Enemy Scene이 생성기 공개 계약을 구현하지 않았습니다.")
+		enemy.free()
+		return null
 
 	enemy_parent.add_child(enemy)
-	enemy.global_position = spawn_position
+	enemy.global_position = world_position
+	enemy.set_meta(&"room_encounter_id", encounter_id)
 	enemy.call(
 		&"configure",
 		target,
@@ -162,7 +172,23 @@ func _spawn_enemy() -> bool:
 	enemy.tree_exited.connect(_on_enemy_tree_exited.bind(enemy), CONNECT_ONE_SHOT)
 	total_spawned += 1
 	enemy_spawned.emit(enemy)
-	return true
+	return enemy
+
+
+func set_reinforcement_paused(source_id: StringName, is_paused: bool) -> void:
+	if source_id == &"":
+		return
+	if is_paused:
+		reinforcement_pause_sources[source_id] = true
+	else:
+		reinforcement_pause_sources.erase(source_id)
+
+
+func get_remaining_spawn_budget() -> int:
+	return (
+		maxi(0, int(spawn_config.get("maximum_total_spawns")) - total_spawned)
+		if spawn_config != null else 0
+	)
 
 
 func get_snapshot() -> Dictionary:
@@ -184,10 +210,11 @@ func get_snapshot() -> Dictionary:
 		&"reinforcement_count": reinforcement_count,
 		&"initial_fill_complete": initial_fill_complete,
 		&"remaining_spawn_budget": (
-			maxi(0, int(spawn_config.get("maximum_total_spawns")) - total_spawned)
-			if spawn_config != null else 0
+			get_remaining_spawn_budget()
 		),
 		&"spawn_budget_exhausted": spawn_budget_is_exhausted,
+		&"reinforcement_paused": not reinforcement_pause_sources.is_empty(),
+		&"reinforcement_pause_sources": reinforcement_pause_sources.keys(),
 		&"enemy_stat_multipliers": enemy_stat_multipliers.duplicate(true),
 	}
 

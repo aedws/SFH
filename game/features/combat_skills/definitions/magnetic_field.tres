@@ -7,14 +7,16 @@
 [sub_resource type="Resource" id="MagneticFieldEffect"]
 script = ExtResource("2_effect")
 radius = 230.0
-damage = 24.0
+tick_damage = 6.0
+duration_seconds = 5.0
+tick_interval_seconds = 0.5
 electric_profile = ExtResource("3_electric")
 
 [resource]
 script = ExtResource("1_definition")
 skill_id = &"magnetic_field"
 display_name = "원형 자기장"
-description = "주변 적에게 즉시 범위 피해"
+description = "5초 동안 플레이어 주변 적에게 0.5초마다 누적 피해"
 input_action = &"combat_skill_2"
 input_label = "2"
 cooldown_seconds = 8.0

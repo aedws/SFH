@@ -144,6 +144,44 @@ func get_visibility_room_rects() -> Array[Rect2]:
 	return result
 
 
+func get_room_encounter_snapshot() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for room_index in range(rooms.size()):
+		var room := rooms[room_index]
+		result.append({
+			&"room_index": room_index,
+			&"world_rect": _room_world_rect(room, false),
+			&"center": _cell_center(_room_center_cell(room)),
+			&"doorways": _get_room_doorways(room),
+			&"is_start_room": room_index == 0,
+			&"is_extraction_room": room_index == extraction_room_index,
+		})
+	return result
+
+
+func get_room_spawn_positions(room_index: int, requested_count: int) -> PackedVector2Array:
+	var result := PackedVector2Array()
+	if room_index < 0 or room_index >= rooms.size() or requested_count <= 0:
+		return result
+	var room := rooms[room_index]
+	var used_cells: Dictionary = {}
+	var attempts := 0
+	var maximum_attempts := requested_count * 80
+	while result.size() < requested_count and attempts < maximum_attempts:
+		attempts += 1
+		var cell := Vector2i(
+			random.randi_range(room.position.x + 3, room.end.x - 4),
+			random.randi_range(room.position.y + 3, room.end.y - 4)
+		)
+		if used_cells.has(cell) or obstacle_cells.has(cell) or not floor_cells.has(cell):
+			continue
+		if cell.distance_squared_to(_room_center_cell(room)) < 16:
+			continue
+		used_cells[cell] = true
+		result.append(_cell_center(cell))
+	return result
+
+
 func get_loot_spawn_positions(requested_count: int) -> PackedVector2Array:
 	var result := PackedVector2Array()
 	for point in get_loot_spawn_points(requested_count):
@@ -640,6 +678,47 @@ func _room_world_rect(room: Rect2i, include_boundary_walls: bool = true) -> Rect
 		Vector2(room.size) * cell_size
 	)
 	return result.grow(cell_size) if include_boundary_walls else result
+
+
+func _get_room_doorways(room: Rect2i) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for y in range(room.position.y, room.end.y):
+		_append_doorway_if_open(result, room, Vector2i(room.position.x, y), Vector2i.LEFT)
+		_append_doorway_if_open(result, room, Vector2i(room.end.x - 1, y), Vector2i.RIGHT)
+	for x in range(room.position.x, room.end.x):
+		_append_doorway_if_open(result, room, Vector2i(x, room.position.y), Vector2i.UP)
+		_append_doorway_if_open(result, room, Vector2i(x, room.end.y - 1), Vector2i.DOWN)
+	return result
+
+
+func _append_doorway_if_open(
+	result: Array[Dictionary],
+	room: Rect2i,
+	inside_cell: Vector2i,
+	outward: Vector2i
+) -> void:
+	var outside_cell := inside_cell + outward
+	if room.has_point(outside_cell) or not floor_cells.has(outside_cell):
+		return
+	var position := _cell_center(inside_cell)
+	var size := Vector2.ONE * cell_size
+	if outward == Vector2i.LEFT:
+		position.x = float(room.position.x) * cell_size
+		size.x = 14.0
+	elif outward == Vector2i.RIGHT:
+		position.x = float(room.end.x) * cell_size
+		size.x = 14.0
+	elif outward == Vector2i.UP:
+		position.y = float(room.position.y) * cell_size
+		size.y = 14.0
+	else:
+		position.y = float(room.end.y) * cell_size
+		size.y = 14.0
+	result.append({
+		&"position": position,
+		&"size": size,
+		&"outward": Vector2(outward),
+	})
 
 
 func _world_to_cell(world_position: Vector2) -> Vector2i:

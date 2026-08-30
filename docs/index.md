@@ -62,11 +62,31 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>7 META SYSTEMS</span><span>6.890ms LARGE RAID</span><span>기획 진행도 71% · 원문 재대조</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>ROOM COMBAT</span><span>6.890ms LARGE ROOM</span><span>기획 진행도 71% · 원문 재대조</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>방·통로 안개 전환 · 탈출 방어 · 영구 경제 · 스마트 타게팅 · 제작 · 랭킹</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>지속 원형 자기장 · 방 진입 봉쇄 전투 · 전멸 보상</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 전투 흐름 2개 개선</strong>
+      <ul>
+        <li>2번 자기장을 5초 동안 플레이어를 따라가며 0.5초마다 피해를 누적하는 지속 필드로 변경했습니다.</li>
+        <li>일반 방 진입 시 등급별 적 무리를 생성하고 출입문을 물리적으로 봉쇄합니다.</li>
+        <li>방 적 전멸 뒤 문을 열고 중앙에 내부 경험치 보상 오브젝트를 생성합니다.</li>
+        <li>방 전투를 끄면 기존 전역 증원으로 복귀하며 총 생성 한계는 두 방식 모두 공유합니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>검증 결론</b><span>소·중·대형 봉쇄·전멸·보상, 선택 폴백과 대형 방 60 FPS CPU 예산을 통과했습니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">방 진입 봉쇄 전투</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>진입→적 생성→문 봉쇄→전멸→전투 데이터 보상을 독립 상태 머신으로 연결했습니다.</p><a href="features/room-encounters/">방 전투 보기 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">지속 원형 자기장</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>단발 24 피해를 5초 동안 0.5초마다 6 피해를 누적하는 추적 필드로 교체했습니다.</p><a href="features/combat-skills/">스킬 규칙 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>방·통로 안개 전환 · 탈출 방어 · 영구 경제 · 스마트 타게팅 · 제작 · 랭킹</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 7개 시스템 + 안개 전환 개선</strong>

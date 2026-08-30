@@ -20,6 +20,9 @@ const LOOT_SPAWNER_SCENE_PATH := "res://game/features/loot/loot_spawner.tscn"
 const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
 const SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
 const SPAWN_CONFIG_PATH_PATTERN := "res://game/features/spawning/configs/%s.tres"
+const ROOM_ENCOUNTER_SCENE_PATH := (
+	"res://game/features/room_encounters/room_encounter_system.tscn"
+)
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const COMBAT_SKILL_SYSTEM_SCENE_PATH := (
 	"res://game/features/combat_skills/combat_skill_system.tscn"
@@ -68,6 +71,8 @@ const MAP_GENERATOR_METHODS := [
 	&"get_enemy_spawn_position",
 	&"get_visibility_region",
 	&"get_visibility_room_rects",
+	&"get_room_encounter_snapshot",
+	&"get_room_spawn_positions",
 	&"get_loot_spawn_points",
 	&"get_world_path",
 ]
@@ -154,7 +159,11 @@ const CREDIT_LEDGER_METHODS := [
 	&"get_snapshot",
 ]
 const LOOT_SPAWNER_METHODS := [&"configure", &"get_spawn_snapshot"]
-const ENEMY_SPAWNER_METHODS := [&"configure", &"get_snapshot", &"get_active_targets"]
+const ENEMY_SPAWNER_METHODS := [
+	&"configure", &"get_snapshot", &"get_active_targets", &"spawn_enemy_at",
+	&"set_reinforcement_paused", &"get_remaining_spawn_budget",
+]
+const ROOM_ENCOUNTER_METHODS := [&"configure", &"try_start_room", &"get_snapshot"]
 const RUN_BUFF_METHODS := [
 	&"configure",
 	&"prepare_choices",
@@ -261,6 +270,7 @@ var extraction_zone
 var credit_ledger
 var loot_spawner
 var enemy_spawner
+var room_encounter_system
 var auto_weapon
 var combat_skill_system
 var combat_skill_hud
@@ -738,6 +748,7 @@ func _reset_run_references() -> void:
 	credit_ledger = null
 	loot_spawner = null
 	enemy_spawner = null
+	room_encounter_system = null
 	auto_weapon = null
 	combat_skill_system = null
 	combat_skill_hud = null
@@ -890,6 +901,8 @@ func _assemble_game() -> bool:
 	if features.enemies_enabled and features.spawning_enabled:
 		if not _install_enemy_spawner():
 			return false
+	if features.room_encounters_enabled and not _install_room_encounters():
+		return false
 	if features.combat_skills_enabled and not _install_combat_skills():
 		return false
 
@@ -1349,6 +1362,44 @@ func _install_enemy_spawner() -> bool:
 		if not auto_weapon.call(&"set_target_provider", enemy_spawner):
 			_report_configuration_error("자동 무기에 적 대상 제공자를 연결하지 못했습니다.")
 			return false
+	return true
+
+
+func _install_room_encounters() -> bool:
+	if not ResourceLoader.exists(features.room_encounter_config_path):
+		_report_configuration_error("방 전투 설정을 찾을 수 없습니다.")
+		return false
+	room_encounter_system = _instantiate_feature(
+		ROOM_ENCOUNTER_SCENE_PATH, world_container, &"RoomEncounters"
+	)
+	if (
+		not _supports_methods(room_encounter_system, ROOM_ENCOUNTER_METHODS)
+		or not room_encounter_system.has_signal(&"encounter_started")
+		or not room_encounter_system.has_signal(&"encounter_cleared")
+		or not room_encounter_system.has_signal(&"reward_collected")
+	):
+		_report_configuration_error("방 전투 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not room_encounter_system.call(
+		&"configure",
+		player,
+		map_generator,
+		enemy_spawner,
+		pickups_container,
+		load(features.room_encounter_config_path),
+		StringName(selected_map_size)
+	):
+		_report_configuration_error("방 전투 모듈을 구성하지 못했습니다.")
+		return false
+	room_encounter_system.connect(
+		&"encounter_started", Callable(self, &"_on_room_encounter_started")
+	)
+	room_encounter_system.connect(
+		&"encounter_cleared", Callable(self, &"_on_room_encounter_cleared")
+	)
+	room_encounter_system.connect(
+		&"reward_collected", Callable(self, &"_on_room_reward_collected")
+	)
 	return true
 
 
@@ -1812,6 +1863,20 @@ func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:
 
 	if progression_system != null:
 		progression_system.call(&"spawn_pickup", world_position, reward)
+
+
+func _on_room_encounter_started(room_index: int, enemy_count: int) -> void:
+	status_label.text = "방 %d 봉쇄 · 적 %d기 섬멸" % [room_index + 1, enemy_count]
+
+
+func _on_room_encounter_cleared(room_index: int) -> void:
+	status_label.text = "방 %d 확보 · 전투 데이터 보상 생성" % [room_index + 1]
+
+
+func _on_room_reward_collected(_room_index: int, experience_amount: int) -> void:
+	if progression_system != null:
+		progression_system.call(&"gain_experience", experience_amount)
+	status_label.text = "방 전투 보상 회수 · 내부 경험치 +%d" % experience_amount
 
 
 func _on_player_health_changed(current: float, maximum: float) -> void:
