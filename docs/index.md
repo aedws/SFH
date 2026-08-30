@@ -62,26 +62,27 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>3 ACTIVE SKILLS</span><span>COOLDOWN HUD</span><span>기획 진행도 51%</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>ELECTRIC SKILLS</span><span>6.887ms LARGE RAID</span><span>기획 진행도 51%</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>1·2·3 전투 스킬 · 실시간 쿨타임 HUD</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>전기 스킬 이펙트 · 대형 작전 성능 최적화</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
-      <strong>핵심 변경 · 4개 주제</strong>
+      <strong>핵심 변경 · 5개 주제</strong>
       <ul>
-        <li>1번 점멸은 정면 360px를 이동하고 벽 앞에서 안전하게 멈춥니다.</li>
-        <li>2번 원형 자기장은 반경 230px의 적에게 24 범위 피해를 가합니다.</li>
-        <li>3번 기동 가속은 4초 동안 이동 속도를 55% 높입니다.</li>
-        <li>하단 3슬롯 HUD가 READY, 남은 쿨타임과 진행 막대를 실시간 표시합니다.</li>
+        <li>점멸·자기장·기동 가속에 전기 잔상·고리·방사형 오라를 적용했습니다.</li>
+        <li>공용 렌더러와 스킬별 프로필을 분리해 패턴·색·밀도·갱신률을 교체할 수 있습니다.</li>
+        <li>전기 형상 10~20Hz 캐시와 쿨타임 HUD 10Hz 제한으로 매 프레임 할당을 줄였습니다.</li>
+        <li>대형 맵 벽·설비 충돌체를 병합하고 적 A* 재탐색을 분산했습니다.</li>
+        <li>적 72명 대형 작전에서 평균 6.887ms, 최대 10.328ms, Node 1,490개를 검증했습니다.</li>
       </ul>
-      <p class="sfh-intent"><b>모듈 감사 결론</b><span>정의·효과·실행기·HUD를 분리하고 Manifest 비활성 폴백까지 자동 검증했습니다.</span></p>
+      <p class="sfh-intent"><b>검증 결론</b><span>전기 표현은 스킬 규칙과 독립된 Resource이며 대형 작전 CPU·Node·충돌체·이펙트 예산을 자동 회귀 테스트로 고정했습니다.</span></p>
     </div>
     <div class="sfh-group"><h3>🆕 구현 · 3</h3>
-      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">점멸·자기장·기동 가속</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>각 효과를 독립 Resource로 구성해 개별 교체와 수치 조정이 가능합니다.</p><a href="features/combat-skills/">전투 스킬 보기 →</a></div></details>
-      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">실시간 쿨타임 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>하단 중앙에서 키·역할·READY/남은 시간과 회복 진행률을 확인합니다.</p></div></details>
-      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">전투 스킬 독립 토글</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>기능을 끄면 실행기와 HUD만 제거되고 자동 공격·장비·이동은 유지됩니다.</p><a href="architecture/module-audit/">모듈 감사 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">모듈형 전기 스킬 표현</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>trail·ring·burst 프로필을 스킬별로 주입해 전기 표현만 독립 교체합니다.</p><a href="features/combat-skills/">전투 스킬 보기 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">대형 작전 엄격 최적화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>충돌체 병합, A* 캐시, HUD 갱신 제한을 적용하고 60 FPS CPU 예산을 통과했습니다.</p><a href="performance/minimum-requirements/">사양·성능 예산 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">성능 예산 자동 게이트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>평균·최대 프레임, Node, 충돌체 압축률과 동시 전기 효과의 상한을 자동 검사합니다.</p><a href="architecture/module-audit/">모듈 감사 →</a></div></details>
     </div>
   </div>
 </details>

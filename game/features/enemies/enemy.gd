@@ -9,6 +9,8 @@ signal defeated(reward: int, world_position: Vector2)
 @export_range(0.0, 1000.0, 1.0) var contact_damage: float = 10.0
 @export_range(0.1, 10.0, 0.1) var contact_interval: float = 0.75
 @export_range(0, 1000, 1) var experience_reward: int = 1
+@export_range(0.2, 2.0, 0.05) var repath_interval: float = 0.7
+@export_range(16.0, 320.0, 8.0) var repath_target_distance: float = 96.0
 
 @onready var contact_area: Area2D = $ContactArea
 @onready var heading: Polygon2D = $Heading
@@ -24,6 +26,7 @@ var contact_cooldown: float = 0.0
 var repath_cooldown: float = 0.0
 var current_path := PackedVector2Array()
 var path_index: int = 0
+var last_path_target_position := Vector2.INF
 
 
 func _ready() -> void:
@@ -52,6 +55,7 @@ func configure(
 	)
 	armor_component.configure(max_armor if armor_enabled else 0.0)
 	status_bars.visible = status_ui_enabled
+	repath_cooldown = fmod(float(get_instance_id()) * 0.017, repath_interval)
 
 
 func _physics_process(delta: float) -> void:
@@ -78,12 +82,19 @@ func _physics_process(delta: float) -> void:
 
 
 func _update_navigation_path() -> void:
-	if repath_cooldown > 0.0 and path_index < current_path.size():
+	if repath_cooldown > 0.0:
+		return
+	if (
+		path_index < current_path.size()
+		and last_path_target_position.distance_to(target.global_position) < repath_target_distance
+	):
+		repath_cooldown = repath_interval
 		return
 
 	current_path = navigation_provider.call(&"get_world_path", global_position, target.global_position)
 	path_index = 1 if current_path.size() > 1 else 0
-	repath_cooldown = 0.45
+	last_path_target_position = target.global_position
+	repath_cooldown = repath_interval
 
 
 func take_damage(amount: float) -> void:

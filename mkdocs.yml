@@ -74,6 +74,8 @@ nav:
       - 모듈화 점검 기록: architecture/module-audit.md
       - 장면 트리: architecture/scene-tree.md
       - Signal 규칙: architecture/signals.md
+  - 성능:
+      - 최소·권장 사양과 성능 예산: performance/minimum-requirements.md
   - 기능:
       - features/index.md
       - 랜덤 맵 생성: features/map-generation.md

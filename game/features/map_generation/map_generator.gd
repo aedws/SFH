@@ -38,6 +38,7 @@ var extraction_room_index: int = 0
 var astar_grid := AStarGrid2D.new()
 var random := RandomNumberGenerator.new()
 var collision_body: StaticBody2D
+var collision_shape_count: int = 0
 
 
 func configure_obstacles(is_enabled: bool) -> void:
@@ -219,6 +220,19 @@ func get_minimap_snapshot() -> Dictionary:
 	}
 
 
+func get_performance_snapshot() -> Dictionary:
+	return {
+		&"floor_cell_count": floor_cells.size(),
+		&"wall_cell_count": wall_cells.size(),
+		&"obstacle_cell_count": obstacle_cells.size(),
+		&"collision_shape_count": collision_shape_count,
+		&"collision_compression_ratio": (
+			float(collision_shape_count) / float(wall_cells.size() + obstacle_cells.size())
+			if wall_cells.size() + obstacle_cells.size() > 0 else 0.0
+		),
+	}
+
+
 func _reset_generated_content() -> void:
 	rooms.clear()
 	floor_cells.clear()
@@ -229,6 +243,7 @@ func _reset_generated_content() -> void:
 	if is_instance_valid(collision_body):
 		collision_body.queue_free()
 	collision_body = null
+	collision_shape_count = 0
 
 
 func _add_start_room() -> void:
@@ -503,24 +518,66 @@ func _build_collision_bodies() -> void:
 	collision_body.collision_mask = 0
 	add_child(collision_body)
 
-	var wall_shape := RectangleShape2D.new()
-	wall_shape.size = Vector2.ONE * (cell_size - tile_visual_inset * 2.0)
-
-	for cell in wall_cells:
-		var collision := CollisionShape2D.new()
-		collision.position = _cell_center(cell)
-		collision.shape = wall_shape
-		collision_body.add_child(collision)
-
-	var interior_wall_shape := RectangleShape2D.new()
-	interior_wall_shape.size = Vector2.ONE * (cell_size * 0.82)
+	collision_shape_count = 0
+	for cell_rect in _merge_collision_cells(wall_cells):
+		_add_rectangle_collision(cell_rect, tile_visual_inset * 2.0)
+	for obstacle_kind in [&"wall", &"utility"]:
+		for cell_rect in _merge_collision_cells(obstacle_cells, obstacle_kind):
+			_add_rectangle_collision(cell_rect, cell_size * 0.18)
 	var pillar_shape := CircleShape2D.new()
 	pillar_shape.radius = cell_size * 0.31
 	for cell in obstacle_cells:
-		var collision := CollisionShape2D.new()
-		collision.position = _cell_center(cell)
-		collision.shape = pillar_shape if obstacle_cells[cell] == &"pillar" else interior_wall_shape
-		collision_body.add_child(collision)
+		if obstacle_cells[cell] != &"pillar":
+			continue
+		var pillar_collision := CollisionShape2D.new()
+		pillar_collision.position = _cell_center(cell)
+		pillar_collision.shape = pillar_shape
+		collision_body.add_child(pillar_collision)
+		collision_shape_count += 1
+
+
+func _add_rectangle_collision(cell_rect: Rect2i, outer_inset: float) -> void:
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(cell_rect.size) * cell_size - Vector2.ONE * outer_inset
+	var collision := CollisionShape2D.new()
+	collision.position = (
+		Vector2(cell_rect.position) + Vector2(cell_rect.size) * 0.5
+	) * cell_size
+	collision.shape = shape
+	collision_body.add_child(collision)
+	collision_shape_count += 1
+
+
+func _merge_collision_cells(
+	source_cells: Dictionary,
+	required_kind: Variant = null
+) -> Array[Rect2i]:
+	var remaining := {}
+	for cell in source_cells:
+		if required_kind == null or source_cells[cell] == required_kind:
+			remaining[cell] = source_cells[cell]
+	var result: Array[Rect2i] = []
+	while not remaining.is_empty():
+		var start: Vector2i = remaining.keys()[0]
+		var kind: Variant = remaining[start]
+		var width := 1
+		while remaining.get(start + Vector2i(width, 0), null) == kind:
+			width += 1
+		var height := 1
+		while true:
+			var row_is_complete := true
+			for x_offset in width:
+				if remaining.get(start + Vector2i(x_offset, height), null) != kind:
+					row_is_complete = false
+					break
+			if not row_is_complete:
+				break
+			height += 1
+		for x_offset in width:
+			for y_offset in height:
+				remaining.erase(start + Vector2i(x_offset, y_offset))
+		result.append(Rect2i(start, Vector2i(width, height)))
+	return result
 
 
 func _build_pathfinding_grid() -> void:

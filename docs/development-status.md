@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>3 ACTIVE SKILLS</span><span>COOLDOWN HUD</span><span>MODULAR PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>ELECTRIC SKILLS</span><span>6.887ms LARGE RAID</span><span>MODULAR PASS</span></div>
 
 ## 기획 기준 진행도
 
@@ -68,25 +68,25 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>점멸 · 원형 자기장 · 기동 가속 · 쿨타임 HUD</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>전기 스킬 표현 · 대형 작전 성능 예산</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>
       <ul>
-        <li><code>1</code> 점멸은 바라보는 방향으로 최대 360px 이동하며 벽 관통을 방지합니다.</li>
-        <li><code>2</code> 원형 자기장은 반경 230px의 모든 피해 계약 대상에 24 피해를 전달합니다.</li>
-        <li><code>3</code> 기동 가속은 기존 장비·버프와 합성되는 이동 속도 55% 증가를 4초 적용합니다.</li>
-        <li>하단 세 카드가 키·설명·READY·남은 쿨타임과 진행 막대를 표시합니다.</li>
-        <li>효과·정의·실행기·HUD와 Manifest 토글을 분리해 각 블록을 교체할 수 있습니다.</li>
+        <li><code>1</code> 점멸은 전기 잔상, <code>2</code> 자기장은 원형 전기장, <code>3</code> 가속은 추적형 전기 방출을 표시합니다.</li>
+        <li>공용 전기 렌더러와 세 프로필을 분리해 패턴·색·수명·밀도·갱신률을 데이터로 교체합니다.</li>
+        <li>형상 10~20Hz 캐시, HUD 10Hz, one-shot Timer로 매 프레임 갱신과 할당을 줄였습니다.</li>
+        <li>연속 맵 충돌체 병합, 적 A* 0.7초 분산 갱신과 생성 목록 Signal 정리를 적용했습니다.</li>
+        <li>대형 맵·적 72명에서 평균 6.887ms, 최대 10.328ms, Node 1,490개, 충돌체 6.7%를 검증했습니다.</li>
       </ul>
-      <p class="sfh-intent"><b>검증 결과</b><span>입력, 세 효과, 중복 발동 차단, 쿨타임 회복, HUD 슬롯과 비활성 폴백이 전체 스모크 테스트를 통과했습니다.</span></p>
+      <p class="sfh-intent"><b>검증 결과</b><span>기능 스모크 테스트와 별도 대형 작전 성능 게이트를 통과했으며 실제 최소 사양은 저사양 GPU 실기 인증 전까지 임시 목표로 관리합니다.</span></p>
     </div>
     <div class="sfh-group"><h3>🆕 구현 · 2</h3>
-      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">세 가지 직접 전투 스킬</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>위치 이동, 범위 피해와 시간제 스탯 효과의 기본 실행 경로를 완성했습니다.</p><a href="../features/combat-skills/">스킬 계약 →</a></div></details>
-      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">실시간 쿨타임 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전투 화면 아래에서 세 슬롯의 재사용 가능 여부를 즉시 판단합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">공용 전기 아크와 스킬별 프로필</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>점멸·자기장·가속이 같은 렌더러에 독립 Resource를 주입합니다.</p><a href="../features/combat-skills/">스킬 계약 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">성능 예산 자동 테스트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>대형 작전 240프레임의 평균·최대 시간과 SceneTree 예산을 검사합니다.</p><a href="../performance/minimum-requirements/">사양·성능 예산 →</a></div></details>
     </div>
     <div class="sfh-group"><h3>🧩 수정 · 1</h3>
-      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">장비 호환성과 실행 효과 경계 분리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비는 태그 호환을, 전투 스킬은 입력·효과를 담당하며 후속 ID 매핑 지점을 문서화했습니다.</p><a href="../architecture/module-audit/">모듈 감사 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">충돌·경로·UI 핫패스 최적화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>기능 경계를 유지하면서 반복 Node·배열·경로 계산만 각 소유 모듈 안에서 줄였습니다.</p><a href="../architecture/module-audit/">모듈 감사 →</a></div></details>
     </div>
   </div>
 </details>

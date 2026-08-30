@@ -1,14 +1,13 @@
 class_name MagneticFieldSkillEffect
 extends "res://game/features/combat_skills/combat_skill_effect.gd"
 
-const PULSE_EFFECT_SCRIPT := preload(
-	"res://game/features/combat_skills/effects/skill_pulse_effect.gd"
+const ELECTRIC_EFFECT_SCRIPT := preload(
+	"res://game/features/combat_skills/effects/electric_arc_effect.gd"
 )
 
 @export_range(32.0, 1000.0, 8.0) var radius: float = 230.0
 @export_range(0.0, 10000.0, 1.0) var damage: float = 24.0
-@export_range(0.1, 5.0, 0.1) var visual_duration: float = 0.75
-@export var effect_color: Color = Color(0.44, 0.62, 1.0, 1.0)
+@export var electric_profile: Resource
 
 
 func activate(player: Node2D, context: Dictionary) -> Dictionary:
@@ -18,7 +17,9 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 	var target_container: Variant = context.get(&"target_container")
 	var damage_enabled := bool(context.get(&"damage_enabled", true))
 	if is_instance_valid(target_container) and target_container is Node:
-		for target in (target_container as Node).get_children():
+		var container := target_container as Node
+		for target_index in container.get_child_count():
+			var target := container.get_child(target_index)
 			if (
 				target is Node2D
 				and target.has_method(&"take_damage")
@@ -27,7 +28,7 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 				if damage_enabled:
 					target.call(&"take_damage", damage)
 				hit_count += 1
-	_spawn_pulse(context.get(&"effect_parent"), player.global_position)
+	_spawn_electric_field(context.get(&"effect_parent"), player.global_position)
 	return {
 		&"success": true,
 		&"status": "자기장 전개 · %d개 대상" % hit_count,
@@ -37,13 +38,14 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 
 
 func get_parameters() -> Dictionary:
-	return {&"radius": radius, &"damage": damage, &"visual_duration": visual_duration}
+	return {&"radius": radius, &"damage": damage}
 
 
-func _spawn_pulse(parent: Variant, world_position: Vector2) -> void:
-	if not is_instance_valid(parent) or not parent is Node2D:
+func _spawn_electric_field(parent: Variant, world_position: Vector2) -> void:
+	if not is_instance_valid(parent) or not parent is Node2D or electric_profile == null:
 		return
-	var pulse := PULSE_EFFECT_SCRIPT.new()
-	(parent as Node2D).add_child(pulse)
-	pulse.global_position = world_position
-	pulse.configure(radius, effect_color, visual_duration, true)
+	var electric := ELECTRIC_EFFECT_SCRIPT.new()
+	(parent as Node2D).add_child(electric)
+	electric.global_position = world_position
+	if not electric.configure_radial(radius, electric_profile):
+		electric.queue_free()

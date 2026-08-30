@@ -1,8 +1,8 @@
 class_name SpeedBoostSkillEffect
 extends "res://game/features/combat_skills/combat_skill_effect.gd"
 
-const PULSE_EFFECT_SCRIPT := preload(
-	"res://game/features/combat_skills/effects/skill_pulse_effect.gd"
+const ELECTRIC_EFFECT_SCRIPT := preload(
+	"res://game/features/combat_skills/effects/electric_arc_effect.gd"
 )
 const TIMED_MODIFIER_SCRIPT := preload(
 	"res://game/features/combat_skills/effects/timed_stat_modifier.gd"
@@ -11,7 +11,7 @@ const TIMED_MODIFIER_SCRIPT := preload(
 @export_range(1.01, 5.0, 0.01) var speed_multiplier: float = 1.55
 @export_range(0.1, 60.0, 0.1) var duration_seconds: float = 4.0
 @export var modifier_source_id: StringName = &"combat_skill_speed_boost"
-@export var effect_color: Color = Color(0.45, 1.0, 0.58, 1.0)
+@export var electric_profile: Resource
 
 
 func activate(player: Node2D, context: Dictionary) -> Dictionary:
@@ -35,7 +35,7 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 	):
 		modifier.queue_free()
 		return {&"success": false, &"status": "이동 가속 적용에 실패했습니다."}
-	_spawn_pulse(context.get(&"effect_parent"), player.global_position)
+	_spawn_electric_aura(context.get(&"effect_parent"), player)
 	return {
 		&"success": true,
 		&"status": "이동 속도 %.0f%% · %.1f초" % [speed_multiplier * 100.0, duration_seconds],
@@ -51,10 +51,11 @@ func get_parameters() -> Dictionary:
 	}
 
 
-func _spawn_pulse(parent: Variant, world_position: Vector2) -> void:
-	if not is_instance_valid(parent) or not parent is Node2D:
+func _spawn_electric_aura(parent: Variant, player: Node2D) -> void:
+	if not is_instance_valid(parent) or not parent is Node2D or electric_profile == null:
 		return
-	var pulse := PULSE_EFFECT_SCRIPT.new()
-	(parent as Node2D).add_child(pulse)
-	pulse.global_position = world_position
-	pulse.configure(120.0, effect_color, 0.5)
+	var electric := ELECTRIC_EFFECT_SCRIPT.new()
+	(parent as Node2D).add_child(electric)
+	electric.global_position = player.global_position
+	if not electric.configure_radial(78.0, electric_profile, player):
+		electric.queue_free()

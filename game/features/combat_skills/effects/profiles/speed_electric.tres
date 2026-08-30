@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ElectricEffectProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/electric_effect_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+pattern = "burst"
+lifetime_seconds = 4.0
+geometry_refresh_hz = 10.0
+arc_count = 4
+points_per_arc = 5
+jitter_pixels = 14.0
+glow_width = 6.0
+core_width = 2.0
+field_fill_alpha = 0.035
+glow_color = Color(0.1, 1, 0.48, 0.4)
+core_color = Color(0.78, 1, 0.88, 1)

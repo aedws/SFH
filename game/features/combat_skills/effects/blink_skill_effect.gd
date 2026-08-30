@@ -1,14 +1,14 @@
 class_name BlinkSkillEffect
 extends "res://game/features/combat_skills/combat_skill_effect.gd"
 
-const PULSE_EFFECT_SCRIPT := preload(
-	"res://game/features/combat_skills/effects/skill_pulse_effect.gd"
+const ELECTRIC_EFFECT_SCRIPT := preload(
+	"res://game/features/combat_skills/effects/electric_arc_effect.gd"
 )
 
 @export_range(32.0, 1200.0, 8.0) var distance: float = 360.0
 @export_range(0.0, 64.0, 1.0) var wall_clearance: float = 24.0
 @export_range(0, 4294967295, 1) var obstacle_collision_mask: int = 16
-@export var effect_color: Color = Color(0.36, 0.92, 1.0, 1.0)
+@export var electric_profile: Resource
 
 
 func activate(player: Node2D, context: Dictionary) -> Dictionary:
@@ -32,8 +32,7 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 	if start.distance_to(destination) < 24.0:
 		return {&"success": false, &"status": "앞이 막혀 점멸할 수 없습니다."}
 	player.global_position = destination
-	_spawn_pulse(context.get(&"effect_parent"), start, 72.0)
-	_spawn_pulse(context.get(&"effect_parent"), destination, 104.0)
+	_spawn_electric_trail(context.get(&"effect_parent"), start, destination)
 	return {
 		&"success": true,
 		&"status": "전방 %.0fpx 점멸" % start.distance_to(destination),
@@ -45,10 +44,11 @@ func get_parameters() -> Dictionary:
 	return {&"distance": distance, &"wall_clearance": wall_clearance}
 
 
-func _spawn_pulse(parent: Variant, world_position: Vector2, radius: float) -> void:
-	if not is_instance_valid(parent) or not parent is Node2D:
+func _spawn_electric_trail(parent: Variant, start: Vector2, destination: Vector2) -> void:
+	if not is_instance_valid(parent) or not parent is Node2D or electric_profile == null:
 		return
-	var pulse := PULSE_EFFECT_SCRIPT.new()
-	(parent as Node2D).add_child(pulse)
-	pulse.global_position = world_position
-	pulse.configure(radius, effect_color, 0.32)
+	var electric := ELECTRIC_EFFECT_SCRIPT.new()
+	(parent as Node2D).add_child(electric)
+	electric.global_position = start
+	if not electric.configure_trail(destination - start, electric_profile):
+		electric.queue_free()
