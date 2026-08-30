@@ -17,6 +17,15 @@ const WEAPON_BALANCE_SCENE_PATH := "res://game/features/weapon_balance/weapon_ba
 const WEAPON_BALANCE_CONFIG_PATH := "res://game/features/weapon_balance/configs/default_weapon_balance.tres"
 const GROWTH_BALANCE_SCENE_PATH := "res://game/features/growth_balance/growth_balance_service.tscn"
 const GROWTH_BALANCE_CONFIG_PATH := "res://game/features/growth_balance/configs/default_growth_balance.tres"
+const WEAPON_BALANCE_PAYLOAD_PATH := (
+	"res://game/features/weapon_balance/data/weapon_balance_payload.tres"
+)
+const RUN_BUFF_BALANCE_PAYLOAD_PATH := (
+	"res://game/features/growth_balance/data/run_buff_balance_payload.tres"
+)
+const UPGRADE_BALANCE_PAYLOAD_PATH := (
+	"res://game/features/growth_balance/data/upgrade_balance_payload.tres"
+)
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
@@ -176,6 +185,22 @@ func _verify_web_export_data_contract() -> bool:
 	for required_path in WEB_EXPORT_DATA_PATHS:
 		if required_path not in included_paths:
 			return _fail("Web PCK 필수 밸런스 CSV가 내보내기 대상에서 누락됐습니다: %s" % required_path)
+	var payload_contracts := [
+		[WEB_EXPORT_DATA_PATHS[0], WEAPON_BALANCE_PAYLOAD_PATH],
+		[WEB_EXPORT_DATA_PATHS[1], RUN_BUFF_BALANCE_PAYLOAD_PATH],
+		[WEB_EXPORT_DATA_PATHS[2], UPGRADE_BALANCE_PAYLOAD_PATH],
+	]
+	for contract in payload_contracts:
+		var source_path := "res://%s" % String(contract[0])
+		var payload := load(String(contract[1])) as Resource
+		var source_file := FileAccess.open(source_path, FileAccess.READ)
+		if payload == null or source_file == null:
+			return _fail("Web 내장 밸런스 계약을 불러오지 못했습니다: %s" % source_path)
+		var source_text := source_file.get_as_text().replace("\r\n", "\n")
+		if source_text != String(payload.call(&"get_csv_text")).replace("\r\n", "\n"):
+			return _fail("CSV와 Web 내장 밸런스 데이터가 다릅니다: %s" % source_path)
+		if not payload.call(&"is_valid_for", source_path):
+			return _fail("Web 내장 밸런스 데이터의 원본 경로가 다릅니다: %s" % source_path)
 	return true
 
 
@@ -1623,6 +1648,17 @@ func _verify_weapon_balance_modules() -> bool:
 			failure_message = "권총의 1회 관통 특색이 적용되지 않았습니다."
 		elif service.call(&"load_csv_text", "weapon_id,damage\nbroken,1", "오류 테스트"):
 			failure_message = "필수 열이 없는 밸런스 CSV를 허용했습니다."
+		var fallback_payload := balance_config.locked_csv_payload.duplicate(true) as Resource
+		fallback_payload.set("source_path", "res://missing/web_weapon_balance.csv")
+		if (
+			failure_message.is_empty()
+			and String(service.call(
+				&"_read_locked_text",
+				fallback_payload.get("source_path"),
+				fallback_payload
+			)).is_empty()
+		):
+			failure_message = "Web 내장 무기 밸런스 폴백을 읽지 못했습니다."
 		if failure_message.is_empty():
 			var sheet_csv := "\n".join(PackedStringArray([
 				"weapon_id,display_name,runtime_enabled,trait_id,damage,fire_interval_sec,projectile_speed_px_sec,target_range_px,projectiles_per_shot,spread_angle_deg,burst_count,burst_interval_sec,critical_chance,critical_multiplier,pierce_count,pierce_damage_retention,projectile_lifetime_sec,projectile_color_hex,description",
@@ -1696,6 +1732,17 @@ func _verify_growth_balance_modules() -> bool:
 			failure_message = "필수 열이 없는 성장 CSV를 허용했습니다."
 		elif int((service.call(&"get_snapshot") as Dictionary).get(&"upgrade_spec_count", 0)) != 25:
 			failure_message = "잘못된 갱신 후 마지막 정상 성장 데이터가 보존되지 않았습니다."
+		var fallback_payload := balance_config.get("locked_run_buff_payload").duplicate(true) as Resource
+		fallback_payload.set("source_path", "res://missing/web_run_buff_balance.csv")
+		if (
+			failure_message.is_empty()
+			and String(service.call(
+				&"_read_file",
+				fallback_payload.get("source_path"),
+				fallback_payload
+			)).is_empty()
+		):
+			failure_message = "Web 내장 성장 밸런스 폴백을 읽지 못했습니다."
 	root.remove_child(service)
 	service.free()
 	if not failure_message.is_empty():
@@ -2645,7 +2692,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK web_korean_font web_export_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

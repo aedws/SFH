@@ -115,7 +115,7 @@ tags:
             <li>Godot 4.7.2 Web 내보내기를 /play/에 배포하고 main의 게임 변경도 자동 배포 조건에 포함했습니다.</li>
             <li>게임과 위키를 독립 빌드한 뒤 HTML·WASM·PCK가 모두 있을 때만 Pages 아티팩트를 게시합니다.</li>
             <li>Web에서 누락되던 한글 글리프를 OFL 전역 폰트와 자동 계약 검사로 복구했습니다.</li>
-            <li>확정 밸런스 CSV 3종을 Web PCK에 포함해 작전 조립 실패와 즉시 거점 복귀를 수정했습니다.</li>
+            <li>확정 밸런스 CSV 3종과 자동 동기화된 Web 내장 Resource로 작전 조립 실패와 즉시 거점 복귀를 수정했습니다.</li>
             <li>홈 현재 빌드 카드와 모든 문서의 상단 고정 플레이 버튼으로 Web 진입을 상시 노출합니다.</li>
           </ul>
           <p class="sfh-intent"><b>검증 결과</b><span>Web 프리셋의 전체 프로젝트 PCK 내보내기, 게임 스모크, 위키 strict 빌드와 일일 묶음 검사를 수행합니다.</span></p>
@@ -135,7 +135,7 @@ tags:
         </div>
         <div class="sfh-group"><h3>🩹 버그픽스 · 2</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web 한글 폰트 누락</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>운영체제 폴백 대신 프로젝트 내 Nanum Gothic을 사용하고 대표 한글 글리프를 스모크 테스트에서 확인합니다.</p><a href="../getting-started/run-project/">브라우저 실행 →</a></div></details>
-          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">브라우저 작전 즉시 회귀</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Web 내보내기에서 누락된 성장·강화 CSV를 명시적으로 패키징하고 자동 계약으로 고정했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">브라우저 작전 즉시 회귀</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>브라우저에서 CSV 스트림을 열 수 없는 경우 원본과 자동 동기화된 내장 Resource로 폴백하도록 고정했습니다.</p></div></details>
         </div>
       </div>
     </details>

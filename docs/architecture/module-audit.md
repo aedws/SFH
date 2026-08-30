@@ -482,13 +482,13 @@ tags:
 
 | 검사 항목 | 결과 | 근거 |
 |---|---|---|
-| 원인 분리 | 통과 | Web PCK에서만 누락된 비-Resource CSV 때문에 `GrowthBalanceService.configure()`가 실패하고 조립 롤백이 거점을 복구했음을 Headless Chromium 콘솔로 재현 |
-| 데이터 패키징 | 통과 | 무기·내부 성장·장비 강화 CSV 3종을 Web 프리셋의 명시적 포함 목록으로 관리하고 서비스가 PCK에서 직접 열기 |
-| 자동 회귀 | 통과 | 게임 스모크가 세 CSV의 실제 존재와 Web 내보내기 포함 계약을 함께 검사 |
+| 원인 분리 | 통과 | Web PCK에는 CSV가 포함됐지만 브라우저 런타임의 `FileAccess.open()`이 비-Resource CSV 스트림을 제공하지 않아 `GrowthBalanceService.configure()`가 실패하고 조립 롤백이 거점을 복구했음을 배포 아티팩트 콘솔로 재현 |
+| 데이터 패키징 | 통과 | 무기·내부 성장·장비 강화 CSV 3종을 Web 프리셋에 포함하고, Web-safe `EmbeddedCsvPayload` 미러를 설정 Resource로 주입 |
+| 자동 회귀 | 통과 | 동기화 스크립트와 게임 스모크가 세 CSV의 실제 존재, Web 내보내기 목록, 내장 미러의 원문·원본 경로 일치를 함께 검사 |
 | 플레이 링크 단일화 | 통과 | 홈 실행 카드와 전역 고정 도크가 모두 배포 루트 기준 `/play/`를 계산 |
 | 즉시 탐색 호환 | 통과 | 전역 도크는 Material `document$` 재탐색마다 기존 요소를 재사용하고 링크만 갱신 |
 
-밸런스 서비스는 계속 로컬 CSV 또는 실시간 Google Sheets 제공자만 소비합니다. 설정 Resource는 경로의 비어 있음만 검증하고, 실제 파일 접근 성공 여부는 서비스가 `FileAccess.open()` 결과로 판정합니다. 이 경계는 Web PCK의 정적 `file_exists()` 사전 판정 차이를 피하면서 읽기 실패를 같은 서비스 오류로 유지합니다.
+밸런스 서비스는 계속 확정 CSV 또는 실시간 Google Sheets 제공자만 소비합니다. 로컬·에디터에서는 `FileAccess.open()`으로 CSV를 우선 읽고, 브라우저에서 그 스트림을 얻지 못할 때만 설정 Resource에 주입된 동일 원문의 `EmbeddedCsvPayload`를 사용합니다. Google Sheets 동기화 스크립트가 CSV 저장과 미러 생성을 하나의 작업으로 처리하고 `--check`가 불일치를 거부하므로 두 데이터 경로가 별도 기준으로 갈라지지 않습니다.
 
 ## 의도된 결합
 

@@ -93,7 +93,7 @@ hide:
             <li>Godot Web 빌드를 개발 위키의 /play/ 경로에 결합해 설치 없이 브라우저에서 실행합니다.</li>
             <li>게임 내보내기와 HTML·WASM·PCK 검증 실패 시 Pages 배포를 중단해 마지막 정상 빌드를 유지합니다.</li>
             <li>OFL 한글 폰트를 전역 자산으로 포함해 Web에서 네모 글리프로 깨지던 한글 UI를 복구했습니다.</li>
-            <li>Web PCK에 무기·내부 성장·장비 강화 확정 CSV를 포함해 작전 시작 직후 거점으로 돌아오던 실패를 해결했습니다.</li>
+            <li>Web에서 확정 CSV를 열 수 없을 때 동일 원문의 내장 Resource로 전환해 작전 시작 직후 거점으로 돌아오던 실패를 해결했습니다.</li>
             <li>홈 빌드 카드와 모든 위키 화면의 고정 버튼에서 브라우저 플레이를 즉시 열 수 있습니다.</li>
           </ul>
           <p class="sfh-intent"><b>배포 경계</b><span>게임은 Godot Web 프리셋, 문서는 MkDocs로 각각 빌드한 뒤 하나의 검증된 Pages 아티팩트에서만 결합합니다.</span></p>
@@ -113,7 +113,7 @@ hide:
         </div>
         <div class="sfh-group"><h3>🩹 버그픽스 · 2</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web 한글 글리프 복구</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Nanum Gothic을 전역 폰트로 포함하고 한글 글리프 계약을 자동 검사해 브라우저의 네모 글자 표시를 막았습니다.</p><a href="getting-started/run-project/">Web 실행 기준 →</a></div></details>
-          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web 작전 시작 회귀</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>확정 밸런스 CSV 3종을 PCK에 포함해 성장 데이터 조립 실패와 자동 거점 복귀를 차단했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web 작전 시작 회귀</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>브라우저가 확정 CSV 스트림을 제공하지 못하면 원본과 자동 동기화된 내장 Resource를 읽어 성장 데이터 조립 실패와 자동 거점 복귀를 차단합니다.</p></div></details>
         </div>
       </div>
     </details>
