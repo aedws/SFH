@@ -21,6 +21,8 @@ signal defeated(reward: int, world_position: Vector2)
 
 var target: Node2D
 var navigation_provider: Node
+var crowd_provider: Node
+var crowd_config: Resource
 var current_health: float
 var damage_enabled: bool = true
 var contact_cooldown: float = 0.0
@@ -28,6 +30,8 @@ var repath_cooldown: float = 0.0
 var current_path := PackedVector2Array()
 var path_index: int = 0
 var last_path_target_position := Vector2.INF
+var crowd_steering_cooldown: float = 0.0
+var cached_crowd_steering := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -45,7 +49,9 @@ func configure(
 	new_navigation_provider: Node = null,
 	armor_enabled: bool = true,
 	status_ui_enabled: bool = true,
-	stat_multipliers: Dictionary = {}
+	stat_multipliers: Dictionary = {},
+	new_crowd_provider: Node = null,
+	new_crowd_config: Resource = null
 ) -> void:
 	target = new_target
 	damage_enabled = contact_damage_enabled
@@ -55,6 +61,13 @@ func configure(
 		and new_navigation_provider.has_method(&"get_world_path")
 		else null
 	)
+	crowd_provider = (
+		new_crowd_provider
+		if is_instance_valid(new_crowd_provider)
+		and new_crowd_provider.has_method(&"get_separation_vector")
+		else null
+	)
+	crowd_config = new_crowd_config
 	move_speed *= float(stat_multipliers.get(&"speed_multiplier", 1.0))
 	contact_damage *= float(stat_multipliers.get(&"damage_multiplier", 1.0))
 	health_component.configure(
@@ -66,11 +79,17 @@ func configure(
 	)
 	status_bars.visible = status_ui_enabled
 	repath_cooldown = fmod(float(get_instance_id()) * 0.017, repath_interval)
+	if _crowd_separation_enabled():
+		crowd_steering_cooldown = fmod(
+			float(get_instance_id()) * 0.013,
+			float(crowd_config.get("steering_update_interval"))
+		)
 
 
 func _physics_process(delta: float) -> void:
 	contact_cooldown = maxf(0.0, contact_cooldown - delta)
 	repath_cooldown = maxf(0.0, repath_cooldown - delta)
+	crowd_steering_cooldown = maxf(0.0, crowd_steering_cooldown - delta)
 
 	if is_instance_valid(target):
 		var destination := target.global_position
@@ -83,12 +102,49 @@ func _physics_process(delta: float) -> void:
 					if path_index < current_path.size():
 						destination = current_path[path_index]
 
-		var direction := global_position.direction_to(destination)
+		var pursuit_direction := global_position.direction_to(destination)
+		_update_crowd_steering()
+		var direction := pursuit_direction
+		if _crowd_separation_enabled():
+			direction = (
+				cached_crowd_steering.normalized()
+				if cached_crowd_steering.length() >= 0.95
+				else (
+					pursuit_direction
+					+ cached_crowd_steering * float(crowd_config.get("separation_strength"))
+				).normalized()
+			)
 		velocity = direction * move_speed
 		heading.rotation = direction.angle()
 		move_and_slide()
 
 	_try_contact_damage()
+
+
+func _update_crowd_steering() -> void:
+	if not _crowd_separation_enabled():
+		cached_crowd_steering = Vector2.ZERO
+		return
+	if crowd_steering_cooldown > 0.0:
+		return
+	cached_crowd_steering = crowd_provider.call(
+		&"get_separation_vector",
+		self,
+		global_position,
+		float(crowd_config.get("separation_radius")),
+		int(crowd_config.get("maximum_neighbors"))
+	)
+	crowd_steering_cooldown = float(crowd_config.get("steering_update_interval"))
+
+
+func _crowd_separation_enabled() -> bool:
+	return (
+		is_instance_valid(crowd_provider)
+		and crowd_config != null
+		and bool(crowd_config.get("enabled"))
+		and crowd_config.has_method(&"is_valid")
+		and bool(crowd_config.call(&"is_valid"))
+	)
 
 
 func _update_navigation_path() -> void:
