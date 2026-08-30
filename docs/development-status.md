@@ -95,14 +95,14 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>21 UPDATE BUNDLES &middot; BUILD 39 &middot; IMPROVE 30 &middot; CHANGE 18 &middot; FIX 7</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>21 UPDATE BUNDLES &middot; BUILD 39 &middot; IMPROVE 30 &middot; CHANGE 18 &middot; FIX 8</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>21</b><small>UPDATE BUNDLES</small></span>
       <span><b>39</b><small>BUILD</small></span>
       <span><b>30</b><small>IMPROVE</small></span>
       <span><b>18</b><small>CHANGE</small></span>
-      <span><b>7</b><small>FIX</small></span>
+      <span><b>8</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>즉시 플레이 README · Godot Web · Pages 배포 게이트</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -114,6 +114,7 @@ tags:
             <li>‘조준은 자동으로. 판단은 끝까지.’라는 전투 노선과 SURVIVE · FIGHT · HAUL을 명시했습니다.</li>
             <li>Godot 4.7.2 Web 내보내기를 /play/에 배포하고 main의 게임 변경도 자동 배포 조건에 포함했습니다.</li>
             <li>게임과 위키를 독립 빌드한 뒤 HTML·WASM·PCK가 모두 있을 때만 Pages 아티팩트를 게시합니다.</li>
+            <li>Web에서 누락되던 한글 글리프를 OFL 전역 폰트와 자동 계약 검사로 복구했습니다.</li>
           </ul>
           <p class="sfh-intent"><b>검증 결과</b><span>Web 프리셋의 전체 프로젝트 PCK 내보내기, 게임 스모크, 위키 strict 빌드와 일일 묶음 검사를 수행합니다.</span></p>
         </div>
@@ -127,6 +128,9 @@ tags:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">README 역할 재정의</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>상세 구현 기록은 위키로 보내고 README는 게임 소개와 실행 진입점에 집중합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🩹 버그픽스 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web 한글 폰트 누락</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>운영체제 폴백 대신 프로젝트 내 Nanum Gothic을 사용하고 대표 한글 글리프를 스모크 테스트에서 확인합니다.</p><a href="../getting-started/run-project/">브라우저 실행 →</a></div></details>
         </div>
       </div>
     </details>

@@ -50,6 +50,7 @@ const RESULT_CONFIG_PATH := "res://game/features/operation_results/configs/defau
 const SMART_TARGETING_PATH := "res://game/features/smart_targeting/configs/default_smart_targeting.tres"
 const EXTRACTION_SCENE_PATH := "res://game/features/extraction/extraction_zone.tscn"
 const EXTRACTION_DEFENSE_CONFIG_PATH := "res://game/features/extraction/configs/default_extraction_defense.tres"
+const KOREAN_FONT_PATH := "res://game/assets/fonts/nanum-gothic/NanumGothic-Regular.ttf"
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 var game_instance: Node
@@ -58,6 +59,8 @@ var frame_count: int = 0
 
 func _init() -> void:
 	_reset_persistent_test_data()
+	if not _verify_korean_ui_font():
+		return
 	if not _verify_map_tiers():
 		return
 	if not await _verify_player_sustain_and_movement():
@@ -140,6 +143,19 @@ func _init() -> void:
 				room_encounters.call(&"try_start_room", int(room[&"room_index"]))
 				break
 	frame_count = 0
+
+
+func _verify_korean_ui_font() -> bool:
+	var configured_path := String(ProjectSettings.get_setting("gui/theme/custom_font", ""))
+	if configured_path != KOREAN_FONT_PATH:
+		return _fail("프로젝트 전역 한글 폰트 경로가 올바르지 않습니다.")
+	var korean_font := load(KOREAN_FONT_PATH) as Font
+	if korean_font == null:
+		return _fail("프로젝트 전역 한글 폰트를 불러오지 못했습니다.")
+	for character in ["한", "글", "가", "힣"]:
+		if not korean_font.has_char(character.unicode_at(0)):
+			return _fail("프로젝트 전역 폰트에 한글 글리프가 없습니다: %s" % character)
+	return true
 
 
 func _reset_persistent_test_data() -> void:
@@ -2539,7 +2555,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK web_korean_font electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 
