@@ -15,6 +15,7 @@ signal run_settled(result: Dictionary)
 signal upgrade_completed(result: Dictionary)
 signal recovery_state_changed(snapshot: Dictionary)
 signal reinforcement_dispatched(spawned_count: int, active_count: int, target_count: int)
+signal spawn_budget_exhausted(total_spawned: int, maximum_total_spawns: int)
 ```
 
 ## 사용 기준

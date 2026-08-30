@@ -5,6 +5,7 @@ const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_genera
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
 const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
 const SPAWN_CONFIG_PATH_PATTERN := "res://game/features/spawning/configs/%s.tres"
+const ENEMY_SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
 const EQUIPMENT_SCENE_PATH := "res://game/features/equipment/equipment_system.tscn"
 const EQUIPMENT_LOADOUT_PATH := "res://game/features/equipment/loadouts/default_loadout.tres"
 const INVENTORY_SCENE_PATH := "res://game/features/inventory/grid_inventory.tscn"
@@ -42,6 +43,8 @@ func _init() -> void:
 	if not await _verify_equipment_modules():
 		return
 	if not await _verify_enemy_stats_modules():
+		return
+	if not await _verify_enemy_spawn_budget():
 		return
 	if not _verify_roguelike_progression_modules():
 		return
@@ -84,6 +87,7 @@ func _verify_map_tiers() -> bool:
 
 	var previous_minimum_enemies := 0
 	var previous_maximum_enemies := 0
+	var previous_spawn_budget := 0
 	for tier_id in MAP_TIER_IDS:
 		var config = load(MAP_CONFIG_PATH_PATTERN % tier_id)
 		var generator := generator_scene.instantiate()
@@ -160,27 +164,34 @@ func _verify_map_tiers() -> bool:
 			or not spawn_config.call(&"is_valid")
 			or int(spawn_config.get("minimum_active_enemies")) <= previous_minimum_enemies
 			or int(spawn_config.get("maximum_active_enemies")) <= previous_maximum_enemies
+			or int(spawn_config.get("maximum_total_spawns")) <= previous_spawn_budget
+			or int(spawn_config.get("maximum_total_spawns"))
+			< int(spawn_config.get("maximum_active_enemies"))
 		):
 			_fail("%s 맵의 핵앤슬래시 적 수량 정책이 맵 크기에 비례하지 않습니다." % tier_id)
 			return false
 		previous_minimum_enemies = int(spawn_config.get("minimum_active_enemies"))
 		previous_maximum_enemies = int(spawn_config.get("maximum_active_enemies"))
+		previous_spawn_budget = int(spawn_config.get("maximum_total_spawns"))
 		if not is_equal_approx(
 			float(loot_config.get("minimum_deployment_value_multiplier")),
 			2.5
+		) or not is_equal_approx(
+			float(loot_config.get("maximum_deployment_value_multiplier")),
+			5.0
 		):
-			_fail("%s 작전의 최소 자원 배치 보정이 투입 코스트 2.5배가 아닙니다." % tier_id)
+			_fail("%s 작전의 자원 회수 범위가 투입 코스트 2.5~5배가 아닙니다." % tier_id)
 			return false
-		var minimum_placement_value := ceili(
+		var maximum_placement_value := floori(
 			float(config.get("entry_cost"))
-			* float(loot_config.get("minimum_deployment_value_multiplier"))
+			* float(loot_config.get("maximum_deployment_value_multiplier"))
 		)
 		if (
 			int(loot_config.get("maximum_cache_count"))
 			* int(loot_config.get("maximum_cache_credits"))
-			< minimum_placement_value
+			< maximum_placement_value
 		):
-			_fail("%s 작전의 파밍 설정으로 최소 배치 가치를 충족할 수 없습니다." % tier_id)
+			_fail("%s 작전의 파밍 설정으로 최대 회수 배수를 구성할 수 없습니다." % tier_id)
 			return false
 		var loot_points: Array = generator.call(
 			&"get_loot_spawn_points",
@@ -232,26 +243,43 @@ func _verify_player_sustain_and_movement() -> bool:
 	host.add_child(player)
 	await process_frame
 	var movement = player.get_node("Movement")
+	var movement_snapshot: Dictionary = movement.call(&"get_movement_snapshot")
+	var base_speed := float(movement_snapshot[&"speed"])
 	var accelerated: Vector2 = movement.call(
 		&"step_velocity", Vector2.ZERO, Vector2.RIGHT, 0.05, false
 	)
 	var braked: Vector2 = movement.call(
-		&"step_velocity", Vector2.RIGHT * 260.0, Vector2.ZERO, 0.05, false
+		&"step_velocity", Vector2.RIGHT * base_speed, Vector2.ZERO, 0.05, false
 	)
 	var counter_steered: Vector2 = movement.call(
-		&"step_velocity", Vector2.RIGHT * 260.0, Vector2.LEFT, 0.05, false
+		&"step_velocity", Vector2.RIGHT * base_speed, Vector2.LEFT, 0.05, false
+	)
+	var cornered: Vector2 = movement.call(
+		&"step_velocity", Vector2.RIGHT * base_speed, Vector2.DOWN, 0.05, false
 	)
 	var dashed: Vector2 = movement.call(
 		&"step_velocity", Vector2.ZERO, Vector2.RIGHT, 0.016, true
 	)
+	var dash_exit: Vector2 = movement.call(
+		&"step_velocity",
+		dashed,
+		Vector2.RIGHT,
+		float(movement_snapshot[&"dash_duration"]) + 0.01,
+		false
+	)
 	if (
 		accelerated.x <= 0.0
-		or accelerated.x >= 260.0
-		or braked.length() >= 260.0
-		or counter_steered.x >= 260.0
-		or dashed.length() < 500.0
+		or accelerated.x < float(movement_snapshot[&"launch_speed"])
+		or accelerated.x >= base_speed
+		or braked.length() >= base_speed
+		or counter_steered.x >= 0.0
+		or cornered.y <= 0.0
+		or dashed.length() <= base_speed * 2.0
+		or dash_exit.length() <= base_speed
+		or dash_exit.length() >= dashed.length()
+		or not bool(movement.call(&"get_movement_snapshot")[&"dash_exit_active"])
 	):
-		_fail("가속·제동·역선회·회피 이동 응답이 예상 범위를 벗어났습니다.")
+		_fail("초동 가속·제동·급선회·회피 후 관성 응답이 예상 범위를 벗어났습니다.")
 		return false
 
 	var recovery := recovery_scene.instantiate()
@@ -520,7 +548,7 @@ func _verify_equipment_modules() -> bool:
 		failure_message = "장비 최대 체력이 플레이어에 적용되지 않았습니다."
 	elif not is_equal_approx(float(player.get("defense")), 3.0):
 		failure_message = "장비 방어력이 플레이어에 적용되지 않았습니다."
-	elif not is_equal_approx(float(player.get_node("Movement").get("speed")), 280.0):
+	elif not is_equal_approx(float(player.get_node("Movement").get("speed")), 300.0):
 		failure_message = "장비 이동 속도가 플레이어에 적용되지 않았습니다."
 	elif equipment.call(&"get_active_weapon_slot") != &"main":
 		failure_message = "초기 활성 무기가 메인 슬롯이 아닙니다."
@@ -955,10 +983,21 @@ func _verify_tier_population_and_value(
 		return false
 	var loot_snapshot: Dictionary = loot_spawner.call(&"get_spawn_snapshot")
 	var expected_minimum := ceili(float(map_config.get("entry_cost")) * 2.5)
+	var expected_maximum := floori(float(map_config.get("entry_cost")) * 5.0)
+	var target_total := int(loot_snapshot.get(&"target_total_credits", 0))
+	var placed_total := int(loot_snapshot.get(&"total_placed_credits", 0))
+	var selected_multiplier := float(loot_snapshot.get(&"selected_value_multiplier", 0.0))
 	return (
 		int(loot_snapshot.get(&"minimum_total_credits", 0)) == expected_minimum
-		and int(loot_snapshot.get(&"total_placed_credits", 0)) >= expected_minimum
+		and int(loot_snapshot.get(&"maximum_total_credits", 0)) == expected_maximum
+		and target_total >= expected_minimum
+		and target_total <= expected_maximum
+		and placed_total == target_total
+		and selected_multiplier >= 2.5
+		and selected_multiplier <= 5.0
 		and bool(loot_snapshot.get(&"minimum_value_satisfied", false))
+		and bool(loot_snapshot.get(&"maximum_value_respected", false))
+		and bool(loot_snapshot.get(&"target_value_satisfied", false))
 	)
 
 
@@ -1015,6 +1054,62 @@ func _verify_enemy_stats_modules() -> bool:
 	enemy.free()
 	if not valid:
 		_fail("적 체력·방어력 컴포넌트 또는 상태바가 정상 동작하지 않습니다.")
+		return false
+	return true
+
+
+func _verify_enemy_spawn_budget() -> bool:
+	var spawner_scene := load(ENEMY_SPAWNER_SCENE_PATH) as PackedScene
+	var base_config = load(SPAWN_CONFIG_PATH_PATTERN % "small")
+	if spawner_scene == null or base_config == null:
+		_fail("유한 적 생성 예산 검증 리소스를 불러오지 못했습니다.")
+		return false
+	var host := Node2D.new()
+	var target := Node2D.new()
+	var enemy_parent := Node2D.new()
+	root.add_child(host)
+	host.add_child(target)
+	host.add_child(enemy_parent)
+	var spawner := spawner_scene.instantiate()
+	host.add_child(spawner)
+	var config = base_config.duplicate(true)
+	config.set("minimum_active_enemies", 1)
+	config.set("maximum_active_enemies", 1)
+	config.set("minimum_reinforcement_batch", 1)
+	config.set("maximum_reinforcement_batch", 1)
+	config.set("initial_delay_seconds", 0.0)
+	config.set("reinforcement_interval_seconds", 0.1)
+	config.set("maximum_total_spawns", 2)
+	if not spawner.call(&"configure", target, enemy_parent, false, null, false, false, config):
+		root.remove_child(host)
+		host.free()
+		_fail("유한 적 생성 예산 모듈 구성에 실패했습니다.")
+		return false
+
+	spawner.call(&"_process", 1.0)
+	var first_snapshot: Dictionary = spawner.call(&"get_snapshot")
+	for enemy in enemy_parent.get_children():
+		enemy.queue_free()
+	await process_frame
+	spawner.call(&"_process", 1.0)
+	var exhausted_snapshot: Dictionary = spawner.call(&"get_snapshot")
+	for enemy in enemy_parent.get_children():
+		enemy.queue_free()
+	await process_frame
+	spawner.call(&"_process", 1.0)
+	var final_snapshot: Dictionary = spawner.call(&"get_snapshot")
+	var valid := (
+		int(first_snapshot.get(&"total_spawned", 0)) == 1
+		and int(exhausted_snapshot.get(&"total_spawned", 0)) == 2
+		and int(exhausted_snapshot.get(&"remaining_spawn_budget", -1)) == 0
+		and bool(exhausted_snapshot.get(&"spawn_budget_exhausted", false))
+		and int(final_snapshot.get(&"total_spawned", 0)) == 2
+		and int(final_snapshot.get(&"active_enemies", -1)) == 0
+	)
+	root.remove_child(host)
+	host.free()
+	if not valid:
+		_fail("적 처치 후 총 생성 예산을 넘어서 재생성됩니다.")
 		return false
 	return true
 
@@ -1259,7 +1354,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery deployment_value_2_5 loot credits map_optional player responsive_movement dash health_recovery health_ui enemies reinforcement_population armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

@@ -51,7 +51,7 @@ hide:
 </section>
 
 <div class="sfh-stats">
-  <div class="sfh-stat"><small>Core loop</small><strong>9–11 MIN</strong><span>전투 → 파밍 → 신호 개방 → 탈출</span></div>
+  <div class="sfh-stat"><small>Core loop</small><strong>2.5–5× HAUL</strong><span>투입 비용 대비 판별 목표 회수 가치</span></div>
   <div class="sfh-stat"><small>World</small><strong>ROOM + CONE VISION</strong><span>방 전체 공개 · 통로 정면 시야 · 전체 미니맵</span></div>
   <div class="sfh-stat"><small>Loadout</small><strong>장비 기반 완료</strong><span>무기·방어구·파츠·모듈</span></div>
   <div class="sfh-stat"><small>Growth</small><strong>Run + Meta</strong><span>임시 버프·세 계열 영구 레벨</span></div>
@@ -62,11 +62,38 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>방 전체 공개 + 통로 정면 시야</span><span>실제 렌더 검증 PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>회수 목표 2.5~5배</span><span>유한 증원 120~360</span><span>동적 이동 검증 PASS</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>방 전체 공개 · 통로 정면 원뿔 시야 · 다른 방 차단</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 5개 주제</strong>
+      <ul>
+        <li>판마다 투입 코스트의 2.5~5배에서 회수 목표 총액을 선택합니다.</li>
+        <li>최소·최대 배수와 지점별 수용량을 Resource로 분리해 범위를 유연하게 바꿀 수 있습니다.</li>
+        <li>최초 배치를 포함한 총 적 생성 한계를 소형 120, 중형 220, 대형 360으로 적용했습니다.</li>
+        <li>초동 가속, 90도 선회, 180도 역선회와 대시 종료 관성을 강화했습니다.</li>
+        <li>세 등급 경제·스폰 정책과 유한 재생성·이동 단계를 자동 검증했습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>개선 의도</b><span>작전 투자의 보상 폭은 명확히 보장하되 데이터로 재조정 가능하게 하고, 전투는 무한 리스폰 대신 끝이 있는 밀도 높은 핵앤슬래시 흐름으로 만듭니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">2.5~5배 판별 회수 목표</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>선택 배수의 목표 총액과 실제 회수 지점 총액을 정확히 일치시킵니다.</p><a href="features/credit-loot/">회수 경제 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">등급별 총 생성 예산</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>누적 생성량이 한계에 도달하면 생존 적이 줄어도 추가 증원을 중단합니다.</p><a href="features/enemies/">적 생성 정책 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>✨ 개선 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">탑뷰 핵앤슬래시 동적 이동</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>빠른 출발·급선회·짧은 대시와 감쇠 관성으로 전투 중 방향 전환의 손맛을 강화했습니다.</p><a href="features/player/">이동 수치 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>🧩 수정 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">정책 Resource·스냅샷 계약 확장</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>경제 범위, 남은 스폰 예산과 이동 상태를 기능별 공개 계약으로 분리했습니다.</p><a href="architecture/module-audit/">모듈 감사 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>방 전체 공개 · 통로 정면 원뿔 시야 · 다른 방 차단</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 4개 주제</strong>

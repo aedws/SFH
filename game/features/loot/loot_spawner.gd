@@ -9,6 +9,9 @@ signal interaction_availability_changed(available: bool, prompt: String)
 var spawned_cache_count: int = 0
 var total_placed_credits: int = 0
 var minimum_total_credits: int = 0
+var maximum_total_credits: int = 0
+var target_total_credits: int = 0
+var selected_value_multiplier: float = 0.0
 var deployment_cost: int = 0
 var random := RandomNumberGenerator.new()
 
@@ -36,66 +39,108 @@ func configure(
 	if not config.is_valid():
 		push_error("LootTierConfig 값이 유효하지 않습니다.")
 		return false
+	spawned_cache_count = 0
+	total_placed_credits = 0
 	deployment_cost = new_deployment_cost
 	minimum_total_credits = ceili(
 		float(deployment_cost) * config.minimum_deployment_value_multiplier
 	)
+	maximum_total_credits = floori(
+		float(deployment_cost) * config.maximum_deployment_value_multiplier
+	)
+	selected_value_multiplier = clampf(
+		snappedf(random.randf_range(
+			config.minimum_deployment_value_multiplier,
+			config.maximum_deployment_value_multiplier
+		), 0.1),
+		config.minimum_deployment_value_multiplier,
+		config.maximum_deployment_value_multiplier
+	)
+	target_total_credits = clampi(
+		ceili(float(deployment_cost) * selected_value_multiplier),
+		minimum_total_credits,
+		maximum_total_credits
+	)
 	var minimum_count := config.minimum_cache_count
 	var maximum_count := config.maximum_cache_count
 	var required_count := 0
-	if minimum_total_credits > 0 and config.maximum_cache_credits > 0:
+	if target_total_credits > 0 and config.maximum_cache_credits > 0:
 		required_count = ceili(
-			float(minimum_total_credits) / float(config.maximum_cache_credits)
+			float(target_total_credits) / float(config.maximum_cache_credits)
 		)
-	if required_count > maximum_count:
-		push_error("최대 회수 지점 수로 투입 코스트 최소 보정값을 충족할 수 없습니다.")
+	var affordable_count := maximum_count
+	if config.minimum_cache_credits > 0:
+		affordable_count = floori(
+			float(target_total_credits) / float(config.minimum_cache_credits)
+		)
+	var allowed_minimum_count := maxi(minimum_count, required_count)
+	var allowed_maximum_count := mini(maximum_count, affordable_count)
+	if allowed_minimum_count > allowed_maximum_count:
+		push_error("회수 지점 수·가치 범위로 선택된 배수 목표를 구성할 수 없습니다.")
 		return false
-	var cache_count := maxi(
-		random.randi_range(minimum_count, maximum_count),
-		required_count
-	)
+	var cache_count := random.randi_range(allowed_minimum_count, allowed_maximum_count)
 	var spawn_points: Array = map_provider.call(&"get_loot_spawn_points", cache_count)
-	if spawn_points.size() < required_count:
-		push_error("맵이 투입 코스트 최소 보정값에 필요한 회수 위치를 제공하지 못했습니다.")
+	if spawn_points.size() < cache_count:
+		push_error("맵이 선택된 배수 목표에 필요한 회수 위치를 제공하지 못했습니다.")
 		return false
-	var credit_amounts := _build_credit_amounts(spawn_points.size(), config)
+	var credit_amounts := _build_credit_amounts(
+		spawn_points.size(), config, target_total_credits
+	)
 	for index in range(spawn_points.size()):
 		_spawn_cache(
 			loot_parent,
 			spawn_points[index],
 			credit_amounts[index]
 		)
-	return total_placed_credits >= minimum_total_credits
+	return total_placed_credits == target_total_credits
 
 
 func get_spawn_snapshot() -> Dictionary:
 	return {
 		&"deployment_cost": deployment_cost,
 		&"minimum_total_credits": minimum_total_credits,
+		&"maximum_total_credits": maximum_total_credits,
+		&"target_total_credits": target_total_credits,
 		&"total_placed_credits": total_placed_credits,
+		&"selected_value_multiplier": selected_value_multiplier,
 		&"spawned_cache_count": spawned_cache_count,
 		&"minimum_value_satisfied": total_placed_credits >= minimum_total_credits,
+		&"maximum_value_respected": total_placed_credits <= maximum_total_credits,
+		&"target_value_satisfied": total_placed_credits == target_total_credits,
 	}
 
 
-func _build_credit_amounts(count: int, config: LootTierConfig) -> PackedInt32Array:
+func _build_credit_amounts(
+	count: int,
+	config: LootTierConfig,
+	target_total: int
+) -> PackedInt32Array:
 	var amounts := PackedInt32Array()
 	for _index in range(count):
 		amounts.append(random.randi_range(
 			config.minimum_cache_credits,
 			config.maximum_cache_credits
 		))
-	var deficit := maxi(0, minimum_total_credits - _sum_amounts(amounts))
 	var indices: Array[int] = []
 	for index in range(count):
 		indices.append(index)
 	indices.shuffle()
-	for index in indices:
-		if deficit <= 0:
-			break
-		var added := mini(deficit, config.maximum_cache_credits - amounts[index])
-		amounts[index] += added
-		deficit -= added
+	var difference := target_total - _sum_amounts(amounts)
+	if difference > 0:
+		for index in indices:
+			if difference <= 0:
+				break
+			var added := mini(difference, config.maximum_cache_credits - amounts[index])
+			amounts[index] += added
+			difference -= added
+	elif difference < 0:
+		var surplus := -difference
+		for index in indices:
+			if surplus <= 0:
+				break
+			var removed := mini(surplus, amounts[index] - config.minimum_cache_credits)
+			amounts[index] -= removed
+			surplus -= removed
 	return amounts
 
 

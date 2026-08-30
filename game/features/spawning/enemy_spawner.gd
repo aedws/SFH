@@ -3,6 +3,7 @@ extends Node
 
 signal enemy_spawned(enemy: Node)
 signal reinforcement_dispatched(spawned_count: int, active_count: int, target_count: int)
+signal spawn_budget_exhausted(total_spawned: int, maximum_total_spawns: int)
 
 const MAP_PROVIDER_METHODS := [&"get_enemy_spawn_position", &"get_world_path"]
 
@@ -19,6 +20,7 @@ var reinforcement_cooldown: float = 0.0
 var total_spawned: int = 0
 var reinforcement_count: int = 0
 var initial_fill_complete: bool = false
+var spawn_budget_is_exhausted: bool = false
 var tracked_enemies: Array[Node] = []
 var random := RandomNumberGenerator.new()
 
@@ -52,6 +54,14 @@ func configure(
 	enemy_armor_enabled = enable_enemy_armor
 	enemy_status_ui_enabled = enable_enemy_status_ui
 	spawn_config = new_spawn_config
+	for enemy in tracked_enemies:
+		if is_instance_valid(enemy):
+			enemy.queue_free()
+	total_spawned = 0
+	reinforcement_count = 0
+	initial_fill_complete = false
+	spawn_budget_is_exhausted = false
+	tracked_enemies.clear()
 	target_active_enemies = random.randi_range(
 		int(spawn_config.get("minimum_active_enemies")),
 		int(spawn_config.get("maximum_active_enemies"))
@@ -68,6 +78,11 @@ func _process(delta: float) -> void:
 	reinforcement_cooldown -= delta
 	if reinforcement_cooldown > 0.0 or spawn_config == null:
 		return
+	var maximum_total_spawns := int(spawn_config.get("maximum_total_spawns"))
+	var remaining_spawn_budget := maxi(0, maximum_total_spawns - total_spawned)
+	if remaining_spawn_budget <= 0:
+		_mark_spawn_budget_exhausted()
+		return
 
 	var active_count := tracked_enemies.size()
 	var reinforcement_trigger := ceili(
@@ -83,7 +98,10 @@ func _process(delta: float) -> void:
 		int(spawn_config.get("minimum_reinforcement_batch")),
 		int(spawn_config.get("maximum_reinforcement_batch"))
 	)
-	var batch_size := mini(requested_batch, target_active_enemies - active_count)
+	var batch_size := mini(
+		requested_batch,
+		mini(target_active_enemies - active_count, remaining_spawn_budget)
+	)
 	var spawned_count := 0
 	for _index in range(batch_size):
 		if _spawn_enemy():
@@ -97,6 +115,8 @@ func _process(delta: float) -> void:
 		)
 	if tracked_enemies.size() >= target_active_enemies:
 		initial_fill_complete = true
+	if total_spawned >= maximum_total_spawns:
+		_mark_spawn_budget_exhausted()
 	reinforcement_cooldown = float(spawn_config.get("reinforcement_interval_seconds"))
 
 
@@ -152,11 +172,19 @@ func get_snapshot() -> Dictionary:
 		&"maximum_active_enemies": (
 			spawn_config.get("maximum_active_enemies") if spawn_config != null else 0
 		),
+		&"maximum_total_spawns": (
+			spawn_config.get("maximum_total_spawns") if spawn_config != null else 0
+		),
 		&"target_active_enemies": target_active_enemies,
 		&"active_enemies": tracked_enemies.size(),
 		&"total_spawned": total_spawned,
 		&"reinforcement_count": reinforcement_count,
 		&"initial_fill_complete": initial_fill_complete,
+		&"remaining_spawn_budget": (
+			maxi(0, int(spawn_config.get("maximum_total_spawns")) - total_spawned)
+			if spawn_config != null else 0
+		),
+		&"spawn_budget_exhausted": spawn_budget_is_exhausted,
 	}
 
 
@@ -171,6 +199,16 @@ func get_active_targets() -> Array[Node2D]:
 
 func _on_enemy_tree_exited(enemy: Node) -> void:
 	tracked_enemies.erase(enemy)
+
+
+func _mark_spawn_budget_exhausted() -> void:
+	if spawn_budget_is_exhausted or spawn_config == null:
+		return
+	spawn_budget_is_exhausted = true
+	spawn_budget_exhausted.emit(
+		total_spawned,
+		int(spawn_config.get("maximum_total_spawns"))
+	)
 
 
 func _prune_invalid_enemies() -> void:
