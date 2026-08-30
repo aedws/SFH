@@ -8,6 +8,7 @@ Signal 이름은 이미 발생한 사건처럼 작성합니다.
 
 ```gdscript
 signal health_changed(current: float, maximum: float)
+signal operation_requested
 signal enemy_defeated(enemy_id: StringName)
 signal experience_collected(amount: int)
 signal buff_selected(buff_id: StringName, stacks: int)

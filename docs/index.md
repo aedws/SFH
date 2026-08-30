@@ -34,14 +34,14 @@ hide:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>40%</b>
+        <b>45%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><i style="width: 40%"></i></div>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45"><i style="width: 45%"></i></div>
       <p>확정 전투 원칙 3× · 코어 루프 2× · 기타 요구사항 1× 가중치</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
     </div>
     <header><strong>현재 빌드 상태</strong><b class="sfh-live">PLAYABLE</b></header>
-    <p>작전 규모 선택부터 전투·파밍·탈출 또는 사망까지 최소 게임 루프가 연결되어 있습니다.</p>
+    <p>큰 시작 거점에서 작전 게이트로 진입하고 전투·파밍·탈출 또는 사망 뒤 다시 거점으로 복귀합니다.</p>
     <div class="sfh-operation-grid">
       <span><b>3</b><small>MAP TIERS</small></span>
       <span><b>⇧·Q·F·I·U</b><small>ACTIVE INPUTS</small></span>
@@ -51,7 +51,7 @@ hide:
 </section>
 
 <div class="sfh-stats">
-  <div class="sfh-stat"><small>Core loop</small><strong>2.5–5× HAUL</strong><span>투입 비용 대비 판별 목표 회수 가치</span></div>
+  <div class="sfh-stat"><small>Core loop</small><strong>HUB → RAID → HUB</strong><span>게이트 진입 · 전투 세션 · 결과 후 복귀</span></div>
   <div class="sfh-stat"><small>World</small><strong>ROOM + CONE VISION</strong><span>방 전체 공개 · 통로 정면 시야 · 전체 미니맵</span></div>
   <div class="sfh-stat"><small>Loadout</small><strong>장비 기반 완료</strong><span>무기·방어구·파츠·모듈</span></div>
   <div class="sfh-stat"><small>Growth</small><strong>Run + Meta</strong><span>임시 버프·세 계열 영구 레벨</span></div>
@@ -62,10 +62,34 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>성장 시트 2개</span><span>런 버프 5개</span><span>강화 스펙 25개</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>START HUB 1 ROOM</span><span>F 작전 게이트</span><span>기획 진행도 45%</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>큰 시작 거점 · 작전 게이트 · 전투 세션 복귀</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 5개 주제</strong>
+      <ul>
+        <li>게임 시작 지점을 1800×1040px 크기의 큰 단일 안전 방으로 변경했습니다.</li>
+        <li>동쪽 작전 게이트에서 F를 눌러 소·중·대형 전투 세션을 선택합니다.</li>
+        <li>작전 UI를 전장 카드·밸런스 모드·ESC 복귀 중심으로 재구성했습니다.</li>
+        <li>탈출·사망 결과 확인 후 전투 모듈만 정리하고 같은 시작 거점 흐름으로 복귀합니다.</li>
+        <li>Notion을 다시 대조해 진행도를 45%로 갱신하고 후속 작업을 확정도별로 정리했습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>개선 의도</b><span>메뉴에서 전투를 고르는 대신 실제 공간의 게이트를 통해 출격하고 귀환하는 익스트랙션 루프의 감각을 먼저 만듭니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">SFH 전초기지와 작전 게이트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>안전 구역 플레이어, 큰 방 경계와 F 상호작용 게이트를 독립 모듈로 추가했습니다.</p><a href="features/start-hub/">시작 거점 보기 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">거점↔전투 세션 전환</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>출격 시 거점을 제거하고 귀환 시 전투 Node를 정리해 세션 상태를 섞지 않습니다.</p><a href="features/raid-setup-extraction/">작전 흐름 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>✨ 개선 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">세션 구성 UI 최적화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전장 정보와 데이터 모드를 분리하고 취소·복귀 동선을 명확하게 표시합니다.</p></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
   <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">

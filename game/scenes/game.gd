@@ -3,6 +3,7 @@ extends Node2D
 ## 최상위 조립 지점입니다. 기능은 활성화됐을 때만 경로로 불러옵니다.
 
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
+const START_HUB_SCENE_PATH := "res://game/features/start_hub/start_hub.tscn"
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
 const FOG_OF_WAR_SCENE_PATH := "res://game/features/fog_of_war/fog_of_war.tscn"
@@ -55,6 +56,13 @@ const PLAYER_METHODS := [
 	&"get_runtime_stats",
 	&"get_facing_direction",
 	&"heal",
+]
+const START_HUB_METHODS := [
+	&"get_spawn_position",
+	&"get_operation_position",
+	&"get_room_rect",
+	&"get_snapshot",
+	&"request_operation",
 ]
 const FOG_OF_WAR_METHODS := [&"configure", &"get_snapshot"]
 const MINIMAP_PROVIDER_METHODS := [&"get_minimap_snapshot"]
@@ -170,6 +178,8 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var experience_bar: ProgressBar = %ExperienceBar
 @onready var experience_label: Label = %ExperienceLabel
 @onready var run_setup_overlay: Control = %RunSetupOverlay
+@onready var start_hub_hud: Control = %StartHubHUD
+@onready var setup_close_button: Button = %SetupCloseButton
 @onready var balance_mode_section: Control = %BalanceModeSection
 @onready var locked_balance_button: Button = %LockedBalanceButton
 @onready var live_balance_button: Button = %LiveBalanceButton
@@ -183,6 +193,7 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var restart_button: Button = %RestartButton
 
 var player
+var start_hub
 var map_generator
 var fog_of_war
 var minimap
@@ -219,6 +230,7 @@ var pending_buff_levels: Array[int] = []
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	restart_button.pressed.connect(_restart_run)
+	setup_close_button.pressed.connect(_close_run_setup)
 	locked_balance_button.pressed.connect(
 		_select_balance_source_mode.bind(WeaponBalanceConfig.SourceMode.LOCKED_CSV)
 	)
@@ -232,6 +244,7 @@ func _ready() -> void:
 	map_label.visible = false
 	interaction_label.visible = false
 	game_over_overlay.visible = false
+	start_hub_hud.visible = false
 	balance_mode_section.visible = false
 
 	if features == null:
@@ -254,8 +267,13 @@ func _ready() -> void:
 	_configure_balance_mode_selector()
 
 	if features.run_setup_enabled:
-		run_setup_overlay.visible = true
-		status_label.text = "작전 규모를 선택하세요."
+		if features.start_hub_enabled:
+			run_setup_overlay.visible = false
+			if not _install_start_hub():
+				return
+		else:
+			run_setup_overlay.visible = true
+			status_label.text = "작전 규모를 선택하세요."
 	else:
 		run_setup_overlay.visible = false
 		start_run(features.map_size)
@@ -271,6 +289,8 @@ func start_run(map_size: String) -> bool:
 		return false
 
 	selected_map_size = map_size
+	get_tree().paused = false
+	_clear_start_hub()
 	run_started = true
 	run_setup_overlay.visible = false
 	hud_margin.visible = true
@@ -279,9 +299,151 @@ func start_run(map_size: String) -> bool:
 	if not _assemble_game():
 		run_started = false
 		hud_margin.visible = false
-		run_setup_overlay.visible = features.run_setup_enabled
+		if features.start_hub_enabled and features.run_setup_enabled:
+			_return_to_start_hub()
+		else:
+			run_setup_overlay.visible = features.run_setup_enabled
 		return false
 	return true
+
+
+func _install_start_hub() -> bool:
+	start_hub = _instantiate_feature(START_HUB_SCENE_PATH, world_container, &"StartHub")
+	if (
+		not _supports_methods(start_hub, START_HUB_METHODS)
+		or not start_hub.has_signal(&"operation_requested")
+		or not start_hub.has_signal(&"interaction_availability_changed")
+	):
+		_report_configuration_error("시작 거점 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	player = _instantiate_feature(PLAYER_SCENE_PATH, actors_container, &"HubPlayer")
+	if not _supports_methods(player, PLAYER_METHODS):
+		_report_configuration_error("시작 거점 플레이어를 설치하지 못했습니다.")
+		return false
+	player.global_position = start_hub.call(&"get_spawn_position")
+	player.call(&"configure_damage", false)
+	start_hub.connect(&"operation_requested", Callable(self, &"_open_run_setup"))
+	start_hub.connect(
+		&"interaction_availability_changed",
+		Callable(self, &"_on_interaction_availability_changed")
+	)
+	run_started = false
+	run_ended = false
+	hud_margin.visible = false
+	start_hub_hud.visible = true
+	interaction_label.visible = false
+	status_label.text = "작전 게이트로 이동하세요."
+	return true
+
+
+func _open_run_setup() -> void:
+	if run_started or start_hub == null:
+		return
+	run_setup_overlay.visible = true
+	interaction_label.visible = false
+	get_tree().paused = true
+
+
+func _close_run_setup() -> void:
+	if run_started:
+		return
+	run_setup_overlay.visible = false
+	get_tree().paused = false
+	if start_hub != null and player != null:
+		var is_near: bool = (
+			player.global_position.distance_to(start_hub.call(&"get_operation_position"))
+			<= float(start_hub.get("interaction_radius"))
+		)
+		_on_interaction_availability_changed(is_near, "F · 작전 게이트 접속")
+
+
+func _clear_start_hub() -> void:
+	start_hub_hud.visible = false
+	interaction_label.visible = false
+	_free_feature_node(start_hub)
+	start_hub = null
+	_free_feature_node(player)
+	player = null
+
+
+func _return_to_start_hub() -> void:
+	get_tree().paused = false
+	game_over_overlay.visible = false
+	run_setup_overlay.visible = false
+	interaction_label.visible = false
+	for node in [fog_of_war, minimap, inventory_window, equipment_workbench, run_buff_selector]:
+		_free_feature_node(node)
+	for container in [
+		actors_container, enemies_container, projectiles_container,
+		pickups_container, module_container,
+	]:
+		for child in container.get_children():
+			_free_feature_node(child)
+	for child in world_container.get_children():
+		if child not in [
+			actors_container, enemies_container, projectiles_container,
+			pickups_container, $World/ArenaGrid,
+		]:
+			_free_feature_node(child)
+	_reset_run_references()
+	_reset_run_state()
+	if features.start_hub_enabled and features.run_setup_enabled:
+		_install_start_hub()
+	elif features.run_setup_enabled:
+		run_setup_overlay.visible = true
+	else:
+		start_run(features.map_size)
+
+
+func _free_feature_node(node: Node) -> void:
+	if not is_instance_valid(node):
+		return
+	var parent := node.get_parent()
+	if parent != null:
+		parent.remove_child(node)
+	node.free()
+
+
+func _reset_run_references() -> void:
+	player = null
+	map_generator = null
+	fog_of_war = null
+	minimap = null
+	equipment_system = null
+	inventory_system = null
+	inventory_window = null
+	equipment_workbench = null
+	extraction_zone = null
+	credit_ledger = null
+	loot_spawner = null
+	enemy_spawner = null
+	auto_weapon = null
+	weapon_balance_service = null
+	growth_balance_service = null
+	progression_system = null
+	health_recovery_system = null
+	run_buff_system = null
+	run_buff_selector = null
+	meta_progression_system = null
+	equipment_upgrade_service = null
+	current_map_config = null
+
+
+func _reset_run_state() -> void:
+	run_started = false
+	run_ended = false
+	elapsed_time = 0.0
+	extraction_unlocked = false
+	defeated_enemies = 0
+	pending_buff_levels.clear()
+	hud_margin.visible = false
+	map_label.visible = false
+	time_label.text = "시간 00:00"
+	level_label.text = "레벨 1"
+	kills_label.text = "처치 0"
+	credit_label.text = "휴대 크레딧 0"
+	experience_bar.value = 0.0
+	experience_label.text = "0 / 5"
 
 
 func _assemble_game() -> bool:
@@ -900,13 +1062,15 @@ func _update_run_time_hud() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not run_ended or not event is InputEventKey:
+	if not event is InputEventKey:
 		return
 
 	var key_event := event as InputEventKey
 	if key_event.pressed and not key_event.echo:
-		if key_event.keycode == KEY_ENTER or key_event.keycode == KEY_SPACE:
+		if run_ended and (key_event.keycode == KEY_ENTER or key_event.keycode == KEY_SPACE):
 			_restart_run()
+		elif run_setup_overlay.visible and key_event.keycode == KEY_ESCAPE:
+			_close_run_setup()
 
 
 func _instantiate_feature(path: String, parent: Node, display_name: StringName) -> Node:
@@ -1282,7 +1446,7 @@ func _finish_run(title: String, summary: String) -> void:
 	interaction_label.visible = false
 	end_title.text = title
 	game_over_summary.text = final_summary
-	restart_button.text = "새 작전 선택 (Enter)"
+	restart_button.text = "시작 거점으로 복귀 (Enter)"
 	game_over_overlay.visible = true
 	get_tree().paused = true
 
@@ -1295,8 +1459,7 @@ func _selected_map_display_name() -> String:
 
 
 func _restart_run() -> void:
-	get_tree().paused = false
-	get_tree().reload_current_scene()
+	_return_to_start_hub()
 
 
 func _report_configuration_error(message: String) -> void:

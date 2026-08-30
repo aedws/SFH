@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/start_hub/start_hub.gd" id="1_hub"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gate"]
+size = Vector2(190, 220)
+
+[node name="StartHub" type="Node2D"]
+z_index = -60
+script = ExtResource("1_hub")
+
+[node name="OperationGate" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OperationGate"]
+shape = SubResource("RectangleShape2D_gate")

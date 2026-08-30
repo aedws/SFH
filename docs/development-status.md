@@ -17,16 +17,16 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>성장 시트 2개</span><span>런 버프 5개</span><span>강화 스펙 25개</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>START HUB 1 ROOM</span><span>F 작전 게이트</span><span>세션 복귀 PASS</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>PLANNING PROGRESS · 2026-08-30</small><strong>현재 기획 진행도</strong></span>
-    <b>40%</b>
+    <b>45%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><i style="width: 40%"></i></div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45"><i style="width: 45%"></i></div>
   <p>노션에서 명시적으로 확정된 전투 원칙을 가장 크게 반영하고, 저장소에서 실제로 확인되는 기능만 완료 또는 부분 완료로 계산합니다.</p>
 </div>
 
@@ -36,17 +36,65 @@ tags:
 |---|---:|---:|---|
 | 확정 전투 원칙 | ×3 | 70% | 수동 조준 없는 이동·자동 공격은 구현, 실제 스킬 트리거와 쿨타임·자원 운용은 미구현 |
 | 스마트 오토 타겟팅 `(미확정)` | ×1 | 20% | 가장 가까운 적 자동 공격만 구현, 최대 HP·등급·밀집도 규칙은 미구현 |
-| 코어 플레이 루프 | ×2 | 50% | 작전 선택·탐험·사냥·파밍·탈출·사망 흐름은 연결, 탈출 방어전과 영속 정산은 미구현 |
-| 로비 인베스트먼트·타겟 파밍 | ×1 | 30% | 소·중·대형 선택과 티어별 맵·보상 기반은 구현, 비용 지불·지역·난이도·보스·드랍 테이블은 미구현 |
-| 성장·순환형 해금 | ×1 | 15% | 기본 로드아웃과 작전 내 크레딧만 존재, 영구 해금 상점·소모성 로드아웃·저장은 미구현 |
+| 코어 플레이 루프 | ×2 | 65% | 시작 거점→전투 세션→탈출·사망→거점 복귀까지 연결, 탈출 방어전과 전리품 영속 정산은 미구현 |
+| 로비 인베스트먼트·타겟 파밍 | ×1 | 40% | 이동 가능한 거점·작전 게이트와 소·중·대형 선택은 구현, 비용 지불·지역·난이도·보스·드랍 테이블은 미구현 |
+| 성장·순환형 해금 | ×1 | 35% | 내부 버프, 외부 캐릭터·무기·방어구 성장 저장과 장비 강화는 구현, 영구 해금 상점·소모성 로드아웃은 미구현 |
 | 무기 태그·스킬 장착 | ×1 | 60% | 무기 3단계 태그와 스킬 호환·0~10개 제한은 구현, 스킬 실행·등급별 변형·연계 효과는 미구현 |
 | 페널티 모디파이어 | ×1 | 0% | 미구현 |
 | 조건부 랭킹 | ×1 | 0% | 미구현 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`이며 결과 `39.5%`를 정수로 반올림해 **40%**로 표시합니다. 이후 “진행도 체크” 요청이 들어오면 먼저 위 노션을 다시 읽고, 확정·미확정 표시와 Phase 상태를 확인한 뒤 저장소 검증 결과로 이 표를 갱신합니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`이며 현재 결과는 `(70×3 + 20 + 65×2 + 40 + 35 + 60) ÷ 11 = 45%`입니다. 이후 “진행도 체크” 요청이 들어오면 먼저 위 노션을 다시 읽고, 확정·미확정 표시와 Phase 상태를 확인한 뒤 저장소 검증 결과로 이 표를 갱신합니다.
+
+### 2026-08-30 Notion 변경 확인
+
+[SFH 프로젝트 노션](https://app.notion.com/p/SFH-6b45b728004082af8a4a811ef0a1c5e9)을 로그인 상태에서 다시 확인했습니다.
+
+- 네 개 Phase 체크박스는 여전히 모두 미체크이며, 본문의 확정 전투 원칙과 미확정 스마트 타겟팅 표시는 기존 기준과 같습니다.
+- 새 논의로 `아이템 직접 획득 vs 도면 회수 후 제작`과 `제작 무기에 확률 추가 옵션 부여`가 추가됐습니다.
+- 두 항목은 댓글 형태의 검토 제안이며 확정 또는 Phase 반영 표시가 없어 진행도에는 포함하지 않았습니다.
+
+### 앞으로 해야 할 작업
+
+| 우선순위 | 작업 | 기획 상태 | 완료 조건 |
+|---:|---|---|---|
+| 1 | 실제 스킬 트리거·쿨타임·자원 운용 | 확정 전투 원칙 | 0~10개 장착 스킬이 입력·자동 대상 규칙에 따라 실행되고 HUD에 쿨타임 표시 |
+| 2 | 탈출 카운트다운 방어전과 전리품 성공/사망 정산 | Phase 2 | 구역 활성화 후 방어전, 성공 보관·사망 소실이 자동 검증됨 |
+| 3 | 실제 작전 투자 비용·지역·난이도 선택 | Phase 3 | 거점 계약 UI에서 크레딧 차감, 지역별 드랍 테이블과 난이도 보정 적용 |
+| 4 | 영구 해금 상점·창고·소모성 로드아웃 | Phase 3 | 회수품이 거점 저장소에 남고 다음 작전 장착 비용에 연결됨 |
+| 5 | 최대 HP·등급·밀집도 스마트 타겟팅 | 미확정 | 단일·범위 스킬 대상 정책을 Resource로 선택 가능 |
+| 6 | 도면 제작과 확률 추가 옵션 방향 결정 | 새 논의·미확정 | 직접 드랍/도면 제작 중 정책 확정 후 데이터·저장 계약 설계 |
+| 7 | 페널티 모디파이어와 보상 배율 | Phase 4 | 거점에서 페널티 선택, 작전 적용, 최종 보상 배율 정산 |
+| 8 | 조건부 랭킹 | 후순위 요구 | 동일 조건별 가치·시간·처치 기록 저장과 비교 |
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>큰 시작 거점 · F 작전 게이트 · 전투 세션 복귀</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 5개 주제</strong>
+      <ul>
+        <li>첫 실행을 메뉴가 아닌 1800×1040px 단일 방의 안전 거점으로 전환했습니다.</li>
+        <li>동쪽 작전 게이트 접근 후 F를 눌러 세션 구성 UI를 엽니다.</li>
+        <li>전장 카드, 밸런스 데이터 모드와 ESC 복귀 동선을 한 화면에 정리했습니다.</li>
+        <li>탈출·사망 결과 후 전투 Node만 정리하고 시작 거점을 다시 설치합니다.</li>
+        <li>Notion 최신 상태를 재확인하고 진행도를 45%로 갱신했습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>모듈 감사 결론</b><span>거점은 방·게이트만 소유하고 전장 생성과 전투를 모르며, Game은 두 세션의 설치·정리 순서만 조정합니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">이동 가능한 SFH 전초기지</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>화면보다 큰 안전 방, 충돌 경계, 거점 플레이어와 동쪽 작전 게이트를 추가했습니다.</p><a href="../features/start-hub/">시작 거점 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">전투 세션 진입·복귀 수명주기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>거점→작전과 결과→거점 전환에서 동적 World·Modules·UI를 명시적으로 정리합니다.</p><a href="../features/raid-setup-extraction/">작전 흐름 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>✨ 개선 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">작전 시작 UI 재구성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>안전 거점 HUD, 전장 카드, 데이터 모드와 ESC 취소를 명확한 계층으로 배치했습니다.</p></div></details>
+    </div>
+    <div class="sfh-group"><h3>🧩 수정 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">Notion 진행도·후속 목록 갱신</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>확정도 가중치로 45%를 계산하고 새 제작·확률 옵션 논의를 미확정 작업으로 분리했습니다.</p></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
   <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
@@ -353,7 +401,7 @@ tags:
 - 1회성 파밍, 크레딧 회수, F 탈출과 게임오버
 - 장비·맵·무기 밸런스 선택 모듈 비활성화 폴백
 
-성공하면 `SMOKE_TEST_OK`와 함께 `weapon_balance_csv`, `growth_balance_csv`, `growth_balance_optional`, `run_buff_sheet`, `upgrade_sheet`, `weapon_upgrade_spec`, `armor_upgrade_spec`, `module_upgrade_spec` 등의 검증 토큰이 출력됩니다.
+성공하면 `SMOKE_TEST_OK`와 함께 `start_hub`, `start_hub_optional`, `operation_gate`, `optimized_setup_ui`, `combat_session`, `hub_return`, `growth_balance_csv`, `run_buff_sheet`, `upgrade_sheet` 등의 검증 토큰이 출력됩니다.
 
 ## 의도적으로 남긴 확장 지점
 

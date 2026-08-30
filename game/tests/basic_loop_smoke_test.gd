@@ -59,6 +59,10 @@ func _init() -> void:
 	if game_scene == null:
 		_fail("Game Scene을 불러오지 못했습니다.")
 		return
+	if not await _verify_start_hub_flow(game_scene):
+		return
+	if not await _verify_optional_start_hub_module(game_scene):
+		return
 	if not await _verify_all_tier_entry(game_scene):
 		return
 	if not await _verify_optional_map_module(game_scene):
@@ -78,11 +82,114 @@ func _init() -> void:
 	root.add_child(game_instance)
 	await process_frame
 	var setup_overlay := game_instance.get_node("UI/RunSetupOverlay") as Control
-	if not setup_overlay.visible or game_instance.get("player") != null:
-		_fail("작전 규모 선택 화면이 게임 조립 전에 표시되지 않았습니다.")
+	if (
+		setup_overlay.visible
+		or game_instance.get("start_hub") == null
+		or game_instance.get("player") == null
+	):
+		_fail("첫 실행이 이동 가능한 시작 거점으로 진입하지 않았습니다.")
 		return
 	game_instance.call(&"start_run", "small")
 	frame_count = 0
+
+
+func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
+	var hub_game := game_scene.instantiate()
+	root.add_child(hub_game)
+	await process_frame
+	var hub = hub_game.get("start_hub")
+	var hub_player = hub_game.get("player")
+	var setup_overlay := hub_game.get_node("UI/RunSetupOverlay") as Control
+	var hub_hud := hub_game.get_node("UI/StartHubHUD") as Control
+	var setup_panel := hub_game.get_node("UI/RunSetupOverlay/Center/Panel") as Control
+	var setup_close := hub_game.get_node("UI/RunSetupOverlay/SetupCloseButton") as Button
+	var small_card := hub_game.get_node(
+		"UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons/SmallMapButton"
+	) as Button
+	var failure_message := ""
+	if hub == null or hub_player == null:
+		failure_message = "시작 거점 또는 거점 플레이어가 설치되지 않았습니다."
+	else:
+		var snapshot: Dictionary = hub.call(&"get_snapshot")
+		if int(snapshot.get(&"room_count", 0)) != 1:
+			failure_message = "시작 거점이 하나의 큰 방으로 구성되지 않았습니다."
+		elif (
+			float((snapshot.get(&"room_size", Vector2.ZERO) as Vector2).x) < 1280.0
+			or float((snapshot.get(&"room_size", Vector2.ZERO) as Vector2).y) < 720.0
+		):
+			failure_message = "시작 거점 방이 기본 화면보다 작습니다."
+		elif setup_overlay.visible or not hub_hud.visible:
+			failure_message = "시작 시 작전 UI가 닫히거나 거점 안내 HUD가 표시되지 않았습니다."
+		elif (
+			setup_panel.custom_minimum_size.x < 1000.0
+			or setup_panel.custom_minimum_size.y < 580.0
+			or small_card.custom_minimum_size.x < 280.0
+			or not setup_close.visible
+		):
+			failure_message = "최적화된 세션 구성 패널·전장 카드·ESC 동선이 적용되지 않았습니다."
+		else:
+			hub_player.global_position = hub.call(&"get_operation_position")
+			if not hub.call(&"request_operation", hub_player):
+				failure_message = "작전 게이트의 F 상호작용 요청이 실패했습니다."
+			elif not setup_overlay.visible or not paused:
+				failure_message = "작전 게이트가 세션 구성 UI를 열지 못했습니다."
+			else:
+				setup_close.pressed.emit()
+				if setup_overlay.visible or paused:
+					failure_message = "ESC 복귀가 작전 UI를 닫지 못했습니다."
+				elif not hub_game.call(&"start_run", "small"):
+					failure_message = "시작 거점에서 전투 세션으로 전환하지 못했습니다."
+				elif hub_game.get("start_hub") != null or hub_game.get("map_generator") == null:
+					failure_message = "전투 세션 전환 후 거점과 작전 맵 상태가 분리되지 않았습니다."
+				else:
+					hub_game.call(&"_finish_run", "테스트 종료", "거점 복귀 검증")
+					if "시작 거점" not in String(
+						hub_game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/RestartButton").text
+					):
+						failure_message = "작전 결과 UI에 시작 거점 복귀 동작이 없습니다."
+					else:
+						hub_game.call(&"_restart_run")
+						await process_frame
+						if (
+							hub_game.get("start_hub") == null
+							or hub_game.get("player") == null
+							or bool(hub_game.get("run_started"))
+						):
+							failure_message = "전투 종료 후 시작 거점으로 복귀하지 못했습니다."
+	paused = false
+	root.remove_child(hub_game)
+	hub_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("시작 거점 흐름 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_optional_start_hub_module(game_scene: PackedScene) -> bool:
+	var hub_free_game := game_scene.instantiate()
+	var hub_free_features = hub_free_game.get("features").duplicate(true)
+	hub_free_features.set("start_hub_enabled", false)
+	hub_free_game.set("features", hub_free_features)
+	root.add_child(hub_free_game)
+	await process_frame
+	var setup_overlay := hub_free_game.get_node("UI/RunSetupOverlay") as Control
+	var failure_message := ""
+	if hub_free_game.get("start_hub") != null or hub_free_game.get("player") != null:
+		failure_message = "비활성화했지만 시작 거점 또는 거점 플레이어가 설치됐습니다."
+	elif not setup_overlay.visible:
+		failure_message = "시작 거점 비활성화 시 기존 작전 선택 UI로 폴백하지 않았습니다."
+	elif not hub_free_game.call(&"start_run", "small"):
+		failure_message = "시작 거점 없이 기존 직접 작전 진입이 실패했습니다."
+	elif hub_free_game.get("map_generator") == null:
+		failure_message = "시작 거점 폴백에서 작전 맵이 설치되지 않았습니다."
+	root.remove_child(hub_free_game)
+	hub_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("시작 거점 모듈 비활성화 실패: %s" % failure_message)
+		return false
+	return true
 
 
 func _verify_map_tiers() -> bool:
@@ -1261,9 +1368,8 @@ func _verify_extraction_flow(game_scene: PackedScene) -> bool:
 	root.add_child(extraction_game)
 	await process_frame
 
-	var setup_overlay := extraction_game.get_node("UI/RunSetupOverlay") as Control
-	if not setup_overlay.visible:
-		_fail("첫 실행 작전 규모 선택 화면이 표시되지 않았습니다.")
+	if extraction_game.get("start_hub") == null or extraction_game.get("player") == null:
+		_fail("첫 실행 시작 거점이 표시되지 않았습니다.")
 		return false
 
 	extraction_game.call(&"start_run", "small")
@@ -1459,7 +1565,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK start_hub start_hub_optional single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

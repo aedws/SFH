@@ -6,6 +6,7 @@ extends Resource
 
 @export_category("Core modules")
 @export var player_enabled: bool = true
+@export var start_hub_enabled: bool = true
 @export var map_generation_enabled: bool = true
 @export var map_obstacles_enabled: bool = true
 @export var fog_of_war_enabled: bool = true
@@ -80,6 +81,8 @@ func enabled_module_ids() -> Array[StringName]:
 
 	if player_enabled:
 		result.append(&"player")
+	if start_hub_enabled:
+		result.append(&"start_hub")
 	if map_generation_enabled:
 		result.append(&"map_generation")
 	if map_obstacles_enabled:
@@ -147,6 +150,8 @@ func validation_errors() -> PackedStringArray:
 
 	if not player_enabled and enabled_module_ids().size() > 0:
 		errors.append("다른 게임 기능을 사용하려면 player 모듈이 필요합니다.")
+	if start_hub_enabled and not player_enabled:
+		errors.append("start_hub 모듈은 player 모듈이 필요합니다.")
 	if map_generation_enabled and map_size not in ["small", "medium", "large"]:
 		errors.append("map_size는 small, medium, large 중 하나여야 합니다.")
 	if map_obstacles_enabled and not map_generation_enabled:
