@@ -1551,6 +1551,7 @@ func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -
 		or not bool(room_snapshot.get(&"has_visibility_provider", false))
 		or room_snapshot.get(&"visibility_mode") != &"room"
 		or int(room_snapshot.get(&"active_room_index", -1)) < 0
+		or not is_equal_approx(float(room_snapshot.get(&"room_visibility_blend", 0.0)), 1.0)
 		or int(room_snapshot.get(&"room_rect_count", 0)) != generator.get("rooms").size()
 	):
 		return false
@@ -1559,17 +1560,36 @@ func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -
 		return false
 	var original_position := player.global_position
 	player.global_position = corridor_position
-	fog.call(&"_process", 0.0)
+	var exit_seconds := float(room_snapshot.get(&"room_exit_transition_seconds", 0.0))
+	fog.call(&"_process", exit_seconds * 0.5)
+	var doorway_exit_snapshot: Dictionary = fog.call(&"get_snapshot")
+	fog.call(&"_process", exit_seconds)
 	var corridor_snapshot: Dictionary = fog.call(&"get_snapshot")
 	player.global_position = original_position
-	fog.call(&"_process", 0.0)
+	var enter_seconds := float(room_snapshot.get(&"room_enter_transition_seconds", 0.0))
+	fog.call(&"_process", enter_seconds * 0.5)
+	var doorway_enter_snapshot: Dictionary = fog.call(&"get_snapshot")
+	fog.call(&"_process", enter_seconds)
+	var settled_room_snapshot: Dictionary = fog.call(&"get_snapshot")
 	return (
-		corridor_snapshot.get(&"visibility_mode") == &"corridor"
+		doorway_exit_snapshot.get(&"visibility_mode") == &"corridor"
+		and float(doorway_exit_snapshot.get(&"room_visibility_blend", 0.0)) > 0.0
+		and float(doorway_exit_snapshot.get(&"room_visibility_blend", 1.0)) < 1.0
+		and int(doorway_exit_snapshot.get(&"transition_room_index", -1)) >= 0
+		and corridor_snapshot.get(&"visibility_mode") == &"corridor"
 		and int(corridor_snapshot.get(&"active_room_index", -1)) == -1
+		and int(corridor_snapshot.get(&"transition_room_index", -1)) == -1
+		and is_zero_approx(float(corridor_snapshot.get(&"room_visibility_blend", 1.0)))
 		and float(corridor_snapshot.get(&"corridor_forward_distance", 0.0))
 		> float(corridor_snapshot.get(&"corridor_near_radius", 0.0))
 		and (corridor_snapshot.get(&"facing_direction", Vector2.ZERO) as Vector2)
 		== player.call(&"get_facing_direction")
+		and doorway_enter_snapshot.get(&"visibility_mode") == &"room"
+		and float(doorway_enter_snapshot.get(&"room_visibility_blend", 0.0)) > 0.0
+		and float(doorway_enter_snapshot.get(&"room_visibility_blend", 1.0)) < 1.0
+		and is_equal_approx(
+			float(settled_room_snapshot.get(&"room_visibility_blend", 0.0)), 1.0
+		)
 	)
 
 

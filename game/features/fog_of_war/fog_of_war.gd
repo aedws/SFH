@@ -9,6 +9,8 @@ const MAX_SHADER_ROOM_RECTS := 64
 @export_range(1.0, 30.0, 1.0) var corridor_angle_softness_degrees: float = 12.0
 @export_range(10.0, 300.0, 10.0) var corridor_distance_softness: float = 130.0
 @export_range(0.0, 80.0, 2.0) var room_edge_softness: float = 18.0
+@export_range(0.05, 1.0, 0.01) var room_enter_transition_seconds: float = 0.22
+@export_range(0.05, 1.0, 0.01) var room_exit_transition_seconds: float = 0.32
 @export var fog_color := Color(0.008, 0.014, 0.025, 0.97)
 
 @onready var overlay: ColorRect = %FogOverlay
@@ -18,8 +20,12 @@ var visibility_provider: Node
 var room_world_rects: Array[Rect2] = []
 var visibility_mode: StringName = &"corridor"
 var active_room_index: int = -1
+var transition_room_index: int = -1
+var transition_room_world_rect := Rect2()
+var room_visibility_blend: float = 0.0
 var current_facing_direction := Vector2.RIGHT
 var active_screen_room_count: int = 0
+var focus_initialized: bool = false
 
 
 func _ready() -> void:
@@ -35,6 +41,12 @@ func configure(actor: Node2D, new_visibility_provider: Node = null) -> bool:
 	tracked_actor = actor
 	visibility_provider = null
 	room_world_rects.clear()
+	visibility_mode = &"corridor"
+	active_room_index = -1
+	transition_room_index = -1
+	transition_room_world_rect = Rect2()
+	room_visibility_blend = 0.0
+	focus_initialized = false
 	if is_instance_valid(new_visibility_provider):
 		if (
 			not new_visibility_provider.has_method(&"get_visibility_region")
@@ -47,7 +59,7 @@ func configure(actor: Node2D, new_visibility_provider: Node = null) -> bool:
 				room_world_rects.append(room_rect)
 	_apply_static_shader_parameters()
 	set_process(true)
-	_update_focus()
+	_update_focus(0.0, true)
 	return true
 
 
@@ -57,11 +69,15 @@ func get_snapshot() -> Dictionary:
 		&"corridor_forward_distance": corridor_forward_distance,
 		&"corridor_half_angle_degrees": corridor_half_angle_degrees,
 		&"room_edge_softness": room_edge_softness,
+		&"room_enter_transition_seconds": room_enter_transition_seconds,
+		&"room_exit_transition_seconds": room_exit_transition_seconds,
+		&"room_visibility_blend": room_visibility_blend,
 		&"fog_color": fog_color,
 		&"tracks_actor": is_instance_valid(tracked_actor),
 		&"has_visibility_provider": is_instance_valid(visibility_provider),
 		&"visibility_mode": visibility_mode,
 		&"active_room_index": active_room_index,
+		&"transition_room_index": transition_room_index,
 		&"facing_direction": current_facing_direction,
 		&"room_rect_count": room_world_rects.size(),
 		&"screen_room_rect_count": active_screen_room_count,
@@ -69,8 +85,8 @@ func get_snapshot() -> Dictionary:
 	}
 
 
-func _process(_delta: float) -> void:
-	_update_focus()
+func _process(delta: float) -> void:
+	_update_focus(delta)
 
 
 func _apply_static_shader_parameters() -> void:
@@ -93,7 +109,7 @@ func _apply_static_shader_parameters() -> void:
 	shader_material.set_shader_parameter(&"fog_color", fog_color)
 
 
-func _update_focus() -> void:
+func _update_focus(delta: float = 0.0, snap_transition: bool = false) -> void:
 	if not is_instance_valid(tracked_actor):
 		set_process(false)
 		return
@@ -111,7 +127,7 @@ func _update_focus() -> void:
 	var screen_direction := (
 		(canvas_transform * current_facing_direction - canvas_transform * Vector2.ZERO).normalized()
 	)
-	var active_room_rect := Rect2()
+	var detected_room_rect := Rect2()
 	visibility_mode = &"corridor"
 	active_room_index = -1
 	if is_instance_valid(visibility_provider):
@@ -121,9 +137,13 @@ func _update_focus() -> void:
 		visibility_mode = context.get(&"mode", &"corridor")
 		active_room_index = int(context.get(&"room_index", -1))
 		if visibility_mode == &"room":
-			active_room_rect = _world_rect_to_screen(
-				context.get(&"world_rect", Rect2()), canvas_transform
-			)
+			detected_room_rect = context.get(&"world_rect", Rect2())
+	_update_room_transition(
+		visibility_mode, active_room_index, detected_room_rect, delta, snap_transition
+	)
+	var transition_room_rect := _world_rect_to_screen(
+		transition_room_world_rect, canvas_transform
+	)
 	var screen_room_rects := PackedVector4Array()
 	var viewport_rect := Rect2(Vector2.ZERO, viewport_size)
 	for world_rect in room_world_rects:
@@ -140,17 +160,48 @@ func _update_focus() -> void:
 	shader_material.set_shader_parameter(&"viewport_size", viewport_size)
 	shader_material.set_shader_parameter(&"focus_position", screen_position)
 	shader_material.set_shader_parameter(&"facing_direction", screen_direction)
-	shader_material.set_shader_parameter(
-		&"visibility_mode", 1 if visibility_mode == &"room" else 0
-	)
+	shader_material.set_shader_parameter(&"room_visibility_blend", room_visibility_blend)
 	shader_material.set_shader_parameter(&"active_room_rect", Vector4(
-		active_room_rect.position.x,
-		active_room_rect.position.y,
-		active_room_rect.end.x,
-		active_room_rect.end.y
+		transition_room_rect.position.x,
+		transition_room_rect.position.y,
+		transition_room_rect.end.x,
+		transition_room_rect.end.y
 	))
 	shader_material.set_shader_parameter(&"room_count", screen_room_rects.size())
 	shader_material.set_shader_parameter(&"room_rects", screen_room_rects)
+
+
+func _update_room_transition(
+	detected_mode: StringName,
+	detected_room_index: int,
+	detected_room_rect: Rect2,
+	delta: float,
+	snap_transition: bool
+) -> void:
+	var target_blend := 0.0
+	if detected_mode == &"room" and detected_room_index >= 0:
+		target_blend = 1.0
+		if transition_room_index != detected_room_index:
+			transition_room_index = detected_room_index
+			transition_room_world_rect = detected_room_rect
+			if focus_initialized:
+				room_visibility_blend = 0.0
+	if not focus_initialized or snap_transition:
+		room_visibility_blend = target_blend
+		focus_initialized = true
+	else:
+		var duration := (
+			room_enter_transition_seconds
+			if target_blend > room_visibility_blend
+			else room_exit_transition_seconds
+		)
+		room_visibility_blend = move_toward(
+			room_visibility_blend, target_blend, maxf(0.0, delta) / maxf(0.001, duration)
+		)
+	if target_blend <= 0.0 and room_visibility_blend <= 0.0001:
+		room_visibility_blend = 0.0
+		transition_room_index = -1
+		transition_room_world_rect = Rect2()
 
 
 func _world_rect_to_screen(world_rect: Rect2, canvas_transform: Transform2D) -> Rect2:

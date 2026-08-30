@@ -66,11 +66,12 @@ hide:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>탈출 방어 · 영구 경제 · 스마트 타게팅 · 제작 · 변형 · 랭킹</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>방·통로 안개 전환 · 탈출 방어 · 영구 경제 · 스마트 타게팅 · 제작 · 랭킹</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
-      <strong>핵심 변경 · 7개 시스템</strong>
+      <strong>핵심 변경 · 7개 시스템 + 안개 전환 개선</strong>
       <ul>
+        <li>방과 통로 경계에서 즉시 끊기던 안개를 입장 0.22초·퇴장 0.32초 문턱 전환으로 개선했습니다.</li>
         <li>탈출 지점 F 상호작용을 15~35초 구역 유지형 방어전과 성공·실패 영구 정산으로 확장했습니다.</li>
         <li>지역·난이도·맵·페널티가 실제 투입 비용, 적 스탯, 회수·도면 배율에 연결됩니다.</li>
         <li>영구 크레딧·지역 해금·상점·창고·최대 3칸 소모품 로드아웃을 저장합니다.</li>
@@ -87,6 +88,9 @@ hide:
       <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">스마트 자동 타게팅</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>거리 외 체력 비율·등급·밀집도를 함께 계산합니다.</p><a href="features/smart-targeting/">타게팅 규칙 →</a></div></details>
       <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">도면 제작·랜덤 옵션</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>도면과 재료를 소비해 중복 없는 옵션 장비를 영구 생성합니다.</p><a href="features/blueprint-crafting/">제작 정책 →</a></div></details>
       <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">페널티·조건부 랭킹</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>선택 위험과 동일 조건 점수표를 독립 저장합니다.</p><a href="features/penalty-ranking/">변형·랭킹 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>✨ 개선 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">방 단위 던전 슈터식 안개 전환</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>문턱에서 방 전체 시야와 통로 정면 시야를 크로스페이드하고 다른 방은 계속 차단합니다.</p><a href="features/fog-of-war/">안개 규칙 →</a></div></details>
     </div>
   </div>
 </details>
