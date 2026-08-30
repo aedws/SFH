@@ -93,6 +93,7 @@ nav:
       - 플레이어: features/player.md
       - 부분 체력 회복: features/health-recovery.md
       - 전투 스킬과 쿨타임 HUD: features/combat-skills.md
+      - 전투 에너지·충전·회복 드랍: features/combat-resources.md
       - 스마트 자동 타게팅: features/smart-targeting.md
       - 도면 제작과 랜덤 옵션: features/blueprint-crafting.md
       - 페널티 변형과 조건부 랭킹: features/penalty-ranking.md

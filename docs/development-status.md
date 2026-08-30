@@ -17,24 +17,24 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>SEARCH COMMAND</span><span>2 DAYS · 18 TOPICS</span><span>MODULAR PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>SEARCH COMMAND</span><span>2 DAYS · 19 TOPICS</span><span>MODULAR PASS</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>PLANNING PROGRESS · 2026-08-30</small><strong>현재 기획 진행도</strong></span>
-    <b>71%</b>
+    <b>74%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="71"><i style="width: 71%"></i></div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="74"><i style="width: 74%"></i></div>
   <p>2026-08-30에 사용자가 제공한 기획 원문을 기준으로, 저장소에서 실제 확인되는 범위만 완료 또는 부분 완료로 계산했습니다.</p>
 </div>
 
-기획 원본은 로그인 없이 열리는 [게시된 SFH 프로젝트 노션](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-08-30에 공개 페이지의 실제 렌더링 본문을 직접 읽어 기존 기획 스냅샷과 일치함을 확인했습니다. 앞으로 진행도 점검은 이 공개 주소를 먼저 읽고 저장소 구현과 대조합니다. Phase 체크박스는 모두 미체크이므로 완료 증거로 사용하지 않고 실제 코드·자동 테스트만 판정 근거로 삼습니다.
+기획 원본은 로그인 없이 열리는 [게시된 SFH 프로젝트 노션](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-08-30에 공개 페이지의 실제 렌더링 본문을 다시 읽어 `스킬 쿨타임/자원 관리`가 확정 전투 운용 핵심에 포함됨을 확인했습니다. 이번 사용자 확정 요청의 에너지·충전·처치 드랍 정책과 저장소 구현을 함께 대조했습니다. Phase 체크박스는 모두 미체크이므로 완료 증거로 사용하지 않고 실제 코드·자동 테스트만 판정 근거로 삼습니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
-| 확정 전투 원칙 | ×3 | 90% | 수동 조준 없는 이동·자동 공격·1~3 직접 스킬·쿨타임 HUD 구현, 별도 에너지/충전 자원은 후속 확장 |
+| 확정 전투 원칙 | ×3 | 100% | 수동 조준 없는 이동·자동 공격·1~3 직접 스킬, 쿨타임·에너지·충전 관리와 처치 회복 드랍 구현 |
 | 스마트 오토 타겟팅 `(미확정)` | ×1 | 65% | 등급·체력 비율·밀집 가중 정책 구현. 최대 HP 우선, 밀집 **지점** 선택과 스킬 유형별 정책 분리는 미구현 |
 | 코어 플레이 루프 | ×2 | 85% | 거점 준비→탐험·전투·파밍→탈출 방어→성공/사망 정산 구현. 시간 기반 환경 페널티는 미구현 |
 | 로비 인베스트먼트·타겟 파밍 | ×1 | 55% | 맵·지역·난이도 비용과 보상/도면 배율 구현. 보스 확정, 고등급 가중치와 지역별 전체 드랍 테이블은 미구현 |
@@ -43,7 +43,7 @@ tags:
 | 페널티 모디파이어 | ×1 | 65% | 자발적 선택·복수 합성·보상 배율 구현. 회복 감소·시야 제한·탈출 지연 유형은 미구현 |
 | 조건부 랭킹 | ×1 | 45% | 동일 조건 격리와 기록 저장 구현. 최소 페널티 점수 및 루팅·시간·처치 3종 분리 순위는 미구현 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`입니다. 명시적으로 확정된 전투 원칙은 ×3, 코어 루프는 ×2, `(미확정)`을 포함한 세부 묶음은 ×1을 적용했습니다. 현재 결과는 `(90×3 + 65 + 85×2 + 55 + 60 + 55 + 65 + 45) ÷ 11 ≈ 71%`입니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`입니다. 명시적으로 확정된 전투 원칙은 ×3, 코어 루프는 ×2, `(미확정)`을 포함한 세부 묶음은 ×1을 적용했습니다. 현재 결과는 `(100×3 + 65 + 85×2 + 55 + 60 + 55 + 65 + 45) ÷ 11 ≈ 74%`입니다.
 
 `완료`는 기능 이름이 존재한다는 뜻이 아니라 기획의 세부 수용 기준까지 충족한 경우에만 부여합니다. 따라서 이번 7개 시스템의 코드 구현 자체는 완료됐지만, 기획 요구와 다른 정책이나 빠진 변형은 위 표에서 부분 완료로 감점했습니다.
 
@@ -56,6 +56,9 @@ tags:
 | 도면 제작·랜덤 옵션 | 완료 | 비용 소비·옵션 1~2개·중복 방지 |
 | 페널티 변형 | 완료 | 최대 3개 선택 계약과 적·보상 배율 합성 |
 | 조건부 랭킹 | 완료 | 성공만 제출·동일 조건 격리·정렬·JSON 왕복 |
+| 에너지·충전 전투 자원 | 완료 | 스킬별 소비·충전 복구·부족 차단·HUD·비활성 폴백 |
+| 적 처치 에너지·체력 드랍 | 완료 | 2종 확률 드랍·최소 1개 보정·자석 회수·실제 수치 반영 |
+| 레벨업 체력 회복 | 완료 | 임시 버프 UI와 무관하게 레벨마다 HP 12 회복 |
 
 #### 기획 마일스톤 판정
 
@@ -71,6 +74,7 @@ tags:
 [게시된 SFH 프로젝트 노션](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)의 렌더링 본문을 직접 확인했으며 다음 상태를 확인했습니다.
 
 - `수동 조준 배제`는 확정 사항이며 현재 구현과 일치합니다.
+- 확정 전투 운용 핵심의 `쿨타임/자원 관리`를 에너지 100, 슬롯별 충전, 적 처치 회복 결정으로 구체화해 구현했습니다.
 - 스마트 자동 타게팅, 시간 경과 위험 증가, 장비·스킬 상점 영구 등록은 `(미확정)` 상태입니다.
 - Phase 2의 탈출 방어·생존/사망 정산은 수용 기준을 충족합니다.
 - Phase 1·3·4는 핵심 기반이 있으나 세부 정책 차이와 빠진 기능 때문에 부분 완료입니다.
@@ -91,17 +95,42 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>17 UPDATE BUNDLES &middot; BUILD 32 &middot; IMPROVE 22 &middot; CHANGE 15 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 34 &middot; IMPROVE 23 &middot; CHANGE 15 &middot; FIX 7</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>17</b><small>UPDATE BUNDLES</small></span>
-      <span><b>32</b><small>BUILD</small></span>
-      <span><b>22</b><small>IMPROVE</small></span>
+      <span><b>18</b><small>UPDATE BUNDLES</small></span>
+      <span><b>34</b><small>BUILD</small></span>
+      <span><b>23</b><small>IMPROVE</small></span>
       <span><b>15</b><small>CHANGE</small></span>
-      <span><b>6</b><small>FIX</small></span>
+      <span><b>7</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>적 군중 분리 · 안전 생성 · 성능 제한</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 1</small><b>전투 에너지 · 스킬 충전 · 처치 회복 드랍</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>핵심 변경 · 확정 전투 자원 루프</strong>
+          <ul>
+            <li>공용 에너지 100과 점멸 2회·자기장 1회·가속 2회의 독립 충전을 구현했습니다.</li>
+            <li>적 처치 시 에너지 20·체력 15 결정을 확률 생성하고 최소 1개 드랍을 보정합니다.</li>
+            <li>HUD에서 전체 에너지, 스킬별 소비량과 충전 수·부족 원인을 확인합니다.</li>
+            <li>레벨업 HP 12 회복을 버프 선택 모듈과 분리해 원상 복구했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>검증 결과</b><span>소비·차단·충전 복구·2종 회수·레벨업 회복·모듈 비활성 폴백과 대형 작전 평균 6.889ms 예산을 통과했습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">전투 에너지·충전 모듈</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>자원 은행을 스킬 실행기와 제공자 계약으로 연결해 비용·충전을 데이터로 교체합니다.</p><a href="../features/combat-resources/">전투 자원 설계 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">에너지·체력 Pickup</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>드랍률·양·최소 보정·자석 반경을 독립 설정 Resource로 관리합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>✨ 개선 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">에너지·충전 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>쿨타임 외 발동 조건을 전투 중 한눈에 읽을 수 있습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🐛 버그픽스 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">레벨업 회복 누락 수정</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>임시 버프 선택기가 설치된 일반 플레이에서도 HP 12 회복이 적용됩니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 2</small><b>적 군중 분리 · 안전 생성 · 성능 제한</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 겹침 없는 핵앤슬래시 군중</strong>
@@ -122,7 +151,7 @@ tags:
       </div>
     </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 2</small><b>기획자 검색 허브 · 실시간 탐색 순위 · 검색 우선순위 데이터</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 3</small><b>기획자 검색 허브 · 실시간 탐색 순위 · 검색 우선순위 데이터</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 검색 전 추천과 입력 후 전체 검색</strong>
@@ -143,7 +172,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 3</small><b>하루 단위 업데이트 압축 · 일일 합계 · 중복 방지 검사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 4</small><b>하루 단위 업데이트 압축 · 일일 합계 · 중복 방지 검사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 날짜당 카드 하나</strong>
@@ -161,7 +190,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 4</small><b>거점 I·U/E·Q 로드아웃 확인</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 5</small><b>거점 I·U/E·Q 로드아웃 확인</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 거점 입력 4종</strong>
@@ -182,7 +211,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 5</small><b>지속 자기장 · 방 진입 봉쇄 · 전멸 보상</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 6</small><b>지속 자기장 · 방 진입 봉쇄 · 전멸 보상</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 2개 전투 모듈</strong>
@@ -203,7 +232,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 6</small><b>방·통로 안개 전환 · 7개 작전·영구 성장 시스템 통합</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 7</small><b>방·통로 안개 전환 · 7개 작전·영구 성장 시스템 통합</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 7개 시스템 + 안개 전환 개선</strong>
@@ -231,7 +260,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 7</small><b>전기 스킬 표현 · 대형 작전 성능 예산</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 8</small><b>전기 스킬 표현 · 대형 작전 성능 예산</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -254,7 +283,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 8</small><b>큰 시작 거점 · F 작전 게이트 · 전투 세션 복귀</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 9</small><b>큰 시작 거점 · F 작전 게이트 · 전투 세션 복귀</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -280,7 +309,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 9</small><b>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 10</small><b>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 4개 주제</strong>
@@ -302,7 +331,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 10</small><b>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 11</small><b>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -328,7 +357,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 11</small><b>방·통로 전장의 안개 최적화 · 정면 시야 확장</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 12</small><b>방·통로 전장의 안개 최적화 · 정면 시야 확장</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -352,7 +381,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 12</small><b>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 전체 결합 재점검</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 13</small><b>맵 비례 적 증원 · 최소 2.5배 회수 가치 · 전체 결합 재점검</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -377,7 +406,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 13</small><b>화면 한 장급 방 · 전장의 안개 · 자원 회수 지점</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 14</small><b>화면 한 장급 방 · 전장의 안개 · 자원 회수 지점</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -402,7 +431,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 14</small><b>전체 화면 장비 · 모듈 인벤토리 UI</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 15</small><b>전체 화면 장비 · 모듈 인벤토리 UI</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 4개 주제</strong>
@@ -428,7 +457,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 15</small><b>확장 맵 · 10분 런 · 반응형 이동 · 부분 회복</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 16</small><b>확장 맵 · 10분 런 · 반응형 이동 · 부분 회복</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 4개 주제</strong>
@@ -451,7 +480,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 16</small><b>로그라이크 성장 · 강화 경제 · 모듈 전수 점검</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 17</small><b>로그라이크 성장 · 강화 경제 · 모듈 전수 점검</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 5개 주제</strong>
@@ -476,7 +505,7 @@ tags:
           </div>
         </details>
         <details class="sfh-bundle">
-          <summary><span><small>UPDATE 17</small><b>무기 밸런스 · 격자 가방 · 장비 개조</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+          <summary><span><small>UPDATE 18</small><b>무기 밸런스 · 격자 가방 · 장비 개조</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">
               <strong>핵심 변경 · 6개 주제</strong>

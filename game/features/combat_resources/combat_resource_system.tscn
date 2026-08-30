@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_resources/combat_resource_system.gd" id="1_system"]
+[ext_resource type="PackedScene" path="res://game/features/combat_resources/combat_resource_pickup.tscn" id="2_pickup"]
+
+[node name="CombatResourceSystem" type="Node"]
+script = ExtResource("1_system")
+pickup_scene = ExtResource("2_pickup")

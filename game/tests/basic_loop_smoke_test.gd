@@ -31,6 +31,8 @@ const HEALTH_RECOVERY_CONFIG_PATH := "res://game/features/health_recovery/config
 const COMBAT_SKILL_SYSTEM_SCENE_PATH := "res://game/features/combat_skills/combat_skill_system.tscn"
 const COMBAT_SKILL_HUD_SCENE_PATH := "res://game/features/combat_skills/combat_skill_hud.tscn"
 const COMBAT_SKILL_LOADOUT_PATH := "res://game/features/combat_skills/configs/default_combat_skills.tres"
+const COMBAT_RESOURCE_SCENE_PATH := "res://game/features/combat_resources/combat_resource_system.tscn"
+const COMBAT_RESOURCE_CONFIG_PATH := "res://game/features/combat_resources/configs/default_combat_resources.tres"
 const ENEMY_SCENE_PATH := "res://game/features/enemies/enemy.tscn"
 const PROFILE_SCENE_PATH := "res://game/features/persistent_profile/persistent_profile.tscn"
 const HUB_ECONOMY_SCENE_PATH := "res://game/features/hub_economy/hub_economy_system.tscn"
@@ -59,6 +61,8 @@ func _init() -> void:
 	if not _verify_map_tiers():
 		return
 	if not await _verify_player_sustain_and_movement():
+		return
+	if not await _verify_combat_resource_modules():
 		return
 	if not await _verify_combat_skill_modules():
 		return
@@ -94,6 +98,8 @@ func _init() -> void:
 	if not await _verify_optional_start_hub_module(game_scene):
 		return
 	if not await _verify_optional_combat_skill_module(game_scene):
+		return
+	if not await _verify_optional_combat_resource_module(game_scene):
 		return
 	if not await _verify_optional_room_encounter_module(game_scene):
 		return
@@ -448,6 +454,117 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 	return true
 
 
+func _verify_combat_resource_modules() -> bool:
+	var sandbox := Node2D.new()
+	var pickups := Node2D.new()
+	var enemies := Node2D.new()
+	var effects := Node2D.new()
+	root.add_child(sandbox)
+	sandbox.add_child(pickups)
+	sandbox.add_child(enemies)
+	sandbox.add_child(effects)
+	var player := (load(PLAYER_SCENE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(player)
+	var loadout: Resource = load(COMBAT_SKILL_LOADOUT_PATH)
+	var config: Resource = load(COMBAT_RESOURCE_CONFIG_PATH).duplicate(true)
+	config.set("starting_energy", 50.0)
+	config.set("energy_drop_chance", 1.0)
+	config.set("health_drop_chance", 1.0)
+	var resources := (load(COMBAT_RESOURCE_SCENE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(resources)
+	var failure_message := ""
+	if not resources.call(&"configure", player, pickups, loadout, config, 4242):
+		failure_message = "전투 자원 시스템 구성이 실패했습니다."
+	else:
+		var initial: Dictionary = resources.call(&"get_snapshot")
+		var slots: Array = initial.get(&"slots", [])
+		if (
+			int(initial.get(&"energy_current", 0)) != 50
+			or slots.size() != 3
+			or int(slots[0].get(&"current_charges", 0)) != 2
+			or int(slots[1].get(&"current_charges", 0)) != 1
+			or int(slots[2].get(&"current_charges", 0)) != 2
+		):
+			failure_message = "공용 에너지 또는 스킬별 초기 충전 수량이 설정값과 다릅니다."
+		elif not resources.call(&"consume_for_skill", 0):
+			failure_message = "점멸 에너지·충전 자원을 소비하지 못했습니다."
+		else:
+			var consumed: Dictionary = resources.call(&"get_skill_resource_snapshot", 0)
+			if (
+				int(consumed.get(&"energy_current", 0)) != 30
+				or int(consumed.get(&"current_charges", 0)) != 1
+			):
+				failure_message = "스킬 비용 20 에너지와 충전 1회가 정확히 차감되지 않았습니다."
+			else:
+				resources.call(&"advance", 6.9)
+				if int(resources.call(&"get_skill_resource_snapshot", 0).get(&"current_charges", 0)) != 1:
+					failure_message = "충전 시간이 끝나기 전에 점멸 충전이 복구됐습니다."
+				resources.call(&"advance", 0.2)
+				if (
+					failure_message.is_empty()
+					and int(resources.call(&"get_skill_resource_snapshot", 0).get(&"current_charges", 0)) != 2
+				):
+					failure_message = "7초 뒤 점멸 충전이 복구되지 않았습니다."
+	if failure_message.is_empty():
+		player.call(&"take_damage", 30.0)
+		var health_before := float(player.call(&"get_health_snapshot").get(&"current", 0.0))
+		if int(resources.call(&"spawn_enemy_drops", Vector2(60.0, 0.0))) != 2:
+			failure_message = "확정 드랍 정책에서 에너지·체력 픽업 두 종류를 생성하지 못했습니다."
+		else:
+			for pickup in pickups.get_children():
+				if pickup.has_method(&"_on_body_entered"):
+					pickup.call(&"_on_body_entered", player)
+			var recovered: Dictionary = resources.call(&"get_snapshot")
+			if (
+				int(recovered.get(&"energy_current", 0)) != 50
+				or float(player.call(&"get_health_snapshot").get(&"current", 0.0)) < health_before + 14.9
+				or int(recovered.get(&"spawned_pickups", {}).get(&"energy", 0)) != 1
+				or int(recovered.get(&"spawned_pickups", {}).get(&"health", 0)) != 1
+			):
+				failure_message = "에너지·체력 픽업 회수가 실제 자원에 반영되지 않았습니다."
+	if failure_message.is_empty():
+		player.call(&"take_damage", 20.0)
+		var health_before_level := float(player.call(&"get_health_snapshot").get(&"current", 0.0))
+		var progression := (load(PROGRESSION_SCENE_PATH) as PackedScene).instantiate()
+		sandbox.add_child(progression)
+		progression.call(&"configure", pickups, true, player)
+		progression.call(&"gain_experience", 5)
+		if not is_equal_approx(
+			float(player.call(&"get_health_snapshot").get(&"current", 0.0)),
+			health_before_level + 12.0
+		):
+			failure_message = "내부 레벨업 시 12 HP 회복이 복구되지 않았습니다."
+	if failure_message.is_empty():
+		var skill_system := (load(COMBAT_SKILL_SYSTEM_SCENE_PATH) as PackedScene).instantiate()
+		sandbox.add_child(skill_system)
+		if not skill_system.call(
+			&"configure", player, enemies, effects, loadout, true, resources
+		):
+			failure_message = "전투 스킬에 자원 제공자를 주입하지 못했습니다."
+		elif not skill_system.call(&"try_activate", 0):
+			failure_message = "충전과 에너지가 있는 스킬의 발동이 거부됐습니다."
+		elif skill_system.call(&"try_activate", 1):
+			failure_message = "잔여 에너지보다 비용이 큰 스킬이 발동됐습니다."
+		else:
+			var states: Array = skill_system.call(&"get_skill_states")
+			var hud := (load(COMBAT_SKILL_HUD_SCENE_PATH) as PackedScene).instantiate()
+			sandbox.add_child(hud)
+			if (
+				int(states[0].get(&"energy_current", -1)) != 30
+				or int(states[0].get(&"current_charges", -1)) != 1
+				or not hud.call(&"configure", skill_system)
+				or "30 / 100" not in String(hud.get_node("Panel/Margin/Content/ResourceRow/EnergyLabel").text)
+			):
+				failure_message = "스킬 HUD에 에너지와 충전 상태가 표시되지 않았습니다."
+	root.remove_child(sandbox)
+	sandbox.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("전투 자원 모듈 실패: %s" % failure_message)
+		return false
+	return true
+
+
 func _verify_combat_skill_modules() -> bool:
 	if (
 		not _has_key_binding(&"combat_skill_1", KEY_1)
@@ -548,7 +665,7 @@ func _verify_combat_skill_modules() -> bool:
 				var hud_snapshot: Dictionary = hud.call(&"get_snapshot")
 				if (
 					int(hud_snapshot.get(&"slot_count", 0)) != 3
-					or hud.get_node("Panel/Margin/SkillSlots").get_child_count() != 3
+					or hud.get_node("Panel/Margin/Content/SkillSlots").get_child_count() != 3
 				):
 					failure_message = "스킬 HUD에 세 개 슬롯과 쿨타임 상태가 표시되지 않았습니다."
 		if failure_message.is_empty():
@@ -607,6 +724,35 @@ func _verify_optional_combat_skill_module(game_scene: PackedScene) -> bool:
 	await process_frame
 	if not failure_message.is_empty():
 		_fail("전투 스킬 선택 모듈 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_optional_combat_resource_module(game_scene: PackedScene) -> bool:
+	var resource_free_game := game_scene.instantiate()
+	var resource_free_features = resource_free_game.get("features").duplicate(true)
+	resource_free_features.set("combat_resources_enabled", false)
+	resource_free_features.set("start_hub_enabled", false)
+	resource_free_features.set("run_setup_enabled", false)
+	resource_free_game.set("features", resource_free_features)
+	root.add_child(resource_free_game)
+	await process_frame
+	var skill_system = resource_free_game.get("combat_skill_system")
+	var failure_message := ""
+	if not bool(resource_free_game.get("run_started")):
+		failure_message = "전투 자원 비활성 구성에서 작전을 시작하지 못했습니다."
+	elif resource_free_game.get("combat_resource_system") != null:
+		failure_message = "비활성화했지만 전투 자원 시스템이 설치됐습니다."
+	elif skill_system == null or bool(skill_system.call(&"get_snapshot").get(&"resources_enabled", true)):
+		failure_message = "전투 자원 제거 후 쿨타임 전용 스킬 폴백이 복구되지 않았습니다."
+	elif not skill_system.call(&"try_activate", 0):
+		failure_message = "전투 자원 없이 기존 스킬을 발동하지 못했습니다."
+	paused = false
+	root.remove_child(resource_free_game)
+	resource_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("전투 자원 선택 모듈 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -2228,6 +2374,16 @@ func _process(_delta: float) -> bool:
 			return _fail("적 처치 이벤트가 Game에 전달되지 않았습니다.")
 		if game_instance.get_node("World/Pickups").get_child_count() < 1:
 			return _fail("경험치 픽업이 생성되지 않았습니다.")
+		var combat_resources = game_instance.get("combat_resource_system")
+		var resource_drops: Dictionary = (
+			combat_resources.call(&"get_snapshot").get(&"spawned_pickups", {})
+			if combat_resources != null else {}
+		)
+		if (
+			int(resource_drops.get(&"energy", 0))
+			+ int(resource_drops.get(&"health", 0)) < 1
+		):
+			return _fail("적 처치가 에너지 또는 체력 자원 드랍을 보장하지 않습니다.")
 
 		var progression = game_instance.get("progression_system")
 		if int(progression.get("level")) < 2:

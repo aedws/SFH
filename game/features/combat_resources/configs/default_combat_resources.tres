@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CombatResourceConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_resources/combat_resource_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+maximum_energy = 100.0
+starting_energy = 100.0
+energy_drop_chance = 0.55
+energy_drop_amount = 20.0
+health_drop_chance = 0.2
+health_drop_amount = 15.0
+guarantee_one_drop = true
+pickup_magnet_radius = 150.0
+pickup_magnet_speed = 320.0

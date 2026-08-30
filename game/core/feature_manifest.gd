@@ -27,6 +27,7 @@ extends Resource
 @export var room_encounters_enabled: bool = true
 @export var weapons_enabled: bool = true
 @export var combat_skills_enabled: bool = true
+@export var combat_resources_enabled: bool = true
 @export var weapon_balance_enabled: bool = true
 @export var growth_balance_enabled: bool = true
 @export var damage_enabled: bool = true
@@ -67,6 +68,9 @@ extends Resource
 @export_category("Combat skills")
 @export_file("*.tres") var combat_skill_loadout_path: String = (
 	"res://game/features/combat_skills/configs/default_combat_skills.tres"
+)
+@export_file("*.tres") var combat_resource_config_path: String = (
+	"res://game/features/combat_resources/configs/default_combat_resources.tres"
 )
 
 @export_category("Room encounters")
@@ -173,6 +177,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"weapons")
 	if combat_skills_enabled:
 		result.append(&"combat_skills")
+	if combat_resources_enabled:
+		result.append(&"combat_resources")
 	if weapon_balance_enabled:
 		result.append(&"weapon_balance")
 	if growth_balance_enabled:
@@ -279,6 +285,11 @@ func validation_errors() -> PackedStringArray:
 		or not ResourceLoader.exists(combat_skill_loadout_path)
 	):
 		errors.append("combat_skills 로드아웃 Resource 경로가 유효하지 않습니다.")
+	if combat_resources_enabled and (
+		combat_resource_config_path.is_empty()
+		or not ResourceLoader.exists(combat_resource_config_path)
+	):
+		errors.append("combat_resources 설정 Resource 경로가 유효하지 않습니다.")
 	if weapon_balance_enabled and not weapons_enabled:
 		errors.append("weapon_balance 모듈은 weapons 모듈이 필요합니다.")
 	if weapon_balance_enabled and (

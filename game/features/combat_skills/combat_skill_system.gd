@@ -10,6 +10,7 @@ var player: Node2D
 var target_container: Node
 var effect_parent: Node2D
 var loadout
+var resource_provider: Node
 var damage_enabled: bool = true
 var activation_enabled: bool = true
 var cooldowns: Array[float] = []
@@ -22,7 +23,8 @@ func configure(
 	new_target_container: Node,
 	new_effect_parent: Node2D,
 	new_loadout,
-	new_damage_enabled: bool = true
+	new_damage_enabled: bool = true,
+	new_resource_provider: Node = null
 ) -> bool:
 	if (
 		not is_instance_valid(new_player)
@@ -37,6 +39,19 @@ func configure(
 	effect_parent = new_effect_parent
 	loadout = new_loadout
 	damage_enabled = new_damage_enabled
+	resource_provider = (
+		new_resource_provider
+		if is_instance_valid(new_resource_provider)
+		and new_resource_provider.has_signal(&"resources_changed")
+		and new_resource_provider.has_method(&"can_activate")
+		and new_resource_provider.has_method(&"consume_for_skill")
+		and new_resource_provider.has_method(&"get_skill_resource_snapshot")
+		else null
+	)
+	if is_instance_valid(resource_provider) and not resource_provider.is_connected(
+		&"resources_changed", Callable(self, &"_on_resources_changed")
+	):
+		resource_provider.connect(&"resources_changed", Callable(self, &"_on_resources_changed"))
 	hud_refresh_accumulator = 0.0
 	state_emission_count = 0
 	cooldowns.clear()
@@ -68,6 +83,7 @@ func try_activate(slot_index: int) -> bool:
 		or slot_index >= loadout.skills.size()
 		or cooldowns[slot_index] > 0.0
 		or not is_instance_valid(player)
+		or (is_instance_valid(resource_provider) and not resource_provider.call(&"can_activate", slot_index))
 	):
 		return false
 	var skill: Resource = loadout.skills[slot_index]
@@ -78,6 +94,11 @@ func try_activate(slot_index: int) -> bool:
 		&"damage_enabled": damage_enabled,
 	})
 	if not bool(result.get(&"success", false)):
+		return false
+	if (
+		is_instance_valid(resource_provider)
+		and not bool(resource_provider.call(&"consume_for_skill", slot_index))
+	):
 		return false
 	cooldowns[slot_index] = float(skill.get("cooldown_seconds"))
 	skill_activated.emit(slot_index, skill.get("skill_id"), result.duplicate(true))
@@ -126,7 +147,21 @@ func get_skill_states() -> Array[Dictionary]:
 		state[&"cooldown_ratio"] = clampf(
 			remaining / float(definition.get("cooldown_seconds")), 0.0, 1.0
 		)
-		state[&"ready"] = activation_enabled and remaining <= 0.0
+		var resource_state := {
+			&"energy_current": 0.0,
+			&"energy_maximum": 0.0,
+			&"energy_cost": 0.0,
+			&"current_charges": -1,
+			&"maximum_charges": -1,
+			&"charge_recovery_remaining": 0.0,
+			&"resource_ready": true,
+		}
+		if is_instance_valid(resource_provider):
+			resource_state = resource_provider.call(&"get_skill_resource_snapshot", index)
+		state.merge(resource_state, true)
+		state[&"ready"] = (
+			activation_enabled and remaining <= 0.0 and bool(state[&"resource_ready"])
+		)
 		state[&"activation_enabled"] = activation_enabled
 		states.append(state)
 	return states
@@ -142,9 +177,14 @@ func get_snapshot() -> Dictionary:
 			&"combat_skill_electric_effect"
 		) if is_inside_tree() else 0,
 		&"states": get_skill_states(),
+		&"resources_enabled": is_instance_valid(resource_provider),
 	}
 
 
 func _emit_states() -> void:
 	state_emission_count += 1
 	skill_states_changed.emit(get_skill_states())
+
+
+func _on_resources_changed(_snapshot: Dictionary) -> void:
+	_emit_states()
