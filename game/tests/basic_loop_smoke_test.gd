@@ -25,6 +25,10 @@ const EQUIPMENT_UPGRADE_SCENE_PATH := "res://game/features/equipment_upgrade/equ
 const EQUIPMENT_UPGRADE_POLICY_PATH := "res://game/features/equipment_upgrade/configs/default_upgrade_costs.tres"
 const HEALTH_RECOVERY_SCENE_PATH := "res://game/features/health_recovery/health_recovery_system.tscn"
 const HEALTH_RECOVERY_CONFIG_PATH := "res://game/features/health_recovery/configs/default_health_recovery.tres"
+const COMBAT_SKILL_SYSTEM_SCENE_PATH := "res://game/features/combat_skills/combat_skill_system.tscn"
+const COMBAT_SKILL_HUD_SCENE_PATH := "res://game/features/combat_skills/combat_skill_hud.tscn"
+const COMBAT_SKILL_LOADOUT_PATH := "res://game/features/combat_skills/configs/default_combat_skills.tres"
+const ENEMY_SCENE_PATH := "res://game/features/enemies/enemy.tscn"
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 var game_instance: Node
@@ -35,6 +39,8 @@ func _init() -> void:
 	if not _verify_map_tiers():
 		return
 	if not await _verify_player_sustain_and_movement():
+		return
+	if not await _verify_combat_skill_modules():
 		return
 	if not _verify_inventory_modules():
 		return
@@ -62,6 +68,8 @@ func _init() -> void:
 	if not await _verify_start_hub_flow(game_scene):
 		return
 	if not await _verify_optional_start_hub_module(game_scene):
+		return
+	if not await _verify_optional_combat_skill_module(game_scene):
 		return
 	if not await _verify_all_tier_entry(game_scene):
 		return
@@ -162,6 +170,119 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 	await process_frame
 	if not failure_message.is_empty():
 		_fail("시작 거점 흐름 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_combat_skill_modules() -> bool:
+	if (
+		not _has_key_binding(&"combat_skill_1", KEY_1)
+		or not _has_key_binding(&"combat_skill_2", KEY_2)
+		or not _has_key_binding(&"combat_skill_3", KEY_3)
+	):
+		_fail("1/2/3 전투 스킬 입력이 프로젝트에 등록되지 않았습니다.")
+		return false
+	var sandbox := Node2D.new()
+	root.add_child(sandbox)
+	var actors := Node2D.new()
+	var enemies := Node2D.new()
+	var effects := Node2D.new()
+	sandbox.add_child(actors)
+	sandbox.add_child(enemies)
+	sandbox.add_child(effects)
+	var player := (load(PLAYER_SCENE_PATH) as PackedScene).instantiate()
+	actors.add_child(player)
+	var enemy := (load(ENEMY_SCENE_PATH) as PackedScene).instantiate()
+	enemy.set("max_health", 100.0)
+	enemy.set("max_armor", 2.0)
+	enemy.global_position = Vector2(100.0, 0.0)
+	enemies.add_child(enemy)
+	var system := (load(COMBAT_SKILL_SYSTEM_SCENE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(system)
+	var loadout: Resource = load(COMBAT_SKILL_LOADOUT_PATH)
+	var failure_message := ""
+	if not system.call(&"configure", player, enemies, effects, loadout, true):
+		failure_message = "전투 스킬 실행기 구성이 실패했습니다."
+	else:
+		var initial: Dictionary = system.call(&"get_snapshot")
+		var states: Array = initial.get(&"states", [])
+		if (
+			int(initial.get(&"skill_count", 0)) != 3
+			or String(states[0].get(&"display_name", "")) != "점멸"
+			or String(states[1].get(&"display_name", "")) != "원형 자기장"
+			or String(states[2].get(&"display_name", "")) != "기동 가속"
+		):
+			failure_message = "기본 전투 스킬 세 종류가 순서대로 로드되지 않았습니다."
+		else:
+			var start_position: Vector2 = player.global_position
+			if not system.call(&"try_activate", 0):
+				failure_message = "1번 점멸 스킬이 발동하지 않았습니다."
+			elif player.global_position.distance_to(start_position) < 300.0:
+				failure_message = "점멸이 충분한 전방 이동 거리를 제공하지 않습니다."
+			elif system.call(&"try_activate", 0):
+				failure_message = "점멸 쿨타임 중 재발동이 허용됐습니다."
+			else:
+				system.call(&"advance", 5.1)
+				if not bool(system.call(&"get_skill_states")[0].get(&"ready", false)):
+					failure_message = "점멸 쿨타임 종료가 HUD 상태에 반영되지 않았습니다."
+		if failure_message.is_empty():
+			enemy.global_position = player.global_position + Vector2(100.0, 0.0)
+			var health_before := float(enemy.get("current_health"))
+			if not system.call(&"try_activate", 1):
+				failure_message = "2번 원형 자기장 스킬이 발동하지 않았습니다."
+			elif float(enemy.get("current_health")) >= health_before:
+				failure_message = "원형 자기장이 범위 내 적에게 피해를 주지 않았습니다."
+		if failure_message.is_empty():
+			var speed_before := float(player.call(&"get_runtime_stats").get(&"movement_speed", 0.0))
+			if not system.call(&"try_activate", 2):
+				failure_message = "3번 이동속도 증가 스킬이 발동하지 않았습니다."
+			else:
+				var speed_after := float(player.call(&"get_runtime_stats").get(&"movement_speed", 0.0))
+				if speed_after < speed_before * 1.54:
+					failure_message = "이동속도 증가 스킬의 55% 배율이 적용되지 않았습니다."
+		if failure_message.is_empty():
+			var hud := (load(COMBAT_SKILL_HUD_SCENE_PATH) as PackedScene).instantiate()
+			sandbox.add_child(hud)
+			if not hud.call(&"configure", system):
+				failure_message = "전투 스킬 HUD가 실행기와 연결되지 않았습니다."
+			else:
+				var hud_snapshot: Dictionary = hud.call(&"get_snapshot")
+				if (
+					int(hud_snapshot.get(&"slot_count", 0)) != 3
+					or hud.get_node("Panel/Margin/SkillSlots").get_child_count() != 3
+				):
+					failure_message = "스킬 HUD에 세 개 슬롯과 쿨타임 상태가 표시되지 않았습니다."
+	root.remove_child(sandbox)
+	sandbox.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("전투 스킬 모듈 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_optional_combat_skill_module(game_scene: PackedScene) -> bool:
+	var skill_free_game := game_scene.instantiate()
+	var skill_free_features = skill_free_game.get("features").duplicate(true)
+	skill_free_features.set("combat_skills_enabled", false)
+	skill_free_game.set("features", skill_free_features)
+	root.add_child(skill_free_game)
+	await process_frame
+	var failure_message := ""
+	if not skill_free_game.call(&"start_run", "small"):
+		failure_message = "전투 스킬 비활성 구성에서 작전을 시작하지 못했습니다."
+	elif (
+		skill_free_game.get("combat_skill_system") != null
+		or skill_free_game.get("combat_skill_hud") != null
+		or skill_free_game.get_node_or_null("UI/CombatSkillHud") != null
+	):
+		failure_message = "비활성화했지만 전투 스킬 실행기 또는 HUD가 설치됐습니다."
+	paused = false
+	root.remove_child(skill_free_game)
+	skill_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("전투 스킬 선택 모듈 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -1474,6 +1595,8 @@ func _process(_delta: float) -> bool:
 		var meta_progression = game_instance.get("meta_progression_system")
 		var upgrade_economy = game_instance.get("equipment_upgrade_service")
 		var health_recovery = game_instance.get("health_recovery_system")
+		var combat_skills = game_instance.get("combat_skill_system")
+		var combat_skill_hud = game_instance.get("combat_skill_hud")
 		if (
 			progression == null
 			or weapon == null
@@ -1485,8 +1608,15 @@ func _process(_delta: float) -> bool:
 			or meta_progression == null
 			or upgrade_economy == null
 			or health_recovery == null
+			or combat_skills == null
+			or combat_skill_hud == null
 		):
-			return _fail("맵, 탈출, 장비, 전투 또는 성장 모듈이 설치되지 않았습니다.")
+			return _fail("맵, 탈출, 장비, 전투 스킬 또는 성장 모듈이 설치되지 않았습니다.")
+		if (
+			int(combat_skills.call(&"get_snapshot").get(&"skill_count", 0)) != 3
+			or int(combat_skill_hud.call(&"get_snapshot").get(&"slot_count", 0)) != 3
+		):
+			return _fail("전투 세션에 세 개 스킬과 쿨타임 HUD가 연결되지 않았습니다.")
 		var small_config = load(MAP_CONFIG_PATH_PATTERN % "small")
 		if map_generator.get("rooms").size() < int(small_config.get("minimum_rooms")):
 			return _fail("소형 맵의 최소 방 수를 생성하지 못했습니다.")
@@ -1565,7 +1695,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK start_hub start_hub_optional single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK combat_skills combat_skills_optional skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

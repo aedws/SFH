@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CombatSkillLoadout" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_loadout.gd" id="1_loadout"]
+[ext_resource type="Resource" path="res://game/features/combat_skills/definitions/blink.tres" id="2_blink"]
+[ext_resource type="Resource" path="res://game/features/combat_skills/definitions/magnetic_field.tres" id="3_field"]
+[ext_resource type="Resource" path="res://game/features/combat_skills/definitions/speed_boost.tres" id="4_speed"]
+
+[resource]
+script = ExtResource("1_loadout")
+skills = [ExtResource("2_blink"), ExtResource("3_field"), ExtResource("4_speed")]

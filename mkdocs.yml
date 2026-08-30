@@ -84,6 +84,7 @@ nav:
       - 크레딧 파밍과 회수: features/credit-loot.md
       - 플레이어: features/player.md
       - 부분 체력 회복: features/health-recovery.md
+      - 전투 스킬과 쿨타임 HUD: features/combat-skills.md
       - 캐릭터 장비와 로드아웃: features/character-equipment.md
       - 격자 가방 인벤토리: features/grid-inventory.md
       - 장비 파츠·모듈 개조: features/equipment-customization.md

@@ -21,6 +21,7 @@ Game
 │  ├─ EnemySpawner          # 등급별 목표 수량·총 생성 한계와 묶음 증원
 │  ├─ ProgressionSystem     # 실행 시 생성
 │  ├─ HealthRecovery        # 지연·상한이 있는 부분 체력 회복
+│  ├─ CombatSkills          # 1·2·3 입력, 효과 실행과 쿨타임 상태
 │  ├─ RunBuffSystem         # 한 판 임시 버프 선택·중첩
 │  ├─ GrowthBalance         # RunBuff·Upgrade 실시간/확정 CSV와 수정자 제공
 │  ├─ MetaProgression       # 캐릭터·무기·방어구 외부 성장과 저장
@@ -31,6 +32,7 @@ Game
 └─ UI
    ├─ StartHubHUD           # 거점 목표와 조작 안내
    ├─ HUDMargin
+   ├─ CombatSkillHud        # 실행 시 설치되는 하단 3슬롯 쿨타임 HUD
    ├─ TacticalMinimap      # 실행 시 설치되는 우측 상단 전술 지도
    ├─ InteractionLabel      # 탈출 범위의 F 안내
    ├─ RunSetupOverlay       # 소·중·대형 선택
@@ -49,6 +51,8 @@ Game
 - `game/scenes/game.gd`: 모듈 설치 코드
 - `game/core/feature_manifest.tres`: 활성 기능 설정
 - `game/features/player/player.tscn`: 플레이어 기능 장면
+- `game/features/combat_skills/combat_skill_system.tscn`: 전투 스킬 입력·쿨타임 실행기
+- `game/features/combat_skills/combat_skill_hud.tscn`: 전투 스킬 하단 HUD
 - `game/features/equipment/equipment_system.tscn`: 장비 로드아웃과 호환성·스탯 집계
 - `game/features/map_generation/map_generator.tscn`: 방, 복도, 벽, 길찾기 생성
 - `game/features/fog_of_war/fog_of_war.tscn`: 플레이어 중심 월드 시야 제한

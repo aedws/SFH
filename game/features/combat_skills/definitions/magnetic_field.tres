@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1_definition"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/magnetic_field_skill_effect.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="MagneticFieldEffect"]
+script = ExtResource("2_effect")
+radius = 230.0
+damage = 24.0
+visual_duration = 0.75
+
+[resource]
+script = ExtResource("1_definition")
+skill_id = &"magnetic_field"
+display_name = "원형 자기장"
+description = "주변 적에게 즉시 범위 피해"
+input_action = &"combat_skill_2"
+input_label = "2"
+cooldown_seconds = 8.0
+accent_color = Color(0.44, 0.62, 1, 1)
+effect = SubResource("MagneticFieldEffect")

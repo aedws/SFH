@@ -34,9 +34,9 @@ hide:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>45%</b>
+        <b>51%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45"><i style="width: 45%"></i></div>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="51"><i style="width: 51%"></i></div>
       <p>확정 전투 원칙 3× · 코어 루프 2× · 기타 요구사항 1× 가중치</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
     </div>
@@ -44,7 +44,7 @@ hide:
     <p>큰 시작 거점에서 작전 게이트로 진입하고 전투·파밍·탈출 또는 사망 뒤 다시 거점으로 복귀합니다.</p>
     <div class="sfh-operation-grid">
       <span><b>3</b><small>MAP TIERS</small></span>
-      <span><b>⇧·Q·F·I·U</b><small>ACTIVE INPUTS</small></span>
+      <span><b>1·2·3·⇧·Q·F</b><small>ACTIVE INPUTS</small></span>
       <span><b>PASS</b><small>SMOKE TEST</small></span>
     </div>
   </aside>
@@ -53,7 +53,7 @@ hide:
 <div class="sfh-stats">
   <div class="sfh-stat"><small>Core loop</small><strong>HUB → RAID → HUB</strong><span>게이트 진입 · 전투 세션 · 결과 후 복귀</span></div>
   <div class="sfh-stat"><small>World</small><strong>ROOM + CONE VISION</strong><span>방 전체 공개 · 통로 정면 시야 · 전체 미니맵</span></div>
-  <div class="sfh-stat"><small>Loadout</small><strong>장비 기반 완료</strong><span>무기·방어구·파츠·모듈</span></div>
+  <div class="sfh-stat"><small>Combat</small><strong>3 ACTIVE SKILLS</strong><span>점멸 · 원형 자기장 · 기동 가속</span></div>
   <div class="sfh-stat"><small>Growth</small><strong>Run + Meta</strong><span>임시 버프·세 계열 영구 레벨</span></div>
 </div>
 
@@ -62,11 +62,32 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>START HUB 1 ROOM</span><span>F 작전 게이트</span><span>기획 진행도 45%</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>3 ACTIVE SKILLS</span><span>COOLDOWN HUD</span><span>기획 진행도 51%</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>큰 시작 거점 · 작전 게이트 · 전투 세션 복귀</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>1·2·3 전투 스킬 · 실시간 쿨타임 HUD</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 4개 주제</strong>
+      <ul>
+        <li>1번 점멸은 정면 360px를 이동하고 벽 앞에서 안전하게 멈춥니다.</li>
+        <li>2번 원형 자기장은 반경 230px의 적에게 24 범위 피해를 가합니다.</li>
+        <li>3번 기동 가속은 4초 동안 이동 속도를 55% 높입니다.</li>
+        <li>하단 3슬롯 HUD가 READY, 남은 쿨타임과 진행 막대를 실시간 표시합니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>모듈 감사 결론</b><span>정의·효과·실행기·HUD를 분리하고 Manifest 비활성 폴백까지 자동 검증했습니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 3</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">점멸·자기장·기동 가속</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>각 효과를 독립 Resource로 구성해 개별 교체와 수치 조정이 가능합니다.</p><a href="features/combat-skills/">전투 스킬 보기 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">실시간 쿨타임 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>하단 중앙에서 키·역할·READY/남은 시간과 회복 진행률을 확인합니다.</p></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">전투 스킬 독립 토글</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>기능을 끄면 실행기와 HUD만 제거되고 자동 공격·장비·이동은 유지됩니다.</p><a href="architecture/module-audit/">모듈 감사 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>큰 시작 거점 · 작전 게이트 · 전투 세션 복귀</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>
@@ -90,7 +111,7 @@ hide:
 </details>
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 4개 주제</strong>
@@ -113,7 +134,7 @@ hide:
 </details>
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>

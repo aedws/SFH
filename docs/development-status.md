@@ -17,16 +17,16 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>START HUB 1 ROOM</span><span>F 작전 게이트</span><span>세션 복귀 PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>3 ACTIVE SKILLS</span><span>COOLDOWN HUD</span><span>MODULAR PASS</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>PLANNING PROGRESS · 2026-08-30</small><strong>현재 기획 진행도</strong></span>
-    <b>45%</b>
+    <b>51%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45"><i style="width: 45%"></i></div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="51"><i style="width: 51%"></i></div>
   <p>노션에서 명시적으로 확정된 전투 원칙을 가장 크게 반영하고, 저장소에서 실제로 확인되는 기능만 완료 또는 부분 완료로 계산합니다.</p>
 </div>
 
@@ -34,16 +34,16 @@ tags:
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
-| 확정 전투 원칙 | ×3 | 70% | 수동 조준 없는 이동·자동 공격은 구현, 실제 스킬 트리거와 쿨타임·자원 운용은 미구현 |
+| 확정 전투 원칙 | ×3 | 90% | 수동 조준 없는 이동·자동 공격·1~3 직접 스킬·쿨타임 HUD 구현, 별도 에너지/충전 자원은 후속 확장 |
 | 스마트 오토 타겟팅 `(미확정)` | ×1 | 20% | 가장 가까운 적 자동 공격만 구현, 최대 HP·등급·밀집도 규칙은 미구현 |
 | 코어 플레이 루프 | ×2 | 65% | 시작 거점→전투 세션→탈출·사망→거점 복귀까지 연결, 탈출 방어전과 전리품 영속 정산은 미구현 |
 | 로비 인베스트먼트·타겟 파밍 | ×1 | 40% | 이동 가능한 거점·작전 게이트와 소·중·대형 선택은 구현, 비용 지불·지역·난이도·보스·드랍 테이블은 미구현 |
 | 성장·순환형 해금 | ×1 | 35% | 내부 버프, 외부 캐릭터·무기·방어구 성장 저장과 장비 강화는 구현, 영구 해금 상점·소모성 로드아웃은 미구현 |
-| 무기 태그·스킬 장착 | ×1 | 60% | 무기 3단계 태그와 스킬 호환·0~10개 제한은 구현, 스킬 실행·등급별 변형·연계 효과는 미구현 |
+| 무기 태그·스킬 장착 | ×1 | 70% | 무기 3단계 태그·호환·0~10개 제한과 기본 전투 효과 실행 구현, 장비 스킬 ID 연결·등급별 변형은 미구현 |
 | 페널티 모디파이어 | ×1 | 0% | 미구현 |
 | 조건부 랭킹 | ×1 | 0% | 미구현 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`이며 현재 결과는 `(70×3 + 20 + 65×2 + 40 + 35 + 60) ÷ 11 = 45%`입니다. 이후 “진행도 체크” 요청이 들어오면 먼저 위 노션을 다시 읽고, 확정·미확정 표시와 Phase 상태를 확인한 뒤 저장소 검증 결과로 이 표를 갱신합니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`이며 현재 결과는 `(90×3 + 20 + 65×2 + 40 + 35 + 70) ÷ 11 ≈ 51%`입니다. 이번 수치는 2026-08-30에 확인한 동일 Notion 기준에 새 스킬 구현 검증만 반영했습니다. 이후 “진행도 체크” 요청이 들어오면 먼저 위 노션을 다시 읽고, 확정·미확정 표시와 Phase 상태를 확인한 뒤 저장소 검증 결과로 이 표를 갱신합니다.
 
 ### 2026-08-30 Notion 변경 확인
 
@@ -57,10 +57,10 @@ tags:
 
 | 우선순위 | 작업 | 기획 상태 | 완료 조건 |
 |---:|---|---|---|
-| 1 | 실제 스킬 트리거·쿨타임·자원 운용 | 확정 전투 원칙 | 0~10개 장착 스킬이 입력·자동 대상 규칙에 따라 실행되고 HUD에 쿨타임 표시 |
-| 2 | 탈출 카운트다운 방어전과 전리품 성공/사망 정산 | Phase 2 | 구역 활성화 후 방어전, 성공 보관·사망 소실이 자동 검증됨 |
-| 3 | 실제 작전 투자 비용·지역·난이도 선택 | Phase 3 | 거점 계약 UI에서 크레딧 차감, 지역별 드랍 테이블과 난이도 보정 적용 |
-| 4 | 영구 해금 상점·창고·소모성 로드아웃 | Phase 3 | 회수품이 거점 저장소에 남고 다음 작전 장착 비용에 연결됨 |
+| 1 | 탈출 카운트다운 방어전과 전리품 성공/사망 정산 | Phase 2 | 구역 활성화 후 방어전, 성공 보관·사망 소실이 자동 검증됨 |
+| 2 | 실제 작전 투자 비용·지역·난이도 선택 | Phase 3 | 거점 계약 UI에서 크레딧 차감, 지역별 드랍 테이블과 난이도 보정 적용 |
+| 3 | 영구 해금 상점·창고·소모성 로드아웃 | Phase 3 | 회수품이 거점 저장소에 남고 다음 작전 장착 비용에 연결됨 |
+| 4 | 장비 스킬 ID와 전투 효과·추가 자원 연결 | 확정 전투 원칙 | 0~10개 장착 결과가 하단 슬롯을 구성하고 에너지/충전 정책을 선택 가능 |
 | 5 | 최대 HP·등급·밀집도 스마트 타겟팅 | 미확정 | 단일·범위 스킬 대상 정책을 Resource로 선택 가능 |
 | 6 | 도면 제작과 확률 추가 옵션 방향 결정 | 새 논의·미확정 | 직접 드랍/도면 제작 중 정책 확정 후 데이터·저장 계약 설계 |
 | 7 | 페널티 모디파이어와 보상 배율 | Phase 4 | 거점에서 페널티 선택, 작전 적용, 최종 보상 배율 정산 |
@@ -68,7 +68,31 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>큰 시작 거점 · F 작전 게이트 · 전투 세션 복귀</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>점멸 · 원형 자기장 · 기동 가속 · 쿨타임 HUD</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 5개 주제</strong>
+      <ul>
+        <li><code>1</code> 점멸은 바라보는 방향으로 최대 360px 이동하며 벽 관통을 방지합니다.</li>
+        <li><code>2</code> 원형 자기장은 반경 230px의 모든 피해 계약 대상에 24 피해를 전달합니다.</li>
+        <li><code>3</code> 기동 가속은 기존 장비·버프와 합성되는 이동 속도 55% 증가를 4초 적용합니다.</li>
+        <li>하단 세 카드가 키·설명·READY·남은 쿨타임과 진행 막대를 표시합니다.</li>
+        <li>효과·정의·실행기·HUD와 Manifest 토글을 분리해 각 블록을 교체할 수 있습니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>검증 결과</b><span>입력, 세 효과, 중복 발동 차단, 쿨타임 회복, HUD 슬롯과 비활성 폴백이 전체 스모크 테스트를 통과했습니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">세 가지 직접 전투 스킬</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>위치 이동, 범위 피해와 시간제 스탯 효과의 기본 실행 경로를 완성했습니다.</p><a href="../features/combat-skills/">스킬 계약 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">실시간 쿨타임 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전투 화면 아래에서 세 슬롯의 재사용 가능 여부를 즉시 판단합니다.</p></div></details>
+    </div>
+    <div class="sfh-group"><h3>🧩 수정 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">장비 호환성과 실행 효과 경계 분리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비는 태그 호환을, 전투 스킬은 입력·효과를 담당하며 후속 ID 매핑 지점을 문서화했습니다.</p><a href="../architecture/module-audit/">모듈 감사 →</a></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>큰 시작 거점 · F 작전 게이트 · 전투 세션 복귀</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>
@@ -95,7 +119,7 @@ tags:
 </details>
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>내부 성장 · 무기·방어구·모듈 Google Sheets 연동</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 4개 주제</strong>
@@ -118,7 +142,7 @@ tags:
 </details>
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>2.5~5배 회수 · 유한 적 재생성 · 핵앤슬래시 무브먼트</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>
