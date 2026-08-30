@@ -15,9 +15,9 @@ tags:
 
 ## 플레이 흐름
 
-작전을 시작하면 맵 등급의 최소~최대 범위에서 이번 판의 **목표 동시 개체 수**를 하나 무작위로 정합니다. 적 수가 목표의 75% 이하로 감소하면 일정 수량을 묶음으로 증원하며, 목표 수량과 작전별 **총 생성 한계**를 넘기지 않습니다.
+기본 작전에서는 일반 방 진입을 감지한 `RoomEncounterSystem`이 등급별 적 무리를 요청합니다. 적이 생성되면 문이 닫히고 해당 무리를 전멸할 때까지 교전이 유지됩니다. 모든 방의 누적 생성량은 작전별 **총 생성 한계**를 넘기지 않습니다.
 
-한 마리씩 계속 생성하던 방식과 달리 교전 사이에 적 무리가 다시 진입하므로 워프레임·퍼스트 디센던트 계열의 일정 밀도 핵앤슬래시 흐름에 가깝습니다. 최초 배치도 총 생성량에 포함되며 예산을 모두 사용하면 처치 후에도 더는 재생성하지 않습니다.
+`room_encounters`를 끈 폴백에서는 기존처럼 목표 동시 개체 수의 75% 이하에서 묶음 증원이 작동합니다. 따라서 방 잠금형 구조와 개방형 핵앤슬래시 증원 구조를 모듈 토글 하나로 비교할 수 있습니다. 두 방식 모두 최초 배치부터 총 생성량에 포함하며 예산을 모두 사용하면 더는 재생성하지 않습니다.
 
 ## 등급별 수량
 
@@ -27,12 +27,15 @@ tags:
 | 중형 | 36~54 중 무작위 | 220 | 8~12 | 1.0초 | 700px |
 | 대형 | 52~72 중 무작위 | 360 | 10~16 | 0.85초 | 780px |
 
+위 표는 전역 증원 폴백 정책입니다. 기본 방 전투의 방당 수량은 [방 진입 전투와 봉쇄 보상](room-encounters.md)을 확인합니다.
+
 수치는 `game/features/spawning/configs/`의 `EnemySpawnTierConfig` Resource에서 변경합니다. 적 체력·방어력·이동 속도 같은 개체 능력치는 `game/features/enemies/`에 남아 있으므로 생성 밀도와 적 밸런스를 따로 조정할 수 있습니다.
 
 ## 모듈 경계
 
 - 생성 정책: 최소·최대 개체 수, 총 생성 한계, 증원 묶음, 간격, 반경
 - `EnemySpawner`: 이번 판 목표 선택, 자신이 생성한 적과 누적 생성량 추적, 유한 증원 실행
+- `RoomEncounterSystem`: 전역 증원을 일시 정지하고 방 내부 위치에 적 무리를 요청
 - 맵: 걸을 수 있고 플레이어에게서 충분히 떨어진 생성 위치 제공
 - 적: 이동, 길찾기, 체력·방어력, 접촉 피해와 사망 Signal
 - 자동 무기: `get_active_targets()`로 전달받은 후보만 조준
@@ -47,12 +50,14 @@ tags:
 | 적 생성기 | `configure(...)` | `Game` 조립부 |
 | 적 생성기 | `get_snapshot()` | HUD·자동 테스트 |
 | 적 생성기 | `get_active_targets()` | 자동 무기 |
+| 적 생성기 | `spawn_enemy_at`, `get_remaining_spawn_budget` | 방 전투 |
+| 적 생성기 | `set_reinforcement_paused` | 방 전투·향후 보스전 |
 | 적 생성기 | `enemy_spawned`, `reinforcement_dispatched`, `spawn_budget_exhausted` | 전투 흐름·향후 연출 |
 | 맵 | `get_enemy_spawn_position(origin, distance)` | 적 생성기 |
 
 ## 활성화와 의존성
 
-`FeatureManifest`의 `enemies_enabled`와 `spawning_enabled`로 분리합니다. `spawning`은 `enemies`가 필요하며, 맵 생성을 끄면 같은 증원 정책을 유지하면서 플레이어 주변 원형 위치를 사용합니다.
+`FeatureManifest`의 `enemies_enabled`, `spawning_enabled`, `room_encounters_enabled`로 분리합니다. `room_encounters`는 맵과 생성기가 필요합니다. 방 전투를 끄면 같은 총 예산을 사용하는 전역 증원 정책으로 돌아갑니다.
 
 ## 검색 별칭
 

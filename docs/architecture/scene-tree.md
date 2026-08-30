@@ -9,6 +9,7 @@ Game
 │  ├─ ArenaGrid
 │  ├─ StartHub              # 비전투 시 큰 단일 방과 작전 게이트
 │  ├─ GeneratedMap          # 등급 Resource에 따라 실행 시 생성
+│  ├─ RoomEncounters        # 방 진입·문 봉쇄·전멸·보상 상태 머신
 │  ├─ ExtractionZone        # 최원거리 방에 실행 시 생성
 │  ├─ Actors
 │  │  └─ Player             # 실행 시 생성
@@ -16,7 +17,8 @@ Game
 │  ├─ Enemies
 │  ├─ Projectiles
 │  └─ Pickups
-│     └─ CreditLootCache   # 금고·자재함·회수 단말기 유형으로 여러 개 생성
+│     ├─ CreditLootCache   # 금고·자재함·회수 단말기 유형으로 여러 개 생성
+│     └─ RoomRewardPickup  # 방 전멸 뒤 생성되는 내부 경험치 보상
 ├─ Modules
 │  ├─ EnemySpawner          # 등급별 목표 수량·총 생성 한계와 묶음 증원
 │  ├─ ProgressionSystem     # 실행 시 생성
@@ -61,6 +63,7 @@ Game
 - `game/features/credits/credit_ledger.tscn`: 작전 크레딧 원장
 - `game/features/loot/loot_spawner.tscn`: 파밍 오브젝트 배치
 - `game/features/spawning/enemy_spawner.tscn`: 적 생성 기능
+- `game/features/room_encounters/room_encounter_system.tscn`: 방 진입·문 봉쇄·전멸·보상 조정
 - `game/features/weapons/auto_weapon.tscn`: 자동 공격 기능
 - `game/features/experience/progression_system.tscn`: 성장 기능
 - `game/features/run_buffs/run_buff_system.tscn`: 한 판 임시 버프

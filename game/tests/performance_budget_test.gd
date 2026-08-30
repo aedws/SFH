@@ -34,12 +34,13 @@ func _run() -> void:
 		_fail("대형 성능 검증 작전을 시작하지 못했습니다.")
 		return
 	var configured_spawner = game.get("enemy_spawner")
-	if configured_spawner != null:
-		var configured_snapshot: Dictionary = configured_spawner.call(&"get_snapshot")
-		configured_spawner.set(
-			"target_active_enemies",
-			int(configured_snapshot.get(&"maximum_active_enemies", 0))
-		)
+	var room_encounters = game.get("room_encounter_system")
+	var generated_map = game.get("map_generator")
+	if room_encounters != null and generated_map != null:
+		for room: Dictionary in generated_map.call(&"get_room_encounter_snapshot"):
+			if not bool(room[&"is_start_room"]) and not bool(room[&"is_extraction_room"]):
+				room_encounters.call(&"try_start_room", int(room[&"room_index"]))
+				break
 	for _frame in WARMUP_FRAMES:
 		await process_frame
 
@@ -97,6 +98,10 @@ func _run() -> void:
 		),
 		&"active_enemy_target": int(spawner_snapshot.get(&"target_active_enemies", 0)),
 		&"maximum_total_spawns": int(spawner_snapshot.get(&"maximum_total_spawns", 0)),
+		&"active_room_enemies": int(
+			room_encounters.call(&"get_snapshot").get(&"active_enemy_count", 0)
+			if room_encounters != null else 0
+		),
 	}
 	print("PERFORMANCE_BUDGET_RESULT %s" % JSON.stringify(result))
 	if average_wall_frame_ms > TARGET_FRAME_MS:

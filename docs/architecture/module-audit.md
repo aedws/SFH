@@ -395,10 +395,25 @@ tags:
 
 장비는 가격이나 가방을 모르고, 가방은 강화 단계나 장비 슬롯을 모릅니다. 따라서 비용표·재화 종류·재료 정책을 교체해도 장비 상태 모델을 유지할 수 있습니다.
 
+## 지속 자기장·방 전투 재감사 (2026-08-30)
+
+| 검사 항목 | 결과 | 근거 |
+|---|---|---|
+| 스킬 수명 분리 | 통과 | 정의 Resource는 반경·지속·틱 수치만 소유하고 `PersistentMagneticField`가 추적·피해 주기를 관리 |
+| 방 내부 캡슐화 | 통과 | 방 전투는 맵의 `rooms`, `floor_cells`, `obstacle_cells` 대신 공개 스냅샷과 위치 요청만 사용 |
+| 적 생성 경로 재사용 | 통과 | 위치 지정 생성도 `EnemySpawner.spawn_enemy_at()`의 동일 configure·Signal·총 예산 경로 사용 |
+| 문 봉쇄 교체성 | 통과 | `RoomDoorBarrier`가 충돌·표현을 독립 소유하며 전투 시스템은 공개 `configure`만 호출 |
+| 보상 경제 분리 | 통과 | 기존 2.5~5배 크레딧 목표를 바꾸지 않고 별도 내부 경험치 보상으로 제공 |
+| 선택 제거 | 통과 | `room_encounters_enabled=false`에서 실행기 미설치와 전역 증원 재개를 자동 검증 |
+| 성능 예산 | 통과 | 대형 방 적 14기·전기 효과 3개에서 평균 6.890ms, 최대 7.731ms, Node 1,280개 |
+
+숨겨진 비모듈 결합은 발견되지 않았습니다. `Game`은 설치 순서와 Signal 연결만 소유하고, 방 판정·수량·문 수명·전멸 판정·보상 생성은 `game/features/room_encounters/` 안에 유지됩니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.
 - `EnemySpawner`는 기본 적 Scene을 참조합니다. 이는 `spawning → enemies` 선언 의존성입니다.
+- `RoomEncounterSystem`은 맵·적 생성기의 공개 메서드만 사용합니다. 이는 Manifest에 선언된 `room_encounters → map_generation, spawning` 의존성입니다.
 - `Game`은 기본 장비 Scene과 선택된 로드아웃 Resource 경로를 알고, 장비는 플레이어의 스탯 적용 공개 메서드만 압니다.
 - `Game`은 인벤토리 카탈로그와 I/U 패널 Scene 경로를 알고, 가방과 장비 시스템은 서로의 내부 Node 경로를 참조하지 않습니다.
 - `Game`은 장비, 밸런스, 자동 무기의 조립 순서를 알지만 각 모듈은 서로의 내부 Node 경로를 참조하지 않습니다.
@@ -415,7 +430,7 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `recovery_multiplier_range`, `recovery_target_exact`, `finite_spawn_budget`, `dynamic_hack_slash_movement`, `dash_exit_momentum`, `screen_sized_rooms`, `fog_of_war`, `minimap_full_map`, `target_provider`, `run_buffs`, `meta_experience`, `part_upgrade`, `upgrade_credits`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
+성공하면 출력에 `persistent_magnetic_field`, `room_triggered_encounter`, `room_door_lock`, `room_clear_reward`, `room_encounters_optional`, `finite_spawn_budget`, `dynamic_hack_slash_movement`, `fog_of_war`, `minimap_full_map`, `target_provider`, `run_buffs`, `meta_experience`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
 
 ## 다음 개선 시점
 
