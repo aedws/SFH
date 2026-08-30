@@ -787,6 +787,8 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 				or tier_game.get("equipment_workbench") == null
 			):
 				failure_message = "%s 작전의 가방 또는 장비 개조 UI가 설치되지 않았습니다." % tier_id
+			elif tier_id == "small" and not _verify_loadout_workbench_ui(tier_game):
+				failure_message = "U 장비·모듈 카드 UI의 구성 또는 공개 동작이 올바르지 않습니다."
 			elif generator.get("rooms").size() < int(config.get("minimum_rooms")):
 				failure_message = "%s 작전의 최소 방 수를 생성하지 못했습니다." % tier_id
 			else:
@@ -801,6 +803,34 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 			_fail("티어 진입 실패: %s" % failure_message)
 			return false
 	return true
+
+
+func _verify_loadout_workbench_ui(tier_game: Node) -> bool:
+	var workbench = tier_game.get("equipment_workbench")
+	workbench.call(&"open_panel")
+	var equipment_grid := workbench.get_node("%EquipmentInventoryGrid") as GridContainer
+	var modification_grid := workbench.get_node("%ModificationInventoryGrid") as GridContainer
+	var installed_grid := workbench.get_node("%InstalledModuleGrid") as GridContainer
+	var selection_ready := false
+	for child in equipment_grid.get_children():
+		var card := child as Button
+		if card != null and "장착 가능" in card.text:
+			card.pressed.emit()
+			selection_ready = not (workbench.get_node("%EquipSelectedButton") as Button).disabled
+			break
+	var valid: bool = (
+		workbench.visible
+		and paused
+		and workbench.size.x >= 1100.0
+		and equipment_grid.get_child_count() >= 2
+		and modification_grid.get_child_count() >= 4
+		and installed_grid.get_child_count() >= 1
+		and selection_ready
+		and workbench.has_method(&"show_weapon_tab")
+		and workbench.has_method(&"show_armor_tab")
+	)
+	workbench.call(&"close_panel")
+	return valid and not paused
 
 
 func _verify_enemy_stats_modules() -> bool:
@@ -1060,7 +1090,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale run_pacing extraction_lock minimap equipment loadout weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles loot credits map_optional player responsive_movement dash health_recovery health_ui enemies armor status_bars pathfinding weapon run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale run_pacing extraction_lock minimap equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles loot credits map_optional player responsive_movement dash health_recovery health_ui enemies armor status_bars pathfinding weapon run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 
