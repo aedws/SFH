@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "updated": "2026-08-30",
+  "title": "기획자 검색 허브",
+  "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
+  "rankings": [
+    {
+      "query": "개발 진행도",
+      "label": "개발 진행도",
+      "description": "Notion 기준 진행률과 완료·부분 완료 근거",
+      "category": "기획",
+      "priority": 100
+    },
+    {
+      "query": "앞으로 해야 할 작업",
+      "label": "앞으로 해야 할 작업",
+      "description": "확정도와 구현 차이를 반영한 후속 우선순위",
+      "category": "기획",
+      "priority": 96
+    },
+    {
+      "query": "확정 사항",
+      "label": "확정·미확정 사항",
+      "description": "공개 Notion 원문과 현재 저장소 대조",
+      "category": "기획",
+      "priority": 92
+    },
+    {
+      "query": "코어 플레이 루프",
+      "label": "코어 플레이 루프",
+      "description": "거점 준비부터 파밍·탈출·정산까지",
+      "category": "게임 루프",
+      "priority": 88
+    },
+    {
+      "query": "스마트 자동 타게팅",
+      "label": "스마트 자동 타게팅",
+      "description": "수동 조준 없는 대상 선택 정책과 미확정 항목",
+      "category": "전투",
+      "priority": 84
+    },
+    {
+      "query": "작전 맵",
+      "label": "작전 맵·방·안개",
+      "description": "맵 등급, 방 전투, 통로 시야와 미니맵",
+      "category": "작전",
+      "priority": 80
+    },
+    {
+      "query": "탈출 방어전",
+      "label": "탈출 방어전·정산",
+      "description": "카운트다운, 생환·사망과 영구 결과",
+      "category": "작전",
+      "priority": 76
+    },
+    {
+      "query": "장비 모듈",
+      "label": "장비·모듈·파츠",
+      "description": "태그, 장착 제한, 강화와 개조 계약",
+      "category": "장비",
+      "priority": 72
+    },
+    {
+      "query": "Google Sheets 밸런스",
+      "label": "Google Sheets 밸런스",
+      "description": "실시간 테스트와 확정 CSV 데이터 구조",
+      "category": "데이터",
+      "priority": 68
+    },
+    {
+      "query": "성능 예산",
+      "label": "성능 예산·최소 사양",
+      "description": "60 FPS 예산, Node와 대형 작전 측정값",
+      "category": "검증",
+      "priority": 64
+    }
+  ],
+  "planner_groups": [
+    {
+      "label": "기획·현황",
+      "queries": ["개발 진행도", "앞으로 해야 할 작업", "확정 사항"]
+    },
+    {
+      "label": "전투 설계",
+      "queries": ["스마트 자동 타게팅", "전투 스킬", "적 생성", "방 진입 전투"]
+    },
+    {
+      "label": "작전·맵",
+      "queries": ["코어 플레이 루프", "작전 맵", "전장의 안개", "탈출 방어전"]
+    },
+    {
+      "label": "장비·성장",
+      "queries": ["장비 모듈", "격자 가방", "내부 외부 성장", "Google Sheets 밸런스"]
+    },
+    {
+      "label": "검증·구조",
+      "queries": ["모듈 감사", "성능 예산", "버그픽스", "검색 별칭"]
+    }
+  ]
+}
