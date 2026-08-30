@@ -12,6 +12,8 @@ const INVENTORY_SCENE_PATH := "res://game/features/inventory/grid_inventory.tscn
 const INVENTORY_CATALOG_PATH := "res://game/features/inventory/catalogs/default_inventory.tres"
 const WEAPON_BALANCE_SCENE_PATH := "res://game/features/weapon_balance/weapon_balance_service.tscn"
 const WEAPON_BALANCE_CONFIG_PATH := "res://game/features/weapon_balance/configs/default_weapon_balance.tres"
+const GROWTH_BALANCE_SCENE_PATH := "res://game/features/growth_balance/growth_balance_service.tscn"
+const GROWTH_BALANCE_CONFIG_PATH := "res://game/features/growth_balance/configs/default_growth_balance.tres"
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
@@ -38,6 +40,8 @@ func _init() -> void:
 		return
 	if not await _verify_weapon_balance_modules():
 		return
+	if not await _verify_growth_balance_modules():
+		return
 	if not await _verify_balance_mode_selector():
 		return
 	if not await _verify_equipment_modules():
@@ -62,6 +66,8 @@ func _init() -> void:
 	if not await _verify_optional_equipment_module(game_scene):
 		return
 	if not await _verify_optional_weapon_balance_module(game_scene):
+		return
+	if not await _verify_optional_growth_balance_module(game_scene):
 		return
 	if not await _verify_optional_progression_modules(game_scene):
 		return
@@ -674,6 +680,64 @@ func _verify_weapon_balance_modules() -> bool:
 	return true
 
 
+func _verify_growth_balance_modules() -> bool:
+	var balance_scene := load(GROWTH_BALANCE_SCENE_PATH) as PackedScene
+	var balance_config := load(GROWTH_BALANCE_CONFIG_PATH) as Resource
+	if balance_scene == null or balance_config == null:
+		_fail("성장 밸런스 Scene 또는 Config를 불러오지 못했습니다.")
+		return false
+	var service := balance_scene.instantiate()
+	root.add_child(service)
+	await process_frame
+	var failure_message := ""
+	if not service.call(&"configure", balance_config):
+		failure_message = "확정 성장 밸런스 CSV 로드에 실패했습니다."
+	else:
+		var snapshot: Dictionary = service.call(&"get_snapshot")
+		var catalog := service.call(&"get_run_buff_catalog") as RunBuffCatalog
+		var rifle_level_two: Dictionary = service.call(
+			&"get_weapon_modifiers", &"weapon", &"assault_rifle", 2
+		)
+		var vest_level_two: Dictionary = service.call(
+			&"get_player_modifiers", &"armor", &"tactical_vest", 2
+		)
+		var module_quote: Dictionary = service.call(
+			&"quote_upgrade", &"module", &"ballistic_core", 1
+		)
+		if int(snapshot.get(&"run_buff_count", 0)) != 5:
+			failure_message = "RunBuff 시트의 내부 성장 선택지 5개를 읽지 못했습니다."
+		elif int(snapshot.get(&"upgrade_spec_count", 0)) != 25:
+			failure_message = "Upgrade 시트의 강화 스펙 25개를 읽지 못했습니다."
+		elif catalog == null or catalog.get_buff(&"vitality") == null:
+			failure_message = "내부 성장 CSV를 RunBuffCatalog로 변환하지 못했습니다."
+		elif not is_equal_approx(float(rifle_level_two.get(&"damage_add", 0.0)), 0.5):
+			failure_message = "돌격소총 Lv.2 시트 피해 보너스를 읽지 못했습니다."
+		elif not is_equal_approx(
+			float((vest_level_two.get(&"defense", {}) as Dictionary).get(&"add", 0.0)),
+			1.0
+		):
+			failure_message = "전술 방탄복 Lv.2 시트 방어력 보너스를 읽지 못했습니다."
+		elif int(service.call(
+			&"get_module_capacity_cost", &"ballistic_core", 2, 99
+		)) != 3:
+			failure_message = "모듈 Lv.2 장착 코스트를 시트에서 읽지 못했습니다."
+		elif (
+			int(module_quote.get(&"credit_cost", -1)) != 120
+			or int(module_quote.get(&"material_quantity", -1)) != 1
+		):
+			failure_message = "모듈 1→2 강화 비용을 시트에서 읽지 못했습니다."
+		elif service.call(&"load_upgrade_csv_text", "target_kind,target_id\nmodule,broken", "오류 테스트"):
+			failure_message = "필수 열이 없는 성장 CSV를 허용했습니다."
+		elif int((service.call(&"get_snapshot") as Dictionary).get(&"upgrade_spec_count", 0)) != 25:
+			failure_message = "잘못된 갱신 후 마지막 정상 성장 데이터가 보존되지 않았습니다."
+	root.remove_child(service)
+	service.free()
+	if not failure_message.is_empty():
+		_fail("성장 밸런스 모듈 실패: %s" % failure_message)
+		return false
+	return true
+
+
 func _verify_balance_mode_selector() -> bool:
 	var game_scene := load(GAME_SCENE_PATH) as PackedScene
 	if game_scene == null:
@@ -778,6 +842,7 @@ func _verify_optional_equipment_module(game_scene: PackedScene) -> bool:
 	equipment_free_features.set("equipment_armor_enabled", false)
 	equipment_free_features.set("equipment_customization_enabled", false)
 	equipment_free_features.set("equipment_upgrade_economy_enabled", false)
+	equipment_free_features.set("growth_balance_enabled", false)
 	equipment_free_features.set("run_setup_enabled", false)
 	equipment_free_game.set("features", equipment_free_features)
 	root.add_child(equipment_free_game)
@@ -826,10 +891,42 @@ func _verify_optional_weapon_balance_module(game_scene: PackedScene) -> bool:
 	return true
 
 
+func _verify_optional_growth_balance_module(game_scene: PackedScene) -> bool:
+	var growth_free_game := game_scene.instantiate()
+	var growth_free_features = growth_free_game.get("features").duplicate(true)
+	growth_free_features.set("growth_balance_enabled", false)
+	growth_free_features.set("run_setup_enabled", false)
+	growth_free_game.set("features", growth_free_features)
+	root.add_child(growth_free_game)
+	await process_frame
+	var failure_message := ""
+	var equipment = growth_free_game.get("equipment_system")
+	var run_buffs = growth_free_game.get("run_buff_system")
+	var upgrade_service = growth_free_game.get("equipment_upgrade_service")
+	if growth_free_game.get("growth_balance_service") != null:
+		failure_message = "비활성화했지만 성장 밸런스 서비스가 설치됐습니다."
+	elif equipment == null or run_buffs == null or upgrade_service == null:
+		failure_message = "성장 데이터와 함께 기존 장비·버프·강화 기능까지 제거됐습니다."
+	elif equipment.get("upgrade_balance_provider") != null:
+		failure_message = "성장 데이터 비활성화 뒤 장비 제공자가 남았습니다."
+	elif upgrade_service.get("balance_provider") != null:
+		failure_message = "성장 데이터 비활성화 뒤 강화 제공자가 남았습니다."
+	elif run_buffs.get("catalog").call(&"get_buff", &"vitality") == null:
+		failure_message = "성장 데이터 비활성화 시 기본 RunBuff Resource로 폴백하지 않았습니다."
+	root.remove_child(growth_free_game)
+	growth_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("성장 밸런스 모듈 비활성화 실패: %s" % failure_message)
+		return false
+	return true
+
+
 func _verify_optional_progression_modules(game_scene: PackedScene) -> bool:
 	var progression_free_game := game_scene.instantiate()
 	var progression_free_features = progression_free_game.get("features").duplicate(true)
 	progression_free_features.set("run_buffs_enabled", false)
+	progression_free_features.set("growth_balance_enabled", false)
 	progression_free_features.set("meta_progression_enabled", false)
 	progression_free_features.set("equipment_upgrade_economy_enabled", false)
 	progression_free_features.set("health_recovery_enabled", false)
@@ -1267,6 +1364,7 @@ func _process(_delta: float) -> bool:
 		var extraction_zone = game_instance.get("extraction_zone")
 		var equipment = game_instance.get("equipment_system")
 		var run_buffs = game_instance.get("run_buff_system")
+		var growth_balance = game_instance.get("growth_balance_service")
 		var meta_progression = game_instance.get("meta_progression_system")
 		var upgrade_economy = game_instance.get("equipment_upgrade_service")
 		var health_recovery = game_instance.get("health_recovery_system")
@@ -1277,6 +1375,7 @@ func _process(_delta: float) -> bool:
 			or extraction_zone == null
 			or equipment == null
 			or run_buffs == null
+			or growth_balance == null
 			or meta_progression == null
 			or upgrade_economy == null
 			or health_recovery == null
@@ -1305,6 +1404,12 @@ func _process(_delta: float) -> bool:
 		var balance = game_instance.get("weapon_balance_service")
 		if balance == null or balance.call(&"get_snapshot").size() != 2:
 			return _fail("무기 밸런스 모듈이 Game 조립 지점에 설치되지 않았습니다.")
+		if (
+			int((growth_balance.call(&"get_snapshot") as Dictionary).get(&"run_buff_count", 0)) != 5
+			or equipment.get("upgrade_balance_provider") != growth_balance
+			or run_buffs.get("catalog").call(&"get_buff", &"vitality") == null
+		):
+			return _fail("성장 밸런스가 장비와 내부 레벨업 모듈에 연결되지 않았습니다.")
 		if not equipment.call(&"switch_active_weapon"):
 			return _fail("런타임 Q 무기 교체 상태 전환이 실패했습니다.")
 
@@ -1354,7 +1459,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

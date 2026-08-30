@@ -23,6 +23,9 @@ const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const WEAPON_BALANCE_SCENE_PATH := (
 	"res://game/features/weapon_balance/weapon_balance_service.tscn"
 )
+const GROWTH_BALANCE_SCENE_PATH := (
+	"res://game/features/growth_balance/growth_balance_service.tscn"
+)
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
 const HEALTH_RECOVERY_SCENE_PATH := (
 	"res://game/features/health_recovery/health_recovery_system.tscn"
@@ -78,12 +81,24 @@ const EQUIPMENT_METHODS := [
 	&"upgrade_part",
 	&"get_upgrade_context",
 	&"set_external_armor_level",
+	&"set_upgrade_balance_provider",
+	&"get_active_weapon_upgrade_modifiers",
 ]
 const WEAPON_BALANCE_METHODS := [
 	&"configure",
 	&"request_live_balance",
 	&"load_csv_text",
 	&"get_weapon_balance",
+	&"get_snapshot",
+]
+const GROWTH_BALANCE_METHODS := [
+	&"configure",
+	&"request_live_balance",
+	&"get_run_buff_catalog",
+	&"get_upgrade_spec",
+	&"get_player_modifiers",
+	&"get_weapon_modifiers",
+	&"quote_upgrade",
 	&"get_snapshot",
 ]
 const INVENTORY_METHODS := [
@@ -116,6 +131,7 @@ const RUN_BUFF_METHODS := [
 	&"selected_buff_count",
 	&"get_meta_experience_breakdown",
 	&"get_snapshot",
+	&"set_catalog",
 ]
 const META_PROGRESSION_METHODS := [
 	&"configure",
@@ -124,7 +140,9 @@ const META_PROGRESSION_METHODS := [
 	&"get_snapshot",
 	&"get_summary_line",
 ]
-const EQUIPMENT_UPGRADE_METHODS := [&"configure", &"quote_upgrade", &"upgrade"]
+const EQUIPMENT_UPGRADE_METHODS := [
+	&"configure", &"set_balance_provider", &"quote_upgrade", &"upgrade",
+]
 const HEALTH_RECOVERY_METHODS := [&"configure", &"advance", &"get_snapshot"]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
@@ -178,6 +196,7 @@ var loot_spawner
 var enemy_spawner
 var auto_weapon
 var weapon_balance_service
+var growth_balance_service
 var progression_system
 var health_recovery_system
 var run_buff_system
@@ -327,6 +346,8 @@ func _assemble_game() -> bool:
 
 	if features.credits_enabled:
 		_install_credit_ledger()
+	if features.growth_balance_enabled and not _install_growth_balance():
+		return false
 	if features.equipment_upgrade_economy_enabled and not _install_equipment_upgrade_service():
 		return false
 	if features.equipment_customization_enabled and not _install_equipment_workbench():
@@ -406,9 +427,10 @@ func _install_run_buffs() -> bool:
 	if not _supports_methods(run_buff_system, RUN_BUFF_METHODS):
 		_report_configuration_error("런 버프 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
-	if not run_buff_system.call(
-		&"configure", player, auto_weapon, load(features.run_buff_catalog_path)
-	):
+	var run_buff_catalog: Resource = load(features.run_buff_catalog_path)
+	if growth_balance_service != null:
+		run_buff_catalog = growth_balance_service.call(&"get_run_buff_catalog")
+	if not run_buff_system.call(&"configure", player, auto_weapon, run_buff_catalog):
 		_report_configuration_error("런 버프 모듈을 구성하지 못했습니다.")
 		return false
 	run_buff_selector = _instantiate_feature(
@@ -454,13 +476,49 @@ func _install_equipment_upgrade_service() -> bool:
 	if not _supports_methods(equipment_upgrade_service, EQUIPMENT_UPGRADE_METHODS):
 		_report_configuration_error("장비 강화 경제 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
-	return bool(equipment_upgrade_service.call(
+	var configured := bool(equipment_upgrade_service.call(
 		&"configure",
 		equipment_system,
 		inventory_system,
 		credit_ledger,
 		load(features.equipment_upgrade_policy_path)
 	))
+	if configured and growth_balance_service != null:
+		configured = bool(equipment_upgrade_service.call(
+			&"set_balance_provider", growth_balance_service
+		))
+	return configured
+
+
+func _install_growth_balance() -> bool:
+	if not ResourceLoader.exists(features.growth_balance_config_path):
+		_report_configuration_error("성장 밸런스 설정을 찾을 수 없습니다.")
+		return false
+	growth_balance_service = _instantiate_feature(
+		GROWTH_BALANCE_SCENE_PATH, module_container, &"GrowthBalance"
+	)
+	if not _supports_growth_balance(growth_balance_service):
+		_report_configuration_error("성장 밸런스 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	growth_balance_service.connect(
+		&"growth_balance_error", Callable(self, &"_on_growth_balance_error")
+	)
+	growth_balance_service.connect(
+		&"growth_balance_updated", Callable(self, &"_on_growth_balance_updated")
+	)
+	var growth_config: Resource = load(features.growth_balance_config_path)
+	if growth_config == null:
+		_report_configuration_error("성장 밸런스 설정 형식이 올바르지 않습니다.")
+		return false
+	growth_config = growth_config.duplicate(true)
+	growth_config.set("source_mode", selected_balance_source_mode)
+	if not growth_balance_service.call(&"configure", growth_config):
+		_report_configuration_error("성장 밸런스 데이터를 불러오지 못했습니다.")
+		return false
+	if not equipment_system.call(&"set_upgrade_balance_provider", growth_balance_service):
+		_report_configuration_error("장비에 성장 밸런스 제공자를 연결하지 못했습니다.")
+		return false
+	return true
 
 
 func _install_weapon_balance() -> bool:
@@ -489,16 +547,23 @@ func _install_weapon_balance() -> bool:
 
 
 func _configure_balance_mode_selector() -> void:
-	balance_mode_section.visible = features.weapon_balance_enabled
+	balance_mode_section.visible = features.weapon_balance_enabled or features.growth_balance_enabled
 	if not balance_mode_section.visible:
 		return
 	var balance_config := load(features.weapon_balance_config_path) as WeaponBalanceConfig
-	if balance_config == null:
+	var growth_config: Resource = load(features.growth_balance_config_path)
+	if balance_config == null or (features.growth_balance_enabled and growth_config == null):
 		live_balance_button.disabled = true
 		_select_balance_source_mode(WeaponBalanceConfig.SourceMode.LOCKED_CSV)
 		balance_mode_description.text = "밸런스 설정을 읽을 수 없어 확정 CSV만 선택할 수 있습니다."
 		return
 	live_balance_button.disabled = balance_config.live_csv_url.is_empty()
+	if features.growth_balance_enabled:
+		live_balance_button.disabled = (
+			live_balance_button.disabled
+			or growth_config.live_run_buff_csv_url.is_empty()
+			or growth_config.live_upgrade_csv_url.is_empty()
+		)
 	var initial_mode := int(balance_config.source_mode)
 	if (
 		initial_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET
@@ -523,11 +588,11 @@ func _select_balance_source_mode(source_mode: int) -> void:
 	)
 	if source_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET:
 		balance_mode_description.text = (
-			"Google Sheet를 기본 3초마다 다시 읽습니다. 네트워크 실패 시 확정 CSV로 복구합니다."
+			"Weapon·RunBuff·Upgrade Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
 		)
 	else:
 		balance_mode_description.text = (
-			"저장소에 확정된 CSV를 사용합니다. 배포와 일반 플레이에 권장됩니다."
+			"무기·내부 성장·장비 강화의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
 		)
 
 
@@ -922,6 +987,16 @@ func _supports_weapon_balance(candidate: Node) -> bool:
 	return true
 
 
+func _supports_growth_balance(candidate: Node) -> bool:
+	if (
+		not is_instance_valid(candidate)
+		or not candidate.has_signal(&"growth_balance_updated")
+		or not candidate.has_signal(&"growth_balance_error")
+	):
+		return false
+	return _supports_methods(candidate, GROWTH_BALANCE_METHODS)
+
+
 func _supports_inventory(candidate: Node) -> bool:
 	if not is_instance_valid(candidate) or not candidate.has_signal(&"inventory_changed"):
 		return false
@@ -1068,6 +1143,21 @@ func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:
 
 func _on_weapon_balance_error(message: String) -> void:
 	push_warning(message)
+
+
+func _on_growth_balance_error(message: String) -> void:
+	push_warning(message)
+
+
+func _on_growth_balance_updated(_snapshot: Dictionary, _source_label: String) -> void:
+	if equipment_system != null:
+		equipment_system.call(&"set_upgrade_balance_provider", growth_balance_service)
+	if equipment_upgrade_service != null:
+		equipment_upgrade_service.call(&"set_balance_provider", growth_balance_service)
+	if run_buff_system != null:
+		run_buff_system.call(
+			&"set_catalog", growth_balance_service.call(&"get_run_buff_catalog")
+		)
 
 
 func _on_extraction_completed(_actor: Node2D) -> void:

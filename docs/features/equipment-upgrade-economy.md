@@ -20,7 +20,7 @@ tags:
 | 모듈 | 120 크레딧 | 240 크레딧 | 동일 모듈 아이템 1개 |
 | 고유 파츠 | 180 크레딧 | 360 크레딧 | 동일 파츠 아이템 1개 |
 
-비용은 `default_upgrade_costs.tres`에서 교체할 수 있습니다. 강화 전 서비스가 장비 상태, 동일 Resource 재료 수량, 휴대 크레딧을 모두 확인하고 승인된 경우에만 소비합니다.
+모듈 비용·장착 코스트·레벨 효과는 Google Sheets `Upgrade` 탭과 확정 CSV가 우선합니다. 고유 파츠 또는 시트에 없는 행은 `default_upgrade_costs.tres`로 폴백합니다. 강화 전 서비스가 장비 상태, 동일 Resource 재료 수량, 휴대 크레딧을 모두 확인하고 승인된 경우에만 소비합니다. 자세한 행 규칙은 [내부 성장·장비 강화 Google Sheets 연동](growth-balance.md)을 참고합니다.
 
 ## 모듈 경계
 
@@ -28,6 +28,7 @@ tags:
 - `GridInventory`: 같은 연결 Resource 조회와 재료 소비만 담당
 - `CreditLedger`: 휴대 크레딧 조회와 소비만 담당
 - `EquipmentUpgradeService`: 비용 정책을 읽고 세 계약을 조정
+- `GrowthBalanceService`: 모듈 ID·레벨별 시트 비용과 누적 효과를 선택적으로 제공
 - `EquipmentWorkbench`: U 화면 입력과 결과 표시만 담당
 
 각 모듈은 다른 기능의 내부 변수나 Node 경로를 참조하지 않고 공개 메서드로 연결됩니다.

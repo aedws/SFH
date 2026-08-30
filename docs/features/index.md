@@ -17,6 +17,7 @@
 - [적 체력과 방어력](enemy-defense.md)
 - [자동 무기](weapons.md)
 - [Q 무기 교체와 Google Sheets 밸런스](weapon-balance.md)
+- [내부 성장·장비 강화 Google Sheets 연동](growth-balance.md)
 - [내부·외부 로그라이크 성장](progression.md)
 - [게임 루프와 HUD](game-loop.md)
 

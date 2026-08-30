@@ -12,6 +12,7 @@ var equipment_provider: Node
 var inventory_provider: Node
 var wallet_provider: Node
 var policy: Resource
+var balance_provider: Node
 
 
 func configure(
@@ -43,6 +44,13 @@ func configure(
 	return true
 
 
+func set_balance_provider(provider: Node) -> bool:
+	if provider != null and not provider.has_method(&"quote_upgrade"):
+		return false
+	balance_provider = provider
+	return true
+
+
 func quote_upgrade(
 	target_kind: StringName,
 	slot_id: StringName,
@@ -56,7 +64,15 @@ func quote_upgrade(
 	if context.is_empty() or int(context[&"current_level"]) >= int(context[&"maximum_level"]):
 		return {}
 	var result := context.duplicate(true)
-	result.merge(policy.call(&"quote", target_kind, int(context[&"current_level"])), true)
+	var balance_target_id: StringName = context.get(&"balance_target_id", target_id)
+	var policy_quote: Dictionary = {}
+	if balance_provider != null:
+		policy_quote = balance_provider.call(
+			&"quote_upgrade", target_kind, balance_target_id, int(context[&"current_level"])
+		)
+	if policy_quote.is_empty():
+		policy_quote = policy.call(&"quote", target_kind, int(context[&"current_level"]), balance_target_id)
+	result.merge(policy_quote, true)
 	var material_ids: PackedStringArray = inventory_provider.call(
 		&"find_instance_ids_by_resource", context[&"material_resource"]
 	)

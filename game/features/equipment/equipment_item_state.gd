@@ -8,6 +8,7 @@ extends Resource
 @export var part_upgrade_levels: Dictionary = {}
 @export var installed_modules: Array[EquipmentModuleInstance] = []
 @export var granted_module_tags: Array[StringName] = []
+var upgrade_balance_provider: Node
 
 
 func configure(new_state_id: StringName, new_definition: Resource) -> void:
@@ -28,12 +29,35 @@ func is_armor() -> bool:
 	return definition is EquipmentArmorDefinition
 
 
+func set_upgrade_balance_provider(provider: Node) -> void:
+	upgrade_balance_provider = provider
+
+
 func maximum_level() -> int:
+	var target_kind := &"weapon" if is_weapon() else &"armor" if is_armor() else &""
+	var target_id := definition_id()
+	var fallback := 1
 	if is_weapon():
-		return (definition as EquipmentWeaponDefinition).maximum_level
+		fallback = (definition as EquipmentWeaponDefinition).maximum_level
+	elif is_armor():
+		fallback = (definition as EquipmentArmorDefinition).maximum_level
+	if (
+		upgrade_balance_provider != null
+		and target_kind != &""
+		and upgrade_balance_provider.has_method(&"get_maximum_level")
+	):
+		return int(upgrade_balance_provider.call(
+			&"get_maximum_level", target_kind, target_id, fallback
+		))
+	return fallback
+
+
+func definition_id() -> StringName:
+	if is_weapon():
+		return (definition as EquipmentWeaponDefinition).weapon_id
 	if is_armor():
-		return (definition as EquipmentArmorDefinition).maximum_level
-	return 1
+		return (definition as EquipmentArmorDefinition).armor_id
+	return &""
 
 
 func module_slot_limit() -> int:
@@ -90,7 +114,7 @@ func upgrade_part(part_id: StringName) -> bool:
 func effective_module_cost(module_instance: EquipmentModuleInstance) -> int:
 	if module_instance == null or module_instance.definition == null:
 		return 0
-	var cost := module_instance.base_cost()
+	var cost := module_instance.base_cost(upgrade_balance_provider)
 	for module_tag in module_instance.definition.module_tags:
 		if module_tag in granted_module_tags:
 			return ceili(float(cost) * 0.5)
@@ -129,7 +153,18 @@ func install_module(instance_id: StringName, module_definition: EquipmentModuleD
 func upgrade_module(instance_id: StringName) -> bool:
 	for module_instance in installed_modules:
 		if module_instance.instance_id == instance_id:
-			return module_instance.upgrade()
+			var maximum_level := module_instance.definition.maximum_upgrade_level()
+			if (
+				upgrade_balance_provider != null
+				and upgrade_balance_provider.has_method(&"get_maximum_level")
+			):
+				maximum_level = int(upgrade_balance_provider.call(
+					&"get_maximum_level",
+					&"module",
+					module_instance.definition.module_id,
+					maximum_level
+				))
+			return module_instance.upgrade(maximum_level)
 	return false
 
 
@@ -156,11 +191,23 @@ func get_upgrade_context(target_kind: StringName, target_id: StringName) -> Dict
 		var module_instance := get_module_instance(target_id)
 		if module_instance == null or module_instance.definition == null:
 			return {}
+		var maximum_level := module_instance.definition.maximum_upgrade_level()
+		if (
+			upgrade_balance_provider != null
+			and upgrade_balance_provider.has_method(&"get_maximum_level")
+		):
+			maximum_level = int(upgrade_balance_provider.call(
+				&"get_maximum_level",
+				&"module",
+				module_instance.definition.module_id,
+				maximum_level
+			))
 		return {
 			&"target_kind": &"module",
 			&"target_id": module_instance.instance_id,
+			&"balance_target_id": module_instance.definition.module_id,
 			&"current_level": module_instance.upgrade_level,
-			&"maximum_level": module_instance.definition.maximum_upgrade_level(),
+			&"maximum_level": maximum_level,
 			&"material_resource": module_instance.definition,
 		}
 	return {}

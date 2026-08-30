@@ -36,6 +36,19 @@ func configure(
 		var weapon = equipment_provider.call(&"get_active_weapon")
 		if weapon != null:
 			active_weapon_id = weapon.weapon_id
+	if (
+		equipment_provider != null
+		and equipment_provider.has_signal(&"weapon_upgrade_modifiers_changed")
+		and equipment_provider.has_method(&"get_active_weapon_upgrade_modifiers")
+	):
+		equipment_provider.connect(
+			&"weapon_upgrade_modifiers_changed",
+			Callable(self, &"_on_weapon_upgrade_modifiers_changed")
+		)
+		set_runtime_modifiers(
+			&"equipment_upgrade",
+			equipment_provider.call(&"get_active_weapon_upgrade_modifiers")
+		)
 	if balance_provider != null and balance_provider.has_signal(&"balance_updated"):
 		balance_provider.connect(&"balance_updated", Callable(self, &"_on_balance_updated"))
 	_refresh_balance()
@@ -203,6 +216,10 @@ func _on_active_weapon_changed(
 
 func _on_balance_updated(_snapshot: Dictionary, _source_label: String) -> void:
 	_refresh_balance()
+
+
+func _on_weapon_upgrade_modifiers_changed(modifiers: Dictionary) -> void:
+	set_runtime_modifiers(&"equipment_upgrade", modifiers)
 
 
 func _refresh_balance() -> void:

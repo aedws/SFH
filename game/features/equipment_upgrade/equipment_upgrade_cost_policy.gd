@@ -21,7 +21,11 @@ func validation_errors() -> PackedStringArray:
 	return errors
 
 
-func quote(target_kind: StringName, current_level: int) -> Dictionary:
+func quote(
+	target_kind: StringName,
+	current_level: int,
+	_target_id: StringName = &""
+) -> Dictionary:
 	var costs := module_credit_costs if target_kind == &"module" else part_credit_costs
 	var index := clampi(current_level - 1, 0, costs.size() - 1)
 	return {
