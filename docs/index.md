@@ -39,6 +39,7 @@ hide:
       <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="71"><i style="width: 71%"></i></div>
       <p>제공된 기획 원문 재대조 · 확정 전투 3× · 코어 루프 2× · 기타 1×</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
+      <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
     </div>
     <header><strong>현재 빌드 상태</strong><b class="sfh-live">PLAYABLE</b></header>
     <p>거점에서 지역·난이도·페널티·소모품을 준비하고, 투입 비용을 지불해 전투·파밍·탈출 방어·영구 정산 뒤 복귀합니다.</p>
@@ -74,11 +75,15 @@ hide:
         <li>거점에서도 I 가방과 U/E 장비·모듈·파츠 화면을 열어 현재 구성을 확인합니다.</li>
         <li>거점 장비 화면은 조회 전용으로 장착·레벨업·강화·개조 변경을 차단합니다.</li>
         <li>Q로 선택한 메인·보조 무기 슬롯은 전투 세션에 유지되고 귀환 후에도 다시 확인할 수 있습니다.</li>
+        <li>게시된 Notion을 향후 기획 진행도 점검의 권위 있는 공개 원본으로 지정했습니다.</li>
       </ul>
       <p class="sfh-intent"><b>검증 결론</b><span>키 매핑, 패널 열기, 조회 전용 차단, 출격 선택 유지와 귀환 재설치를 자동 검증했습니다.</span></p>
     </div>
     <div class="sfh-group"><h3>✨ 개선 · 1</h3>
       <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">거점 로드아웃 조회</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>I·U/E·Q 준비 동선을 전초기지에 연결하고 전투 UI 모듈을 조회 모드로 재사용합니다.</p><a href="features/start-hub/">거점 단축키 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>🧩 수정 · 1</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">공개 Notion 기준 링크</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>게시 페이지의 렌더링 본문을 대조하고 위키와 진행도 점검 규칙에서 같은 공개 주소를 사용합니다.</p><a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">기획 원본 ↗</a></div></details>
     </div>
   </div>
 </details>
