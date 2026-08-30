@@ -1,89 +1,94 @@
+<div align="center">
+
 # SFH
 
-Godot 4 기반의 모듈형 탑다운 뱀서라이크 프로젝트입니다.
+### SURVIVE · FIGHT · HAUL
 
-현재 목표는 화려한 콘텐츠보다 다음 세 가지를 먼저 검증하는 것입니다.
+**조준은 자동으로. 판단은 끝까지.**<br>
+거점에서 투자하고, 밀려드는 적을 뚫고, 살아서 전리품을 회수하는<br>
+Godot 4 기반 모듈형 탑다운 익스트랙션 액션입니다.
 
-1. 처음부터 끝까지 실행 가능한 최소 게임 루프
-2. 기능을 독립적으로 켜고 끌 수 있는 모듈 구조
-3. 초보자도 검색해서 따라갈 수 있는 한국어 개발 위키
+[![브라우저에서 바로 플레이](https://img.shields.io/badge/PLAY-브라우저에서_바로_플레이-20d9b0?style=for-the-badge&logo=godotengine&logoColor=white)](https://aedws.github.io/SFH/play/)
+[![개발 위키](https://img.shields.io/badge/WIKI-개발_현황과_기획-253b4b?style=for-the-badge)](https://aedws.github.io/SFH/)
+[![Web deployment](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml/badge.svg)](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml)
 
-## 현재 구현 상태
+`PLAYABLE PROTOTYPE` · `DESKTOP WEB` · `1280 × 720`
 
-- Godot 4 프로젝트 골격
-- `FeatureManifest` 기반 기능 활성화 설정
-- 플레이어 이동·체력·카메라
-- 적 생성과 플레이어 추적
-- 가장 가까운 적을 겨냥하는 자동 무기와 투사체
-- 경험치 픽업, 레벨 상승, 무기 성장
-- 생존 시간·체력·경험치·처치 수 HUD
-- 사망과 재시작
-- 무한 스크롤처럼 보이는 탑다운 격자 필드
-- 투자 등급에 따른 소·중·대형 로그라이크 맵 자동 생성
-- 첫 실행 시 소형·중형·대형 작전 선택 화면
-- 생성 지형과 플레이어·탈출 위치를 보여주는 우측 상단 전술 미니맵
-- 넓어진 방, 32px 타일, 얇은 벽 표현과 충돌 방해물
-- 연결된 방과 복도, 벽·방해물 충돌, 적 A* 길찾기
-- 최원거리 탈출 지점과 `F` 상호작용 탈출
-- 색상 단계와 퍼센트를 포함한 플레이어 HP HUD
-- 적 체력·방어력 컴포넌트와 월드 상태바
-- 메인·보조 무기 3단계 태그, 0~10개 호환 스킬, 범용 방어구 스탯 로드아웃
-- I 키로 여는 12×8 가변 격자 가방과 아이템별 점유 크기
-- U 키 무기·방어구 탭, 슬롯 태그 장착, 고유 파츠와 장비 모듈
-- 모듈 코스트·강화와 최고 장비 레벨 개조 태그 50% 규칙
-- Q 메인·보조 무기 교체, 돌격소총 3점사와 권총 고위력 관통
-- Google Sheets 공개 CSV 실시간 밸런스와 검증된 확정 CSV 폴백
-- 등급별 랜덤 1회성 크레딧 보급 상자와 탈출 회수
-- 방 내부의 짧은 벽·기둥 패턴 장애물
-- Material for MkDocs 기반 개발 위키 소스
+</div>
 
-## 게임 실행
+## 게임 정체성
 
-1. [Godot 공식 다운로드 페이지](https://godotengine.org/download/windows/)에서 Godot 4 안정 버전을 설치합니다.
-2. Godot Project Manager에서 이 폴더의 `project.godot`을 가져옵니다.
-3. 우측 상단의 프로젝트 실행 버튼 또는 `F6`가 아닌 `F5`를 누릅니다.
-4. 소형, 중형, 대형 중 진입할 작전 규모를 선택합니다.
-5. 거점과 작전에서 `I`로 가방, `U` 또는 `E`로 장비 화면을 엽니다. 거점 `Q`로 확인 무기를 바꾸면 출격 후에도 선택이 유지됩니다.
-6. `WASD` 또는 방향키로 이동하고 작전 중 `Q`로 무기를 교체합니다.
-7. 탈출 지점에서 `F`를 누릅니다.
+| 핵심 노선 | SFH의 선택 |
+|---|---|
+| **No-Aim Action** | 수동 조준을 없애고 스마트 자동 타게팅, 스킬 쿨타임, 이동과 회피 판단에 집중합니다. |
+| **Invest & Extract** | 진입 비용으로 지역·난이도·맵 크기를 선택하고, 위험을 감수한 만큼 더 큰 회수를 노립니다. |
+| **Room Hacking** | 방 진입과 동시에 문이 닫히고 적 무리가 생성됩니다. 전멸시키면 보상을 확보하고 다음 동선을 선택합니다. |
+| **Build Your Gear** | 무기 태그, 방어구, 고유 파츠와 코스트 기반 모듈을 조합해 출격 로드아웃을 구성합니다. |
+| **Modular by Default** | 맵·전투·장비·성장·경제를 독립 기능으로 나눠 켜고 끄거나 교체할 수 있게 만듭니다. |
 
-일반 방에 진입하면 적 무리가 생성되고 문이 닫힙니다. 무기는 스마트 자동 타게팅으로 공격하며, 방을 확보하고 경험치와 보상을 회수한 뒤 주황색 탈출 지점에서 `F`를 눌러 작전을 끝냅니다.
+```text
+거점 준비 → 진입 투자 → 탐험·방 전투 → 파밍·런 성장 → 탈출 방어 → 정산·영구 성장
+     ↑                                                               │
+     └──────────────────── 다음 작전 준비 ←───────────────────────────┘
+```
 
-## 게임 자동 검증
+## 지금 바로 플레이
+
+별도 설치 없이 [SFH Web 빌드](https://aedws.github.io/SFH/play/)를 열면 현재 `main` 기준 프로토타입을 실행할 수 있습니다.
+
+- 데스크톱 Chrome, Edge, Whale 등 최신 Chromium 브라우저와 키보드를 권장합니다.
+- 첫 로딩에는 Godot WebAssembly와 게임 데이터 다운로드 시간이 필요합니다.
+- 개발 중인 프로토타입이므로 세이브 호환성과 밸런스는 변경될 수 있습니다.
+- Web 빌드는 `main` 변경 시 자동 생성되며, 내보내기에 실패하면 Pages 배포도 중단됩니다.
+
+### 기본 조작
+
+| 입력 | 기능 |
+|---|---|
+| `WASD` / 방향키 | 이동 |
+| `Shift` / `Space` | 회피 이동 |
+| `1` · `2` · `3` | 점멸 · 지속 자기장 · 기동 가속 |
+| `Q` | 메인·보조 무기 교체 |
+| `F` | 작전 게이트·자원 지점·탈출 상호작용 |
+| `I` | 가변 격자 가방 |
+| `U` / `E` | 장비·모듈·파츠 관리 |
+| `ESC` | 현재 창 닫기 |
+
+## 현재 플레이 가능한 범위
+
+- 하나의 큰 시작 거점에서 작전 지역·난이도·맵 크기·페널티·소모품 설정
+- 소형·중형·대형 절차 생성 맵과 방·통로 기반 전장의 안개, 전체 미니맵
+- 방 진입 봉쇄 전투, 맵 규모 비례 유한 증원, 스마트 자동 공격
+- 점멸, 플레이어 추적형 지속 자기장, 이동속도 증가 전기 스킬
+- 크레딧·장비·모듈·고유 파츠 파밍과 2.5~5배 목표 회수 가치
+- 탈출 카운트다운 방어전, 성공·사망 정산과 거점 복귀
+- 한 판 임시 성장과 캐릭터·무기·방어구 영구 성장
+- Google Sheets 실시간 밸런스 테스트와 검증된 CSV 확정 모드
+
+세부 진행률과 최신 변경은 [개발 현황 위키](https://aedws.github.io/SFH/development-status/)에서 확인합니다.
+
+## 로컬 실행
+
+1. [Godot 4.7.2](https://godotengine.org/download/windows/) 이상을 설치합니다.
+2. Godot Project Manager에서 저장소의 `project.godot`을 가져옵니다.
+3. 프로젝트 실행 버튼 또는 `F5`를 누릅니다.
 
 ```powershell
+git clone https://github.com/aedws/SFH.git
+cd SFH
 .\scripts\test-game.cmd
 ```
 
-`SMOKE_TEST_OK`가 표시되면 소·중·대형 맵 연결성과 기본 게임 루프가 정상입니다.
+`SMOKE_TEST_OK`가 표시되면 현재 게임 루프와 모듈 계약이 정상입니다. 대형 작전 CPU 예산은 `scripts\test-performance.ps1`, 위키와 검색은 `scripts\wiki.cmd build`로 검사합니다.
 
-무기 밸런스 CSV는 `scripts\\weapon-balance.cmd check`로 검사합니다. Google Sheets 실시간 테스트와 수치 확정 절차는 온라인 위키의 **Q 무기 교체와 Google Sheets 밸런스** 문서를 확인합니다.
-
-자세한 설명은 `docs/getting-started/`에서 확인할 수 있습니다.
-
-## 위키 실행
-
-Python 3가 설치된 PowerShell에서 다음 명령을 실행합니다. 스크립트가 프로젝트 전용 가상환경과 필요한 패키지를 자동으로 준비합니다.
-
-```powershell
-.\scripts\wiki.cmd serve
-```
-
-브라우저에서 `http://127.0.0.1:8000`을 열면 검색 가능한 개발 위키가 표시됩니다.
-
-## 온라인 위키
-
-배포된 위키는 [https://aedws.github.io/SFH/](https://aedws.github.io/SFH/)에서 확인합니다.
-
-문서 우측 상단의 연필 아이콘을 누르면 GitHub 웹 편집기로 이동합니다. 수정 사항이 `main` 브랜치에 반영되면 GitHub Actions가 위키를 자동으로 다시 배포합니다.
-
-## 주요 경로
+## 저장소 구조
 
 ```text
-game/core/       공통 계약과 모듈 활성화 설정
-game/features/   독립적으로 설치 가능한 게임 기능
-game/scenes/     여러 기능을 조립하는 최상위 장면
-docs/            개발 위키 원문
+game/core/       공통 계약과 기능 활성화 설정
+game/features/   독립 설치·교체 가능한 게임 기능
+game/scenes/     기능을 조립하는 거점·작전 Scene
+game/tests/      게임 루프·모듈·성능 자동 검증
+docs/            검색 가능한 한국어 개발 위키 원문
 ```
 
-문서의 링크와 검색 인덱스만 검증하려면 `.\scripts\wiki.cmd build`를 실행합니다.
+설계 원칙은 [모듈 규칙](https://aedws.github.io/SFH/architecture/module-rules/), 처음 참여하는 작업자를 위한 실행·문서 절차는 [개발 위키](https://aedws.github.io/SFH/)에서 확인할 수 있습니다.
