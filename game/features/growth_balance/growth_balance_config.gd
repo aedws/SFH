@@ -21,10 +21,10 @@ enum SourceMode {
 
 func validation_errors() -> PackedStringArray:
 	var errors := PackedStringArray()
-	if locked_run_buff_csv_path.is_empty() or not FileAccess.file_exists(locked_run_buff_csv_path):
-		errors.append("확정 내부 성장 CSV 경로가 유효하지 않습니다.")
-	if locked_upgrade_csv_path.is_empty() or not FileAccess.file_exists(locked_upgrade_csv_path):
-		errors.append("확정 장비 강화 CSV 경로가 유효하지 않습니다.")
+	if locked_run_buff_csv_path.is_empty():
+		errors.append("확정 내부 성장 CSV 경로가 비어 있습니다.")
+	if locked_upgrade_csv_path.is_empty():
+		errors.append("확정 장비 강화 CSV 경로가 비어 있습니다.")
 	if source_mode == SourceMode.LIVE_GOOGLE_SHEET:
 		if live_run_buff_csv_url.is_empty() or live_upgrade_csv_url.is_empty():
 			errors.append("실시간 성장 테스트에는 RunBuff와 Upgrade 공개 CSV URL이 필요합니다.")

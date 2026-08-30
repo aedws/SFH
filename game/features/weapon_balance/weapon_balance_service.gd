@@ -81,11 +81,12 @@ func get_snapshot() -> Dictionary:
 
 
 func _load_locked_csv() -> bool:
-	if config == null or not FileAccess.file_exists(config.locked_csv_path):
+	if config == null:
 		balance_error.emit("확정 무기 밸런스 CSV를 찾을 수 없습니다.")
 		return false
 	var file := FileAccess.open(config.locked_csv_path, FileAccess.READ)
 	if file == null:
+		balance_error.emit("확정 무기 밸런스 CSV를 찾을 수 없습니다.")
 		return false
 	return load_csv_text(file.get_as_text(), "확정 CSV")
 

@@ -221,8 +221,6 @@ func _load_locked_csvs() -> bool:
 
 
 func _read_file(path: String) -> String:
-	if not FileAccess.file_exists(path):
-		return ""
 	var file := FileAccess.open(path, FileAccess.READ)
 	return file.get_as_text() if file != null else ""
 
