@@ -681,7 +681,7 @@ func _install_loot_spawner() -> bool:
 		loot_config,
 		int(current_map_config.get("entry_cost"))
 	):
-		_report_configuration_error("파밍 모듈이 최소 배치 가치 보정을 충족하지 못했습니다.")
+		_report_configuration_error("파밍 모듈이 선택된 회수 배수 목표를 충족하지 못했습니다.")
 		return false
 	return true
 
@@ -982,6 +982,7 @@ func _supports_enemy_spawner(candidate: Node) -> bool:
 		not is_instance_valid(candidate)
 		or not candidate.has_signal(&"enemy_spawned")
 		or not candidate.has_signal(&"reinforcement_dispatched")
+		or not candidate.has_signal(&"spawn_budget_exhausted")
 	):
 		return false
 	return _supports_methods(candidate, ENEMY_SPAWNER_METHODS)

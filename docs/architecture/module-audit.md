@@ -11,6 +11,20 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-08-30 회수 범위·유한 증원·동적 이동 재점검
+
+| 점검 대상 | 결과 | 교체·확장 근거 |
+|---|---|---|
+| 회수 배수 범위 | 통과 | 2.5·5.0을 `LootTierConfig`의 최소·최대 필드로 분리해 코드 변경 없이 축소·확장 가능 |
+| 정확한 목표 총액 | 통과 | `LootSpawner`가 선택 배수와 가능한 지점 수를 계산하고 개별 값을 상·하향해 목표와 일치 |
+| 적 재생성 한계 | 통과 | 등급별 `maximum_total_spawns`가 최초 배치와 모든 증원을 함께 제한 |
+| 생성 종료 사건 | 통과 | 남은 예산·소진 상태를 스냅샷으로, 최초 소진을 `spawn_budget_exhausted` Signal로 공개 |
+| 핵앤슬래시 이동 | 통과 | 초동·선회·역선회·회피 종료 관성을 `PlayerMovement` export 값과 순수 계산 메서드로 격리 |
+| 조립부 경계 | 통과 | `Game`은 Resource 전달과 Signal 계약 검사만 수행하며 경제·생성·속도 계산을 복제하지 않음 |
+| 자동 검증 | 통과 | 세 등급 2.5~5배 수용량·정확한 총액, 2회 한계 뒤 무스폰, 이동 응답 단계를 확인 |
+
+이번 임시 밸런스 값은 기능별 Resource에만 존재합니다. 회수 배수를 바꿀 때는 회수 지점의 수용량만 함께 확인하면 되며 맵·크레딧 원장·탈출 코드는 수정하지 않습니다. 총 적 생성량을 바꿀 때도 적 능력치나 자동 무기를 수정하지 않습니다. 이동 계산은 물리 충돌과 장비 스탯 적용으로부터 분리되어 다른 캐릭터용 설정이나 구현으로 교체할 수 있습니다.
+
 ## 2026-08-30 방·통로 방향성 시야 점검
 
 | 점검 대상 | 결과 | 근거 |
@@ -310,7 +324,7 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `screen_sized_rooms`, `indoor_structures`, `fog_of_war`, `minimap_full_map`, `resource_recovery`, `deployment_value_2_5`, `reinforcement_population`, `target_provider`, `run_experience`, `run_buffs`, `meta_experience`, `part_upgrade`, `upgrade_credits`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
+성공하면 출력에 `recovery_multiplier_range`, `recovery_target_exact`, `finite_spawn_budget`, `dynamic_hack_slash_movement`, `dash_exit_momentum`, `screen_sized_rooms`, `fog_of_war`, `minimap_full_map`, `target_provider`, `run_buffs`, `meta_experience`, `part_upgrade`, `upgrade_credits`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
 
 ## 다음 개선 시점
 

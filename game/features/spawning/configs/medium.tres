@@ -7,6 +7,7 @@ script = ExtResource("1_config")
 tier_id = &"medium"
 minimum_active_enemies = 36
 maximum_active_enemies = 54
+maximum_total_spawns = 220
 minimum_reinforcement_batch = 8
 maximum_reinforcement_batch = 12
 reinforcement_interval_seconds = 1.0

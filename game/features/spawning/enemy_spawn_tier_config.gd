@@ -4,6 +4,7 @@ extends Resource
 @export var tier_id: StringName = &"small"
 @export_range(1, 1000, 1) var minimum_active_enemies: int = 24
 @export_range(1, 1000, 1) var maximum_active_enemies: int = 36
+@export_range(1, 10000, 1) var maximum_total_spawns: int = 120
 @export_range(1, 100, 1) var minimum_reinforcement_batch: int = 6
 @export_range(1, 100, 1) var maximum_reinforcement_batch: int = 10
 @export_range(0.1, 30.0, 0.1) var reinforcement_interval_seconds: float = 1.2
@@ -16,6 +17,7 @@ func is_valid() -> bool:
 	return (
 		minimum_active_enemies > 0
 		and maximum_active_enemies >= minimum_active_enemies
+		and maximum_total_spawns >= maximum_active_enemies
 		and minimum_reinforcement_batch > 0
 		and maximum_reinforcement_batch >= minimum_reinforcement_batch
 		and maximum_reinforcement_batch <= maximum_active_enemies
