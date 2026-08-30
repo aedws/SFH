@@ -238,7 +238,7 @@ horizontal_alignment = 2
 [node name="FooterRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content"]
 
 [node name="Hint" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/FooterRow"]
-text = "이동 WASD/방향키 · Q 무기 교체 · F 상호작용 · I 가방 · U 장비/개조"
+text = "이동 WASD/방향키 · 1/2/3 스킬 · Q 무기 교체 · F 상호작용 · I 가방 · U 장비/개조"
 
 [node name="FooterSpacer" type="Control" parent="UI/HUDMargin/Panel/Margin/Content/FooterRow"]
 layout_mode = 2
@@ -275,9 +275,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -210.0
-offset_top = -92.0
+offset_top = -178.0
 offset_right = 210.0
-offset_bottom = -44.0
+offset_bottom = -136.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "F · 작전 지역에서 탈출"

@@ -18,6 +18,8 @@ signal growth_balance_updated(snapshot: Dictionary, source_label: String)
 signal recovery_state_changed(snapshot: Dictionary)
 signal reinforcement_dispatched(spawned_count: int, active_count: int, target_count: int)
 signal spawn_budget_exhausted(total_spawned: int, maximum_total_spawns: int)
+signal skill_states_changed(states: Array[Dictionary])
+signal skill_activated(slot_index: int, skill_id: StringName, result: Dictionary)
 ```
 
 ## 사용 기준

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1_definition"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/speed_boost_skill_effect.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="SpeedBoostEffect"]
+script = ExtResource("2_effect")
+speed_multiplier = 1.55
+duration_seconds = 4.0
+
+[resource]
+script = ExtResource("1_definition")
+skill_id = &"speed_boost"
+display_name = "기동 가속"
+description = "4초 동안 이동 속도 55% 증가"
+input_action = &"combat_skill_3"
+input_label = "3"
+cooldown_seconds = 12.0
+accent_color = Color(0.45, 1, 0.58, 1)
+effect = SubResource("SpeedBoostEffect")

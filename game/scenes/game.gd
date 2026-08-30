@@ -21,6 +21,12 @@ const LOOT_CONFIG_PATH_PATTERN := "res://game/features/loot/configs/%s.tres"
 const SPAWNER_SCENE_PATH := "res://game/features/spawning/enemy_spawner.tscn"
 const SPAWN_CONFIG_PATH_PATTERN := "res://game/features/spawning/configs/%s.tres"
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
+const COMBAT_SKILL_SYSTEM_SCENE_PATH := (
+	"res://game/features/combat_skills/combat_skill_system.tscn"
+)
+const COMBAT_SKILL_HUD_SCENE_PATH := (
+	"res://game/features/combat_skills/combat_skill_hud.tscn"
+)
 const WEAPON_BALANCE_SCENE_PATH := (
 	"res://game/features/weapon_balance/weapon_balance_service.tscn"
 )
@@ -152,6 +158,11 @@ const EQUIPMENT_UPGRADE_METHODS := [
 	&"configure", &"set_balance_provider", &"quote_upgrade", &"upgrade",
 ]
 const HEALTH_RECOVERY_METHODS := [&"configure", &"advance", &"get_snapshot"]
+const COMBAT_SKILL_METHODS := [
+	&"configure", &"try_activate", &"advance", &"set_activation_enabled",
+	&"get_skill_states", &"get_snapshot",
+]
+const COMBAT_SKILL_HUD_METHODS := [&"configure", &"get_snapshot"]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 @export var features: FeatureManifest
@@ -206,6 +217,8 @@ var credit_ledger
 var loot_spawner
 var enemy_spawner
 var auto_weapon
+var combat_skill_system
+var combat_skill_hud
 var weapon_balance_service
 var growth_balance_service
 var progression_system
@@ -371,7 +384,10 @@ func _return_to_start_hub() -> void:
 	game_over_overlay.visible = false
 	run_setup_overlay.visible = false
 	interaction_label.visible = false
-	for node in [fog_of_war, minimap, inventory_window, equipment_workbench, run_buff_selector]:
+	for node in [
+		fog_of_war, minimap, inventory_window, equipment_workbench,
+		run_buff_selector, combat_skill_hud,
+	]:
 		_free_feature_node(node)
 	for container in [
 		actors_container, enemies_container, projectiles_container,
@@ -418,6 +434,8 @@ func _reset_run_references() -> void:
 	loot_spawner = null
 	enemy_spawner = null
 	auto_weapon = null
+	combat_skill_system = null
+	combat_skill_hud = null
 	weapon_balance_service = null
 	growth_balance_service = null
 	progression_system = null
@@ -555,9 +573,11 @@ func _assemble_game() -> bool:
 	if features.enemies_enabled and features.spawning_enabled:
 		if not _install_enemy_spawner():
 			return false
+	if features.combat_skills_enabled and not _install_combat_skills():
+		return false
 
 	status_label.text = (
-		"작전 진행 중 · Shift/Space 회피 · Q 무기 · F 상호작용 · I 가방 · U 장비"
+		"작전 진행 중 · 1/2/3 스킬 · Shift/Space 회피 · Q 무기 · F 상호작용 · I 가방 · U 장비"
 	)
 	_update_run_time_hud()
 	return true
@@ -577,6 +597,47 @@ func _install_health_recovery() -> bool:
 		&"configure", player, load(features.health_recovery_config_path)
 	):
 		_report_configuration_error("부분 체력 회복 모듈을 구성하지 못했습니다.")
+		return false
+	return true
+
+
+func _install_combat_skills() -> bool:
+	if not ResourceLoader.exists(features.combat_skill_loadout_path):
+		_report_configuration_error("전투 스킬 로드아웃을 찾을 수 없습니다.")
+		return false
+	var skill_loadout: Resource = load(features.combat_skill_loadout_path)
+	if skill_loadout == null or not skill_loadout.call(&"validation_errors").is_empty():
+		_report_configuration_error("전투 스킬 로드아웃이 유효하지 않습니다.")
+		return false
+	combat_skill_system = _instantiate_feature(
+		COMBAT_SKILL_SYSTEM_SCENE_PATH, module_container, &"CombatSkills"
+	)
+	if (
+		not _supports_methods(combat_skill_system, COMBAT_SKILL_METHODS)
+		or not combat_skill_system.has_signal(&"skill_states_changed")
+		or not combat_skill_system.has_signal(&"skill_activated")
+	):
+		_report_configuration_error("전투 스킬 실행기의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not combat_skill_system.call(
+		&"configure",
+		player,
+		enemies_container,
+		world_container,
+		skill_loadout,
+		features.damage_enabled
+	):
+		_report_configuration_error("전투 스킬 실행기를 구성하지 못했습니다.")
+		return false
+	combat_skill_system.connect(&"skill_activated", Callable(self, &"_on_combat_skill_activated"))
+	combat_skill_hud = _instantiate_feature(
+		COMBAT_SKILL_HUD_SCENE_PATH, ui_layer, &"CombatSkillHud"
+	)
+	if (
+		not _supports_methods(combat_skill_hud, COMBAT_SKILL_HUD_METHODS)
+		or not combat_skill_hud.call(&"configure", combat_skill_system)
+	):
+		_report_configuration_error("전투 스킬 HUD를 구성하지 못했습니다.")
 		return false
 	return true
 
@@ -1239,6 +1300,17 @@ func _supports_methods(candidate: Node, methods: Array) -> bool:
 func _on_enemy_spawned(enemy: Node) -> void:
 	if enemy.has_signal(&"defeated"):
 		enemy.connect(&"defeated", Callable(self, &"_on_enemy_defeated"))
+
+
+func _on_combat_skill_activated(
+	slot_index: int,
+	_skill_id: StringName,
+	result: Dictionary
+) -> void:
+	status_label.text = "%d 스킬 · %s" % [
+		slot_index + 1,
+		result.get(&"status", "발동"),
+	]
 
 
 func _on_map_generated(
