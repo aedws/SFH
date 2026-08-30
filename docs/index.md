@@ -67,12 +67,12 @@ hide:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 33 &middot; IMPROVE 24 &middot; CHANGE 12 &middot; FIX 5</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 33 &middot; IMPROVE 27 &middot; CHANGE 12 &middot; FIX 5</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>18</b><small>UPDATE BUNDLES</small></span>
       <span><b>33</b><small>BUILD</small></span>
-      <span><b>24</b><small>IMPROVE</small></span>
+      <span><b>27</b><small>IMPROVE</small></span>
       <span><b>12</b><small>CHANGE</small></span>
       <span><b>5</b><small>FIX</small></span>
     </div>
@@ -133,7 +133,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>거점 로드아웃 편집 · ESC 닫기 · 세션 상태 유지</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 3</small><b>고밀도 I·U·E · 거점 로드아웃 편집 · 세션 상태 유지</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 거점에서 출격 장비를 완성</strong>
@@ -142,6 +142,8 @@ hide:
             <li>거점에서 무기·방어구·모듈·고유 파츠를 장착·교체·해제합니다.</li>
             <li>해제한 장비와 강화 상태를 가방에 반환하며 공간 부족 시 변경 전 차단합니다.</li>
             <li>준비 로드아웃과 가방 배치를 작전 진입·거점 귀환 사이에 유지합니다.</li>
+            <li>I 가방은 50px 12×8 격자·용량·상세 패널로, U/E는 3열 카드와 압축 슬롯 레일로 재구성했습니다.</li>
+            <li>U는 장비, E는 모듈·파츠를 직접 열고 열린 상태에서는 창을 닫지 않고 탭을 전환합니다.</li>
           </ul>
           <p class="sfh-intent"><b>모듈 감사 결론</b><span>Workbench는 공개 반출입 계약만 조정하고, Game은 불투명 런타임 스냅샷만 세션 사이에 전달합니다.</span></p>
         </div>
@@ -149,9 +151,12 @@ hide:
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">장비·모듈·파츠 반환 트랜잭션</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장착 상태와 강화 단계를 보존해 가방으로 반환하고 실패 시 원래 상태로 롤백합니다.</p><a href="features/equipment-customization/">거점 편집 규칙 →</a></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">거점↔작전 준비 상태 전달</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비와 가방 제공자의 export/restore 계약으로 Scene 교체 후에도 상태를 복구합니다.</p></div></details>
         </div>
-        <div class="sfh-group"><h3>✨ 개선 · 2</h3>
+        <div class="sfh-group"><h3>✨ 개선 · 5</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">I·U·E 공통 ESC 닫기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>열린 모달을 ESC 한 번으로 닫습니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">교체·해제 전용 버튼과 상태 문구</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비와 장착 모듈·파츠의 반환 동선을 UI에서 명확히 표시합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">I 가방 판독 밀도</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>12×8 실제 점유 격자, 사용률과 선택 아이템 상세를 한 화면에서 비교합니다.</p><a href="features/grid-inventory/">격자 가방 UI →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">U·E 장비 카드 밀도</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>슬롯 레일을 압축하고 장비·모듈·파츠 후보를 3열로 유지합니다.</p><a href="features/equipment-customization/">장비 UI →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">U·E 직접 탭 이동</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>U는 장비, E는 모듈·파츠 화면으로 바로 이동하며 열린 창에서 즉시 상호 전환합니다.</p></div></details>
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">거점 조회 전용 정책 해제</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>시작 거점의 Workbench를 실제 출격 준비 편집 모드로 전환했습니다.</p></div></details>

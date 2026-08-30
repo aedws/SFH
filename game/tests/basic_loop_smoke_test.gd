@@ -364,6 +364,7 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 		"UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons/SmallMapButton"
 	) as Button
 	var failure_message := ""
+	var density_failure := _hub_loadout_ui_density_failure(hub_inventory, hub_workbench)
 	if hub == null or hub_player == null:
 		failure_message = "시작 거점 또는 거점 플레이어가 설치되지 않았습니다."
 	elif (
@@ -398,6 +399,8 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 			or not setup_close.visible
 		):
 			failure_message = "최적화된 세션 구성 패널·전장 카드·ESC 동선이 적용되지 않았습니다."
+		elif not density_failure.is_empty():
+			failure_message = density_failure
 		else:
 			var inventory_event := InputEventAction.new()
 			inventory_event.action = &"toggle_inventory"
@@ -426,6 +429,32 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 					hub_workbench.call(&"_unhandled_input", cancel_event)
 					if hub_workbench.visible or paused:
 						failure_message = "거점 U/E 장비 화면이 ESC로 닫히지 않았습니다."
+			if failure_message.is_empty():
+				var modification_key := InputEventKey.new()
+				modification_key.keycode = KEY_E
+				modification_key.physical_keycode = KEY_E
+				modification_key.pressed = true
+				hub_workbench.call(&"_unhandled_input", modification_key)
+				if (
+					not hub_workbench.visible
+					or int((hub_workbench.get("tabs") as TabContainer).current_tab) != 1
+				):
+					failure_message = "거점 E 입력이 모듈·파츠 탭을 직접 열지 못했습니다."
+				else:
+					var equipment_key := InputEventKey.new()
+					equipment_key.keycode = KEY_U
+					equipment_key.physical_keycode = KEY_U
+					equipment_key.pressed = true
+					hub_workbench.call(&"_unhandled_input", equipment_key)
+					if (
+						not hub_workbench.visible
+						or int((hub_workbench.get("tabs") as TabContainer).current_tab) != 0
+					):
+						failure_message = "열린 E 화면에서 U 입력이 장비 탭으로 전환되지 않았습니다."
+					else:
+						hub_workbench.call(&"_unhandled_input", equipment_key)
+						if hub_workbench.visible or paused:
+							failure_message = "활성 U 탭에서 U 재입력이 화면을 닫지 못했습니다."
 			if failure_message.is_empty():
 				failure_message = _hub_loadout_editing_failure(hub_game)
 			var switch_event := InputEventAction.new()
@@ -484,6 +513,46 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 		_fail("시작 거점 흐름 실패: %s" % failure_message)
 		return false
 	return true
+
+
+func _hub_loadout_ui_density_failure(inventory_window: Node, workbench: Node) -> String:
+	if inventory_window == null or workbench == null:
+		return "I·U·E 밀도 검증 대상 UI가 설치되지 않았습니다."
+	var inventory_density: Dictionary = inventory_window.call(&"get_density_snapshot")
+	var grid_size: Vector2 = inventory_density.get(&"grid_minimum_size", Vector2.ZERO)
+	var inventory_window_size: Vector2 = inventory_density.get(&"window_size", Vector2.ZERO)
+	if (
+		float(inventory_density.get(&"cell_pixel_size", 0.0)) < 50.0
+		or grid_size.x < 600.0
+		or grid_size.y < 400.0
+		or float(inventory_density.get(&"detail_minimum_width", 0.0)) < 330.0
+		or inventory_window_size.x > 1236.0
+		or inventory_window_size.y > 680.0
+	):
+		return "I 가방 밀도 기준 실패: grid=%s detail=%.0f cell=%.0f window=%s" % [
+			grid_size,
+			float(inventory_density.get(&"detail_minimum_width", 0.0)),
+			float(inventory_density.get(&"cell_pixel_size", 0.0)),
+			inventory_window_size,
+		]
+	var workbench_density: Dictionary = workbench.call(&"get_density_snapshot")
+	var workbench_window_size: Vector2 = workbench_density.get(&"window_size", Vector2.ZERO)
+	if (
+		float(workbench_density.get(&"slot_rail_width", 0.0)) > 220.0
+		or float(workbench_density.get(&"slot_button_height", 0.0)) > 64.0
+		or int(workbench_density.get(&"equipment_columns", 0)) < 3
+		or int(workbench_density.get(&"modification_columns", 0)) < 3
+		or workbench_window_size.x > 1236.0
+		or workbench_window_size.y > 680.0
+	):
+		return "U·E 밀도 기준 실패: rail=%.0f slot=%.0f equipment=%d modification=%d window=%s" % [
+			float(workbench_density.get(&"slot_rail_width", 0.0)),
+			float(workbench_density.get(&"slot_button_height", 0.0)),
+			int(workbench_density.get(&"equipment_columns", 0)),
+			int(workbench_density.get(&"modification_columns", 0)),
+			workbench_window_size,
+		]
+	return ""
 
 
 func _hub_loadout_editing_failure(hub_game: Node) -> String:
@@ -2555,7 +2624,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK web_korean_font electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK web_korean_font electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 
