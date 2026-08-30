@@ -11,6 +11,19 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-08-30 화면 크기 방·전장의 안개·자원 회수 점검
+
+| 점검 대상 | 결과 | 근거 |
+|---|---|---|
+| 화면 한 장급 방 | 통과 | 세 등급의 최소 방이 모두 40×23셀을 넘고 32px 타일 기준 1280×720 이상 |
+| 실내 장애물 구조 | 통과 | 문 있는 긴 칸막이, 넓은 설비 블록, 다중 기둥을 방별 패턴으로 생성 |
+| 전장의 안개 분리 | 통과 | 별도 Scene·Manifest 토글이며 추적 `Node2D`와 시야 설정만 소비 |
+| 전체 미니맵 유지 | 통과 | 안개는 월드 layer 0에만 렌더링하고 미니맵은 전체 지형 스냅샷 크기를 유지 |
+| 자원 배치 다양성 | 통과 | 맵은 위치·방향·유형 힌트, 파밍은 외형·문구·보상과 1회성 회수를 담당 |
+| 자동·시각 검증 | 통과 | 세 등급 구조·경로·회수 유형, 안개 추적·전체 지도와 1280×720 렌더를 확인 |
+
+전장의 안개는 맵 배열과 미니맵 텍스처에 접근하지 않으며, 파밍 오브젝트는 맵의 방·A* 내부 상태를 읽지 않습니다. 넓어진 방과 실내 패턴은 기존 `MapTierConfig`·맵 생성기 경계 안에 남아 있어 각 기능을 독립적으로 비활성화하거나 교체할 수 있습니다.
+
 ## 2026-08-30 장비·모듈 UI 재설계 점검
 
 | 점검 대상 | 결과 | 근거 |
@@ -105,6 +118,7 @@ tags:
 | Method | `get_player_spawn_position()` | 플레이어 배치 |
 | Method | `get_extraction_position()` | 탈출 모듈 배치 |
 | Method | `get_enemy_spawn_position(origin, minimum_distance)` | 적 생성기 |
+| Method | `get_loot_spawn_points(count)` | 파밍 위치·벽 방향·배치 유형 제공 |
 | Method | `get_world_path(from_world, to_world)` | 적 이동 |
 | Method | `get_minimap_snapshot()` | 전술 미니맵 조립부 |
 
@@ -135,12 +149,22 @@ tags:
 
 | 제공자 | 계약 | 소비자 |
 |---|---|---|
-| 맵 | `get_loot_spawn_positions(count)` | `LootSpawner` |
-| 상자 | `credits_collected(amount, world_position)` | `LootSpawner` |
+| 맵 | `get_loot_spawn_points(count)` | `LootSpawner` |
+| 회수 지점 | `configure(amount, kind, facing)`, `credits_collected` | `LootSpawner` |
 | 파밍 | `credits_looted(amount, world_position)` | `Game` 조립부 |
 | 원장 | `add_carried`, `secure_carried`, `lose_carried` | `Game` 조립부 |
 
 맵은 파밍 보상 수치를 알지 않고, 파밍 모듈은 맵의 방 배열과 A* 자료구조를 알지 않습니다.
+
+## 전장의 안개 공개 계약
+
+| 제공자 | 계약 | 소비자 |
+|---|---|---|
+| 안개 | `configure(tracked_actor)` | `Game` 조립부 |
+| 안개 | `get_snapshot()` | 자동 테스트·향후 옵션 UI |
+| 플레이어 | `Node2D` 화면 좌표 | 안개 Shader 초점 |
+
+안개는 CanvasLayer 0, HUD·미니맵은 별도 UI CanvasLayer에 있어 월드 시야 제한이 전체 미니맵 데이터나 모달 UI를 가리지 않습니다.
 
 ## 미니맵 공개 계약
 
@@ -241,7 +265,7 @@ tags:
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `run_experience`, `run_buffs`, `buff_choice`, `meta_experience`, `character_level`, `weapon_level`, `armor_level`, `part_upgrade`, `upgrade_materials`, `upgrade_credits`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
+성공하면 출력에 `screen_sized_rooms`, `indoor_structures`, `fog_of_war`, `minimap_full_map`, `resource_recovery`, `run_experience`, `run_buffs`, `meta_experience`, `part_upgrade`, `upgrade_credits`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
 
 ## 다음 개선 시점
 

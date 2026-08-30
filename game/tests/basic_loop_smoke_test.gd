@@ -98,6 +98,10 @@ func _verify_map_tiers() -> bool:
 		if minimum_rooms < int(minimum_room_counts[tier_id]):
 			_fail("%s 맵 크기가 상향 기준에 미달합니다." % tier_id)
 			return false
+		var minimum_room_size: Vector2i = config.get("minimum_room_size")
+		if minimum_room_size.x < 40 or minimum_room_size.y < 23:
+			_fail("%s 방 한 칸이 1280×720 화면 기준보다 작습니다." % tier_id)
+			return false
 		if int(config.get("target_run_duration_seconds")) != int(target_durations[tier_id]):
 			_fail("%s 작전 목표 시간이 9~11분 페이싱과 다릅니다." % tier_id)
 			return false
@@ -120,16 +124,30 @@ func _verify_map_tiers() -> bool:
 			_fail("%s 맵에 방해물이 생성되지 않았습니다." % tier_id)
 			return false
 		var obstacle_kinds: Array = generator.get("obstacle_cells").values()
-		if &"wall" not in obstacle_kinds or &"pillar" not in obstacle_kinds:
-			_fail("%s 맵에 실내 벽과 기둥 패턴이 모두 생성되지 않았습니다." % tier_id)
+		if (
+			&"wall" not in obstacle_kinds
+			or &"pillar" not in obstacle_kinds
+			or &"utility" not in obstacle_kinds
+		):
+			_fail("%s 맵에 칸막이·설비 블록·기둥 패턴이 모두 생성되지 않았습니다." % tier_id)
 			return false
 		var loot_config = load(LOOT_CONFIG_PATH_PATTERN % tier_id)
-		var loot_positions: PackedVector2Array = generator.call(
-			&"get_loot_spawn_positions",
+		var loot_points: Array = generator.call(
+			&"get_loot_spawn_points",
 			int(loot_config.get("minimum_cache_count"))
 		)
-		if loot_positions.size() < int(loot_config.get("minimum_cache_count")):
+		if loot_points.size() < int(loot_config.get("minimum_cache_count")):
 			_fail("%s 맵에 필요한 파밍 위치를 확보하지 못했습니다." % tier_id)
+			return false
+		var placement_kinds: Array[StringName] = []
+		for point in loot_points:
+			placement_kinds.append(point[&"placement_kind"])
+		if (
+			&"wall_safe" not in placement_kinds
+			or &"material_locker" not in placement_kinds
+			or &"recovery_terminal" not in placement_kinds
+		):
+			_fail("%s 맵의 금고·자재함·회수 단말기 배치 유형이 부족합니다." % tier_id)
 			return false
 		if not is_equal_approx(float(generator.get("cell_size")), 32.0):
 			_fail("맵 타일 크기가 32px로 조정되지 않았습니다.")
@@ -772,6 +790,7 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 			await process_frame
 			var generator = tier_game.get("map_generator")
 			var minimap = tier_game.get("minimap")
+			var fog = tier_game.get("fog_of_war")
 			var config = load(MAP_CONFIG_PATH_PATTERN % tier_id)
 			if not bool(tier_game.get("run_started")):
 				failure_message = "%s 작전이 시작 상태로 전환되지 않았습니다." % tier_id
@@ -781,6 +800,8 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 				failure_message = "%s 작전의 플레이어 또는 맵이 설치되지 않았습니다." % tier_id
 			elif tier_game.get("extraction_zone") == null or minimap == null:
 				failure_message = "%s 작전의 탈출 또는 미니맵이 설치되지 않았습니다." % tier_id
+			elif fog == null or not bool(fog.call(&"get_snapshot").get(&"tracks_actor", false)):
+				failure_message = "%s 작전의 전장의 안개가 플레이어를 추적하지 않습니다." % tier_id
 			elif (
 				tier_game.get("inventory_system") == null
 				or tier_game.get("inventory_window") == null
@@ -795,6 +816,10 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 				var map_view = minimap.get_node("Margin/Content/MapView")
 				if map_view.get("map_texture") == null:
 					failure_message = "%s 작전의 미니맵 텍스처가 생성되지 않았습니다." % tier_id
+				else:
+					var snapshot: Dictionary = generator.call(&"get_minimap_snapshot")
+					if Vector2i(map_view.get("map_texture").get_size()) != snapshot[&"cell_bounds"].size:
+						failure_message = "%s 미니맵이 전체 지형 스냅샷을 유지하지 않습니다." % tier_id
 
 		root.remove_child(tier_game)
 		tier_game.free()
@@ -867,6 +892,7 @@ func _verify_optional_map_module(game_scene: PackedScene) -> bool:
 	var fallback_features = fallback_game.get("features").duplicate(true)
 	fallback_features.set("map_generation_enabled", false)
 	fallback_features.set("map_obstacles_enabled", false)
+	fallback_features.set("fog_of_war_enabled", false)
 	fallback_features.set("minimap_enabled", false)
 	fallback_features.set("extraction_enabled", false)
 	fallback_features.set("run_setup_enabled", false)
@@ -893,6 +919,8 @@ func _verify_optional_map_module(game_scene: PackedScene) -> bool:
 		failure_message = "비활성화했지만 맵 HUD가 표시됩니다."
 	elif fallback_game.get("minimap") != null:
 		failure_message = "비활성화했지만 미니맵이 설치됐습니다."
+	elif fallback_game.get("fog_of_war") != null:
+		failure_message = "비활성화했지만 전장의 안개가 설치됐습니다."
 
 	root.remove_child(fallback_game)
 	fallback_game.free()
@@ -933,9 +961,18 @@ func _verify_extraction_flow(game_scene: PackedScene) -> bool:
 		if loot_caches.is_empty():
 			failure_message = "랜덤 1회성 파밍 오브젝트가 생성되지 않았습니다."
 		else:
+			var spawned_kinds: Array[String] = []
+			for loot_cache in loot_caches:
+				spawned_kinds.append(String(loot_cache.get("placement_kind")))
+			if (
+				"wall_safe" not in spawned_kinds
+				or "material_locker" not in spawned_kinds
+				or "recovery_terminal" not in spawned_kinds
+			):
+				failure_message = "벽면 금고·자재함·회수 단말기 다양성이 생성되지 않았습니다."
 			var cache := loot_caches[0] as Node2D
 			extraction_player.global_position = cache.global_position
-			if not cache.call(&"request_loot", extraction_player):
+			if failure_message.is_empty() and not cache.call(&"request_loot", extraction_player):
 				failure_message = "파밍 오브젝트에서 크레딧을 획득하지 못했습니다."
 			elif cache.call(&"request_loot", extraction_player):
 				failure_message = "1회성 파밍 오브젝트를 두 번 획득할 수 있습니다."
@@ -1090,7 +1127,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale run_pacing extraction_lock minimap equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles loot credits map_optional player responsive_movement dash health_recovery health_ui enemies armor status_bars pathfinding weapon run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures run_pacing extraction_lock fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery loot credits map_optional player responsive_movement dash health_recovery health_ui enemies armor status_bars pathfinding weapon run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

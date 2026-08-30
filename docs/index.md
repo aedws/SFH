@@ -52,7 +52,7 @@ hide:
 
 <div class="sfh-stats">
   <div class="sfh-stat"><small>Core loop</small><strong>9–11 MIN</strong><span>전투 → 파밍 → 신호 개방 → 탈출</span></div>
-  <div class="sfh-stat"><small>World</small><strong>18–60 ROOMS</strong><span>확장 방·복도·기둥·미니맵</span></div>
+  <div class="sfh-stat"><small>World</small><strong>FULL-SCREEN ROOMS</strong><span>전장의 안개 · 전체 미니맵 · 실내 구조</span></div>
   <div class="sfh-stat"><small>Loadout</small><strong>장비 기반 완료</strong><span>무기·방어구·파츠·모듈</span></div>
   <div class="sfh-stat"><small>Growth</small><strong>Run + Meta</strong><span>임시 버프·세 계열 영구 레벨</span></div>
 </div>
@@ -62,11 +62,36 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>U 장비 + 모듈 카드 UI</span><span>자동·시각 검증 PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-30</span><span>화면 크기 방 + 전장의 안개</span><span>자동·시각 검증 PASS</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>U 장비 · 모듈 인벤토리 UI 개편</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><i class="sfh-latest">최신</i><small>화면 크기 방 · 안개 · 금고형 자원 회수</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-summary">
+      <strong>핵심 변경 · 5개 주제</strong>
+      <ul>
+        <li>가장 작은 방도 42×25셀로 확장해 기본 화면 한 장보다 크게 만들었습니다.</li>
+        <li>긴 실내 칸막이, 설비 블록과 다중 기둥이 건물 내부 구조를 만듭니다.</li>
+        <li>플레이어 주변만 보이는 전장의 안개를 적용했습니다.</li>
+        <li>우측 미니맵은 `FULL MAP` 전체 지형을 계속 표시합니다.</li>
+        <li>벽면 금고·자재함·회수 단말기에서 F로 크레딧 자원을 확보합니다.</li>
+      </ul>
+      <p class="sfh-intent"><b>개선 의도</b><span>한 방 안에서도 탐색과 교전이 일어나고, 제한된 시야 속에서 전체 전술 지도를 활용하는 익스트랙션 감각을 강화합니다.</span></p>
+    </div>
+    <div class="sfh-group"><h3>🆕 구현 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">전장의 안개 + FULL MAP</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>월드만 시야 제한하고 HUD와 전체 미니맵은 밝게 유지합니다.</p><a href="features/fog-of-war/">시야 설계 보기 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">금고형 자원 회수 지점</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>상자 대신 세 유형의 회수 지점을 위치·벽 방향에 맞춰 배치합니다.</p><a href="features/credit-loot/">파밍 보기 →</a></div></details>
+    </div>
+    <div class="sfh-group"><h3>✨ 개선 · 2</h3>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">화면 한 장급 방</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>세 등급의 방 최소 면적을 1280×720 화면보다 크게 상향했습니다.</p><a href="features/map-generation/">맵 수치 보기 →</a></div></details>
+      <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">건물 내부 구조 생성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>출입구 있는 칸막이·넓은 설비·기둥 열로 장애물 패턴을 강화했습니다.</p></div></details>
+    </div>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>U 장비 · 모듈 인벤토리 UI 개편</small></span><em class="sfh-chevron">⌄</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-summary">
       <strong>핵심 변경 · 5개 주제</strong>
@@ -121,6 +146,7 @@ hide:
   <a class="sfh-link-card" href="architecture/module-rules/"><b>모듈 작성 규칙</b><span>기능을 독립적으로 켜고 끄기 위한 폴더·Signal·의존성 규칙입니다.</span><small>ARCHITECTURE →</small></a>
   <a class="sfh-link-card" href="features/weapon-balance/"><b>무기 밸런스</b><span>Google Sheets 실시간 테스트와 확정 CSV 운영 절차를 설명합니다.</span><small>BALANCE PIPELINE →</small></a>
   <a class="sfh-link-card" href="features/progression/"><b>로그라이크 성장</b><span>한 판 임시 버프와 작전 종료 후 외부 성장 정산을 설명합니다.</span><small>RUN + META →</small></a>
+  <a class="sfh-link-card" href="features/fog-of-war/"><b>전장의 안개</b><span>월드 시야 제한과 전체 미니맵의 분리된 동작을 설명합니다.</span><small>WORLD VISIBILITY →</small></a>
   <a class="sfh-link-card" href="features/grid-inventory/"><b>격자 가방</b><span>아이템별 점유 크기와 I 키 인벤토리의 현재 구현을 확인합니다.</span><small>INVENTORY →</small></a>
   <a class="sfh-link-card" href="getting-started/edit-wiki-online/"><b>웹에서 위키 수정</b><span>GitHub 웹 편집과 자동 Pages 배포 흐름을 따라갑니다.</span><small>COLLABORATE →</small></a>
 </div>

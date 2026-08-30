@@ -7,6 +7,7 @@ script = ExtResource("1_manifest")
 player_enabled = true
 map_generation_enabled = true
 map_obstacles_enabled = true
+fog_of_war_enabled = true
 minimap_enabled = true
 extraction_enabled = true
 credits_enabled = true

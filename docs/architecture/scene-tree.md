@@ -4,6 +4,7 @@
 
 ```text
 Game
+├─ BattlefieldFogOfWar     # 월드만 가리고 HUD·미니맵은 유지하는 CanvasLayer
 ├─ World
 │  ├─ ArenaGrid
 │  ├─ GeneratedMap          # 등급 Resource에 따라 실행 시 생성
@@ -14,7 +15,7 @@ Game
 │  ├─ Enemies
 │  ├─ Projectiles
 │  └─ Pickups
-│     └─ CreditLootCache   # 등급에 따라 여러 개 생성
+│     └─ CreditLootCache   # 금고·자재함·회수 단말기 유형으로 여러 개 생성
 ├─ Modules
 │  ├─ EnemySpawner          # 실행 시 생성
 │  ├─ ProgressionSystem     # 실행 시 생성
@@ -24,7 +25,7 @@ Game
 │  ├─ CharacterEquipment    # 무기·스킬·방어구 로드아웃 조립
 │  ├─ CreditLedger          # 휴대·회수·분실 계산
 │  ├─ EquipmentUpgrade      # 동일 아이템·크레딧 강화 비용 조정
-│  └─ LootSpawner           # 1회성 보급 상자 배치
+│  └─ LootSpawner           # 1회성 자원 회수 지점 배치
 └─ UI
    ├─ HUDMargin
    ├─ TacticalMinimap      # 실행 시 설치되는 우측 상단 전술 지도
@@ -46,6 +47,7 @@ Game
 - `game/features/player/player.tscn`: 플레이어 기능 장면
 - `game/features/equipment/equipment_system.tscn`: 장비 로드아웃과 호환성·스탯 집계
 - `game/features/map_generation/map_generator.tscn`: 방, 복도, 벽, 길찾기 생성
+- `game/features/fog_of_war/fog_of_war.tscn`: 플레이어 중심 월드 시야 제한
 - `game/features/minimap/minimap.tscn`: 지형 스냅샷 기반 우측 상단 전술 지도
 - `game/features/extraction/extraction_zone.tscn`: F 상호작용 탈출 지점
 - `game/features/credits/credit_ledger.tscn`: 작전 크레딧 원장
