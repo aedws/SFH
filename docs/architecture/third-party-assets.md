@@ -18,8 +18,11 @@ SFH에 새 외부 에셋을 반입할 때는 원본 배포자가 명시한 라�
 | 자산 | 원작자 | 라이선스 | 상업 이용 | SFH 반입 범위 |
 | --- | --- | --- | --- | --- |
 | Kenney Particle Pack 1.1 | Kenney Vleugels | CC0 1.0 Universal | 허용, 표기 의무 없음 | `spark_01.png`, `spark_04.png` 2개 |
+| Galmuri 11 | Lee Minseo (`quiple`) | SIL Open Font License 1.1 | 허용, 라이선스 원문 동봉 | 게임 `Galmuri11-Bold.ttf`, 위키 `Galmuri11.woff2` |
 
 Godot용 패키징 원본은 [Calinou/kenney-particle-pack](https://github.com/Calinou/kenney-particle-pack)이며 반입 기준은 `ab7086639ee73be31abd87feb21bf1402d4e8144`입니다. 원본 저장소도 CC0 1.0을 명시하며, 실제 포함된 라이선스 원문은 `game/assets/vfx/kenney_particle_pack/LICENSE.txt`, 파일별 SHA-256과 용도는 같은 폴더의 `SOURCE.md`에 보존합니다.
+
+Galmuri의 공식 원본은 [quiple/galmuri](https://github.com/quiple/galmuri)이며 반입 기준은 `71e1cacf1437a11220307120e63e30bc275312d4`입니다. 라이선스 원문과 게임 파일 해시는 `game/assets/fonts/galmuri/`, 위키 전송본과 라이선스는 `docs/assets/fonts/galmuri/`에 보존합니다. 게임은 TTF만, 위키는 WOFF2만 사용해 불필요한 Godot 임포트와 중복 배포를 피합니다.
 
 ## 반입 규칙
 

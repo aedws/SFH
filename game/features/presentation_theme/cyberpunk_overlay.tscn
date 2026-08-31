@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/presentation_theme/cyberpunk_overlay.gd" id="1_overlay"]
+[ext_resource type="Script" path="res://game/features/presentation_theme/cyberpunk_screen_fx.gd" id="2_fx"]
+
+[node name="CyberpunkOverlay" type="CanvasLayer"]
+script = ExtResource("1_overlay")
+
+[node name="ScreenFX" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_fx")
+
+[node name="SweepLine" type="ColorRect" parent="ScreenFX"]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 2.0
+mouse_filter = 2
+color = Color(0.00784314, 0.898039, 0.882353, 0.055)
+
+[node name="Status" type="HBoxContainer" parent="ScreenFX"]
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -59.0
+offset_top = 10.0
+offset_right = 59.0
+offset_bottom = 26.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Pulse" type="ColorRect" parent="ScreenFX/Status"]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.00784314, 0.898039, 0.882353, 1)
+
+[node name="Label" type="Label" parent="ScreenFX/Status"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.00784314, 0.898039, 0.882353, 0.7)
+theme_override_font_sizes/font_size = 9
+text = "SYS // LINKED"

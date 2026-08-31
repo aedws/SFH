@@ -2,7 +2,7 @@ extends Control
 
 ## 에셋 없이도 작전 지역의 구조·경로·위험도를 읽을 수 있는 전술 브리핑 프리뷰입니다.
 
-var accent_color := Color("36d9bd")
+var accent_color := Color("02e5e1")
 var danger_color := Color("ffad45")
 var risk_level: int = 0
 
@@ -15,10 +15,10 @@ func _ready() -> void:
 func update_context(region_id: StringName, tier_id: StringName, difficulty_id: StringName) -> void:
 	risk_level = {&"standard": 0, &"veteran": 1, &"nightmare": 2}.get(difficulty_id, 0)
 	accent_color = {
-		&"ruined_city": Color("35d8bd"),
+		&"ruined_city": Color("02e5e1"),
 		&"industrial_district": Color("5ac8fa"),
 		&"research_complex": Color("b89cff"),
-	}.get(region_id, Color("35d8bd"))
+	}.get(region_id, Color("02e5e1"))
 	danger_color = {
 		&"small": Color("6fe7c8"),
 		&"medium": Color("ffcb68"),
@@ -35,6 +35,8 @@ func _draw() -> void:
 		draw_line(Vector2(x, 0), Vector2(x, size.y), Color(accent_color, 0.055), 1.0)
 	for y in range(20, int(size.y), 28):
 		draw_line(Vector2(0, y), Vector2(size.x, y), Color(accent_color, 0.055), 1.0)
+	for y in range(7, int(size.y), 8):
+		draw_line(Vector2(0, y), Vector2(size.x, y), Color(accent_color, 0.018), 1.0)
 
 	var rooms := [
 		Rect2(34, 42, 92, 58), Rect2(164, 28, 112, 72), Rect2(320, 44, 142, 62),

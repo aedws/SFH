@@ -62,7 +62,10 @@ const RESULT_CONFIG_PATH := "res://game/features/operation_results/configs/defau
 const SMART_TARGETING_PATH := "res://game/features/smart_targeting/configs/default_smart_targeting.tres"
 const EXTRACTION_SCENE_PATH := "res://game/features/extraction/extraction_zone.tscn"
 const EXTRACTION_DEFENSE_CONFIG_PATH := "res://game/features/extraction/configs/default_extraction_defense.tres"
-const KOREAN_FONT_PATH := "res://game/assets/fonts/nanum-gothic/NanumGothic-Regular.ttf"
+const KOREAN_FONT_PATH := "res://game/assets/fonts/galmuri/Galmuri11-Bold.ttf"
+const CYBERPUNK_THEME_PATH := "res://game/features/presentation_theme/cyberpunk_theme.tres"
+const CYBERPUNK_FONT_LICENSE_PATH := "res://game/assets/fonts/galmuri/OFL.txt"
+const CYBERPUNK_FONT_SOURCE_PATH := "res://game/assets/fonts/galmuri/README.md"
 const KEY_MAPPING_SERVICE_PATH := "res://game/features/key_mapping/key_mapping_service.tscn"
 const KEY_MAPPING_PANEL_PATH := "res://game/features/key_mapping/key_mapping_panel.tscn"
 const KEY_MAPPING_CATALOG_PATH := "res://game/features/key_mapping/configs/default_key_mapping.tres"
@@ -127,6 +130,8 @@ func _init() -> void:
 		return
 	if not await _verify_optional_start_hub_module(game_scene):
 		return
+	if not await _verify_optional_cyberpunk_theme_module(game_scene):
+		return
 	if not await _verify_optional_combat_skill_module(game_scene):
 		return
 	if not await _verify_optional_hit_feedback_module(game_scene):
@@ -157,6 +162,20 @@ func _init() -> void:
 	game_instance = game_scene.instantiate()
 	root.add_child(game_instance)
 	await process_frame
+	var cyberpunk_presentation = game_instance.get("cyberpunk_overlay")
+	if cyberpunk_presentation == null:
+		_fail("사이버펑크 표현 계층이 기본 빌드에 설치되지 않았습니다.")
+		return
+	var cyberpunk_snapshot: Dictionary = cyberpunk_presentation.call(&"get_snapshot")
+	if (
+		cyberpunk_snapshot.get(&"accent_hex", "") != "#02e5e1"
+		or not bool(cyberpunk_snapshot.get(&"motion_enabled", false))
+		or not bool(cyberpunk_snapshot.get(&"noise_enabled", false))
+		or int(cyberpunk_snapshot.get(&"scanline_spacing", 0)) != 6
+		or String(cyberpunk_snapshot.get(&"status_text", "")) != "SYS // LINKED"
+	):
+		_fail("사이버펑크 색상·스캔라인·노이즈·점멸 상태 계약이 올바르지 않습니다.")
+		return
 	var setup_overlay := game_instance.get_node("UI/RunSetupOverlay") as Control
 	if (
 		setup_overlay.visible
@@ -180,12 +199,24 @@ func _verify_korean_ui_font() -> bool:
 	var configured_path := String(ProjectSettings.get_setting("gui/theme/custom_font", ""))
 	if configured_path != KOREAN_FONT_PATH:
 		return _fail("프로젝트 전역 한글 폰트 경로가 올바르지 않습니다.")
+	if String(ProjectSettings.get_setting("gui/theme/custom", "")) != CYBERPUNK_THEME_PATH:
+		return _fail("프로젝트 전역 사이버펑크 Theme 경로가 올바르지 않습니다.")
 	var korean_font := load(KOREAN_FONT_PATH) as Font
-	if korean_font == null:
+	var cyberpunk_theme := load(CYBERPUNK_THEME_PATH) as Theme
+	if korean_font == null or cyberpunk_theme == null:
 		return _fail("프로젝트 전역 한글 폰트를 불러오지 못했습니다.")
 	for character in ["한", "글", "가", "힣"]:
 		if not korean_font.has_char(character.unicode_at(0)):
 			return _fail("프로젝트 전역 폰트에 한글 글리프가 없습니다: %s" % character)
+	for required_path in [CYBERPUNK_FONT_LICENSE_PATH, CYBERPUNK_FONT_SOURCE_PATH]:
+		if not FileAccess.file_exists(required_path):
+			return _fail("사이버펑크 폰트의 라이선스 추적 파일이 없습니다: %s" % required_path)
+	var font_license := FileAccess.open(CYBERPUNK_FONT_LICENSE_PATH, FileAccess.READ)
+	var font_source := FileAccess.open(CYBERPUNK_FONT_SOURCE_PATH, FileAccess.READ)
+	if font_license == null or "SIL OPEN FONT LICENSE Version 1.1" not in font_license.get_as_text():
+		return _fail("Galmuri 글꼴의 OFL 1.1 원문이 보존되지 않았습니다.")
+	if font_source == null or "71e1cacf1437a11220307120e63e30bc275312d4" not in font_source.get_as_text():
+		return _fail("Galmuri 글꼴의 원본 커밋 추적 기록이 없습니다.")
 	return true
 
 
@@ -650,7 +681,7 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 			or not bool(setup_snapshot.get(&"layout_fits", false))
 			or not setup_close.visible
 		):
-			failure_message = "전술 브리핑 패널·전장 규모 선택·명시적 투입·ESC 동선이 적용되지 않았습니다."
+			failure_message = "전술 브리핑 패널·전장 규모 선택·명시적 투입·ESC 동선이 적용되지 않았습니다: %s" % setup_snapshot
 		elif not density_failure.is_empty():
 			failure_message = density_failure
 		else:
@@ -1420,6 +1451,27 @@ func _verify_optional_start_hub_module(game_scene: PackedScene) -> bool:
 	await process_frame
 	if not failure_message.is_empty():
 		_fail("시작 거점 모듈 비활성화 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_optional_cyberpunk_theme_module(game_scene: PackedScene) -> bool:
+	var theme_free_game := game_scene.instantiate()
+	var theme_free_features = theme_free_game.get("features").duplicate(true)
+	theme_free_features.set("cyberpunk_theme_enabled", false)
+	theme_free_game.set("features", theme_free_features)
+	root.add_child(theme_free_game)
+	await process_frame
+	var failure_message := ""
+	if theme_free_game.get("cyberpunk_overlay") != null:
+		failure_message = "비활성화했지만 사이버펑크 표현 계층이 설치됐습니다."
+	elif (&"cyberpunk_theme" in theme_free_features.call(&"enabled_module_ids")):
+		failure_message = "비활성화한 표현 모듈이 활성 모듈 목록에 남았습니다."
+	root.remove_child(theme_free_game)
+	theme_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("사이버펑크 표현 선택 모듈 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -3169,7 +3221,8 @@ func _process(_delta: float) -> bool:
 
 		paused = false
 		print("WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction")
-		print("SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("CYBERPUNK_THEME_OK accent_02e5e1 pixel_korean scanlines static_noise blink_state optional_overlay")
+		print("SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx commercial_ofl_pixel_font vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font cyberpunk_theme cyberpunk_theme_optional cyberpunk_motion cyberpunk_static_noise web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

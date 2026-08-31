@@ -32,6 +32,22 @@ func _run() -> void:
 	root.add_child(game)
 	await process_frame
 	await process_frame
+	var cyberpunk_presentation = game.get("cyberpunk_overlay")
+	var cyberpunk_snapshot: Dictionary = (
+		cyberpunk_presentation.call(&"get_snapshot") if cyberpunk_presentation != null else {}
+	)
+	var cyberpunk_screen := (
+		cyberpunk_presentation.get_node_or_null("ScreenFX") as Control
+		if cyberpunk_presentation != null else null
+	)
+	if (
+		cyberpunk_screen == null
+		or cyberpunk_screen.mouse_filter != Control.MOUSE_FILTER_IGNORE
+		or cyberpunk_snapshot.get(&"accent_hex", "") != "#02e5e1"
+		or cyberpunk_screen.size != get_root().get_visible_rect().size
+	):
+		_fail("사이버펑크 화면 효과가 입력을 가로채거나 뷰포트를 채우지 못했습니다.")
+		return
 
 	if not await _verify_hub_input_session():
 		return
@@ -42,6 +58,7 @@ func _run() -> void:
 
 	paused = false
 	print("E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe")
+	print("E2E_CYBERPUNK_THEME_OK viewport_safe input_passthrough accent_02e5e1")
 	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
 	_cleanup_test_profile()
 	quit(0)

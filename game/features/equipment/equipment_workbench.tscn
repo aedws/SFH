@@ -9,11 +9,11 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.12, 0.78, 0.68, 0.9)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+border_color = Color(0.00784314, 0.898039, 0.882353, 0.9)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 shadow_color = Color(0, 0, 0, 0.65)
 shadow_size = 12
 
@@ -66,7 +66,7 @@ border_width_left = 3
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.2, 0.88, 0.76, 1)
+border_color = Color(0.00784314, 0.898039, 0.882353, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
@@ -78,14 +78,14 @@ border_width_left = 4
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.28, 1, 0.82, 1)
+border_color = Color(0.627451, 1, 0.988235, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="AccentButton"]
-bg_color = Color(0.12, 0.75, 0.61, 1)
+bg_color = Color(0.00784314, 0.898039, 0.882353, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
@@ -104,7 +104,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="ProgressFill"]
-bg_color = Color(0.18, 0.86, 0.68, 1)
+bg_color = Color(0.00784314, 0.898039, 0.882353, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -146,7 +146,7 @@ layout_mode = 2
 text = "U"
 theme_override_colors/font_color = Color(0.08, 0.12, 0.12, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.2)
-theme_override_colors/font_outline_color = Color(0.24, 1, 0.82, 1)
+theme_override_colors/font_outline_color = Color(0.00784314, 0.898039, 0.882353, 1)
 theme_override_constants/outline_size = 7
 theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
@@ -159,7 +159,7 @@ theme_override_constants/separation = -2
 [node name="Kicker" type="Label" parent="Margin/Content/Header/TitleBlock"]
 layout_mode = 2
 text = "TACTICAL LOADOUT / OPERATION INVENTORY"
-theme_override_colors/font_color = Color(0.24, 0.9, 0.76, 1)
+theme_override_colors/font_color = Color(0.00784314, 0.898039, 0.882353, 1)
 theme_override_font_sizes/font_size = 11
 
 [node name="WindowTitle" type="Label" parent="Margin/Content/Header/TitleBlock"]
@@ -207,7 +207,7 @@ theme_override_constants/separation = 6
 [node name="SectionKicker" type="Label" parent="Margin/Content/Main/SlotRail/Margin/Slots"]
 layout_mode = 2
 text = "EQUIPPED SLOTS"
-theme_override_colors/font_color = Color(0.26, 0.86, 0.73, 1)
+theme_override_colors/font_color = Color(0.00784314, 0.898039, 0.882353, 1)
 theme_override_font_sizes/font_size = 11
 
 [node name="SectionTitle" type="Label" parent="Margin/Content/Main/SlotRail/Margin/Slots"]
@@ -319,7 +319,7 @@ theme_override_constants/separation = 6
 unique_name_in_owner = true
 layout_mode = 2
 text = "MAIN WEAPON / EQUIPPED"
-theme_override_colors/font_color = Color(0.25, 0.88, 0.74, 1)
+theme_override_colors/font_color = Color(0.00784314, 0.898039, 0.882353, 1)
 theme_override_font_sizes/font_size = 11
 
 [node name="SelectedEquipmentName" type="Label" parent="Margin/Content/Main/Tabs/장비_장착/DetailPanel/Margin/Content"]
@@ -418,7 +418,7 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 text = "0개"
-theme_override_colors/font_color = Color(0.32, 0.88, 0.74, 1)
+theme_override_colors/font_color = Color(0.00784314, 0.898039, 0.882353, 1)
 
 [node name="EquipmentInventoryHint" type="Label" parent="Margin/Content/Main/Tabs/장비_장착/EquipmentInventoryPanel/Margin/Content"]
 layout_mode = 2
@@ -480,7 +480,7 @@ theme_override_constants/separation = 5
 [node name="ModuleLoadoutKicker" type="Label" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
 layout_mode = 2
 text = "EQUIPMENT MODULE LOADOUT"
-theme_override_colors/font_color = Color(0.28, 0.9, 0.78, 1)
+theme_override_colors/font_color = Color(0.00784314, 0.898039, 0.882353, 1)
 theme_override_font_sizes/font_size = 10
 
 [node name="SelectedModuleEquipment" type="Label" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
@@ -493,7 +493,7 @@ theme_override_font_sizes/font_size = 20
 unique_name_in_owner = true
 layout_mode = 2
 text = "모듈 0/3 · 코스트 0/8"
-theme_override_colors/font_color = Color(0.35, 0.9, 0.75, 1)
+theme_override_colors/font_color = Color(0.00784314, 0.898039, 0.882353, 1)
 
 [node name="ModuleCostBar" type="ProgressBar" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
 unique_name_in_owner = true
@@ -627,7 +627,7 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 text = "0개"
-theme_override_colors/font_color = Color(0.32, 0.88, 0.74, 1)
+theme_override_colors/font_color = Color(0.00784314, 0.898039, 0.882353, 1)
 
 [node name="Filters" type="HBoxContainer" parent="Margin/Content/Main/Tabs/모듈_파츠/ModificationInventoryPanel/Margin/Content"]
 layout_mode = 2
@@ -730,7 +730,7 @@ theme_override_constants/separation = 8
 [node name="StatusMarker" type="Label" parent="Margin/Content/Footer"]
 layout_mode = 2
 text = "◆"
-theme_override_colors/font_color = Color(0.27, 0.94, 0.76, 1)
+theme_override_colors/font_color = Color(0.00784314, 0.898039, 0.882353, 1)
 vertical_alignment = 1
 
 [node name="WorkbenchStatus" type="Label" parent="Margin/Content/Footer"]

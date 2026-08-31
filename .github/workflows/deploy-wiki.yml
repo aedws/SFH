@@ -54,18 +54,22 @@ jobs:
       - name: Test game contracts
         run: |
           test -s "$GITHUB_WORKSPACE/game/assets/fonts/nanum-gothic/OFL.txt"
+          test -s "$GITHUB_WORKSPACE/game/assets/fonts/galmuri/OFL.txt"
+          test -s "$GITHUB_WORKSPACE/game/assets/fonts/galmuri/Galmuri11-Bold.ttf"
           test -s "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/LICENSE.txt"
           test -s "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/SOURCE.md"
           grep -q "Creative Commons Zero" "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/LICENSE.txt"
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
           grep -q "SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing" /tmp/sfh-smoke.log
           grep -q "WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction" /tmp/sfh-smoke.log
+          grep -q "CYBERPUNK_THEME_OK accent_02e5e1 pixel_korean scanlines static_noise blink_state optional_overlay" /tmp/sfh-smoke.log
 
       - name: Test real-input play session
         run: |
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort ui_state_contracts_21 viewport_bounds modal_exclusivity hud_non_overlap operation_briefing" /tmp/sfh-e2e.log
           grep -q "E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe" /tmp/sfh-e2e.log
+          grep -q "E2E_CYBERPUNK_THEME_OK viewport_safe input_passthrough accent_02e5e1" /tmp/sfh-e2e.log
 
       - name: Export browser game
         run: |
@@ -114,7 +118,11 @@ jobs:
       - name: Verify combined Pages artifact
         run: |
           test -s .wiki-site/index.html
+          test -s .wiki-site/assets/fonts/galmuri/Galmuri11.woff2
+          test -s .wiki-site/assets/fonts/galmuri/OFL.txt
           test -s .wiki-site/javascripts/play-entry.js
+          grep -q '#02e5e1' .wiki-site/stylesheets/extra.css
+          grep -q 'Galmuri11.woff2' .wiki-site/stylesheets/extra.css
           grep -q 'class="sfh-operation-play" href="play/"' .wiki-site/index.html
           grep -q 'data-sfh-global-play' .wiki-site/javascripts/play-entry.js
           test -s .wiki-site/play/index.html

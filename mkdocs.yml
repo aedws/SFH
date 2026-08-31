@@ -72,6 +72,7 @@ nav:
       - design/index.md
       - 게임 개요: design/game-overview.md
       - MVP 범위: design/mvp-scope.md
+      - 사이버펑크 비주얼 테마: design/cyberpunk-visual-theme.md
   - 아키텍처:
       - architecture/index.md
       - 모듈 규칙: architecture/module-rules.md

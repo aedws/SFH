@@ -12,6 +12,7 @@ const SOCKET_LABELS := {
 	&"magazine": "탄창",
 	&"blade": "칼날",
 }
+const ACCENT := Color("02e5e1")
 
 var equipment_state
 var selected_socket_id: StringName = &""
@@ -77,7 +78,7 @@ func _draw() -> void:
 	)
 	draw_string(
 		font, Vector2(size.x - 112, 18), weapon.tags.minor_label,
-		HORIZONTAL_ALIGNMENT_RIGHT, 102, 11, Color(0.42, 0.88, 0.78)
+		HORIZONTAL_ALIGNMENT_RIGHT, 102, 11, ACCENT
 	)
 	_draw_weapon_schematic(weapon.tags.minor_tag)
 	var sockets: Array[StringName] = weapon.part_socket_ids
@@ -89,16 +90,18 @@ func _draw() -> void:
 
 
 func _draw_background() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.012, 0.017, 0.024, 0.98), true)
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.18, 0.3, 0.34, 0.9), false, 1.0)
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.004, 0.018, 0.024, 0.98), true)
+	draw_rect(Rect2(Vector2.ZERO, size), Color(ACCENT, 0.52), false, 1.0)
 	for x in range(12, int(size.x), 24):
-		draw_line(Vector2(x, 26), Vector2(x, size.y - 8), Color(0.08, 0.12, 0.14, 0.45), 1.0)
+		draw_line(Vector2(x, 26), Vector2(x, size.y - 8), Color(ACCENT, 0.055), 1.0)
+	for y in range(28, int(size.y), 8):
+		draw_line(Vector2(0, y), Vector2(size.x, y), Color(ACCENT, 0.018), 1.0)
 
 
 func _draw_weapon_schematic(minor_tag: StringName) -> void:
 	var center := Vector2(size.x * 0.5, size.y * 0.54)
 	var steel := Color(0.28, 0.34, 0.37, 0.9)
-	var edge := Color(0.5, 0.65, 0.68, 0.95)
+	var edge := Color(ACCENT, 0.78)
 	if minor_tag == &"pistol":
 		draw_rect(Rect2(center + Vector2(-45, -12), Vector2(86, 18)), steel, true)
 		draw_polygon(PackedVector2Array([
@@ -152,7 +155,7 @@ func _draw_socket_card(socket_id: StringName, rect: Rect2) -> void:
 	var installed := installed_part != null
 	var selected := selected_socket_id == socket_id
 	var fill := Color(0.08, 0.16, 0.16, 0.96) if installed else Color(0.055, 0.065, 0.075, 0.92)
-	var border := Color(0.28, 1.0, 0.78) if selected else Color(0.28, 0.76, 0.68) if installed else Color(0.26, 0.31, 0.34)
+	var border := Color("a0fffc") if selected else ACCENT if installed else Color(0.18, 0.3, 0.32)
 	draw_rect(rect, fill, true)
 	draw_rect(rect, border, false, 2.0 if selected else 1.0)
 	var anchor := Vector2(rect.get_center().x, rect.position.y)

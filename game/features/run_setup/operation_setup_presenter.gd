@@ -30,7 +30,7 @@ func install(overlay: Control) -> Dictionary:
 	var panel := overlay.get_node("Center/Panel") as PanelContainer
 	root_panel = panel
 	panel.custom_minimum_size = Vector2(1180.0, 660.0)
-	panel.add_theme_stylebox_override("panel", _style_box(Color("071018f7"), Color("247e7a"), 12, 2))
+	panel.add_theme_stylebox_override("panel", _style_box(Color("030d12f7"), Color("02e5e1"), 2, 2))
 	var margin := overlay.get_node("Center/Panel/Margin") as MarginContainer
 	for side in [&"margin_left", &"margin_top", &"margin_right", &"margin_bottom"]:
 		margin.add_theme_constant_override(side, 20)
@@ -49,7 +49,7 @@ func install(overlay: Control) -> Dictionary:
 	left_panel.name = "MissionBriefingPanel"
 	left_panel.custom_minimum_size = Vector2(548.0, 0.0)
 	left_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	left_panel.add_theme_stylebox_override("panel", _style_box(Color("091722e6"), Color("295b63"), 8, 1))
+	left_panel.add_theme_stylebox_override("panel", _style_box(Color("06151be6"), Color("087b7a"), 2, 1))
 	columns.add_child(left_panel)
 	var left_margin := _margin_container(18, 16, 18, 16)
 	left_panel.add_child(left_margin)
@@ -63,7 +63,7 @@ func install(overlay: Control) -> Dictionary:
 	right_panel.name = "ContractConfigurationPanel"
 	right_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	right_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	right_panel.add_theme_stylebox_override("panel", _style_box(Color("07131ce8"), Color("254a55"), 8, 1))
+	right_panel.add_theme_stylebox_override("panel", _style_box(Color("041116e8"), Color("07615f"), 2, 1))
 	columns.add_child(right_panel)
 	var right_margin := _margin_container(18, 14, 18, 14)
 	right_panel.add_child(right_margin)
@@ -80,7 +80,7 @@ func install(overlay: Control) -> Dictionary:
 	_move(subtitle, left)
 	context.text = "OPERATION BRIEF // TACTICAL INSERTION"
 	context.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	context.add_theme_color_override("font_color", Color("42ddc3"))
+	context.add_theme_color_override("font_color", Color("02e5e1"))
 	title.text = "작전 브리핑"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	title.add_theme_font_size_override("font_size", 28)
@@ -95,7 +95,7 @@ func install(overlay: Control) -> Dictionary:
 	preview = OPERATION_PREVIEW_SCRIPT.new()
 	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	left.add_child(preview)
-	var preview_badge := _label("LIVE TACTICAL PROJECTION  ·  START → EXTRACTION", 11, Color("a9eee2"))
+	var preview_badge := _label("LIVE TACTICAL PROJECTION  ·  START → EXTRACTION", 11, Color("8ffffc"))
 	preview_badge.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 	preview_badge.offset_left = 12.0
 	preview_badge.offset_top = -30.0
@@ -152,7 +152,7 @@ func install(overlay: Control) -> Dictionary:
 	risk_summary = _label("위험도 계산 중...", 12, Color("ffbf84"))
 	risk_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	right.add_child(risk_summary)
-	selection_summary = _label("계약 선택 대기", 12, Color("8de6d5"))
+	selection_summary = _label("계약 선택 대기", 12, Color("02e5e1"))
 	selection_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	right.add_child(selection_summary)
 	var launch_spacer := Control.new()
@@ -162,9 +162,9 @@ func install(overlay: Control) -> Dictionary:
 	launch_button.name = "OperationLaunchButton"
 	launch_button.custom_minimum_size = Vector2(0.0, 52.0)
 	launch_button.add_theme_font_size_override("font_size", 18)
-	launch_button.add_theme_stylebox_override("normal", _style_box(Color("0f493f"), Color("32d9b9"), 5, 2))
-	launch_button.add_theme_stylebox_override("hover", _style_box(Color("176455"), Color("7ff5dc"), 5, 2))
-	launch_button.add_theme_stylebox_override("pressed", _style_box(Color("0a332d"), Color("29ad98"), 5, 2))
+	launch_button.add_theme_stylebox_override("normal", _style_box(Color("063332"), Color("02e5e1"), 1, 2))
+	launch_button.add_theme_stylebox_override("hover", _style_box(Color("07504f"), Color("8ffffc"), 1, 2))
+	launch_button.add_theme_stylebox_override("pressed", _style_box(Color("02e5e1"), Color("c8fffe"), 1, 2))
 	right.add_child(launch_button)
 
 	var footer := content.get_node("Footer") as Label
@@ -241,10 +241,10 @@ func get_snapshot() -> Dictionary:
 func _style_tier_button(button: Button, selected: bool) -> void:
 	button.set_meta(&"selected", selected)
 	button.add_theme_stylebox_override("normal", _style_box(
-		Color("123e38") if selected else Color("111b22"),
-		Color("38dfbf") if selected else Color("324852"), 4, 2 if selected else 1
+		Color("053332") if selected else Color("081419"),
+		Color("02e5e1") if selected else Color("21434a"), 1, 2 if selected else 1
 	))
-	button.add_theme_color_override("font_color", Color("baffef") if selected else Color("c2ced1"))
+	button.add_theme_color_override("font_color", Color("d2fffe") if selected else Color("a9bdc0"))
 
 
 func _tier_id_from_button(button: Node) -> StringName:

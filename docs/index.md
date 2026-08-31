@@ -69,17 +69,17 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 28 TOPICS</span><span>기획 진행도 96% · 총기 파츠 소켓 UI</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 29 TOPICS</span><span>기획 진행도 96% · #02e5e1 CYBER UI</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>10 UPDATE BUNDLES &middot; BUILD 21 &middot; IMPROVE 21 &middot; CHANGE 12 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>11 UPDATE BUNDLES &middot; BUILD 23 &middot; IMPROVE 25 &middot; CHANGE 13 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>10</b><small>UPDATE BUNDLES</small></span>
-      <span><b>21</b><small>BUILD</small></span>
-      <span><b>21</b><small>IMPROVE</small></span>
-      <span><b>12</b><small>CHANGE</small></span>
+      <span><b>11</b><small>UPDATE BUNDLES</small></span>
+      <span><b>23</b><small>BUILD</small></span>
+      <span><b>25</b><small>IMPROVE</small></span>
+      <span><b>13</b><small>CHANGE</small></span>
       <span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -337,6 +337,33 @@ hide:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">파츠 카드 목록 → 무기 소켓 지도</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>숨겨진 기존 카드는 동작 호환용으로 유지하고 기본 표현을 위치 기반 도식으로 전환했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 11</small><b>#02e5e1 사이버펑크 테마 · 도트 문자·스캔·점멸 신호</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 게임과 위키를 하나의 전술 단말기 언어로 통합</strong>
+          <ul>
+            <li>게임 HUD·모달·미니맵과 위키 카드·검색·진행 표시의 핵심 신호색을 <code>#02e5e1</code>로 통일했습니다.</li>
+            <li>한글을 지원하는 Galmuri 도트 글꼴, 6px 스캔라인, 희박한 정적 노이즈, 상태 점멸과 각진 패널을 적용했습니다.</li>
+            <li>참조 이미지의 자산이나 UI 조각은 복제하지 않고 시각적 구조만 코드로 재해석했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>모듈·접근성</b><span>움직임과 노이즈는 독립 토글이며 위키는 reduced-motion에서 점멸·스캔을 멈춥니다. OFL 글꼴의 원문·고정 커밋·해시를 함께 보존했습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Presentation Theme 모듈</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>공통 Theme와 입력을 가로채지 않는 스캔·노이즈·상태 오버레이를 플레이 규칙 밖의 표현 계층으로 분리했습니다.</p><a href="design/cyberpunk-visual-theme/">시각 테마 규칙 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">상업 배포 가능한 도트 글꼴 경계</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>게임 TTF와 위키 WOFF2를 분리하고 SIL OFL 1.1 원문·출처·파일 해시를 기록했습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">게임 UI 공통 신호 체계</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>작전 설정·전투 HUD·가방·장비·스킬·대시·미니맵의 활성 상태와 테두리를 같은 토큰으로 맞췄습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">위키 전술 단말기 스타일</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>격자·스캔라인·도트 노이즈·각진 카드와 활성 점으로 검색과 최신 변경의 정보 계층을 강화했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">한글 도트 타이포</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>한글이 깨지지 않는 Galmuri 11 계열을 게임·브라우저 전달 형식에 맞게 적용했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">저비용 효과·동작 축소</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>정적 노이즈는 크기 변경 때만 다시 그리고 애니메이션은 얇은 스캔 바와 상태 점으로 제한했습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">화면별 청록 변형 → 단일 디자인 토큰</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>서로 다른 청록색과 둥근 패널을 핵심 신호색·얇은 선·각진 모서리 중심의 공통 언어로 교체했습니다.</p></div></details>
         </div>
       </div>
     </details>
