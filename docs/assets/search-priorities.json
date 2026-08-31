@@ -97,10 +97,10 @@
     },
     {
       "query": "장비 모듈",
-      "label": "장비 태그·등급 변형",
-      "description": "태그 슬롯 제약과 등급별 스킬 메커니즘",
+      "label": "장비 모듈 UI·태그 규칙",
+      "description": "적용 수치, 장착 코스트, 4열 카드, 추천·코스트 정렬과 태그 제약",
       "category": "장비",
-      "priority": 74
+      "priority": 87
     },
     {
       "query": "투자 보스 드랍",

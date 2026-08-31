@@ -10,6 +10,9 @@ const SLOT_LABELS := {
 	&"feet": "04  신발 방어구",
 }
 const WEAPON_SLOTS := [&"main", &"secondary"]
+const MODULE_UI_PRESENTER_SCRIPT := preload(
+	"res://game/features/equipment/equipment_module_ui_presenter.gd"
+)
 
 @onready var tabs: TabContainer = %Tabs
 @onready var key_badge: Label = %KeyBadge
@@ -29,6 +32,7 @@ const WEAPON_SLOTS := [&"main", &"secondary"]
 @onready var selected_module_equipment: Label = %SelectedModuleEquipment
 @onready var module_capacity_label: Label = %ModuleCapacityLabel
 @onready var module_cost_bar: ProgressBar = %ModuleCostBar
+@onready var module_effect_summary: Label = %ModuleEffectSummary
 @onready var installed_module_grid: GridContainer = %InstalledModuleGrid
 @onready var installed_part_grid: GridContainer = %InstalledPartGrid
 @onready var installed_selection_detail: Label = %InstalledSelectionDetail
@@ -48,8 +52,10 @@ var selected_inventory_entry: Dictionary = {}
 var selected_installed_kind: StringName = &""
 var selected_installed_id: StringName = &""
 var modification_filter: StringName = &"all"
+var modification_sort: StringName = &"compatibility"
 var slot_buttons: Dictionary = {}
 var read_only: bool = false
+var module_ui_presenter = MODULE_UI_PRESENTER_SCRIPT.new()
 
 
 func _ready() -> void:
@@ -70,6 +76,8 @@ func _ready() -> void:
 	%AllModificationFilter.pressed.connect(_set_modification_filter.bind(&"all"))
 	%ModuleFilter.pressed.connect(_set_modification_filter.bind(&"module"))
 	%PartFilter.pressed.connect(_set_modification_filter.bind(&"part"))
+	%CompatibilitySort.pressed.connect(_set_modification_sort.bind(&"compatibility"))
+	%CostSort.pressed.connect(_set_modification_sort.bind(&"cost"))
 	equip_selected_button.pressed.connect(_equip_selected_candidate)
 	unequip_equipment_button.pressed.connect(_unequip_selected_equipment)
 	install_selected_modification_button.pressed.connect(_install_selected_modification)
@@ -186,10 +194,16 @@ func _set_modification_filter(filter_id: StringName) -> void:
 	_refresh_modification_inventory()
 
 
+func _set_modification_sort(sort_id: StringName) -> void:
+	modification_sort = sort_id
+	_refresh_filter_buttons()
+	_refresh_modification_inventory()
+
+
 func _on_tab_changed(tab: int) -> void:
 	selected_inventory_entry.clear()
 	key_badge.text = "U" if tab == 0 else "E"
-	window_title.text = "캐릭터 장비 관리" if tab == 0 else "모듈 · 파츠 관리"
+	window_title.text = "캐릭터 장비 관리" if tab == 0 else "모듈 세팅 · 효과 관리"
 	_refresh()
 
 
@@ -330,6 +344,8 @@ func _refresh_installed_customization() -> void:
 		module_capacity_label.text = "모듈 0/0 · 코스트 0/0"
 		module_cost_bar.max_value = 1
 		module_cost_bar.value = 0
+		module_cost_bar.self_modulate = Color(0.45, 0.52, 0.56)
+		module_effect_summary.text = module_ui_presenter.call(&"applied_effects_text", null)
 		_add_empty_card(installed_module_grid, "장비 필요")
 		_add_empty_card(installed_part_grid, "장비 필요")
 		_refresh_installed_selection_detail()
@@ -343,21 +359,25 @@ func _refresh_installed_customization() -> void:
 	]
 	module_cost_bar.max_value = maxi(1, state.module_cost_limit())
 	module_cost_bar.value = state.used_module_cost()
+	var cost_ratio := float(state.used_module_cost()) / float(maxi(1, state.module_cost_limit()))
+	module_cost_bar.self_modulate = (
+		Color(1.0, 0.42, 0.24)
+		if cost_ratio >= 0.9
+		else Color(1.0, 0.78, 0.28) if cost_ratio >= 0.65
+		else Color(0.42, 1.0, 0.78)
+	)
+	module_effect_summary.text = module_ui_presenter.call(&"applied_effects_text", state)
 	for module_instance in state.installed_modules:
 		var selected: bool = (
 			selected_installed_kind == &"module"
 			and selected_installed_id == module_instance.instance_id
 		)
 		var card := _make_card(
-			"%s\nLv.%d · COST %d" % [
-				module_instance.definition.display_name,
-				module_instance.upgrade_level,
-				state.effective_module_cost(module_instance),
-			],
+			module_ui_presenter.call(&"installed_card_text", state, module_instance),
 			Color(0.35, 0.88, 0.76),
 			selected,
 			true,
-			Vector2(110, 68)
+			Vector2(96, 78)
 		)
 		card.pressed.connect(_select_installed.bind(&"module", module_instance.instance_id))
 		installed_module_grid.add_child(card)
@@ -396,28 +416,26 @@ func _refresh_modification_inventory() -> void:
 			continue
 		if modification_filter != &"all" and item_type != modification_filter:
 			continue
-		entries.append(entry)
+		var display_entry: Dictionary = entry.duplicate(true)
+		display_entry[&"ui_compatible"] = _can_install_entry(
+			_get_state(selected_slot_id), display_entry
+		)
+		entries.append(display_entry)
+	entries.sort_custom(_sort_modification_entries)
 	modification_inventory_count.text = "%d개" % entries.size()
 	var state := _get_state(selected_slot_id)
 	for entry in entries:
-		var compatible := _can_install_entry(state, entry)
+		var compatible := bool(entry.get(&"ui_compatible", false))
 		var selected: bool = (
 			not selected_inventory_entry.is_empty()
 			and selected_inventory_entry.get(&"instance_id") == entry.get(&"instance_id")
 		)
-		var definition: Resource = entry.get(&"linked_resource")
-		var type_label := "모듈" if entry.get(&"item_type") == &"module" else "고유 파츠"
 		var card := _make_card(
-			"%s\n%s · %s\n%s" % [
-				entry.get(&"display_name", "이름 없음"),
-				type_label,
-				_modification_meta(definition),
-				"장착 가능" if compatible else "조건 불일치",
-			],
+			module_ui_presenter.call(&"inventory_card_text", entry, compatible),
 			entry.get(&"panel_color", Color(0.2, 0.8, 0.7)),
 			selected,
 			compatible,
-			Vector2(160, 78)
+			Vector2(138, 92)
 		)
 		card.tooltip_text = String(entry.get(&"description", ""))
 		card.pressed.connect(_select_inventory_candidate.bind(entry, &"modification"))
@@ -962,9 +980,32 @@ func _refresh_filter_buttons() -> void:
 	%AllModificationFilter.button_pressed = modification_filter == &"all"
 	%ModuleFilter.button_pressed = modification_filter == &"module"
 	%PartFilter.button_pressed = modification_filter == &"part"
+	%CompatibilitySort.button_pressed = modification_sort == &"compatibility"
+	%CostSort.button_pressed = modification_sort == &"cost"
+
+
+func _sort_modification_entries(first: Dictionary, second: Dictionary) -> bool:
+	var first_value: Array = module_ui_presenter.call(
+		&"sort_value", first, bool(first.get(&"ui_compatible", false)), modification_sort
+	)
+	var second_value: Array = module_ui_presenter.call(
+		&"sort_value", second, bool(second.get(&"ui_compatible", false)), modification_sort
+	)
+	for index in mini(first_value.size(), second_value.size()):
+		if first_value[index] == second_value[index]:
+			continue
+		return first_value[index] < second_value[index]
+	return false
 
 
 func get_density_snapshot() -> Dictionary:
+	var metadata_card_count := 0
+	for child in modification_inventory_grid.get_children():
+		if child is Button and (
+			String((child as Button).text).begins_with("MOD  |")
+			or String((child as Button).text).begins_with("PART  |")
+		):
+			metadata_card_count += 1
 	return {
 		&"window_size": size,
 		&"slot_rail_width": %SlotRail.custom_minimum_size.x,
@@ -972,7 +1013,12 @@ func get_density_snapshot() -> Dictionary:
 		&"equipment_columns": equipment_inventory_grid.columns,
 		&"modification_columns": modification_inventory_grid.columns,
 		&"equipment_card_size": Vector2(190, 78),
-		&"modification_card_size": Vector2(160, 78),
+		&"modification_card_size": Vector2(138, 92),
+		&"module_effect_summary_visible": module_effect_summary.visible,
+		&"module_effect_line_count": module_effect_summary.text.count("\n") + 1,
+		&"module_inventory_metadata_card_count": metadata_card_count,
+		&"module_sort_control_count": 2,
+		&"modification_sort": modification_sort,
 		&"active_tab": tabs.current_tab,
 	}
 

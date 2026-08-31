@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 30 TOPICS</span><span>96% · HIT FEEDBACK PHASE 1</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 31 TOPICS</span><span>96% · MODULE UI REFERENCE PASS</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,13 +76,13 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>8 UPDATE BUNDLES &middot; BUILD 17 &middot; IMPROVE 15 &middot; CHANGE 10 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>9 UPDATE BUNDLES &middot; BUILD 19 &middot; IMPROVE 18 &middot; CHANGE 11 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>8</b><small>UPDATE BUNDLES</small></span>
-      <span><b>17</b><small>BUILD</small></span>
-      <span><b>15</b><small>IMPROVE</small></span>
-      <span><b>10</b><small>CHANGE</small></span>
+      <span><b>9</b><small>UPDATE BUNDLES</small></span>
+      <span><b>19</b><small>BUILD</small></span>
+      <span><b>18</b><small>IMPROVE</small></span>
+      <span><b>11</b><small>CHANGE</small></span>
       <span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -290,6 +290,33 @@ tags:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">전역 멈춤 대신 국소 경직</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>다수 적과 Web 입력 응답을 유지하도록 맞은 액터만 짧게 멈춥니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 9</small><b>모듈 UI 참조 재설계 · 세팅 결과와 후보 비교 일원화</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>세팅 보드</b> · 선택 장비명·모듈 슬롯·사용 코스트와 장착 카드의 레벨·태그를 한 영역으로 묶었습니다.</li>
+            <li><b>적용 결과</b> · 장착 모듈의 스탯 수정자와 특수 기능 수를 읽어 왼쪽 적용 수치로 합산 표시합니다.</li>
+            <li><b>후보 카드</b> · MOD/PART, 코스트·소켓·태그·호환 상태를 4열 카드에서 선택 전에 비교합니다.</li>
+            <li><b>탐색</b> · 전체·모듈·파츠 필터에 현재 장비 추천 우선과 기본 코스트 정렬을 결합했습니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>검증</b><span>실제 E 입력, 1280×720 경계, 4열·메타 카드·적용 수치·정렬 상태와 장착 후 요약 갱신을 자동 검사합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">모듈 UI Presenter</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비·가방 공개 상태를 카드와 적용 수치로 바꾸는 표현 경계를 추가했습니다.</p><a href="../features/equipment-customization/">화면·계약 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">표시 전용 정렬 계약</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>추천과 코스트 순서가 가방 원본 및 장착 판정에 영향을 주지 않습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 3</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">합산 적용 수치</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장착 결과를 최대 체력·방어·이동·피해 수치와 특수 기능 수로 표시합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">4열 모듈 카드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>1280×720에서 후보 비교량을 늘리면서 카드 메타 정보를 보존했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">용량 위험 색상</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>코스트 사용률을 청록·황색·적색 단계로 구분합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">목록 중심 → 결과 중심 정보 계층</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>선택 장비, 현재 세팅 결과, 보유 후보 순서로 시선 흐름을 재배치했습니다.</p></div></details>
         </div>
       </div>
     </details>
