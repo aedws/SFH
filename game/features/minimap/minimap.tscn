@@ -18,6 +18,7 @@ shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 5
 
 [node name="TacticalMinimap" type="PanelContainer"]
+z_index = 90
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -57,7 +58,7 @@ size_flags_horizontal = 3
 
 [node name="Legend" type="Label" parent="Margin/Content/Header"]
 layout_mode = 2
-text = "● YOU  ◆ EXIT"
+text = "M 축소 · 표시 지점 클릭 워프"
 theme_override_colors/font_color = Color(0.66, 0.76, 0.78, 1)
 theme_override_font_sizes/font_size = 9
 
@@ -65,5 +66,7 @@ theme_override_font_sizes/font_size = 9
 unique_name_in_owner = true
 custom_minimum_size = Vector2(196, 126)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("2_view")

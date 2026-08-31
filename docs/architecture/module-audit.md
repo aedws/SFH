@@ -622,8 +622,10 @@ Presenter는 도메인 결과를 새로 계산하지 않습니다. 비용·배�
 |---|---|---|
 | 맵 | `get_minimap_snapshot()` | `Game` 조립부 |
 | 미니맵 | `configure(snapshot, tracked_actor, display_name)` | `Game` 조립부 |
+| 미니맵 | `set_warp_targets`, `warp_requested` | `RoomWarpSystem` 조립 연결 |
+| 방 워프 | `get_warp_targets`, `request_warp`, `get_snapshot` | 미니맵·E2E |
 
-스냅샷에는 셀 경계, 셀 크기, 바닥·방해물 좌표, 시작·탈출 위치만 들어갑니다. 미니맵은 맵의 방 배열, 길찾기 객체, 구체 클래스에 접근하지 않습니다.
+스냅샷에는 셀 경계, 셀 크기, 바닥·방해물 좌표, 시작·탈출 위치와 방별 4방향 연결 사본만 들어갑니다. 미니맵은 맵의 방 배열, 길찾기 객체, 구체 클래스에 접근하지 않으며 워프 가능 여부도 계산하지 않습니다.
 
 ## 캐릭터 장비 공개 계약
 
@@ -774,11 +776,29 @@ Presenter는 도메인 결과를 새로 계산하지 않습니다. 비용·배�
 
 E2E 실행기는 기능 내부 구현을 복제하지 않습니다. 실제 InputMap 이벤트와 공개 상호작용·정산 계약을 통해 모듈을 연결하며, 특정 기능의 규칙 검증은 기존 단위형 스모크에 남깁니다. 이 분리로 세부 모듈 교체와 플레이 흐름 회귀를 서로 다른 실패 메시지로 진단할 수 있습니다.
 
+## 조기 탈출·M 방 워프·크레딧 보상 재감사 (2026-09-01)
+
+| 검사 항목 | 결과 | 근거 |
+|---|---|---|
+| 지도 토폴로지 캡슐화 | 통과 | 맵은 방 배열 대신 `open_directions`, `is_four_way`, 중심·경계 사본만 공개 |
+| 표시·이동 분리 | 통과 | `TacticalMinimap`은 확대·표식·클릭 Signal만, `RoomWarpSystem`은 허용 조건과 실제 이동만 소유 |
+| 방 진행도 분리 | 통과 | 워프 서비스는 `is_room_completed()`·`get_snapshot()` 공개 계약만 사용하고 완료 Dictionary에 접근하지 않음 |
+| 전투 안전 | 통과 | 활성 봉쇄 방이 있으면 시작·끝을 포함한 모든 워프 요청을 재검증해 거부 |
+| 보상 수치 데이터화 | 통과 | 박스 1~5개, 크기·난수 보정, 티어별 크레딧 범위를 `RoomEncounterConfig` Resource가 소유 |
+| 경제 연결 | 통과 | 보상 박스는 크레딧 Signal만 발행하고 `Game` 조립부가 공개 `CreditLedger.add_carried()`로 전달 |
+| 탈출 원인 분리 | 통과 | 시간과 전투 방 완주가 공통 `_unlock_extraction()`을 호출하며 탈출 구역은 개방 원인을 모름 |
+| 선택 제거 | 통과 | `room_warp_enabled=false`에서 방 전투·미니맵은 유지되고 워프 서비스만 미설치됨 |
+| 실제 입력 회귀 | 통과 | 물리 M→확장→후보 클릭→워프→자동 축소, 미클리어 거부, 조기 탈출과 F 보상 회수를 E2E 검증 |
+| 성능 예산 | 통과 | 대형 34기·전기 효과 3개에서 평균 6.894ms, 피크 8.948ms, Node 최대 1,773개 |
+
+기존 `RoomRewardPickup`은 제거했습니다. 방 교전 내부 경험치라는 별도 경제 경로가 남지 않고, 로컬 `RoomCreditRewardBox`가 일반 파밍과 같은 F 상호작용 Signal 계약만 구현합니다. 따라서 `loot` 폴더의 Scene을 직접 참조하지 않습니다. 입력 카탈로그는 `toggle_map`을 추가해 22개 Action이 되었으며 M 역시 K 화면에서 변경·저장할 수 있습니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.
 - `EnemySpawner`는 기본 적 Scene을 참조합니다. 이는 `spawning → enemies` 선언 의존성입니다.
-- `RoomEncounterSystem`은 맵·적 생성기의 공개 메서드만 사용합니다. 이는 Manifest에 선언된 `room_encounters → map_generation, spawning` 의존성입니다.
+- `RoomEncounterSystem`은 맵·적 생성·크레딧의 공개 계약만 사용합니다. 이는 Manifest에 선언된 `room_encounters → map_generation, spawning, credits` 의존성입니다.
+- `RoomWarpSystem`은 맵·방 진행도 공개 계약만 사용합니다. 이는 `room_warp → room_encounters, minimap` 선언 의존성입니다.
 - `Game`은 기본 장비 Scene과 선택된 로드아웃 Resource 경로를 알고, 장비는 플레이어의 스탯 적용 공개 메서드만 압니다.
 - `Game`은 인벤토리 카탈로그와 I/U 패널 Scene 경로를 알고, 가방과 장비 시스템은 서로의 내부 Node 경로를 참조하지 않습니다.
 - `Game`은 장비, 밸런스, 자동 무기의 조립 순서를 알지만 각 모듈은 서로의 내부 Node 경로를 참조하지 않습니다.
@@ -796,7 +816,7 @@ E2E 실행기는 기능 내부 구현을 복제하지 않습니다. 실제 Input
 .\scripts\wiki.cmd build
 ```
 
-성공하면 출력에 `persistent_magnetic_field`, `room_triggered_encounter`, `room_door_lock`, `room_clear_reward`, `room_encounters_optional`, `finite_spawn_budget`, `dynamic_hack_slash_movement`, `fog_of_war`, `minimap_full_map`, `target_provider`, `run_buffs`, `meta_experience`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
+성공하면 출력에 `persistent_magnetic_field`, `room_triggered_encounter`, `room_door_lock`, `room_credit_boxes_1_5`, `room_encounters_optional`, `room_warp_optional`, `minimap_expanded_warp`, `early_extraction`, `finite_spawn_budget`, `dynamic_hack_slash_movement`, `fog_of_war`, `minimap_full_map`, `target_provider`, `run_buffs`, `meta_experience`, `modular_progression`이 기존 검증 항목과 함께 포함됩니다.
 
 ## 다음 개선 시점
 

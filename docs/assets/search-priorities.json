@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-08-31",
+  "updated": "2026-09-01",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
@@ -35,7 +35,7 @@
     {
       "query": "K 키 설정",
       "label": "K 자유 키 설정·영구 저장",
-      "description": "21개 Action, 중복 교환, ESC 안전 고정과 브라우저 저장",
+      "description": "M 확장 지도를 포함한 22개 Action, 중복 교환, ESC 안전 고정과 브라우저 저장",
       "category": "입력",
       "priority": 91
     },
@@ -84,9 +84,16 @@
     {
       "query": "방 진입 전투",
       "label": "방 진입·핵앤슬래시 최소 무리",
-      "description": "실제 방 진입 생성, 12·18·24기 하드 최소 무리, 문 봉쇄·클리어 보상",
+      "description": "실제 방 진입 생성, 12·18·24기 하드 최소 무리, 문 봉쇄·F 크레딧 박스 1~5개",
       "category": "전투",
       "priority": 92
+    },
+    {
+      "query": "M 확장 지도 워프",
+      "label": "M 전술 지도·조건부 방 워프",
+      "description": "시작·끝·클리어 4방향 교차 방 클릭 이동과 전투 중 차단",
+      "category": "작전",
+      "priority": 93
     },
     {
       "query": "반응형 UI",

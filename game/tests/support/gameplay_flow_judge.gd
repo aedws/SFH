@@ -59,8 +59,8 @@ func _judge_room_encounter(evidence: Dictionary, errors: PackedStringArray) -> v
 		errors.append("방 클리어 뒤 보상이 생성되지 않았습니다.")
 	if int(collected.get(&"rewards_collected", 0)) <= int(cleared.get(&"rewards_collected", 0)):
 		errors.append("플레이어가 방 보상을 회수하지 못했습니다.")
-	if float(evidence.get(&"experience_after", 0.0)) <= float(evidence.get(&"experience_before", 0.0)):
-		errors.append("방 보상 회수 뒤 내부 경험치가 증가하지 않았습니다.")
+	if int(evidence.get(&"credits_after", 0)) <= int(evidence.get(&"credits_before", 0)):
+		errors.append("방 보상 박스 회수 뒤 휴대 크레딧이 증가하지 않았습니다.")
 
 
 func _judge_ten_minute_session(evidence: Dictionary, errors: PackedStringArray) -> void:

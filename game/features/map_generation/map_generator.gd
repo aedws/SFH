@@ -148,11 +148,15 @@ func get_room_encounter_snapshot() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for room_index in range(rooms.size()):
 		var room := rooms[room_index]
+		var doorways := _get_room_doorways(room)
+		var open_directions := _get_open_directions(doorways)
 		result.append({
 			&"room_index": room_index,
 			&"world_rect": _room_world_rect(room, false),
 			&"center": _cell_center(_room_center_cell(room)),
-			&"doorways": _get_room_doorways(room),
+			&"doorways": doorways,
+			&"open_directions": open_directions,
+			&"is_four_way": open_directions.size() == 4,
 			&"is_start_room": room_index == 0,
 			&"is_extraction_room": room_index == extraction_room_index,
 		})
@@ -255,6 +259,8 @@ func get_minimap_snapshot() -> Dictionary:
 		&"obstacle_cells": obstacle_snapshot,
 		&"start_position": start_position,
 		&"extraction_position": extraction_position,
+		&"rooms": get_room_encounter_snapshot(),
+		&"used_seed": used_seed,
 	}
 
 
@@ -688,6 +694,28 @@ func _get_room_doorways(room: Rect2i) -> Array[Dictionary]:
 	for x in range(room.position.x, room.end.x):
 		_append_doorway_if_open(result, room, Vector2i(x, room.position.y), Vector2i.UP)
 		_append_doorway_if_open(result, room, Vector2i(x, room.end.y - 1), Vector2i.DOWN)
+	return result
+
+
+func _get_open_directions(doorways: Array[Dictionary]) -> Array[StringName]:
+	var seen := {}
+	for doorway in doorways:
+		var outward := Vector2(doorway.get(&"outward", Vector2.ZERO))
+		var direction := &""
+		if outward == Vector2.LEFT:
+			direction = &"west"
+		elif outward == Vector2.RIGHT:
+			direction = &"east"
+		elif outward == Vector2.UP:
+			direction = &"north"
+		elif outward == Vector2.DOWN:
+			direction = &"south"
+		if not direction.is_empty():
+			seen[direction] = true
+	var result: Array[StringName] = []
+	for direction in [&"north", &"east", &"south", &"west"]:
+		if seen.has(direction):
+			result.append(direction)
 	return result
 
 

@@ -88,7 +88,7 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK" /tmp/sfh-e2e.log
           grep -q "ui_state_contracts_23 player_perception_contracts_23 gameplay_flows_5" /tmp/sfh-e2e.log
-          grep -q "physical_lmb_attack hit_kill_drop room_entry_lock_clear_reward medium_large_600s fog_room_corridor_transition" /tmp/sfh-e2e.log
+          grep -q "physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition" /tmp/sfh-e2e.log
           grep -q "E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe" /tmp/sfh-e2e.log
           grep -q "E2E_CYBERPUNK_THEME_OK viewport_safe input_passthrough accent_02e5e1" /tmp/sfh-e2e.log
           grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_23 units_9" /tmp/sfh-e2e.log

@@ -50,7 +50,7 @@ hide:
       </a>
       <div class="sfh-operation-meta" aria-label="현재 플레이 빌드 요약">
         <span><b>3</b><small>MAP TIERS</small></span>
-        <span><b>K · 21 ACTIONS</b><small>FREE KEY MAPPING</small></span>
+        <span><b>K · 22 ACTIONS</b><small>FREE KEY MAPPING</small></span>
         <span><b>PASS</b><small>WEB BUILD</small></span>
       </div>
     </div>
@@ -69,10 +69,42 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 38 TOPICS</span><span>ROOM HORDE · 12 / 18 / 24 MIN</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>3 DAYS · 39 TOPICS</span><span>M MAP · CLEAR → EARLY EXIT</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLE · BUILD 4 · IMPROVE 4 · CHANGE 3 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-daily-overview">
+      <span><b>1</b><small>UPDATE BUNDLE</small></span><span><b>4</b><small>BUILD</small></span><span><b>4</b><small>IMPROVE</small></span><span><b>3</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span>
+    </div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 방 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 탐색을 끝낸 플레이어가 남은 시간을 기다리지 않고 보상을 회수해 탈출할 수 있습니다.</strong>
+          <ul>
+            <li>전투 가능한 방을 모두 확보하거나 남은 적 생성 예산으로 최소 무리를 만들 수 없으면 탈출 신호를 즉시 개방합니다.</li>
+            <li><code>M</code>으로 전체 지도를 확대하고 시작·탈출·클리어한 4방향 교차 방을 클릭해 워프합니다. 봉쇄 전투 중과 미클리어 일반 방은 거부합니다.</li>
+            <li>방 중앙 자동 획득 경험치 1개를 없애고, 방 크기와 난수로 1~5개의 F 상호작용 크레딧 박스를 생성합니다.</li>
+            <li>대형 34기 교전에서 평균 6.894ms, 최대 8.948ms로 60 FPS CPU 예산을 유지했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>모듈 판단</b><span>지도는 4방향 연결 스냅샷, 미니맵은 표시·클릭 요청, RoomWarpSystem은 이동 검증, RoomEncounterSystem은 교전·보상 정책만 소유합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">전투 방 완주 조기 탈출</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>시간 개방과 동일한 탈출 잠금 계약을 재사용해 완주 즉시 방어전을 시작할 수 있습니다.</p><a href="features/raid-setup-extraction/">탈출 규격 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">M 확장 전술 지도</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>평소에는 저점유 미니맵, M 입력 뒤에는 후보를 클릭하는 반응형 전체 지도로 전환합니다.</p><a href="features/minimap/">지도 규격 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">조건부 방 워프 서비스</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>시작·끝 지역과 클리어한 4방향 교차 방만 허용하고 방 봉쇄 중 이동을 차단합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">1~5개 크레딧 보상 박스</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>방 면적 보정과 난수를 결합하고 F로 직접 회수해야 휴대 크레딧에 반영됩니다.</p><a href="features/room-encounters/">방 보상 규격 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 4</h3><p>탐색 종료 동선, 전체 지도 조작성, 보상 회수 감각, 실제 입력 E2E를 함께 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>🧭 수정 · 3</h3><p>방 보상을 내부 경험치에서 크레딧으로, 키 카탈로그를 22개 Action으로, 맵 스냅샷을 방향 연결 정보 포함 형태로 수정했습니다.</p></div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>확장 지도 초기 레이아웃에서 0 이하 크기 사각형이 생길 수 있던 클릭 판정을 양수 영역으로 보정했습니다.</p></div>
+      </div>
+    </details>
+  </div>
+</details>
+<details class="sfh-day">
   <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>20 UPDATE BUNDLES &middot; BUILD 42 &middot; IMPROVE 62 &middot; CHANGE 24 &middot; FIX 8</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">

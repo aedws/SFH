@@ -152,7 +152,7 @@
             "documents": [
               {"label": "랜덤 맵 생성", "source": "features/map-generation.md", "route": "features/map-generation/", "summary": "규모별 방·통로·건물 생성"},
               {"label": "전장의 안개", "source": "features/fog-of-war.md", "route": "features/fog-of-war/", "summary": "방·통로·정면 시야 규칙"},
-              {"label": "전술 미니맵", "source": "features/minimap.md", "route": "features/minimap/", "summary": "전체 작전 구조와 현재 위치"},
+              {"label": "전술 미니맵", "source": "features/minimap.md", "route": "features/minimap/", "summary": "M 확장 지도와 조건부 방 워프"},
               {"label": "작전 선택과 탈출", "source": "features/raid-setup-extraction.md", "route": "features/raid-setup-extraction/", "summary": "규모 선택·진입 비용·탈출"},
               {"label": "탈출 방어전과 결과 정산", "source": "features/extraction-defense-results.md", "route": "features/extraction-defense-results/", "summary": "카운트다운·성공·실패 정산"},
               {"label": "투입 비용·지역·난이도 계약", "source": "features/operation-contracts.md", "route": "features/operation-contracts/", "summary": "투자와 위험·보상 데이터 연결"},
@@ -166,7 +166,7 @@
             "description": "이동·공격·스킬·피드백",
             "documents": [
               {"label": "플레이어", "source": "features/player.md", "route": "features/player/", "summary": "탑다운 이동·대시·조작감"},
-              {"label": "K 키 설정과 영구 바인딩", "source": "features/key-mapping.md", "route": "features/key-mapping/", "summary": "21개 Action 재설정과 저장"},
+              {"label": "K 키 설정과 영구 바인딩", "source": "features/key-mapping.md", "route": "features/key-mapping/", "summary": "M 지도를 포함한 22개 Action 재설정과 저장"},
               {"label": "부분 체력 회복", "source": "features/health-recovery.md", "route": "features/health-recovery/", "summary": "회복 규칙과 제한"},
               {"label": "전투 스킬과 쿨타임 HUD", "source": "features/combat-skills.md", "route": "features/combat-skills/", "summary": "점멸·자기장·기동 가속"},
               {"label": "타격감과 피격 피드백", "source": "features/hit-feedback.md", "route": "features/hit-feedback/", "summary": "섬광·넉백·충격·카메라 반응"},
@@ -199,7 +199,7 @@
             "description": "핵앤슬래시 물량과 방 봉쇄",
             "documents": [
               {"label": "적과 증원형 생성 시스템", "source": "features/enemies.md", "route": "features/enemies/", "summary": "규모별 물량·분리·재생성 한계"},
-              {"label": "방 진입 전투와 봉쇄 보상", "source": "features/room-encounters.md", "route": "features/room-encounters/", "summary": "문 폐쇄·클리어·보상 생성"},
+              {"label": "방 진입 전투와 봉쇄 보상", "source": "features/room-encounters.md", "route": "features/room-encounters/", "summary": "문 폐쇄·1~5개 크레딧 박스·조기 탈출"},
               {"label": "적 체력과 방어력", "source": "features/enemy-defense.md", "route": "features/enemy-defense/", "summary": "적 생존 스탯과 상태 바"}
             ]
           }
