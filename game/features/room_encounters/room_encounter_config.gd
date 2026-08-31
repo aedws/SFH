@@ -4,20 +4,20 @@ extends Resource
 ## 등급별 방 전투 수량과 보상을 데이터로 관리합니다.
 
 @export_category("Small")
-@export_range(1, 100, 1) var small_minimum_enemies: int = 6
-@export_range(1, 100, 1) var small_maximum_enemies: int = 8
+@export_range(1, 100, 1) var small_minimum_enemies: int = 12
+@export_range(1, 100, 1) var small_maximum_enemies: int = 18
 @export_range(1, 100, 1) var small_maximum_encounters: int = 12
 @export_range(1, 1000, 1) var small_reward_experience: int = 4
 
 @export_category("Medium")
-@export_range(1, 100, 1) var medium_minimum_enemies: int = 8
-@export_range(1, 100, 1) var medium_maximum_enemies: int = 11
+@export_range(1, 100, 1) var medium_minimum_enemies: int = 18
+@export_range(1, 100, 1) var medium_maximum_enemies: int = 26
 @export_range(1, 100, 1) var medium_maximum_encounters: int = 18
 @export_range(1, 1000, 1) var medium_reward_experience: int = 6
 
 @export_category("Large")
-@export_range(1, 100, 1) var large_minimum_enemies: int = 10
-@export_range(1, 100, 1) var large_maximum_enemies: int = 14
+@export_range(1, 100, 1) var large_minimum_enemies: int = 24
+@export_range(1, 100, 1) var large_maximum_enemies: int = 34
 @export_range(1, 100, 1) var large_maximum_encounters: int = 24
 @export_range(1, 1000, 1) var large_reward_experience: int = 8
 

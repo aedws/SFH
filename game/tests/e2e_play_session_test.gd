@@ -439,10 +439,18 @@ func _verify_run_augment_choice() -> bool:
 		return false
 	var selected_before := int(run_buffs.call(&"selected_buff_count"))
 	await _tap_key(KEY_2)
-	if selector.visible or paused:
-		return _fail("실제 2 입력 뒤 증강 선택 화면이 닫히고 전투가 재개되지 않았습니다.")
 	if int(run_buffs.call(&"selected_buff_count")) != selected_before + 1:
 		return _fail("실제 2 입력으로 두 번째 증강이 런 상태에 적용되지 않았습니다.")
+	var chained_choices := 0
+	while selector.visible:
+		chained_choices += 1
+		if chained_choices > 16:
+			return _fail("연속 레벨업 증강 선택이 16회를 넘어서도 종료되지 않습니다.")
+		await _tap_key(KEY_1)
+	await process_frame
+	var pending_levels: Array = game.get("pending_buff_levels")
+	if selector.visible or not pending_levels.is_empty() or paused:
+		return _fail("대기 중인 연속 증강을 모두 선택한 뒤 전투가 재개되지 않았습니다.")
 	if not _judge_ui_state(&"combat", "증강 선택 후 전투 복원"):
 		return false
 	return true

@@ -43,6 +43,12 @@ func _judge_room_encounter(evidence: Dictionary, errors: PackedStringArray) -> v
 		errors.append("방 진입이 전투를 활성화하지 못했습니다.")
 	if int(active.get(&"active_enemy_count", 0)) <= 0:
 		errors.append("방 진입 후 적이 생성되지 않았습니다.")
+	if active.get(&"last_trigger_source", &"none") != &"room_entry":
+		errors.append("플레이어의 실제 방 진입이 교전을 시작하지 않았습니다.")
+	if int(active.get(&"active_enemy_count", 0)) < int(active.get(&"minimum_horde_size", 1)):
+		errors.append("방 적 무리가 티어별 핵앤슬래시 최소 스폰량보다 적습니다.")
+	if not bool(active.get(&"minimum_horde_met", false)):
+		errors.append("방 교전이 최소 무리 보장 정책을 충족하지 못했습니다.")
 	if int(active.get(&"locked_door_count", 0)) <= 0:
 		errors.append("적 생성 후 문이 봉쇄되지 않았습니다.")
 	if int(cleared.get(&"active_room_index", -2)) != -1:
