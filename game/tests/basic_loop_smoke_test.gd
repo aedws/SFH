@@ -63,6 +63,12 @@ const SMART_TARGETING_PATH := "res://game/features/smart_targeting/configs/defau
 const EXTRACTION_SCENE_PATH := "res://game/features/extraction/extraction_zone.tscn"
 const EXTRACTION_DEFENSE_CONFIG_PATH := "res://game/features/extraction/configs/default_extraction_defense.tres"
 const KOREAN_FONT_PATH := "res://game/assets/fonts/nanum-gothic/NanumGothic-Regular.ttf"
+const KEY_MAPPING_SERVICE_PATH := "res://game/features/key_mapping/key_mapping_service.tscn"
+const KEY_MAPPING_PANEL_PATH := "res://game/features/key_mapping/key_mapping_panel.tscn"
+const KEY_MAPPING_CATALOG_PATH := "res://game/features/key_mapping/configs/default_key_mapping.tres"
+const KEY_MAPPING_TEST_STORAGE_PATH := "user://sfh_key_mapping_smoke.json"
+const COMMERCIAL_VFX_SOURCE_PATH := "res://game/assets/vfx/kenney_particle_pack/SOURCE.md"
+const COMMERCIAL_VFX_LICENSE_PATH := "res://game/assets/vfx/kenney_particle_pack/LICENSE.txt"
 const WEB_EXPORT_DATA_PATHS := [
 	"game/features/weapon_balance/data/weapon_balance.csv",
 	"game/features/growth_balance/data/run_buff_balance.csv",
@@ -83,6 +89,8 @@ func _init() -> void:
 	if not _verify_map_tiers():
 		return
 	if not await _verify_player_sustain_and_movement():
+		return
+	if not await _verify_key_mapping_and_commercial_vfx():
 		return
 	if not await _verify_combat_resource_modules():
 		return
@@ -177,6 +185,111 @@ func _verify_korean_ui_font() -> bool:
 		if not korean_font.has_char(character.unicode_at(0)):
 			return _fail("프로젝트 전역 폰트에 한글 글리프가 없습니다: %s" % character)
 	return true
+
+
+func _verify_key_mapping_and_commercial_vfx() -> bool:
+	if FileAccess.file_exists(KEY_MAPPING_TEST_STORAGE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(KEY_MAPPING_TEST_STORAGE_PATH))
+	for required_path in [
+		KEY_MAPPING_SERVICE_PATH,
+		KEY_MAPPING_PANEL_PATH,
+		KEY_MAPPING_CATALOG_PATH,
+		COMMERCIAL_VFX_SOURCE_PATH,
+		COMMERCIAL_VFX_LICENSE_PATH,
+	]:
+		if not ResourceLoader.exists(required_path) and not FileAccess.file_exists(required_path):
+			return _fail("키 설정·상업 VFX 필수 파일이 없습니다: %s" % required_path)
+	var license_file := FileAccess.open(COMMERCIAL_VFX_LICENSE_PATH, FileAccess.READ)
+	var source_file := FileAccess.open(COMMERCIAL_VFX_SOURCE_PATH, FileAccess.READ)
+	if license_file == null or "Creative Commons Zero" not in license_file.get_as_text():
+		return _fail("반입 VFX의 CC0 라이선스 원문이 보존되지 않았습니다.")
+	if source_file == null or "ab7086639ee73be31abd87feb21bf1402d4e8144" not in source_file.get_as_text():
+		return _fail("반입 VFX의 원본 커밋 추적 기록이 없습니다.")
+	for profile_path in [
+		"res://game/features/combat_skills/effects/profiles/blink_electric.tres",
+		"res://game/features/combat_skills/effects/profiles/magnetic_electric.tres",
+		"res://game/features/combat_skills/effects/profiles/speed_electric.tres",
+	]:
+		var profile := load(profile_path) as Resource
+		if profile == null or profile.get("accent_texture") == null:
+			return _fail("전기 이펙트 프로필에 CC0 강조 텍스처가 연결되지 않았습니다.")
+		if int(profile.get("accent_count")) <= 0 or int(profile.get("accent_count")) > 16:
+			return _fail("전기 이펙트 강조 드로우 수가 1~16 예산을 벗어났습니다.")
+
+	var sandbox := Node.new()
+	root.add_child(sandbox)
+	var service := (load(KEY_MAPPING_SERVICE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(service)
+	if not service.call(
+		&"configure", load(KEY_MAPPING_CATALOG_PATH), KEY_MAPPING_TEST_STORAGE_PATH, false
+	):
+		sandbox.queue_free()
+		return _fail("키 설정 서비스를 구성하지 못했습니다.")
+	var initial_snapshot: Dictionary = service.call(&"get_snapshot")
+	if int(initial_snapshot.get(&"binding_count", 0)) != 21:
+		sandbox.queue_free()
+		return _fail("변경 가능한 키 Action 수가 21개가 아닙니다.")
+	var escape_event := InputEventKey.new()
+	escape_event.keycode = KEY_ESCAPE
+	escape_event.physical_keycode = KEY_ESCAPE
+	if bool(service.call(&"rebind_action", &"toggle_key_mapping", escape_event).get(&"success", true)):
+		sandbox.queue_free()
+		return _fail("키 설정이 안전 닫기용 ESC 재지정을 허용했습니다.")
+	var inventory_event := InputEventKey.new()
+	inventory_event.keycode = KEY_I
+	inventory_event.physical_keycode = KEY_I
+	var swap_result: Dictionary = service.call(
+		&"rebind_action", &"toggle_key_mapping", inventory_event
+	)
+	if (
+		not bool(swap_result.get(&"success", false))
+		or swap_result.get(&"swapped_action_id", &"") != &"toggle_inventory"
+	):
+		sandbox.queue_free()
+		return _fail("중복 키가 기존 Action과 안전하게 교환되지 않았습니다.")
+	if not FileAccess.file_exists(KEY_MAPPING_TEST_STORAGE_PATH):
+		sandbox.queue_free()
+		return _fail("변경한 키 설정이 JSON으로 저장되지 않았습니다.")
+	service.call(&"reset_defaults", false)
+	var reloaded_service := (load(KEY_MAPPING_SERVICE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(reloaded_service)
+	if not reloaded_service.call(
+		&"configure", load(KEY_MAPPING_CATALOG_PATH), KEY_MAPPING_TEST_STORAGE_PATH, true
+	):
+		sandbox.queue_free()
+		return _fail("저장된 키 설정을 새 서비스에서 다시 불러오지 못했습니다.")
+	if (
+		not _input_action_has_key(&"toggle_key_mapping", KEY_I)
+		or not _input_action_has_key(&"toggle_inventory", KEY_K)
+	):
+		reloaded_service.call(&"reset_defaults", false)
+		sandbox.queue_free()
+		return _fail("재실행 시 저장된 중복 교환 키가 InputMap에 복원되지 않았습니다.")
+	var panel := (load(KEY_MAPPING_PANEL_PATH) as PackedScene).instantiate()
+	sandbox.add_child(panel)
+	if not panel.call(&"configure", reloaded_service):
+		reloaded_service.call(&"reset_defaults", false)
+		sandbox.queue_free()
+		return _fail("K 키 설정 UI를 서비스에 연결하지 못했습니다.")
+	await process_frame
+	if int(panel.call(&"get_snapshot").get(&"binding_row_count", 0)) != 21:
+		reloaded_service.call(&"reset_defaults", false)
+		sandbox.queue_free()
+		return _fail("K 키 설정 UI에 전체 Action이 표시되지 않습니다.")
+	reloaded_service.call(&"reset_defaults", false)
+	sandbox.queue_free()
+	if FileAccess.file_exists(KEY_MAPPING_TEST_STORAGE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(KEY_MAPPING_TEST_STORAGE_PATH))
+	return true
+
+
+func _input_action_has_key(action_id: StringName, keycode: Key) -> bool:
+	for event: InputEvent in InputMap.action_get_events(action_id):
+		if event is InputEventKey and (
+			event.physical_keycode == keycode or event.keycode == keycode
+		):
+			return true
+	return false
 
 
 func _verify_web_export_data_contract() -> bool:
@@ -2935,7 +3048,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

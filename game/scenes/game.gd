@@ -69,6 +69,12 @@ const RANKING_SCENE_PATH := (
 const OPERATION_RESULT_SCENE_PATH := (
 	"res://game/features/operation_results/operation_result_service.tscn"
 )
+const KEY_MAPPING_SERVICE_SCENE_PATH := (
+	"res://game/features/key_mapping/key_mapping_service.tscn"
+)
+const KEY_MAPPING_PANEL_SCENE_PATH := (
+	"res://game/features/key_mapping/key_mapping_panel.tscn"
+)
 const MAP_GENERATOR_METHODS := [
 	&"configure_obstacles",
 	&"generate",
@@ -238,6 +244,9 @@ const PENALTY_METHODS := [
 ]
 const RANKING_METHODS := [&"configure", &"submit_run", &"get_entries", &"get_snapshot"]
 const OPERATION_RESULT_METHODS := [&"configure", &"settle_success", &"settle_failure"]
+const KEY_MAPPING_METHODS := [
+	&"configure", &"rebind_action", &"reset_defaults", &"get_entries", &"get_snapshot",
+]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 @export var features: FeatureManifest
@@ -322,6 +331,8 @@ var crafting_system
 var penalty_system
 var conditional_ranking_system
 var operation_result_service
+var key_mapping_service
+var key_mapping_panel
 var active_contract: Dictionary = {}
 var consumed_run_items: Array[StringName] = []
 var current_map_config: Resource
@@ -343,8 +354,8 @@ var modal_ui_visibility_snapshot: Dictionary = {}
 
 
 func _ready() -> void:
-	control_hint_label.text = "이동 WASD/방향키 · LMB 기본기 · 1~9 스킬 · Q 무기 · F 상호작용 · I 가방 · U 장비 · E 모듈"
-	hub_control_hint_label.text = "이동 WASD/방향키 · I 가방 · U 장비 · E 모듈·파츠 · Q 무기 · 게이트 F"
+	control_hint_label.text = "이동 WASD · Space 대시 · LMB 기본기 · 1~9 스킬 · Q/F/I/U/E · K 키 설정"
+	hub_control_hint_label.text = "이동 WASD · I 가방 · U 장비 · E 모듈·파츠 · Q 무기 · F 게이트 · K 키 설정"
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	restart_button.pressed.connect(_restart_run)
 	setup_close_button.pressed.connect(_close_run_setup)
@@ -384,6 +395,8 @@ func _ready() -> void:
 		status_label.text = "설정 오류: %s" % " / ".join(configuration_errors)
 		return
 	if not _install_persistent_services():
+		return
+	if features.key_mapping_enabled and not _install_key_mapping():
 		return
 
 	_configure_tier_button(small_map_button, "small")
@@ -490,6 +503,96 @@ func _install_persistent_services() -> bool:
 			_report_configuration_error("작전 결과 정산 모듈을 구성하지 못했습니다.")
 			return false
 	return true
+
+
+func _install_key_mapping() -> bool:
+	key_mapping_service = _instantiate_feature(
+		KEY_MAPPING_SERVICE_SCENE_PATH, self, &"KeyMappingService"
+	)
+	if (
+		not _supports_methods(key_mapping_service, KEY_MAPPING_METHODS)
+		or not key_mapping_service.call(
+			&"configure",
+			load(features.key_mapping_catalog_path),
+			features.key_mapping_storage_path,
+			true
+		)
+	):
+		_report_configuration_error("키 설정 저장 모듈을 구성하지 못했습니다.")
+		return false
+	key_mapping_panel = _instantiate_feature(
+		KEY_MAPPING_PANEL_SCENE_PATH, ui_layer, &"KeyMappingPanel"
+	)
+	if key_mapping_panel == null or not _supports_panel(key_mapping_panel):
+		_report_configuration_error("키 설정 UI 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not bool(key_mapping_panel.call(&"configure", key_mapping_service)):
+		_report_configuration_error("키 설정 UI를 입력 저장 모듈에 연결하지 못했습니다.")
+		return false
+	_connect_modal_panel(key_mapping_panel)
+	if key_mapping_service.has_signal(&"bindings_changed"):
+		key_mapping_service.connect(
+			&"bindings_changed", Callable(self, &"_on_key_bindings_changed")
+		)
+	_refresh_control_hints()
+	return true
+
+
+func _on_key_bindings_changed(_snapshot: Dictionary) -> void:
+	_refresh_control_hints()
+
+
+func _refresh_control_hints() -> void:
+	if key_mapping_service == null:
+		return
+	var move_keys := "%s/%s/%s/%s" % [
+		_binding_label(&"move_up"),
+		_binding_label(&"move_left"),
+		_binding_label(&"move_down"),
+		_binding_label(&"move_right"),
+	]
+	var menu_keys := "%s 가방 · %s 장비 · %s 모듈·파츠" % [
+		_binding_label(&"toggle_inventory"),
+		_binding_label(&"toggle_equipment"),
+		_binding_label(&"toggle_modification"),
+	]
+	control_hint_label.text = (
+		"이동 %s · %s 대시 · %s 기본기 · 스킬 %s/%s/%s · %s 무기 · %s 상호작용 · %s · %s 키 설정"
+		% [
+			move_keys,
+			_binding_label(&"dash"),
+			_binding_label(&"primary_attack"),
+			_binding_label(&"combat_skill_1"),
+			_binding_label(&"combat_skill_2"),
+			_binding_label(&"combat_skill_3"),
+			_binding_label(&"switch_weapon"),
+			_binding_label(&"interact"),
+			menu_keys,
+			_binding_label(&"toggle_key_mapping"),
+		]
+	)
+	hub_control_hint_label.text = "이동 %s · %s · %s 무기 · %s 게이트 · %s 키 설정" % [
+		move_keys,
+		menu_keys,
+		_binding_label(&"switch_weapon"),
+		_binding_label(&"interact"),
+		_binding_label(&"toggle_key_mapping"),
+	]
+
+
+func _binding_label(action_id: StringName) -> String:
+	if key_mapping_service == null:
+		return {
+			&"move_up": "W", &"move_down": "S", &"move_left": "A", &"move_right": "D",
+			&"dash": "Space", &"primary_attack": "마우스 1", &"interact": "F",
+			&"switch_weapon": "Q", &"combat_skill_1": "1", &"combat_skill_2": "2",
+			&"combat_skill_3": "3", &"toggle_inventory": "I", &"toggle_equipment": "U",
+			&"toggle_modification": "E", &"toggle_key_mapping": "K",
+		}.get(action_id, String(action_id))
+	for entry: Dictionary in key_mapping_service.call(&"get_entries"):
+		if entry[&"action_id"] == action_id:
+			return String(entry[&"binding_text"])
+	return String(action_id)
 
 
 func _cycle_region() -> void:
@@ -986,7 +1089,16 @@ func _assemble_game() -> bool:
 		return false
 
 	status_label.text = (
-		"작전 진행 중 · 좌클릭 기본기 · 1~9 스킬 · Shift/Space 회피 · Q 무기 · F 상호작용"
+		"작전 진행 중 · %s 기본기 · 스킬 %s/%s/%s · %s 대시 · %s 무기 · %s 상호작용"
+		% [
+			_binding_label(&"primary_attack"),
+			_binding_label(&"combat_skill_1"),
+			_binding_label(&"combat_skill_2"),
+			_binding_label(&"combat_skill_3"),
+			_binding_label(&"dash"),
+			_binding_label(&"switch_weapon"),
+			_binding_label(&"interact"),
+		]
 	)
 	_update_run_time_hud()
 	return true

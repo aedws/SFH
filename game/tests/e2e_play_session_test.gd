@@ -4,6 +4,7 @@ const GAME_SCENE_PATH := "res://game/scenes/game.tscn"
 const E2E_PROFILE_PATH := "user://sfh_e2e_profile.json"
 const E2E_RANKINGS_PATH := "user://sfh_e2e_rankings.json"
 const E2E_META_PATH := "user://sfh_e2e_meta_progression.json"
+const E2E_KEY_MAPPING_PATH := "user://sfh_e2e_key_mapping.json"
 
 var game: Node
 
@@ -23,6 +24,7 @@ func _run() -> void:
 	isolated_features.set("persistent_profile_storage_path", E2E_PROFILE_PATH)
 	isolated_features.set("conditional_ranking_storage_path", E2E_RANKINGS_PATH)
 	isolated_features.set("meta_progression_storage_path", E2E_META_PATH)
+	isolated_features.set("key_mapping_storage_path", E2E_KEY_MAPPING_PATH)
 	game.set("features", isolated_features)
 	root.add_child(game)
 	await process_frame
@@ -36,7 +38,7 @@ func _run() -> void:
 		return
 
 	paused = false
-	print("E2E_PLAY_SESSION_OK hub_real_input u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return")
+	print("E2E_PLAY_SESSION_OK hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return")
 	_cleanup_test_profile()
 	quit(0)
 
@@ -56,6 +58,22 @@ func _verify_hub_input_session() -> bool:
 		return _fail("첫 화면에서 작전 설정과 거점 HUD의 가시성이 뒤바뀌었습니다.")
 	if "U 장비" not in hub_hint.text or "E 모듈·파츠" not in hub_hint.text:
 		return _fail("거점 조작 안내가 U와 E의 서로 다른 역할을 설명하지 않습니다.")
+	if "K 키 설정" not in hub_hint.text:
+		return _fail("거점 조작 안내가 K 키 설정 진입을 설명하지 않습니다.")
+
+	await _tap_key(KEY_K)
+	var key_panel = game.get("key_mapping_panel") as Control
+	if (
+		key_panel == null
+		or not key_panel.visible
+		or not paused
+		or hub_hud.visible
+		or int(key_panel.call(&"get_snapshot").get(&"binding_row_count", 0)) != 21
+	):
+		return _fail("실제 K 입력이 전체 Action 키 설정 화면을 열지 못했습니다.")
+	await _tap_key(KEY_ESCAPE)
+	if key_panel.visible or paused or not hub_hud.visible:
+		return _fail("실제 ESC 입력이 키 설정을 닫고 거점 HUD를 복원하지 못했습니다.")
 
 	await _tap_key(KEY_I)
 	if not inventory.visible or not paused or hub_hud.visible:
@@ -88,14 +106,14 @@ func _verify_hub_input_session() -> bool:
 		return _fail("실제 Q 입력이 거점 무기를 교체하지 못했습니다.")
 
 	var gate_position: Vector2 = hub.call(&"get_operation_position")
-	Input.action_press(&"ui_right")
+	Input.action_press(&"move_right")
 	var reached_gate := false
 	for _frame in range(480):
 		await physics_frame
 		if player.global_position.distance_to(gate_position) <= float(hub.get("interaction_radius")) * 0.8:
 			reached_gate = true
 			break
-	Input.action_release(&"ui_right")
+	Input.action_release(&"move_right")
 	if not reached_gate:
 		return _fail("실제 지속 이동 입력으로 거점 작전 게이트까지 이동하지 못했습니다.")
 	await physics_frame
@@ -128,7 +146,11 @@ func _verify_operation_session() -> bool:
 		return _fail("전투 HUD·미니맵·대시 UI가 함께 설치되지 않았습니다.")
 	if not minimap.visible or not skills.visible or not dash.visible:
 		return _fail("전투 HUD의 필수 자원·쿨타임 정보가 보이지 않습니다.")
-	if "LMB 기본기" not in control_hint.text or "1~9 스킬" not in control_hint.text:
+	if (
+		"기본기" not in control_hint.text
+		or "스킬" not in control_hint.text
+		or "K 키 설정" not in control_hint.text
+	):
 		return _fail("실제 조작 범위와 다른 전투 안내 문구가 표시됩니다.")
 	if minimap.get_global_rect().intersects(skills.get_global_rect()):
 		return _fail("미니맵과 스킬 HUD가 화면에서 겹칩니다.")
@@ -233,13 +255,13 @@ func _reset_test_profile() -> void:
 
 
 func _cleanup_test_profile() -> void:
-	for path in [E2E_PROFILE_PATH, E2E_RANKINGS_PATH, E2E_META_PATH]:
+	for path in [E2E_PROFILE_PATH, E2E_RANKINGS_PATH, E2E_META_PATH, E2E_KEY_MAPPING_PATH]:
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 
 func _fail(message: String) -> bool:
-	Input.action_release(&"ui_right")
+	Input.action_release(&"move_right")
 	paused = false
 	printerr("E2E_PLAY_SESSION_FAILED: %s" % message)
 	_cleanup_test_profile()

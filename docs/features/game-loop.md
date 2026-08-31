@@ -40,12 +40,12 @@ tags:
 - 메인·보조 무기 태그, 활성 스킬 수, 방어구 수와 방어력
 - 현재 활성 무기의 특색·피해·자동 탐지 거리·밸런스 출처
 - 하단 중앙의 1·2·3 스킬 이름, 설명, READY/남은 쿨타임과 진행 막대
-- `LMB 기본기`, `1~9 스킬`, `Shift/Space 회피`, `Q 무기 교체`, `I 가방`, `U 장비`, `E 모듈`, `F 상호작용` 조작 안내
+- 현재 바인딩 기준 `기본기`, `1~9 스킬`, `대시`, `Q 무기 교체`, `I 가방`, `U 장비`, `E 모듈`, `F 상호작용`, `K 키 설정` 조작 안내
 
 ## 활성화와 의존성
 
-`damage_enabled`가 접촉 피해를 허용합니다. `health_recovery_enabled`는 [부분 체력 회복](health-recovery.md)을 독립 설치하고 `combat_skills_enabled`는 [전투 스킬과 쿨타임 HUD](combat-skills.md)를 함께 설치합니다. `game_over_enabled`는 체력이 0일 때 게임 정지와 재시작 화면을 담당하며 `damage`에 의존합니다. `fog_of_war_enabled`는 플레이어 중심 월드 시야를 제한하고, `minimap_enabled`는 안개와 별개인 전체 전술 지도를 설치합니다. 장비 하위 기능의 의존성은 [캐릭터 장비와 로드아웃](character-equipment.md)에 정리되어 있습니다.
+`damage_enabled`가 접촉 피해를 허용합니다. `health_recovery_enabled`는 [부분 체력 회복](health-recovery.md)을 독립 설치하고 `combat_skills_enabled`는 [전투 스킬과 쿨타임 HUD](combat-skills.md)를 함께 설치합니다. `key_mapping_enabled`는 [K 키 설정과 영구 바인딩](key-mapping.md)을 독립 설치합니다. `game_over_enabled`는 체력이 0일 때 게임 정지와 재시작 화면을 담당하며 `damage`에 의존합니다. `fog_of_war_enabled`는 플레이어 중심 월드 시야를 제한하고, `minimap_enabled`는 안개와 별개인 전체 전술 지도를 설치합니다. 장비 하위 기능의 의존성은 [캐릭터 장비와 로드아웃](character-equipment.md)에 정리되어 있습니다.
 
 ## 검색 별칭
 
-UI, 체력 바, 경험치 바, 미니맵, 전술 지도, 사망, 죽음, 재도전, 다시 시작, 생존 시간, 탈출 성공, 작전 실패, I 가방, U 장비창
+UI, 체력 바, 경험치 바, 미니맵, 전술 지도, 사망, 죽음, 재도전, 다시 시작, 생존 시간, 탈출 성공, 작전 실패, I 가방, U 장비창, K 키 설정, 바인딩

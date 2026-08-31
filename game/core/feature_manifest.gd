@@ -46,6 +46,7 @@ extends Resource
 @export var penalty_modifiers_enabled: bool = true
 @export var conditional_ranking_enabled: bool = true
 @export var game_over_enabled: bool = true
+@export var key_mapping_enabled: bool = true
 
 @export_category("Run setup")
 @export var run_setup_enabled: bool = true
@@ -90,6 +91,12 @@ extends Resource
 @export var meta_progression_storage_path: String = "user://sfh_meta_progression.json"
 @export var persistent_profile_storage_path: String = "user://sfh_profile.json"
 @export var conditional_ranking_storage_path: String = "user://sfh_rankings.json"
+
+@export_category("Key mapping")
+@export_file("*.tres") var key_mapping_catalog_path: String = (
+	"res://game/features/key_mapping/configs/default_key_mapping.tres"
+)
+@export var key_mapping_storage_path: String = "user://sfh_key_mapping.json"
 
 @export_category("Operation and meta systems")
 @export_file("*.tres") var operation_contract_config_path: String = (
@@ -215,6 +222,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"conditional_ranking")
 	if game_over_enabled:
 		result.append(&"game_over")
+	if key_mapping_enabled:
+		result.append(&"key_mapping")
 
 	return result
 
@@ -371,6 +380,10 @@ func validation_errors() -> PackedStringArray:
 		errors.append("작전 결과 설정 Resource 경로가 유효하지 않습니다.")
 	if game_over_enabled and not damage_enabled:
 		errors.append("game_over 모듈은 damage 모듈이 필요합니다.")
+	if key_mapping_enabled and not _resource_exists(key_mapping_catalog_path):
+		errors.append("키 설정 카탈로그 Resource 경로가 유효하지 않습니다.")
+	if key_mapping_enabled and key_mapping_storage_path.is_empty():
+		errors.append("키 설정 저장 경로가 필요합니다.")
 
 	return errors
 

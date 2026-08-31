@@ -11,6 +11,7 @@ var elapsed_seconds: float = 0.0
 var refresh_accumulator: float = 0.0
 var geometry_rebuild_count: int = 0
 var cached_arcs: Array[PackedVector2Array] = []
+var cached_accents: PackedVector2Array = PackedVector2Array()
 var random := RandomNumberGenerator.new()
 
 
@@ -42,6 +43,7 @@ func get_snapshot() -> Dictionary:
 		&"geometry_refresh_hz": float(profile.get("geometry_refresh_hz")) if profile != null else 0.0,
 		&"geometry_rebuild_count": geometry_rebuild_count,
 		&"cached_arc_count": cached_arcs.size(),
+		&"accent_count": cached_accents.size(),
 	}
 
 
@@ -81,6 +83,7 @@ func _process(delta: float) -> void:
 
 func _rebuild_geometry() -> void:
 	cached_arcs.clear()
+	cached_accents.clear()
 	match String(profile.get("pattern")):
 		"trail":
 			_build_trail_arcs()
@@ -88,6 +91,7 @@ func _rebuild_geometry() -> void:
 			_build_burst_arcs()
 		_:
 			_build_ring_arcs()
+	_build_accents()
 	geometry_rebuild_count += 1
 	queue_redraw()
 
@@ -139,6 +143,19 @@ func _build_burst_arcs() -> void:
 		cached_arcs.append(points)
 
 
+func _build_accents() -> void:
+	if profile.get("accent_texture") == null or cached_arcs.is_empty():
+		return
+	var count := mini(int(profile.get("accent_count")), 16)
+	for accent_index in count:
+		var points := cached_arcs[accent_index % cached_arcs.size()]
+		if points.is_empty():
+			continue
+		var ratio := (float(accent_index) + 0.5) / float(maxi(1, count))
+		var point_index := clampi(roundi(ratio * float(points.size() - 1)), 0, points.size() - 1)
+		cached_accents.append(points[point_index])
+
+
 func _draw() -> void:
 	if profile == null:
 		return
@@ -154,3 +171,17 @@ func _draw() -> void:
 	for points in cached_arcs:
 		draw_polyline(points, glow_color, glow_width, true)
 		draw_polyline(points, core_color, core_width, true)
+	var accent_texture: Texture2D = profile.get("accent_texture")
+	if accent_texture == null:
+		return
+	var accent_size := float(profile.get("accent_size"))
+	var accent_color: Color = core_color
+	accent_color.a = float(profile.get("accent_alpha"))
+	var half_size := Vector2.ONE * accent_size * 0.5
+	for accent_position in cached_accents:
+		draw_texture_rect(
+			accent_texture,
+			Rect2(accent_position - half_size, Vector2.ONE * accent_size),
+			false,
+			accent_color
+		)

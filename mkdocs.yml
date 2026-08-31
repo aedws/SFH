@@ -76,6 +76,7 @@ nav:
       - architecture/index.md
       - 모듈 규칙: architecture/module-rules.md
       - 모듈화 점검 기록: architecture/module-audit.md
+      - 외부 에셋 라이선스 원장: architecture/third-party-assets.md
       - 장면 트리: architecture/scene-tree.md
       - Signal 규칙: architecture/signals.md
   - 성능:
@@ -94,6 +95,7 @@ nav:
       - 영구 해금·상점·창고·소모품: features/hub-economy.md
       - 크레딧 파밍과 회수: features/credit-loot.md
       - 플레이어: features/player.md
+      - K 키 설정과 영구 바인딩: features/key-mapping.md
       - 부분 체력 회복: features/health-recovery.md
       - 전투 스킬과 쿨타임 HUD: features/combat-skills.md
       - 전투 에너지·충전·회복 드랍: features/combat-resources.md
