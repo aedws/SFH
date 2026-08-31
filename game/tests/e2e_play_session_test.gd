@@ -41,7 +41,7 @@ func _run() -> void:
 		return
 
 	paused = false
-	print("E2E_PLAY_SESSION_OK ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
+	print("E2E_PLAY_SESSION_OK ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
 	_cleanup_test_profile()
 	quit(0)
 
@@ -177,7 +177,7 @@ func _verify_operation_session() -> bool:
 	var minimap = game.get("minimap") as Control
 	var skills = game.get("combat_skill_hud") as Control
 	var dash = game.get("dash_cooldown_hud") as Control
-	var control_hint := game.get_node("UI/HUDMargin/Panel/Margin/Content/FooterRow/Hint") as Label
+	var control_hint := game.get("control_hint_label") as Label
 	if player == null or minimap == null or skills == null or dash == null:
 		return _fail("전투 HUD·미니맵·대시 UI가 함께 설치되지 않았습니다.")
 	if not minimap.visible or not skills.visible or not dash.visible:
@@ -185,13 +185,18 @@ func _verify_operation_session() -> bool:
 	var hud_snapshot: Dictionary = game.get("combat_hud_presenter").call(
 		&"get_snapshot", game.get_node("UI/HUDMargin")
 	)
-	var hud_size: Vector2 = hud_snapshot.get(&"size", Vector2.ZERO)
 	if (
 		not bool(hud_snapshot.get(&"installed", false))
+		or not bool(hud_snapshot.get(&"mission_tracker", false))
+		or not bool(hud_snapshot.get(&"bottom_cluster", false))
+		or not bool(hud_snapshot.get(&"runtime_clustered", false))
 		or not bool(hud_snapshot.get(&"details_side_by_side", false))
-		or hud_size.y > 150.0
 	):
-		return _fail("전투 HUD가 압축된 전술 정보 계층으로 구성되지 않았습니다: %s" % hud_snapshot)
+		return _fail("전투 HUD가 임무 추적기와 하단 시선권으로 구성되지 않았습니다: %s" % hud_snapshot)
+	var mission_rect: Rect2 = hud_snapshot.get(&"mission_rect", Rect2())
+	var core_rect: Rect2 = hud_snapshot.get(&"core_rect", Rect2())
+	if mission_rect.intersects(core_rect) or core_rect.intersects(skills.get_global_rect()):
+		return _fail("임무 추적기·생존 정보·스킬 UI가 서로 겹칩니다: %s" % hud_snapshot)
 	if (
 		"기본기" not in control_hint.text
 		or "스킬" not in control_hint.text

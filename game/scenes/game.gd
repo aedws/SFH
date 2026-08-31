@@ -1142,6 +1142,12 @@ func _assemble_game() -> bool:
 		return false
 	if features.combat_skills_enabled and not _install_combat_skills():
 		return false
+	combat_hud_presenter.call(
+		&"attach_runtime_layers",
+		combat_skill_hud as Control,
+		dash_cooldown_hud as Control,
+		interaction_label
+	)
 
 	status_label.text = (
 		"작전 진행 중 · %s 기본기 · 스킬 %s/%s/%s · %s 대시 · %s 무기 · %s 상호작용"

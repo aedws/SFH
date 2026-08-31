@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 28 TOPICS</span><span>96% · OPERATION BRIEF · TACTICAL HUD</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 29 TOPICS</span><span>96% · MISSION TRACKER · BOTTOM HUD</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,13 +76,13 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>6 UPDATE BUNDLES &middot; BUILD 14 &middot; IMPROVE 10 &middot; CHANGE 8 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>7 UPDATE BUNDLES &middot; BUILD 14 &middot; IMPROVE 13 &middot; CHANGE 9 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>6</b><small>UPDATE BUNDLES</small></span>
+      <span><b>7</b><small>UPDATE BUNDLES</small></span>
       <span><b>14</b><small>BUILD</small></span>
-      <span><b>10</b><small>IMPROVE</small></span>
-      <span><b>8</b><small>CHANGE</small></span>
+      <span><b>13</b><small>IMPROVE</small></span>
+      <span><b>9</b><small>CHANGE</small></span>
       <span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -240,6 +240,29 @@ tags:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">선택과 투입 분리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>소·중·대형 선택 직후 출격하지 않고 현재 계약을 확인한 뒤 확정합니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 7</small><b>전투 HUD 분산 시선권 · 목표·생존·행동 정보 재정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>임무</b> · 현재 방·교전·탈출 목표와 시간을 좌측 상단 338×108 추적기로 이동했습니다.</li>
+            <li><b>생존</b> · 체력·경험치·런 지표·장비·현재 무기를 하단 중앙 600×142 코어에 모았습니다.</li>
+            <li><b>행동</b> · 에너지·3개 스킬을 516×92, 대시를 178×62로 압축해 코어 바로 아래에 정렬했습니다.</li>
+            <li><b>안전</b> · 상호작용 프롬프트와 미니맵을 별도 영역에 유지하고 모든 Rect 교차를 자동 검사합니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>모듈 경계</b><span>Presenter는 기존 UI 노드와 공개 HUD Control의 배치만 바꾸며 체력·목표·쿨타임·에너지 계산은 각 모듈에 남습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 3</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">임무 추적 시선권</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>행동 목표와 시간만 좌측 상단에 분리해 전장 중앙 가림을 제거했습니다.</p><a href="../features/raid-setup-extraction/#hud">HUD 수치·배치 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">생존·화력 글랜스</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>체력부터 무기·스킬까지 하단 한 시선권에서 확인합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">스킬 카드 압축</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전투 중 필요한 입력·준비·비용·쿨타임을 우선하고 긴 설명은 숨겼습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">상단 1040px HUD 폐기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>한 덩어리 정보판을 좌측 임무와 하단 전투 클러스터로 분리했습니다.</p></div></details>
         </div>
       </div>
     </details>

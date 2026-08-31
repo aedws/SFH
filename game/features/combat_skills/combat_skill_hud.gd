@@ -118,7 +118,7 @@ func _rebuild_slots(states: Array[Dictionary]) -> void:
 	cooldown_bars.clear()
 	for state in states:
 		var panel := PanelContainer.new()
-		panel.custom_minimum_size = Vector2(200.0, 70.0)
+		panel.custom_minimum_size = Vector2(156.0, 58.0)
 		var accent: Color = state[&"accent_color"]
 		var slot_style := StyleBoxFlat.new()
 		slot_style.bg_color = Color(0.04, 0.075, 0.095, 0.97)
@@ -136,21 +136,22 @@ func _rebuild_slots(states: Array[Dictionary]) -> void:
 		content.add_theme_constant_override(&"separation", 1)
 		margin.add_child(content)
 		var title := Label.new()
-		title.add_theme_font_size_override(&"font_size", 14)
+		title.add_theme_font_size_override(&"font_size", 12)
 		title.modulate = accent
 		content.add_child(title)
 		var description := Label.new()
-		description.add_theme_font_size_override(&"font_size", 10)
+		description.visible = false
+		description.add_theme_font_size_override(&"font_size", 9)
 		description.modulate = Color(0.72, 0.82, 0.86, 1.0)
 		content.add_child(description)
 		var footer := HBoxContainer.new()
 		content.add_child(footer)
 		var status := Label.new()
-		status.custom_minimum_size = Vector2(128.0, 0.0)
-		status.add_theme_font_size_override(&"font_size", 11)
+		status.custom_minimum_size = Vector2(92.0, 0.0)
+		status.add_theme_font_size_override(&"font_size", 9)
 		footer.add_child(status)
 		var bar := ProgressBar.new()
-		bar.custom_minimum_size = Vector2(54.0, 8.0)
+		bar.custom_minimum_size = Vector2(34.0, 7.0)
 		bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		bar.show_percentage = false
 		footer.add_child(bar)
