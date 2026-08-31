@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 43 TOPICS</span><span>M MAP · CLEAR → EARLY EXIT</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 44 TOPICS</span><span>55 DOCS · ROOT-SAFE LINKS</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,9 +76,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLE · BUILD 4 · IMPROVE 4 · CHANGE 3 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 5 · IMPROVE 7 · CHANGE 5 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLE</small></span><span><b>4</b><small>BUILD</small></span><span><b>4</b><small>IMPROVE</small></span><span><b>3</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -97,6 +97,24 @@ tags:
         <div class="sfh-group"><h3>⚡ 개선 · 4</h3><p>완주 후 대기 제거, 지도 탐색 동선 단축, F 회수 감각, 실제 입력 E2E 범위를 개선했습니다.</p></div>
         <div class="sfh-group"><h3>🧭 수정 · 3</h3><p>방 보상 경제, 맵 방향 스냅샷, 키 설정 카탈로그를 각각 크레딧·4방향·22개 Action 기준으로 수정했습니다.</p></div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>확장 레이아웃 첫 프레임에도 클릭 영역이 음수 또는 0이 되지 않도록 양수 사각형으로 보정했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>전체 문서 노드맵 · 안정 주소 · 반응형 계층 탐색</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 추천 문서 8개가 아니라 위키 55개 전체를 대→중→소→세부 계층으로 찾습니다.</strong>
+          <ul>
+            <li><b>404 수정:</b> 현재 페이지 상대 주소 대신 <code>knowledge-map.js</code>의 고정 배포 위치에서 <code>/SFH/</code> 루트를 산출해 모든 문서 링크와 JSON 요청에 적용합니다.</li>
+            <li><b>홈 통합:</b> 기존 자주 찾는 카드 위치에 같은 노드맵 컴포넌트를 장착해 중복 탐색 UI를 제거했습니다.</li>
+            <li><b>반응형 CSS:</b> 넓은 화면 4열, 992px 이하 2열, 640px 이하 1열로 바꾸고 모든 분기 노드를 연결 레일에 시각적으로 묶습니다.</li>
+            <li><b>회귀 차단:</b> 55개 Markdown·내비게이션·JSON 경로 일치에 더해 루트 이탈 주소와 불안정한 런타임 URL 생성도 빌드에서 거부합니다.</li>
+          </ul>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 1</h3><p>홈 명시 마운트와 문서 하단 자동 마운트를 공유하는 전체 노드맵 컴포넌트를 구성했습니다.</p></div>
+        <div class="sfh-group"><h3>⚡ 개선 · 3</h3><p>계층 인지, 터치 조작성, 화면 폭별 정보 밀도를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>🧭 수정 · 2</h3><p>홈 탐색 구조와 지식 그래프 데이터 날짜·버전을 현재 빌드 기준으로 수정했습니다.</p></div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>Material 즉시 이동 뒤 최초 문서의 `base`가 남아 노드 경로가 중첩되던 404를 제거했습니다.</p></div>
       </div>
     </details>
   </div>
