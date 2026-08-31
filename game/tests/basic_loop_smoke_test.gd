@@ -2935,8 +2935,22 @@ func _process(_delta: float) -> bool:
 		var dash_hud := game_instance.get("dash_cooldown_hud") as Control
 		var interaction_prompt := game_instance.get_node("UI/InteractionLabel") as Control
 		var combat_hud := game_instance.get_node("UI/HUDMargin") as Control
+		var combat_hud_snapshot: Dictionary = game_instance.get(
+			"combat_hud_presenter"
+		).call(&"get_snapshot", combat_hud)
+		var core_rect: Rect2 = combat_hud_snapshot.get(&"core_rect", Rect2())
+		var mission_rect: Rect2 = combat_hud_snapshot.get(&"mission_rect", Rect2())
 		if (
-			combat_hud.size.y > 180.0
+			not bool(combat_hud_snapshot.get(&"mission_tracker", false))
+			or not bool(combat_hud_snapshot.get(&"bottom_cluster", false))
+			or not bool(combat_hud_snapshot.get(&"runtime_clustered", false))
+			or core_rect.size.x > 601.0
+			or core_rect.size.y > 143.0
+			or core_rect.position.y < 430.0
+			or mission_rect.position.x > 20.0
+			or mission_rect.position.y > 20.0
+			or mission_rect.size.x > 360.0
+			or mission_rect.size.y > 120.0
 			or tactical_minimap == null
 			or tactical_minimap.size.x > 220.0
 			or tactical_minimap.size.y > 180.0
@@ -2946,14 +2960,17 @@ func _process(_delta: float) -> bool:
 			or dash_hud == null
 			or dash_hud.size.x > 200.0
 			or dash_hud.size.y > 76.0
-			or combat_hud.get_global_rect().intersects(tactical_minimap.get_global_rect())
+			or core_rect.intersects(tactical_minimap.get_global_rect())
+			or mission_rect.intersects(tactical_minimap.get_global_rect())
 			or dash_hud.get_global_rect().intersects(skill_hud.get_global_rect())
 			or skill_hud.get_global_rect().intersects(interaction_prompt.get_global_rect())
+			or core_rect.intersects(interaction_prompt.get_global_rect())
+			or core_rect.intersects(skill_hud.get_global_rect())
 		):
 			return _fail(
-				"전투 HUD 압축·비겹침 계약 실패: hud=%s map=%s skill=%s prompt=%s" % [
-					combat_hud.get_global_rect(), tactical_minimap.get_global_rect(),
-					skill_hud.get_global_rect(), interaction_prompt.get_global_rect(),
+				"전투 HUD 시선권·비겹침 계약 실패: mission=%s core=%s map=%s skill=%s prompt=%s" % [
+					mission_rect, core_rect, tactical_minimap.get_global_rect(),
+					skill_hud.get_global_rect(), interaction_prompt.get_global_rect()
 				]
 			)
 		var energy_bar := skill_hud.get_node(
@@ -3037,7 +3054,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK operation_briefing selected_then_launch tactical_hud key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 
