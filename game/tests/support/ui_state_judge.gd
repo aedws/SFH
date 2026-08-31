@@ -134,9 +134,29 @@ func judge(game: Node, state_id: StringName) -> Dictionary:
 	for pair: Array in rule.get(&"non_overlapping", []):
 		if _layers_overlap(snapshot, pair[0], pair[1]):
 			errors.append("동시에 보이는 HUD가 겹칩니다: %s ↔ %s" % [pair[0], pair[1]])
+	if state_id == &"combat":
+		var obstruction_ratio := _combat_obstruction_ratio(game, snapshot)
+		snapshot[&"obstruction_ratio"] = obstruction_ratio
+		if obstruction_ratio > 0.20:
+			errors.append("지속 HUD가 전투 화면의 20%%를 넘게 점유합니다: %.1f%%" % (obstruction_ratio * 100.0))
 	if rule.has(&"equipment_tab") and int(snapshot[&"equipment_tab"]) != int(rule[&"equipment_tab"]):
 		errors.append("장비 화면 탭이 %d가 아니라 %d입니다." % [rule[&"equipment_tab"], snapshot[&"equipment_tab"]])
 	return {&"success": errors.is_empty(), &"errors": errors, &"snapshot": snapshot}
+
+
+func _combat_obstruction_ratio(game: Node, snapshot: Dictionary) -> float:
+	var viewport_size: Vector2 = snapshot.get(&"viewport_size", Vector2.ZERO)
+	var viewport_area := maxf(1.0, viewport_size.x * viewport_size.y)
+	var presenter = game.get("combat_hud_presenter")
+	var ratio := 0.0
+	if presenter != null:
+		var hud_snapshot: Dictionary = presenter.call(
+			&"get_snapshot", game.get_node_or_null("UI/HUDMargin")
+		)
+		ratio += float(hud_snapshot.get(&"persistent_area_ratio", 1.0))
+	var minimap_rect: Rect2 = (snapshot.get(&"rects", {}) as Dictionary).get(&"minimap", Rect2())
+	ratio += minimap_rect.get_area() / viewport_area
+	return ratio
 
 
 func capture(game: Node) -> Dictionary:

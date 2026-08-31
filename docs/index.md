@@ -69,17 +69,17 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 35 TOPICS</span><span>기획 진행도 96% · ICON HUD</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 36 TOPICS</span><span>기획 진행도 96% · LOW OBSTRUCTION UI</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>17 UPDATE BUNDLES &middot; BUILD 34 &middot; IMPROVE 50 &middot; CHANGE 19 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 36 &middot; IMPROVE 55 &middot; CHANGE 21 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>17</b><small>UPDATE BUNDLES</small></span>
-      <span><b>34</b><small>BUILD</small></span>
-      <span><b>50</b><small>IMPROVE</small></span>
-      <span><b>19</b><small>CHANGE</small></span>
+      <span><b>18</b><small>UPDATE BUNDLES</small></span>
+      <span><b>36</b><small>BUILD</small></span>
+      <span><b>55</b><small>IMPROVE</small></span>
+      <span><b>21</b><small>CHANGE</small></span>
       <span><b>6</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -541,6 +541,37 @@ hide:
         <div class="sfh-group"><h3>수정 · 2</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">600px 하단 패널 폐기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>한 덩어리 텍스트 패널을 역할별 독립 위젯으로 전환했습니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">이모지 의존 제거</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>브라우저 폰트에 없는 문자를 코드 드로잉 도형으로 대체했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 18</small><b>저점유 UI 기조 · 상황별 자동 축약 · 전투 화면 20% 예산</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 정보는 유지하되 필요할 때만 면적을 사용</strong>
+          <ul>
+            <li>장비·무기 상세 카드는 변경 직후 1.8초만 나타나고 자동으로 사라집니다.</li>
+            <li>F 상호작용 중에는 임무와 행동 도크를 흐리게 해 현재 프롬프트를 우선합니다.</li>
+            <li>체력이 35% 아래로 내려갈 때만 생존 코어를 완전한 강조 상태로 전환합니다.</li>
+            <li>미니맵의 제목·범례·그림자는 제거하되 전체 지도와 YOU·EXIT 마커는 보존합니다.</li>
+            <li>1100·900px 분기와 800px 주입 테스트, 지속 HUD 20% 점유 상한을 배포 계약으로 추가했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>핵심 원칙</b><span>전투 시야를 먼저 확보하고 정보는 상태 변화·위험·상호작용에 반응해 필요한 순간에만 확장합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">상황별 상세 Reveal Timer</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장비·무기 변경 피드백을 1.8초 표시한 뒤 지속 HUD에서 자동 제거합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">전투 화면 점유율 게이트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>지속 HUD와 미니맵 합계가 20%를 넘으면 UI E2E를 실패시킵니다.</p><a href="quality/e2e-play-session/">검증 기준 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 5</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">전투 상세 자동 숨김</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>변화가 없는 장비·무기 문구가 전장을 계속 가리지 않습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">상호작용 초점</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>F 프롬프트가 나타날 때 주변 HUD 대비를 낮춥니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">위험 체력 강조</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>평시 패널은 반투명, 35% 이하만 강한 불투명도로 구분합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">저장식 전체 미니맵</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>지도 정보는 유지하면서 헤더·범례·그림자와 배경 불투명도를 줄였습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">800px 축약 검증</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>좁은 화면에서 상세 제거와 가장자리 재배치를 자동 확인합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">상시 상세 표시 정책</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>항상 표시에서 상태 변화 시 잠시 표시하는 정책으로 전환했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">미니맵 정보 계층</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>제목 중심 카드에서 지도·마커 중심 저점유 위젯으로 바꿨습니다.</p></div></details>
         </div>
       </div>
     </details>

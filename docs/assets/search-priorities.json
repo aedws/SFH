@@ -82,6 +82,13 @@
 		"priority": 93
     },
     {
+      "query": "반응형 UI",
+      "label": "저점유 반응형 인터페이스",
+      "description": "상황별 상세 자동 숨김, 1100·900·800px 축약과 전투 화면 20% 점유 상한",
+      "category": "디자인",
+      "priority": 94
+    },
+    {
       "query": "타격감",
       "label": "타격감·피격 피드백",
       "description": "피격 섬광, 국소 경직, 넉백, 충격 링과 카메라 Trauma",

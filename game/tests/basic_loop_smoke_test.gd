@@ -3164,6 +3164,10 @@ func _process(_delta: float) -> bool:
 			or not bool(combat_hud_snapshot.get(&"responsive", false))
 			or int(combat_hud_snapshot.get(&"icon_count", 0)) < 16
 			or int(combat_hud_snapshot.get(&"action_count", 0)) < 8
+			or not bool(combat_hud_snapshot.get(&"low_obstruction", false))
+			or bool(combat_hud_snapshot.get(&"details_persistent", true))
+			or not bool(combat_hud_snapshot.get(&"context_reveal", false))
+			or float(combat_hud_snapshot.get(&"persistent_area_ratio", 1.0)) > 0.16
 			or core_rect.size.x > 402.0
 			or core_rect.size.y > 92.0
 			or mission_rect.position.x > 20.0
@@ -3195,6 +3199,30 @@ func _process(_delta: float) -> bool:
 					skill_hud.get_global_rect(), interaction_prompt.get_global_rect()
 				]
 			)
+		var minimap_layout: Dictionary = tactical_minimap.call(&"get_layout_snapshot")
+		if (
+			not bool(minimap_layout.get(&"low_obstruction", false))
+			or bool(minimap_layout.get(&"header_visible", true))
+			or not bool(minimap_layout.get(&"full_map_preserved", false))
+			or float(minimap_layout.get(&"background_alpha", 1.0)) > 0.7
+		):
+			return _fail("미니맵 저점유 반응형 계약 실패: %s" % minimap_layout)
+		game_instance.get("combat_hud_presenter").call(&"apply_responsive_width", 800.0)
+		tactical_minimap.call(&"apply_responsive_width", 800.0)
+		var compact_hud_snapshot: Dictionary = game_instance.get(
+			"combat_hud_presenter"
+		).call(&"get_snapshot", combat_hud)
+		var compact_minimap_snapshot: Dictionary = tactical_minimap.call(&"get_layout_snapshot")
+		if (
+			StringName(compact_hud_snapshot.get(&"layout_mode", &"")) != &"compact_edge"
+			or (compact_hud_snapshot.get(&"equipment_rect", Rect2()) as Rect2).get_area() > 0.0
+			or (compact_hud_snapshot.get(&"weapon_rect", Rect2()) as Rect2).get_area() > 0.0
+			or StringName(compact_minimap_snapshot.get(&"layout_mode", &"")) != &"edge_compact"
+			or tactical_minimap.get_node("Margin/Content/MapView").custom_minimum_size.x > 154.0
+		):
+			return _fail("800px 반응형 축약 계약 실패: hud=%s map=%s" % [compact_hud_snapshot, compact_minimap_snapshot])
+		game_instance.get("combat_hud_presenter").call(&"apply_responsive_width", 1280.0)
+		tactical_minimap.call(&"apply_responsive_width", 1280.0)
 		var energy_bar := skill_hud.get_node(
 			"Panel/Margin/Content/ResourceRow/EnergyBar"
 		) as ProgressBar
