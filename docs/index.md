@@ -69,17 +69,17 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 34 TOPICS</span><span>기획 진행도 96% · READABILITY TUNE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 35 TOPICS</span><span>기획 진행도 96% · ICON HUD</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>16 UPDATE BUNDLES &middot; BUILD 31 &middot; IMPROVE 45 &middot; CHANGE 17 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>17 UPDATE BUNDLES &middot; BUILD 34 &middot; IMPROVE 50 &middot; CHANGE 19 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>16</b><small>UPDATE BUNDLES</small></span>
-      <span><b>31</b><small>BUILD</small></span>
-      <span><b>45</b><small>IMPROVE</small></span>
-      <span><b>17</b><small>CHANGE</small></span>
+      <span><b>17</b><small>UPDATE BUNDLES</small></span>
+      <span><b>34</b><small>BUILD</small></span>
+      <span><b>50</b><small>IMPROVE</small></span>
+      <span><b>19</b><small>CHANGE</small></span>
       <span><b>6</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -509,6 +509,38 @@ hide:
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">링크·포커스 식별</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>밑줄과 외곽선으로 마우스·키보드 탐색 상태를 명확히 표시합니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">상태색 대비</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>구현·수정·버그·위험 색상이 어두운 패널에서 서로 분리됩니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">장식 간섭 억제</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>스캔라인과 글로우를 낮춰 도트 스타일은 유지하면서 글자 윤곽을 보존합니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 17</small><b>반응형 아이콘 전투 HUD · 플레이어 주변 시선권 · Web-safe 도형</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 하단 텍스트 덩어리를 해체하고 행동에 가까운 위치로 이동</strong>
+          <ul>
+            <li>HP·XP는 플레이어 바로 위, 레벨·처치·CR은 그 위, 장비·무기는 좌우에 분리했습니다.</li>
+            <li>스킬 3개는 플레이어 우측 세로열, 대시는 좌측 하단, 8개 현재 키는 우측 하단 아이콘 도크로 이동했습니다.</li>
+            <li>체력·경험치·무기·방어·스킬·에너지·대시·상호작용을 코드 드로잉해 브라우저 이모지 누락을 제거했습니다.</li>
+            <li>1100px 미만에서는 장비·무기 상세만 접고 생존·스킬·행동 도크를 가장자리에 유지합니다.</li>
+            <li>23개 UI 상태와 20개 플레이어 인식 체크포인트가 아이콘 의미·키 재매핑·자원 변화를 검사합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>모듈 경계</b><span>Presenter와 아이콘은 배치·표현만 담당하며 체력·무기·스킬·대시 계산과 Signal 계약은 그대로 유지합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 3</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">12종 벡터 전술 아이콘</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>외부 이미지·이모지 없이 동일한 도형을 데스크톱과 Web에 그립니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Player Orbit 반응형 Presenter</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>화면 폭에 따라 플레이어 주변 또는 가장자리 압축 배치를 선택합니다.</p><a href="features/raid-setup-extraction/#hud">HUD 구조 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">아이콘 인식 E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>가시 텍스트뿐 아니라 아이콘 의미와 수치 변화도 플레이어 인식 증거로 판정합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 5</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">생존 시선 거리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>HP·XP를 캐릭터 바로 위로 옮겨 전투 중 시선 이동을 줄였습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">세로 스킬 판독</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>아이콘·키·준비/쿨타임을 같은 세로축에서 비교합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">행동 키 압축</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>긴 조작 문장을 8개 아이콘과 현재 키 배지로 교체했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">저해상도 우선순위</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>좁은 화면에서는 상세 정보만 숨기고 생존·행동 상태는 유지합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">키 재매핑 즉시 반영</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>K 설정 뒤 행동 도크의 8개 키가 현재 InputMap과 동기화됩니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">600px 하단 패널 폐기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>한 덩어리 텍스트 패널을 역할별 독립 위젯으로 전환했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">이모지 의존 제거</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>브라우저 폰트에 없는 문자를 코드 드로잉 도형으로 대체했습니다.</p></div></details>
         </div>
       </div>
     </details>

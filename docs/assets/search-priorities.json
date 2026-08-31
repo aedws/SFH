@@ -76,10 +76,10 @@
     },
     {
       "query": "전투 HUD",
-      "label": "임무 추적기·하단 전투 HUD",
-      "description": "좌측 임무 목표와 하단 체력·무기·에너지·스킬·대시 시선권",
-      "category": "전투",
-      "priority": 89
+      "label": "아이콘형 반응형 전투 HUD",
+      "description": "좌측 임무와 플레이어 주변 HP·XP·장비·무기, 세로 스킬·대시·행동 도크 시선권",
+		"category": "전투",
+		"priority": 93
     },
     {
       "query": "타격감",

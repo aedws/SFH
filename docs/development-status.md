@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 38 TOPICS</span><span>96% · READABILITY TUNE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 39 TOPICS</span><span>96% · ICON HUD</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,13 +76,13 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>16 UPDATE BUNDLES &middot; BUILD 31 &middot; IMPROVE 45 &middot; CHANGE 17 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>17 UPDATE BUNDLES &middot; BUILD 34 &middot; IMPROVE 50 &middot; CHANGE 19 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>16</b><small>UPDATE BUNDLES</small></span>
-      <span><b>31</b><small>BUILD</small></span>
-      <span><b>45</b><small>IMPROVE</small></span>
-      <span><b>17</b><small>CHANGE</small></span>
+      <span><b>17</b><small>UPDATE BUNDLES</small></span>
+      <span><b>34</b><small>BUILD</small></span>
+      <span><b>50</b><small>IMPROVE</small></span>
+      <span><b>19</b><small>CHANGE</small></span>
       <span><b>6</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -519,6 +519,39 @@ tags:
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">탐색 상태 가시성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>링크 밑줄·hover·키보드 포커스가 서로 다른 단서를 제공합니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">의미색 명도</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>초록·보라·황색·적색을 어두운 패널에서 7:1 이상으로 조정했습니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">노이즈·잔상 절제</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>사이버펑크 분위기는 유지하면서 본문 위 시각 간섭을 줄였습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 17</small><b>아이콘형 전투 HUD · 캐릭터 중심 배치 · 반응형 압축</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 인식 변화</strong>
+          <ol>
+            <li><b>텍스트 해체</b> · 600×142 패널의 레벨·처치·크레딧·장비·무기 문장을 역할별 위젯으로 분리했습니다.</li>
+            <li><b>위치 재구성</b> · HP/XP와 전투 수치를 플레이어 위, 장비/무기를 좌우, 스킬을 우측 세로열로 옮겼습니다.</li>
+            <li><b>행동 압축</b> · 기본기·1~3·Q·F·I/U/E·K를 8개 아이콘과 현재 키 배지로 표시합니다.</li>
+            <li><b>Web 안정화</b> · 12종 상태 상징을 코드 드로잉해 이모지 글리프 의존을 제거했습니다.</li>
+            <li><b>반응형 전환</b> · 1100px 미만에서는 상세 장비·무기만 숨기고 핵심 위젯을 가장자리에 재배치합니다.</li>
+            <li><b>인지 검증</b> · UI 상태 23개와 인식 20개가 아이콘 의미·수치 변화·키 재매핑을 통과했습니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>변경 영향</b><span>표현 계층만 교체했으며 전투 계산·장비 요약·스킬 상태·대시 스냅샷 계약은 유지됩니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 3</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">TacticalHudIcon 12종</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>HP·XP·전투·장비·스킬·행동 상징을 외부 자산 없이 그립니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">두 단계 반응형 레이아웃</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Player Orbit와 Compact Edge를 화면 폭으로 자동 선택합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">아이콘 의미 계약</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>접근성 의미와 수치 전후 변화를 플레이어 인식 E2E에 포함했습니다.</p><a href="../quality/e2e-play-session/">E2E 기준 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 5</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">HP·XP 중심 배치</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>플레이어와 생존 정보를 같은 시선권에 둡니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">장비·무기 독립 카드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>방어와 화력 정보를 양쪽에 나눠 필요한 쪽만 읽습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">세로 스킬 스택</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>3개 쿨타임과 충전을 플레이어 우측에서 비교합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">대시·행동 모서리 분리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>좌측 대시와 우측 키 도크가 중앙 전투 공간을 비웁니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">현재 바인딩 동기화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>K 변경 직후 도크 키를 다시 그립니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">문장형 조작 안내 제거</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>긴 한 줄을 행동 아이콘과 짧은 키 배지로 교체했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">브라우저 이모지 제거</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>폰트별로 깨지던 상태 상징을 벡터 도형으로 전환했습니다.</p></div></details>
         </div>
       </div>
     </details>

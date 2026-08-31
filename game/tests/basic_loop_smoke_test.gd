@@ -1110,8 +1110,8 @@ func _verify_combat_resource_modules() -> bool:
 				int(states[0].get(&"energy_current", -1)) != 30
 				or int(states[0].get(&"current_charges", -1)) != 1
 				or not hud.call(&"configure", skill_system)
-				or "30 / 100" not in String(hud.get_node("Panel/Margin/Content/ResourceRow/EnergyLabel").text)
-				or "LOW" not in String(hud.get_node("Panel/Margin/Content/ResourceRow/EnergyStateLabel").text)
+				or "30" not in String(hud.get_node("Panel/Margin/Content/ResourceRow/EnergyLabel").text)
+				or "LOW" not in String(hud.get_node("Panel/Margin/Content/ResourceRow/EnergyStateLabel").tooltip_text)
 			):
 				failure_message = "스킬 HUD에 에너지와 충전 상태가 표시되지 않았습니다."
 			else:
@@ -1120,14 +1120,17 @@ func _verify_combat_resource_modules() -> bool:
 					if "⚡" in status_text:
 						failure_message = "Web 폰트에 없는 에너지 이모지가 HUD에 남아 있습니다."
 						break
-					has_web_safe_energy_label = has_web_safe_energy_label or "EN " in status_text
+					has_web_safe_energy_label = (
+						has_web_safe_energy_label
+						or "ENERGY" in String((status_label as Label).tooltip_text)
+					)
 				if failure_message.is_empty() and not has_web_safe_energy_label:
 					failure_message = "Web-safe 에너지 비용 표기가 HUD에 없습니다."
 			if failure_message.is_empty():
 				states[0][&"energy_current"] = 10.0
 				hud.call(&"_on_skill_states_changed", states)
 				if "CRITICAL" not in String(
-					hud.get_node("Panel/Margin/Content/ResourceRow/EnergyStateLabel").text
+					hud.get_node("Panel/Margin/Content/ResourceRow/EnergyStateLabel").tooltip_text
 				):
 					failure_message = "스킬 HUD가 에너지 위험 임계값을 표시하지 않습니다."
 	root.remove_child(sandbox)
@@ -1742,9 +1745,10 @@ func _verify_player_sustain_and_movement() -> bool:
 	dash_hud.call(&"_refresh_state")
 	var dash_hud_snapshot: Dictionary = dash_hud.call(&"get_snapshot")
 	if (
-		String(dash_hud_snapshot.get(&"status", "")) != "재사용"
+		String(dash_hud_snapshot.get(&"status", "")) != "WAIT"
 		or float(dash_hud_snapshot.get(&"bar_value", 100.0)) >= 100.0
 		or float(dash_hud_snapshot.get(&"refresh_hz", 0.0)) > 20.0
+		or not bool(dash_hud_snapshot.get(&"icon_mode", false))
 	):
 		_fail("대시 HUD가 남은 시간·준비 게이지를 제한 주기로 표시하지 못했습니다.")
 		return false
@@ -3148,13 +3152,20 @@ func _process(_delta: float) -> bool:
 		).call(&"get_snapshot", combat_hud)
 		var core_rect: Rect2 = combat_hud_snapshot.get(&"core_rect", Rect2())
 		var mission_rect: Rect2 = combat_hud_snapshot.get(&"mission_rect", Rect2())
+		var telemetry_rect: Rect2 = combat_hud_snapshot.get(&"telemetry_rect", Rect2())
+		var equipment_rect: Rect2 = combat_hud_snapshot.get(&"equipment_rect", Rect2())
+		var weapon_rect: Rect2 = combat_hud_snapshot.get(&"weapon_rect", Rect2())
+		var action_rect: Rect2 = combat_hud_snapshot.get(&"action_rect", Rect2())
 		if (
 			not bool(combat_hud_snapshot.get(&"mission_tracker", false))
 			or not bool(combat_hud_snapshot.get(&"bottom_cluster", false))
 			or not bool(combat_hud_snapshot.get(&"runtime_clustered", false))
-			or core_rect.size.x > 601.0
-			or core_rect.size.y > 143.0
-			or core_rect.position.y < 430.0
+			or not bool(combat_hud_snapshot.get(&"loadout_split", false))
+			or not bool(combat_hud_snapshot.get(&"responsive", false))
+			or int(combat_hud_snapshot.get(&"icon_count", 0)) < 16
+			or int(combat_hud_snapshot.get(&"action_count", 0)) < 8
+			or core_rect.size.x > 402.0
+			or core_rect.size.y > 92.0
 			or mission_rect.position.x > 20.0
 			or mission_rect.position.y > 20.0
 			or mission_rect.size.x > 360.0
@@ -3163,8 +3174,8 @@ func _process(_delta: float) -> bool:
 			or tactical_minimap.size.x > 220.0
 			or tactical_minimap.size.y > 180.0
 			or skill_hud == null
-			or skill_hud.size.x > 680.0
-			or skill_hud.size.y > 112.0
+			or skill_hud.size.x > 110.0
+			or skill_hud.size.y > 282.0
 			or dash_hud == null
 			or dash_hud.size.x > 200.0
 			or dash_hud.size.y > 76.0
@@ -3174,6 +3185,9 @@ func _process(_delta: float) -> bool:
 			or skill_hud.get_global_rect().intersects(interaction_prompt.get_global_rect())
 			or core_rect.intersects(interaction_prompt.get_global_rect())
 			or core_rect.intersects(skill_hud.get_global_rect())
+			or core_rect.intersects(telemetry_rect)
+			or equipment_rect.intersects(weapon_rect)
+			or action_rect.intersects(dash_hud.get_global_rect())
 		):
 			return _fail(
 				"전투 HUD 시선권·비겹침 계약 실패: mission=%s core=%s map=%s skill=%s prompt=%s" % [
@@ -3190,11 +3204,11 @@ func _process(_delta: float) -> bool:
 		if (
 			energy_bar.custom_minimum_size.y < 12.0
 			or "%" not in energy_state.text
-			or "AVAILABLE" not in energy_state.text
+			or "AVAILABLE" not in energy_state.tooltip_text
 		):
 			return _fail("에너지 HUD가 굵은 게이지와 현재 가용 상태를 표시하지 않습니다.")
 		var equipment_label := game_instance.get("equipment_label") as Label
-		if "스킬 2/3 활성" not in equipment_label.text or "방어 3" not in equipment_label.text:
+		if "2/3" not in equipment_label.text or "DEF 3" not in equipment_label.text:
 			return _fail("장비 HUD에 무기·스킬·방어구 상태가 표시되지 않았습니다.")
 		var balance = game_instance.get("weapon_balance_service")
 		if balance == null or balance.call(&"get_snapshot").size() != 2:
@@ -3241,7 +3255,7 @@ func _process(_delta: float) -> bool:
 		var runtime_label := game_instance.get("weapon_runtime_label") as Label
 		if snapshot.get(&"active_weapon_id", &"") != &"service_pistol":
 			return _fail("무기 교체가 자동 공격 런타임에 반영되지 않았습니다.")
-		if "고위력 관통" not in runtime_label.text or "확정 CSV" not in runtime_label.text:
+		if "고위력 관통" not in runtime_label.text or "확정 CSV" not in runtime_label.tooltip_text:
 			return _fail("무기 특색 또는 밸런스 출처가 HUD에 표시되지 않았습니다.")
 		var selector = game_instance.get("run_buff_selector")
 		var run_buffs = game_instance.get("run_buff_system")

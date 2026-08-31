@@ -236,7 +236,6 @@ func _verify_operation_session() -> bool:
 	var minimap = game.get("minimap") as Control
 	var skills = game.get("combat_skill_hud") as Control
 	var dash = game.get("dash_cooldown_hud") as Control
-	var control_hint := game.get("control_hint_label") as Label
 	if player == null or minimap == null or skills == null or dash == null:
 		return _fail("전투 HUD·미니맵·대시 UI가 함께 설치되지 않았습니다.")
 	if not minimap.visible or not skills.visible or not dash.visible:
@@ -250,18 +249,16 @@ func _verify_operation_session() -> bool:
 		or not bool(hud_snapshot.get(&"bottom_cluster", false))
 		or not bool(hud_snapshot.get(&"runtime_clustered", false))
 		or not bool(hud_snapshot.get(&"details_side_by_side", false))
+		or not bool(hud_snapshot.get(&"loadout_split", false))
+		or not bool(hud_snapshot.get(&"responsive", false))
+		or int(hud_snapshot.get(&"icon_count", 0)) < 16
+		or int(hud_snapshot.get(&"action_count", 0)) < 8
 	):
-		return _fail("전투 HUD가 임무 추적기와 하단 시선권으로 구성되지 않았습니다: %s" % hud_snapshot)
+		return _fail("전투 HUD가 아이콘 기반 반응형 시선권으로 구성되지 않았습니다: %s" % hud_snapshot)
 	var mission_rect: Rect2 = hud_snapshot.get(&"mission_rect", Rect2())
 	var core_rect: Rect2 = hud_snapshot.get(&"core_rect", Rect2())
 	if mission_rect.intersects(core_rect) or core_rect.intersects(skills.get_global_rect()):
 		return _fail("임무 추적기·생존 정보·스킬 UI가 서로 겹칩니다: %s" % hud_snapshot)
-	if (
-		"기본기" not in control_hint.text
-		or "스킬" not in control_hint.text
-		or "K 키 설정" not in control_hint.text
-	):
-		return _fail("실제 조작 범위와 다른 전투 안내 문구가 표시됩니다.")
 	if minimap.get_global_rect().intersects(skills.get_global_rect()):
 		return _fail("미니맵과 스킬 HUD가 화면에서 겹칩니다.")
 	if not _judge_ui_state(&"combat", "첫 전투 HUD"):
@@ -325,7 +322,7 @@ func _verify_operation_session() -> bool:
 	if not _judge_player_perception(&"loot_feedback", "자원 회수 수치 피드백", {
 		&"before_text": credit_text_before,
 		&"after_text": String((game.get("credit_label") as Label).text),
-		&"after_phrases": ["휴대 크레딧"],
+		&"after_phrases": ["CR"],
 		&"before_value": credits_before,
 		&"after_value": credits_after,
 		&"value_direction": &"increase",

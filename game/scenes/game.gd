@@ -588,6 +588,20 @@ func _on_key_bindings_changed(_snapshot: Dictionary) -> void:
 func _refresh_control_hints() -> void:
 	if key_mapping_service == null:
 		return
+	combat_hud_presenter.call(&"update_action_bindings", {
+		&"primary": _binding_label(&"primary_attack"),
+		&"skill_1": _binding_label(&"combat_skill_1"),
+		&"skill_2": _binding_label(&"combat_skill_2"),
+		&"skill_3": _binding_label(&"combat_skill_3"),
+		&"switch_weapon": _binding_label(&"switch_weapon"),
+		&"interact": _binding_label(&"interact"),
+		&"inventory": "%s/%s/%s" % [
+			_binding_label(&"toggle_inventory"),
+			_binding_label(&"toggle_equipment"),
+			_binding_label(&"toggle_modification"),
+		],
+		&"key_mapping": _binding_label(&"toggle_key_mapping"),
+	})
 	var move_keys := "%s/%s/%s/%s" % [
 		_binding_label(&"move_up"),
 		_binding_label(&"move_left"),
@@ -1040,9 +1054,9 @@ func _reset_run_state() -> void:
 	hud_margin.visible = false
 	map_label.visible = false
 	time_label.text = "시간 00:00"
-	level_label.text = "레벨 1"
-	kills_label.text = "처치 0"
-	credit_label.text = "휴대 크레딧 0"
+	level_label.text = "1"
+	kills_label.text = "0"
+	credit_label.text = "CR 0"
 	experience_bar.value = 0.0
 	experience_label.text = "0 / 5"
 
@@ -2215,7 +2229,8 @@ func _on_credits_looted(amount: int, _world_position: Vector2) -> void:
 
 
 func _on_credits_changed(carried: int, _secured: int) -> void:
-	credit_label.text = "휴대 크레딧 %d" % carried
+	credit_label.text = "CR %d" % carried
+	credit_label.tooltip_text = "휴대 크레딧 %d" % carried
 
 
 func _on_equipment_changed(summary: Dictionary) -> void:
@@ -2225,13 +2240,11 @@ func _on_equipment_changed(summary: Dictionary) -> void:
 	var active_slot := String(summary.get(&"active_weapon_slot", &"main"))
 	var main_marker := "▶" if active_slot == "main" else " "
 	var secondary_marker := "▶" if active_slot == "secondary" else " "
-	equipment_label.text = "%sM %s [%s] · %sS %s [%s]\n스킬 %d/%d 활성 · 방어구 %d · 방어 %.0f" % [
+	equipment_label.text = "%sM %s\n%sS %s · %d/%d · ARM %d · DEF %.0f" % [
 		main_marker,
 		summary.get(&"main_weapon_name", "없음"),
-		summary.get(&"main_weapon_tags", "-"),
 		secondary_marker,
 		summary.get(&"secondary_weapon_name", "없음"),
-		summary.get(&"secondary_weapon_tags", "-"),
 		int(summary.get(&"active_skill_count", 0)),
 		int(summary.get(&"equipped_skill_count", 0)),
 		int(summary.get(&"armor_count", 0)),
@@ -2258,11 +2271,15 @@ func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:
 		&"heavy_piercing": "고위력 관통",
 	}
 	var trait_id: StringName = snapshot.get(&"trait_id", &"")
-	weapon_runtime_label.text = "LMB HOLD · Q 현재 %s · %s · 피해 %.1f · 사거리 %.0f · %s" % [
+	weapon_runtime_label.text = "%s\n%.1f DMG · %.0f RNG · %s" % [
 		snapshot.get(&"display_name", "무기"),
-		trait_labels.get(trait_id, String(trait_id)),
 		float(snapshot.get(&"damage", 0.0)) + float(snapshot.get(&"level_damage_bonus", 0.0)),
 		float(snapshot.get(&"target_range_px", 0.0)),
+		trait_labels.get(trait_id, String(trait_id)),
+	]
+	weapon_runtime_label.tooltip_text = "현재 무기 · %s · %s · %s" % [
+		snapshot.get(&"display_name", "무기"),
+		trait_labels.get(trait_id, String(trait_id)),
 		snapshot.get(&"source_label", "내장 기본값"),
 	]
 
@@ -2348,7 +2365,8 @@ func _extraction_defense_duration() -> float:
 
 func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:
 	defeated_enemies += 1
-	kills_label.text = "처치 %d" % defeated_enemies
+	kills_label.text = str(defeated_enemies)
+	kills_label.tooltip_text = "처치 %d" % defeated_enemies
 
 	if progression_system != null:
 		progression_system.call(&"spawn_pickup", world_position, reward)
@@ -2374,7 +2392,7 @@ func _on_player_health_changed(current: float, maximum: float) -> void:
 	health_bar.max_value = maximum
 	health_bar.value = current
 	var ratio := current / maximum if maximum > 0.0 else 0.0
-	health_label.text = "%d / %d · %d%%" % [
+	health_label.text = "%d/%d · %d%%" % [
 		ceili(current),
 		ceili(maximum),
 		roundi(ratio * 100.0),
@@ -2394,7 +2412,8 @@ func _on_player_health_changed(current: float, maximum: float) -> void:
 
 
 func _on_progress_changed(level: int, current: int, required: int) -> void:
-	level_label.text = "레벨 %d" % level
+	level_label.text = str(level)
+	level_label.tooltip_text = "레벨 %d" % level
 	experience_bar.max_value = required
 	experience_bar.value = current
 	experience_label.text = "%d / %d" % [current, required]

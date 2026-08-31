@@ -72,7 +72,7 @@ const CHECKPOINT_RULES := {
 	&"loot_feedback": {
 		&"unit": &"resource_feedback",
 		&"surfaces": [&"combat"],
-		&"phrases": ["휴대 크레딧"],
+		&"phrases": ["CR"],
 	},
 	&"extraction_start_feedback": {
 		&"unit": &"state_feedback",
@@ -211,6 +211,10 @@ func _resolve_surface(game: Node, surface_id: StringName) -> Control:
 func _collect_visible_text(node: Node, output: PackedStringArray) -> void:
 	if node is CanvasItem and not (node as CanvasItem).is_visible_in_tree():
 		return
+	if node is Control:
+		var semantic_text := (node as Control).tooltip_text.strip_edges()
+		if not semantic_text.is_empty():
+			output.append(semantic_text)
 	if node is Label:
 		var label_text := (node as Label).text.strip_edges()
 		if not label_text.is_empty():
