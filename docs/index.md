@@ -69,16 +69,16 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 33 TOPICS</span><span>기획 진행도 96% · KNOWLEDGE GRAPH</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 34 TOPICS</span><span>기획 진행도 96% · READABILITY TUNE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>15 UPDATE BUNDLES &middot; BUILD 30 &middot; IMPROVE 40 &middot; CHANGE 17 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>16 UPDATE BUNDLES &middot; BUILD 31 &middot; IMPROVE 45 &middot; CHANGE 17 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>15</b><small>UPDATE BUNDLES</small></span>
-      <span><b>30</b><small>BUILD</small></span>
-      <span><b>40</b><small>IMPROVE</small></span>
+      <span><b>16</b><small>UPDATE BUNDLES</small></span>
+      <span><b>31</b><small>BUILD</small></span>
+      <span><b>45</b><small>IMPROVE</small></span>
       <span><b>17</b><small>CHANGE</small></span>
       <span><b>6</b><small>FIX</small></span>
     </div>
@@ -483,6 +483,32 @@ hide:
         </div>
         <div class="sfh-group"><h3>수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">선형 목차 → 관계 중심 탐색</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>문서 순서만 보여 주던 탐색을 시스템 소속과 관련 문서를 함께 보여 주는 구조로 확장했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 16</small><b>위키 색상 재배합 · 본문 AAA 대비 · 표면 3단 분리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · #02e5e1 정체성은 유지하고 읽기 역할을 중립색에 분담</strong>
+          <ul>
+            <li>제목·본문·보조·최소 정보의 문자색을 네 단계로 분리해 긴 기획 문서의 시선 피로를 낮췄습니다.</li>
+            <li>배경·기본·상승·강조 패널을 단계적으로 밝게 조정해 카드와 노드맵의 중첩 경계를 분명히 했습니다.</li>
+            <li>링크에는 밑줄, 키보드 포커스에는 2px 밝은 청록 외곽선을 더해 색상 외의 상태 단서를 제공합니다.</li>
+            <li>초록·보라·황색·적색 상태색을 밝히고 본문 위 스캔라인·노이즈·제목 잔상의 세기를 낮췄습니다.</li>
+            <li>두 화면 모드의 문자·상태·경계 22개 대비 조합을 검사해 기준 미달 시 Pages 배포를 중단합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>가독성 기준</b><span>본문·보조문은 7:1, 최소 문자는 4.5:1, 패널 경계는 3:1 이상을 유지합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">색상 대비 배포 게이트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>공통 토큰 22개 조합과 #02e5e1 유지 여부를 빌드마다 자동 검사합니다.</p><a href="design/cyberpunk-visual-theme/">색상 규칙 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 5</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">본문 명도 계층</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>제목·본문·보조·최소 정보가 청록 없이도 우선순위를 드러냅니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">패널 깊이 구분</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>본문 카드·검색·노드맵을 같은 3단 표면 토큰으로 정렬했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">링크·포커스 식별</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>밑줄과 외곽선으로 마우스·키보드 탐색 상태를 명확히 표시합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">상태색 대비</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>구현·수정·버그·위험 색상이 어두운 패널에서 서로 분리됩니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">장식 간섭 억제</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>스캔라인과 글로우를 낮춰 도트 스타일은 유지하면서 글자 윤곽을 보존합니다.</p></div></details>
         </div>
       </div>
     </details>

@@ -130,6 +130,7 @@ jobs:
         shell: pwsh
         run: |
           ./scripts/check-wiki-knowledge-map.ps1
+          ./scripts/check-wiki-color-contrast.ps1
           python -m mkdocs build --strict
 
       - name: Add browser game to wiki site

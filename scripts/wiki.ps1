@@ -34,6 +34,7 @@ try {
     & (Join-Path $PSScriptRoot "check-wiki-search.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-play-entry.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-knowledge-map.ps1")
+    & (Join-Path $PSScriptRoot "check-wiki-color-contrast.ps1")
     & $virtualPython -m mkdocs $Action --strict
 }
 finally {
