@@ -69,18 +69,18 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 22 TOPICS</span><span>기획 진행도 96% · K 키 설정</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 23 TOPICS</span><span>기획 진행도 96% · UI 상태 E2E</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>4 UPDATE BUNDLES &middot; BUILD 11 &middot; IMPROVE 7 &middot; CHANGE 7 &middot; FIX 1</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>5 UPDATE BUNDLES &middot; BUILD 12 &middot; IMPROVE 8 &middot; CHANGE 7 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>4</b><small>UPDATE BUNDLES</small></span>
-      <span><b>11</b><small>BUILD</small></span>
-      <span><b>7</b><small>IMPROVE</small></span>
+      <span><b>5</b><small>UPDATE BUNDLES</small></span>
+      <span><b>12</b><small>BUILD</small></span>
+      <span><b>8</b><small>IMPROVE</small></span>
       <span><b>7</b><small>CHANGE</small></span>
-      <span><b>1</b><small>FIX</small></span>
+      <span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>공개 기획 재대조 · 진행률 69% · 남은 작업 재정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -186,6 +186,29 @@ hide:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">물리키 직결 → Action 입력</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>플레이어 이동·대시가 WASD와 Space를 직접 읽지 않아 모든 변경값이 실제 조작에 반영됩니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 5</small><b>UI 상태 판정 E2E · 21개 전환 · 결과 HUD 누수 차단</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 화면이 열렸는지에서 플레이 상태 전체가 올바른지로 검증 확장</strong>
+          <ul>
+            <li>거점·K/I/U/E·작전 설정·전투·성공·실패·복귀의 21개 전환마다 표시·숨김·일시정지·모달 수를 판정합니다.</li>
+            <li>1280×720 화면 경계와 미니맵·스킬·대시 비겹침을 실제 전역 Rect로 검사합니다.</li>
+            <li>첫 실행에서 성공 정산 뒤 전투 HUD 4종이 남는 결함을 재현하고 정산 진입에서 일괄 종료했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>배포 기준</b><span>21개 UI 상태 계약 성공 토큰이 없으면 Web 내보내기와 위키 배포를 중단합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">UI 상태 계약 판정기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>플레이를 변경하지 않는 읽기 전용 판정기가 21개 전환의 레이어·정지·모달·탭 상태를 검사합니다.</p><a href="quality/e2e-play-session/">상태 판정표 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">상태별 실패 진단</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>실패한 플레이 맥락과 보이거나 겹친 레이어를 한 줄로 출력합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">정산 화면 뒤 전투 HUD 잔류</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>성공·실패 결과에서는 전투 HUD·미니맵·스킬·대시를 모두 숨기고 결과만 표시합니다.</p></div></details>
         </div>
       </div>
     </details>

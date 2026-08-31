@@ -5,8 +5,11 @@ const E2E_PROFILE_PATH := "user://sfh_e2e_profile.json"
 const E2E_RANKINGS_PATH := "user://sfh_e2e_rankings.json"
 const E2E_META_PATH := "user://sfh_e2e_meta_progression.json"
 const E2E_KEY_MAPPING_PATH := "user://sfh_e2e_key_mapping.json"
+const UI_STATE_JUDGE_SCRIPT := preload("res://game/tests/support/ui_state_judge.gd")
 
 var game: Node
+var ui_state_judge := UI_STATE_JUDGE_SCRIPT.new()
+var judged_ui_states := PackedStringArray()
 
 
 func _init() -> void:
@@ -38,7 +41,7 @@ func _run() -> void:
 		return
 
 	paused = false
-	print("E2E_PLAY_SESSION_OK hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return")
+	print("E2E_PLAY_SESSION_OK ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
 	_cleanup_test_profile()
 	quit(0)
 
@@ -56,6 +59,8 @@ func _verify_hub_input_session() -> bool:
 		return _fail("거점·플레이어·가방·장비 모듈이 함께 준비되지 않았습니다.")
 	if setup.visible or not hub_hud.visible:
 		return _fail("첫 화면에서 작전 설정과 거점 HUD의 가시성이 뒤바뀌었습니다.")
+	if not _judge_ui_state(&"hub", "첫 거점"):
+		return false
 	if "U 장비" not in hub_hint.text or "E 모듈·파츠" not in hub_hint.text:
 		return _fail("거점 조작 안내가 U와 E의 서로 다른 역할을 설명하지 않습니다.")
 	if "K 키 설정" not in hub_hint.text:
@@ -71,20 +76,30 @@ func _verify_hub_input_session() -> bool:
 		or int(key_panel.call(&"get_snapshot").get(&"binding_row_count", 0)) != 21
 	):
 		return _fail("실제 K 입력이 전체 Action 키 설정 화면을 열지 못했습니다.")
+	if not _judge_ui_state(&"key_mapping_hub", "거점 K 키 설정"):
+		return false
 	await _tap_key(KEY_ESCAPE)
 	if key_panel.visible or paused or not hub_hud.visible:
 		return _fail("실제 ESC 입력이 키 설정을 닫고 거점 HUD를 복원하지 못했습니다.")
+	if not _judge_ui_state(&"hub", "K 종료 후 거점"):
+		return false
 
 	await _tap_key(KEY_I)
 	if not inventory.visible or not paused or hub_hud.visible:
 		return _fail("실제 I 입력이 겹침 없이 가방을 열지 못했습니다.")
+	if not _judge_ui_state(&"inventory_hub", "거점 I 가방"):
+		return false
 	await _tap_key(KEY_ESCAPE)
 	if inventory.visible or paused or not hub_hud.visible:
 		return _fail("실제 ESC 입력이 가방을 닫고 거점 HUD를 복원하지 못했습니다.")
+	if not _judge_ui_state(&"hub", "I 종료 후 거점"):
+		return false
 
 	await _tap_key(KEY_U)
 	if not workbench.visible or int((workbench.get("tabs") as TabContainer).current_tab) != 0:
 		return _fail("실제 U 입력이 캐릭터 장비 탭을 열지 못했습니다.")
+	if not _judge_ui_state(&"equipment_hub", "거점 U 장비"):
+		return false
 	var summary_text := String((workbench.get("character_summary") as Label).text)
 	if "장비 태그 호환" not in summary_text or "활성 스킬" in summary_text:
 		return _fail("장비 호환 수치가 실제 활성 스킬 수처럼 오해되는 문구로 표시됩니다.")
@@ -92,12 +107,18 @@ func _verify_hub_input_session() -> bool:
 	await _tap_key(KEY_E)
 	if not workbench.visible or int((workbench.get("tabs") as TabContainer).current_tab) != 1:
 		return _fail("열린 U 화면에서 실제 E 입력이 창을 닫지 않고 모듈·파츠 탭으로 전환하지 못했습니다.")
+	if not _judge_ui_state(&"modification_hub", "거점 E 모듈·파츠"):
+		return false
 	await _tap_key(KEY_U)
 	if not workbench.visible or int((workbench.get("tabs") as TabContainer).current_tab) != 0:
 		return _fail("열린 E 화면에서 실제 U 입력이 장비 탭으로 돌아오지 못했습니다.")
+	if not _judge_ui_state(&"equipment_hub", "거점 U 탭 복귀"):
+		return false
 	await _tap_key(KEY_ESCAPE)
 	if workbench.visible or paused:
 		return _fail("실제 ESC 입력이 장비 화면을 닫지 못했습니다.")
+	if not _judge_ui_state(&"hub", "U 종료 후 거점"):
+		return false
 
 	var weapon_before: StringName = equipment.call(&"get_active_weapon_slot")
 	await _tap_key(KEY_Q)
@@ -121,6 +142,8 @@ func _verify_hub_input_session() -> bool:
 	await _tap_key(KEY_F)
 	if not setup.visible or not paused or hub_hud.visible:
 		return _fail("게이트의 실제 F 입력이 겹침 없이 작전 설정을 열지 못했습니다.")
+	if not _judge_ui_state(&"run_setup", "작전 설정"):
+		return false
 	return true
 
 
@@ -154,20 +177,32 @@ func _verify_operation_session() -> bool:
 		return _fail("실제 조작 범위와 다른 전투 안내 문구가 표시됩니다.")
 	if minimap.get_global_rect().intersects(skills.get_global_rect()):
 		return _fail("미니맵과 스킬 HUD가 화면에서 겹칩니다.")
+	if not _judge_ui_state(&"combat", "첫 전투 HUD"):
+		return false
 
 	await _tap_key(KEY_I)
 	var inventory = game.get("inventory_window") as Control
 	if inventory == null or not inventory.visible or not paused:
 		return _fail("전투 세션에서 실제 I 입력으로 가방을 확인할 수 없습니다.")
+	if not _judge_ui_state(&"inventory_combat", "전투 I 가방"):
+		return false
 	await _tap_key(KEY_ESCAPE)
+	if not _judge_ui_state(&"combat", "전투 I 종료"):
+		return false
 	await _tap_key(KEY_U)
 	var workbench = game.get("equipment_workbench") as Control
 	if workbench == null or not workbench.visible:
 		return _fail("전투 세션에서 실제 U 입력으로 장비를 확인할 수 없습니다.")
+	if not _judge_ui_state(&"equipment_combat", "전투 U 장비"):
+		return false
 	await _tap_key(KEY_E)
 	if not workbench.visible or int((workbench.get("tabs") as TabContainer).current_tab) != 1:
 		return _fail("전투 세션에서도 E가 모듈·파츠 탭을 안정적으로 열지 못했습니다.")
+	if not _judge_ui_state(&"modification_combat", "전투 E 모듈·파츠"):
+		return false
 	await _tap_key(KEY_ESCAPE)
+	if not _judge_ui_state(&"combat", "전투 U/E 종료"):
+		return false
 
 	var loot_cache: Node2D
 	for child in game.get_node("World/Pickups").get_children():
@@ -215,9 +250,13 @@ func _verify_operation_session() -> bool:
 	var title := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/EndTitle") as Label
 	if not result.visible or title.text != "탈출 성공" or not paused:
 		return _fail("탈출 완료 후 성공 정산 화면이 표시되지 않았습니다.")
+	if not _judge_ui_state(&"result", "성공 결과"):
+		return false
 	await _tap_key(KEY_ENTER)
 	if game.get("start_hub") == null or bool(game.get("run_started")) or paused:
 		return _fail("정산 화면의 실제 Enter 입력이 시작 거점으로 복귀하지 못했습니다.")
+	if not _judge_ui_state(&"hub", "성공 정산 후 거점"):
+		return false
 	return true
 
 
@@ -225,15 +264,30 @@ func _verify_failure_and_return_session() -> bool:
 	if not game.call(&"start_run", "small"):
 		return _fail("성공 정산 후 두 번째 작전을 시작할 수 없습니다.")
 	await process_frame
+	if not _judge_ui_state(&"combat", "실패 검증용 두 번째 전투"):
+		return false
 	var player = game.get("player")
 	player.call(&"take_damage", 999999.0)
 	await process_frame
 	var title := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/EndTitle") as Label
 	if not bool(game.get("run_ended")) or title.text != "작전 실패" or not paused:
 		return _fail("플레이어 사망 후 실패 정산이 표시되지 않았습니다.")
+	if not _judge_ui_state(&"result", "실패 결과"):
+		return false
 	await _tap_key(KEY_ENTER)
 	if game.get("start_hub") == null or bool(game.get("run_started")) or paused:
 		return _fail("실패 정산 후 실제 Enter 입력이 시작 거점으로 복귀하지 못했습니다.")
+	if not _judge_ui_state(&"hub", "실패 정산 후 거점"):
+		return false
+	return true
+
+
+func _judge_ui_state(state_id: StringName, context: String) -> bool:
+	var result: Dictionary = ui_state_judge.call(&"judge", game, state_id)
+	if not bool(result.get(&"success", false)):
+		var errors: PackedStringArray = result.get(&"errors", PackedStringArray())
+		return _fail("UI 상태 판정 실패 [%s/%s] · %s" % [context, state_id, " / ".join(errors)])
+	judged_ui_states.append(state_id)
 	return true
 
 

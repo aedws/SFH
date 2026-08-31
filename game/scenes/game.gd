@@ -2353,12 +2353,20 @@ func _finish_run(title: String, summary: String) -> void:
 		final_summary += "\n" + String(meta_progression_system.call(
 			&"get_summary_line", settlement[&"gained_experience"]
 		))
-	interaction_label.visible = false
+	_hide_active_run_ui()
 	end_title.text = title
 	game_over_summary.text = final_summary
 	restart_button.text = "시작 거점으로 복귀 (Enter)"
 	game_over_overlay.visible = true
 	get_tree().paused = true
+
+
+func _hide_active_run_ui() -> void:
+	hud_margin.visible = false
+	interaction_label.visible = false
+	for layer in [minimap, combat_skill_hud, dash_cooldown_hud]:
+		if is_instance_valid(layer):
+			layer.visible = false
 
 
 func _selected_map_display_name() -> String:
