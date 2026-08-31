@@ -55,7 +55,7 @@ jobs:
         run: |
           test -s "$GITHUB_WORKSPACE/game/assets/fonts/nanum-gothic/OFL.txt"
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
-          grep -q "SMOKE_TEST_OK web_korean_font" /tmp/sfh-smoke.log
+          grep -q "SMOKE_TEST_OK primary_attack_hold skill_slots_1_9 runtime_rebind" /tmp/sfh-smoke.log
 
       - name: Export browser game
         run: |
