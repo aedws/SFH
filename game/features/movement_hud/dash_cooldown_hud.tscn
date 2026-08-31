@@ -64,7 +64,7 @@ layout_mode = 2
 [node name="InputLabel" type="Label" parent="Panel/Margin/Content/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "SHIFT / SPACE · 대시"
+text = "DASH · 회피"
 theme_override_colors/font_color = Color(0.68, 0.82, 0.88, 1)
 theme_override_font_sizes/font_size = 11
 

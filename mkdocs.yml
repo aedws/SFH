@@ -84,6 +84,7 @@ nav:
       - 최소·권장 사양과 성능 예산: performance/minimum-requirements.md
   - 품질 검수:
       - 실제 플레이 세션 E2E: quality/e2e-play-session.md
+      - 플레이어 인식 단위 E2E 감사: quality/player-perception-audit.md
   - 기능:
       - features/index.md
       - 랜덤 맵 생성: features/map-generation.md

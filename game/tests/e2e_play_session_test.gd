@@ -6,10 +6,16 @@ const E2E_RANKINGS_PATH := "user://sfh_e2e_rankings.json"
 const E2E_META_PATH := "user://sfh_e2e_meta_progression.json"
 const E2E_KEY_MAPPING_PATH := "user://sfh_e2e_key_mapping.json"
 const UI_STATE_JUDGE_SCRIPT := preload("res://game/tests/support/ui_state_judge.gd")
+const PLAYER_PERCEPTION_JUDGE_SCRIPT := preload(
+	"res://game/tests/support/player_perception_judge.gd"
+)
 
 var game: Node
 var ui_state_judge := UI_STATE_JUDGE_SCRIPT.new()
+var player_perception_judge := PLAYER_PERCEPTION_JUDGE_SCRIPT.new()
 var judged_ui_states := PackedStringArray()
+var judged_perception_checkpoints := PackedStringArray()
+var judged_perception_units := {}
 
 
 func _init() -> void:
@@ -59,7 +65,12 @@ func _run() -> void:
 	paused = false
 	print("E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe")
 	print("E2E_CYBERPUNK_THEME_OK viewport_safe input_passthrough accent_02e5e1")
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
+	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
+		judged_perception_checkpoints.size(), judged_perception_units.size(),
+	])
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort ui_state_contracts_%d player_perception_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud skill_action_feedback dash_action_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
+		judged_ui_states.size(), judged_perception_checkpoints.size(),
+	])
 	_cleanup_test_profile()
 	quit(0)
 
@@ -79,6 +90,8 @@ func _verify_hub_input_session() -> bool:
 		return _fail("첫 화면에서 작전 설정과 거점 HUD의 가시성이 뒤바뀌었습니다.")
 	if not _judge_ui_state(&"hub", "첫 거점"):
 		return false
+	if not _judge_player_perception(&"hub_orientation", "첫 거점 방향 인지"):
+		return false
 	if "U 장비" not in hub_hint.text or "E 모듈·파츠" not in hub_hint.text:
 		return _fail("거점 조작 안내가 U와 E의 서로 다른 역할을 설명하지 않습니다.")
 	if "K 키 설정" not in hub_hint.text:
@@ -96,6 +109,8 @@ func _verify_hub_input_session() -> bool:
 		return _fail("실제 K 입력이 전체 Action 키 설정 화면을 열지 못했습니다.")
 	if not _judge_ui_state(&"key_mapping_hub", "거점 K 키 설정"):
 		return false
+	if not _judge_player_perception(&"key_mapping_comprehension", "키 설정 선택 이해"):
+		return false
 	await _tap_key(KEY_ESCAPE)
 	if key_panel.visible or paused or not hub_hud.visible:
 		return _fail("실제 ESC 입력이 키 설정을 닫고 거점 HUD를 복원하지 못했습니다.")
@@ -107,6 +122,8 @@ func _verify_hub_input_session() -> bool:
 		return _fail("실제 I 입력이 겹침 없이 가방을 열지 못했습니다.")
 	if not _judge_ui_state(&"inventory_hub", "거점 I 가방"):
 		return false
+	if not _judge_player_perception(&"inventory_comprehension", "가방 공간 이해"):
+		return false
 	await _tap_key(KEY_ESCAPE)
 	if inventory.visible or paused or not hub_hud.visible:
 		return _fail("실제 ESC 입력이 가방을 닫고 거점 HUD를 복원하지 못했습니다.")
@@ -117,6 +134,8 @@ func _verify_hub_input_session() -> bool:
 	if not workbench.visible or int((workbench.get("tabs") as TabContainer).current_tab) != 0:
 		return _fail("실제 U 입력이 캐릭터 장비 탭을 열지 못했습니다.")
 	if not _judge_ui_state(&"equipment_hub", "거점 U 장비"):
+		return false
+	if not _judge_player_perception(&"equipment_comprehension", "장비 슬롯 이해"):
 		return false
 	var summary_text := String((workbench.get("character_summary") as Label).text)
 	if "장비 태그 호환" not in summary_text or "활성 스킬" in summary_text:
@@ -138,6 +157,8 @@ func _verify_hub_input_session() -> bool:
 		return _fail("E 모듈 화면이 적용 수치·4열 카드·추천 정렬·총기 소켓 도식을 함께 표시하지 못했습니다.")
 	if not _judge_ui_state(&"modification_hub", "거점 E 모듈·파츠"):
 		return false
+	if not _judge_player_perception(&"modification_comprehension", "모듈·파츠 선택 이해"):
+		return false
 	await _tap_key(KEY_U)
 	if not workbench.visible or int((workbench.get("tabs") as TabContainer).current_tab) != 0:
 		return _fail("열린 E 화면에서 실제 U 입력이 장비 탭으로 돌아오지 못했습니다.")
@@ -149,11 +170,18 @@ func _verify_hub_input_session() -> bool:
 	if not _judge_ui_state(&"hub", "U 종료 후 거점"):
 		return false
 
+	var weapon_feedback_before := hub_hint.text
 	var weapon_before: StringName = equipment.call(&"get_active_weapon_slot")
 	await _tap_key(KEY_Q)
 	var weapon_after: StringName = equipment.call(&"get_active_weapon_slot")
 	if weapon_before == weapon_after:
 		return _fail("실제 Q 입력이 거점 무기를 교체하지 못했습니다.")
+	if not _judge_player_perception(&"weapon_switch_feedback", "거점 무기 교체 피드백", {
+		&"before_text": weapon_feedback_before,
+		&"after_text": hub_hint.text,
+		&"after_phrases": ["현재"],
+	}):
+		return false
 
 	var gate_position: Vector2 = hub.call(&"get_operation_position")
 	Input.action_press(&"move_right")
@@ -182,6 +210,8 @@ func _verify_hub_input_session() -> bool:
 		or "소모품" not in String(setup_snapshot.get(&"selection_summary", ""))
 	):
 		return _fail("작전 진입 화면이 브리핑·계약·명시적 투입 구조를 제공하지 않습니다.")
+	if not _judge_player_perception(&"operation_decision", "작전 위험·비용 결정 이해"):
+		return false
 	return true
 
 
@@ -236,6 +266,10 @@ func _verify_operation_session() -> bool:
 		return _fail("미니맵과 스킬 HUD가 화면에서 겹칩니다.")
 	if not _judge_ui_state(&"combat", "첫 전투 HUD"):
 		return false
+	if not _judge_player_perception(&"combat_glance", "전투 시선 정보 이해"):
+		return false
+	if not await _verify_combat_action_feedback(player, skills, dash):
+		return false
 
 	await _tap_key(KEY_I)
 	var inventory = game.get("inventory_window") as Control
@@ -260,6 +294,11 @@ func _verify_operation_session() -> bool:
 	await _tap_key(KEY_ESCAPE)
 	if not _judge_ui_state(&"combat", "전투 U/E 종료"):
 		return false
+	if not _judge_player_perception(&"combat_context_restored", "모달 종료 후 전투 복원", {
+		&"expected_context": &"combat",
+		&"actual_context": &"combat" if not paused else &"paused",
+	}):
+		return false
 
 	var loot_cache: Node2D
 	for child in game.get_node("World/Pickups").get_children():
@@ -274,10 +313,22 @@ func _verify_operation_session() -> bool:
 	# Headless physics does not always emit a fresh Area2D body_entered after teleporting.
 	# Keep the interaction handler under test while making the nearby actor explicit.
 	loot_cache.set("nearby_player", player)
-	await _tap_key(KEY_F)
 	var credit_ledger = game.get("credit_ledger")
-	if int(credit_ledger.get("carried_credits")) <= 0:
+	var credits_before := int(credit_ledger.get("carried_credits"))
+	var credit_text_before := String((game.get("credit_label") as Label).text)
+	await _tap_key(KEY_F)
+	var credits_after := int(credit_ledger.get("carried_credits"))
+	if credits_after <= 0:
 		return _fail("파밍 오브젝트 앞 실제 F 입력이 휴대 크레딧을 회수하지 못했습니다.")
+	if not _judge_player_perception(&"loot_feedback", "자원 회수 수치 피드백", {
+		&"before_text": credit_text_before,
+		&"after_text": String((game.get("credit_label") as Label).text),
+		&"after_phrases": ["휴대 크레딧"],
+		&"before_value": credits_before,
+		&"after_value": credits_after,
+		&"value_direction": &"increase",
+	}):
+		return false
 
 	var extraction = game.get("extraction_zone") as Node2D
 	player.global_position = extraction.global_position
@@ -290,6 +341,8 @@ func _verify_operation_session() -> bool:
 	var extraction_state: Dictionary = extraction.call(&"get_snapshot")
 	if not bool(extraction_state.get(&"defense_active", false)):
 		return _fail("탈출 지점의 실제 F 입력이 카운트다운 방어전을 시작하지 못했습니다.")
+	if not _judge_player_perception(&"extraction_start_feedback", "탈출 방어 시작 인지"):
+		return false
 	var remaining_before := float(extraction_state.get(&"defense_remaining_seconds", 0.0))
 	player.global_position += Vector2(float(extraction.get("interaction_radius")) + 80.0, 0.0)
 	extraction.call(&"advance", 0.5)
@@ -298,9 +351,13 @@ func _verify_operation_session() -> bool:
 		return _fail("탈출 구역 이탈 시 방어 카운트다운이 일시정지되지 않았습니다.")
 	if float(extraction_state.get(&"defense_remaining_seconds", 0.0)) < remaining_before - 0.1:
 		return _fail("탈출 구역 밖에서 카운트다운이 소모됩니다.")
+	if not _judge_player_perception(&"extraction_pause_feedback", "탈출 이탈 일시정지 인지"):
+		return false
 	player.global_position = extraction.global_position
 	if not extraction.call(&"request_extraction", player):
 		return _fail("탈출 구역 복귀 후 방어전을 재개하지 못했습니다.")
+	if not _judge_player_perception(&"extraction_resume_feedback", "탈출 복귀 재개 인지"):
+		return false
 	extraction.call(&"advance", remaining_before + 0.5)
 	await process_frame
 	var result := game.get_node("UI/GameOverOverlay") as Control
@@ -309,10 +366,17 @@ func _verify_operation_session() -> bool:
 		return _fail("탈출 완료 후 성공 정산 화면이 표시되지 않았습니다.")
 	if not _judge_ui_state(&"result", "성공 결과"):
 		return false
+	if not _judge_player_perception(&"success_consequence", "탈출 성공 결과 이해"):
+		return false
 	await _tap_key(KEY_ENTER)
 	if game.get("start_hub") == null or bool(game.get("run_started")) or paused:
 		return _fail("정산 화면의 실제 Enter 입력이 시작 거점으로 복귀하지 못했습니다.")
 	if not _judge_ui_state(&"hub", "성공 정산 후 거점"):
+		return false
+	if not _judge_player_perception(&"hub_context_restored", "성공 후 거점 복원", {
+		&"expected_context": &"hub",
+		&"actual_context": &"hub" if not bool(game.get("run_started")) else &"combat",
+	}):
 		return false
 	return true
 
@@ -342,11 +406,94 @@ func _verify_failure_and_return_session() -> bool:
 		return _fail("플레이어 사망 후 실패 정산이 표시되지 않았습니다.")
 	if not _judge_ui_state(&"result", "실패 결과"):
 		return false
+	if not _judge_player_perception(&"failure_consequence", "사망 실패 결과 이해"):
+		return false
 	await _tap_key(KEY_ENTER)
 	if game.get("start_hub") == null or bool(game.get("run_started")) or paused:
 		return _fail("실패 정산 후 실제 Enter 입력이 시작 거점으로 복귀하지 못했습니다.")
 	if not _judge_ui_state(&"hub", "실패 정산 후 거점"):
 		return false
+	if not _judge_player_perception(&"hub_context_restored", "실패 후 거점 복원", {
+		&"expected_context": &"hub",
+		&"actual_context": &"hub" if not bool(game.get("run_started")) else &"combat",
+	}):
+		return false
+	return true
+
+
+func _verify_combat_action_feedback(player: Node2D, skills: Control, dash: Control) -> bool:
+	var skill_before: Dictionary = skills.call(&"get_snapshot")
+	var skill_before_states: Array = skill_before.get(&"states", [])
+	if skill_before_states.is_empty():
+		return _fail("전투 스킬 HUD에 실제 발동 가능한 슬롯이 없습니다.")
+	var energy_before := float((skill_before_states[0] as Dictionary).get(&"energy_current", 0.0))
+	var blink_position_before := player.global_position
+	await _tap_key(KEY_1)
+	await physics_frame
+	await process_frame
+	var skill_after: Dictionary = skills.call(&"get_snapshot")
+	var skill_after_states: Array = skill_after.get(&"states", [])
+	if skill_after_states.is_empty():
+		return _fail("스킬 발동 후 HUD 상태가 사라졌습니다.")
+	var blink_state: Dictionary = skill_after_states[0]
+	var energy_after := float(blink_state.get(&"energy_current", energy_before))
+	var blink_distance := blink_position_before.distance_to(player.global_position)
+	if float(blink_state.get(&"cooldown_remaining", 0.0)) <= 0.0:
+		return _fail("실제 1 입력 뒤 점멸 쿨타임이 시작되지 않았습니다.")
+	if not _judge_player_perception(&"skill_activation_feedback", "점멸 이동·에너지·쿨타임 인지", {
+		&"before_value": energy_before,
+		&"after_value": energy_after,
+		&"value_direction": &"decrease",
+		&"world_delta": blink_distance,
+		&"minimum_world_delta": 24.0,
+	}):
+		return false
+
+	var dash_before: Dictionary = dash.call(&"get_snapshot")
+	var dash_before_remaining := float(
+		(dash_before.get(&"movement", {}) as Dictionary).get(&"dash_cooldown_remaining", 0.0)
+	)
+	Input.action_press(&"move_left")
+	await physics_frame
+	await _press_key_for_physics(KEY_SPACE)
+	for _frame in range(6):
+		await physics_frame
+	Input.action_release(&"move_left")
+	await process_frame
+	var dash_after: Dictionary = dash.call(&"get_snapshot")
+	var dash_after_remaining := float(
+		(dash_after.get(&"movement", {}) as Dictionary).get(&"dash_cooldown_remaining", 0.0)
+	)
+	if dash_after_remaining <= 0.0:
+		return _fail("실제 Space 입력 뒤 대시 쿨타임이 시작되지 않았습니다.")
+	if String(dash_after.get(&"status", "READY")) == "READY":
+		return _fail("실제 대시 뒤 HUD가 READY 상태에서 바뀌지 않았습니다.")
+	if not _judge_player_perception(&"dash_activation_feedback", "대시 재사용 피드백 인지", {
+		&"before_text": String(dash_before.get(&"status", "")),
+		&"after_text": String(dash_after.get(&"status", "")),
+		&"before_value": dash_before_remaining,
+		&"after_value": dash_after_remaining,
+		&"value_direction": &"increase",
+	}):
+		return false
+	return true
+
+
+func _judge_player_perception(
+	checkpoint_id: StringName,
+	context: String,
+	evidence: Dictionary = {}
+) -> bool:
+	var result: Dictionary = player_perception_judge.call(
+		&"judge", game, checkpoint_id, evidence
+	)
+	if not bool(result.get(&"success", false)):
+		var errors: PackedStringArray = result.get(&"errors", PackedStringArray())
+		return _fail("플레이어 인식 판정 실패 [%s/%s] · %s" % [
+			context, checkpoint_id, " / ".join(errors),
+		])
+	judged_perception_checkpoints.append(checkpoint_id)
+	judged_perception_units[result.get(&"perception_unit", &"unknown")] = true
 	return true
 
 
@@ -366,6 +513,20 @@ func _tap_key(keycode: Key) -> void:
 	pressed_event.pressed = true
 	Input.parse_input_event(pressed_event)
 	await process_frame
+	var released_event := pressed_event.duplicate() as InputEventKey
+	released_event.pressed = false
+	Input.parse_input_event(released_event)
+	await process_frame
+
+
+func _press_key_for_physics(keycode: Key, frame_count: int = 1) -> void:
+	var pressed_event := InputEventKey.new()
+	pressed_event.keycode = keycode
+	pressed_event.physical_keycode = keycode
+	pressed_event.pressed = true
+	Input.parse_input_event(pressed_event)
+	for _frame in range(maxi(1, frame_count)):
+		await physics_frame
 	var released_event := pressed_event.duplicate() as InputEventKey
 	released_event.pressed = false
 	Input.parse_input_event(released_event)
