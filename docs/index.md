@@ -69,17 +69,17 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 27 TOPICS</span><span>기획 진행도 96% · 모듈 UI 참조 재설계</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 28 TOPICS</span><span>기획 진행도 96% · 총기 파츠 소켓 UI</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>9 UPDATE BUNDLES &middot; BUILD 19 &middot; IMPROVE 18 &middot; CHANGE 11 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>10 UPDATE BUNDLES &middot; BUILD 21 &middot; IMPROVE 21 &middot; CHANGE 12 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>9</b><small>UPDATE BUNDLES</small></span>
-      <span><b>19</b><small>BUILD</small></span>
-      <span><b>18</b><small>IMPROVE</small></span>
-      <span><b>11</b><small>CHANGE</small></span>
+      <span><b>10</b><small>UPDATE BUNDLES</small></span>
+      <span><b>21</b><small>BUILD</small></span>
+      <span><b>21</b><small>IMPROVE</small></span>
+      <span><b>12</b><small>CHANGE</small></span>
       <span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -311,6 +311,32 @@ hide:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">단순 양쪽 목록 → 세팅 결과 중심 구조</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>선택 장비·장착 결과·보유 후보 순서로 화면 정보 계층을 바꿨습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 10</small><b>총기 파츠 UI · 무기 도식·실제 소켓·장착 선택 연결</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 목록으로만 보이던 파츠를 무기의 장착 위치로 재구성</strong>
+          <ul>
+            <li>선택한 무기 종류에 따라 소총·권총·단검·대검 코드 실루엣을 표시합니다.</li>
+            <li>돌격소총의 실제 optic·muzzle·magazine 소켓을 도식 주변에 배치하고 빈 슬롯·장착·선택 상태를 구분합니다.</li>
+            <li>장착 소켓 클릭은 강화·교체·해제 대상으로, 빈 소켓 클릭은 호환 파츠 목록으로 연결됩니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>자산·모듈 경계</b><span>외부 총기 이미지를 복제하지 않으며 보드는 상태를 읽고 Signal만 보내고 장착 규칙은 기존 장비 시스템에 남습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">WeaponPartsBoard</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>무기 분류별 실루엣과 정의 기반 소켓 지도를 그리는 독립 Control을 추가했습니다.</p><a href="features/equipment-customization/">총기 파츠 UI →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">소켓 선택 Signal</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>도식에서 선택한 소켓을 기존 파츠 강화·교체·해제 흐름으로 연결합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 3</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">장착 위치 가시화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>광학·총구·탄창의 위치와 상태를 목록을 열기 전에 확인합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">빈 소켓 안내</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>장착 가능한 파츠가 아직 없는 소켓도 명시해 누락과 비활성 상태를 구분합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">방어구 상태 설명</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>방어구 선택 시 파츠 미지원 상태를 빈 화면 대신 문장으로 표시합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">파츠 카드 목록 → 무기 소켓 지도</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>숨겨진 기존 카드는 동작 호환용으로 유지하고 기본 표현을 위치 기반 도식으로 전환했습니다.</p></div></details>
         </div>
       </div>
     </details>

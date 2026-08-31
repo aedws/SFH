@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 31 TOPICS</span><span>96% · MODULE UI REFERENCE PASS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 32 TOPICS</span><span>96% · WEAPON PARTS SOCKET UI</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,13 +76,13 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>9 UPDATE BUNDLES &middot; BUILD 19 &middot; IMPROVE 18 &middot; CHANGE 11 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>10 UPDATE BUNDLES &middot; BUILD 21 &middot; IMPROVE 21 &middot; CHANGE 12 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>9</b><small>UPDATE BUNDLES</small></span>
-      <span><b>19</b><small>BUILD</small></span>
-      <span><b>18</b><small>IMPROVE</small></span>
-      <span><b>11</b><small>CHANGE</small></span>
+      <span><b>10</b><small>UPDATE BUNDLES</small></span>
+      <span><b>21</b><small>BUILD</small></span>
+      <span><b>21</b><small>IMPROVE</small></span>
+      <span><b>12</b><small>CHANGE</small></span>
       <span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -317,6 +317,33 @@ tags:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">목록 중심 → 결과 중심 정보 계층</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>선택 장비, 현재 세팅 결과, 보유 후보 순서로 시선 흐름을 재배치했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 10</small><b>총기 파츠 UI · 코드 무기 도식과 실제 소켓 지도</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>도식</b> · 무기 `minor_tag`를 소총·권총·단검·대검 실루엣으로 변환합니다.</li>
+            <li><b>소켓</b> · 정의의 `part_socket_ids`와 장착 파츠를 광학·총구·탄창·칼날 위치 카드로 표시합니다.</li>
+            <li><b>조작</b> · 장착 소켓은 기존 파츠 선택으로, 빈 소켓은 파츠 필터와 장착 안내로 이어집니다.</li>
+            <li><b>비무기</b> · 방어구는 파츠 미지원 상태를 명시하고 잘못된 장착 요청을 만들지 않습니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>검증</b><span>실제 E 입력에서 296×122px 보드·소총 3소켓·무기 분류를 확인하고 장착 후 소켓 상태와 클릭 선택을 스모크로 검사합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">코드 기반 무기 도식</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>상업 라이선스 추가 없이 무기 분류별 파츠 장착 배경을 제공합니다.</p><a href="../features/equipment-customization/">파츠 보드 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">소켓 상호작용 계약</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>보드는 소켓 ID만 방출하고 Workbench가 기존 파츠 조작으로 연결합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 3</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">장착 위치·상태 비교</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>빈 슬롯·장착·현재 선택을 회색·청록·강조 테두리로 구분합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">소켓 메타 정보</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>optic·muzzle·magazine을 광학·총구·탄창 의미와 함께 표시합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">파츠 비지원 가독성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>방어구 선택이 오류가 아니라 의도된 제한임을 화면에서 설명합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">목록식 파츠 표현 → 위치식 소켓 표현</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>기능 API는 유지하고 기본 파츠 표현만 참조 UI의 공간 구조로 교체했습니다.</p></div></details>
         </div>
       </div>
     </details>
