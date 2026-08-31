@@ -510,10 +510,10 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 	elif (
 		not _has_key_binding(&"toggle_inventory", KEY_I)
 		or not _has_key_binding(&"toggle_equipment", KEY_U)
-		or not _has_key_binding(&"toggle_equipment", KEY_E)
+		or not _has_key_binding(&"toggle_modification", KEY_E)
 		or not _has_key_binding(&"switch_weapon", KEY_Q)
 	):
-		failure_message = "거점 I·U/E·Q 단축키가 모두 등록되지 않았습니다."
+		failure_message = "거점 I·U·E·Q 단축키가 모두 등록되지 않았습니다."
 	else:
 		var snapshot: Dictionary = hub.call(&"get_snapshot")
 		if int(snapshot.get(&"room_count", 0)) != 1:
@@ -561,40 +561,38 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 			if failure_message.is_empty():
 				hub_workbench.call(&"_unhandled_input", equipment_event)
 				if not hub_workbench.visible or not paused:
-					failure_message = "거점 U/E 입력이 장비 편집 화면을 열지 못했습니다."
+					failure_message = "거점 U 입력이 장비 편집 화면을 열지 못했습니다."
 				elif hub_hud.visible or setup_overlay.visible:
-					failure_message = "U/E 장비 화면 뒤에 거점 또는 작전 HUD가 겹쳐 표시됩니다."
+					failure_message = "U 장비 화면 뒤에 거점 또는 작전 HUD가 겹쳐 표시됩니다."
 				else:
 					var cancel_event := InputEventAction.new()
 					cancel_event.action = &"ui_cancel"
 					cancel_event.pressed = true
 					hub_workbench.call(&"_unhandled_input", cancel_event)
 					if hub_workbench.visible or paused:
-						failure_message = "거점 U/E 장비 화면이 ESC로 닫히지 않았습니다."
+						failure_message = "거점 장비 화면이 ESC로 닫히지 않았습니다."
 			if failure_message.is_empty():
-				var modification_key := InputEventKey.new()
-				modification_key.keycode = KEY_E
-				modification_key.physical_keycode = KEY_E
-				modification_key.pressed = true
-				hub_workbench.call(&"_unhandled_input", modification_key)
+				var modification_event := InputEventAction.new()
+				modification_event.action = &"toggle_modification"
+				modification_event.pressed = true
+				hub_workbench.call(&"_unhandled_input", modification_event)
 				if (
 					not hub_workbench.visible
 					or int((hub_workbench.get("tabs") as TabContainer).current_tab) != 1
 				):
 					failure_message = "거점 E 입력이 모듈·파츠 탭을 직접 열지 못했습니다."
 				else:
-					var equipment_key := InputEventKey.new()
-					equipment_key.keycode = KEY_U
-					equipment_key.physical_keycode = KEY_U
-					equipment_key.pressed = true
-					hub_workbench.call(&"_unhandled_input", equipment_key)
+					var equipment_return_event := InputEventAction.new()
+					equipment_return_event.action = &"toggle_equipment"
+					equipment_return_event.pressed = true
+					hub_workbench.call(&"_unhandled_input", equipment_return_event)
 					if (
 						not hub_workbench.visible
 						or int((hub_workbench.get("tabs") as TabContainer).current_tab) != 0
 					):
 						failure_message = "열린 E 화면에서 U 입력이 장비 탭으로 전환되지 않았습니다."
 					else:
-						hub_workbench.call(&"_unhandled_input", equipment_key)
+						hub_workbench.call(&"_unhandled_input", equipment_return_event)
 						if hub_workbench.visible or paused:
 							failure_message = "활성 U 탭에서 U 재입력이 화면을 닫지 못했습니다."
 			if failure_message.is_empty():
@@ -2036,8 +2034,8 @@ func _verify_inventory_modules() -> bool:
 	if not _has_key_binding(&"toggle_equipment", KEY_U):
 		_fail("U 키가 장비 화면 입력에 연결되지 않았습니다.")
 		return false
-	if not _has_key_binding(&"toggle_equipment", KEY_E):
-		_fail("E 키가 장비 화면 보조 입력에 연결되지 않았습니다.")
+	if not _has_key_binding(&"toggle_modification", KEY_E):
+		_fail("E 키가 모듈·파츠 화면 입력에 연결되지 않았습니다.")
 		return false
 	root.remove_child(inventory)
 	inventory.free()
@@ -2937,7 +2935,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

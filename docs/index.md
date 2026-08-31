@@ -69,18 +69,18 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 20 TOPICS</span><span>기획 진행도 93% · 우선순위 구현</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 21 TOPICS</span><span>기획 진행도 93% · 실제 플레이 E2E</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>2 UPDATE BUNDLES &middot; BUILD 7 &middot; IMPROVE 3 &middot; CHANGE 5 &middot; FIX 0</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>3 UPDATE BUNDLES &middot; BUILD 9 &middot; IMPROVE 5 &middot; CHANGE 6 &middot; FIX 1</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>2</b><small>UPDATE BUNDLES</small></span>
-      <span><b>7</b><small>BUILD</small></span>
-      <span><b>3</b><small>IMPROVE</small></span>
-      <span><b>5</b><small>CHANGE</small></span>
-      <span><b>0</b><small>FIX</small></span>
+      <span><b>3</b><small>UPDATE BUNDLES</small></span>
+      <span><b>9</b><small>BUILD</small></span>
+      <span><b>5</b><small>IMPROVE</small></span>
+      <span><b>6</b><small>CHANGE</small></span>
+      <span><b>1</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>공개 기획 재대조 · 진행률 69% · 남은 작업 재정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -132,6 +132,34 @@ hide:
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">가중 대상 → 명시 정책</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>행동 성격에 맞는 대상 규칙을 정의 단위로 선택합니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">탈출 초기화 → 시간 보존</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>구역 이탈을 실패 초기화가 아닌 방어전 일시정지로 처리합니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">종합 점수 → 3개 사다리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>서로 다른 플레이 목표가 한 공식에 묻히지 않도록 순위를 분리했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 3</small><b>실제 플레이 E2E · U/E Web 입력 수정 · 화면 의미 정리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 기능 보유 검사에서 실제 한 판 입력 흐름 검증으로 확장</strong>
+          <ul>
+            <li>실제 키로 거점 이동, I/U/E/Q/F, 소형 작전, 파밍, 탈출 일시정지·성공, 사망과 두 차례 거점 복귀를 연속 검사합니다.</li>
+            <li>Web에서 열린 U 화면에 E를 누르면 닫히던 입력 충돌을 독립 Action으로 분리했습니다.</li>
+            <li>`활성 스킬`로 오해되던 장비 호환 숫자와 오래된 1~3 조작 안내를 현재 의미에 맞췄습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>검수 기준</b><span>상태가 맞아도 플레이어 눈에 오작동으로 보이면 실패로 기록하고, 자동 입력과 브라우저 육안 결과를 함께 남깁니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">실제 입력 플레이 세션 러너</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>성공·실패 한 판을 연속 실행하고 단계별 실패 원인을 출력합니다.</p><a href="quality/e2e-play-session/">E2E 목록 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">배포 전 E2E 차단선</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Pages Web 내보내기 전에 계약 스모크와 실제 입력 세션을 모두 통과해야 합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">장비 호환 숫자 명시</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>`활성 스킬` 대신 `장비 태그 호환`으로 실제 의미를 표시합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">현재 조작 안내 동기화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>LMB 기본기와 1~9 스킬, U 장비와 E 모듈을 전투 HUD에 명시합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">U/E 독립 입력 계약</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>UI가 물리 키를 추측하지 않고 장비와 모듈 Action을 각각 소비합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web U→E 창 닫힘</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>열린 장비 화면에서 E가 닫기 토글이 아니라 모듈·파츠 탭 전환으로 작동합니다.</p></div></details>
         </div>
       </div>
     </details>

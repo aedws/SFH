@@ -258,6 +258,8 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var map_label: Label = %MapLabel
 @onready var equipment_label: Label = %EquipmentLabel
 @onready var weapon_runtime_label: Label = %WeaponRuntimeLabel
+@onready var control_hint_label: Label = $UI/HUDMargin/Panel/Margin/Content/FooterRow/Hint
+@onready var hub_control_hint_label: Label = $UI/StartHubHUD/Panel/Margin/Content/Controls
 @onready var interaction_label: Label = %InteractionLabel
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var health_label: Label = %HealthLabel
@@ -341,6 +343,8 @@ var modal_ui_visibility_snapshot: Dictionary = {}
 
 
 func _ready() -> void:
+	control_hint_label.text = "이동 WASD/방향키 · LMB 기본기 · 1~9 스킬 · Q 무기 · F 상호작용 · I 가방 · U 장비 · E 모듈"
+	hub_control_hint_label.text = "이동 WASD/방향키 · I 가방 · U 장비 · E 모듈·파츠 · Q 무기 · 게이트 F"
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	restart_button.pressed.connect(_restart_run)
 	setup_close_button.pressed.connect(_close_run_setup)
@@ -703,7 +707,7 @@ func _install_start_hub() -> bool:
 	hud_margin.visible = false
 	start_hub_hud.visible = true
 	interaction_label.visible = false
-	status_label.text = "거점 준비 · I 가방 · U/E 장비 편집 · Q 무기 전환 · F 작전 게이트"
+	status_label.text = "거점 준비 · I 가방 · U 장비 · E 모듈·파츠 · Q 무기 · F 작전 게이트"
 	return true
 
 
@@ -2003,7 +2007,7 @@ func _on_equipment_changed(summary: Dictionary) -> void:
 func _on_active_weapon_changed(slot_id: StringName, weapon_definition: Resource) -> void:
 	preferred_weapon_slot = slot_id
 	if not run_started:
-		status_label.text = "거점 무기 전환 · %s · U/E에서 장비 편집" % (
+		status_label.text = "거점 무기 전환 · %s · U 장비 · E 모듈·파츠" % (
 		weapon_definition.get("display_name") if weapon_definition != null else String(slot_id)
 		)
 
