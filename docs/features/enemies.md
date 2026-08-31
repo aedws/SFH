@@ -78,7 +78,7 @@ tags:
 
 ## 활성화와 의존성
 
-`FeatureManifest`의 `enemies_enabled`, `spawning_enabled`, `room_encounters_enabled`로 분리합니다. `room_encounters`는 맵과 생성기가 필요합니다. 방 전투를 끄면 같은 총 예산을 사용하는 전역 증원 정책으로 돌아갑니다.
+`FeatureManifest`의 `enemies_enabled`, `spawning_enabled`, `room_encounters_enabled`로 분리합니다. `room_encounters`는 맵·생성기·크레딧 원장이 필요합니다. 방 전투를 끄면 같은 총 예산을 사용하는 전역 증원 정책으로 돌아갑니다.
 
 ## 검색 별칭
 

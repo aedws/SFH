@@ -24,6 +24,7 @@ inventory_enabled = true
 equipment_customization_enabled = true
 spawning_enabled = true
 room_encounters_enabled = true
+room_warp_enabled = true
 weapons_enabled = true
 combat_skills_enabled = true
 combat_resources_enabled = true

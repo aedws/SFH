@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 42 TOPICS</span><span>ROOM HORDE · 12 / 18 / 24 MIN</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 43 TOPICS</span><span>M MAP · CLEAR → EARLY EXIT</span></div>
 
 ## 기획 기준 진행도
 
@@ -35,9 +35,9 @@ tags:
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
 | 기술 기반 | ×1 | 100% | Godot 4.x·GDScript·CharacterBody2D·Area2D·TileMapLayer·Camera2D와 기능별 Node/Scene 경계 구현 |
-| 입력·전투 자원 | ×3 | 100% | K 화면에서 이동·대시·Q·F·좌클릭·1~9·I/U/E를 변경·초기화하고 재실행 뒤 유지. 확장 콘텐츠는 별도 범위 |
+| 입력·전투 자원 | ×3 | 100% | K 화면에서 이동·대시·Q·F·좌클릭·1~9·I/U/E/M 22개 Action을 변경·초기화하고 재실행 뒤 유지. 확장 콘텐츠는 별도 범위 |
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
-| 탈출·정산 | ×2 | 94% | F 방어전, 구역 이탈 일시정지·재개, 성공 영구 등록, 사망 런 획득물·장착 로드아웃 소실 구현. 전리품 종류 확장이 남음 |
+| 탈출·정산 | ×2 | 94% | 전투 방 완주 조기 개방, F 방어전, 구역 이탈 일시정지·재개, 성공 영구 등록, 사망 런 획득물·장착 로드아웃 소실 구현. 전리품 종류 확장이 남음 |
 | 메타·경제 | ×1 | 85% | 보스 보장·고등급·지역 드랍·무료 진입·영구 상점·태그 변형·상태 연계·요구 페널티·3종 로컬 랭킹 구현. 구매품 I/U 연결과 서버 랭킹이 남음 |
 
 계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`입니다. 현재 결과는 `(100×1 + 100×3 + 95×2 + 94×2 + 85×1) ÷ 9 ≈ 96%`입니다. 같은 기능을 코어 루프와 세부 시스템 양쪽에 중복 가산하지 않았습니다.
@@ -76,6 +76,32 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLE · BUILD 4 · IMPROVE 4 · CHANGE 3 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLE</small></span><span><b>4</b><small>BUILD</small></span><span><b>4</b><small>IMPROVE</small></span><span><b>3</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 방 전투의 끝을 탐색·회수·조기 탈출로 직접 연결</strong>
+          <ul>
+            <li><b>조기 탈출:</b> 최대 교전 방을 확보했거나 적 생성 예산이 최소 무리보다 작아진 시점에, 9~10분 타이머를 기다리지 않고 탈출 신호가 열립니다.</li>
+            <li><b>M 지도:</b> 우측 상단 저점유 지도는 그대로 유지하고, M을 누르면 화면 중앙의 클릭 가능한 전체 지도로 확대합니다.</li>
+            <li><b>조건부 워프:</b> 시작 지역·끝 지역·클리어한 4방향 교차 방만 후보로 표시합니다. 방 봉쇄 중이거나 미클리어 일반 방이면 서버 역할의 워프 서비스가 다시 거부합니다.</li>
+            <li><b>방 보상:</b> 접촉형 내부 경험치 1개 대신 방 면적과 ±1 난수 보정으로 F 상호작용 크레딧 박스 1~5개를 생성합니다.</li>
+            <li><b>검증:</b> 실제 M 키와 지도 클릭, 미클리어 거부, 제한 시간 전 개방, F 크레딧 회수, 선택 모듈 제거, 대형 34기 성능을 자동 판정했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>성능 결과</b><span>1280×720 GL Compatibility, 대형 방 34기·전기 효과 3개에서 평균 6.894ms, 피크 8.948ms, Node 최대 1,773개로 60 FPS CPU 예산 통과.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 4</h3><p>전투 방 완료 Signal, M 확장 지도, 조건부 RoomWarpSystem, 방 크기 기반 크레딧 보상 박스를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>⚡ 개선 · 4</h3><p>완주 후 대기 제거, 지도 탐색 동선 단축, F 회수 감각, 실제 입력 E2E 범위를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>🧭 수정 · 3</h3><p>방 보상 경제, 맵 방향 스냅샷, 키 설정 카탈로그를 각각 크레딧·4방향·22개 Action 기준으로 수정했습니다.</p></div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>확장 레이아웃 첫 프레임에도 클릭 영역이 음수 또는 0이 되지 않도록 양수 사각형으로 보정했습니다.</p></div>
+      </div>
+    </details>
+  </div>
+</details>
+<details class="sfh-day">
   <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>20 UPDATE BUNDLES &middot; BUILD 42 &middot; IMPROVE 62 &middot; CHANGE 24 &middot; FIX 8</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">

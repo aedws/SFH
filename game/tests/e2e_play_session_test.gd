@@ -75,7 +75,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_reward medium_large_600s fog_room_corridor_transition skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -111,7 +111,7 @@ func _verify_hub_input_session() -> bool:
 		or not key_panel.visible
 		or not paused
 		or hub_hud.visible
-		or int(key_panel.call(&"get_snapshot").get(&"binding_row_count", 0)) != 21
+		or int(key_panel.call(&"get_snapshot").get(&"binding_row_count", 0)) != 22
 	):
 		return _fail("실제 K 입력이 전체 Action 키 설정 화면을 열지 못했습니다.")
 	if not _judge_ui_state(&"key_mapping_hub", "거점 K 키 설정"):
@@ -288,6 +288,8 @@ func _verify_operation_session() -> bool:
 	if not await _verify_primary_attack_resolution(player):
 		return false
 	if not await _verify_room_encounter_resolution(player):
+		return false
+	if not await _verify_expanded_map_warp(player):
 		return false
 	if not await _verify_run_augment_choice():
 		return false
@@ -642,20 +644,29 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 	var spawner = game.get("enemy_spawner")
 	var generator = game.get("map_generator")
 	var progression = game.get("progression_system")
+	var credit_ledger = game.get("credit_ledger")
 	var fog = game.get("fog_of_war")
-	if encounters == null or spawner == null or generator == null or progression == null or fog == null:
+	if encounters == null or spawner == null or generator == null or progression == null or credit_ledger == null or fog == null:
 		return _fail("방 전투 E2E에 필요한 모듈이 설치되지 않았습니다.")
 	var room := {}
+	var fallback_room := {}
 	for candidate: Dictionary in generator.call(&"get_room_encounter_snapshot"):
 		if (
 			not bool(candidate.get(&"is_start_room", false))
 			and not bool(candidate.get(&"is_extraction_room", false))
 			and not (candidate.get(&"doorways", []) as Array).is_empty()
 		):
-			room = candidate
-			break
+			fallback_room = candidate
+			if bool(candidate.get(&"is_four_way", false)):
+				room = candidate
+				break
+	if room.is_empty():
+		room = fallback_room
 	if room.is_empty():
 		return _fail("문 봉쇄가 가능한 일반 방을 생성하지 못했습니다.")
+	var test_tier_values: Dictionary = encounters.get("tier_values").duplicate(true)
+	test_tier_values[&"maximum_encounters"] = 1
+	encounters.set("tier_values", test_tier_values)
 	player.global_position = room[&"center"]
 	await physics_frame
 	await process_frame
@@ -664,9 +675,7 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 	var active: Dictionary = encounters.call(&"get_snapshot")
 	if not _judge_player_perception(&"room_lock_feedback", "방 진입과 문 봉쇄 인지"):
 		return false
-	var experience_before := float(
-		progression.call(&"get_run_snapshot").get(&"total_experience_gained", 0.0)
-	)
+	var credits_before := int(credit_ledger.call(&"get_snapshot").get(&"carried", 0))
 	var room_id := StringName("room_%d" % int(room[&"room_index"]))
 	player.global_position = (room[&"world_rect"] as Rect2).position + Vector2(160.0, 160.0)
 	await physics_frame
@@ -690,27 +699,93 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 		])
 	if not _judge_player_perception(&"room_clear_feedback", "방 클리어와 보상 생성 인지"):
 		return false
+	var pacing: Dictionary = game.call(&"get_run_pacing_snapshot")
+	if (
+		not bool(pacing.get(&"extraction_unlocked", false))
+		or float(pacing.get(&"elapsed_seconds", INF)) >= float(pacing.get(&"extraction_unlock_seconds", 0.0))
+	):
+		return _fail("모든 전투 방 확보가 제한 시간 전 탈출을 개방하지 못했습니다: %s" % pacing)
 	var rewards: Array = encounters.call(&"get_active_rewards")
 	if rewards.is_empty():
 		return _fail("방 클리어 후 회수 가능한 실제 보상 노드가 없습니다.")
 	var reward := rewards[0] as Node2D
 	player.global_position = reward.global_position
 	reward.call(&"_on_body_entered", player)
+	reward.call(&"request_loot", player)
 	await process_frame
 	await process_frame
 	var collected: Dictionary = encounters.call(&"get_snapshot")
-	var experience_after := float(
-		progression.call(&"get_run_snapshot").get(&"total_experience_gained", 0.0)
-	)
+	var credits_after := int(credit_ledger.call(&"get_snapshot").get(&"carried", 0))
 	if not _judge_gameplay_flow(&"room_encounter_resolution", "방 진입→봉쇄→클리어→보상", {
 		&"active": active,
 		&"cleared": cleared,
 		&"collected": collected,
-		&"experience_before": experience_before,
-		&"experience_after": experience_after,
+		&"credits_before": credits_before,
+		&"credits_after": credits_after,
 	}):
 		return false
 	return await _verify_fog_room_corridor_transition(player, generator, fog, room)
+
+
+func _verify_expanded_map_warp(player: Node2D) -> bool:
+	var minimap = game.get("minimap") as Control
+	var room_warp = game.get("room_warp_system")
+	var encounters = game.get("room_encounter_system")
+	var generator = game.get("map_generator")
+	if minimap == null or room_warp == null or encounters == null or generator == null:
+		return _fail("M 확장 지도 워프 E2E에 필요한 모듈이 없습니다.")
+	await _tap_key(KEY_M)
+	await process_frame
+	var expanded: Dictionary = minimap.call(&"get_layout_snapshot")
+	if (
+		not bool(expanded.get(&"expanded", false))
+		or expanded.get(&"layout_mode", &"") != &"expanded_interactive"
+		or int(expanded.get(&"warp_target_count", 0)) < 2
+	):
+		return _fail("실제 M 입력이 클릭 가능한 확장 전술 지도를 열지 못했습니다: %s" % expanded)
+	var targets: Array = room_warp.call(&"get_warp_targets")
+	var chosen := {}
+	for target: Dictionary in targets:
+		if target.get(&"kind", &"") == &"junction":
+			chosen = target
+			break
+	if chosen.is_empty():
+		for target: Dictionary in targets:
+			if target.get(&"kind", &"") == &"start":
+				chosen = target
+				break
+	if chosen.is_empty():
+		return _fail("확장 지도에 시작·클리어 교차 방 워프 후보가 없습니다.")
+	var map_view := minimap.get_node("Margin/Content/MapView") as Control
+	map_view.queue_redraw()
+	await process_frame
+	var rendered_rect: Rect2 = map_view.get("rendered_map_rect")
+	var click_position: Vector2 = map_view.call(
+		&"_world_to_minimap", chosen.get(&"world_position", Vector2.ZERO), rendered_rect
+	)
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	click.position = click_position
+	map_view.call(&"_gui_input", click)
+	await process_frame
+	if not player.global_position.is_equal_approx(chosen.get(&"world_position", Vector2.ZERO)):
+		return _fail("확장 지도 후보 클릭이 플레이어를 해당 방으로 워프하지 못했습니다.")
+	if bool(minimap.call(&"is_expanded")):
+		return _fail("워프 완료 후 확장 지도가 전투 시야를 다시 열어주지 않았습니다.")
+	var rejected_uncleared := false
+	for room: Dictionary in generator.call(&"get_room_encounter_snapshot"):
+		var room_index := int(room.get(&"room_index", -1))
+		if (
+			not bool(room.get(&"is_start_room", false))
+			and not bool(room.get(&"is_extraction_room", false))
+			and not bool(encounters.call(&"is_room_completed", room_index))
+		):
+			rejected_uncleared = not bool(room_warp.call(&"request_warp", room_index))
+			break
+	if not rejected_uncleared:
+		return _fail("미클리어 일반 방 워프 요청이 차단되지 않았습니다.")
+	return true
 
 
 func _verify_fog_room_corridor_transition(

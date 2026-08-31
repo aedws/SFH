@@ -4,14 +4,16 @@ extends Node2D
 signal encounter_started(room_index: int, enemy_count: int)
 signal doors_locked(room_index: int, door_count: int)
 signal encounter_cleared(room_index: int)
-signal reward_spawned(room_index: int, experience_amount: int)
-signal reward_collected(room_index: int, experience_amount: int)
+signal all_encounters_completed(completed_count: int, required_count: int)
+signal reward_spawned(room_index: int, box_count: int, total_credits: int)
+signal reward_collected(room_index: int, credit_amount: int)
+signal interaction_availability_changed(available: bool, prompt: String)
 
 const DOOR_BARRIER_SCRIPT := preload(
 	"res://game/features/room_encounters/room_door_barrier.gd"
 )
 const REWARD_SCENE := preload(
-	"res://game/features/room_encounters/room_reward_pickup.tscn"
+	"res://game/features/room_encounters/room_credit_reward_box.tscn"
 )
 const MAP_METHODS := [
 	&"get_visibility_region", &"get_room_encounter_snapshot", &"get_room_spawn_positions",
@@ -39,6 +41,10 @@ var last_cleared_room_index: int = -1
 var last_requested_enemy_count: int = 0
 var last_spawned_enemy_count: int = 0
 var last_trigger_source: StringName = &"none"
+var completion_announced: bool = false
+var last_reward_box_count: int = 0
+var last_reward_total_credits: int = 0
+var last_reward_size_ratio: float = 0.0
 var random := RandomNumberGenerator.new()
 
 
@@ -80,6 +86,10 @@ func configure(
 	last_requested_enemy_count = 0
 	last_spawned_enemy_count = 0
 	last_trigger_source = &"none"
+	completion_announced = false
+	last_reward_box_count = 0
+	last_reward_total_credits = 0
+	last_reward_size_ratio = 0.0
 	_clear_doors()
 	random.randomize()
 	enemy_spawner.call(&"set_reinforcement_paused", &"room_encounters", true)
@@ -97,17 +107,25 @@ func _process(_delta: float) -> void:
 
 func get_snapshot() -> Dictionary:
 	_prune_active_rewards()
+	var required_count := _required_encounter_count()
 	return {
 		&"tier_id": tier_id,
 		&"room_count": room_definitions.size(),
 		&"completed_encounters": completed_rooms.size(),
 		&"maximum_encounters": int(tier_values.get(&"maximum_encounters", 0)),
+		&"required_encounters": required_count,
+		&"all_encounters_completed": _all_encounters_completed(),
 		&"active_room_index": active_room_index,
 		&"active_enemy_count": active_enemies.size(),
 		&"locked_door_count": active_doors.size(),
 		&"active_reward_count": active_rewards.size(),
 		&"rewards_spawned": rewards_spawned,
 		&"rewards_collected": rewards_collected,
+		&"last_reward_box_count": last_reward_box_count,
+		&"last_reward_total_credits": last_reward_total_credits,
+		&"last_reward_size_ratio": last_reward_size_ratio,
+		&"reward_box_minimum": int(config.get("minimum_reward_boxes")),
+		&"reward_box_maximum": int(config.get("maximum_reward_boxes")),
 		&"last_cleared_room_index": last_cleared_room_index,
 		&"minimum_horde_size": int(tier_values.get(&"minimum_enemies", 0)),
 		&"maximum_horde_size": int(tier_values.get(&"maximum_enemies", 0)),
@@ -120,6 +138,10 @@ func get_snapshot() -> Dictionary:
 		),
 		&"reinforcement_mode": &"room_triggered",
 	}
+
+
+func is_room_completed(room_index: int) -> bool:
+	return completed_rooms.has(room_index)
 
 
 func get_active_rewards() -> Array[Node]:
@@ -208,29 +230,108 @@ func _complete_active_encounter() -> void:
 	_clear_doors()
 	encounter_cleared.emit(cleared_room)
 	_spawn_reward(cleared_room)
+	_check_all_encounters_completed()
 
 
 func _spawn_reward(room_index: int) -> void:
 	var room: Dictionary = room_definitions.get(room_index, {})
 	if room.is_empty() or not is_instance_valid(reward_parent):
 		return
-	var reward := REWARD_SCENE.instantiate()
-	reward_parent.add_child(reward)
-	reward.global_position = room[&"center"]
-	var experience_amount := int(tier_values[&"reward_experience"])
-	if not reward.call(&"configure", room_index, experience_amount):
-		reward.queue_free()
+	var box_count := _reward_box_count(room)
+	var positions: PackedVector2Array = map_provider.call(
+		&"get_room_spawn_positions", room_index, box_count
+	)
+	if positions.is_empty():
+		positions.append(room[&"center"])
+	var total_credits := 0
+	var kinds := [&"field_cache", &"material_locker", &"recovery_terminal"]
+	for index in mini(box_count, positions.size()):
+		var reward := REWARD_SCENE.instantiate()
+		reward_parent.add_child(reward)
+		reward.global_position = positions[index]
+		var credit_amount := random.randi_range(
+			int(tier_values[&"reward_credit_minimum"]),
+			int(tier_values[&"reward_credit_maximum"])
+		)
+		reward.call(&"configure", credit_amount, kinds[index % kinds.size()])
+		reward.set_meta(&"room_index", room_index)
+		active_rewards.append(reward)
+		rewards_spawned += 1
+		total_credits += credit_amount
+		reward.tree_exited.connect(_on_reward_tree_exited.bind(reward), CONNECT_ONE_SHOT)
+		reward.connect(
+			&"credits_collected", Callable(self, &"_on_reward_collected").bind(room_index)
+		)
+		reward.connect(
+			&"interaction_availability_changed",
+			Callable(self, &"_on_reward_interaction_availability_changed")
+		)
+	last_reward_box_count = mini(box_count, positions.size())
+	last_reward_total_credits = total_credits
+	reward_spawned.emit(room_index, last_reward_box_count, total_credits)
+
+
+func _reward_box_count(room: Dictionary) -> int:
+	var minimum_area := INF
+	var maximum_area := 0.0
+	for candidate: Dictionary in room_definitions.values():
+		if _room_is_excluded(candidate):
+			continue
+		var rect: Rect2 = candidate.get(&"world_rect", Rect2())
+		var area := rect.size.x * rect.size.y
+		minimum_area = minf(minimum_area, area)
+		maximum_area = maxf(maximum_area, area)
+	var room_rect: Rect2 = room.get(&"world_rect", Rect2())
+	var room_area := room_rect.size.x * room_rect.size.y
+	var area_ratio := (
+		clampf((room_area - minimum_area) / (maximum_area - minimum_area), 0.0, 1.0)
+		if maximum_area > minimum_area else 0.5
+	)
+	last_reward_size_ratio = area_ratio
+	var minimum_boxes := int(config.get("minimum_reward_boxes"))
+	var maximum_boxes := int(config.get("maximum_reward_boxes"))
+	var size_adjusted := roundi(lerpf(float(minimum_boxes), float(maximum_boxes), area_ratio))
+	var variance := int(config.get("random_box_variance"))
+	return clampi(size_adjusted + random.randi_range(-variance, variance), minimum_boxes, maximum_boxes)
+
+
+func _required_encounter_count() -> int:
+	var eligible_count := 0
+	for room: Dictionary in room_definitions.values():
+		if not _room_is_excluded(room):
+			eligible_count += 1
+	return mini(eligible_count, int(tier_values.get(&"maximum_encounters", 0)))
+
+
+func _all_encounters_completed() -> bool:
+	if active_room_index >= 0:
+		return false
+	var required_count := _required_encounter_count()
+	return (
+		required_count > 0 and completed_rooms.size() >= required_count
+	) or (
+		completed_rooms.size() > 0
+		and int(enemy_spawner.call(&"get_remaining_spawn_budget"))
+		< int(tier_values.get(&"minimum_enemies", 1))
+	)
+
+
+func _check_all_encounters_completed() -> void:
+	if completion_announced or not _all_encounters_completed():
 		return
-	active_rewards.append(reward)
-	rewards_spawned += 1
-	reward.tree_exited.connect(_on_reward_tree_exited.bind(reward), CONNECT_ONE_SHOT)
-	reward.connect(&"collected", Callable(self, &"_on_reward_collected"))
-	reward_spawned.emit(room_index, experience_amount)
+	completion_announced = true
+	all_encounters_completed.emit(completed_rooms.size(), _required_encounter_count())
 
 
-func _on_reward_collected(room_index: int, experience_amount: int) -> void:
+func _on_reward_collected(
+	credit_amount: int, _world_position: Vector2, room_index: int
+) -> void:
 	rewards_collected += 1
-	reward_collected.emit(room_index, experience_amount)
+	reward_collected.emit(room_index, credit_amount)
+
+
+func _on_reward_interaction_availability_changed(available: bool, prompt: String) -> void:
+	interaction_availability_changed.emit(available, prompt)
 
 
 func _on_reward_tree_exited(reward: Node) -> void:

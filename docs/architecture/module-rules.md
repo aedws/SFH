@@ -36,7 +36,8 @@ tags:
 `FeatureManifest.validation_errors()`가 잘못된 조합을 게임 시작 전에 검사합니다.
 
 - `spawning`은 `enemies` 필요
-- `room_encounters`는 `spawning`, `map_generation`과 유효한 방 전투 Resource 필요
+- `room_encounters`는 `spawning`, `map_generation`, `credits`와 유효한 방 전투 Resource 필요
+- `room_warp`는 `room_encounters`, `minimap` 필요
 - `start_hub`는 `player` 필요
 - `weapons`는 `enemies` 필요
 - `combat_skills`는 `player`와 유효한 전투 스킬 로드아웃 Resource 필요
@@ -79,7 +80,7 @@ tags:
 
 타격 피드백은 공격이 선택적으로 전달하는 `hit_context`와 액터의 `damaged` Signal만 사용합니다. 액터 내부 반응은 `HitReaction2D`, 월드 충격과 카메라는 `HitFeedbackDirector`, 표현 수치는 `HitFeedbackProfile`이 소유하며 어느 쪽도 피해량을 수정하지 않습니다.
 
-방 전투는 맵 내부 배열을 직접 읽지 않습니다. 맵이 방 경계·중심·출입구 스냅샷과 방 내부 생성 위치를 제공하고, 적 생성기는 위치 지정 생성·남은 예산·증원 일시 정지 계약만 제공합니다. `RoomEncounterSystem`은 이 공개 계약을 조합해 진입→봉쇄→전멸→보상 상태만 소유합니다.
+방 전투는 맵 내부 배열을 직접 읽지 않습니다. 맵이 방 경계·중심·출입구·4방향 연결 스냅샷과 방 내부 생성 위치를 제공하고, 적 생성기는 위치 지정 생성·남은 예산·증원 일시 정지 계약만 제공합니다. `RoomEncounterSystem`은 이 공개 계약을 조합해 진입→봉쇄→전멸→보상·완주 상태만 소유합니다. `RoomWarpSystem`은 미니맵의 방 번호 요청을 받아 전투·클리어·방 종류를 검증하고, 미니맵은 플레이어 위치를 직접 수정하지 않습니다.
 
 영구 상태는 런타임 Node에 보관하지 않습니다. `PersistentProfile`은 값과 저장만 담당하고 상점 가격, 제작식, 작전 배율, 점수식은 각 정책 모듈이 소유합니다. 출격 조립 실패에는 공개 보상 계약으로 트랜잭션을 되돌립니다.
 

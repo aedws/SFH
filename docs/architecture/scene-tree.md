@@ -18,9 +18,10 @@ Game
 │  ├─ Projectiles
 │  └─ Pickups
 │     ├─ CreditLootCache   # 금고·자재함·회수 단말기 유형으로 여러 개 생성
-│     └─ RoomRewardPickup  # 방 전멸 뒤 생성되는 내부 경험치 보상
+│     └─ RoomCreditRewardBox # 방 전멸 뒤 1~5개 생성되는 F 크레딧 보상 박스
 ├─ Modules
 │  ├─ EnemySpawner          # 등급별 목표 수량·총 생성 한계와 묶음 증원
+│  ├─ RoomWarpSystem        # 시작·끝·클리어 4방향 방 워프 검증
 │  ├─ ProgressionSystem     # 실행 시 생성
 │  ├─ HealthRecovery        # 지연·상한이 있는 부분 체력 회복
 │  ├─ CombatSkills          # 1·2·3 입력, 효과 실행과 쿨타임 상태
@@ -35,7 +36,7 @@ Game
    ├─ StartHubHUD           # 거점 목표와 조작 안내
    ├─ HUDMargin
    ├─ CombatSkillHud        # 실행 시 설치되는 하단 3슬롯 쿨타임 HUD
-   ├─ TacticalMinimap      # 실행 시 설치되는 우측 상단 전술 지도
+   ├─ TacticalMinimap      # 우측 상단 저점유/M 확장 클릭 전술 지도
    ├─ InteractionLabel      # 탈출 범위의 F 안내
    ├─ RunSetupOverlay       # 소·중·대형 선택
    ├─ RunBuffSelector       # 내부 레벨업 때 3개 버프 선택
@@ -65,6 +66,7 @@ Game
 - `game/features/loot/loot_spawner.tscn`: 파밍 오브젝트 배치
 - `game/features/spawning/enemy_spawner.tscn`: 적 생성 기능
 - `game/features/room_encounters/room_encounter_system.tscn`: 방 진입·문 봉쇄·전멸·보상 조정
+- `game/features/room_navigation/room_warp_system.tscn`: 조건부 확장 지도 워프 검증
 - `game/features/weapons/auto_weapon.tscn`: 자동 공격 기능
 - `game/features/experience/progression_system.tscn`: 성장 기능
 - `game/features/run_buffs/run_buff_system.tscn`: 한 판 임시 버프

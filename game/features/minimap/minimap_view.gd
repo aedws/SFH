@@ -1,6 +1,8 @@
 class_name TacticalMinimapView
 extends Control
 
+signal warp_requested(room_index: int)
+
 @export var background_color := Color(0.018, 0.03, 0.045, 1.0)
 @export var floor_color := Color(0.18, 0.38, 0.43, 1.0)
 @export var obstacle_color := Color(0.63, 0.43, 0.24, 1.0)
@@ -13,6 +15,10 @@ var cell_size: float = 32.0
 var extraction_position := Vector2.ZERO
 var map_texture: ImageTexture
 var redraw_elapsed: float = 0.0
+var room_definitions: Array[Dictionary] = []
+var warp_targets: Dictionary = {}
+var interactive := false
+var rendered_map_rect := Rect2()
 
 
 func _ready() -> void:
@@ -26,12 +32,30 @@ func configure(snapshot: Dictionary, actor: Node2D) -> void:
 	cell_bounds = snapshot.get(&"cell_bounds", Rect2i()) as Rect2i
 	cell_size = float(snapshot.get(&"cell_size", 32.0))
 	extraction_position = snapshot.get(&"extraction_position", Vector2.ZERO) as Vector2
+	room_definitions.assign(snapshot.get(&"rooms", []))
 	_build_map_texture(
 		snapshot.get(&"floor_cells", PackedVector2Array()) as PackedVector2Array,
 		snapshot.get(&"obstacle_cells", PackedVector2Array()) as PackedVector2Array
 	)
 	set_process(true)
 	queue_redraw()
+
+
+func set_warp_targets(targets: Array[Dictionary]) -> void:
+	warp_targets.clear()
+	for target in targets:
+		warp_targets[int(target.get(&"room_index", -1))] = target
+	queue_redraw()
+
+
+func set_interactive(value: bool) -> void:
+	interactive = value
+	mouse_filter = Control.MOUSE_FILTER_STOP if value else Control.MOUSE_FILTER_IGNORE
+	queue_redraw()
+
+
+func get_warp_target_count() -> int:
+	return warp_targets.size()
 
 
 func _process(delta: float) -> void:
@@ -69,7 +93,10 @@ func _build_map_texture(
 
 
 func _draw() -> void:
-	var available_rect := Rect2(Vector2(6.0, 6.0), size - Vector2(12.0, 12.0))
+	var available_rect := Rect2(
+		Vector2(6.0, 6.0),
+		Vector2(maxf(1.0, size.x - 12.0), maxf(1.0, size.y - 12.0))
+	)
 	draw_rect(available_rect, background_color, true)
 	if map_texture == null or cell_bounds.size.x <= 0 or cell_bounds.size.y <= 0:
 		return
@@ -79,8 +106,11 @@ func _draw() -> void:
 	var rendered_size := pixel_size * fit_scale
 	var rendered_origin := available_rect.position + (available_rect.size - rendered_size) * 0.5
 	var rendered_rect := Rect2(rendered_origin, rendered_size)
+	rendered_map_rect = rendered_rect
 	draw_texture_rect(map_texture, rendered_rect, false)
 	draw_rect(rendered_rect, Color(0.39, 0.69, 0.72, 0.72), false, 1.0)
+	if interactive:
+		_draw_warp_targets(rendered_rect)
 
 	var extraction_marker := _world_to_minimap(extraction_position, rendered_rect)
 	var diamond := PackedVector2Array([
@@ -115,3 +145,39 @@ func _world_to_minimap(world_position: Vector2, rendered_rect: Rect2) -> Vector2
 		cell_position.y / float(cell_bounds.size.y)
 	)
 	return rendered_rect.position + normalized * rendered_rect.size
+
+
+func _draw_warp_targets(rendered_rect: Rect2) -> void:
+	for room_index: int in warp_targets:
+		var target: Dictionary = warp_targets[room_index]
+		var marker := _world_to_minimap(target.get(&"world_position", Vector2.ZERO), rendered_rect)
+		var color := extraction_color if target.get(&"kind", &"") == &"extraction" else player_color
+		draw_circle(marker, 8.0, Color(background_color, 0.9))
+		draw_arc(marker, 7.0, 0.0, TAU, 20, color, 2.0, true)
+		draw_circle(marker, 2.0, color)
+
+
+func _gui_input(event: InputEvent) -> void:
+	if not interactive or not event is InputEventMouseButton:
+		return
+	var mouse_event := event as InputEventMouseButton
+	if not mouse_event.pressed or mouse_event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	var room_index := _room_at_minimap_position(mouse_event.position)
+	if warp_targets.has(room_index):
+		warp_requested.emit(room_index)
+		accept_event()
+
+
+func _room_at_minimap_position(local_position: Vector2) -> int:
+	var safe_rect := rendered_map_rect.abs()
+	if safe_rect.size.x <= 0.0 or safe_rect.size.y <= 0.0 or not safe_rect.has_point(local_position):
+		return -1
+	var normalized := (local_position - safe_rect.position) / safe_rect.size
+	var cell_position := Vector2(cell_bounds.position) + normalized * Vector2(cell_bounds.size)
+	var world_position := cell_position * cell_size
+	for room in room_definitions:
+		var room_rect: Rect2 = room.get(&"world_rect", Rect2())
+		if room_rect.has_point(world_position):
+			return int(room.get(&"room_index", -1))
+	return -1

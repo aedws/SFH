@@ -25,6 +25,7 @@ extends Resource
 @export var equipment_customization_enabled: bool = true
 @export var spawning_enabled: bool = true
 @export var room_encounters_enabled: bool = true
+@export var room_warp_enabled: bool = true
 @export var weapons_enabled: bool = true
 @export var combat_skills_enabled: bool = true
 @export var combat_resources_enabled: bool = true
@@ -189,6 +190,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"spawning")
 	if room_encounters_enabled:
 		result.append(&"room_encounters")
+	if room_warp_enabled:
+		result.append(&"room_warp")
 	if weapons_enabled:
 		result.append(&"weapons")
 	if combat_skills_enabled:
@@ -272,6 +275,12 @@ func validation_errors() -> PackedStringArray:
 		errors.append("room_encounters 모듈은 map_generation 모듈이 필요합니다.")
 	if room_encounters_enabled and not _resource_exists(room_encounter_config_path):
 		errors.append("방 전투 설정 Resource 경로가 유효하지 않습니다.")
+	if room_encounters_enabled and not credits_enabled:
+		errors.append("room_encounters 보상은 credits 모듈이 필요합니다.")
+	if room_warp_enabled and not room_encounters_enabled:
+		errors.append("room_warp 모듈은 room_encounters 모듈이 필요합니다.")
+	if room_warp_enabled and not minimap_enabled:
+		errors.append("room_warp 모듈은 minimap 모듈이 필요합니다.")
 	if enemy_armor_enabled and not enemies_enabled:
 		errors.append("enemy_armor 모듈은 enemies 모듈이 필요합니다.")
 	if enemy_status_ui_enabled and not enemies_enabled:

@@ -23,6 +23,7 @@ const SPAWN_CONFIG_PATH_PATTERN := "res://game/features/spawning/configs/%s.tres
 const ROOM_ENCOUNTER_SCENE_PATH := (
 	"res://game/features/room_encounters/room_encounter_system.tscn"
 )
+const ROOM_WARP_SCENE_PATH := "res://game/features/room_navigation/room_warp_system.tscn"
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const COMBAT_SKILL_SYSTEM_SCENE_PATH := (
 	"res://game/features/combat_skills/combat_skill_system.tscn"
@@ -117,7 +118,7 @@ const START_HUB_METHODS := [
 ]
 const FOG_OF_WAR_METHODS := [&"configure", &"get_snapshot", &"set_visibility_multiplier"]
 const MINIMAP_PROVIDER_METHODS := [&"get_minimap_snapshot"]
-const MINIMAP_METHODS := [&"configure"]
+const MINIMAP_METHODS := [&"configure", &"set_warp_targets", &"set_expanded", &"is_expanded"]
 const EQUIPMENT_METHODS := [
 	&"configure",
 	&"get_active_skill_ids",
@@ -203,8 +204,9 @@ const ENEMY_SPAWNER_METHODS := [
 	&"set_reinforcement_paused", &"get_remaining_spawn_budget", &"get_separation_vector",
 ]
 const ROOM_ENCOUNTER_METHODS := [
-	&"configure", &"try_start_room", &"get_snapshot", &"get_active_rewards",
+	&"configure", &"try_start_room", &"get_snapshot", &"get_active_rewards", &"is_room_completed",
 ]
+const ROOM_WARP_METHODS := [&"configure", &"refresh_targets", &"get_warp_targets", &"request_warp", &"get_snapshot"]
 const RUN_BUFF_METHODS := [
 	&"configure",
 	&"prepare_choices",
@@ -327,6 +329,7 @@ var credit_ledger
 var loot_spawner
 var enemy_spawner
 var room_encounter_system
+var room_warp_system
 var auto_weapon
 var combat_skill_system
 var combat_skill_hud
@@ -376,7 +379,7 @@ var modal_ui_visibility_snapshot: Dictionary = {}
 
 
 func _ready() -> void:
-	control_hint_label.text = "이동 WASD · Space 대시 · LMB 기본기 · 1~9 스킬 · Q/F/I/U/E · K 키 설정"
+	control_hint_label.text = "이동 WASD · Space 대시 · LMB 기본기 · 1~9 스킬 · Q/F/I/U/E · M 전술 지도 · K 키 설정"
 	hub_control_hint_label.text = "이동 WASD · I 가방 · U 장비 · E 모듈·파츠 · Q 무기 · F 게이트 · K 키 설정"
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	if features != null and features.cyberpunk_theme_enabled:
@@ -1027,6 +1030,7 @@ func _reset_run_references() -> void:
 	loot_spawner = null
 	enemy_spawner = null
 	room_encounter_system = null
+	room_warp_system = null
 	auto_weapon = null
 	combat_skill_system = null
 	combat_skill_hud = null
@@ -1197,6 +1201,8 @@ func _assemble_game() -> bool:
 		if not _install_enemy_spawner():
 			return false
 	if features.room_encounters_enabled and not _install_room_encounters():
+		return false
+	if features.room_warp_enabled and not _install_room_warp():
 		return false
 	if features.combat_skills_enabled and not _install_combat_skills():
 		return false
@@ -1841,7 +1847,9 @@ func _install_room_encounters() -> bool:
 		not _supports_methods(room_encounter_system, ROOM_ENCOUNTER_METHODS)
 		or not room_encounter_system.has_signal(&"encounter_started")
 		or not room_encounter_system.has_signal(&"encounter_cleared")
+		or not room_encounter_system.has_signal(&"all_encounters_completed")
 		or not room_encounter_system.has_signal(&"reward_collected")
+		or not room_encounter_system.has_signal(&"interaction_availability_changed")
 	):
 		_report_configuration_error("방 전투 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
@@ -1865,6 +1873,41 @@ func _install_room_encounters() -> bool:
 	room_encounter_system.connect(
 		&"reward_collected", Callable(self, &"_on_room_reward_collected")
 	)
+	room_encounter_system.connect(
+		&"all_encounters_completed", Callable(self, &"_on_all_room_encounters_completed")
+	)
+	room_encounter_system.connect(
+		&"interaction_availability_changed",
+		Callable(self, &"_on_interaction_availability_changed")
+	)
+	return true
+
+
+func _install_room_warp() -> bool:
+	if minimap == null:
+		_report_configuration_error("방 워프 모듈에는 설치된 미니맵이 필요합니다.")
+		return false
+	room_warp_system = _instantiate_feature(
+		ROOM_WARP_SCENE_PATH, module_container, &"RoomWarpSystem"
+	)
+	if (
+		not _supports_methods(room_warp_system, ROOM_WARP_METHODS)
+		or not room_warp_system.has_signal(&"warp_targets_changed")
+		or not room_warp_system.has_signal(&"warped")
+		or not room_warp_system.has_signal(&"warp_rejected")
+	):
+		_report_configuration_error("방 워프 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not room_warp_system.call(&"configure", player, map_generator, room_encounter_system):
+		_report_configuration_error("방 워프 모듈을 구성하지 못했습니다.")
+		return false
+	room_warp_system.connect(
+		&"warp_targets_changed", Callable(minimap, &"set_warp_targets")
+	)
+	room_warp_system.connect(&"warped", Callable(self, &"_on_room_warped"))
+	room_warp_system.connect(&"warp_rejected", Callable(self, &"_on_room_warp_rejected"))
+	minimap.connect(&"warp_requested", Callable(room_warp_system, &"request_warp"))
+	minimap.call(&"set_warp_targets", room_warp_system.call(&"get_warp_targets"))
 	return true
 
 
@@ -1972,9 +2015,20 @@ func advance_run_clock(delta: float) -> void:
 		and not extraction_unlocked
 		and elapsed_time >= extraction_unlock_seconds
 	):
-		extraction_unlocked = true
-		extraction_zone.call(&"set_locked", false)
-		status_label.text = "탈출 신호 활성 · 탈출 지점에서 F"
+		_unlock_extraction(&"elapsed_time")
+	_update_run_time_hud()
+
+
+func _unlock_extraction(reason: StringName) -> void:
+	if extraction_unlocked or extraction_zone == null:
+		return
+	extraction_unlocked = true
+	extraction_zone.call(&"set_locked", false)
+	status_label.text = (
+		"모든 전투 방 확보 · 즉시 탈출 가능"
+		if reason == &"all_rooms_cleared"
+		else "탈출 신호 활성 · 탈출 지점에서 F"
+	)
 	_update_run_time_hud()
 
 
@@ -2412,16 +2466,42 @@ func _on_room_encounter_started(room_index: int, enemy_count: int) -> void:
 
 func _on_room_encounter_cleared(room_index: int) -> void:
 	combat_hud_presenter.call(
-		&"show_status", "방 %d 확보 · 전투 데이터 보상 생성" % [room_index + 1], 3, 2.0
+		&"show_status", "방 %d 확보 · 크레딧 보상 박스 생성" % [room_index + 1], 3, 2.0
 	)
+	if room_warp_system != null:
+		room_warp_system.call(&"refresh_targets")
 
 
-func _on_room_reward_collected(_room_index: int, experience_amount: int) -> void:
-	if progression_system != null:
-		progression_system.call(&"gain_experience", experience_amount)
+func _on_room_reward_collected(_room_index: int, credit_amount: int) -> void:
+	if credit_ledger != null:
+		credit_ledger.call(&"add_carried", credit_amount)
 	combat_hud_presenter.call(
-		&"show_status", "방 전투 보상 회수 · 내부 경험치 +%d" % experience_amount, 4, 2.0
+		&"show_status", "방 보상 박스 회수 · 크레딧 +%d" % credit_amount, 4, 2.0
 	)
+
+
+func _on_all_room_encounters_completed(completed_count: int, _required_count: int) -> void:
+	var extraction_available := extraction_zone != null
+	_unlock_extraction(&"all_rooms_cleared")
+	combat_hud_presenter.call(
+		&"show_status",
+		(
+			"전투 방 %d곳 확보 · 보상 박스 생성 · 조기 탈출 개방"
+			if extraction_available
+			else "전투 방 %d곳 확보 · 보상 박스 생성"
+		) % completed_count,
+		5,
+		3.0
+	)
+
+
+func _on_room_warped(room_index: int, _world_position: Vector2) -> void:
+	minimap.call(&"set_expanded", false)
+	combat_hud_presenter.call(&"show_status", "전술 워프 · 방 %d" % [room_index + 1], 3, 1.6)
+
+
+func _on_room_warp_rejected(_room_index: int, reason: String) -> void:
+	combat_hud_presenter.call(&"show_status", reason, 4, 2.0)
 
 
 func _on_player_health_changed(current: float, maximum: float) -> void:
