@@ -97,7 +97,7 @@ const START_HUB_METHODS := [
 	&"get_snapshot",
 	&"request_operation",
 ]
-const FOG_OF_WAR_METHODS := [&"configure", &"get_snapshot"]
+const FOG_OF_WAR_METHODS := [&"configure", &"get_snapshot", &"set_visibility_multiplier"]
 const MINIMAP_PROVIDER_METHODS := [&"get_minimap_snapshot"]
 const MINIMAP_METHODS := [&"configure"]
 const EQUIPMENT_METHODS := [
@@ -128,6 +128,8 @@ const EQUIPMENT_METHODS := [
 	&"set_external_armor_level",
 	&"set_upgrade_balance_provider",
 	&"get_active_weapon_upgrade_modifiers",
+	&"active_weapon_has_combat_tags",
+	&"get_active_skill_mechanic_override",
 	&"export_runtime_state",
 	&"restore_runtime_state",
 ]
@@ -202,7 +204,7 @@ const META_PROGRESSION_METHODS := [
 const EQUIPMENT_UPGRADE_METHODS := [
 	&"configure", &"set_balance_provider", &"quote_upgrade", &"upgrade",
 ]
-const HEALTH_RECOVERY_METHODS := [&"configure", &"advance", &"get_snapshot"]
+const HEALTH_RECOVERY_METHODS := [&"configure", &"advance", &"get_snapshot", &"set_recovery_multiplier"]
 const COMBAT_SKILL_METHODS := [
 	&"configure", &"try_activate", &"advance", &"set_activation_enabled",
 	&"get_skill_states", &"get_snapshot",
@@ -212,12 +214,15 @@ const DASH_COOLDOWN_HUD_METHODS := [&"configure", &"get_snapshot"]
 const COMBAT_RESOURCE_METHODS := [
 	&"configure", &"can_activate", &"consume_for_skill", &"restore_energy",
 	&"spawn_enemy_drops", &"get_skill_resource_snapshot", &"get_snapshot",
+	&"set_recovery_multiplier",
 ]
 const PERSISTENT_PROFILE_METHODS := [
 	&"configure", &"can_spend", &"spend", &"add_credits", &"get_snapshot",
 	&"is_unlocked", &"unlock", &"add_warehouse_item", &"has_warehouse_item",
 	&"take_warehouse_item", &"add_blueprint", &"consume_blueprint",
 	&"add_crafted_item", &"set_consumable_loadout", &"consume_loadout_for_run",
+	&"register_shop_offer", &"is_shop_offer_registered",
+	&"unlock_skill",
 ]
 const OPERATION_CONTRACT_METHODS := [
 	&"configure", &"select_region", &"select_difficulty", &"cycle_region",
@@ -323,6 +328,7 @@ var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CS
 var preferred_weapon_slot: StringName = &"main"
 var prepared_equipment_state: Dictionary = {}
 var prepared_inventory_state: Dictionary = {}
+var lose_equipped_loadout_on_return: bool = false
 var elapsed_time: float = 0.0
 var target_run_duration_seconds: float = 600.0
 var extraction_unlock_seconds: float = 600.0
@@ -574,14 +580,15 @@ func _refresh_contract_setup_ui() -> void:
 	penalty_button.text = "페널티 · %s" % (
 		"없음" if penalty_names.is_empty() else ", ".join(penalty_names)
 	)
-	profile_summary.text = "보유 %d C · 창고 고철 %d / 응급키트 %d · 도면 %d · 제작 장비 %d" % [
+	profile_summary.text = "보유 %d C · 고철 %d / 응급키트 %d · 도면 %d · 상점 등록 %d · 스킬 %d" % [
 		int(profile_snapshot.get(&"banked_credits", 0)),
 		int(profile_snapshot.get(&"warehouse", {}).get(&"scrap", 0)),
 		int(profile_snapshot.get(&"warehouse", {}).get(&"field_medkit", 0)),
 		(profile_snapshot.get(&"blueprints", {}) as Dictionary).values().reduce(
 			func(total, value): return int(total) + int(value), 0
 		),
-		(profile_snapshot.get(&"crafted_items", []) as Array).size(),
+		(profile_snapshot.get(&"unlocked_shop_offer_ids", []) as Array).size(),
+		(profile_snapshot.get(&"unlocked_skill_ids", []) as Array).size(),
 	]
 	var loadout: Array = profile_snapshot.get(&"consumable_loadout", [])
 	loadout_button.text = "소모품 · %s" % ("응급키트" if not loadout.is_empty() else "비어 있음")
@@ -600,8 +607,12 @@ func _refresh_contract_setup_ui() -> void:
 		quote = operation_contract_service.call(
 			&"quote", load(tier_path), penalty_snapshot
 		)
-	contract_summary.text = "선택 계약 · 투입 %d C · 회수 보정 ×%.2f" % [
-		int(quote.get(&"entry_cost", 0)), float(quote.get(&"reward_multiplier", 1.0))
+	contract_summary.text = "선택 계약 · 투입 %d C%s · 회수 ×%.2f · 고등급 ×%.2f · %s" % [
+		int(quote.get(&"entry_cost", 0)),
+		" 무료 지원" if bool(quote.get(&"bankruptcy_protection", false)) else "",
+		float(quote.get(&"reward_multiplier", 1.0)),
+		float(quote.get(&"high_grade_drop_multiplier", 1.0)),
+		"보스 확정" if bool(quote.get(&"boss_spawn_guaranteed", false)) else "일반 생성",
 	]
 	for tier_id in MAP_TIER_IDS:
 		_configure_tier_button(
@@ -746,7 +757,11 @@ func _clear_start_hub() -> void:
 
 
 func _return_to_start_hub() -> void:
-	_capture_prepared_loadout()
+	if lose_equipped_loadout_on_return:
+		prepared_equipment_state.clear()
+		lose_equipped_loadout_on_return = false
+	else:
+		_capture_prepared_loadout()
 	get_tree().paused = false
 	game_over_overlay.visible = false
 	run_setup_overlay.visible = false
@@ -967,7 +982,7 @@ func _assemble_game() -> bool:
 		return false
 
 	status_label.text = (
-		"작전 진행 중 · 1/2/3 스킬 · Shift/Space 회피 · Q 무기 · F 상호작용 · I 가방 · U 장비"
+		"작전 진행 중 · 좌클릭 기본기 · 1~9 스킬 · Shift/Space 회피 · Q 무기 · F 상호작용"
 	)
 	_update_run_time_hud()
 	return true
@@ -1002,6 +1017,10 @@ func _install_health_recovery() -> bool:
 	):
 		_report_configuration_error("부분 체력 회복 모듈을 구성하지 못했습니다.")
 		return false
+	health_recovery_system.call(
+		&"set_recovery_multiplier",
+		float(active_contract.get(&"player_modifiers", {}).get(&"recovery_multiplier", 1.0))
+	)
 	return true
 
 
@@ -1030,7 +1049,9 @@ func _install_combat_skills() -> bool:
 		world_container,
 		skill_loadout,
 		features.damage_enabled,
-		combat_resource_system
+		combat_resource_system,
+		load(features.smart_targeting_policy_path) if features.smart_targeting_enabled else null,
+		equipment_system
 	):
 		_report_configuration_error("전투 스킬 실행기를 구성하지 못했습니다.")
 		return false
@@ -1085,6 +1106,10 @@ func _install_combat_resources() -> bool:
 	):
 		_report_configuration_error("에너지·충전·회복 드랍 정책을 구성하지 못했습니다.")
 		return false
+	combat_resource_system.call(
+		&"set_recovery_multiplier",
+		float(active_contract.get(&"player_modifiers", {}).get(&"recovery_multiplier", 1.0))
+	)
 	combat_resource_system.connect(
 		&"pickup_collected", Callable(self, &"_on_combat_resource_pickup_collected")
 	)
@@ -1451,6 +1476,12 @@ func _install_extraction_zone() -> void:
 	extraction_zone.connect(
 		&"extraction_defense_cancelled", Callable(self, &"_on_extraction_defense_cancelled")
 	)
+	extraction_zone.connect(
+		&"extraction_defense_paused", Callable(self, &"_on_extraction_defense_paused")
+	)
+	extraction_zone.connect(
+		&"extraction_defense_resumed", Callable(self, &"_on_extraction_defense_resumed")
+	)
 	extraction_zone.call(
 		&"configure", map_generator.call(&"get_extraction_position"),
 		_extraction_defense_duration()
@@ -1534,7 +1565,8 @@ func _install_enemy_spawner() -> bool:
 		features.enemy_armor_enabled,
 		features.enemy_status_ui_enabled,
 		spawn_config,
-		active_contract.get(&"enemy_modifiers", {})
+		active_contract.get(&"enemy_modifiers", {}),
+		active_contract
 	):
 		_report_configuration_error("적 생성 모듈을 등급 정책으로 구성하지 못했습니다.")
 		return false
@@ -1771,6 +1803,10 @@ func _install_fog_of_war() -> bool:
 	if not fog_of_war.call(&"configure", player, map_generator):
 		_report_configuration_error("전장의 안개가 플레이어를 추적하지 못했습니다.")
 		return false
+	fog_of_war.call(
+		&"set_visibility_multiplier",
+		float(active_contract.get(&"world_modifiers", {}).get(&"vision_multiplier", 1.0))
+	)
 	return true
 
 
@@ -1978,7 +2014,7 @@ func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:
 		&"heavy_piercing": "고위력 관통",
 	}
 	var trait_id: StringName = snapshot.get(&"trait_id", &"")
-	weapon_runtime_label.text = "Q 현재 %s · %s · 피해 %.1f · 사거리 %.0f · %s" % [
+	weapon_runtime_label.text = "LMB HOLD · Q 현재 %s · %s · 피해 %.1f · 사거리 %.0f · %s" % [
 		snapshot.get(&"display_name", "무기"),
 		trait_labels.get(trait_id, String(trait_id)),
 		float(snapshot.get(&"damage", 0.0)) + float(snapshot.get(&"level_damage_bonus", 0.0)),
@@ -2018,19 +2054,22 @@ func _on_extraction_completed(_actor: Node2D) -> void:
 			&"kills": defeated_enemies,
 		}, active_contract)
 	var ranking: Dictionary = settlement.get(&"ranking", {})
+	var ranks: Dictionary = ranking.get(&"ranks", {})
 	var blueprint_label := ""
 	if StringName(settlement.get(&"blueprint_id", &"")) != &"":
 		blueprint_label = " · 도면 획득"
 	_finish_run(
 		"탈출 성공",
-		"%s 작전 · 생존 %s · 처치 %d · 정산 %d C · 고철 %d%s · 조건 랭크 #%d" % [
+		"%s 작전 · 생존 %s · 처치 %d · 정산 %d C · 고철 %d%s · 가치 #%d / 시간 #%d / 처치 #%d" % [
 			_selected_map_display_name(),
 			_format_time(elapsed_time),
 			defeated_enemies,
 			int(settlement.get(&"recovered_credits", carried_credits)),
 			int(settlement.get(&"salvage", 0)),
 			blueprint_label,
-			int(ranking.get(&"rank", 0)),
+			int(ranks.get(&"recovered_value", ranking.get(&"rank", 0))),
+			int(ranks.get(&"elapsed_seconds", 0)),
+			int(ranks.get(&"kills", 0)),
 		]
 	)
 
@@ -2043,6 +2082,14 @@ func _on_extraction_defense_cancelled() -> void:
 	status_label.text = "탈출 방어 중단 · 구역으로 돌아가 F를 누르세요."
 
 
+func _on_extraction_defense_paused(remaining_seconds: float) -> void:
+	status_label.text = "탈출 방어 일시정지 · 구역 복귀 시 %.1f초부터 재개" % remaining_seconds
+
+
+func _on_extraction_defense_resumed(remaining_seconds: float) -> void:
+	status_label.text = "탈출 방어 재개 · 잔여 %.1f초" % remaining_seconds
+
+
 func _extraction_defense_duration() -> float:
 	if not features.extraction_defense_enabled:
 		return 0.0
@@ -2052,7 +2099,7 @@ func _extraction_defense_duration() -> float:
 	return float(defense_config.call(
 		&"duration_for", StringName(selected_map_size),
 		StringName(active_contract.get(&"difficulty_id", &"standard"))
-	))
+	)) * float(active_contract.get(&"world_modifiers", {}).get(&"extraction_duration_multiplier", 1.0))
 
 
 func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:
@@ -2161,6 +2208,7 @@ func _on_player_died() -> void:
 			&"elapsed_seconds": elapsed_time,
 			&"kills": defeated_enemies,
 		}, active_contract)
+	lose_equipped_loadout_on_return = true
 	_finish_run(
 		"작전 실패",
 		"생존 %s · 처치 %d · 분실 %d 크레딧" % [

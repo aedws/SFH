@@ -7,21 +7,21 @@
     {
       "query": "개발 진행도",
       "label": "개발 진행도",
-      "description": "Notion 기준 진행률과 완료·부분 완료 근거",
+      "description": "Notion 기준 93% 진행률과 구현·후속 범위 근거",
       "category": "기획",
       "priority": 100
     },
     {
       "query": "앞으로 해야 할 작업",
       "label": "앞으로 해야 할 작업",
-      "description": "확정도와 구현 차이를 반영한 후속 우선순위",
+      "description": "키 설정·I/U 구매품·온라인 랭킹·추가 콘텐츠 순서",
       "category": "기획",
       "priority": 96
     },
     {
       "query": "확정 사항",
       "label": "최신 기획 대조",
-      "description": "공개 Notion 최신 요구와 현재 저장소의 차이",
+      "description": "공개 Notion 요구의 구현 전→후 변화와 남은 차이",
       "category": "기획",
       "priority": 92
     },
@@ -35,7 +35,7 @@
     {
       "query": "스마트 자동 타게팅",
       "label": "스마트 자동 타게팅",
-      "description": "최근접·최대 HP·밀집 중심·이동 벡터 정책",
+      "description": "최근접·최대 HP·엘리트·밀집 중심·이동 벡터 정책",
       "category": "전투",
       "priority": 88
     },
@@ -68,6 +68,20 @@
       "priority": 74
     },
     {
+      "query": "투자 보스 드랍",
+      "label": "투자·보스·지역 드랍",
+      "description": "비용 기반 보스 보장, 고등급 가중치와 지역 타겟 파밍",
+      "category": "경제",
+      "priority": 72
+    },
+    {
+      "query": "페널티 랭킹",
+      "label": "페널티·3종 랭킹",
+      "description": "회복·시야·탈출 위험과 가치·시간·처치 순위",
+      "category": "경쟁",
+      "priority": 70
+    },
+    {
       "query": "성능 예산",
       "label": "성능 예산·최소 사양",
       "description": "60 FPS 예산, Node와 대형 작전 측정값",
@@ -86,7 +100,7 @@
     },
     {
       "label": "작전·맵",
-      "queries": ["코어 플레이 루프", "작전 맵", "전장의 안개", "탈출 일시정지"]
+      "queries": ["코어 플레이 루프", "작전 맵", "전장의 안개", "탈출 일시정지", "투자 보스 드랍"]
     },
     {
       "label": "장비·성장",
@@ -94,7 +108,7 @@
     },
     {
       "label": "검증·구조",
-      "queries": ["모듈 감사", "성능 예산", "버그픽스", "검색 별칭"]
+      "queries": ["모듈 감사", "성능 예산", "페널티 랭킹", "버그픽스", "검색 별칭"]
     }
   ]
 }

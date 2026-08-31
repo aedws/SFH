@@ -17,6 +17,7 @@ display_name = "기동 가속"
 description = "4초 동안 이동 속도 55% 증가"
 input_action = &"combat_skill_3"
 input_label = "3"
+targeting_mode = &"self"
 cooldown_seconds = 12.0
 energy_cost = 25.0
 maximum_charges = 2

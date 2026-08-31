@@ -75,6 +75,21 @@ func quote(tier_config: Resource, penalty_snapshot: Dictionary = {}) -> Dictiona
 		* float(region.get(&"entry_cost_multiplier", 1.0))
 		* float(difficulty.get(&"entry_cost_multiplier", 1.0))
 	)
+	var bankruptcy_protection := (
+		bool(config.get("bankruptcy_protection_enabled"))
+		and StringName(tier_config.get("tier_id")) == StringName(config.get("free_tier_id"))
+		and selected_region_id == StringName(config.get("free_region_id"))
+		and selected_difficulty_id == StringName(config.get("free_difficulty_id"))
+		and not bool(profile.call(&"can_spend", entry_cost))
+	)
+	if bankruptcy_protection:
+		entry_cost = 0
+	var boss_guaranteed := (
+		entry_cost >= int(config.get("boss_guarantee_minimum_cost"))
+		or bool(region.get(&"boss_guaranteed", false))
+		or bool(difficulty.get(&"boss_guaranteed", false))
+	)
+	var penalty_score := int(penalty_snapshot.get(&"penalty_score", 0))
 	return {
 		&"region_id": selected_region_id,
 		&"region_name": region.get(&"display_name", selected_region_id),
@@ -82,6 +97,14 @@ func quote(tier_config: Resource, penalty_snapshot: Dictionary = {}) -> Dictiona
 		&"difficulty_name": difficulty.get(&"display_name", selected_difficulty_id),
 		&"tier_id": tier_config.get("tier_id"),
 		&"entry_cost": entry_cost,
+		&"bankruptcy_protection": bankruptcy_protection,
+		&"boss_spawn_guaranteed": boss_guaranteed,
+		&"high_grade_drop_multiplier": (
+			float(region.get(&"high_grade_drop_multiplier", 1.0))
+			* float(difficulty.get(&"high_grade_drop_multiplier", 1.0))
+			* (1.0 + float(entry_cost) / 1500.0)
+		),
+		&"region_drop_table": config.call(&"get_region_drop_table", selected_region_id),
 		&"reward_multiplier": (
 			float(region.get(&"reward_multiplier", 1.0))
 			* float(difficulty.get(&"reward_multiplier", 1.0))
@@ -93,11 +116,13 @@ func quote(tier_config: Resource, penalty_snapshot: Dictionary = {}) -> Dictiona
 		),
 		&"blueprint_drop_multiplier": float(region.get(&"blueprint_drop_multiplier", 1.0)),
 		&"penalty_ids": penalty_snapshot.get(&"selected_ids", []),
-		&"ranking_condition_key": "%s|%s|%s|%s" % [
+		&"penalty_score": penalty_score,
+		&"player_modifiers": penalty_snapshot.get(&"player_modifiers", {}),
+		&"world_modifiers": penalty_snapshot.get(&"world_modifiers", {}),
+		&"ranking_condition_key": "%s|%s|%s" % [
 			selected_region_id,
 			selected_difficulty_id,
 			tier_config.get("tier_id"),
-			",".join(PackedStringArray(penalty_snapshot.get(&"selected_ids", []))),
 		],
 	}
 

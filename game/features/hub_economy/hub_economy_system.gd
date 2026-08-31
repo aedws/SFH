@@ -27,14 +27,22 @@ func quote(offer_id: StringName) -> Dictionary:
 	if offer.is_empty():
 		return {&"available": false, &"reason": "존재하지 않는 상점 항목"}
 	var unlock_required := StringName(offer.get(&"required_unlock_id", &""))
+	var registration_required := StringName(offer.get(&"required_offer_registration", &""))
 	var available := (
 		unlock_required == &""
 		or bool(profile.call(&"is_unlocked", unlock_required))
+	) and (
+		registration_required == &""
+		or (
+			profile.has_method(&"is_shop_offer_registered")
+			and bool(profile.call(&"is_shop_offer_registered", registration_required))
+		)
 	)
 	return {
 		&"available": available,
 		&"offer": offer,
 		&"can_afford": profile.call(&"can_spend", int(offer.get(&"price", 0))),
+		&"registration_required": registration_required,
 	}
 
 
@@ -49,6 +57,8 @@ func purchase(offer_id: StringName) -> Dictionary:
 	var target_id := StringName(offer.get(&"target_id", &""))
 	if offer_type == &"unlock":
 		profile.call(&"unlock", target_id)
+	elif offer_type == &"skill" and profile.has_method(&"unlock_skill"):
+		profile.call(&"unlock_skill", target_id)
 	else:
 		profile.call(&"add_warehouse_item", target_id, int(offer.get(&"quantity", 1)))
 	var result := {&"success": true, &"offer_id": offer_id, &"target_id": target_id}

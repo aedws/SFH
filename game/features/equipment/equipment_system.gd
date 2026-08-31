@@ -78,6 +78,23 @@ func get_active_weapon() -> EquipmentWeaponDefinition:
 	return get_weapon(active_weapon_slot)
 
 
+func active_weapon_has_combat_tags(required_tags: Array) -> bool:
+	var weapon := get_active_weapon()
+	if weapon == null:
+		return false
+	for required_tag in required_tags:
+		if StringName(required_tag) not in weapon.combat_tags:
+			return false
+	return true
+
+
+func get_active_skill_mechanic_override(skill_id: StringName) -> Dictionary:
+	var weapon := get_active_weapon()
+	if weapon == null:
+		return {}
+	return (weapon.skill_mechanic_overrides.get(skill_id, {}) as Dictionary).duplicate(true)
+
+
 func switch_active_weapon() -> bool:
 	var next_slot := &"secondary" if active_weapon_slot == &"main" else &"main"
 	return set_active_weapon_slot(next_slot)
@@ -367,6 +384,8 @@ func get_summary() -> Dictionary:
 		&"active_weapon_slot": active_weapon_slot,
 		&"active_weapon_id": get_active_weapon().weapon_id if get_active_weapon() != null else &"",
 		&"active_weapon_name": get_active_weapon().display_name if get_active_weapon() != null else "없음",
+		&"active_weapon_grade": get_active_weapon().grade if get_active_weapon() != null else 0,
+		&"active_weapon_combat_tags": get_active_weapon().combat_tags.duplicate() if get_active_weapon() != null else [],
 		&"equipped_skill_count": loadout.skills.size() if loadout != null and skills_enabled else 0,
 		&"active_skill_count": active_skill_ids.size(),
 		&"active_skill_ids": get_active_skill_ids(),

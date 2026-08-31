@@ -1,6 +1,7 @@
 class_name CombatSkillLoadout
 extends Resource
 
+@export_range(1, 9, 1) var slot_capacity: int = 9
 @export var skills: Array[Resource] = []
 
 
@@ -8,8 +9,8 @@ func validation_errors() -> PackedStringArray:
 	var errors := PackedStringArray()
 	if skills.is_empty():
 		errors.append("전투 스킬을 하나 이상 지정해야 합니다.")
-	if skills.size() > 10:
-		errors.append("전투 스킬은 최대 10개까지 구성할 수 있습니다.")
+	if skills.size() > slot_capacity:
+		errors.append("전투 스킬은 슬롯 용량 %d개를 초과할 수 없습니다." % slot_capacity)
 	var used_ids := {}
 	var used_actions := {}
 	for skill in skills:

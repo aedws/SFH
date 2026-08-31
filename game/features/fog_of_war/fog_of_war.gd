@@ -26,6 +26,7 @@ var room_visibility_blend: float = 0.0
 var current_facing_direction := Vector2.RIGHT
 var active_screen_room_count: int = 0
 var focus_initialized: bool = false
+var visibility_multiplier: float = 1.0
 
 
 func _ready() -> void:
@@ -63,6 +64,11 @@ func configure(actor: Node2D, new_visibility_provider: Node = null) -> bool:
 	return true
 
 
+func set_visibility_multiplier(multiplier: float) -> void:
+	visibility_multiplier = clampf(multiplier, 0.25, 2.0)
+	_apply_static_shader_parameters()
+
+
 func get_snapshot() -> Dictionary:
 	return {
 		&"corridor_near_radius": corridor_near_radius,
@@ -82,6 +88,7 @@ func get_snapshot() -> Dictionary:
 		&"room_rect_count": room_world_rects.size(),
 		&"screen_room_rect_count": active_screen_room_count,
 		&"canvas_layer": layer,
+		&"visibility_multiplier": visibility_multiplier,
 	}
 
 
@@ -93,8 +100,8 @@ func _apply_static_shader_parameters() -> void:
 	var shader_material := overlay.material as ShaderMaterial
 	if shader_material == null:
 		return
-	shader_material.set_shader_parameter(&"corridor_near_radius", corridor_near_radius)
-	shader_material.set_shader_parameter(&"corridor_forward_distance", corridor_forward_distance)
+	shader_material.set_shader_parameter(&"corridor_near_radius", corridor_near_radius * visibility_multiplier)
+	shader_material.set_shader_parameter(&"corridor_forward_distance", corridor_forward_distance * visibility_multiplier)
 	shader_material.set_shader_parameter(
 		&"corridor_half_angle_radians", deg_to_rad(corridor_half_angle_degrees)
 	)

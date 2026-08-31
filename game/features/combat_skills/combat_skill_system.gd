@@ -16,6 +16,8 @@ var activation_enabled: bool = true
 var cooldowns: Array[float] = []
 var hud_refresh_accumulator: float = 0.0
 var state_emission_count: int = 0
+var targeting_policy: Resource
+var equipment_provider: Node
 
 
 func configure(
@@ -24,7 +26,9 @@ func configure(
 	new_effect_parent: Node2D,
 	new_loadout,
 	new_damage_enabled: bool = true,
-	new_resource_provider: Node = null
+	new_resource_provider: Node = null,
+	new_targeting_policy: Resource = null,
+	new_equipment_provider: Node = null
 ) -> bool:
 	if (
 		not is_instance_valid(new_player)
@@ -39,6 +43,14 @@ func configure(
 	effect_parent = new_effect_parent
 	loadout = new_loadout
 	damage_enabled = new_damage_enabled
+	targeting_policy = new_targeting_policy
+	equipment_provider = new_equipment_provider
+	if (
+		is_instance_valid(equipment_provider)
+		and equipment_provider.has_signal(&"active_weapon_changed")
+		and not equipment_provider.is_connected(&"active_weapon_changed", Callable(self, &"_on_active_weapon_changed"))
+	):
+		equipment_provider.connect(&"active_weapon_changed", Callable(self, &"_on_active_weapon_changed"))
 	resource_provider = (
 		new_resource_provider
 		if is_instance_valid(new_resource_provider)
@@ -87,11 +99,18 @@ func try_activate(slot_index: int) -> bool:
 	):
 		return false
 	var skill: Resource = loadout.skills[slot_index]
+	if not _skill_matches_active_weapon(skill):
+		return false
 	var effect: Resource = skill.get("effect")
+	var activation_context := _build_activation_context(skill)
 	var result: Dictionary = effect.call(&"activate", player, {
-		&"target_container": target_container,
-		&"effect_parent": effect_parent,
-		&"damage_enabled": damage_enabled,
+		&"target_container": activation_context[&"target_container"],
+		&"effect_parent": activation_context[&"effect_parent"],
+		&"damage_enabled": activation_context[&"damage_enabled"],
+		&"target": activation_context[&"target"],
+		&"target_point": activation_context[&"target_point"],
+		&"direction": activation_context[&"direction"],
+		&"mechanic_override": activation_context[&"mechanic_override"],
 	})
 	if not bool(result.get(&"success", false)):
 		return false
@@ -135,6 +154,35 @@ func set_activation_enabled(is_enabled: bool) -> void:
 	_emit_states()
 
 
+func rebind_slot(slot_index: int, input_event: InputEvent) -> bool:
+	if loadout == null or slot_index < 0 or slot_index >= int(loadout.get("slot_capacity")):
+		return false
+	var action := StringName("combat_skill_%d" % (slot_index + 1))
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	InputMap.action_erase_events(action)
+	InputMap.action_add_event(action, input_event)
+	if slot_index < loadout.skills.size():
+		loadout.skills[slot_index].set("input_action", action)
+		loadout.skills[slot_index].set("input_label", _event_label(input_event))
+	_emit_states()
+	return true
+
+
+func get_slot_bindings() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var capacity := int(loadout.get("slot_capacity")) if loadout != null else 0
+	for slot_index in capacity:
+		var action := StringName("combat_skill_%d" % (slot_index + 1))
+		result.append({
+			&"slot_index": slot_index,
+			&"action": action,
+			&"events": InputMap.action_get_events(action),
+			&"occupied": slot_index < loadout.skills.size(),
+		})
+	return result
+
+
 func get_skill_states() -> Array[Dictionary]:
 	var states: Array[Dictionary] = []
 	if loadout == null:
@@ -160,8 +208,12 @@ func get_skill_states() -> Array[Dictionary]:
 			resource_state = resource_provider.call(&"get_skill_resource_snapshot", index)
 		state.merge(resource_state, true)
 		state[&"ready"] = (
-			activation_enabled and remaining <= 0.0 and bool(state[&"resource_ready"])
+			activation_enabled
+			and remaining <= 0.0
+			and bool(state[&"resource_ready"])
+			and _skill_matches_active_weapon(definition)
 		)
+		state[&"weapon_tags_ready"] = _skill_matches_active_weapon(definition)
 		state[&"activation_enabled"] = activation_enabled
 		states.append(state)
 	return states
@@ -170,6 +222,8 @@ func get_skill_states() -> Array[Dictionary]:
 func get_snapshot() -> Dictionary:
 	return {
 		&"skill_count": loadout.skills.size() if loadout != null else 0,
+		&"slot_capacity": int(loadout.get("slot_capacity")) if loadout != null else 0,
+		&"slot_bindings": get_slot_bindings(),
 		&"activation_enabled": activation_enabled,
 		&"hud_refresh_hz": 1.0 / hud_refresh_interval_seconds,
 		&"state_emission_count": state_emission_count,
@@ -188,3 +242,64 @@ func _emit_states() -> void:
 
 func _on_resources_changed(_snapshot: Dictionary) -> void:
 	_emit_states()
+
+
+func _on_active_weapon_changed(_slot_id: StringName, _weapon_definition: Resource) -> void:
+	_emit_states()
+
+
+func _build_activation_context(skill: Resource) -> Dictionary:
+	var direction := Vector2.RIGHT
+	if is_instance_valid(player) and player.has_method(&"get_facing_direction"):
+		direction = player.call(&"get_facing_direction")
+	var candidates: Array = []
+	if is_instance_valid(target_container):
+		candidates = target_container.get_children()
+	var target: Node2D
+	var target_point := player.global_position if is_instance_valid(player) else Vector2.ZERO
+	var mode := StringName(skill.get("targeting_mode"))
+	var maximum_range := float(skill.get("targeting_range"))
+	if targeting_policy != null and targeting_policy.has_method(&"resolve"):
+		var resolved: Dictionary = targeting_policy.call(
+			&"resolve", mode, player.global_position, candidates, maximum_range, direction
+		)
+		target = resolved.get(&"target") as Node2D
+		target_point = resolved.get(&"target_point", target_point)
+		direction = resolved.get(&"direction", direction)
+	var mechanic_override := {}
+	if (
+		is_instance_valid(equipment_provider)
+		and equipment_provider.has_method(&"get_active_skill_mechanic_override")
+	):
+		mechanic_override = equipment_provider.call(
+			&"get_active_skill_mechanic_override", skill.get("skill_id")
+		)
+	return {
+		&"target_container": target_container,
+		&"effect_parent": effect_parent,
+		&"damage_enabled": damage_enabled,
+		&"target": target,
+		&"target_point": target_point,
+		&"direction": direction.normalized() if not direction.is_zero_approx() else Vector2.RIGHT,
+		&"mechanic_override": mechanic_override,
+	}
+
+
+func _skill_matches_active_weapon(skill: Resource) -> bool:
+	var required: Array = skill.get("required_combat_tags")
+	if required.is_empty():
+		return true
+	if not is_instance_valid(equipment_provider):
+		return true
+	return (
+		equipment_provider.has_method(&"active_weapon_has_combat_tags")
+		and bool(equipment_provider.call(&"active_weapon_has_combat_tags", required))
+	)
+
+
+func _event_label(input_event: InputEvent) -> String:
+	if input_event is InputEventKey:
+		return OS.get_keycode_string((input_event as InputEventKey).physical_keycode)
+	if input_event is InputEventMouseButton:
+		return "M%d" % int((input_event as InputEventMouseButton).button_index)
+	return "?"

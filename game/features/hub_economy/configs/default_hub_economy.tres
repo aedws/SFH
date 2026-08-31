@@ -12,6 +12,12 @@ offers = Array[Dictionary]([{
 "display_name": "산업 지구 접근권", "offer_id": &"unlock_industrial", "offer_type": &"unlock", "price": 600, "quantity": 1, "target_id": &"region_industrial_district"
 }, {
 "display_name": "연구 단지 접근권", "offer_id": &"unlock_research", "offer_type": &"unlock", "price": 1200, "quantity": 1, "required_unlock_id": &"region_industrial_district", "target_id": &"region_research_complex"
+}, {
+"display_name": "돌격소총 출격권", "offer_id": &"buy_assault_rifle", "offer_type": &"item", "price": 420, "quantity": 1, "required_offer_registration": &"buy_assault_rifle", "target_id": &"spare_assault_rifle"
+}, {
+"display_name": "전술 방탄복 출격권", "offer_id": &"buy_tactical_vest", "offer_type": &"item", "price": 480, "quantity": 1, "required_offer_registration": &"buy_tactical_vest", "target_id": &"spare_tactical_vest"
+}, {
+"display_name": "원형 자기장 스킬", "offer_id": &"unlock_magnetic_field", "offer_type": &"skill", "price": 650, "quantity": 1, "required_offer_registration": &"unlock_magnetic_field", "target_id": &"magnetic_field"
 }])
 consumable_effects = {
 &"field_medkit": {"heal": 15.0, "player_modifiers": {&"max_health": {"add": 15.0, "multiply": 1.0}}}

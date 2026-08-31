@@ -4,6 +4,8 @@ extends Area2D
 signal extraction_completed(actor: Node2D)
 signal extraction_defense_started(actor: Node2D, duration_seconds: float)
 signal extraction_defense_cancelled()
+signal extraction_defense_paused(remaining_seconds: float)
+signal extraction_defense_resumed(remaining_seconds: float)
 signal interaction_availability_changed(available: bool, prompt: String)
 
 @export var interaction_action: StringName = &"interact"
@@ -17,6 +19,7 @@ var locked: bool = false
 var locked_prompt: String = "탈출 신호 대기 중"
 var defense_actor: Node2D
 var defense_remaining_seconds: float = 0.0
+var defense_paused: bool = false
 
 
 func _ready() -> void:
@@ -51,9 +54,15 @@ func request_extraction(actor: Node2D) -> bool:
 		extraction_completed.emit(actor)
 		return true
 	if is_instance_valid(defense_actor):
+		if actor == defense_actor and defense_paused:
+			defense_paused = false
+			extraction_defense_resumed.emit(defense_remaining_seconds)
+			interaction_availability_changed.emit(true, _interaction_prompt())
+			return true
 		return false
 	defense_actor = actor
 	defense_remaining_seconds = defense_duration_seconds
+	defense_paused = false
 	extraction_defense_started.emit(actor, defense_duration_seconds)
 	interaction_availability_changed.emit(true, _interaction_prompt())
 	return true
@@ -69,6 +78,7 @@ func get_snapshot() -> Dictionary:
 		&"defense_active": is_instance_valid(defense_actor),
 		&"defense_duration_seconds": defense_duration_seconds,
 		&"defense_remaining_seconds": defense_remaining_seconds,
+		&"defense_paused": defense_paused,
 	}
 
 
@@ -80,14 +90,19 @@ func _advance_defense(delta: float) -> void:
 	if not is_instance_valid(defense_actor):
 		return
 	if defense_actor.global_position.distance_to(global_position) > interaction_radius:
-		_cancel_defense()
+		_pause_defense()
 		return
+	if defense_paused:
+		defense_paused = false
+		extraction_defense_resumed.emit(defense_remaining_seconds)
+		interaction_availability_changed.emit(true, _interaction_prompt())
 	defense_remaining_seconds = maxf(0.0, defense_remaining_seconds - maxf(0.0, delta))
 	interaction_availability_changed.emit(true, _interaction_prompt())
 	queue_redraw()
 	if defense_remaining_seconds <= 0.0:
 		var completed_actor := defense_actor
 		defense_actor = null
+		defense_paused = false
 		extraction_completed.emit(completed_actor)
 
 
@@ -102,6 +117,9 @@ func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group(&"player"):
 		return
 	nearby_player = body
+	if body == defense_actor and defense_paused:
+		defense_paused = false
+		extraction_defense_resumed.emit(defense_remaining_seconds)
 	interaction_availability_changed.emit(true, _interaction_prompt())
 
 
@@ -110,7 +128,7 @@ func _on_body_exited(body: Node2D) -> void:
 		return
 	nearby_player = null
 	if body == defense_actor:
-		_cancel_defense()
+		_pause_defense()
 	interaction_availability_changed.emit(false, "")
 
 
@@ -131,6 +149,8 @@ func _interaction_prompt() -> String:
 	if locked:
 		return locked_prompt
 	if is_instance_valid(defense_actor):
+		if defense_paused:
+			return "탈출 방어 일시정지 · 구역 복귀 시 %.1f초부터 재개" % defense_remaining_seconds
 		return "탈출 방어 중 · %.1f초 · 구역 유지" % defense_remaining_seconds
 	return "F · 탈출 방어전 시작"
 
@@ -140,5 +160,14 @@ func _cancel_defense() -> void:
 		return
 	defense_actor = null
 	defense_remaining_seconds = 0.0
+	defense_paused = false
 	extraction_defense_cancelled.emit()
+	queue_redraw()
+
+
+func _pause_defense() -> void:
+	if not is_instance_valid(defense_actor) or defense_paused:
+		return
+	defense_paused = true
+	extraction_defense_paused.emit(defense_remaining_seconds)
 	queue_redraw()

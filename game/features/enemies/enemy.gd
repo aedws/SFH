@@ -32,6 +32,7 @@ var path_index: int = 0
 var last_path_target_position := Vector2.INF
 var crowd_steering_cooldown: float = 0.0
 var cached_crowd_steering := Vector2.ZERO
+var active_statuses: Dictionary = {}
 
 
 func _ready() -> void:
@@ -87,6 +88,7 @@ func configure(
 
 
 func _physics_process(delta: float) -> void:
+	_advance_statuses(delta)
 	contact_cooldown = maxf(0.0, contact_cooldown - delta)
 	repath_cooldown = maxf(0.0, repath_cooldown - delta)
 	crowd_steering_cooldown = maxf(0.0, crowd_steering_cooldown - delta)
@@ -171,6 +173,32 @@ func take_damage(amount: float) -> void:
 	health_component.apply_damage(remaining_damage)
 
 
+func apply_status(status_id: StringName, duration_seconds: float, stacks: int = 1) -> bool:
+	if status_id == &"" or duration_seconds <= 0.0 or stacks <= 0:
+		return false
+	var current: Dictionary = active_statuses.get(status_id, {&"remaining": 0.0, &"stacks": 0})
+	current[&"remaining"] = maxf(float(current.get(&"remaining", 0.0)), duration_seconds)
+	current[&"stacks"] = mini(99, int(current.get(&"stacks", 0)) + stacks)
+	active_statuses[status_id] = current
+	return true
+
+
+func has_status(status_id: StringName) -> bool:
+	return active_statuses.has(status_id) and float(active_statuses[status_id].get(&"remaining", 0.0)) > 0.0
+
+
+func consume_status(status_id: StringName, stacks: int = 1) -> bool:
+	if not has_status(status_id):
+		return false
+	var current: Dictionary = active_statuses[status_id]
+	current[&"stacks"] = int(current.get(&"stacks", 1)) - maxi(1, stacks)
+	if int(current[&"stacks"]) <= 0:
+		active_statuses.erase(status_id)
+	else:
+		active_statuses[status_id] = current
+	return true
+
+
 func get_targeting_snapshot() -> Dictionary:
 	return {
 		&"current_health": health_component.current_value,
@@ -178,7 +206,18 @@ func get_targeting_snapshot() -> Dictionary:
 		&"current_armor": armor_component.current_value,
 		&"maximum_armor": armor_component.maximum_value,
 		&"priority_rank": priority_rank,
+		&"active_statuses": active_statuses.duplicate(true),
 	}
+
+
+func _advance_statuses(delta: float) -> void:
+	for status_id in active_statuses.keys():
+		var current: Dictionary = active_statuses[status_id]
+		current[&"remaining"] = maxf(0.0, float(current.get(&"remaining", 0.0)) - maxf(0.0, delta))
+		if float(current[&"remaining"]) <= 0.0:
+			active_statuses.erase(status_id)
+		else:
+			active_statuses[status_id] = current
 
 
 func _on_health_value_changed(current: float, _maximum: float) -> void:

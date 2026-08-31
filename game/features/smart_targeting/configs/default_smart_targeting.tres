@@ -4,10 +4,5 @@
 
 [resource]
 script = ExtResource("1_policy")
-proximity_weight = 0.45
-execute_weight = 0.2
-priority_weight = 0.2
-density_weight = 0.15
 density_radius = 180.0
 maximum_priority_rank = 5.0
-reference_density_count = 8.0
