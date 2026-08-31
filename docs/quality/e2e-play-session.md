@@ -69,6 +69,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-performance.p
 
 현재 E2E는 이 계약을 거점 시작부터 성공 복귀, 재투입, 사망 결과와 실패 복귀까지 **21개 전환 지점**에서 판정합니다. 실패 시 `성공 결과/result · 숨겨야 할 레이어가 보입니다: minimap`처럼 상태·맥락·위반 레이어를 함께 출력합니다.
 
+사이버펑크 표현 계층도 같은 세션에서 검사합니다. 오버레이가 뷰포트 전체를 덮되 입력을 가로채지 않는지, 핵심 신호색이 정확히 `#02e5e1`인지, Feature Manifest에서 끄면 표현 노드만 빠지고 플레이 규칙은 유지되는지를 확인합니다.
+
 ## 브라우저 육안 검수 목록
 
 | 화면 | 사람이 확인할 항목 | 판정 |
@@ -109,4 +111,4 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-performance.p
 
 ## 검색 별칭
 
-E2E, 실제 플레이, 플레이 테스트, UI 상태 판정, UI 상태 계약, 모달 배타성, HUD 겹침, 화면 경계, QA 체크리스트, 거점 작전 탈출, 성공 정산, 실패 정산, K 키 설정, U E 입력, 브라우저 입력
+E2E, 실제 플레이, 플레이 테스트, UI 상태 판정, UI 상태 계약, 모달 배타성, HUD 겹침, 화면 경계, QA 체크리스트, 거점 작전 탈출, 성공 정산, 실패 정산, K 키 설정, U E 입력, 브라우저 입력, 사이버펑크 테마, 오버레이 입력 통과

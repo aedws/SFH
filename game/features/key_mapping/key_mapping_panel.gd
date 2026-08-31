@@ -108,12 +108,12 @@ func _build_ui() -> void:
 	panel.custom_minimum_size = Vector2(920.0, 620.0)
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.025, 0.055, 0.075, 0.98)
-	panel_style.border_color = Color(0.1, 0.8, 0.85, 0.78)
+	panel_style.border_color = Color("02e5e1c7")
 	panel_style.set_border_width_all(2)
-	panel_style.corner_radius_top_left = 12
-	panel_style.corner_radius_top_right = 12
-	panel_style.corner_radius_bottom_left = 12
-	panel_style.corner_radius_bottom_right = 12
+	panel_style.corner_radius_top_left = 2
+	panel_style.corner_radius_top_right = 2
+	panel_style.corner_radius_bottom_left = 2
+	panel_style.corner_radius_bottom_right = 2
 	panel.add_theme_stylebox_override("panel", panel_style)
 	center.add_child(panel)
 	var margin := MarginContainer.new()
@@ -134,7 +134,7 @@ func _build_ui() -> void:
 	header.add_child(title)
 	key_badge_label = Label.new()
 	key_badge_label.text = "K · OPEN  |  ESC · CLOSE"
-	key_badge_label.modulate = Color(0.35, 0.92, 0.95)
+	key_badge_label.modulate = Color("02e5e1")
 	header.add_child(key_badge_label)
 	var close_button := Button.new()
 	close_button.text = "닫기"
@@ -147,7 +147,7 @@ func _build_ui() -> void:
 	description.modulate = Color(0.72, 0.82, 0.86)
 	content.add_child(description)
 	summary_label = Label.new()
-	summary_label.modulate = Color(0.2, 0.9, 0.75)
+	summary_label.modulate = Color("02e5e1")
 	content.add_child(summary_label)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -190,7 +190,7 @@ func _refresh_rows() -> void:
 			current_category = category
 			var category_label := Label.new()
 			category_label.text = category.to_upper()
-			category_label.modulate = Color(0.25, 0.86, 0.9)
+			category_label.modulate = Color("02e5e1")
 			category_label.add_theme_font_size_override("font_size", 16)
 			rows_container.add_child(category_label)
 		var row := HBoxContainer.new()

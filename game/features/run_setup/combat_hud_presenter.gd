@@ -34,14 +34,14 @@ func install(hud: Control) -> bool:
 	core_panel.reparent(layout_root)
 	_position_bottom_core(core_panel)
 	core_panel.add_theme_stylebox_override(
-		"panel", _style_box(Color("061018e8"), Color("247d78"), 7, 1)
+		"panel", _style_box(Color("030d12e8"), Color("02e5e1"), 1, 1)
 	)
 	content.add_theme_constant_override("separation", 2)
 
 	var top_row := content.get_node("TopRow") as HBoxContainer
 	var title := top_row.get_node("Title") as Label
 	title.text = "ACTIVE LOADOUT"
-	title.add_theme_color_override("font_color", Color("7ce7d5"))
+	title.add_theme_color_override("font_color", Color("02e5e1"))
 	title.add_theme_font_size_override("font_size", 13)
 	for label_path in ["LevelLabel", "KillsLabel", "CreditLabel"]:
 		(top_row.get_node(label_path) as Label).add_theme_font_size_override("font_size", 10)
@@ -127,7 +127,7 @@ func _build_mission_tracker(
 	panel.name = "MissionTracker"
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_theme_stylebox_override(
-		"panel", _style_box(Color("071018dc"), Color("815ee8"), 5, 1)
+		"panel", _style_box(Color("030d12dc"), Color("02e5e1"), 1, 1)
 	)
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 10)
@@ -141,9 +141,11 @@ func _build_mission_tracker(
 	var header := HBoxContainer.new()
 	mission_content.add_child(header)
 	var header_label := Label.new()
-	header_label.text = "MISSION // TACTICAL OBJECTIVE"
+	header_label.text = "MISSION // OBJ"
 	header_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header_label.add_theme_color_override("font_color", Color("b39aff"))
+	header_label.clip_text = true
+	header_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	header_label.add_theme_color_override("font_color", Color("02e5e1"))
 	header_label.add_theme_font_size_override("font_size", 11)
 	header.add_child(header_label)
 	var time_label := top_row.get_node("TimeLabel") as Label
@@ -152,6 +154,8 @@ func _build_mission_tracker(
 	var map_label := top_row.get_node("MapLabel") as Label
 	map_label.reparent(mission_content)
 	map_label.add_theme_font_size_override("font_size", 13)
+	map_label.clip_text = true
+	map_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	var status := footer.get_node("StatusLabel") as Label
 	status.reparent(mission_content)
 	status.custom_minimum_size.y = 38.0

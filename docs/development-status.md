@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 32 TOPICS</span><span>96% · WEAPON PARTS SOCKET UI</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 33 TOPICS</span><span>96% · #02e5e1 CYBER UI</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,13 +76,13 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>10 UPDATE BUNDLES &middot; BUILD 21 &middot; IMPROVE 21 &middot; CHANGE 12 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>11 UPDATE BUNDLES &middot; BUILD 23 &middot; IMPROVE 25 &middot; CHANGE 13 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>10</b><small>UPDATE BUNDLES</small></span>
-      <span><b>21</b><small>BUILD</small></span>
-      <span><b>21</b><small>IMPROVE</small></span>
-      <span><b>12</b><small>CHANGE</small></span>
+      <span><b>11</b><small>UPDATE BUNDLES</small></span>
+      <span><b>23</b><small>BUILD</small></span>
+      <span><b>25</b><small>IMPROVE</small></span>
+      <span><b>13</b><small>CHANGE</small></span>
       <span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -344,6 +344,34 @@ tags:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">목록식 파츠 표현 → 위치식 소켓 표현</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>기능 API는 유지하고 기본 파츠 표현만 참조 UI의 공간 구조로 교체했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 11</small><b>#02e5e1 사이버펑크 테마 · 게임·위키 공통 시각 언어</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>토큰</b> · 핵심 신호색 <code>#02e5e1</code>과 검정 계열 배경을 게임 Theme·위키 CSS에서 공유합니다.</li>
+            <li><b>문자</b> · 한글 Galmuri 도트 글꼴을 게임 TTF·위키 WOFF2로 나누고 OFL 원문과 해시를 보존합니다.</li>
+            <li><b>표현</b> · 정적 스캔라인·결정론적 희박 노이즈·모서리 표식과 작은 점멸 신호를 독립 표현 모듈로 추가합니다.</li>
+            <li><b>검증</b> · 21개 UI 상태 E2E, 입력 통과, 1280×720 경계, 대형 맵 평균 6.889ms·최대 8.094ms를 확인했습니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>저작권 경계</b><span>제공된 스톡 참조 이미지는 포함하지 않았고, 기능적 HUD 문법만 코드와 CSS로 새로 구성했습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">CyberpunkPresentation</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Theme·ScreenFX·Overlay를 전투·경제 상태를 수정하지 않는 표현 계약으로 추가했습니다.</p><a href="../design/cyberpunk-visual-theme/">모듈·토큰 보기 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Galmuri 배포 자산</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>고정 원본 커밋에서 가져온 글꼴과 SIL OFL 1.1 원문을 게임·문서 배포 경계별로 저장했습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">게임 HUD·모달 일관성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>작전·전투·장비·가방·스킬·미니맵을 같은 활성색과 각진 패널 계층으로 정렬했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">위키 검색·업데이트 가독성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>검색 명령창과 최신 변경 카드에 전술 격자·신호 점·스캔 표현을 적용했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">도트 문자와 한글 안정성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>브라우저 전달용 WOFF2와 게임용 벡터 TTF로 한글 글리프와 다양한 UI 크기를 유지합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">성능·접근성 경계</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>노이즈 재계산을 크기 변경으로 제한하고 reduced-motion 및 움직임·노이즈 개별 토글을 제공합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">화면별 스타일 → 공통 전술 단말기 테마</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>산발적인 청록·둥근 패널을 하나의 색·선·문자·상태 신호 규칙으로 바꿨습니다.</p></div></details>
         </div>
       </div>
     </details>

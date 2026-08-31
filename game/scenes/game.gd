@@ -78,6 +78,9 @@ const KEY_MAPPING_SERVICE_SCENE_PATH := (
 const KEY_MAPPING_PANEL_SCENE_PATH := (
 	"res://game/features/key_mapping/key_mapping_panel.tscn"
 )
+const CYBERPUNK_OVERLAY_SCENE_PATH := (
+	"res://game/features/presentation_theme/cyberpunk_overlay.tscn"
+)
 const OPERATION_SETUP_PRESENTER_SCRIPT := preload(
 	"res://game/features/run_setup/operation_setup_presenter.gd"
 )
@@ -257,6 +260,7 @@ const OPERATION_RESULT_METHODS := [&"configure", &"settle_success", &"settle_fai
 const KEY_MAPPING_METHODS := [
 	&"configure", &"rebind_action", &"reset_defaults", &"get_entries", &"get_snapshot",
 ]
+const CYBERPUNK_OVERLAY_METHODS := [&"configure", &"get_snapshot"]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
 @export var features: FeatureManifest
@@ -344,6 +348,7 @@ var conditional_ranking_system
 var operation_result_service
 var key_mapping_service
 var key_mapping_panel
+var cyberpunk_overlay
 var operation_setup_presenter := OPERATION_SETUP_PRESENTER_SCRIPT.new()
 var combat_hud_presenter := COMBAT_HUD_PRESENTER_SCRIPT.new()
 var operation_launch_button: Button
@@ -371,6 +376,9 @@ func _ready() -> void:
 	control_hint_label.text = "이동 WASD · Space 대시 · LMB 기본기 · 1~9 스킬 · Q/F/I/U/E · K 키 설정"
 	hub_control_hint_label.text = "이동 WASD · I 가방 · U 장비 · E 모듈·파츠 · Q 무기 · F 게이트 · K 키 설정"
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	if features != null and features.cyberpunk_theme_enabled:
+		if not _install_cyberpunk_theme():
+			return
 	var operation_controls: Dictionary = operation_setup_presenter.call(&"install", run_setup_overlay)
 	operation_launch_button = operation_controls.get(&"launch_button") as Button
 	combat_hud_presenter.call(&"install", hud_margin)
@@ -554,6 +562,21 @@ func _install_key_mapping() -> bool:
 			&"bindings_changed", Callable(self, &"_on_key_bindings_changed")
 		)
 	_refresh_control_hints()
+	return true
+
+
+func _install_cyberpunk_theme() -> bool:
+	cyberpunk_overlay = _instantiate_feature(
+		CYBERPUNK_OVERLAY_SCENE_PATH, self, &"CyberpunkPresentation"
+	)
+	if not _supports_methods(cyberpunk_overlay, CYBERPUNK_OVERLAY_METHODS):
+		_report_configuration_error("사이버펑크 표현 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not bool(cyberpunk_overlay.call(
+		&"configure", features.cyberpunk_motion_enabled, features.cyberpunk_noise_enabled
+	)):
+		_report_configuration_error("사이버펑크 표현 모듈을 구성하지 못했습니다.")
+		return false
 	return true
 
 

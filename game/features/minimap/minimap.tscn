@@ -9,11 +9,11 @@ border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.25, 0.55, 0.59, 0.82)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+border_color = Color(0.00784314, 0.898039, 0.882353, 0.82)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 5
 
@@ -57,7 +57,7 @@ size_flags_horizontal = 3
 
 [node name="Legend" type="Label" parent="Margin/Content/Header"]
 layout_mode = 2
-text = "FULL MAP · ● 나  ◆ 탈출"
+text = "● YOU  ◆ EXIT"
 theme_override_colors/font_color = Color(0.66, 0.76, 0.78, 1)
 theme_override_font_sizes/font_size = 9
 

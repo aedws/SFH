@@ -19,7 +19,8 @@ window/stretch/mode="canvas_items"
 
 [gui]
 
-theme/custom_font="res://game/assets/fonts/nanum-gothic/NanumGothic-Regular.ttf"
+theme/custom="res://game/features/presentation_theme/cyberpunk_theme.tres"
+theme/custom_font="res://game/assets/fonts/galmuri/Galmuri11-Bold.ttf"
 
 [input]
 

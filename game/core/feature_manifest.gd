@@ -48,6 +48,9 @@ extends Resource
 @export var conditional_ranking_enabled: bool = true
 @export var game_over_enabled: bool = true
 @export var key_mapping_enabled: bool = true
+@export var cyberpunk_theme_enabled: bool = true
+@export var cyberpunk_motion_enabled: bool = true
+@export var cyberpunk_noise_enabled: bool = true
 
 @export_category("Run setup")
 @export var run_setup_enabled: bool = true
@@ -232,6 +235,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"game_over")
 	if key_mapping_enabled:
 		result.append(&"key_mapping")
+	if cyberpunk_theme_enabled:
+		result.append(&"cyberpunk_theme")
 
 	return result
 
