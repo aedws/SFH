@@ -9,13 +9,18 @@ const UI_STATE_JUDGE_SCRIPT := preload("res://game/tests/support/ui_state_judge.
 const PLAYER_PERCEPTION_JUDGE_SCRIPT := preload(
 	"res://game/tests/support/player_perception_judge.gd"
 )
+const GAMEPLAY_FLOW_JUDGE_SCRIPT := preload(
+	"res://game/tests/support/gameplay_flow_judge.gd"
+)
 
 var game: Node
 var ui_state_judge := UI_STATE_JUDGE_SCRIPT.new()
 var player_perception_judge := PLAYER_PERCEPTION_JUDGE_SCRIPT.new()
+var gameplay_flow_judge := GAMEPLAY_FLOW_JUDGE_SCRIPT.new()
 var judged_ui_states := PackedStringArray()
 var judged_perception_checkpoints := PackedStringArray()
 var judged_perception_units := {}
+var judged_gameplay_flows := PackedStringArray()
 
 
 func _init() -> void:
@@ -59,6 +64,8 @@ func _run() -> void:
 		return
 	if not await _verify_operation_session():
 		return
+	if not await _verify_ten_minute_sessions(game_scene):
+		return
 	if not await _verify_failure_and_return_session():
 		return
 
@@ -68,8 +75,8 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
-		judged_ui_states.size(), judged_perception_checkpoints.size(),
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_reward medium_large_600s fog_room_corridor_transition skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
+		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
 	quit(0)
@@ -277,6 +284,10 @@ func _verify_operation_session() -> bool:
 	if not _judge_player_perception(&"combat_glance", "전투 시선 정보 이해"):
 		return false
 	if not await _verify_combat_action_feedback(player, skills, dash):
+		return false
+	if not await _verify_primary_attack_resolution(player):
+		return false
+	if not await _verify_room_encounter_resolution(player):
 		return false
 	if not await _verify_run_augment_choice():
 		return false
@@ -542,6 +553,265 @@ func _verify_combat_action_feedback(player: Node2D, skills: Control, dash: Contr
 		&"minimum_camera_lead_pixels": 8.0,
 	}):
 		return false
+	return true
+
+
+func _verify_primary_attack_resolution(player: Node2D) -> bool:
+	var spawner = game.get("enemy_spawner")
+	var weapon = game.get("auto_weapon")
+	var hit_feedback = game.get("hit_feedback_director")
+	var resources = game.get("combat_resource_system")
+	var map_provider = game.get("map_generator")
+	if spawner == null or weapon == null or hit_feedback == null or resources == null or map_provider == null:
+		return _fail("좌클릭 전투 인과관계를 관측할 필수 모듈이 없습니다.")
+	var spawn_position: Vector2 = map_provider.call(
+		&"get_enemy_spawn_position", player.global_position, 180.0
+	)
+	var enemy: Node2D = spawner.call(&"spawn_enemy_at", spawn_position, &"e2e_primary_attack")
+	if enemy == null:
+		return _fail("좌클릭 전투 검증용 적을 실제 스포너로 생성하지 못했습니다.")
+	enemy.global_position = player.global_position + Vector2(180.0, 0.0)
+	enemy.set("move_speed", 0.0)
+	enemy.set("damage_enabled", false)
+	await process_frame
+
+	var weapon_before: Dictionary = weapon.call(&"get_runtime_snapshot")
+	var hit_before: Dictionary = hit_feedback.call(&"get_snapshot")
+	var resource_before: Dictionary = resources.call(&"get_snapshot")
+	var kills_before := int(game.get("defeated_enemies"))
+	var target_instance_id := enemy.get_instance_id()
+	var pressed_event := InputEventMouseButton.new()
+	pressed_event.button_index = MOUSE_BUTTON_LEFT
+	pressed_event.button_mask = MOUSE_BUTTON_MASK_LEFT
+	pressed_event.pressed = true
+	pressed_event.position = get_root().get_visible_rect().size * 0.5
+	pressed_event.global_position = pressed_event.position
+	Input.parse_input_event(pressed_event)
+	for _frame in range(360):
+		await physics_frame
+		if not is_instance_valid(enemy):
+			break
+	var released_event := pressed_event.duplicate() as InputEventMouseButton
+	released_event.pressed = false
+	released_event.button_mask = 0
+	Input.parse_input_event(released_event)
+	await process_frame
+	await process_frame
+
+	var weapon_after: Dictionary = weapon.call(&"get_runtime_snapshot")
+	var hit_after: Dictionary = hit_feedback.call(&"get_snapshot")
+	var resource_after: Dictionary = resources.call(&"get_snapshot")
+	var spawned_before: Dictionary = resource_before.get(&"spawned_pickups", {})
+	var spawned_after: Dictionary = resource_after.get(&"spawned_pickups", {})
+	var drop_count_before := int(spawned_before.get(&"energy", 0)) + int(spawned_before.get(&"health", 0))
+	var drop_count_after := int(spawned_after.get(&"energy", 0)) + int(spawned_after.get(&"health", 0))
+	if int(weapon_after.get(&"last_target_instance_id", 0)) != target_instance_id:
+		return _fail("실제 좌클릭 공격이 생성한 적을 스마트 타게팅하지 못했습니다.")
+	if not _judge_gameplay_flow(&"primary_attack_resolution", "좌클릭→타격→처치→드랍", {
+		&"physical_left_mouse": true,
+		&"projectiles_before": weapon_before.get(&"total_projectiles_fired", 0),
+		&"projectiles_after": weapon_after.get(&"total_projectiles_fired", 0),
+		&"hits_before": hit_before.get(&"total_hits", 0),
+		&"hits_after": hit_after.get(&"total_hits", 0),
+		&"lethal_before": hit_before.get(&"total_lethal_hits", 0),
+		&"lethal_after": hit_after.get(&"total_lethal_hits", 0),
+		&"kills_before": kills_before,
+		&"kills_after": game.get("defeated_enemies"),
+		&"drops_before": drop_count_before,
+		&"drops_after": drop_count_after,
+		&"target_removed": not is_instance_valid(enemy),
+	}):
+		return false
+	return _judge_player_perception(&"primary_attack_feedback", "좌클릭 처치 피드백", {
+		&"before_value": kills_before,
+		&"after_value": game.get("defeated_enemies"),
+		&"value_direction": &"increase",
+	})
+
+
+func _verify_room_encounter_resolution(player: Node2D) -> bool:
+	var encounters = game.get("room_encounter_system")
+	var spawner = game.get("enemy_spawner")
+	var generator = game.get("map_generator")
+	var progression = game.get("progression_system")
+	var fog = game.get("fog_of_war")
+	if encounters == null or spawner == null or generator == null or progression == null or fog == null:
+		return _fail("방 전투 E2E에 필요한 모듈이 설치되지 않았습니다.")
+	var room := {}
+	for candidate: Dictionary in generator.call(&"get_room_encounter_snapshot"):
+		if (
+			not bool(candidate.get(&"is_start_room", false))
+			and not bool(candidate.get(&"is_extraction_room", false))
+			and not (candidate.get(&"doorways", []) as Array).is_empty()
+		):
+			room = candidate
+			break
+	if room.is_empty():
+		return _fail("문 봉쇄가 가능한 일반 방을 생성하지 못했습니다.")
+	player.global_position = room[&"center"]
+	await physics_frame
+	await process_frame
+	encounters.call(&"_process", 0.0)
+	await process_frame
+	var active: Dictionary = encounters.call(&"get_snapshot")
+	if not _judge_player_perception(&"room_lock_feedback", "방 진입과 문 봉쇄 인지"):
+		return false
+	var experience_before := float(
+		progression.call(&"get_run_snapshot").get(&"total_experience_gained", 0.0)
+	)
+	var room_id := StringName("room_%d" % int(room[&"room_index"]))
+	player.global_position = (room[&"world_rect"] as Rect2).position + Vector2(160.0, 160.0)
+	await physics_frame
+	await physics_frame
+	for enemy in spawner.call(&"get_active_targets"):
+		if enemy.get_meta(&"room_encounter_id", &"") == room_id:
+			enemy.call(&"take_damage", 100000.0, {
+				&"source_kind": &"e2e_room_clear",
+				&"impact_direction": Vector2.RIGHT,
+				&"impact_strength": 1.0,
+			})
+	for _frame in range(4):
+		await process_frame
+	encounters.call(&"_process", 0.0)
+	await process_frame
+	var cleared: Dictionary = encounters.call(&"get_snapshot")
+	var visible_status := String((game.get("status_label") as Label).text)
+	if int(cleared.get(&"active_room_index", -2)) != -1 or "확보" not in visible_status:
+		return _fail("방 섬멸 후 확보 상태가 화면에 유지되지 않습니다: %s / %s" % [
+			visible_status, cleared,
+		])
+	if not _judge_player_perception(&"room_clear_feedback", "방 클리어와 보상 생성 인지"):
+		return false
+	var rewards: Array = encounters.call(&"get_active_rewards")
+	if rewards.is_empty():
+		return _fail("방 클리어 후 회수 가능한 실제 보상 노드가 없습니다.")
+	var reward := rewards[0] as Node2D
+	player.global_position = reward.global_position
+	reward.call(&"_on_body_entered", player)
+	await process_frame
+	await process_frame
+	var collected: Dictionary = encounters.call(&"get_snapshot")
+	var experience_after := float(
+		progression.call(&"get_run_snapshot").get(&"total_experience_gained", 0.0)
+	)
+	if not _judge_gameplay_flow(&"room_encounter_resolution", "방 진입→봉쇄→클리어→보상", {
+		&"active": active,
+		&"cleared": cleared,
+		&"collected": collected,
+		&"experience_before": experience_before,
+		&"experience_after": experience_after,
+	}):
+		return false
+	return await _verify_fog_room_corridor_transition(player, generator, fog, room)
+
+
+func _verify_fog_room_corridor_transition(
+	player: Node2D,
+	generator: Node,
+	fog: Node,
+	room: Dictionary
+) -> bool:
+	player.global_position = room[&"center"]
+	var enter_seconds := float(fog.get("room_enter_transition_seconds"))
+	var exit_seconds := float(fog.get("room_exit_transition_seconds"))
+	fog.call(&"_process", enter_seconds + 0.01)
+	var room_snapshot: Dictionary = fog.call(&"get_snapshot")
+	var corridor_position := _find_corridor_position(generator)
+	if corridor_position == Vector2.INF:
+		return _fail("방·통로 안개 전환을 확인할 통로 좌표가 없습니다.")
+	player.global_position = corridor_position
+	fog.call(&"_process", exit_seconds * 0.5)
+	var leaving_snapshot: Dictionary = fog.call(&"get_snapshot")
+	fog.call(&"_process", exit_seconds)
+	var corridor_snapshot: Dictionary = fog.call(&"get_snapshot")
+	player.global_position = room[&"center"]
+	fog.call(&"_process", enter_seconds * 0.5)
+	var entering_snapshot: Dictionary = fog.call(&"get_snapshot")
+	fog.call(&"_process", enter_seconds)
+	var returned_snapshot: Dictionary = fog.call(&"get_snapshot")
+	return _judge_gameplay_flow(&"fog_room_corridor_transition", "방↔통로 전장의 안개", {
+		&"room": room_snapshot,
+		&"leaving": leaving_snapshot,
+		&"corridor": corridor_snapshot,
+		&"entering": entering_snapshot,
+		&"returned": returned_snapshot,
+	})
+
+
+func _verify_ten_minute_sessions(game_scene: PackedScene) -> bool:
+	for tier_id in [&"medium", &"large"]:
+		var tier_game := game_scene.instantiate()
+		var tier_features: Resource = tier_game.get("features").duplicate(true)
+		var suffix := String(tier_id)
+		tier_features.set("persistent_profile_storage_path", "user://sfh_e2e_%s_profile.json" % suffix)
+		tier_features.set("conditional_ranking_storage_path", "user://sfh_e2e_%s_rankings.json" % suffix)
+		tier_features.set("meta_progression_storage_path", "user://sfh_e2e_%s_meta.json" % suffix)
+		tier_features.set("key_mapping_storage_path", "user://sfh_e2e_%s_keys.json" % suffix)
+		tier_game.set("features", tier_features)
+		root.add_child(tier_game)
+		await process_frame
+		if not tier_game.call(&"start_run", String(tier_id)):
+			root.remove_child(tier_game)
+			tier_game.free()
+			return _fail("%s 10분 E2E 세션을 시작하지 못했습니다." % tier_id)
+		await process_frame
+		var initial: Dictionary = tier_game.call(&"get_run_pacing_snapshot")
+		var until_before_unlock := maxf(
+			0.0,
+			float(initial.get(&"extraction_unlock_seconds", 600.0))
+			- float(initial.get(&"elapsed_seconds", 0.0))
+			- 1.0
+		)
+		tier_game.call(&"advance_run_clock", until_before_unlock)
+		var before_unlock: Dictionary = tier_game.call(&"get_run_pacing_snapshot")
+		tier_game.call(&"advance_run_clock", 1.1)
+		var after_unlock: Dictionary = tier_game.call(&"get_run_pacing_snapshot")
+		var valid := _judge_gameplay_flow(&"ten_minute_session", "%s 10분 세션" % tier_id, {
+			&"before_unlock": before_unlock,
+			&"after_unlock": after_unlock,
+		})
+		root.remove_child(tier_game)
+		tier_game.free()
+		await process_frame
+		_cleanup_tier_profile(suffix)
+		if not valid:
+			return false
+	return true
+
+
+func _find_corridor_position(generator: Node) -> Vector2:
+	var cell_size := float(generator.get("cell_size"))
+	for cell in generator.get("floor_cells"):
+		var world_position := (Vector2(cell) + Vector2.ONE * 0.5) * cell_size
+		var context: Dictionary = generator.call(&"get_visibility_region", world_position)
+		if context.get(&"mode", &"room") == &"corridor":
+			return world_position
+	return Vector2.INF
+
+
+func _cleanup_tier_profile(suffix: String) -> void:
+	for path in [
+		"user://sfh_e2e_%s_profile.json" % suffix,
+		"user://sfh_e2e_%s_rankings.json" % suffix,
+		"user://sfh_e2e_%s_meta.json" % suffix,
+		"user://sfh_e2e_%s_keys.json" % suffix,
+	]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
+func _judge_gameplay_flow(
+	flow_id: StringName,
+	context: String,
+	evidence: Dictionary
+) -> bool:
+	var result: Dictionary = gameplay_flow_judge.call(&"judge", flow_id, evidence)
+	if not bool(result.get(&"success", false)):
+		var errors: PackedStringArray = result.get(&"errors", PackedStringArray())
+		return _fail("게임플레이 흐름 판정 실패 [%s/%s] · %s" % [
+			context, flow_id, " / ".join(errors),
+		])
+	judged_gameplay_flows.append(flow_id)
 	return true
 
 

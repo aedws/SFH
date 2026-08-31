@@ -202,7 +202,9 @@ const ENEMY_SPAWNER_METHODS := [
 	&"configure", &"get_snapshot", &"get_active_targets", &"spawn_enemy_at",
 	&"set_reinforcement_paused", &"get_remaining_spawn_budget", &"get_separation_vector",
 ]
-const ROOM_ENCOUNTER_METHODS := [&"configure", &"try_start_room", &"get_snapshot"]
+const ROOM_ENCOUNTER_METHODS := [
+	&"configure", &"try_start_room", &"get_snapshot", &"get_active_rewards",
+]
 const RUN_BUFF_METHODS := [
 	&"configure",
 	&"prepare_choices",
@@ -1061,6 +1063,7 @@ func _reset_run_state() -> void:
 	experience_label.text = "0 / 5"
 	combat_hud_presenter.call(&"set_interaction_active", false)
 	combat_hud_presenter.call(&"set_survival_ratio", 1.0)
+	combat_hud_presenter.call(&"reset_status_priority")
 
 
 func _assemble_game() -> bool:
@@ -1956,10 +1959,14 @@ func _tier_resources_are_available(tier_id: String) -> bool:
 
 
 func _process(delta: float) -> void:
+	advance_run_clock(delta)
+
+
+func advance_run_clock(delta: float) -> void:
 	if not run_started or run_ended or get_tree().paused:
 		return
 
-	elapsed_time += delta
+	elapsed_time += maxf(0.0, delta)
 	if (
 		extraction_zone != null
 		and not extraction_unlocked
@@ -1969,6 +1976,19 @@ func _process(delta: float) -> void:
 		extraction_zone.call(&"set_locked", false)
 		status_label.text = "탈출 신호 활성 · 탈출 지점에서 F"
 	_update_run_time_hud()
+
+
+func get_run_pacing_snapshot() -> Dictionary:
+	return {
+		&"tier_id": StringName(selected_map_size),
+		&"elapsed_seconds": elapsed_time,
+		&"target_seconds": target_run_duration_seconds,
+		&"extraction_unlock_seconds": extraction_unlock_seconds,
+		&"extraction_unlocked": extraction_unlocked,
+		&"run_started": run_started,
+		&"run_ended": run_ended,
+		&"hud_text": time_label.text,
+	}
 
 
 func _update_run_time_hud() -> void:
@@ -2376,23 +2396,32 @@ func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:
 	kills_label.tooltip_text = "처치 %d" % defeated_enemies
 
 	if progression_system != null:
-		progression_system.call(&"spawn_pickup", world_position, reward)
+		progression_system.call_deferred(&"spawn_pickup", world_position, reward)
 	if combat_resource_system != null:
-		combat_resource_system.call(&"spawn_enemy_drops", world_position)
+		combat_resource_system.call_deferred(&"spawn_enemy_drops", world_position)
 
 
 func _on_room_encounter_started(room_index: int, enemy_count: int) -> void:
-	status_label.text = "방 %d 봉쇄 · 적 %d기 섬멸" % [room_index + 1, enemy_count]
+	combat_hud_presenter.call(
+		&"show_status",
+		"방 %d 봉쇄 · 적 %d기 섬멸" % [room_index + 1, enemy_count],
+		2,
+		600.0
+	)
 
 
 func _on_room_encounter_cleared(room_index: int) -> void:
-	status_label.text = "방 %d 확보 · 전투 데이터 보상 생성" % [room_index + 1]
+	combat_hud_presenter.call(
+		&"show_status", "방 %d 확보 · 전투 데이터 보상 생성" % [room_index + 1], 3, 2.0
+	)
 
 
 func _on_room_reward_collected(_room_index: int, experience_amount: int) -> void:
 	if progression_system != null:
 		progression_system.call(&"gain_experience", experience_amount)
-	status_label.text = "방 전투 보상 회수 · 내부 경험치 +%d" % experience_amount
+	combat_hud_presenter.call(
+		&"show_status", "방 전투 보상 회수 · 내부 경험치 +%d" % experience_amount, 4, 2.0
+	)
 
 
 func _on_player_health_changed(current: float, maximum: float) -> void:
@@ -2439,11 +2468,11 @@ func _on_level_increased(new_level: int) -> void:
 func _on_combat_resource_pickup_collected(resource_id: StringName, amount: float) -> void:
 	if amount <= 0.0:
 		return
-	status_label.text = (
+	combat_hud_presenter.call(&"show_status", (
 		"에너지 자원 회수 · +%d" % roundi(amount)
 		if resource_id == &"energy"
 		else "체력 자원 회수 · +%d HP" % roundi(amount)
-	)
+	), 0, 0.0)
 
 
 func _show_next_run_buff_choice() -> void:

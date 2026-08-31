@@ -21,11 +21,14 @@ var combat_skill_hud: Control
 var dash_cooldown_hud: Control
 var interaction_prompt: Control
 var detail_reveal_timer: Timer
+var status_label: Label
 var action_labels: Dictionary = {}
 var layout_mode := &"player_orbit"
 var revealed_detail := &""
 var interaction_active := false
 var survival_ratio := 1.0
+var status_priority: int = 0
+var status_priority_until_msec: int = 0
 var icon_count := 0
 
 
@@ -115,6 +118,23 @@ func set_survival_ratio(ratio: float) -> void:
 		core_panel.modulate.a = 1.0 if survival_ratio <= 0.35 else 0.88
 
 
+func show_status(message: String, priority: int = 0, hold_seconds: float = 0.0) -> bool:
+	if status_label == null:
+		return false
+	var now := Time.get_ticks_msec()
+	if now < status_priority_until_msec and priority < status_priority:
+		return false
+	status_label.text = message
+	status_priority = priority
+	status_priority_until_msec = now + roundi(maxf(0.0, hold_seconds) * 1000.0)
+	return true
+
+
+func reset_status_priority() -> void:
+	status_priority = 0
+	status_priority_until_msec = 0
+
+
 func apply_responsive_width(viewport_width: float) -> void:
 	_apply_layout_for_width(maxf(1.0, viewport_width))
 
@@ -202,11 +222,11 @@ func _build_mission_tracker(top_row: HBoxContainer, footer: HBoxContainer) -> Pa
 	map_label.add_theme_font_size_override("font_size", 13)
 	map_label.clip_text = true
 	map_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	var status := footer.get_node("StatusLabel") as Label
-	status.reparent(content)
-	status.custom_minimum_size.y = 38.0
-	status.add_theme_font_size_override("font_size", 11)
-	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status_label = footer.get_node("StatusLabel") as Label
+	status_label.reparent(content)
+	status_label.custom_minimum_size.y = 38.0
+	status_label.add_theme_font_size_override("font_size", 11)
+	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	return panel
 
 

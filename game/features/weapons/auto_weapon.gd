@@ -21,6 +21,9 @@ var cooldown: float = 0.2
 var burst_remaining: int = 0
 var burst_direction := Vector2.RIGHT
 var runtime_modifier_sources: Dictionary = {}
+var total_trigger_pulls: int = 0
+var total_projectiles_fired: int = 0
+var last_target_instance_id: int = 0
 
 
 func configure(
@@ -31,6 +34,9 @@ func configure(
 	projectile_parent = new_projectile_parent
 	equipment_provider = new_equipment_provider
 	balance_provider = new_balance_provider
+	total_trigger_pulls = 0
+	total_projectiles_fired = 0
+	last_target_instance_id = 0
 	if equipment_provider != null and equipment_provider.has_signal(&"active_weapon_changed"):
 		equipment_provider.connect(
 			&"active_weapon_changed", Callable(self, &"_on_active_weapon_changed")
@@ -111,6 +117,7 @@ func _process(delta: float) -> void:
 	var target := _find_nearest_enemy()
 	if target == null:
 		return
+	last_target_instance_id = target.get_instance_id()
 	burst_direction = global_position.direction_to(target.global_position)
 	_fire_pattern(burst_direction)
 	burst_remaining = maxi(0, int(current_balance.get(&"burst_count", 1)) - 1)
@@ -127,6 +134,7 @@ func try_fire_once() -> bool:
 	var target := _find_nearest_enemy()
 	if target == null:
 		return false
+	last_target_instance_id = target.get_instance_id()
 	burst_direction = global_position.direction_to(target.global_position)
 	_fire_pattern(burst_direction)
 	burst_remaining = maxi(0, int(current_balance.get(&"burst_count", 1)) - 1)
@@ -173,6 +181,9 @@ func get_runtime_snapshot() -> Dictionary:
 	result[&"targeting_mode"] = &"smart_weighted" if targeting_policy != null else &"nearest"
 	result[&"fire_input_action"] = primary_attack_action
 	result[&"hold_to_fire"] = requires_primary_attack
+	result[&"total_trigger_pulls"] = total_trigger_pulls
+	result[&"total_projectiles_fired"] = total_projectiles_fired
+	result[&"last_target_instance_id"] = last_target_instance_id
 	result[&"targeting_policy"] = (
 		targeting_policy.call(&"get_snapshot") if targeting_policy != null else {}
 	)
@@ -213,6 +224,7 @@ func _resolved_targeting_mode() -> StringName:
 
 
 func _fire_pattern(base_direction: Vector2) -> void:
+	total_trigger_pulls += 1
 	var projectile_count := int(current_balance.get(&"projectiles_per_shot", 1))
 	var spread_radians := deg_to_rad(float(current_balance.get(&"spread_angle_deg", 0.0)))
 	for projectile_index in range(projectile_count):
@@ -248,6 +260,7 @@ func _spawn_projectile(direction: Vector2) -> void:
 		float(current_balance.get(&"pierce_damage_retention", 1.0)),
 		current_balance.get(&"projectile_color", Color.WHITE)
 	)
+	total_projectiles_fired += 1
 
 
 func _on_active_weapon_changed(

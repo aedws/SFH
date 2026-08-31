@@ -69,6 +69,21 @@ const CHECKPOINT_RULES := {
 		&"surfaces": [&"dash"],
 		&"phrases": ["DASH"],
 	},
+	&"primary_attack_feedback": {
+		&"unit": &"action_feedback",
+		&"surfaces": [&"combat"],
+		&"phrases": ["HP", "처치"],
+	},
+	&"room_lock_feedback": {
+		&"unit": &"state_feedback",
+		&"surfaces": [&"combat"],
+		&"phrases": ["봉쇄", "섬멸"],
+	},
+	&"room_clear_feedback": {
+		&"unit": &"state_feedback",
+		&"surfaces": [&"combat"],
+		&"phrases": ["확보", "보상"],
+	},
 	&"loot_feedback": {
 		&"unit": &"resource_feedback",
 		&"surfaces": [&"combat"],

@@ -69,21 +69,56 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 36 TOPICS</span><span>기획 진행도 96% · LOW OBSTRUCTION UI</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 37 TOPICS</span><span>GAMEPLAY E2E · 5 FLOWS</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 36 &middot; IMPROVE 55 &middot; CHANGE 21 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>19 UPDATE BUNDLES &middot; BUILD 40 &middot; IMPROVE 59 &middot; CHANGE 23 &middot; FIX 8</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>18</b><small>UPDATE BUNDLES</small></span>
-      <span><b>36</b><small>BUILD</small></span>
-      <span><b>55</b><small>IMPROVE</small></span>
-      <span><b>21</b><small>CHANGE</small></span>
-      <span><b>6</b><small>FIX</small></span>
+      <span><b>19</b><small>UPDATE BUNDLES</small></span>
+      <span><b>40</b><small>BUILD</small></span>
+      <span><b>59</b><small>IMPROVE</small></span>
+      <span><b>23</b><small>CHANGE</small></span>
+      <span><b>8</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>공개 기획 재대조 · 진행률 69% · 남은 작업 재정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 1</small><b>핵심 게임플레이 인과 E2E · 방 전투 · 10분 세션 · 안개 전환</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 상태 보유 검사를 실제 입력부터 결과까지 이어지는 플레이 검증으로 승격</strong>
+          <ul>
+            <li>실제 좌클릭 입력이 자동 타게팅·발사체·피격·처치·자원 드랍으로 이어지는 인과 체인을 한 번에 검증합니다.</li>
+            <li>방 진입으로 적과 문 봉쇄가 활성화되고, 전멸 뒤 문 개방·보상 생성·획득까지 완료되는 흐름을 검증합니다.</li>
+            <li>중형과 대형 모두 599초에는 탈출이 잠기고 600초에 열리는 10분 페이싱을 독립 세션으로 확인합니다.</li>
+            <li>방·진입 경계·통로·이탈 경계·방의 다섯 안개 상태와 전체 미니맵 독립 표시 계약을 확인합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>오작동 수정</b><span>피격 콜백 중 드랍 생성으로 발생하던 물리 쿼리 오류를 지연 생성으로 제거하고, 방 클리어 안내가 일반 획득 메시지에 즉시 덮이는 문제를 상태 우선순위로 해결했습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">GameplayFlowJudge</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>입력 전후 스냅샷을 비교해 공격·방·페이싱·안개 인과 관계를 독립 판정합니다.</p><a href="quality/e2e-play-session/">E2E 규격 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">기본기 전투 텔레메트리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>실제 대상·트리거·발사체·피격·치명타격·드랍의 누적값을 읽기 전용 계약으로 제공합니다.</p><a href="features/weapons/">무기 전투 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">방 보상 생명주기 스냅샷</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>활성·클리어 방과 생성·회수 보상을 외부 E2E가 내부 필드 없이 판정합니다.</p><a href="features/room-encounters/">방 전투 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">런 페이싱·안개 전환 계약</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>런 시계와 다섯 안개 전환 상태, 비활성 방 차폐·미니맵 독립성을 조회할 수 있습니다.</p><a href="features/fog-of-war/">전장의 안개 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">실물 좌클릭 공격 E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>물리 마우스 이벤트부터 적 제거와 자원 드랍까지 기다리며 원인과 결과를 확인합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">실제 방 봉쇄·보상 E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>생성된 방으로 이동해 자동 시작, 문 봉쇄, 전멸, 보상 획득과 경험치 증가를 확인합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">중·대형 600초 경계 E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>등급별 독립 인스턴스에서 599초 잠금과 600초 개방을 빠른 논리 시계로 재현합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">방·통로 안개 전환 E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>경계를 오갈 때 활성 방 공개와 통로 정면 시야가 순서대로 바뀌는지 검증합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">대형 작전 11분 → 10분</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>중형과 대형의 목표·탈출 신호를 모두 600초로 맞춰 판당 10분 요구를 고정했습니다.</p><a href="features/raid-setup-extraction/">작전 페이싱 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">전투 상태 메시지 우선순위</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>방 시작·클리어·보상 안내가 일반 자원 획득 문구보다 오래 유지됩니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">피격 중 드랍 물리 쿼리 오류</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>적 처치 콜백의 픽업 생성을 물리 프레임 뒤로 지연해 flushing queries 오류를 제거했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">방 이벤트 피드백 즉시 소실</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>중요도와 유지 시간을 적용해 클리어 문구가 같은 프레임 획득 메시지에 덮이지 않습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 2</small><b>공개 기획 재대조 · 진행률 69% · 남은 작업 재정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 기능 보유 여부가 아니라 최신 수용 기준으로 다시 계산</strong>
@@ -100,7 +135,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>자동 전투를 직접 운용으로 · 탈출·경제·랭킹 완결 · 진행률 93%</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 3</small><b>자동 전투를 직접 운용으로 · 탈출·경제·랭킹 완결 · 진행률 93%</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 자동으로 흘러가던 프로토타입을 선택과 손실이 있는 작전으로 전환</strong>
@@ -136,7 +171,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>실제 플레이 E2E · U/E Web 입력 수정 · 화면 의미 정리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 4</small><b>실제 플레이 E2E · U/E Web 입력 수정 · 화면 의미 정리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 기능 보유 검사에서 실제 한 판 입력 흐름 검증으로 확장</strong>
@@ -164,7 +199,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 4</small><b>K 자유 키 설정 · CC0 상업 VFX · 입력 완전 Action화</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 5</small><b>K 자유 키 설정 · CC0 상업 VFX · 입력 완전 Action화</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 고정 조작과 출처 불명 표현에서 재설정 가능한 입력·감사 가능한 VFX로 전환</strong>
@@ -190,7 +225,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 5</small><b>UI 상태 판정 E2E · 21개 전환 · 결과 HUD 누수 차단</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 6</small><b>UI 상태 판정 E2E · 21개 전환 · 결과 HUD 누수 차단</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 화면이 열렸는지에서 플레이 상태 전체가 올바른지로 검증 확장</strong>
@@ -213,7 +248,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 6</small><b>작전 브리핑 UI · 선택 후 투입 확정 · 전술 HUD 재배치</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 7</small><b>작전 브리핑 UI · 선택 후 투입 확정 · 전술 HUD 재배치</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 작은 설정 버튼 모음에서 작전 판단을 위한 양쪽 브리핑 화면으로 전환</strong>
@@ -239,7 +274,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 7</small><b>전투 HUD 시선권 재구성 · 임무 추적기 · 하단 전투 클러스터</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 8</small><b>전투 HUD 시선권 재구성 · 임무 추적기 · 하단 전투 클러스터</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 상단 전체 폭 정보판에서 전장을 비우는 분산형 HUD로 전환</strong>
@@ -262,7 +297,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 8</small><b>타격 피드백 1차 · 피격 섬광·국소 경직·넉백·카메라 충격</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 9</small><b>타격 피드백 1차 · 피격 섬광·국소 경직·넉백·카메라 충격</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 체력 숫자만 줄던 타격에 시각·움직임·화면 반응을 연결</strong>
@@ -289,7 +324,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 9</small><b>참조 기반 모듈 세팅 UI · 적용 수치·4열 카드·추천 정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 10</small><b>참조 기반 모듈 세팅 UI · 적용 수치·4열 카드·추천 정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 장착 결과와 보유 후보를 한 시선 흐름으로 재구성</strong>
@@ -315,7 +350,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 10</small><b>총기 파츠 UI · 무기 도식·실제 소켓·장착 선택 연결</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 11</small><b>총기 파츠 UI · 무기 도식·실제 소켓·장착 선택 연결</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 목록으로만 보이던 파츠를 무기의 장착 위치로 재구성</strong>
@@ -341,7 +376,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 11</small><b>#02e5e1 사이버펑크 테마 · 도트 문자·스캔·점멸 신호</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 12</small><b>#02e5e1 사이버펑크 테마 · 도트 문자·스캔·점멸 신호</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 게임과 위키를 하나의 전술 단말기 언어로 통합</strong>
@@ -368,7 +403,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 12</small><b>플레이어 인식 단위 E2E · 19개 체크포인트·9개 판단 축</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 13</small><b>플레이어 인식 단위 E2E · 19개 체크포인트·9개 판단 축</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 기능이 존재하는가에서 플레이어가 변화를 알아차리는가로 검수 기준 확장</strong>
@@ -399,7 +434,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 13</small><b>티 나는 조작감 · 출발·정지 신호·카메라 리드·대시 궤적</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 14</small><b>티 나는 조작감 · 출발·정지 신호·카메라 리드·대시 궤적</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 수치만 빠르던 이동에 플레이어가 즉시 읽을 수 있는 움직임 대비 추가</strong>
@@ -429,7 +464,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 14</small><b>내부 증강 3장 카드 · 효과 비교 · 실제 숫자 선택 E2E</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 15</small><b>내부 증강 3장 카드 · 효과 비교 · 실제 숫자 선택 E2E</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 가로 텍스트 버튼을 작전 중 성장 결정을 위한 세로 증강 카드로 전환</strong>
@@ -458,7 +493,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 15</small><b>55개 문서 4단계 노드맵 · 모든 페이지 하단 탐색 HUD</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 16</small><b>55개 문서 4단계 노드맵 · 모든 페이지 하단 탐색 HUD</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 긴 좌측 목록을 보완하는 마인드맵형 전체 문서 HUD 추가</strong>
@@ -487,7 +522,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 16</small><b>위키 색상 재배합 · 본문 AAA 대비 · 표면 3단 분리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 17</small><b>위키 색상 재배합 · 본문 AAA 대비 · 표면 3단 분리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · #02e5e1 정체성은 유지하고 읽기 역할을 중립색에 분담</strong>
@@ -513,7 +548,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 17</small><b>반응형 아이콘 전투 HUD · 플레이어 주변 시선권 · Web-safe 도형</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 18</small><b>반응형 아이콘 전투 HUD · 플레이어 주변 시선권 · Web-safe 도형</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 하단 텍스트 덩어리를 해체하고 행동에 가까운 위치로 이동</strong>
@@ -545,7 +580,7 @@ hide:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 18</small><b>저점유 UI 기조 · 상황별 자동 축약 · 전투 화면 20% 예산</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 19</small><b>저점유 UI 기조 · 상황별 자동 축약 · 전투 화면 20% 예산</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 정보는 유지하되 필요할 때만 면적을 사용</strong>
