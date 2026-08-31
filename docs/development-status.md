@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 33 TOPICS</span><span>96% · #02e5e1 CYBER UI</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 34 TOPICS</span><span>96% · 플레이어 인식 E2E</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,14 +76,14 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>11 UPDATE BUNDLES &middot; BUILD 23 &middot; IMPROVE 25 &middot; CHANGE 13 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>12 UPDATE BUNDLES &middot; BUILD 25 &middot; IMPROVE 28 &middot; CHANGE 14 &middot; FIX 4</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>11</b><small>UPDATE BUNDLES</small></span>
-      <span><b>23</b><small>BUILD</small></span>
-      <span><b>25</b><small>IMPROVE</small></span>
-      <span><b>13</b><small>CHANGE</small></span>
-      <span><b>2</b><small>FIX</small></span>
+      <span><b>12</b><small>UPDATE BUNDLES</small></span>
+      <span><b>25</b><small>BUILD</small></span>
+      <span><b>28</b><small>IMPROVE</small></span>
+      <span><b>14</b><small>CHANGE</small></span>
+      <span><b>4</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>공개 기획 재대조 · 진행률 69% · 잔여 개발 순서 확정</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -372,6 +372,37 @@ tags:
         </div>
         <div class="sfh-group"><h3>수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">화면별 스타일 → 공통 전술 단말기 테마</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>산발적인 청록·둥근 패널을 하나의 색·선·문자·상태 신호 규칙으로 바꿨습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 12</small><b>플레이어 인식 E2E 재작업 · 전체 범위 감사와 다음 검수 순서</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>표현 수집</b> · 실제 표시 중인 Label·Button만 읽고 깨진 문자·정보 부족·필수 의미 누락을 판정합니다.</li>
+            <li><b>행동 검증</b> · 실제 Q·1·Space·F 입력 뒤 무기명·위치·에너지·쿨타임·크레딧·탈출 문구 변화를 검사합니다.</li>
+            <li><b>연속 세션</b> · 거점→메뉴→작전→전투→파밍→탈출 성공→거점→재투입→실패→거점의 인식 맥락을 확인합니다.</li>
+            <li><b>남은 범위</b> · 기본기 처치, 방 전투, 전장의 안개, 중·대형 10분 루프, 장비 지속성, 실기 성능과 음향을 후속 우선순위로 공개합니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>검증 결과</b><span>UI 상태 21개와 플레이어 인식 19개 체크포인트·9개 판단 단위가 한 프로세스에서 통과하며 CI 배포 게이트에도 연결됩니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">읽기 전용 인식 판정기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>도메인 상태를 변경하지 않고 화면의 의미·수치·변화만 증거로 수집합니다.</p><a href="../quality/player-perception-audit/">19개 체크포인트·공백 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">실제 입력 인식 계약</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>K·I·U·E·Q·1·Space·F와 성공·실패 복귀를 9개 인식 단위로 검증합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 3</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">기능 중심 목록 재작성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>플레이어가 무엇을 보고 어떤 결과를 이해해야 하는지 기준으로 전체 E2E를 다시 분류했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">거점 무기 교체 피드백</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Q를 누른 즉시 현재 무기명이 거점의 항상 보이는 안내에 갱신됩니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">자동·부분·수동 검수 구분</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>구현 여부를 과대평가하지 않도록 현재 증거와 남은 관찰 항목을 한 표로 통합했습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">완료 판정 기준</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>클래스·노드 존재가 아니라 플레이어가 원인과 결과를 구분할 수 있어야 E2E를 통과합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Q 피드백의 숨은 HUD 의존</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전투 HUD가 꺼진 거점에서도 교체 결과를 확인하도록 표시 위치를 보완했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">재매핑 뒤 대시 키 오안내</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>정적인 SHIFT/SPACE 문구를 키 설정과 충돌하지 않는 DASH·회피 식별자로 변경했습니다.</p></div></details>
         </div>
       </div>
     </details>

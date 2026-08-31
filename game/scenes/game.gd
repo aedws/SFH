@@ -358,6 +358,7 @@ var current_map_config: Resource
 var selected_map_size: String = "small"
 var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CSV
 var preferred_weapon_slot: StringName = &"main"
+var hub_active_weapon_name: String = ""
 var prepared_equipment_state: Dictionary = {}
 var prepared_inventory_state: Dictionary = {}
 var lose_equipped_loadout_on_return: bool = false
@@ -613,12 +614,16 @@ func _refresh_control_hints() -> void:
 			_binding_label(&"toggle_key_mapping"),
 		]
 	)
-	hub_control_hint_label.text = "이동 %s · %s · %s 무기 · %s 게이트 · %s 키 설정" % [
+	var active_weapon_feedback := (
+		" · 현재 %s" % hub_active_weapon_name if not hub_active_weapon_name.is_empty() else ""
+	)
+	hub_control_hint_label.text = "이동 %s · %s · %s 무기 · %s 게이트 · %s 키 설정%s" % [
 		move_keys,
 		menu_keys,
 		_binding_label(&"switch_weapon"),
 		_binding_label(&"interact"),
 		_binding_label(&"toggle_key_mapping"),
+		active_weapon_feedback,
 	]
 
 
@@ -2236,8 +2241,13 @@ func _on_equipment_changed(summary: Dictionary) -> void:
 func _on_active_weapon_changed(slot_id: StringName, weapon_definition: Resource) -> void:
 	preferred_weapon_slot = slot_id
 	if not run_started:
+		hub_active_weapon_name = (
+			String(weapon_definition.get("display_name"))
+			if weapon_definition != null else String(slot_id)
+		)
+		_refresh_control_hints()
 		status_label.text = "거점 무기 전환 · %s · U 장비 · E 모듈·파츠" % (
-		weapon_definition.get("display_name") if weapon_definition != null else String(slot_id)
+			hub_active_weapon_name
 		)
 
 
