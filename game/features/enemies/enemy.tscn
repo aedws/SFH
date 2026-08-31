@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://game/features/enemies/enemy.gd" id="1_enemy"]
 [ext_resource type="Script" path="res://game/features/enemies/components/health_component.gd" id="2_health"]
 [ext_resource type="Script" path="res://game/features/enemies/components/armor_component.gd" id="3_armor"]
 [ext_resource type="Script" path="res://game/features/enemies/components/enemy_status_bars.gd" id="4_bars"]
+[ext_resource type="Script" path="res://game/features/hit_feedback/hit_reaction.gd" id="5_hit_reaction"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
 radius = 16.0
@@ -40,3 +41,10 @@ script = ExtResource("3_armor")
 [node name="StatusBars" type="Node2D" parent="."]
 z_index = 10
 script = ExtResource("4_bars")
+
+[node name="HitReaction" type="Node" parent="."]
+script = ExtResource("5_hit_reaction")
+stagger_seconds = 0.055
+knockback_impulse = 72.0
+knockback_decay = 24.0
+flash_seconds = 0.07

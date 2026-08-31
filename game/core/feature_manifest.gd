@@ -31,6 +31,7 @@ extends Resource
 @export var weapon_balance_enabled: bool = true
 @export var growth_balance_enabled: bool = true
 @export var damage_enabled: bool = true
+@export var hit_feedback_enabled: bool = true
 @export var health_recovery_enabled: bool = true
 @export var experience_enabled: bool = true
 @export var leveling_enabled: bool = true
@@ -129,6 +130,11 @@ extends Resource
 	"res://game/features/health_recovery/configs/default_health_recovery.tres"
 )
 
+@export_category("Hit feedback")
+@export_file("*.tres") var hit_feedback_profile_path: String = (
+	"res://game/features/hit_feedback/configs/default_hit_feedback.tres"
+)
+
 @export_category("Equipment upgrade economy")
 @export_file("*.tres") var equipment_upgrade_policy_path: String = (
 	"res://game/features/equipment_upgrade/configs/default_upgrade_costs.tres"
@@ -192,6 +198,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"growth_balance")
 	if damage_enabled:
 		result.append(&"damage")
+	if hit_feedback_enabled:
+		result.append(&"hit_feedback")
 	if health_recovery_enabled:
 		result.append(&"health_recovery")
 	if experience_enabled:
@@ -380,6 +388,10 @@ func validation_errors() -> PackedStringArray:
 		errors.append("작전 결과 설정 Resource 경로가 유효하지 않습니다.")
 	if game_over_enabled and not damage_enabled:
 		errors.append("game_over 모듈은 damage 모듈이 필요합니다.")
+	if hit_feedback_enabled and not damage_enabled:
+		errors.append("hit_feedback 모듈은 damage 모듈이 필요합니다.")
+	if hit_feedback_enabled and not _resource_exists(hit_feedback_profile_path):
+		errors.append("타격 피드백 프로필 Resource 경로가 유효하지 않습니다.")
 	if key_mapping_enabled and not _resource_exists(key_mapping_catalog_path):
 		errors.append("키 설정 카탈로그 Resource 경로가 유효하지 않습니다.")
 	if key_mapping_enabled and key_mapping_storage_path.is_empty():

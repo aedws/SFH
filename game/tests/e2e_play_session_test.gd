@@ -41,7 +41,7 @@ func _run() -> void:
 		return
 
 	paused = false
-	print("E2E_PLAY_SESSION_OK ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
 	_cleanup_test_profile()
 	quit(0)
 
@@ -297,6 +297,17 @@ func _verify_failure_and_return_session() -> bool:
 	var player = game.get("player")
 	player.call(&"take_damage", 999999.0)
 	await process_frame
+	var hit_feedback = game.get("hit_feedback_director")
+	var feedback_snapshot: Dictionary = (
+		hit_feedback.call(&"get_snapshot") if hit_feedback != null else {}
+	)
+	if (
+		hit_feedback == null
+		or int(feedback_snapshot.get(&"total_player_hits", 0)) < 1
+		or int(feedback_snapshot.get(&"active_impacts", 0)) < 1
+		or float(feedback_snapshot.get(&"trauma", 0.0)) <= 0.0
+	):
+		return _fail("실제 플레이어 피격이 충격 VFX와 카메라 반응으로 연결되지 않았습니다.")
 	var title := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/EndTitle") as Label
 	if not bool(game.get("run_ended")) or title.text != "작전 실패" or not paused:
 		return _fail("플레이어 사망 후 실패 정산이 표시되지 않았습니다.")

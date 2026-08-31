@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="HitFeedbackProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/hit_feedback/hit_feedback_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+impact_lifetime_seconds = 0.18
+impact_radius = 26.0
+impact_ray_count = 8
+maximum_active_impacts = 32
+reference_damage = 10.0
+enemy_hit_trauma = 0.13
+player_hit_trauma = 0.34
+lethal_bonus_trauma = 0.16
+maximum_camera_offset = 6.0
+camera_decay_per_second = 3.8

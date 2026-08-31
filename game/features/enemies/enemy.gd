@@ -2,6 +2,12 @@ class_name EnemyCharacter
 extends CharacterBody2D
 
 signal defeated(reward: int, world_position: Vector2)
+signal damaged(
+	health_damage: float,
+	armor_damage: float,
+	world_position: Vector2,
+	context: Dictionary
+)
 
 @export_range(0.0, 1000.0, 5.0) var move_speed: float = 90.0
 @export_range(1.0, 10000.0, 1.0) var max_health: float = 3.0
@@ -14,10 +20,12 @@ signal defeated(reward: int, world_position: Vector2)
 @export_range(1, 5, 1) var priority_rank: int = 1
 
 @onready var contact_area: Area2D = $ContactArea
+@onready var body_visual: Polygon2D = $Body
 @onready var heading: Polygon2D = $Heading
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var armor_component: ArmorComponent = $ArmorComponent
 @onready var status_bars: EnemyStatusBars = $StatusBars
+@onready var hit_reaction: Node = get_node_or_null("HitReaction")
 
 var target: Node2D
 var navigation_provider: Node
@@ -42,6 +50,8 @@ func _ready() -> void:
 	health_component.configure(max_health)
 	armor_component.configure(max_armor)
 	status_bars.configure(health_component, armor_component)
+	if hit_reaction != null:
+		hit_reaction.configure(self, [body_visual, heading])
 
 
 func configure(
@@ -116,7 +126,11 @@ func _physics_process(delta: float) -> void:
 					+ cached_crowd_steering * float(crowd_config.get("separation_strength"))
 				).normalized()
 			)
-		velocity = direction * move_speed
+		var desired_velocity := direction * move_speed
+		velocity = (
+			hit_reaction.advance(delta, desired_velocity)
+			if hit_reaction != null else desired_velocity
+		)
 		heading.rotation = direction.angle()
 		move_and_slide()
 
@@ -165,12 +179,19 @@ func _update_navigation_path() -> void:
 	repath_cooldown = repath_interval
 
 
-func take_damage(amount: float) -> void:
+func take_damage(amount: float, hit_context: Dictionary = {}) -> void:
 	if health_component.current_value <= 0.0:
 		return
 
+	var armor_before := armor_component.current_value
 	var remaining_damage := armor_component.absorb_damage(amount)
-	health_component.apply_damage(remaining_damage)
+	var armor_damage := maxf(0.0, armor_before - armor_component.current_value)
+	var health_damage := health_component.apply_damage(remaining_damage)
+	var context := hit_context.duplicate(true)
+	context[&"lethal"] = health_component.current_value <= 0.0
+	if hit_reaction != null:
+		hit_reaction.react(context, armor_damage + health_damage)
+	damaged.emit(health_damage, armor_damage, global_position, context)
 
 
 func apply_status(status_id: StringName, duration_seconds: float, stacks: int = 1) -> bool:
@@ -235,6 +256,11 @@ func _try_contact_damage() -> void:
 
 	for body in contact_area.get_overlapping_bodies():
 		if body.has_method(&"take_damage"):
-			body.call(&"take_damage", contact_damage)
+			body.call(&"take_damage", contact_damage, {
+				&"source_kind": &"enemy_contact",
+				&"source_position": global_position,
+				&"impact_direction": global_position.direction_to(body.global_position),
+				&"impact_strength": 0.65,
+			})
 			contact_cooldown = contact_interval
 			return

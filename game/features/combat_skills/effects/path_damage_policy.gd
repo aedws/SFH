@@ -67,7 +67,12 @@ func apply(
 			status_triggers += 1
 			if target.has_method(&"consume_status"):
 				target.call(&"consume_status", trigger_status_id, 1)
-		target.call(&"take_damage", target_damage)
+		target.call(&"take_damage", target_damage, {
+			&"source_kind": &"blink_path",
+			&"source_position": closest,
+			&"impact_direction": start.direction_to(destination),
+			&"impact_strength": clampf(target_damage / 12.0, 0.6, 1.6),
+		})
 		if applied_status_id != &"" and target.has_method(&"apply_status"):
 			target.call(&"apply_status", applied_status_id, applied_status_duration, 1)
 		hit_count += 1

@@ -108,7 +108,14 @@ func _apply_damage_tick() -> void:
 			<= radius * radius
 		):
 			if damage_enabled:
-				target.call(&"take_damage", tick_damage)
+				target.call(&"take_damage", tick_damage, {
+					&"source_kind": &"magnetic_field",
+					&"source_position": player.global_position,
+					&"impact_direction": player.global_position.direction_to(
+						(target as Node2D).global_position
+					),
+					&"impact_strength": clampf(tick_damage / 8.0, 0.3, 0.8),
+				})
 			if applied_status_id != &"" and target.has_method(&"apply_status"):
 				target.call(&"apply_status", applied_status_id, status_duration, 1)
 			total_hits += 1
