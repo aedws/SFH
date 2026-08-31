@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 36 TOPICS</span><span>96% · AUGMENT CARD UI</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 37 TOPICS</span><span>96% · KNOWLEDGE GRAPH</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,13 +76,13 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>14 UPDATE BUNDLES &middot; BUILD 28 &middot; IMPROVE 36 &middot; CHANGE 16 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>15 UPDATE BUNDLES &middot; BUILD 30 &middot; IMPROVE 40 &middot; CHANGE 17 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>14</b><small>UPDATE BUNDLES</small></span>
-      <span><b>28</b><small>BUILD</small></span>
-      <span><b>36</b><small>IMPROVE</small></span>
-      <span><b>16</b><small>CHANGE</small></span>
+      <span><b>15</b><small>UPDATE BUNDLES</small></span>
+      <span><b>30</b><small>BUILD</small></span>
+      <span><b>40</b><small>IMPROVE</small></span>
+      <span><b>17</b><small>CHANGE</small></span>
       <span><b>6</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -464,6 +464,35 @@ tags:
         </div>
         <div class="sfh-group"><h3>수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">임시 버프 목록의 화면 역할</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>가로 알림 목록에서 런 빌드 결정을 위한 집중 선택 화면으로 전환했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 15</small><b>위키 지식 그래프 · 55문서 L1-L4 전역 HUD</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 탐색 변화</strong>
+          <ol>
+            <li><b>전수 분류</b> · MkDocs의 55개 문서를 7개 큰 영역과 17개 소그룹에 한 번씩 배치했습니다.</li>
+            <li><b>전역 설치</b> · Material 즉시 탐색 이벤트마다 현재 본문 최하단에 동일한 노드 HUD를 한 번만 삽입합니다.</li>
+            <li><b>현재 경로</b> · URL과 route를 대조해 현재 L2·L3·L4를 선택하고 세부 문서에 `YOU`를 표시합니다.</li>
+            <li><b>직접 탐색</b> · 분류 선택·전체 노드 검색·클릭·터치·Tab·방향키를 같은 인터페이스에서 지원합니다.</li>
+            <li><b>구조 게이트</b> · Markdown·내비게이션·JSON의 55개 완전성과 route 규칙을 PR·Pages 전에 검사합니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>구조 분리</b><span>JSON은 정보 구조, JavaScript는 탐색 상태, CSS는 사이버펑크 HUD 표현만 소유해 각각 독립 교체할 수 있습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">전역 Knowledge Graph Renderer</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>55개 문서를 대·중·소·세부 노드와 현재 경로로 조립합니다.</p><a href="../getting-started/search-wiki/">사용·편집 방법 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">분류 완전성 검증기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>누락·중복·없는 파일·잘못된 route·스크립트 연결을 자동 검사합니다.</p><a href="../architecture/module-audit/">모듈 감사 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">4단계 경로 인지</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>현재 시스템이 전체 프로젝트에서 어디에 속하는지 하단에서 바로 읽습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">분류·요약 통합 검색</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>55개 노드의 문서명과 소속·요약을 동시에 필터링합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">접근 가능한 노드 이동</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>키보드 포커스·방향 이동·현재 페이지 의미를 명시합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">4·2·1열 반응형 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>데스크톱부터 모바일까지 노드 계층을 화면 폭에 맞춰 재배치합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">위키 탐색 모델</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>좌측 선형 내비게이션과 상단 검색에 관계 중심 하단 그래프를 추가했습니다.</p></div></details>
         </div>
       </div>
     </details>
