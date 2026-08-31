@@ -606,9 +606,9 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 	var hub_hud := hub_game.get_node("UI/StartHubHUD") as Control
 	var setup_panel := hub_game.get_node("UI/RunSetupOverlay/Center/Panel") as Control
 	var setup_close := hub_game.get_node("UI/RunSetupOverlay/SetupCloseButton") as Button
-	var small_card := hub_game.get_node(
-		"UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons/SmallMapButton"
-	) as Button
+	var small_card := hub_game.get("small_map_button") as Button
+	var operation_launch := hub_game.get("operation_launch_button") as Button
+	var setup_snapshot: Dictionary = hub_game.get("operation_setup_presenter").call(&"get_snapshot")
 	var failure_message := ""
 	var density_failure := _hub_loadout_ui_density_failure(hub_inventory, hub_workbench)
 	if hub == null or hub_player == null:
@@ -639,15 +639,16 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 		elif setup_overlay.visible or not hub_hud.visible:
 			failure_message = "시작 시 작전 UI가 닫히거나 거점 안내 HUD가 표시되지 않았습니다."
 		elif (
-			setup_panel.custom_minimum_size.x < 900.0
-			or setup_panel.custom_minimum_size.x > 1020.0
-			or setup_panel.custom_minimum_size.y < 540.0
-			or setup_panel.custom_minimum_size.y > 620.0
-			or small_card.custom_minimum_size.x < 260.0
-			or small_card.custom_minimum_size.x > 300.0
+			setup_panel.custom_minimum_size.x < 1160.0
+			or setup_panel.custom_minimum_size.x > 1200.0
+			or setup_panel.custom_minimum_size.y < 640.0
+			or setup_panel.custom_minimum_size.y > 680.0
+			or small_card.custom_minimum_size.y < 80.0
+			or operation_launch == null
+			or not bool(setup_snapshot.get(&"layout_fits", false))
 			or not setup_close.visible
 		):
-			failure_message = "압축된 세션 구성 패널·전장 카드·ESC 동선이 적용되지 않았습니다."
+			failure_message = "전술 브리핑 패널·전장 규모 선택·명시적 투입·ESC 동선이 적용되지 않았습니다."
 		elif not density_failure.is_empty():
 			failure_message = density_failure
 		else:
@@ -2065,15 +2066,9 @@ func _verify_balance_mode_selector() -> bool:
 	var selector_game := game_scene.instantiate()
 	root.add_child(selector_game)
 	await process_frame
-	var locked_button := selector_game.get_node(
-		"UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/Buttons/LockedBalanceButton"
-	) as Button
-	var live_button := selector_game.get_node(
-		"UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/Buttons/LiveBalanceButton"
-	) as Button
-	var description := selector_game.get_node(
-		"UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/BalanceModeDescription"
-	) as Label
+	var locked_button := selector_game.get("locked_balance_button") as Button
+	var live_button := selector_game.get("live_balance_button") as Button
+	var description := selector_game.get("balance_mode_description") as Label
 	var failure_message := ""
 	if not locked_button.button_pressed or live_button.button_pressed:
 		failure_message = "작전 선택 화면의 기본 밸런스 모드가 확정 CSV가 아닙니다."
@@ -2172,7 +2167,7 @@ func _verify_optional_equipment_module(game_scene: PackedScene) -> bool:
 	var failure_message := ""
 	if equipment_free_game.get("equipment_system") != null:
 		failure_message = "비활성화했지만 장비 모듈이 설치됐습니다."
-	elif equipment_free_game.get_node("UI/HUDMargin/Panel/Margin/Content/EquipmentLabel").visible:
+	elif (equipment_free_game.get("equipment_label") as Label).visible:
 		failure_message = "비활성화했지만 장비 HUD가 표시됩니다."
 	elif not is_equal_approx(float(equipment_free_game.get("player").get("max_health")), 100.0):
 		failure_message = "장비 비활성화 시 플레이어 기본 체력이 유지되지 않았습니다."
@@ -2318,24 +2313,28 @@ func _verify_optional_meta_operation_modules(game_scene: PackedScene) -> bool:
 
 
 func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
-	var button_names := {
-		"small": "SmallMapButton",
-		"medium": "MediumMapButton",
-		"large": "LargeMapButton",
+	var button_properties := {
+		"small": "small_map_button",
+		"medium": "medium_map_button",
+		"large": "large_map_button",
 	}
 	for tier_id in MAP_TIER_IDS:
 		var tier_game := game_scene.instantiate()
 		root.add_child(tier_game)
 		await process_frame
-		var button := tier_game.get_node(
-			"UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons/%s" % button_names[tier_id]
-		) as Button
+		var button := tier_game.get(button_properties[tier_id]) as Button
+		var launch := tier_game.get("operation_launch_button") as Button
 		var failure_message := ""
 		if button.disabled:
 			failure_message = "%s 작전 버튼이 비활성화됐습니다: %s" % [tier_id, button.text]
 		else:
 			button.pressed.emit()
 			await process_frame
+			if launch == null or launch.disabled:
+				failure_message = "%s 작전 투입 확정 버튼이 비활성화됐습니다." % tier_id
+			else:
+				launch.pressed.emit()
+				await process_frame
 			var generator = tier_game.get("map_generator")
 			var minimap = tier_game.get("minimap")
 			var fog = tier_game.get("fog_of_war")
@@ -2742,9 +2741,7 @@ func _verify_optional_map_module(game_scene: PackedScene) -> bool:
 
 	var fallback_player = fallback_game.get("player")
 	var fallback_spawner = fallback_game.get("enemy_spawner")
-	var map_label := fallback_game.get_node(
-		"UI/HUDMargin/Panel/Margin/Content/TopRow/MapLabel"
-	) as Label
+	var map_label := fallback_game.get("map_label") as Label
 	var failure_message := ""
 	if fallback_game.get("map_generator") != null:
 		failure_message = "비활성화했지만 맵 생성기가 설치됐습니다."
@@ -2929,13 +2926,9 @@ func _process(_delta: float) -> bool:
 			return _fail("소형 맵에 방해물이 생성되지 않았습니다.")
 		if not map_generator.call(&"is_walkable_world_position", player.global_position):
 			return _fail("플레이어가 걸을 수 없는 위치에 생성됐습니다.")
-		var health_label := game_instance.get_node(
-			"UI/HUDMargin/Panel/Margin/Content/HealthRow/HealthLabel"
-		) as Label
-		var health_bar := game_instance.get_node(
-			"UI/HUDMargin/Panel/Margin/Content/HealthRow/HealthBar"
-		) as ProgressBar
-		if "%" not in health_label.text or health_bar.custom_minimum_size.y < 18.0:
+		var health_label := game_instance.get("health_label") as Label
+		var health_bar := game_instance.get("health_bar") as ProgressBar
+		if "%" not in health_label.text or health_bar.custom_minimum_size.y < 16.0:
 			return _fail("플레이어 체력 HUD의 수치 또는 가독성 스타일이 적용되지 않았습니다.")
 		var tactical_minimap := game_instance.get("minimap") as Control
 		var skill_hud := game_instance.get("combat_skill_hud") as Control
@@ -2975,9 +2968,7 @@ func _process(_delta: float) -> bool:
 			or "AVAILABLE" not in energy_state.text
 		):
 			return _fail("에너지 HUD가 굵은 게이지와 현재 가용 상태를 표시하지 않습니다.")
-		var equipment_label := game_instance.get_node(
-			"UI/HUDMargin/Panel/Margin/Content/EquipmentLabel"
-		) as Label
+		var equipment_label := game_instance.get("equipment_label") as Label
 		if "스킬 2/3 활성" not in equipment_label.text or "방어 3" not in equipment_label.text:
 			return _fail("장비 HUD에 무기·스킬·방어구 상태가 표시되지 않았습니다.")
 		var balance = game_instance.get("weapon_balance_service")
@@ -2998,9 +2989,7 @@ func _process(_delta: float) -> bool:
 	if frame_count == 121:
 		var weapon = game_instance.get("auto_weapon")
 		var snapshot: Dictionary = weapon.call(&"get_runtime_snapshot")
-		var runtime_label := game_instance.get_node(
-			"UI/HUDMargin/Panel/Margin/Content/WeaponRuntimeLabel"
-		) as Label
+		var runtime_label := game_instance.get("weapon_runtime_label") as Label
 		if snapshot.get(&"active_weapon_id", &"") != &"service_pistol":
 			return _fail("무기 교체가 자동 공격 런타임에 반영되지 않았습니다.")
 		if "고위력 관통" not in runtime_label.text or "확정 CSV" not in runtime_label.text:
@@ -3048,7 +3037,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK operation_briefing selected_then_launch tactical_hud key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

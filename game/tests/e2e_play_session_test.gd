@@ -41,7 +41,7 @@ func _run() -> void:
 		return
 
 	paused = false
-	print("E2E_PLAY_SESSION_OK ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
+	print("E2E_PLAY_SESSION_OK ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
 	_cleanup_test_profile()
 	quit(0)
 
@@ -144,21 +144,34 @@ func _verify_hub_input_session() -> bool:
 		return _fail("게이트의 실제 F 입력이 겹침 없이 작전 설정을 열지 못했습니다.")
 	if not _judge_ui_state(&"run_setup", "작전 설정"):
 		return false
+	var setup_snapshot: Dictionary = game.get("operation_setup_presenter").call(&"get_snapshot")
+	if (
+		not bool(setup_snapshot.get(&"installed", false))
+		or not bool(setup_snapshot.get(&"launch_visible", false))
+		or not bool(setup_snapshot.get(&"layout_fits", false))
+		or "폐허 도시" not in String(setup_snapshot.get(&"mission_title", ""))
+		or "소모품" not in String(setup_snapshot.get(&"selection_summary", ""))
+	):
+		return _fail("작전 진입 화면이 브리핑·계약·명시적 투입 구조를 제공하지 않습니다.")
 	return true
 
 
 func _verify_operation_session() -> bool:
 	var setup := game.get_node("UI/RunSetupOverlay") as Control
-	var small_button := game.get_node(
-		"UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons/SmallMapButton"
-	) as Button
+	var small_button := game.get("small_map_button") as Button
+	var launch_button := game.get("operation_launch_button") as Button
 	if small_button == null or small_button.disabled:
 		return _fail("소형 작전 카드가 실제 선택 가능한 상태가 아닙니다.")
 	small_button.pressed.emit()
 	await process_frame
+	if not setup.visible or not paused or bool(game.get("run_started")):
+		return _fail("작전 규모 선택이 확인 없이 즉시 전투를 시작했습니다.")
+	if launch_button == null or not launch_button.visible or launch_button.disabled:
+		return _fail("선택 계약을 확정하는 작전 투입 버튼이 준비되지 않았습니다.")
+	launch_button.pressed.emit()
 	await process_frame
 	if setup.visible or paused or not bool(game.get("run_started")):
-		return _fail("소형 작전 카드 선택 후 전투 세션으로 전환되지 않았습니다.")
+		return _fail("작전 투입 확정 후 전투 세션으로 전환되지 않았습니다.")
 
 	var player = game.get("player") as Node2D
 	var minimap = game.get("minimap") as Control
@@ -169,6 +182,16 @@ func _verify_operation_session() -> bool:
 		return _fail("전투 HUD·미니맵·대시 UI가 함께 설치되지 않았습니다.")
 	if not minimap.visible or not skills.visible or not dash.visible:
 		return _fail("전투 HUD의 필수 자원·쿨타임 정보가 보이지 않습니다.")
+	var hud_snapshot: Dictionary = game.get("combat_hud_presenter").call(
+		&"get_snapshot", game.get_node("UI/HUDMargin")
+	)
+	var hud_size: Vector2 = hud_snapshot.get(&"size", Vector2.ZERO)
+	if (
+		not bool(hud_snapshot.get(&"installed", false))
+		or not bool(hud_snapshot.get(&"details_side_by_side", false))
+		or hud_size.y > 150.0
+	):
+		return _fail("전투 HUD가 압축된 전술 정보 계층으로 구성되지 않았습니다: %s" % hud_snapshot)
 	if (
 		"기본기" not in control_hint.text
 		or "스킬" not in control_hint.text
