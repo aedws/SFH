@@ -167,10 +167,10 @@
     },
     {
       "query": "사이버펑크 UI 테마",
-      "label": "#02e5e1 사이버펑크 테마",
-      "description": "게임·위키 공통 도트 폰트, 각진 HUD, 스캔라인·노이즈·점멸 상태",
+      "label": "#02e5e1 테마·가독성 배합",
+      "description": "도트 HUD, 4단 문자·3단 패널과 22개 자동 색상 대비 계약",
       "category": "UI",
-      "priority": 89
+      "priority": 94
     }
   ],
   "planner_groups": [
