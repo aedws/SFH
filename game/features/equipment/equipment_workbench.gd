@@ -111,16 +111,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		close_panel()
 		get_viewport().set_input_as_handled()
 		return
+	var requested_tab := -1
 	if event.is_action_pressed(&"toggle_equipment") and not event.is_echo():
-		var requested_tab := _tab_for_key_event(event)
-		if requested_tab >= 0:
-			if visible and tabs.current_tab != requested_tab:
-				tabs.current_tab = requested_tab
-				get_viewport().set_input_as_handled()
-				return
-			tabs.current_tab = requested_tab
-		toggle_panel()
+		requested_tab = 0
+	elif event.is_action_pressed(&"toggle_modification") and not event.is_echo():
+		requested_tab = 1
+	if requested_tab < 0:
+		return
+	if visible and tabs.current_tab != requested_tab:
+		tabs.current_tab = requested_tab
 		get_viewport().set_input_as_handled()
+		return
+	tabs.current_tab = requested_tab
+	toggle_panel()
+	get_viewport().set_input_as_handled()
 
 
 func toggle_panel() -> void:
@@ -189,18 +193,6 @@ func _on_tab_changed(tab: int) -> void:
 	_refresh()
 
 
-func _tab_for_key_event(event: InputEvent) -> int:
-	if not event is InputEventKey:
-		return -1
-	var key_event := event as InputEventKey
-	var pressed_key := key_event.physical_keycode if key_event.physical_keycode != 0 else key_event.keycode
-	if pressed_key == KEY_U:
-		return 0
-	if pressed_key == KEY_E:
-		return 1
-	return -1
-
-
 func _on_data_changed(_snapshot: Dictionary) -> void:
 	_refresh()
 
@@ -251,7 +243,7 @@ func _refresh_slot_rail() -> void:
 			equipped_count += 1
 			installed_module_count += state.installed_modules.size()
 	var summary: Dictionary = equipment_provider.call(&"get_summary")
-	character_summary.text = "활성 스킬 %d/%d\n작전 장비 %d슬롯 · 외부 방어 Lv.%d" % [
+	character_summary.text = "장비 태그 호환 %d/%d\n작전 장비 %d슬롯 · 외부 방어 Lv.%d" % [
 		int(summary.get(&"active_skill_count", 0)),
 		int(summary.get(&"equipped_skill_count", 0)),
 		equipped_count,
