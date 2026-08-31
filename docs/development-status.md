@@ -17,17 +17,17 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 23 TOPICS</span><span>NOTION AUDIT</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 24 TOPICS</span><span>NOTION IMPLEMENTATION</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>PLANNING PROGRESS · 2026-08-31</small><strong>현재 기획 진행도</strong></span>
-    <b>69%</b>
+    <b>93%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="69"><i style="width: 69%"></i></div>
-  <p>2026-08-31 공개 기획 원문과 현재 저장소를 대조하고, 구현 근거가 겹치지 않는 다섯 묶음으로 다시 계산했습니다.</p>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="93"><i style="width: 93%"></i></div>
+  <p>2026-08-31 공개 기획 원문의 우선순위 10개를 구현·검증한 뒤, 남은 사용자 UI·온라인 서비스·콘텐츠 범위를 제외해 계산했습니다.</p>
 </div>
 
 권위 있는 기획 원본은 로그인 없이 열리는 [게시된 SFH 프로젝트 노션](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-08-31 공개 페이지의 실제 렌더링 본문을 읽어 최신 조작·타게팅·탈출·경제 요구를 확인했습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 요구사항으로 다루되, 플레이의 핵심인 입력·전투는 ×3, 타게팅과 탈출은 ×2로 더 크게 반영했습니다. 마일스톤 체크박스는 완료 증거로 사용하지 않고 실제 코드·데이터·자동 검증만 판정 근거로 삼습니다.
@@ -35,12 +35,12 @@ tags:
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
 | 기술 기반 | ×1 | 100% | Godot 4.x·GDScript·CharacterBody2D·Area2D·TileMapLayer·Camera2D와 기능별 Node/Scene 경계 구현 |
-| 입력·전투 자원 | ×3 | 75% | WASD·Space/Shift 회피·Q·F·공용 에너지·충전·쿨타임 구현. 좌클릭 홀드 기본기와 1~9 슬롯·키 재설정은 미구현 |
-| 스마트 자동 타게팅 | ×2 | 52% | 최근접 폴백과 거리·체력 비율·등급·밀집 가중 선택 구현. 스킬별 최근접/최대 HP·엘리트/밀집 중심/이동 벡터 정책 분리는 미구현 |
-| 탈출·정산 | ×2 | 70% | F 비콘·원형 방어전·성공/사망 정산 구현. 구역 이탈은 일시정지가 아니라 초기화되며 장착 로드아웃 사망 소실은 불완전 |
-| 메타·경제 | ×1 | 53% | 투자·지역·난이도, 프로필·상점·창고·제작·태그·페널티·랭킹 골격 구현. 보스/등급 드랍·무료 진입·영구 상점 등록·3종 순위 등은 미구현 |
+| 입력·전투 자원 | ×3 | 92% | WASD·회피·Q·F·좌클릭 홀드·1~9 슬롯과 런타임 키 재설정 구현. 사용자 설정 화면·바인딩 영구 저장과 4~9 콘텐츠가 남음 |
+| 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
+| 탈출·정산 | ×2 | 94% | F 방어전, 구역 이탈 일시정지·재개, 성공 영구 등록, 사망 런 획득물·장착 로드아웃 소실 구현. 전리품 종류 확장이 남음 |
+| 메타·경제 | ×1 | 85% | 보스 보장·고등급·지역 드랍·무료 진입·영구 상점·태그 변형·상태 연계·요구 페널티·3종 로컬 랭킹 구현. 구매품 I/U 연결과 서버 랭킹이 남음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`입니다. 현재 결과는 `(100×1 + 75×3 + 52×2 + 70×2 + 53×1) ÷ 9 ≈ 69%`입니다. 같은 기능을 코어 루프와 세부 시스템 양쪽에 중복 가산하지 않았습니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`입니다. 현재 결과는 `(100×1 + 92×3 + 95×2 + 94×2 + 85×1) ÷ 9 ≈ 93%`입니다. 같은 기능을 코어 루프와 세부 시스템 양쪽에 중복 가산하지 않았습니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -48,45 +48,42 @@ tags:
 
 | Phase | 판정 | 저장소 대조 |
 |---|---|---|
-| Phase 1 · 이동·좌클릭·1~9·타게팅 | 부분 완료 | 이동·회피·3스킬·가중 대상 선택은 구현. 좌클릭 홀드, 4~9 슬롯, 밀집 중심 정책이 없음 |
+| Phase 1 · 이동·좌클릭·1~9·타게팅 | 기능 완료·UI 후속 | 좌클릭 홀드, 1~9 입력, 런타임 재설정, 최근접·HP·엘리트·밀집·이동 벡터 정책 구현. 키 설정 화면·저장만 남음 |
 | Phase 2 · Q 교체·AP·쿨타임 | 완료 | 주·보조 교체와 무기 특색, 에너지·충전·쿨타임 및 HUD가 연결됨 |
-| Phase 3 · 탈출·정산 | 부분 완료 | 방어전과 정산은 동작하지만 구역 이탈 시 남은 시간 유지·재개가 아님 |
-| Phase 4 · 태그·투자·해금 상점 | 부분 완료 | 각 기반 모듈은 있으나 런타임 스킬 슬롯 결합, 전체 해금 상점·무료 진입이 미완성 |
-| Phase 5 · 페널티·랭킹 I/O | 부분 완료 | 선택·저장 골격은 있으나 기획 페널티 유형과 3개 종목별 순위가 미완성 |
+| Phase 3 · 탈출·정산 | 완료 | 구역 이탈 일시정지·재개, 성공 등록·정산과 사망 로드아웃 소실까지 자동 검증 |
+| Phase 4 · 태그·투자·해금 상점 | 기능 완료·UI 후속 | 태그 발동 제한·등급 변형·투자 드랍·무료 진입·상점 등록 구현. 구매품 I/U 생성 화면이 남음 |
+| Phase 5 · 페널티·랭킹 I/O | 로컬 완료·온라인 후속 | 회복·시야·탈출 페널티와 가치·시간·처치 로컬 랭킹 구현. 서버 검증·신원·부정 방지가 남음 |
 
-### 2026-08-31 공개 기획 재대조
+### 2026-08-31 구현 후 재대조
 
-- 입력 규격은 `WASD`, `Space`, `Q`, `좌클릭 홀드`, 숫자 `1~9`, `F`와 키 재설정입니다. 현재 좌클릭 홀드와 4~9 슬롯·재설정이 없습니다.
-- 단일 스킬 기본은 최근접, 선택 변형은 최대 HP/엘리트, 범위 스킬은 최고 밀집 **지점**, 이동 스킬은 현재 입력 벡터입니다. 현재는 하나의 가중 대상 선택 정책입니다.
-- 탈출 구역을 벗어나면 카운트다운이 일시정지되고 재진입 시 남은 시간부터 이어져야 합니다. 현재 구현은 방어전을 취소하고 시간을 초기화합니다.
-- 성공 시 전리품을 영구 해금·재화화하고, 사망 시 런 획득물과 장착 로드아웃을 잃어야 합니다. 전리품 정산은 있으나 장착 로드아웃 소실은 완결되지 않았습니다.
-- 투자 비용에 따른 보스 확정·고등급 드랍 가중치, 지역별 드랍표, 무료 기본 무장·맵이 요구됩니다. 현재는 비용·적·보상 배율과 지역 해금 중심입니다.
-- 페널티는 회복 감소·시야 제한·탈출 지연 등을 포함하고, 랭킹은 가치·시간·처치 세 종목을 동일 조건에서 각각 집계해야 합니다.
+- **입력:** 항상 자동 발사 → 좌클릭 홀드, 1~3 고정 → 1~9 슬롯·런타임 재설정 계약으로 변경했습니다.
+- **타게팅:** 하나의 가중 공식 → 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상 정책으로 분리했습니다.
+- **탈출:** 범위 이탈 시 취소·초기화 → 남은 시간 일시정지·재진입 재개로 변경했습니다.
+- **정산:** 런 획득물 손실 중심 → 사망 시 착용 로드아웃까지 소실하고 성공 도면은 영구 상점 등록으로 연결했습니다.
+- **투자:** 비용·배율 표시 중심 → 보스 확정·고등급 가중치·지역 드랍표·파산 방지 무료 기본 계약으로 연결했습니다.
+- **빌드:** 장비 태그 데이터 중심 → 실제 스킬 발동 제한·등급별 메커니즘 변경과 `shock`→점멸→`ionized` 상태 연계로 연결했습니다.
+- **리스크·경쟁:** 적 강화·종합 점수 중심 → 회복·시야·탈출 페널티와 회수 가치·최단 시간·처치 수 세 랭킹으로 분리했습니다.
 
 ### 앞으로 해야 할 작업
 
 | 우선순위 | 작업 | 현재 차이 | 완료 조건 |
 |---:|---|---|---|
-| 1 | 좌클릭 홀드 기본기·1~9 스킬 슬롯 | 현재 자동 공격·1~3 고정 | 공격 속도에 맞춘 홀드 발동, 9개 슬롯과 키 재설정 |
-| 2 | 스킬 유형별 스마트 타게팅 | 단일 가중 대상 정책 | 최근접·최대 HP/엘리트·밀집 중심·입력 벡터를 데이터로 선택 |
-| 3 | 탈출 이탈 일시정지·재개 | 이탈 시 취소·초기화 | 원 밖에서는 타이머 정지, 재진입 시 잔여 시간 유지 |
-| 4 | 사망 로드아웃 소실·영구 해금 상점 | 준비 장비가 세션 사이 유지 | 성공 전리품 등록, 사망 시 장착품 포함 런 자산 소실 |
-| 5 | 투자·지역 타겟 파밍 완결 | 보상 배율 중심 | 보스 확정, 고등급 가중치, 지역별 장비·스킬 드랍표 |
-| 6 | 파산 방지 기본 진입 | 최소 계약 비용 존재 | 재화 0에서도 무료 기본 무장·기본 맵으로 출격 |
-| 7 | 무기 태그 런타임 결합·등급 변형 | 데이터 계약과 전투 슬롯 분리 | 태그가 실제 장착을 제한하고 등급이 스킬 메커니즘을 변경 |
-| 8 | 페널티 요구 유형 확장 | 적 스탯 중심 3종 | 회복 감소·시야 제한·탈출 지연을 독립 Resource로 합성 |
-| 9 | 조건부 랭킹 3종 분리 | 단일 종합 점수 | 동일 맵·최소 페널티에서 가치·최단 시간·처치 순위를 별도 저장 |
-| 10 | 상태 부여→트리거 연계 | 연계 데이터 없음 | 상태 태그와 후속 스킬 트리거를 조합 가능한 계약으로 제공 |
+| 1 | 사용자용 키 설정 화면·영구 저장 | 런타임 재설정 API와 1~9 입력은 구현 | 거점 설정 UI에서 변경·초기화하고 재실행 뒤 유지 |
+| 2 | 상점 구매품→I/U 영구 인벤토리 | 도면 등록·견적·구매·프로필 저장 구현 | 구매 직후 장비·스킬 아이템이 가방/장비 편집에 생성 |
+| 3 | 온라인 조건부 랭킹 | 3종 로컬 저장·이전 데이터 이관 구현 | 서버 신원·비동기 제출·검증·부정 방지 제공자 교체 |
+| 4 | 4~9 스킬 콘텐츠 | 슬롯과 입력 계약만 확보 | 전투 태그·타게팅·자원·상태 연계를 사용하는 6개 정의 추가 |
+| 5 | 고유 보스 콘텐츠 | 투자 조건의 강화 보스 개체 구현 | 지역별 Scene·AI·고유 도면·전투 텔레그래프 추가 |
+| 6 | 밸런스·실기 최적화 | 자동 성능 예산 통과 | Google Sheets 실시간 튜닝과 저사양 GPU·브라우저 실기 인증 |
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>1 UPDATE BUNDLES &middot; BUILD 0 &middot; IMPROVE 0 &middot; CHANGE 1 &middot; FIX 0</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>2 UPDATE BUNDLES &middot; BUILD 7 &middot; IMPROVE 3 &middot; CHANGE 5 &middot; FIX 0</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>1</b><small>UPDATE BUNDLE</small></span>
-      <span><b>0</b><small>BUILD</small></span>
-      <span><b>0</b><small>IMPROVE</small></span>
-      <span><b>1</b><small>CHANGE</small></span>
+      <span><b>2</b><small>UPDATE BUNDLES</small></span>
+      <span><b>7</b><small>BUILD</small></span>
+      <span><b>3</b><small>IMPROVE</small></span>
+      <span><b>5</b><small>CHANGE</small></span>
       <span><b>0</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -103,6 +100,42 @@ tags:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">기획 진행률과 남은 작업 근거 갱신</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>중복 가산을 제거하고 최신 조작·타게팅·탈출 기준을 반영해 진행률을 69%로 재산정했습니다.</p><a href="#_1">산정표 보기 →</a></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 2</small><b>우선순위 10개 구현 · 전투 운용·탈출·경제·랭킹 연결 · 93%</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>입력</b> · 자동 기본기에서 좌클릭 홀드로, 1~3 고정에서 1~9 슬롯·런타임 키 교체로 확장했습니다.</li>
+            <li><b>타게팅</b> · 단일 가중 공식에서 최근접·HP·엘리트·밀집 중심·이동 벡터 정책으로 분리했습니다.</li>
+            <li><b>탈출·손실</b> · 이탈 초기화를 남은 시간 일시정지·재개로 바꾸고 사망 장착품 소실을 연결했습니다.</li>
+            <li><b>투자·해금</b> · 비용을 보스·고등급·지역 드랍과 연결하고 무료 복구 계약·영구 상점 등록을 추가했습니다.</li>
+            <li><b>빌드·리스크</b> · 태그·등급·상태 연계, 회복·시야·탈출 페널티와 3개 조건부 랭킹을 실제 런타임에 연결했습니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>검증</b><span>기능별 Resource·서비스 경계를 유지하고 선택 비활성화·스모크·대형 작전 60 FPS CPU 예산을 통과했습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 7</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">직접 공격·9슬롯 입력</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>좌클릭 홀드, 1~9 Action과 런타임 재설정 계약을 구현했습니다.</p><a href="../features/combat-skills/">스킬 계약 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">정책형 자동 타게팅</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>단일·범위·이동·자기 스킬의 대상 해석을 독립 정책으로 제공합니다.</p><a href="../features/smart-targeting/">타게팅 정책 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">탈출 시간 보존·실패 장비 소실</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>구역 이탈은 시간을 보존하고 사망 정산은 장착 로드아웃까지 잃습니다.</p><a href="../features/extraction-defense-results/">탈출 정산 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">투자 기반 파밍</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>보스 보장·고등급 가중치·지역 드랍표·무료 기본 계약을 데이터로 제공합니다.</p><a href="../features/operation-contracts/">작전 계약 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">도면 영구 상점 등록</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>성공 반출 도면이 구매 가능한 장비·스킬 항목으로 영구 저장됩니다.</p><a href="../features/hub-economy/">거점 경제 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">태그·등급·상태 트리거</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Q 활성 무기에 따라 스킬 호환·메커니즘이 바뀌고 감전 연계가 발동합니다.</p><a href="../features/weapons/">무기 규칙 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">페널티·3종 랭킹</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>회복·시야·탈출 위험과 가치·시간·처치 사다리를 독립 저장합니다.</p><a href="../features/penalty-ranking/">리스크·랭킹 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 3</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">작전 조건 사전 가시화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>무료 지원·보스·고등급·회복 배율을 출격 전 UI에 표시합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">Q 교체 호환 피드백</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>활성 무기 변경과 동시에 스킬 태그 불일치를 HUD에 반영합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">결과 3종 순위</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>정산 화면에서 가치·시간·처치 순위를 한 번에 확인합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">자동 발사 → 좌클릭 홀드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>무조준은 유지하고 공격 의사만 플레이어 입력으로 옮겼습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">가중 대상 → 행동별 정책</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>스킬 성격마다 대상 선택 기준을 독립 지정합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">탈출 초기화 → 일시정지</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>방어 진행도를 악용하거나 잃지 않도록 남은 시간을 보존합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">종합 랭킹 → 목적별 랭킹</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>파밍·스피드런·처치 플레이를 서로 다른 순위로 비교합니다.</p></div></details>
         </div>
       </div>
     </details>

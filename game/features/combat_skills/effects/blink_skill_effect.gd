@@ -15,12 +15,14 @@ const ELECTRIC_EFFECT_SCRIPT := preload(
 func activate(player: Node2D, context: Dictionary) -> Dictionary:
 	if not is_instance_valid(player) or not player.has_method(&"get_facing_direction"):
 		return {&"success": false, &"status": "점멸 방향을 확인할 수 없습니다."}
-	var direction: Vector2 = player.call(&"get_facing_direction")
+	var direction: Vector2 = context.get(&"direction", player.call(&"get_facing_direction"))
 	if direction == Vector2.ZERO:
 		direction = Vector2.RIGHT
 	direction = direction.normalized()
 	var start := player.global_position
-	var destination := start + direction * distance
+	var mechanic_override: Dictionary = context.get(&"mechanic_override", {})
+	var resolved_distance := distance * float(mechanic_override.get(&"distance_multiplier", 1.0))
+	var destination := start + direction * resolved_distance
 	var world := player.get_world_2d()
 	if world != null:
 		var query := PhysicsRayQueryParameters2D.create(start, destination, obstacle_collision_mask)
@@ -47,7 +49,8 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 			context.get(&"target_container"),
 			start,
 			destination,
-			bool(context.get(&"damage_enabled", true))
+			bool(context.get(&"damage_enabled", true)),
+			mechanic_override
 		)
 	player.global_position = destination
 	_spawn_electric_trail(context.get(&"effect_parent"), start, destination)

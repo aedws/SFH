@@ -9,3 +9,5 @@ recovered_value_weight = 1.0
 kill_weight = 10.0
 reward_multiplier_weight = 100.0
 elapsed_seconds_penalty = 0.25
+minimum_penalty_score = 10
+ranking_ids = PackedStringArray("recovered_value", "elapsed_seconds", "kills")

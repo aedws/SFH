@@ -6,6 +6,10 @@ extends Resource
 @export_range(0.0, 10000.0, 1.0) var damage: float = 12.0
 @export_range(1.0, 256.0, 1.0) var half_width: float = 40.0
 @export_range(1, 128, 1) var maximum_targets: int = 24
+@export var applied_status_id: StringName = &"ionized"
+@export_range(0.0, 30.0, 0.1) var applied_status_duration: float = 4.0
+@export var trigger_status_id: StringName = &"shock"
+@export_range(0.0, 10000.0, 1.0) var trigger_bonus_damage: float = 8.0
 
 
 func is_valid() -> bool:
@@ -16,18 +20,21 @@ func apply(
 	target_container: Node,
 	start: Vector2,
 	destination: Vector2,
-	damage_enabled: bool = true
+	damage_enabled: bool = true,
+	mechanic_override: Dictionary = {}
 ) -> Dictionary:
+	var effective_damage := damage * float(mechanic_override.get(&"damage_multiplier", 1.0))
 	var snapshot := {
-		&"damage": damage if damage_enabled else 0.0,
+		&"damage": effective_damage if damage_enabled else 0.0,
 		&"half_width": half_width,
 		&"maximum_targets": maximum_targets,
 		&"hit_count": 0,
 		&"evaluated_targets": 0,
+		&"status_triggers": 0,
 	}
 	if (
 		not damage_enabled
-		or damage <= 0.0
+		or effective_damage <= 0.0
 		or not is_valid()
 		or not is_instance_valid(target_container)
 		or start.is_equal_approx(destination)
@@ -36,6 +43,7 @@ func apply(
 	var hit_count := 0
 	var evaluated_targets := 0
 	var width_squared := half_width * half_width
+	var status_triggers := 0
 	for child_index in target_container.get_child_count():
 		if hit_count >= maximum_targets:
 			break
@@ -53,10 +61,19 @@ func apply(
 		)
 		if target.global_position.distance_squared_to(closest) > width_squared:
 			continue
-		target.call(&"take_damage", damage)
+		var target_damage := effective_damage
+		if trigger_status_id != &"" and target.has_method(&"has_status") and bool(target.call(&"has_status", trigger_status_id)):
+			target_damage += trigger_bonus_damage
+			status_triggers += 1
+			if target.has_method(&"consume_status"):
+				target.call(&"consume_status", trigger_status_id, 1)
+		target.call(&"take_damage", target_damage)
+		if applied_status_id != &"" and target.has_method(&"apply_status"):
+			target.call(&"apply_status", applied_status_id, applied_status_duration, 1)
 		hit_count += 1
 	snapshot[&"hit_count"] = hit_count
 	snapshot[&"evaluated_targets"] = evaluated_targets
+	snapshot[&"status_triggers"] = status_triggers
 	return snapshot
 
 
@@ -65,4 +82,7 @@ func get_snapshot() -> Dictionary:
 		&"damage": damage,
 		&"half_width": half_width,
 		&"maximum_targets": maximum_targets,
+		&"applied_status_id": applied_status_id,
+		&"trigger_status_id": trigger_status_id,
+		&"trigger_bonus_damage": trigger_bonus_damage,
 	}

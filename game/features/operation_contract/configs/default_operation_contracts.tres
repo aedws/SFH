@@ -4,17 +4,22 @@
 
 [resource]
 script = ExtResource("1_config")
+boss_guarantee_minimum_cost = 600
+bankruptcy_protection_enabled = true
+free_tier_id = &"small"
+free_region_id = &"ruined_city"
+free_difficulty_id = &"standard"
 regions = Array[Dictionary]([{
-"blueprint_drop_multiplier": 1.0, "display_name": "폐허 도시", "entry_cost_multiplier": 1.0, "region_id": &"ruined_city", "reward_multiplier": 1.0, "unlock_id": &"region_ruined_city"
+"blueprint_drop_multiplier": 1.0, "display_name": "폐허 도시", "drop_table": [{"blueprint_id": &"assault_rifle_blueprint", "grade": 1, "weight": 80.0}, {"blueprint_id": &"tactical_vest_blueprint", "grade": 2, "weight": 20.0}], "entry_cost_multiplier": 1.0, "high_grade_drop_multiplier": 1.0, "region_id": &"ruined_city", "reward_multiplier": 1.0, "unlock_id": &"region_ruined_city"
 }, {
-"blueprint_drop_multiplier": 1.3, "display_name": "산업 지구", "entry_cost_multiplier": 1.15, "region_id": &"industrial_district", "reward_multiplier": 1.2, "unlock_id": &"region_industrial_district"
+"blueprint_drop_multiplier": 1.3, "display_name": "산업 지구", "drop_table": [{"blueprint_id": &"assault_rifle_blueprint", "grade": 1, "weight": 50.0}, {"blueprint_id": &"tactical_vest_blueprint", "grade": 2, "weight": 50.0}], "entry_cost_multiplier": 1.15, "high_grade_drop_multiplier": 1.25, "region_id": &"industrial_district", "reward_multiplier": 1.2, "unlock_id": &"region_industrial_district"
 }, {
-"blueprint_drop_multiplier": 1.7, "display_name": "연구 단지", "entry_cost_multiplier": 1.35, "region_id": &"research_complex", "reward_multiplier": 1.45, "unlock_id": &"region_research_complex"
+"blueprint_drop_multiplier": 1.7, "boss_guaranteed": true, "display_name": "연구 단지", "drop_table": [{"blueprint_id": &"assault_rifle_blueprint", "grade": 1, "weight": 20.0}, {"blueprint_id": &"tactical_vest_blueprint", "grade": 2, "weight": 50.0}, {"blueprint_id": &"magnetic_field_blueprint", "grade": 3, "weight": 30.0}], "entry_cost_multiplier": 1.35, "high_grade_drop_multiplier": 1.6, "region_id": &"research_complex", "reward_multiplier": 1.45, "unlock_id": &"region_research_complex"
 }])
 difficulties = Array[Dictionary]([{
 "difficulty_id": &"standard", "display_name": "표준", "enemy_modifiers": {"armor_multiplier": 1.0, "damage_multiplier": 1.0, "health_multiplier": 1.0, "speed_multiplier": 1.0}, "entry_cost_multiplier": 1.0, "reward_multiplier": 1.0
 }, {
 "difficulty_id": &"veteran", "display_name": "베테랑", "enemy_modifiers": {"armor_multiplier": 1.25, "damage_multiplier": 1.2, "health_multiplier": 1.35, "speed_multiplier": 1.08}, "entry_cost_multiplier": 1.5, "reward_multiplier": 1.55
 }, {
-"difficulty_id": &"nightmare", "display_name": "악몽", "enemy_modifiers": {"armor_multiplier": 1.6, "damage_multiplier": 1.5, "health_multiplier": 1.8, "speed_multiplier": 1.16}, "entry_cost_multiplier": 2.0, "reward_multiplier": 2.25
+"boss_guaranteed": true, "difficulty_id": &"nightmare", "display_name": "악몽", "enemy_modifiers": {"armor_multiplier": 1.6, "damage_multiplier": 1.5, "health_multiplier": 1.8, "speed_multiplier": 1.16}, "entry_cost_multiplier": 2.0, "high_grade_drop_multiplier": 1.5, "reward_multiplier": 2.25
 }])

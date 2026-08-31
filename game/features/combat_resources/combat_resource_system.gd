@@ -17,6 +17,7 @@ var recharge_remaining := PackedFloat32Array()
 var spawned_pickups: Dictionary = {&"energy": 0, &"health": 0}
 var collected_pickups: Dictionary = {&"energy": 0, &"health": 0}
 var random := RandomNumberGenerator.new()
+var recovery_multiplier: float = 1.0
 
 
 func configure(
@@ -58,6 +59,11 @@ func configure(
 		random.seed = seed
 	_emit_changed()
 	return true
+
+
+func set_recovery_multiplier(multiplier: float) -> void:
+	recovery_multiplier = maxf(0.0, multiplier)
+	_emit_changed()
 
 
 func _process(delta: float) -> void:
@@ -165,6 +171,7 @@ func get_snapshot() -> Dictionary:
 		&"slots": slots,
 		&"spawned_pickups": spawned_pickups.duplicate(true),
 		&"collected_pickups": collected_pickups.duplicate(true),
+		&"recovery_multiplier": recovery_multiplier,
 	}
 
 
@@ -194,7 +201,7 @@ func _on_pickup_collected(resource_id: StringName, amount: float) -> void:
 		applied = restore_energy(amount)
 	elif resource_id == &"health" and is_instance_valid(player_target):
 		var before: Dictionary = player_target.call(&"get_health_snapshot")
-		player_target.call(&"heal", amount)
+		player_target.call(&"heal", amount * recovery_multiplier)
 		var after: Dictionary = player_target.call(&"get_health_snapshot")
 		applied = float(after.get(&"current", 0.0)) - float(before.get(&"current", 0.0))
 	collected_pickups[resource_id] = int(collected_pickups.get(resource_id, 0)) + 1

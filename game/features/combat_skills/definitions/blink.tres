@@ -10,6 +10,10 @@ script = ExtResource("4_path")
 damage = 12.0
 half_width = 40.0
 maximum_targets = 24
+applied_status_id = &"ionized"
+applied_status_duration = 4.0
+trigger_status_id = &"shock"
+trigger_bonus_damage = 8.0
 
 [sub_resource type="Resource" id="BlinkEffect"]
 script = ExtResource("2_effect")
@@ -25,6 +29,7 @@ display_name = "점멸"
 description = "바라보는 방향으로 이동하며 경로 피해"
 input_action = &"combat_skill_1"
 input_label = "1"
+targeting_mode = &"direction"
 cooldown_seconds = 5.0
 energy_cost = 20.0
 maximum_charges = 2

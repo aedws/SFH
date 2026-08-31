@@ -20,6 +20,8 @@ var elapsed_seconds: float = 0.0
 var tick_accumulator: float = 0.0
 var tick_count: int = 0
 var total_hits: int = 0
+var applied_status_id: StringName = &"shock"
+var status_duration: float = 3.0
 
 
 func configure(
@@ -31,7 +33,9 @@ func configure(
 	new_duration_seconds: float,
 	new_tick_interval_seconds: float,
 	new_damage_enabled: bool,
-	new_electric_profile: Resource
+	new_electric_profile: Resource,
+	new_applied_status_id: StringName = &"shock",
+	new_status_duration: float = 3.0
 ) -> bool:
 	if (
 		not is_instance_valid(new_player)
@@ -50,6 +54,8 @@ func configure(
 	tick_interval_seconds = new_tick_interval_seconds
 	damage_enabled = new_damage_enabled
 	electric_profile = new_electric_profile
+	applied_status_id = new_applied_status_id
+	status_duration = maxf(0.0, new_status_duration)
 	add_to_group(&"combat_skill_runtime_effect")
 	global_position = player.global_position
 	_spawn_visual()
@@ -85,6 +91,7 @@ func get_snapshot() -> Dictionary:
 		&"tick_count": tick_count,
 		&"total_hits": total_hits,
 		&"remaining_seconds": maxf(0.0, duration_seconds - elapsed_seconds),
+		&"applied_status_id": applied_status_id,
 	}
 
 
@@ -102,6 +109,8 @@ func _apply_damage_tick() -> void:
 		):
 			if damage_enabled:
 				target.call(&"take_damage", tick_damage)
+			if applied_status_id != &"" and target.has_method(&"apply_status"):
+				target.call(&"apply_status", applied_status_id, status_duration, 1)
 			total_hits += 1
 
 

@@ -11,6 +11,8 @@ var warehouse: Dictionary = {&"scrap": 8, &"field_medkit": 2}
 var consumable_loadout: Array[StringName] = []
 var blueprints: Dictionary = {&"assault_rifle_blueprint": 1}
 var crafted_items: Array[Dictionary] = []
+var unlocked_shop_offer_ids: Array[StringName] = []
+var unlocked_skill_ids: Array[StringName] = [&"blink"]
 
 
 func configure(new_storage_path: String, enable_persistence: bool = true) -> bool:
@@ -50,6 +52,26 @@ func unlock(unlock_id: StringName) -> bool:
 	if unlock_id == &"" or is_unlocked(unlock_id):
 		return false
 	unlock_ids.append(unlock_id)
+	_commit()
+	return true
+
+
+func register_shop_offer(offer_id: StringName) -> bool:
+	if offer_id == &"" or offer_id in unlocked_shop_offer_ids:
+		return false
+	unlocked_shop_offer_ids.append(offer_id)
+	_commit()
+	return true
+
+
+func is_shop_offer_registered(offer_id: StringName) -> bool:
+	return offer_id == &"" or offer_id in unlocked_shop_offer_ids
+
+
+func unlock_skill(skill_id: StringName) -> bool:
+	if skill_id == &"" or skill_id in unlocked_skill_ids:
+		return false
+	unlocked_skill_ids.append(skill_id)
 	_commit()
 	return true
 
@@ -136,6 +158,8 @@ func get_snapshot() -> Dictionary:
 		&"consumable_loadout": consumable_loadout.duplicate(),
 		&"blueprints": blueprints.duplicate(true),
 		&"crafted_items": crafted_items.duplicate(true),
+		&"unlocked_shop_offer_ids": unlocked_shop_offer_ids.duplicate(),
+		&"unlocked_skill_ids": unlocked_skill_ids.duplicate(),
 	}
 
 
@@ -153,6 +177,8 @@ func _reset_defaults() -> void:
 	consumable_loadout = []
 	blueprints = {&"assault_rifle_blueprint": 1}
 	crafted_items = []
+	unlocked_shop_offer_ids = []
+	unlocked_skill_ids = [&"blink"]
 
 
 func _commit() -> void:
@@ -173,6 +199,8 @@ func _save() -> void:
 		"consumable_loadout": Array(consumable_loadout).map(func(value): return String(value)),
 		"blueprints": _string_key_dictionary(blueprints),
 		"crafted_items": crafted_items,
+		"unlocked_shop_offer_ids": Array(unlocked_shop_offer_ids).map(func(value): return String(value)),
+		"unlocked_skill_ids": Array(unlocked_skill_ids).map(func(value): return String(value)),
 	}))
 
 
@@ -189,6 +217,8 @@ func _load() -> void:
 	consumable_loadout = _string_name_array(parsed.get("consumable_loadout", []))
 	blueprints = _string_name_key_dictionary(parsed.get("blueprints", {}))
 	crafted_items = Array(parsed.get("crafted_items", []), TYPE_DICTIONARY, "", null)
+	unlocked_shop_offer_ids = _string_name_array(parsed.get("unlocked_shop_offer_ids", []))
+	unlocked_skill_ids = _string_name_array(parsed.get("unlocked_skill_ids", [&"blink"]))
 
 
 func _string_key_dictionary(source: Dictionary) -> Dictionary:

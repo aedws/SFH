@@ -141,6 +141,8 @@ func _init() -> void:
 		return
 	if not await _verify_extraction_flow(game_scene):
 		return
+	if not await _verify_failure_loadout_loss(game_scene):
+		return
 
 	game_instance = game_scene.instantiate()
 	root.add_child(game_instance)
@@ -244,6 +246,12 @@ func _verify_meta_operation_modules() -> bool:
 		failure_message = "조건부 랭킹 시스템 구성이 실패했습니다."
 	elif not results.call(&"configure", profile, ranking, load(RESULT_CONFIG_PATH), 4242):
 		failure_message = "작전 결과 정산 시스템 구성이 실패했습니다."
+	elif bool(economy.call(&"quote", &"buy_assault_rifle").get(&"available", false)):
+		failure_message = "도면을 반출하지 않은 영구 상점 장비가 미리 열렸습니다."
+	elif not profile.call(&"register_shop_offer", &"buy_assault_rifle"):
+		failure_message = "반출 도면의 영구 상점 등록 상태를 저장하지 못했습니다."
+	elif not bool(economy.call(&"quote", &"buy_assault_rifle").get(&"available", false)):
+		failure_message = "영구 상점 등록 뒤 장비 구매 견적이 열리지 않았습니다."
 	elif not bool(economy.call(&"purchase", &"unlock_industrial").get(&"success", false)):
 		failure_message = "상점 구매가 산업 지구 영구 해금을 적용하지 못했습니다."
 	elif not contracts.call(&"select_region", &"industrial_district"):
@@ -256,12 +264,19 @@ func _verify_meta_operation_modules() -> bool:
 		var penalty_snapshot: Dictionary = penalties.call(&"get_snapshot")
 		var small_config: Resource = load(MAP_CONFIG_PATH_PATTERN % "small")
 		var quote: Dictionary = contracts.call(&"quote", small_config, penalty_snapshot)
+		var large_quote: Dictionary = contracts.call(&"quote", load(MAP_CONFIG_PATH_PATTERN % "large"), penalty_snapshot)
 		if int(quote.get(&"entry_cost", 0)) != 173:
 			failure_message = "지역·난이도 투입 비용이 실제 데이터 배율과 일치하지 않습니다."
 		elif not is_equal_approx(float(quote.get(&"reward_multiplier", 0.0)), 2.325):
 			failure_message = "지역·난이도·페널티 회수 배율이 합성되지 않았습니다."
 		elif float(quote.get(&"enemy_modifiers", {}).get(&"armor_multiplier", 0.0)) != 1.875:
 			failure_message = "난이도와 페널티 적 장갑 배율이 합성되지 않았습니다."
+		elif (quote.get(&"region_drop_table", []) as Array).is_empty():
+			failure_message = "선택 지역의 타겟 드랍 테이블이 계약에 연결되지 않았습니다."
+		elif float(quote.get(&"high_grade_drop_multiplier", 0.0)) <= 1.0:
+			failure_message = "투입 비용의 고등급 드랍 가중치가 계약에 반영되지 않았습니다."
+		elif not bool(large_quote.get(&"boss_spawn_guaranteed", false)):
+			failure_message = "고비용 대형 작전이 보스 확정 생성 규칙을 만들지 못했습니다."
 		else:
 			var before_invest := int(profile.call(&"get_snapshot")[&"banked_credits"])
 			var invested: Dictionary = contracts.call(&"invest", small_config, penalty_snapshot)
@@ -269,6 +284,17 @@ func _verify_meta_operation_modules() -> bool:
 				failure_message = "작전 투입 비용을 차감하지 못했습니다."
 			elif int(profile.call(&"get_snapshot")[&"banked_credits"]) != before_invest - 173:
 				failure_message = "작전 투입 비용이 영구 크레딧에서 정확히 차감되지 않았습니다."
+	if failure_message.is_empty():
+		var poor_profile := (load(PROFILE_SCENE_PATH) as PackedScene).instantiate()
+		var poor_contracts := (load(CONTRACT_SCENE_PATH) as PackedScene).instantiate()
+		sandbox.add_child(poor_profile)
+		sandbox.add_child(poor_contracts)
+		poor_profile.call(&"configure", "", false)
+		poor_profile.set("banked_credits", 0)
+		poor_contracts.call(&"configure", poor_profile, load(CONTRACT_CONFIG_PATH))
+		var free_quote: Dictionary = poor_contracts.call(&"quote", load(MAP_CONFIG_PATH_PATTERN % "small"), {})
+		if int(free_quote.get(&"entry_cost", -1)) != 0 or not bool(free_quote.get(&"bankruptcy_protection", false)):
+			failure_message = "파산 상태에서 기본 무장·소형 기본 맵 무료 출격이 열리지 않았습니다."
 	if failure_message.is_empty():
 		var test_loadout: Array[StringName] = [&"field_medkit"]
 		if not economy.call(&"set_consumable_loadout", test_loadout):
@@ -300,34 +326,53 @@ func _verify_meta_operation_modules() -> bool:
 		elite_target.position = Vector2(200.0, 0.0)
 		elite_target.set("priority_rank", 5)
 		sandbox.add_child(elite_target)
-		var selected = smart_policy.call(
-			&"select_target", Vector2.ZERO, [near_target, elite_target], 800.0
-		)
-		if selected != elite_target:
-			failure_message = "스마트 타게팅이 거리만 보지 않고 우선 등급을 합성하지 못했습니다."
+		var candidates := [near_target, elite_target]
+		var nearest = smart_policy.call(&"select_target_for_mode", &"nearest", Vector2.ZERO, candidates, 800.0)
+		var elite = smart_policy.call(&"select_target_for_mode", &"elite", Vector2.ZERO, candidates, 800.0)
+		var direction_result: Dictionary = smart_policy.call(&"resolve", &"direction", Vector2.ZERO, candidates, 300.0, Vector2.DOWN)
+		if nearest != near_target or elite != elite_target:
+			failure_message = "스마트 타게팅의 최근접·엘리트 정책이 분리되지 않았습니다."
+		elif Vector2(direction_result.get(&"direction", Vector2.ZERO)).dot(Vector2.DOWN) < 0.99:
+			failure_message = "이동 스킬 타게팅이 현재 입력 벡터를 유지하지 못했습니다."
+	if failure_message.is_empty():
+		var risk_penalties := (load(PENALTY_SCENE_PATH) as PackedScene).instantiate()
+		sandbox.add_child(risk_penalties)
+		risk_penalties.call(&"configure", load(PENALTY_CONFIG_PATH))
+		for penalty_id in [&"recovery_suppression", &"narrowed_vision", &"delayed_extraction"]:
+			risk_penalties.call(&"toggle", penalty_id)
+		var risk_snapshot: Dictionary = risk_penalties.call(&"get_snapshot")
+		if (
+			not is_equal_approx(float(risk_snapshot.get(&"player_modifiers", {}).get(&"recovery_multiplier", 1.0)), 0.5)
+			or not is_equal_approx(float(risk_snapshot.get(&"world_modifiers", {}).get(&"vision_multiplier", 1.0)), 0.62)
+			or not is_equal_approx(float(risk_snapshot.get(&"world_modifiers", {}).get(&"extraction_duration_multiplier", 1.0)), 1.5)
+			or int(risk_snapshot.get(&"penalty_score", 0)) != 48
+		):
+			failure_message = "회복 감소·시야 제한·탈출 지연 페널티가 독립 데이터로 합성되지 않았습니다."
 	if failure_message.is_empty():
 		var first_rank: Dictionary = ranking.call(&"submit_run", {
-			&"success": true, &"condition_key": "city|standard|small|",
-			&"recovered_value": 100, &"kills": 10, &"elapsed_seconds": 300.0,
+			&"success": true, &"condition_key": "city|standard|small",
+			&"recovered_value": 100, &"kills": 10, &"elapsed_seconds": 300.0, &"penalty_score": 10,
 		})
 		var second_rank: Dictionary = ranking.call(&"submit_run", {
-			&"success": true, &"condition_key": "city|standard|small|",
-			&"recovered_value": 300, &"kills": 20, &"elapsed_seconds": 240.0,
+			&"success": true, &"condition_key": "city|standard|small",
+			&"recovered_value": 300, &"kills": 20, &"elapsed_seconds": 240.0, &"penalty_score": 10,
 		})
 		ranking.call(&"submit_run", {
-			&"success": true, &"condition_key": "lab|veteran|large|armor",
-			&"recovered_value": 50, &"kills": 1, &"elapsed_seconds": 600.0,
+			&"success": true, &"condition_key": "city|standard|small",
+			&"recovered_value": 50, &"kills": 30, &"elapsed_seconds": 180.0, &"penalty_score": 10,
 		})
 		if not bool(first_rank.get(&"accepted", false)) or int(second_rank.get(&"rank", 0)) != 1:
-			failure_message = "조건부 랭킹이 동일 조건 점수를 내림차순 정렬하지 못했습니다."
-		elif ranking.call(&"get_entries", "city|standard|small|").size() != 2:
-			failure_message = "서로 다른 작전 조건의 랭킹이 섞였습니다."
+			failure_message = "조건부 랭킹이 회수 가치 순위를 정렬하지 못했습니다."
+		elif int(ranking.call(&"get_entries", "city|standard|small", &"elapsed_seconds")[0][&"elapsed_seconds"]) != 180:
+			failure_message = "최단 탈출 시간 순위가 별도 오름차순으로 정렬되지 않았습니다."
+		elif int(ranking.call(&"get_entries", "city|standard|small", &"kills")[0][&"kills"]) != 30:
+			failure_message = "최다 처치 순위가 별도 내림차순으로 정렬되지 않았습니다."
 	if failure_message.is_empty():
 		var settlement: Dictionary = results.call(&"settle_success", {
 			&"carried_credits": 100, &"kills": 24, &"elapsed_seconds": 500.0,
 		}, {
 			&"reward_multiplier": 2.0, &"blueprint_drop_multiplier": 0.0,
-			&"ranking_condition_key": "test|standard|small|", &"region_id": &"ruined_city",
+			&"ranking_condition_key": "test|standard|small", &"region_id": &"ruined_city", &"penalty_score": 10,
 		})
 		if int(settlement.get(&"recovered_credits", 0)) != 200 or int(settlement.get(&"salvage", 0)) != 2:
 			failure_message = "성공 결과의 회수 배수·고철 정산이 영구 프로필에 반영되지 않았습니다."
@@ -345,12 +390,16 @@ func _verify_meta_operation_modules() -> bool:
 		if not extraction.call(&"request_extraction", actor):
 			failure_message = "탈출 방어 카운트다운을 시작하지 못했습니다."
 		else:
-			extraction.call(&"advance", 4.0)
-			if not bool(extraction.call(&"get_snapshot")[&"defense_active"]):
-				failure_message = "카운트다운 종료 전에 탈출 방어가 완료됐습니다."
-			extraction.call(&"advance", 1.1)
+			extraction.call(&"advance", 2.0)
+			actor.position = Vector2(200.0, 0.0)
+			extraction.call(&"advance", 2.0)
+			var paused: Dictionary = extraction.call(&"get_snapshot")
+			if not bool(paused.get(&"defense_paused", false)) or not is_equal_approx(float(paused.get(&"defense_remaining_seconds", 0.0)), 3.0):
+				failure_message = "탈출 구역 이탈 시 잔여 시간이 보존된 채 일시정지되지 않았습니다."
+			actor.position = Vector2.ZERO
+			extraction.call(&"advance", 3.1)
 			if bool(extraction.call(&"get_snapshot")[&"defense_active"]):
-				failure_message = "카운트다운 종료 후 탈출 방어가 완료되지 않았습니다."
+				failure_message = "재진입 후 잔여 시간부터 탈출 방어가 완료되지 않았습니다."
 	if failure_message.is_empty():
 		var profile_test_path := "user://sfh_profile_roundtrip_test.json"
 		var ranking_test_path := "user://sfh_ranking_roundtrip_test.json"
@@ -361,6 +410,8 @@ func _verify_meta_operation_modules() -> bool:
 		sandbox.add_child(stored_profile)
 		stored_profile.call(&"configure", profile_test_path, true)
 		stored_profile.call(&"add_credits", 123)
+		stored_profile.call(&"register_shop_offer", &"buy_tactical_vest")
+		stored_profile.call(&"unlock_skill", &"magnetic_field")
 		stored_profile.call(&"add_crafted_item", {
 			&"instance_id": "roundtrip", &"definition_id": &"test", &"affixes": [],
 		})
@@ -371,13 +422,16 @@ func _verify_meta_operation_modules() -> bool:
 		if (
 			int(loaded_snapshot.get(&"banked_credits", 0)) != 5123
 			or (loaded_snapshot.get(&"crafted_items", []) as Array).size() != 1
+			or &"buy_tactical_vest" not in (loaded_snapshot.get(&"unlocked_shop_offer_ids", []) as Array)
+			or &"magnetic_field" not in (loaded_snapshot.get(&"unlocked_skill_ids", []) as Array)
 		):
-			failure_message = "영구 프로필 JSON 저장·복원이 값을 보존하지 못했습니다."
+			failure_message = "영구 프로필 JSON 저장·복원이 상점 등록·스킬 해금을 보존하지 못했습니다."
 		var stored_ranking := (load(RANKING_SCENE_PATH) as PackedScene).instantiate()
 		sandbox.add_child(stored_ranking)
 		stored_ranking.call(&"configure", ranking_test_path, load(RANKING_POLICY_PATH), true)
 		stored_ranking.call(&"submit_run", {
 			&"success": true, &"condition_key": "roundtrip", &"recovered_value": 100,
+			&"penalty_score": 10,
 		})
 		var loaded_ranking := (load(RANKING_SCENE_PATH) as PackedScene).instantiate()
 		sandbox.add_child(loaded_ranking)
@@ -392,6 +446,36 @@ func _verify_meta_operation_modules() -> bool:
 	await process_frame
 	if not failure_message.is_empty():
 		_fail("작전·메타 시스템 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_failure_loadout_loss(game_scene: PackedScene) -> bool:
+	var failure_game := game_scene.instantiate()
+	root.add_child(failure_game)
+	await process_frame
+	var failure_message := ""
+	if not failure_game.call(&"start_run", "small"):
+		failure_message = "장착 로드아웃 소실 검증용 작전을 시작하지 못했습니다."
+	else:
+		await process_frame
+		if (failure_game.get("prepared_equipment_state") as Dictionary).is_empty():
+			failure_message = "출격 직전 장착 로드아웃 스냅샷이 없습니다."
+		else:
+			failure_game.call(&"_on_player_died")
+			if not bool(failure_game.get("lose_equipped_loadout_on_return")):
+				failure_message = "사망 정산이 장착 로드아웃 소실을 예약하지 않았습니다."
+			else:
+				failure_game.call(&"_restart_run")
+				await process_frame
+				if not (failure_game.get("prepared_equipment_state") as Dictionary).is_empty():
+					failure_message = "사망 귀환 후 장착 로드아웃이 영구 보존됐습니다."
+				elif failure_game.get("start_hub") == null or failure_game.get("equipment_system") == null:
+					failure_message = "장비 소실 뒤 무료 기본 무장으로 거점 복귀하지 못했습니다."
+	root.remove_child(failure_game)
+	failure_game.free()
+	if not failure_message.is_empty():
+		_fail("사망 로드아웃 소실 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -871,12 +955,13 @@ func _verify_combat_resource_modules() -> bool:
 
 
 func _verify_combat_skill_modules() -> bool:
-	if (
-		not _has_key_binding(&"combat_skill_1", KEY_1)
-		or not _has_key_binding(&"combat_skill_2", KEY_2)
-		or not _has_key_binding(&"combat_skill_3", KEY_3)
-	):
-		_fail("1/2/3 전투 스킬 입력이 프로젝트에 등록되지 않았습니다.")
+	var number_keys := [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9]
+	for slot_index in 9:
+		if not _has_key_binding(StringName("combat_skill_%d" % (slot_index + 1)), number_keys[slot_index]):
+			_fail("1~9 전투 스킬 입력이 프로젝트에 모두 등록되지 않았습니다.")
+			return false
+	if not _has_mouse_binding(&"primary_attack", MOUSE_BUTTON_LEFT):
+		_fail("좌클릭 홀드 기본기 입력이 프로젝트에 등록되지 않았습니다.")
 		return false
 	var sandbox := Node2D.new()
 	root.add_child(sandbox)
@@ -935,15 +1020,26 @@ func _verify_combat_skill_modules() -> bool:
 		var states: Array = initial.get(&"states", [])
 		if (
 			int(initial.get(&"skill_count", 0)) != 3
+			or int(initial.get(&"slot_capacity", 0)) != 9
+			or (initial.get(&"slot_bindings", []) as Array).size() != 9
 			or String(states[0].get(&"display_name", "")) != "점멸"
 			or String(states[1].get(&"display_name", "")) != "원형 자기장"
 			or String(states[2].get(&"display_name", "")) != "기동 가속"
 		):
 			failure_message = "기본 전투 스킬 세 종류가 순서대로 로드되지 않았습니다."
 		else:
+			var rebound := InputEventKey.new()
+			rebound.physical_keycode = KEY_0
+			if not system.call(&"rebind_slot", 8, rebound) or not _has_key_binding(&"combat_skill_9", KEY_0):
+				failure_message = "스킬 슬롯 런타임 키 재설정이 적용되지 않았습니다."
+			var restored := InputEventKey.new()
+			restored.physical_keycode = KEY_9
+			system.call(&"rebind_slot", 8, restored)
+		if failure_message.is_empty():
 			var start_position: Vector2 = player.global_position
 			var path_health_before := float(enemy.get("current_health"))
 			var off_path_health_before := float(off_path_enemy.get("current_health"))
+			enemy.call(&"apply_status", &"shock", 3.0, 1)
 			if not system.call(&"try_activate", 0):
 				failure_message = "1번 점멸 스킬이 발동하지 않았습니다."
 			elif player.global_position.distance_to(start_position) < 300.0:
@@ -952,6 +1048,8 @@ func _verify_combat_skill_modules() -> bool:
 				failure_message = "점멸 경로에 있는 적에게 피해가 적용되지 않았습니다."
 			elif float(off_path_enemy.get("current_health")) < off_path_health_before:
 				failure_message = "점멸 경로 밖의 적에게 피해가 적용됐습니다."
+			elif bool(enemy.call(&"has_status", &"shock")) or not bool(enemy.call(&"has_status", &"ionized")):
+				failure_message = "점멸이 감전 상태를 소비해 추가 피해를 만들고 이온화 상태를 부여하지 못했습니다."
 			elif system.call(&"try_activate", 0):
 				failure_message = "점멸 쿨타임 중 재발동이 허용됐습니다."
 			else:
@@ -1629,6 +1727,10 @@ func _verify_equipment_modules() -> bool:
 		failure_message = "장비 이동 속도가 플레이어에 적용되지 않았습니다."
 	elif equipment.call(&"get_active_weapon_slot") != &"main":
 		failure_message = "초기 활성 무기가 메인 슬롯이 아닙니다."
+	elif not equipment.call(&"active_weapon_has_combat_tags", [&"projectile", &"electric"]):
+		failure_message = "활성 소총의 전투 태그가 런타임 스킬 제약에 제공되지 않았습니다."
+	elif (equipment.call(&"get_active_skill_mechanic_override", &"magnetic_field") as Dictionary).is_empty():
+		failure_message = "상위 등급 소총의 스킬 메커니즘 변형 데이터가 제공되지 않았습니다."
 	elif not equipment.call(&"switch_active_weapon"):
 		failure_message = "보조 무기로 교체하지 못했습니다."
 	elif equipment.call(&"get_active_weapon").weapon_id != &"service_pistol":
@@ -1754,6 +1856,19 @@ func _verify_weapon_balance_modules() -> bool:
 				failure_message = "2행 설명을 포함한 Google Sheet CSV를 2개 런타임 무기로 읽지 못했습니다."
 	if not _has_key_binding(&"switch_weapon", KEY_Q):
 		failure_message = "switch_weapon 입력에 Q 키가 할당되지 않았습니다."
+	if failure_message.is_empty():
+		var weapon := (load(WEAPON_SCENE_PATH) as PackedScene).instantiate()
+		var projectile_parent := Node2D.new()
+		root.add_child(projectile_parent)
+		root.add_child(weapon)
+		weapon.call(&"configure", projectile_parent, null, service)
+		var runtime: Dictionary = weapon.call(&"get_runtime_snapshot")
+		if not bool(runtime.get(&"hold_to_fire", false)) or runtime.get(&"fire_input_action") != &"primary_attack":
+			failure_message = "기본 무기가 좌클릭 홀드 발사 계약을 노출하지 않습니다."
+		root.remove_child(weapon)
+		weapon.free()
+		root.remove_child(projectile_parent)
+		projectile_parent.free()
 	root.remove_child(service)
 	service.free()
 	if not failure_message.is_empty():
@@ -2386,7 +2501,7 @@ func _verify_enemy_spawn_budget() -> bool:
 	config.set("initial_delay_seconds", 0.0)
 	config.set("reinforcement_interval_seconds", 0.1)
 	config.set("maximum_total_spawns", 2)
-	if not spawner.call(&"configure", target, enemy_parent, false, null, false, false, config):
+	if not spawner.call(&"configure", target, enemy_parent, false, null, false, false, config, {}, {&"boss_spawn_guaranteed": true}):
 		root.remove_child(host)
 		host.free()
 		_fail("유한 적 생성 예산 모듈 구성에 실패했습니다.")
@@ -2406,6 +2521,7 @@ func _verify_enemy_spawn_budget() -> bool:
 	var final_snapshot: Dictionary = spawner.call(&"get_snapshot")
 	var valid := (
 		int(first_snapshot.get(&"total_spawned", 0)) == 1
+		and bool(first_snapshot.get(&"boss_spawned", false))
 		and int(exhausted_snapshot.get(&"total_spawned", 0)) == 2
 		and int(exhausted_snapshot.get(&"remaining_spawn_budget", -1)) == 0
 		and bool(exhausted_snapshot.get(&"spawn_budget_exhausted", false))
@@ -2641,6 +2757,15 @@ func _has_key_binding(action_name: StringName, keycode: Key) -> bool:
 	return false
 
 
+func _has_mouse_binding(action_name: StringName, button_index: MouseButton) -> bool:
+	if not InputMap.has_action(action_name):
+		return false
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventMouseButton and (event as InputEventMouseButton).button_index == button_index:
+			return true
+	return false
+
+
 func _process(_delta: float) -> bool:
 	frame_count += 1
 
@@ -2812,7 +2937,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

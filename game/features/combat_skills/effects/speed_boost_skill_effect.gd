@@ -21,6 +21,9 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 		or not player.has_method(&"remove_runtime_modifier_source")
 	):
 		return {&"success": false, &"status": "이동 속도를 변경할 수 없습니다."}
+	var mechanic_override: Dictionary = context.get(&"mechanic_override", {})
+	var resolved_multiplier := speed_multiplier * float(mechanic_override.get(&"speed_multiplier", 1.0))
+	var resolved_duration := duration_seconds * float(mechanic_override.get(&"duration_multiplier", 1.0))
 	var previous := player.get_node_or_null("CombatSkillSpeedBoost")
 	if previous != null:
 		previous.free()
@@ -30,17 +33,17 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 	if not modifier.configure(
 		player,
 		modifier_source_id,
-		{&"movement_speed": {&"add": 0.0, &"multiply": speed_multiplier}},
-		duration_seconds
+		{&"movement_speed": {&"add": 0.0, &"multiply": resolved_multiplier}},
+		resolved_duration
 	):
 		modifier.queue_free()
 		return {&"success": false, &"status": "이동 가속 적용에 실패했습니다."}
 	_spawn_electric_aura(context.get(&"effect_parent"), player)
 	return {
 		&"success": true,
-		&"status": "이동 속도 %.0f%% · %.1f초" % [speed_multiplier * 100.0, duration_seconds],
-		&"speed_multiplier": speed_multiplier,
-		&"duration_seconds": duration_seconds,
+		&"status": "이동 속도 %.0f%% · %.1f초" % [resolved_multiplier * 100.0, resolved_duration],
+		&"speed_multiplier": resolved_multiplier,
+		&"duration_seconds": resolved_duration,
 	}
 
 

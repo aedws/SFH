@@ -46,10 +46,11 @@ func settle_success(run_data: Dictionary, contract: Dictionary) -> Dictionary:
 		* float(contract.get(&"blueprint_drop_multiplier", 1.0)), 0.0, 0.8
 	)
 	if random.randf() <= blueprint_chance:
-		blueprint_id = config.call(
-			&"blueprint_for", StringName(contract.get(&"region_id", &"ruined_city"))
-		)
+		blueprint_id = _roll_blueprint(contract)
 		profile.call(&"add_blueprint", blueprint_id, 1)
+		var offer_id: StringName = config.call(&"shop_offer_for", blueprint_id)
+		if offer_id != &"" and profile.has_method(&"register_shop_offer"):
+			profile.call(&"register_shop_offer", offer_id)
 	var ranking_result := {}
 	if is_instance_valid(ranking):
 		ranking_result = ranking.call(&"submit_run", {
@@ -59,6 +60,7 @@ func settle_success(run_data: Dictionary, contract: Dictionary) -> Dictionary:
 			&"kills": run_data.get(&"kills", 0),
 			&"recovered_value": recovered,
 			&"reward_multiplier": reward_multiplier,
+			&"penalty_score": int(contract.get(&"penalty_score", 0)),
 		})
 	var result := {
 		&"success": true,
@@ -71,6 +73,29 @@ func settle_success(run_data: Dictionary, contract: Dictionary) -> Dictionary:
 	}
 	operation_settled.emit(result)
 	return result
+
+
+func _roll_blueprint(contract: Dictionary) -> StringName:
+	var table: Array = contract.get(&"region_drop_table", [])
+	if table.is_empty():
+		return config.call(&"blueprint_for", StringName(contract.get(&"region_id", &"ruined_city")))
+	var high_grade_multiplier := float(contract.get(&"high_grade_drop_multiplier", 1.0))
+	var total_weight := 0.0
+	var weights := PackedFloat32Array()
+	for entry in table:
+		var weight := maxf(0.0, float(entry.get(&"weight", 0.0)))
+		if int(entry.get(&"grade", 1)) >= 2:
+			weight *= high_grade_multiplier
+		weights.append(weight)
+		total_weight += weight
+	if total_weight <= 0.0:
+		return &""
+	var roll := random.randf_range(0.0, total_weight)
+	for index in table.size():
+		roll -= weights[index]
+		if roll <= 0.0:
+			return StringName(table[index].get(&"blueprint_id", &""))
+	return StringName(table.back().get(&"blueprint_id", &""))
 
 
 func settle_failure(run_data: Dictionary, contract: Dictionary) -> Dictionary:

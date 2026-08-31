@@ -9,6 +9,7 @@ var player_target: Node
 var config: Resource
 var delay_remaining: float = 0.0
 var last_health: float = 0.0
+var recovery_multiplier: float = 1.0
 
 
 func configure(new_player_target: Node, new_config: Resource) -> bool:
@@ -31,6 +32,10 @@ func configure(new_player_target: Node, new_config: Resource) -> bool:
 	return true
 
 
+func set_recovery_multiplier(multiplier: float) -> void:
+	recovery_multiplier = maxf(0.0, multiplier)
+
+
 func _process(delta: float) -> void:
 	advance(delta)
 
@@ -46,7 +51,7 @@ func advance(delta: float) -> float:
 	if delay_remaining > 0.0 or current <= 0.0 or current >= ceiling:
 		return 0.0
 	var healed := minf(
-		float(config.get("healing_per_second")) * maxf(0.0, delta),
+		float(config.get("healing_per_second")) * recovery_multiplier * maxf(0.0, delta),
 		ceiling - current
 	)
 	if healed <= 0.0:
@@ -65,6 +70,7 @@ func get_snapshot() -> Dictionary:
 			float(config.get("maximum_recovery_ratio")) if config != null else 0.0
 		),
 		&"recovering": delay_remaining <= 0.0,
+		&"recovery_multiplier": recovery_multiplier,
 	}
 
 

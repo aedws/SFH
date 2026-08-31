@@ -36,29 +36,41 @@ func submit_run(result: Dictionary) -> Dictionary:
 	var condition_key := String(result.get(&"condition_key", ""))
 	if condition_key.is_empty():
 		return {&"accepted": false, &"reason": "조건 키 없음"}
+	if int(result.get(&"penalty_score", 0)) < int(policy.get("minimum_penalty_score")):
+		return {&"accepted": false, &"reason": "최소 페널티 점수 미달"}
 	var score := calculate_score(result)
 	var entry := {
 		&"score": score,
 		&"elapsed_seconds": float(result.get(&"elapsed_seconds", 0.0)),
 		&"kills": int(result.get(&"kills", 0)),
 		&"recovered_value": int(result.get(&"recovered_value", 0)),
+		&"penalty_score": int(result.get(&"penalty_score", 0)),
 		&"timestamp": int(Time.get_unix_time_from_system()),
 	}
-	var entries: Array = entries_by_condition.get(condition_key, [])
-	entries.append(entry)
-	entries.sort_custom(func(a, b): return float(a[&"score"]) > float(b[&"score"]))
+	var ladders: Dictionary = entries_by_condition.get(condition_key, {})
 	var maximum_entries := int(policy.get("maximum_entries_per_condition"))
-	if entries.size() > maximum_entries:
-		entries.resize(maximum_entries)
-	entries_by_condition[condition_key] = entries
+	var ranks := {}
+	for ranking_name in policy.get("ranking_ids"):
+		var ranking_id := StringName(ranking_name)
+		var entries: Array = ladders.get(ranking_id, [])
+		var ranking_entry := entry.duplicate(true)
+		ranking_entry[&"ranking_id"] = ranking_id
+		entries.append(ranking_entry)
+		entries.sort_custom(func(a, b): return bool(policy.call(&"ranks_before", ranking_id, a, b)))
+		if entries.size() > maximum_entries:
+			entries.resize(maximum_entries)
+		ladders[ranking_id] = entries
+		ranks[ranking_id] = entries.find(ranking_entry) + 1
+	entries_by_condition[condition_key] = ladders
 	if persistence_enabled:
 		_save()
-	ranking_updated.emit(condition_key, entries.duplicate(true))
+	ranking_updated.emit(condition_key, get_entries(condition_key, &"recovered_value"))
 	return {
 		&"accepted": true,
 		&"condition_key": condition_key,
 		&"score": score,
-		&"rank": entries.find(entry) + 1,
+		&"rank": int(ranks.get(&"recovered_value", 0)),
+		&"ranks": ranks,
 	}
 
 
@@ -66,9 +78,11 @@ func calculate_score(result: Dictionary) -> float:
 	return float(policy.call(&"calculate_score", result)) if policy != null else 0.0
 
 
-func get_entries(condition_key: String) -> Array[Dictionary]:
+func get_entries(condition_key: String, ranking_id: StringName = &"recovered_value") -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	for entry in entries_by_condition.get(condition_key, []):
+	var ladders: Variant = entries_by_condition.get(condition_key, {})
+	var source: Array = ladders.get(ranking_id, []) if ladders is Dictionary else ladders
+	for entry in source:
 		result.append((entry as Dictionary).duplicate(true))
 	return result
 
@@ -80,6 +94,8 @@ func get_snapshot() -> Dictionary:
 		&"maximum_entries_per_condition": (
 			int(policy.get("maximum_entries_per_condition")) if policy != null else 0
 		),
+		&"ranking_ids": policy.get("ranking_ids") if policy != null else PackedStringArray(),
+		&"minimum_penalty_score": int(policy.get("minimum_penalty_score")) if policy != null else 0,
 	}
 
 
@@ -96,3 +112,18 @@ func _load() -> void:
 	var parsed = JSON.parse_string(file.get_as_text()) if file != null else null
 	if parsed is Dictionary:
 		entries_by_condition = parsed
+		_migrate_legacy_entries()
+
+
+func _migrate_legacy_entries() -> void:
+	for condition_key in entries_by_condition.keys():
+		var legacy: Variant = entries_by_condition[condition_key]
+		if not legacy is Array:
+			continue
+		var ladders := {}
+		for ranking_name in policy.get("ranking_ids"):
+			var ranking_id := StringName(ranking_name)
+			var entries: Array = (legacy as Array).duplicate(true)
+			entries.sort_custom(func(a, b): return bool(policy.call(&"ranks_before", ranking_id, a, b)))
+			ladders[ranking_id] = entries
+		entries_by_condition[condition_key] = ladders

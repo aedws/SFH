@@ -5,6 +5,8 @@ signal weapon_runtime_changed(snapshot: Dictionary)
 
 @export var projectile_scene: PackedScene
 @export var fallback_target_group: StringName = &"enemies"
+@export var primary_attack_action: StringName = &"primary_attack"
+@export var requires_primary_attack: bool = true
 
 var projectile_parent: Node2D
 var equipment_provider: Node
@@ -92,6 +94,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	cooldown -= delta
+	if requires_primary_attack and not Input.is_action_pressed(primary_attack_action):
+		burst_remaining = 0
+		return
 	if cooldown > 0.0:
 		return
 	if burst_remaining > 0:
@@ -114,6 +119,19 @@ func _process(delta: float) -> void:
 		if burst_remaining > 0
 		else _modified_interval(float(current_balance.get(&"fire_interval_sec", 0.72)))
 	)
+
+
+func try_fire_once() -> bool:
+	if cooldown > 0.0:
+		return false
+	var target := _find_nearest_enemy()
+	if target == null:
+		return false
+	burst_direction = global_position.direction_to(target.global_position)
+	_fire_pattern(burst_direction)
+	burst_remaining = maxi(0, int(current_balance.get(&"burst_count", 1)) - 1)
+	cooldown = _modified_interval(float(current_balance.get(&"fire_interval_sec", 0.72)))
+	return true
 
 
 func apply_level(level: int) -> void:
@@ -153,6 +171,8 @@ func get_runtime_snapshot() -> Dictionary:
 		balance_provider.get("current_source_label") if balance_provider != null else "내장 기본값"
 	)
 	result[&"targeting_mode"] = &"smart_weighted" if targeting_policy != null else &"nearest"
+	result[&"fire_input_action"] = primary_attack_action
+	result[&"hold_to_fire"] = requires_primary_attack
 	result[&"targeting_policy"] = (
 		targeting_policy.call(&"get_snapshot") if targeting_policy != null else {}
 	)
@@ -165,7 +185,7 @@ func _find_nearest_enemy() -> Node2D:
 	)
 	var candidates := _target_candidates()
 	if targeting_policy != null:
-		return targeting_policy.call(&"select_target", global_position, candidates, target_range)
+		return targeting_policy.call(&"select_target_for_mode", _resolved_targeting_mode(), global_position, candidates, target_range)
 	var nearest: Node2D
 	var nearest_distance_squared := target_range * target_range
 	for candidate in candidates:
@@ -183,6 +203,13 @@ func _target_candidates() -> Array:
 	if is_instance_valid(target_provider):
 		return target_provider.call(&"get_active_targets")
 	return get_tree().get_nodes_in_group(fallback_target_group)
+
+
+func _resolved_targeting_mode() -> StringName:
+	var configured := StringName(current_balance.get(&"smart_targeting_mode", &""))
+	if configured in [&"nearest", &"highest_health", &"elite"]:
+		return configured
+	return &"elite" if active_weapon_id == &"service_pistol" else &"nearest"
 
 
 func _fire_pattern(base_direction: Vector2) -> void:

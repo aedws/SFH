@@ -34,10 +34,10 @@ hide:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>69%</b>
+        <b>93%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="69"><i style="width: 69%"></i></div>
-      <p>공개 기획 원문 재대조 · 입력·전투 3× · 타게팅·탈출 2× · 기타 1×</p>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="93"><i style="width: 93%"></i></div>
+      <p>우선순위 10개 구현 완료 · 입력·전투 3× · 타게팅·탈출 2× · 기타 1×</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
       <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
     </div>
@@ -50,7 +50,7 @@ hide:
       </a>
       <div class="sfh-operation-meta" aria-label="현재 플레이 빌드 요약">
         <span><b>3</b><small>MAP TIERS</small></span>
-        <span><b>1·2·3·⇧·Q·F</b><small>ACTIVE INPUTS</small></span>
+        <span><b>LMB·1~9·⇧·Q·F</b><small>ACTIVE INPUTS</small></span>
         <span><b>PASS</b><small>WEB BUILD</small></span>
       </div>
     </div>
@@ -69,17 +69,17 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 19 TOPICS</span><span>기획 진행도 69% · 원문 재대조</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 20 TOPICS</span><span>기획 진행도 93% · 우선순위 구현</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>1 UPDATE BUNDLES &middot; BUILD 0 &middot; IMPROVE 0 &middot; CHANGE 1 &middot; FIX 0</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>2 UPDATE BUNDLES &middot; BUILD 7 &middot; IMPROVE 3 &middot; CHANGE 5 &middot; FIX 0</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>1</b><small>UPDATE BUNDLE</small></span>
-      <span><b>0</b><small>BUILD</small></span>
-      <span><b>0</b><small>IMPROVE</small></span>
-      <span><b>1</b><small>CHANGE</small></span>
+      <span><b>2</b><small>UPDATE BUNDLES</small></span>
+      <span><b>7</b><small>BUILD</small></span>
+      <span><b>3</b><small>IMPROVE</small></span>
+      <span><b>5</b><small>CHANGE</small></span>
       <span><b>0</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -96,6 +96,42 @@ hide:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">최신 기획 기준 진행률·개발 순서</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>새로 명시된 입력·타게팅·탈출 조건을 반영하고 남은 작업을 플레이 규격 차이부터 정렬했습니다.</p><a href="development-status/#_1">상세 산정 근거 →</a></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 2</small><b>자동 전투를 직접 운용으로 · 탈출·경제·랭킹 완결 · 진행률 93%</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 자동으로 흘러가던 프로토타입을 선택과 손실이 있는 작전으로 전환</strong>
+          <ul>
+            <li>항상 자동 발사하던 기본기가 좌클릭을 누르는 동안만 발동하며, 액티브 입력은 1~3 고정에서 1~9 슬롯·런타임 재설정 계약으로 확장됐습니다.</li>
+            <li>한 개 가중치 타게팅은 최근접·최대 HP·엘리트·밀집 중심·이동 벡터 정책으로 분리돼 무기와 스킬이 목적별로 선택합니다.</li>
+            <li>탈출 범위를 벗어나면 초기화되던 방어전이 남은 시간 일시정지·재개로 바뀌고, 사망 시 작전 장착품도 소실됩니다.</li>
+            <li>투입 비용은 보스 보장·고등급 가중치·지역 드랍표로 실제 파밍 결과에 연결되고, 파산 시 무료 기본 계약과 무장이 복구됩니다.</li>
+            <li>무기 전투 태그·등급별 스킬 변형과 감전→점멸 트리거를 연결하고, 회복·시야·탈출 페널티와 가치·시간·처치 3종 랭킹을 분리했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>남은 7%</b><span>사용자용 키 설정 저장, 구매품의 I/U 영구 인벤토리 연결, 온라인 검증 랭킹, 4~9번 콘텐츠와 고유 보스가 후속 범위입니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 7</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">좌클릭 홀드·1~9 슬롯</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>공격 의사와 발사 주기는 분리하고 9개 입력 슬롯과 런타임 재설정 계약을 추가했습니다.</p><a href="features/combat-skills/">전투 입력 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">목적별 스마트 타게팅</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>단일·범위·이동·자기 스킬이 서로 다른 대상 해석을 데이터로 선택합니다.</p><a href="features/smart-targeting/">정책표 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">탈출 일시정지·사망 손실</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>방어 시간을 보존해 재개하고 실패 작전의 장착 로드아웃도 정산 범위에 포함했습니다.</p><a href="features/extraction-defense-results/">탈출·정산 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">투자 기반 보스·드랍·무료 복구</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>비용·지역·난이도가 보스, 고등급, 드랍표에 반영되고 파산 시 기본 계약을 보장합니다.</p><a href="features/operation-contracts/">작전 계약 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">영구 상점 등록</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>도면 성공 반출과 상점 등록·구매 가능 상태를 프로필에 영구 저장합니다.</p><a href="features/hub-economy/">거점 경제 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">태그·등급·상태 연계</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>활성 무기 태그가 스킬을 제한하고 등급 수정자와 shock→ionized 연계를 적용합니다.</p><a href="features/weapons/">무기 계약 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">페널티·3종 랭킹</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>회복·시야·탈출 위험을 합성하고 가치·최단 시간·처치를 별도 순위로 저장합니다.</p><a href="features/penalty-ranking/">위험·랭킹 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 3</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">작전 선택 정보 밀도</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>무료 지원, 보스 보장, 고등급 배율과 회복 페널티를 출격 전에 표시합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">스킬 호환 피드백</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Q 교체 직후 태그 불일치 슬롯을 HUD에서 바로 식별합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">결과 순위 가독성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>종합 점수 하나 대신 가치·시간·처치 순위를 결과 화면에 함께 표시합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">자동 발사 → 좌클릭 홀드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>무조준 원칙은 유지하되 공격 시작과 중지는 플레이어가 통제합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">가중 대상 → 명시 정책</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>행동 성격에 맞는 대상 규칙을 정의 단위로 선택합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">탈출 초기화 → 시간 보존</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>구역 이탈을 실패 초기화가 아닌 방어전 일시정지로 처리합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">종합 점수 → 3개 사다리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>서로 다른 플레이 목표가 한 공식에 묻히지 않도록 순위를 분리했습니다.</p></div></details>
         </div>
       </div>
     </details>

@@ -8,3 +8,4 @@ base_blueprint_chance = 0.12
 kills_per_salvage = 12
 minimum_salvage = 1
 blueprint_by_region = {&"industrial_district": &"assault_rifle_blueprint", &"research_complex": &"tactical_vest_blueprint", &"ruined_city": &"assault_rifle_blueprint"}
+shop_offer_by_blueprint = {&"assault_rifle_blueprint": &"buy_assault_rifle", &"magnetic_field_blueprint": &"unlock_magnetic_field", &"tactical_vest_blueprint": &"buy_tactical_vest"}

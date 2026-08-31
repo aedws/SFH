@@ -25,6 +25,8 @@ var spawn_budget_is_exhausted: bool = false
 var tracked_enemies: Array[Node] = []
 var enemy_stat_multipliers: Dictionary = {}
 var reinforcement_pause_sources: Dictionary = {}
+var operation_spawn_rules: Dictionary = {}
+var boss_spawned: bool = false
 var random := RandomNumberGenerator.new()
 
 
@@ -40,7 +42,8 @@ func configure(
 	enable_enemy_armor: bool = true,
 	enable_enemy_status_ui: bool = true,
 	new_spawn_config: Resource = null,
-	new_enemy_stat_multipliers: Dictionary = {}
+	new_enemy_stat_multipliers: Dictionary = {},
+	new_operation_spawn_rules: Dictionary = {}
 ) -> bool:
 	if (
 		not is_instance_valid(new_target)
@@ -64,6 +67,8 @@ func configure(
 	enemy_status_ui_enabled = enable_enemy_status_ui
 	spawn_config = new_spawn_config
 	enemy_stat_multipliers = new_enemy_stat_multipliers.duplicate(true)
+	operation_spawn_rules = new_operation_spawn_rules.duplicate(true)
+	boss_spawned = false
 	for enemy in tracked_enemies:
 		if is_instance_valid(enemy):
 			enemy.queue_free()
@@ -116,7 +121,8 @@ func _process(delta: float) -> void:
 	)
 	var spawned_count := 0
 	for _index in range(batch_size):
-		if _spawn_enemy():
+		var spawn_as_boss := bool(operation_spawn_rules.get(&"boss_spawn_guaranteed", false)) and not boss_spawned
+		if _spawn_enemy(spawn_as_boss):
 			spawned_count += 1
 	if spawned_count > 0:
 		reinforcement_count += 1
@@ -132,7 +138,7 @@ func _process(delta: float) -> void:
 	reinforcement_cooldown = float(spawn_config.get("reinforcement_interval_seconds"))
 
 
-func _spawn_enemy() -> bool:
+func _spawn_enemy(spawn_as_boss: bool = false) -> bool:
 	var angle := random.randf_range(0.0, TAU)
 	var configured_radius := float(spawn_config.get("spawn_radius"))
 	var distance := random.randf_range(configured_radius * 0.85, configured_radius * 1.15)
@@ -143,10 +149,10 @@ func _spawn_enemy() -> bool:
 			target.global_position,
 			configured_radius * 0.5
 		)
-	return spawn_enemy_at(spawn_position) != null
+	return spawn_enemy_at(spawn_position, &"", spawn_as_boss) != null
 
 
-func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"") -> Node2D:
+func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"", spawn_as_boss: bool = false) -> Node2D:
 	if enemy_scene == null or spawn_config == null:
 		push_error("EnemySpawner에 Enemy Scene 또는 등급 정책이 지정되지 않았습니다.")
 		return null
@@ -165,6 +171,12 @@ func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"") -> 
 		enemy.free()
 		return null
 
+	if spawn_as_boss:
+		enemy.set("max_health", float(enemy.get("max_health")) * 12.0)
+		enemy.set("max_armor", float(enemy.get("max_armor")) * 6.0)
+		enemy.set("contact_damage", float(enemy.get("contact_damage")) * 1.8)
+		enemy.set("priority_rank", 5)
+		boss_spawned = true
 	enemy_parent.add_child(enemy)
 	enemy.global_position = resolved_position
 	enemy.set_meta(&"room_encounter_id", encounter_id)
@@ -227,6 +239,8 @@ func get_snapshot() -> Dictionary:
 		&"reinforcement_paused": not reinforcement_pause_sources.is_empty(),
 		&"reinforcement_pause_sources": reinforcement_pause_sources.keys(),
 		&"enemy_stat_multipliers": enemy_stat_multipliers.duplicate(true),
+		&"boss_spawn_guaranteed": bool(operation_spawn_rules.get(&"boss_spawn_guaranteed", false)),
+		&"boss_spawned": boss_spawned,
 		&"crowd_separation_enabled": _crowd_separation_enabled(),
 		&"minimum_spawn_spacing": (
 			float(crowd_config.get("minimum_spawn_spacing"))

@@ -6,6 +6,8 @@ extends Resource
 @export_range(0.0, 1000.0, 0.1) var kill_weight := 10.0
 @export_range(0.0, 1000.0, 0.1) var reward_multiplier_weight := 100.0
 @export_range(0.0, 100.0, 0.01) var elapsed_seconds_penalty := 0.25
+@export_range(0, 1000, 1) var minimum_penalty_score := 10
+@export var ranking_ids := PackedStringArray(["recovered_value", "elapsed_seconds", "kills"])
 
 
 func is_valid() -> bool:
@@ -15,6 +17,7 @@ func is_valid() -> bool:
 		and kill_weight >= 0.0
 		and reward_multiplier_weight >= 0.0
 		and elapsed_seconds_penalty >= 0.0
+		and not ranking_ids.is_empty()
 	)
 
 
@@ -25,3 +28,21 @@ func calculate_score(result: Dictionary) -> float:
 		+ float(result.get(&"reward_multiplier", 1.0)) * reward_multiplier_weight
 		- float(result.get(&"elapsed_seconds", 0.0)) * elapsed_seconds_penalty
 	)
+
+
+func metric_value(ranking_id: StringName, result: Dictionary) -> float:
+	match ranking_id:
+		&"elapsed_seconds":
+			return float(result.get(&"elapsed_seconds", INF))
+		&"kills":
+			return float(result.get(&"kills", 0))
+		_:
+			return float(result.get(&"recovered_value", 0))
+
+
+func ranks_before(ranking_id: StringName, first: Dictionary, second: Dictionary) -> bool:
+	var first_value := metric_value(ranking_id, first)
+	var second_value := metric_value(ranking_id, second)
+	if is_equal_approx(first_value, second_value):
+		return int(first.get(&"timestamp", 0)) < int(second.get(&"timestamp", 0))
+	return first_value < second_value if ranking_id == &"elapsed_seconds" else first_value > second_value

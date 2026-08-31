@@ -9,6 +9,11 @@ extends Resource
 	&"industrial_district": &"assault_rifle_blueprint",
 	&"research_complex": &"tactical_vest_blueprint",
 }
+@export var shop_offer_by_blueprint: Dictionary = {
+	&"assault_rifle_blueprint": &"buy_assault_rifle",
+	&"tactical_vest_blueprint": &"buy_tactical_vest",
+	&"magnetic_field_blueprint": &"unlock_magnetic_field",
+}
 
 
 func is_valid() -> bool:
@@ -18,8 +23,13 @@ func is_valid() -> bool:
 		and kills_per_salvage > 0
 		and minimum_salvage >= 0
 		and not blueprint_by_region.is_empty()
+		and not shop_offer_by_blueprint.is_empty()
 	)
 
 
 func blueprint_for(region_id: StringName) -> StringName:
 	return StringName(blueprint_by_region.get(region_id, &"assault_rifle_blueprint"))
+
+
+func shop_offer_for(blueprint_id: StringName) -> StringName:
+	return StringName(shop_offer_by_blueprint.get(blueprint_id, &""))

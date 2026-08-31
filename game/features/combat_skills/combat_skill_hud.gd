@@ -72,7 +72,9 @@ func _on_skill_states_changed(states: Array[Dictionary]) -> void:
 		var ready := bool(state[&"ready"])
 		var current_charges := int(state.get(&"current_charges", -1))
 		var maximum_charges := int(state.get(&"maximum_charges", -1))
-		if maximum_charges < 0:
+		if not bool(state.get(&"weapon_tags_ready", true)):
+			status_labels[index].text = "무기 태그 불일치"
+		elif maximum_charges < 0:
 			status_labels[index].text = "READY" if ready else "재사용 %.1fs" % remaining
 		elif ready:
 			status_labels[index].text = "READY · EN %d · %d/%d" % [

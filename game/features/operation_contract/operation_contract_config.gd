@@ -3,6 +3,11 @@ extends Resource
 
 @export var regions: Array[Dictionary] = []
 @export var difficulties: Array[Dictionary] = []
+@export_range(0, 1000000, 1) var boss_guarantee_minimum_cost: int = 600
+@export var bankruptcy_protection_enabled: bool = true
+@export var free_tier_id: StringName = &"small"
+@export var free_region_id: StringName = &"ruined_city"
+@export var free_difficulty_id: StringName = &"standard"
 
 
 func is_valid() -> bool:
@@ -17,6 +22,11 @@ func get_region(region_id: StringName) -> Dictionary:
 
 func get_difficulty(difficulty_id: StringName) -> Dictionary:
 	return _find(difficulties, &"difficulty_id", difficulty_id)
+
+
+func get_region_drop_table(region_id: StringName) -> Array[Dictionary]:
+	var region := get_region(region_id)
+	return (region.get(&"drop_table", []) as Array[Dictionary]).duplicate(true)
 
 
 func _entries_are_valid(entries: Array[Dictionary], id_key: StringName) -> bool:
