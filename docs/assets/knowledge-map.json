@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "updated": "2026-09-01",
   "root": {
     "id": "sfh",
@@ -60,6 +60,7 @@
             "description": "무엇을 만들고 어디까지 구현하는가",
             "documents": [
               {"label": "게임 설계", "source": "design/index.md", "route": "design/", "summary": "설계 문서 진입점"},
+              {"label": "Master GDD 구현 대조", "source": "design/master-gdd-alignment.md", "route": "design/master-gdd-alignment/", "summary": "확정 기획·72% 산식·마일스톤 차이"},
               {"label": "게임 개요", "source": "design/game-overview.md", "route": "design/game-overview/", "summary": "장르·캐치프레이즈·핵심 노선"},
               {"label": "MVP 범위", "source": "design/mvp-scope.md", "route": "design/mvp-scope/", "summary": "최소 구현과 후속 범위"}
             ]

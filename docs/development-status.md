@@ -17,30 +17,33 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 45 TOPICS</span><span>56 DOCS · MOBILE E2E</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 46 TOPICS</span><span>57 DOCS · MASTER GDD</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
-    <span><small>PLANNING PROGRESS · 2026-08-31</small><strong>현재 기획 진행도</strong></span>
-    <b>96%</b>
+    <span><small>MASTER GDD ALIGNED · 2026-09-01</small><strong>현재 기획 진행도</strong></span>
+    <b>72%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-  <p>2026-08-31 공개 기획 원문의 우선순위 10개를 구현·검증한 뒤, 남은 영구 상점 UI·온라인 서비스·추가 콘텐츠 범위를 제외해 계산했습니다.</p>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="72"><i style="width: 72%"></i></div>
+  <p>새 Master GDD의 8개 확정 시스템을 저장소와 재대조했습니다. 자유 스킬 배치·현장 전리품 교체·세션 룬 환전·비동기 시즌 범위가 추가되어 기존 96%에서 재산정했습니다.</p>
 </div>
 
-권위 있는 기획 원본은 로그인 없이 열리는 [게시된 SFH 프로젝트 노션](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-08-31 공개 페이지의 실제 렌더링 본문을 읽어 최신 조작·타게팅·탈출·경제 요구를 확인했습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 요구사항으로 다루되, 플레이의 핵심인 입력·전투는 ×3, 타게팅과 탈출은 ×2로 더 크게 반영했습니다. 마일스톤 체크박스는 완료 증거로 사용하지 않고 실제 코드·데이터·자동 검증만 판정 근거로 삼습니다.
+권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-01 공개 페이지의 실제 렌더링 본문 `0~8장`을 읽었습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 확정 요구로 처리합니다. 핵심 플레이 흐름은 ×2, 기반·확장 서비스는 ×1을 적용하며 실제 코드·데이터·자동 검증만 완료 근거로 사용합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
 | 기술 기반 | ×1 | 100% | Godot 4.x·GDScript·CharacterBody2D·Area2D·TileMapLayer·Camera2D와 기능별 Node/Scene 경계 구현 |
-| 입력·전투 자원 | ×3 | 100% | K 화면에서 이동·대시·Q·F·좌클릭·1~9·I/U/E/M 22개 Action을 변경·초기화하고 재실행 뒤 유지. 확장 콘텐츠는 별도 범위 |
+| 입력·자유 스킬 바인딩 | ×2 | 75% | 22개 Action 재설정·저장, 좌클릭 홀드와 1~9 슬롯 구현. 스킬 정의를 임의 Action에 배치하는 기능은 없음 |
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
-| 탈출·정산 | ×2 | 94% | 전투 방 완주 조기 개방, F 방어전, 구역 이탈 일시정지·재개, 성공 영구 등록, 사망 런 획득물·장착 로드아웃 소실 구현. 전리품 종류 확장이 남음 |
-| 메타·경제 | ×1 | 85% | 보스 보장·고등급·지역 드랍·무료 진입·영구 상점·태그 변형·상태 연계·요구 페널티·3종 로컬 랭킹 구현. 구매품 I/U 연결과 서버 랭킹이 남음 |
+| 로비 인베스트먼트·타겟 파밍 | ×2 | 65% | 맵·지역·난이도·페널티·상점 구현. 캐릭터와 완성형 무기·스킬·유틸리티 투자 UI가 남음 |
+| 전리품 2대 분류·현장 파밍 | ×2 | 25% | 크레딧·도면·상점 등록 구현. 현장 장비/스킬 교체, 세션 룬·코어·유물 소켓과 자동 환전은 없음 |
+| 가변 태그·등급 확장 | ×1 | 80% | 동적 태그·등급·불일치 비활성·메커니즘 변형 구현. 무기별 독립 스킬 프리셋이 남음 |
+| 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
+| 비동기 랭킹·시즌 보상 | ×1 | 40% | 동일 조건 3대 로컬 랭킹 구현. 서버 검증과 주간 칭호·오라 보상은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`입니다. 현재 결과는 `(100×1 + 100×3 + 95×2 + 94×2 + 85×1) ÷ 9 ≈ 96%`입니다. 같은 기능을 코어 루프와 세부 시스템 양쪽에 중복 가산하지 않았습니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 13`입니다. 현재 결과는 `(100×1 + 75×2 + 95×2 + 65×2 + 25×2 + 80×1 + 95×2 + 40×1) ÷ 13 ≈ 72%`입니다. 하락은 코드 퇴행이 아니라 Master GDD 확정 범위 확장과 완료 판정 강화 때문입니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -48,37 +51,37 @@ tags:
 
 | Phase | 판정 | 저장소 대조 |
 |---|---|---|
-| Phase 1 · 이동·좌클릭·1~9·타게팅 | 완료 | 좌클릭 홀드, 1~9 입력, K 키 설정·영구 저장, 최근접·HP·엘리트·밀집·이동 벡터 정책 구현 |
-| Phase 2 · Q 교체·AP·쿨타임 | 완료 | 주·보조 교체와 무기 특색, 에너지·충전·쿨타임 및 HUD가 연결됨 |
-| Phase 3 · 탈출·정산 | 완료 | 구역 이탈 일시정지·재개, 성공 등록·정산과 사망 로드아웃 소실까지 자동 검증 |
-| Phase 4 · 태그·투자·해금 상점 | 기능 완료·UI 후속 | 태그 발동 제한·등급 변형·투자 드랍·무료 진입·상점 등록 구현. 구매품 I/U 생성 화면이 남음 |
-| Phase 5 · 페널티·랭킹 I/O | 로컬 완료·온라인 후속 | 회복·시야·탈출 페널티와 가치·시간·처치 로컬 랭킹 구현. 서버 검증·신원·부정 방지가 남음 |
+| Phase 1 · 이동·타게팅·자유 바인딩 | 부분 완료 | 이동·타게팅·키 재설정은 구현. 스킬↔Action 자유 배치가 없음 |
+| Phase 2 · Q·태그·AP·쿨타임 | 완료 | 주·보조 교체, 태그 호환성, 에너지·충전·개별 쿨타임 구현 |
+| Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
+| Phase 4 · 현장 교체·룬 소켓·환전 | 미완료 | 장비/스킬 현장 드랍·즉시 교체와 세션 룬 자동 환전이 없음 |
+| Phase 5 · 로비 4대 세팅·계약·상점 | 부분 완료 | 계약·페널티·상점은 구현. 캐릭터·무기·스킬·유틸리티 선택 흐름이 불완전 |
+| Phase 6 · 비동기 랭킹·시즌 보상 | 로컬 기반 | 3대 로컬 보드만 구현. 서버 제공자와 칭호·오라 보상이 없음 |
 
-### 2026-08-31 구현 후 재대조
+### 2026-09-01 Master GDD 재대조
 
-- **입력:** 항상 자동 발사 → 좌클릭 홀드, 1~3 고정 → 1~9 슬롯·런타임 재설정 계약으로 변경했습니다.
-- **타게팅:** 하나의 가중 공식 → 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상 정책으로 분리했습니다.
-- **탈출:** 범위 이탈 시 취소·초기화 → 남은 시간 일시정지·재진입 재개로 변경했습니다.
-- **정산:** 런 획득물 손실 중심 → 사망 시 착용 로드아웃까지 소실하고 성공 도면은 영구 상점 등록으로 연결했습니다.
-- **투자:** 비용·배율 표시 중심 → 보스 확정·고등급 가중치·지역 드랍표·파산 방지 무료 기본 계약으로 연결했습니다.
-- **빌드:** 장비 태그 데이터 중심 → 실제 스킬 발동 제한·등급별 메커니즘 변경과 `shock`→점멸→`ionized` 상태 연계로 연결했습니다.
-- **리스크·경쟁:** 적 강화·종합 점수 중심 → 회복·시야·탈출 페널티와 회수 가치·최단 시간·처치 수 세 랭킹으로 분리했습니다.
+- **새 확정:** 단순 키 변경이 아닌 스킬과 Action의 자유로운 1:1 배치가 필요합니다.
+- **새 확정:** 무기·스킬·도면은 현장 교체와 영구 해금, 룬·코어·유물은 세션 증폭과 탈출 자동 환전으로 분리됩니다.
+- **새 확정:** 로비 준비는 캐릭터·무기·스킬·유틸리티 네 범주를 모두 투자 대상으로 다룹니다.
+- **새 확정:** 랭킹은 비동기 공식 기록과 주간 시즌 칭호·오라 보상까지 포함합니다.
+- **유지:** 스마트 타게팅, Q 교체, AP·쿨타임, 탈출 일시정지·재개, 파산 방지 기본 무장은 기존 구현 방향과 일치합니다.
 
 ### 앞으로 해야 할 작업
 
 | 우선순위 | 작업 | 현재 차이 | 완료 조건 |
 |---:|---|---|---|
-| 1 | 상점 구매품→I/U 영구 인벤토리 | 도면 등록·견적·구매·프로필 저장 구현 | 구매 직후 장비·스킬 아이템이 가방/장비 편집에 생성 |
-| 2 | 온라인 조건부 랭킹 | 3종 로컬 저장·이전 데이터 이관 구현 | 서버 신원·비동기 제출·검증·부정 방지 제공자 교체 |
-| 3 | 4~9 스킬 콘텐츠 | 슬롯과 입력 계약만 확보 | 전투 태그·타게팅·자원·상태 연계를 사용하는 6개 정의 추가 |
-| 4 | 고유 보스 콘텐츠 | 투자 조건의 강화 보스 개체 구현 | 지역별 Scene·AI·고유 도면·전투 텔레그래프 추가 |
-| 5 | 밸런스·실기 최적화 | 자동 성능 예산 통과 | Google Sheets 실시간 튜닝과 저사양 GPU·브라우저 실기 인증 |
+| 1 | 전리품 2대 분류 계약 | 크레딧·도면 중심 | 영구 자산형과 세션 증폭·환금형 정의·생명주기 분리 |
+| 2 | 현장 장비·스킬 획득/교체 | I/U 장착 기반만 존재 | 드랍→비교→즉시 교체→탈출 해금 E2E 통과 |
+| 3 | 세션 룬·코어·유물 | 영구 모듈·런 증강은 별도 존재 | 소켓 장착·런 한정 효과·탈출 자동 환전 연결 |
+| 4 | 완전 자유 스킬 바인딩 | 22 Action 키 재설정 구현 | 스킬 정의를 마우스·Space·Q·E·1~9 Action에 저장·교체 |
+| 5 | 로비 4대 세팅 | 맵·페널티·상점·소모품 일부 구현 | 캐릭터·무기·스킬·유틸리티 투자와 BEP 미리보기 연결 |
+| 6 | 비동기 랭킹·시즌 보상 | 3대 로컬 랭킹 구현 | 서버 검증 제공자와 주간 칭호·오라 보상 모듈 연결 |
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 7 · IMPROVE 13 · CHANGE 8 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 7 · IMPROVE 15 · CHANGE 12 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>13</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>4</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -117,7 +120,7 @@ tags:
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>Material 즉시 이동 뒤 최초 문서의 `base`가 남아 노드 경로가 중첩되던 404를 제거했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>모바일 위키 전면 최적화 · 전체 화면 검색 · 4단계 실브라우저 E2E</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -135,6 +138,27 @@ tags:
         <div class="sfh-group"><h3>⚡ 개선 · 6</h3><p>safe-area, 읽기 폭, 터치 목표, 검색, 표·코드, 고대비·감소 모션까지 반응형 CSS를 개선했습니다.</p></div>
         <div class="sfh-group"><h3>🧭 수정 · 3</h3><p>홈 정보 순서, 4·2·1열 문서맵, 최신 일일 묶음 기본 펼침 규칙을 사용자 동선 기준으로 수정했습니다.</p></div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 2</h3><p>모바일 검색 빈 화면과 1440px 헤더가 우측으로 101px 넘치던 문제를 실제 브라우저 측정으로 제거했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>Master GDD 재대조 · 진행률 72% · 확정 범위 재분류</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 2026-09-01 게시된 Master GDD 0~8장을 저장소 구현과 다시 대조했습니다.</strong>
+          <ul>
+            <li><b>입력:</b> 22개 Action의 키 변경은 구현됐지만, 원하는 스킬을 마우스·Space·Q·E·1~9에 배치하는 자유 바인딩은 별도 미완료입니다.</li>
+            <li><b>전리품:</b> 크레딧·도면·영구 상점은 있으나 현장 무기/스킬 교체, 룬·코어·유물의 세션 소켓과 탈출 자동 환전은 없습니다.</li>
+            <li><b>로비:</b> 맵·지역·난이도·페널티·소모품은 연결됐지만 캐릭터·무기·스킬·유틸리티 4대 투자 흐름은 불완전합니다.</li>
+            <li><b>랭킹:</b> 동일 조건 3대 로컬 보드는 있으나 비동기 서버 검증과 주간 칭호·오라 보상은 없습니다.</li>
+            <li><b>진행률:</b> 8개 확정 시스템, 핵심 ×2·기반/확장 ×1 산식으로 72%입니다. 기존 96% 대비 하락은 코드 퇴행이 아니라 확정 범위 확대입니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>출처</b><span>로그인 없이 게시된 SFH 프로젝트 Master GDD 실제 렌더링 본문 · 2026-09-01 확인.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 0</h3><p>상태 감사 결과만 반영했으며 누락 기능을 구현 완료로 표시하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>⚡ 개선 · 2</h3><p>확정 요구의 출처 추적성과 기획자·개발자 공통 우선순위를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>🧭 수정 · 4</h3><p>진행률 72%, 8개 시스템 근거표, 6개 Phase 판정, 6단계 후속 순서를 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>이전 기획 기준의 96%가 최신 Master GDD를 대표하던 상태 문서 오류를 수정했습니다.</p></div>
+        <p><a href="design/master-gdd-alignment/">Master GDD 상세 대조 →</a></p>
       </div>
     </details>
   </div>

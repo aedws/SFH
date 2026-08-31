@@ -34,10 +34,10 @@ hide:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>96%</b>
+        <b>72%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-      <p>우선순위 10개 구현 완료 · 입력·전투 3× · 타게팅·탈출 2× · 기타 1×</p>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="72"><i style="width: 72%"></i></div>
+      <p>Master GDD 8개 확정 시스템 재대조 · 현장 전리품·룬 순환·자유 바인딩·비동기 시즌 범위 반영</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
       <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
     </div>
@@ -76,14 +76,14 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>3 DAYS · 41 TOPICS</span><span>56 DOCS · MOBILE E2E</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>3 DAYS · 42 TOPICS</span><span>57 DOCS · MASTER GDD</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 7 · IMPROVE 13 · CHANGE 8 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 7 · IMPROVE 15 · CHANGE 12 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>13</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>4</b><small>FIX</small></span>
+      <span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 방 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
@@ -126,7 +126,7 @@ hide:
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>즉시 페이지 이동 후 상대 경로가 중첩되어 일부 노드가 404로 열리던 문제를 배포 루트 고정으로 차단했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>모바일 위키 전면 최적화 · 전체 화면 검색 · 4단계 실브라우저 E2E</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -144,6 +144,26 @@ hide:
         <div class="sfh-group"><h3>⚡ 개선 · 6</h3><p>안전 영역, 터치 목표, 본문 행 길이, 반응형 카드, 표·코드 스크롤, 고대비·감소 모션 대응을 개선했습니다.</p></div>
         <div class="sfh-group"><h3>🧭 수정 · 3</h3><p>검색을 전체 화면으로, 문서 맵을 4·2·1열로, 최신 묶음만 기본 펼침 상태로 수정했습니다.</p></div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 2</h3><p>모바일 검색 빈 화면과 데스크톱 헤더의 브라우저 플레이 버튼으로 생긴 101px 가로 넘침을 제거했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>Master GDD 재대조 · 진행률 72% · 전리품 순환 우선순위</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 기획자의 최신 Master GDD를 확정 원문으로 다시 읽고, 유사 기반이 아닌 완성된 플레이 흐름 기준으로 진행도를 재산정했습니다.</strong>
+          <ul>
+            <li>기존 96%는 확정 범위가 늘어난 현재 기획을 과대평가하므로 8개 시스템·가중치 13점 기준 <b>72%</b>로 수정했습니다.</li>
+            <li>새 핵심 차이는 스킬↔키 자유 배치, 현장 장비·스킬 교체, 세션 룬·코어·유물 소켓·자동 환전, 비동기 시즌 보상입니다.</li>
+            <li>Phase 2·3은 완료, Phase 1·5는 부분 완료, Phase 4는 미완료, Phase 6은 로컬 기반으로 판정했습니다.</li>
+            <li>다음 작업을 전리품 분류→현장 교체→세션 룬 순환→자유 바인딩→로비 4대 세팅→비동기 시즌 순으로 재배치했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>판정 원칙</b><span>Notion에 적힌 체크나 유사 클래스가 아니라 실제 코드·데이터·자동 검증으로 연결된 플레이 흐름만 완료로 인정합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 0</h3><p>이번 변경은 최신 기획 재대조와 개발 순서 정리이며 게임 기능을 완료 처리하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>⚡ 개선 · 2</h3><p>확정도 판정 근거와 기획자→개발자 후속 작업 추적성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>🧭 수정 · 4</h3><p>진행률, 8개 시스템 산식, 6개 Phase 판정, 다음 개발 순서를 Master GDD 기준으로 수정했습니다.</p></div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>이전 공개안 기준 96%가 최신 확정 범위를 반영하지 못하던 문서 불일치를 해소했습니다.</p></div>
+        <p><a href="design/master-gdd-alignment/">Master GDD 상세 대조 →</a></p>
       </div>
     </details>
   </div>

@@ -71,6 +71,7 @@ nav:
       - 위키 실시간 검색: getting-started/search-wiki.md
   - 게임 설계:
       - design/index.md
+      - Master GDD 구현 대조: design/master-gdd-alignment.md
       - 게임 개요: design/game-overview.md
       - MVP 범위: design/mvp-scope.md
       - 사이버펑크 비주얼 테마: design/cyberpunk-visual-theme.md
