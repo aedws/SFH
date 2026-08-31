@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 26 TOPICS</span><span>96% · K KEY MAPPING · CC0 VFX</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 27 TOPICS</span><span>96% · UI STATE E2E · 21 TRANSITIONS</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,14 +76,14 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>4 UPDATE BUNDLES &middot; BUILD 11 &middot; IMPROVE 7 &middot; CHANGE 7 &middot; FIX 1</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>5 UPDATE BUNDLES &middot; BUILD 12 &middot; IMPROVE 8 &middot; CHANGE 7 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>4</b><small>UPDATE BUNDLES</small></span>
-      <span><b>11</b><small>BUILD</small></span>
-      <span><b>7</b><small>IMPROVE</small></span>
+      <span><b>5</b><small>UPDATE BUNDLES</small></span>
+      <span><b>12</b><small>BUILD</small></span>
+      <span><b>8</b><small>IMPROVE</small></span>
       <span><b>7</b><small>CHANGE</small></span>
-      <span><b>1</b><small>FIX</small></span>
+      <span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>공개 기획 재대조 · 진행률 69% · 잔여 개발 순서 확정</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -190,6 +190,30 @@ tags:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">이동·대시 Action화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>물리 키 직접 조회를 제거해 재지정 값이 실제 조작에 반영됩니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 5</small><b>UI 상태 판정 E2E · 화면 경계·모달·HUD 비겹침</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>상태 계약</b> · 거점부터 성공·실패 복귀까지 21개 지점의 필수 표시·숨김 레이어를 정의했습니다.</li>
+            <li><b>공간 판정</b> · 1280×720 화면 경계와 미니맵·스킬·대시 HUD 교차를 계산합니다.</li>
+            <li><b>모달 판정</b> · K/I/U/E가 하나만 열리고 배경 HUD를 숨긴 채 게임을 정지하는지 확인합니다.</li>
+            <li><b>결함 수정</b> · 결과 오버레이 뒤에 남던 전투 HUD·미니맵·스킬·대시를 정산 진입에서 종료했습니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>자동화 경계</b><span>판정기는 읽기만 하고, E2E는 입력만 보내며, 실제 UI 전환은 Game 조립부가 소유합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">21개 UI 상태 판정기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>표시·숨김·정지·모달 수·장비 탭·화면 경계·HUD 비겹침을 하나의 상태 표로 검사합니다.</p><a href="../quality/e2e-play-session/">상태 계약 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">맥락 포함 실패 출력</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>어느 플레이 단계에서 어떤 레이어가 누수·이탈·겹침됐는지 즉시 확인합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">성공·실패 정산 HUD 누수</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>결과 화면에서는 활성 전투 UI 4종을 모두 숨기고 정산 정보만 유지합니다.</p></div></details>
         </div>
       </div>
     </details>
