@@ -159,6 +159,18 @@ func _validate_evidence(evidence: Dictionary, errors: PackedStringArray) -> void
 		var world_delta := float(evidence.get(&"world_delta", 0.0))
 		if world_delta < float(evidence[&"minimum_world_delta"]):
 			errors.append("행동 결과 이동량이 인지 하한보다 작습니다: %.1fpx" % world_delta)
+	if evidence.has(&"minimum_visual_intensity"):
+		var visual_intensity := float(evidence.get(&"visual_intensity", 0.0))
+		if visual_intensity < float(evidence[&"minimum_visual_intensity"]):
+			errors.append("이동 표현 강도가 인지 하한보다 작습니다: %.2f" % visual_intensity)
+	if evidence.has(&"minimum_trail_points"):
+		var trail_point_count := int(evidence.get(&"trail_point_count", 0))
+		if trail_point_count < int(evidence[&"minimum_trail_points"]):
+			errors.append("대시 궤적 표본이 부족합니다: %d개" % trail_point_count)
+	if evidence.has(&"minimum_camera_lead_pixels"):
+		var camera_lead_pixels := float(evidence.get(&"camera_lead_pixels", 0.0))
+		if camera_lead_pixels < float(evidence[&"minimum_camera_lead_pixels"]):
+			errors.append("카메라 방향 리드가 인지 하한보다 작습니다: %.1fpx" % camera_lead_pixels)
 	if evidence.has(&"expected_context"):
 		if StringName(evidence.get(&"actual_context", &"")) != StringName(evidence[&"expected_context"]):
 			errors.append("행동 후 원래 플레이 맥락이 복원되지 않았습니다.")

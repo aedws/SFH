@@ -1681,6 +1681,54 @@ func _verify_player_sustain_and_movement() -> bool:
 	):
 		_fail("플랫포머형 초동·즉시 제동·급선회·회피 후 짧은 관성 응답이 예상 범위를 벗어났습니다.")
 		return false
+	var movement_feedback := player.get_node_or_null("MovementFeedback")
+	if movement_feedback == null:
+		_fail("이동 체감 피드백 모듈이 플레이어에 조립되지 않았습니다.")
+		return false
+	movement_feedback.set_physics_process(false)
+	movement_feedback.call(
+		&"advance_feedback", Vector2.ZERO, base_speed, 0.016, false, Vector2.ZERO
+	)
+	var launch_feedback: Dictionary = movement_feedback.call(
+		&"advance_feedback",
+		Vector2.RIGHT * base_speed,
+		base_speed,
+		0.016,
+		false,
+		Vector2(6.0, 0.0)
+	)
+	var dash_feedback: Dictionary = movement_feedback.call(
+		&"advance_feedback",
+		Vector2.RIGHT * base_speed * 2.35,
+		base_speed,
+		0.016,
+		true,
+		Vector2(28.0, 0.0)
+	)
+	var brake_feedback: Dictionary = movement_feedback.call(
+		&"advance_feedback", Vector2.ZERO, base_speed, 0.016, false, Vector2(28.0, 0.0)
+	)
+	if (
+		not bool(launch_feedback.get(&"launch_cue_active", false))
+		or float(launch_feedback.get(&"body_offset_pixels", 0.0)) <= 0.5
+		or not bool(dash_feedback.get(&"dash_cue_active", false))
+		or int(dash_feedback.get(&"trail_point_count", 0)) < 2
+		or float(dash_feedback.get(&"trail_width", 0.0)) < 6.0
+		or float(dash_feedback.get(&"camera_lead_pixels", 0.0)) < 5.0
+		or not bool(brake_feedback.get(&"brake_cue_active", false))
+	):
+		_fail("출발·카메라 리드·대시 궤적·급정지 피드백이 인지 하한을 충족하지 못했습니다.")
+		return false
+	movement_feedback.call(&"set_feedback_enabled", false)
+	var disabled_feedback: Dictionary = movement_feedback.call(&"get_feedback_snapshot")
+	if (
+		bool(disabled_feedback.get(&"enabled", true))
+		or float(disabled_feedback.get(&"body_offset_pixels", 1.0)) > 0.01
+		or float(disabled_feedback.get(&"camera_lead_pixels", 1.0)) > 0.01
+	):
+		_fail("이동 피드백 모듈 비활성화가 이동 표현을 원상 복구하지 못했습니다.")
+		return false
+	print("MOVEMENT_FEEDBACK_OK launch_punch camera_lead turn_brake_cues dash_trail optional_module")
 	var dash_hud_scene := load(DASH_COOLDOWN_HUD_SCENE_PATH) as PackedScene
 	var dash_hud = dash_hud_scene.instantiate() if dash_hud_scene != null else null
 	if dash_hud == null:
@@ -3222,7 +3270,7 @@ func _process(_delta: float) -> bool:
 		paused = false
 		print("WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction")
 		print("CYBERPUNK_THEME_OK accent_02e5e1 pixel_korean scanlines static_noise blink_state optional_overlay")
-		print("SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx commercial_ofl_pixel_font vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font cyberpunk_theme cyberpunk_theme_optional cyberpunk_motion cyberpunk_static_noise web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx commercial_ofl_pixel_font vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font cyberpunk_theme cyberpunk_theme_optional cyberpunk_motion cyberpunk_static_noise web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement movement_feedback dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 
