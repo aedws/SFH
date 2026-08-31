@@ -26,6 +26,13 @@
       "priority": 92
     },
     {
+      "query": "문서 노드맵",
+      "label": "전체 문서 4단계 노드맵",
+      "description": "55개 문서를 대·중·소·세부 구조와 현재 위치로 탐색",
+      "category": "위키",
+      "priority": 95
+    },
+    {
       "query": "K 키 설정",
       "label": "K 자유 키 설정·영구 저장",
       "description": "21개 Action, 중복 교환, ESC 안전 고정과 브라우저 저장",
@@ -147,14 +154,14 @@
     {
       "query": "UI 상태 판정 E2E",
       "label": "UI 상태 계약·겹침 판정",
-      "description": "21개 전환의 표시·숨김·정지·화면 경계·모달·HUD 비겹침 계약",
+      "description": "23개 전환의 표시·숨김·정지·화면 경계·모달·HUD 비겹침 계약",
       "category": "검증",
       "priority": 87
     },
     {
       "query": "플레이어 인식 E2E",
       "label": "플레이어 인식 단위·부족한 검수",
-      "description": "19개 체크포인트, 9개 인식 단위와 자동·부분·수동 검수 공백",
+      "description": "20개 체크포인트, 9개 인식 단위와 자동·부분·수동 검수 공백",
       "category": "검증",
       "priority": 93
     },
@@ -169,7 +176,7 @@
   "planner_groups": [
     {
       "label": "기획·현황",
-      "queries": ["개발 진행도", "앞으로 해야 할 작업", "확정 사항"]
+      "queries": ["문서 노드맵", "개발 진행도", "앞으로 해야 할 작업", "확정 사항"]
     },
     {
       "label": "전투 설계",

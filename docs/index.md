@@ -69,17 +69,17 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 32 TOPICS</span><span>기획 진행도 96% · AUGMENT CARD UI</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 33 TOPICS</span><span>기획 진행도 96% · KNOWLEDGE GRAPH</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>14 UPDATE BUNDLES &middot; BUILD 28 &middot; IMPROVE 36 &middot; CHANGE 16 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>15 UPDATE BUNDLES &middot; BUILD 30 &middot; IMPROVE 40 &middot; CHANGE 17 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>14</b><small>UPDATE BUNDLES</small></span>
-      <span><b>28</b><small>BUILD</small></span>
-      <span><b>36</b><small>IMPROVE</small></span>
-      <span><b>16</b><small>CHANGE</small></span>
+      <span><b>15</b><small>UPDATE BUNDLES</small></span>
+      <span><b>30</b><small>BUILD</small></span>
+      <span><b>40</b><small>IMPROVE</small></span>
+      <span><b>17</b><small>CHANGE</small></span>
       <span><b>6</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -454,6 +454,35 @@ hide:
         </div>
         <div class="sfh-group"><h3>수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">가로 텍스트 목록 → 세로 증강 카드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>내부 강화가 단순 알림이 아니라 이번 작전의 빌드 선택으로 인식되도록 화면 구조를 바꿨습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 15</small><b>55개 문서 4단계 노드맵 · 모든 페이지 하단 탐색 HUD</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 긴 좌측 목록을 보완하는 마인드맵형 전체 문서 HUD 추가</strong>
+          <ul>
+            <li>모든 문서 최하단에 SFH→큰 영역→세부 시스템 묶음→실제 문서의 대·중·소·세부 4단계 그래프를 표시합니다.</li>
+            <li>현재 URL을 자동 판정해 보고 있는 분류와 문서에 청록 강조·`YOU` 표시를 적용합니다.</li>
+            <li>프로젝트·시작·설계·아키텍처·품질·기능·지원 7개 영역과 17개 소그룹에서 전체 55개 문서를 탐색합니다.</li>
+            <li>HUD 검색은 분류명·문서명·요약을 함께 필터링하고 클릭·터치·Tab·상하좌우 키를 지원합니다.</li>
+            <li>데스크톱 4열, 태블릿 2열, 모바일 1열로 바뀌며 새 문서가 노드맵에서 빠지면 위키 빌드를 중단합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>사용 목적</b><span>현재 문서를 읽은 뒤 다음 관련 문서를 찾거나, 전체 시스템이 어떤 큰 틀에 속하는지 페이지를 벗어나지 않고 파악합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">L1-L4 지식 그래프 HUD</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>JSON 분류를 현재 문서에 맞춰 4열 노드·연결선·경로 HUD로 렌더링합니다.</p><a href="getting-started/search-wiki/">노드맵 사용법 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">55문서 완전성 배포 게이트</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>MkDocs 내비게이션·실제 Markdown·노드 route의 누락·중복·불일치를 자동 차단합니다.</p><a href="architecture/module-audit/">구조 감사 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">현재 위치 강조</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>대→중→소→세부 경로와 현재 문서를 한눈에 확인합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">노드 안 즉시 검색</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>문서명뿐 아니라 분류와 요약까지 검색해 최대 12개 결과를 바로 엽니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">키보드·터치 탐색</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Tab과 방향키로 열 안과 분류 단계 사이를 이동합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">화면별 밀도 전환</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>4열·2열·1열 구조로 바꿔 작은 화면에서도 가로 이탈 없이 유지합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">선형 목차 → 관계 중심 탐색</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>문서 순서만 보여 주던 탐색을 시스템 소속과 관련 문서를 함께 보여 주는 구조로 확장했습니다.</p></div></details>
         </div>
       </div>
     </details>

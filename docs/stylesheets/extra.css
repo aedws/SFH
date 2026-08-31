@@ -1309,6 +1309,400 @@ a.sfh-global-play:hover {
   }
 }
 
+/* Global L1-L4 document graph. Injected at the end of every rendered article. */
+.sfh-knowledge-map {
+  position: relative;
+  margin: 4.5rem 0 1.5rem;
+  padding: 1.25rem;
+  overflow: hidden;
+  border: 1px solid rgba(var(--sfh-accent-rgb), 0.42);
+  background:
+    linear-gradient(135deg, rgba(var(--sfh-accent-rgb), 0.09), transparent 24%),
+    radial-gradient(circle at 82% 18%, rgba(var(--sfh-accent-rgb), 0.08), transparent 15rem),
+    rgba(2, 12, 16, 0.97);
+  box-shadow: inset 0 0 0 1px rgba(var(--sfh-accent-rgb), 0.035), 0 1.25rem 3rem rgba(0, 0, 0, 0.28);
+  clip-path: polygon(0 14px, 14px 0, calc(100% - 32px) 0, 100% 32px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+  font-family: var(--sfh-mono);
+}
+
+.sfh-knowledge-map::before {
+  position: absolute;
+  top: 0;
+  left: 1.4rem;
+  width: 8.5rem;
+  height: 2px;
+  background: var(--sfh-cyan);
+  box-shadow: 0 0 0.85rem rgba(var(--sfh-accent-rgb), 0.64);
+  content: "";
+}
+
+.sfh-knowledge-map__header,
+.sfh-knowledge-map__status,
+.sfh-knowledge-map__path,
+.sfh-map-column__header,
+.sfh-map-search-result {
+  display: flex;
+  align-items: center;
+}
+
+.sfh-knowledge-map__header {
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sfh-knowledge-map__header small,
+.sfh-map-column__header small {
+  display: block;
+  color: var(--sfh-cyan);
+  font-size: 0.57rem;
+  letter-spacing: 0.13em;
+}
+
+.sfh-knowledge-map__header h2 {
+  margin: 0.18rem 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: var(--sfh-text);
+  font-size: 1.28rem;
+}
+
+.sfh-knowledge-map__header h2::before {
+  display: none !important;
+}
+
+.sfh-knowledge-map__status {
+  min-width: 7.5rem;
+  justify-content: flex-end;
+  gap: 0.48rem;
+  color: var(--sfh-cyan);
+}
+
+.sfh-knowledge-map__status b {
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.sfh-knowledge-map__status span {
+  max-width: 4.1rem;
+  color: var(--sfh-muted);
+  font-size: 0.52rem;
+  line-height: 1.35;
+  letter-spacing: 0.08em;
+}
+
+.sfh-knowledge-map__intro {
+  margin: 0.7rem 0 0.9rem !important;
+  color: var(--sfh-muted);
+  font-size: 0.68rem;
+}
+
+.sfh-knowledge-map__search {
+  width: 100%;
+  margin: 0 0 0.7rem;
+  padding: 0.68rem 0.82rem;
+  border: 1px solid rgba(var(--sfh-accent-rgb), 0.32);
+  border-radius: 0;
+  outline: 0;
+  background: rgba(1, 8, 12, 0.86);
+  color: var(--sfh-text);
+  font: 600 0.68rem/1.3 var(--sfh-mono);
+}
+
+.sfh-knowledge-map__search:focus {
+  border-color: var(--sfh-cyan);
+  box-shadow: inset 3px 0 0 var(--sfh-cyan), 0 0 0.9rem rgba(var(--sfh-accent-rgb), 0.12);
+}
+
+.sfh-knowledge-map__path {
+  min-height: 2.35rem;
+  gap: 0.38rem;
+  margin-bottom: 0.75rem;
+  padding: 0.48rem 0.65rem;
+  overflow-x: auto;
+  border-block: 1px solid rgba(var(--sfh-accent-rgb), 0.19);
+  color: var(--sfh-muted);
+  font-size: 0.59rem;
+  white-space: nowrap;
+}
+
+.sfh-knowledge-map__path i {
+  color: rgba(var(--sfh-accent-rgb), 0.52);
+  font-style: normal;
+}
+
+.sfh-knowledge-map__path .is-current {
+  color: var(--sfh-cyan);
+}
+
+.sfh-knowledge-map__graph {
+  display: grid;
+  grid-template-columns: 0.82fr 1fr 1fr 1.55fr;
+  gap: 0.78rem;
+  min-height: 21rem;
+}
+
+.sfh-map-column {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.43rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(var(--sfh-accent-rgb), 0.17);
+  background: rgba(1, 8, 11, 0.66);
+}
+
+.sfh-map-column:not(:first-child)::before {
+  position: absolute;
+  top: 2.35rem;
+  left: -0.8rem;
+  width: 0.8rem;
+  height: 1px;
+  background: rgba(var(--sfh-accent-rgb), 0.45);
+  content: "";
+}
+
+.sfh-map-column__header {
+  min-height: 1.7rem;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-bottom: 0.15rem;
+  border-bottom: 1px solid rgba(var(--sfh-accent-rgb), 0.22);
+}
+
+.sfh-map-column__header strong {
+  overflow: hidden;
+  color: var(--sfh-muted);
+  font-size: 0.55rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sfh-map-column--documents {
+  max-height: 31rem;
+  overflow-y: auto;
+  scrollbar-color: rgba(var(--sfh-accent-rgb), 0.5) rgba(1, 8, 11, 0.6);
+}
+
+.sfh-map-node {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.58rem 0.62rem;
+  border: 1px solid rgba(var(--sfh-accent-rgb), 0.2);
+  border-radius: 0;
+  background: rgba(5, 23, 28, 0.72);
+  color: var(--sfh-text) !important;
+  font: inherit;
+  text-align: left;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease, transform 120ms ease;
+}
+
+.sfh-map-node::after {
+  position: absolute;
+  top: 50%;
+  right: -0.26rem;
+  width: 0.42rem;
+  height: 0.42rem;
+  border: 1px solid rgba(var(--sfh-accent-rgb), 0.58);
+  background: #031015;
+  content: "";
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.sfh-map-node strong,
+.sfh-map-node small {
+  display: block;
+}
+
+.sfh-map-node strong {
+  overflow: hidden;
+  font-size: 0.65rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+}
+
+.sfh-map-node small {
+  margin-top: 0.28rem;
+  overflow: hidden;
+  color: var(--sfh-muted);
+  font-size: 0.52rem;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+}
+
+.sfh-map-node:hover,
+.sfh-map-node:focus-visible,
+.sfh-map-node.is-selected {
+  border-color: var(--sfh-cyan);
+  outline: 0;
+  background: rgba(var(--sfh-accent-rgb), 0.1);
+  box-shadow: inset 3px 0 0 var(--sfh-cyan), 0 0 0.8rem rgba(var(--sfh-accent-rgb), 0.1);
+}
+
+.sfh-map-node:hover {
+  transform: translateX(2px);
+}
+
+.sfh-map-node.is-selected::after {
+  background: var(--sfh-cyan);
+  box-shadow: 0 0 0.5rem rgba(var(--sfh-accent-rgb), 0.7);
+}
+
+.sfh-map-node--root:disabled {
+  min-height: 6.5rem;
+  cursor: default;
+  opacity: 1;
+}
+
+.sfh-map-node--root:disabled strong {
+  color: var(--sfh-cyan);
+  font-size: 0.76rem;
+}
+
+.sfh-map-node--document.is-current strong::before {
+  margin-right: 0.34rem;
+  color: var(--sfh-cyan);
+  content: "YOU";
+  font-size: 0.47rem;
+  letter-spacing: 0.08em;
+}
+
+.sfh-knowledge-map__results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.sfh-knowledge-map__results[hidden],
+.sfh-knowledge-map__graph[hidden],
+.sfh-knowledge-map__path[hidden] {
+  display: none !important;
+}
+
+.sfh-map-search-result {
+  min-width: 0;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.68rem;
+  border: 1px solid rgba(var(--sfh-accent-rgb), 0.2);
+  background: rgba(4, 20, 25, 0.76);
+  color: var(--sfh-text) !important;
+  text-decoration: none !important;
+}
+
+.sfh-map-search-result:hover,
+.sfh-map-search-result:focus-visible {
+  border-color: var(--sfh-cyan);
+  outline: 0;
+  box-shadow: inset 3px 0 0 var(--sfh-cyan);
+}
+
+.sfh-map-search-result span {
+  min-width: 0;
+}
+
+.sfh-map-search-result strong,
+.sfh-map-search-result small {
+  display: block;
+}
+
+.sfh-map-search-result strong {
+  font-size: 0.65rem;
+}
+
+.sfh-map-search-result small,
+.sfh-map-search-result em {
+  color: var(--sfh-muted);
+  font-size: 0.5rem;
+  font-style: normal;
+  line-height: 1.4;
+}
+
+.sfh-map-search-result em {
+  flex: 0 0 auto;
+  color: var(--sfh-cyan);
+  text-align: right;
+}
+
+.sfh-knowledge-map__empty,
+.sfh-knowledge-map__error {
+  padding: 0.8rem;
+  border: 1px solid rgba(var(--sfh-accent-rgb), 0.2);
+  color: var(--sfh-muted);
+  font-family: var(--sfh-mono);
+  font-size: 0.62rem;
+}
+
+@media screen and (max-width: 76.1875em) {
+  .sfh-knowledge-map__graph {
+    grid-template-columns: 0.78fr 1fr 1fr 1.42fr;
+  }
+
+  .sfh-map-node {
+    padding-inline: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 48em) {
+  .sfh-knowledge-map {
+    margin-top: 3.2rem;
+    padding: 0.9rem;
+    clip-path: polygon(0 9px, 9px 0, 100% 0, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+  }
+
+  .sfh-knowledge-map__graph {
+    grid-template-columns: 1fr 1fr;
+    min-height: 0;
+  }
+
+  .sfh-map-column:not(:first-child)::before {
+    display: none;
+  }
+
+  .sfh-map-column--documents {
+    max-height: 24rem;
+  }
+
+  .sfh-knowledge-map__results {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 30em) {
+  .sfh-knowledge-map__header {
+    align-items: flex-start;
+  }
+
+  .sfh-knowledge-map__status {
+    min-width: 5rem;
+  }
+
+  .sfh-knowledge-map__graph {
+    grid-template-columns: 1fr;
+  }
+
+  .sfh-map-column--root .sfh-map-node--root:disabled {
+    min-height: 3.8rem;
+  }
+
+  .sfh-map-column--documents {
+    max-height: none;
+  }
+
+  .sfh-map-search-result {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sfh-map-search-result em {
+    text-align: left;
+  }
+}
+
 /* Cyberpunk presentation layer ------------------------------------------------
    Code-native HUD styling inspired by tactical displays. No reference artwork
    is embedded. Motion is intentionally sparse and disabled when requested. */
