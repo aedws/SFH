@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 39 TOPICS</span><span>96% · ICON HUD</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 40 TOPICS</span><span>96% · LOW OBSTRUCTION UI</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,13 +76,13 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>17 UPDATE BUNDLES &middot; BUILD 34 &middot; IMPROVE 50 &middot; CHANGE 19 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 36 &middot; IMPROVE 55 &middot; CHANGE 21 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>17</b><small>UPDATE BUNDLES</small></span>
-      <span><b>34</b><small>BUILD</small></span>
-      <span><b>50</b><small>IMPROVE</small></span>
-      <span><b>19</b><small>CHANGE</small></span>
+      <span><b>18</b><small>UPDATE BUNDLES</small></span>
+      <span><b>36</b><small>BUILD</small></span>
+      <span><b>55</b><small>IMPROVE</small></span>
+      <span><b>21</b><small>CHANGE</small></span>
       <span><b>6</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -552,6 +552,38 @@ tags:
         <div class="sfh-group"><h3>수정 · 2</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">문장형 조작 안내 제거</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>긴 한 줄을 행동 아이콘과 짧은 키 배지로 교체했습니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">브라우저 이모지 제거</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>폰트별로 깨지던 상태 상징을 벡터 도형으로 전환했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 18</small><b>반응형 UI 핵심 기조 · 시야 방해 최소화 · 상황별 정보 확장</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 인식 변화</strong>
+          <ol>
+            <li><b>지속 정보 선별</b> · 생존·행동·임무·전체 지도만 유지하고 장비·무기 상세를 상시 HUD에서 제외했습니다.</li>
+            <li><b>변화 반응</b> · 장비·무기 Signal 뒤 해당 상세만 1.8초 표시하는 one-shot Timer를 연결했습니다.</li>
+            <li><b>상황 초점</b> · F 가능 시 주변 HUD를 감쇠하고, 체력 35% 이하에서는 생존 코어만 강하게 강조합니다.</li>
+            <li><b>지도 압축</b> · 전체 지형 텍스처는 유지하면서 미니맵 헤더·범례·그림자를 제거하고 900px 아래에서 축소합니다.</li>
+            <li><b>다중 폭 검증</b> · 1100·900px 런타임 전환과 800px 축약 주입을 계약화했습니다.</li>
+            <li><b>면적 예산</b> · 1280×720 지속 HUD 합계 20% 상한을 23개 UI 상태 E2E의 전투 판정에 추가했습니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>모듈 경계</b><span>Presenter는 가시성·투명도·좌표만 바꾸며 장비·무기·체력·상호작용·지도 계산은 기존 모듈에 남습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Context Reveal 정책</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>상태가 변한 상세 카드만 잠시 열고 자동 회수합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">20% Obstruction Budget</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전투 지속 UI의 단순 면적 합계를 상태 판정기에 포함합니다.</p><a href="../architecture/module-audit/">모듈 감사 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 5</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">장비·무기 일시 표시</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>변경 피드백 뒤 1.8초가 지나면 상세가 사라집니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">상호작용 우선 대비</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>F 프롬프트가 주변 고정 정보보다 먼저 읽힙니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">저체력 선택 강조</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>위험 상태만 생존 패널을 불투명하게 만듭니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">미니맵 장식 제거</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전체 지도는 보존하고 헤더·범례·그림자만 걷어냈습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">800px 반응형 회귀 검사</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>좁은 화면의 상세 제거와 가장자리 배치를 자동 확인합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">상시 노출 우선순위</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>모든 정보를 유지하는 방식에서 생존·행동 중심으로 전환했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">미니맵 카드 역할</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>설명 카드에서 전체 지도 전용 위젯으로 역할을 좁혔습니다.</p></div></details>
         </div>
       </div>
     </details>

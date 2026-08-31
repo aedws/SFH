@@ -253,6 +253,9 @@ func _verify_operation_session() -> bool:
 		or not bool(hud_snapshot.get(&"responsive", false))
 		or int(hud_snapshot.get(&"icon_count", 0)) < 16
 		or int(hud_snapshot.get(&"action_count", 0)) < 8
+		or not bool(hud_snapshot.get(&"low_obstruction", false))
+		or bool(hud_snapshot.get(&"details_persistent", true))
+		or float(hud_snapshot.get(&"persistent_area_ratio", 1.0)) > 0.16
 	):
 		return _fail("전투 HUD가 아이콘 기반 반응형 시선권으로 구성되지 않았습니다: %s" % hud_snapshot)
 	var mission_rect: Rect2 = hud_snapshot.get(&"mission_rect", Rect2())
@@ -261,6 +264,14 @@ func _verify_operation_session() -> bool:
 		return _fail("임무 추적기·생존 정보·스킬 UI가 서로 겹칩니다: %s" % hud_snapshot)
 	if minimap.get_global_rect().intersects(skills.get_global_rect()):
 		return _fail("미니맵과 스킬 HUD가 화면에서 겹칩니다.")
+	var minimap_snapshot: Dictionary = minimap.call(&"get_layout_snapshot")
+	if (
+		not bool(minimap_snapshot.get(&"low_obstruction", false))
+		or bool(minimap_snapshot.get(&"header_visible", true))
+		or not bool(minimap_snapshot.get(&"full_map_preserved", false))
+		or float(minimap_snapshot.get(&"background_alpha", 1.0)) > 0.7
+	):
+		return _fail("미니맵이 전체 지도는 유지하면서 장식 점유를 줄이지 못했습니다: %s" % minimap_snapshot)
 	if not _judge_ui_state(&"combat", "첫 전투 HUD"):
 		return false
 	if not _judge_player_perception(&"combat_glance", "전투 시선 정보 이해"):

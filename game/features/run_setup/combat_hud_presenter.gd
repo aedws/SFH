@@ -7,6 +7,8 @@ const TacticalHudIcon := preload("res://game/features/run_setup/tactical_hud_ico
 const WIDE_LAYOUT_MINIMUM := 1100.0
 const MISSION_WIDTH := 338.0
 const MISSION_HEIGHT := 108.0
+const DETAIL_REVEAL_SECONDS := 1.8
+const PASSIVE_ALPHA := 0.72
 
 var layout_root: Control
 var mission_tracker: PanelContainer
@@ -18,8 +20,12 @@ var action_dock: PanelContainer
 var combat_skill_hud: Control
 var dash_cooldown_hud: Control
 var interaction_prompt: Control
+var detail_reveal_timer: Timer
 var action_labels: Dictionary = {}
 var layout_mode := &"player_orbit"
+var revealed_detail := &""
+var interaction_active := false
+var survival_ratio := 1.0
 var icon_count := 0
 
 
@@ -42,7 +48,7 @@ func install(hud: Control) -> bool:
 	core_panel.name = "VitalsPanel"
 	core_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	core_panel.add_theme_stylebox_override(
-		"panel", _style_box(Color("030d12e8"), Color("02e5e1"), 1, 2)
+		"panel", _style_box(Color("030d12b8"), Color("02e5e1"), 1, 2)
 	)
 	content.add_theme_constant_override("separation", 3)
 
@@ -66,7 +72,15 @@ func install(hud: Control) -> bool:
 	footer.visible = false
 	action_dock = _build_action_dock()
 	layout_root.add_child(action_dock)
+	detail_reveal_timer = Timer.new()
+	detail_reveal_timer.name = "DetailRevealTimer"
+	detail_reveal_timer.one_shot = true
+	detail_reveal_timer.timeout.connect(_on_detail_reveal_timeout)
+	layout_root.add_child(detail_reveal_timer)
 	layout_root.resized.connect(_apply_responsive_layout)
+	mission_tracker.modulate.a = 0.86
+	telemetry_panel.modulate.a = 0.82
+	action_dock.modulate.a = PASSIVE_ALPHA
 	_apply_responsive_layout()
 	return true
 
@@ -76,6 +90,33 @@ func update_action_bindings(bindings: Dictionary) -> void:
 		var label := action_labels[action_name] as Label
 		if label != null:
 			label.text = str(bindings.get(action_name, label.text))
+
+
+func reveal_detail(detail_id: StringName, duration_seconds: float = DETAIL_REVEAL_SECONDS) -> void:
+	if detail_id not in [&"equipment", &"weapon"]:
+		return
+	revealed_detail = detail_id
+	_apply_detail_visibility()
+	if detail_reveal_timer != null:
+		detail_reveal_timer.start(maxf(0.1, duration_seconds))
+
+
+func set_interaction_active(active: bool) -> void:
+	interaction_active = active
+	if action_dock != null:
+		action_dock.modulate.a = 0.28 if active else PASSIVE_ALPHA
+	if mission_tracker != null:
+		mission_tracker.modulate.a = 0.68 if active else 0.86
+
+
+func set_survival_ratio(ratio: float) -> void:
+	survival_ratio = clampf(ratio, 0.0, 1.0)
+	if core_panel != null:
+		core_panel.modulate.a = 1.0 if survival_ratio <= 0.35 else 0.88
+
+
+func apply_responsive_width(viewport_width: float) -> void:
+	_apply_layout_for_width(maxf(1.0, viewport_width))
 
 
 func attach_runtime_layers(
@@ -98,6 +139,15 @@ func get_snapshot(hud: Control) -> Dictionary:
 	var action_rect := _global_rect(action_dock)
 	var skill_rect := _global_rect(combat_skill_hud)
 	var dash_rect := _global_rect(dash_cooldown_hud)
+	var viewport_area := maxf(1.0, hud.size.x * hud.size.y) if hud != null else 1.0
+	var persistent_area := (
+		mission_rect.get_area()
+		+ core_rect.get_area()
+		+ telemetry_rect.get_area()
+		+ action_rect.get_area()
+		+ skill_rect.get_area()
+		+ dash_rect.get_area()
+	)
 	return {
 		&"installed": layout_root != null,
 		&"size": hud.size if hud != null else Vector2.ZERO,
@@ -118,11 +168,18 @@ func get_snapshot(hud: Control) -> Dictionary:
 		&"icon_count": icon_count,
 		&"action_count": action_labels.size(),
 		&"responsive": layout_mode in [&"player_orbit", &"compact_edge"],
+		&"context_reveal": detail_reveal_timer != null,
+		&"revealed_detail": revealed_detail,
+		&"details_persistent": false,
+		&"interaction_focus": interaction_active,
+		&"passive_alpha": PASSIVE_ALPHA,
+		&"low_obstruction": true,
+		&"persistent_area_ratio": persistent_area / viewport_area,
 	}
 
 
 func _build_mission_tracker(top_row: HBoxContainer, footer: HBoxContainer) -> PanelContainer:
-	var panel := _panel("MissionTracker", Color("030d12dc"), Color("02e5e1"))
+	var panel := _panel("MissionTracker", Color("030d1299"), Color("02e5e1"))
 	var margin := _margin(10, 8)
 	panel.add_child(margin)
 	var content := VBoxContainer.new()
@@ -154,7 +211,7 @@ func _build_mission_tracker(top_row: HBoxContainer, footer: HBoxContainer) -> Pa
 
 
 func _build_telemetry_panel(top_row: HBoxContainer) -> PanelContainer:
-	var panel := _panel("TelemetryPanel", Color("030d12d8"), Color("02e5e166"))
+	var panel := _panel("TelemetryPanel", Color("030d1288"), Color("02e5e166"))
 	var margin := _margin(5, 4)
 	panel.add_child(margin)
 	var row := HBoxContainer.new()
@@ -208,7 +265,7 @@ func _build_detail_panel(
 	semantic_label: String,
 	label: Label
 ) -> PanelContainer:
-	var panel := _panel(panel_name, Color("030d12d8"), Color("02e5e166"))
+	var panel := _panel(panel_name, Color("030d12b8"), Color("02e5e166"))
 	var margin := _margin(6, 5)
 	panel.add_child(margin)
 	var row := HBoxContainer.new()
@@ -224,7 +281,7 @@ func _build_detail_panel(
 
 
 func _build_action_dock() -> PanelContainer:
-	var panel := _panel("ActionDock", Color("030d12d8"), Color("02e5e166"))
+	var panel := _panel("ActionDock", Color("030d1288"), Color("02e5e166"))
 	var margin := _margin(5, 4)
 	panel.add_child(margin)
 	var row := HBoxContainer.new()
@@ -262,7 +319,13 @@ func _build_action_dock() -> PanelContainer:
 func _apply_responsive_layout() -> void:
 	if layout_root == null:
 		return
-	layout_mode = &"player_orbit" if layout_root.size.x >= WIDE_LAYOUT_MINIMUM else &"compact_edge"
+	_apply_layout_for_width(layout_root.size.x)
+
+
+func _apply_layout_for_width(viewport_width: float) -> void:
+	if layout_root == null:
+		return
+	layout_mode = &"player_orbit" if viewport_width >= WIDE_LAYOUT_MINIMUM else &"compact_edge"
 	if layout_mode == &"player_orbit":
 		_set_top_left_rect(mission_tracker, 18, 18, MISSION_WIDTH, MISSION_HEIGHT)
 		_set_center_rect(telemetry_panel, -155, -244, 310, 40)
@@ -273,8 +336,6 @@ func _apply_responsive_layout() -> void:
 		_set_bottom_left_rect(dash_cooldown_hud, 18, -74, 166, 62)
 		_set_bottom_right_rect(action_dock, -410, -58, 392, 46)
 		_set_center_rect(interaction_prompt, -170, 38, 340, 32)
-		_set_visible(equipment_panel, true)
-		_set_visible(weapon_panel, true)
 	else:
 		_set_top_left_rect(mission_tracker, 12, 12, 292, 104)
 		_set_top_left_rect(telemetry_panel, 12, 122, 286, 36)
@@ -283,8 +344,18 @@ func _apply_responsive_layout() -> void:
 		_set_bottom_left_rect(dash_cooldown_hud, 12, -74, 166, 62)
 		_set_bottom_right_rect(action_dock, -334, -142, 322, 46)
 		_set_center_rect(interaction_prompt, -160, 42, 320, 30)
-		_set_visible(equipment_panel, false)
-		_set_visible(weapon_panel, false)
+	_apply_detail_visibility()
+
+
+func _apply_detail_visibility() -> void:
+	var wide_layout := layout_mode == &"player_orbit"
+	_set_visible(equipment_panel, wide_layout and revealed_detail == &"equipment")
+	_set_visible(weapon_panel, wide_layout and revealed_detail == &"weapon")
+
+
+func _on_detail_reveal_timeout() -> void:
+	revealed_detail = &""
+	_apply_detail_visibility()
 
 
 func _panel(panel_name: String, background: Color, border: Color) -> PanelContainer:

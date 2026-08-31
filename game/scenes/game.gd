@@ -1059,6 +1059,8 @@ func _reset_run_state() -> void:
 	credit_label.text = "CR 0"
 	experience_bar.value = 0.0
 	experience_label.text = "0 / 5"
+	combat_hud_presenter.call(&"set_interaction_active", false)
+	combat_hud_presenter.call(&"set_survival_ratio", 1.0)
 
 
 func _assemble_game() -> bool:
@@ -2221,6 +2223,7 @@ func _on_map_generated(
 func _on_interaction_availability_changed(available: bool, prompt: String) -> void:
 	interaction_label.text = prompt
 	interaction_label.visible = available and not run_ended
+	combat_hud_presenter.call(&"set_interaction_active", interaction_label.visible)
 
 
 func _on_credits_looted(amount: int, _world_position: Vector2) -> void:
@@ -2250,6 +2253,8 @@ func _on_equipment_changed(summary: Dictionary) -> void:
 		int(summary.get(&"armor_count", 0)),
 		defense_value,
 	]
+	if run_started:
+		combat_hud_presenter.call(&"reveal_detail", &"equipment")
 
 
 func _on_active_weapon_changed(slot_id: StringName, weapon_definition: Resource) -> void:
@@ -2282,6 +2287,8 @@ func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:
 		trait_labels.get(trait_id, String(trait_id)),
 		snapshot.get(&"source_label", "내장 기본값"),
 	]
+	if run_started:
+		combat_hud_presenter.call(&"reveal_detail", &"weapon")
 
 
 func _on_weapon_balance_error(message: String) -> void:
@@ -2392,6 +2399,7 @@ func _on_player_health_changed(current: float, maximum: float) -> void:
 	health_bar.max_value = maximum
 	health_bar.value = current
 	var ratio := current / maximum if maximum > 0.0 else 0.0
+	combat_hud_presenter.call(&"set_survival_ratio", ratio)
 	health_label.text = "%d/%d · %d%%" % [
 		ceili(current),
 		ceili(maximum),
