@@ -76,14 +76,14 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>12 UPDATE BUNDLES &middot; BUILD 25 &middot; IMPROVE 28 &middot; CHANGE 14 &middot; FIX 4</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>12 UPDATE BUNDLES &middot; BUILD 25 &middot; IMPROVE 28 &middot; CHANGE 14 &middot; FIX 5</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>12</b><small>UPDATE BUNDLES</small></span>
       <span><b>25</b><small>BUILD</small></span>
       <span><b>28</b><small>IMPROVE</small></span>
       <span><b>14</b><small>CHANGE</small></span>
-      <span><b>4</b><small>FIX</small></span>
+      <span><b>5</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>공개 기획 재대조 · 진행률 69% · 잔여 개발 순서 확정</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -400,9 +400,10 @@ tags:
         <div class="sfh-group"><h3>수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">완료 판정 기준</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>클래스·노드 존재가 아니라 플레이어가 원인과 결과를 구분할 수 있어야 E2E를 통과합니다.</p></div></details>
         </div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Q 피드백의 숨은 HUD 의존</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전투 HUD가 꺼진 거점에서도 교체 결과를 확인하도록 표시 위치를 보완했습니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">재매핑 뒤 대시 키 오안내</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>정적인 SHIFT/SPACE 문구를 키 설정과 충돌하지 않는 DASH·회피 식별자로 변경했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Pages 글꼴 import 런타임 누락</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Linux 컨테이너에 fontconfig를 명시해 Galmuri import 중 Godot가 종료되던 병합 후 배포 실패를 해결했습니다.</p></div></details>
         </div>
       </div>
     </details>
