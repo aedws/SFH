@@ -69,17 +69,17 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 25 TOPICS</span><span>기획 진행도 96% · 전투 HUD 시선권 개선</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 26 TOPICS</span><span>기획 진행도 96% · 타격 피드백 1차</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>7 UPDATE BUNDLES &middot; BUILD 14 &middot; IMPROVE 13 &middot; CHANGE 9 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>8 UPDATE BUNDLES &middot; BUILD 17 &middot; IMPROVE 15 &middot; CHANGE 10 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>7</b><small>UPDATE BUNDLES</small></span>
-      <span><b>14</b><small>BUILD</small></span>
-      <span><b>13</b><small>IMPROVE</small></span>
-      <span><b>9</b><small>CHANGE</small></span>
+      <span><b>8</b><small>UPDATE BUNDLES</small></span>
+      <span><b>17</b><small>BUILD</small></span>
+      <span><b>15</b><small>IMPROVE</small></span>
+      <span><b>10</b><small>CHANGE</small></span>
       <span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -258,6 +258,33 @@ hide:
         </div>
         <div class="sfh-group"><h3>🧭 수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">상단 전술 카드 → 분산 시선권</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>1040px 상단 카드 대신 임무·생존·행동 정보를 서로 다른 화면 가장자리로 분리했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 8</small><b>타격 피드백 1차 · 피격 섬광·국소 경직·넉백·카메라 충격</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 체력 숫자만 줄던 타격에 시각·움직임·화면 반응을 연결</strong>
+          <ul>
+            <li>적과 플레이어가 맞으면 흰색 섬광, 약 0.05초의 해당 액터 국소 경직과 타격 방향 넉백이 발생합니다.</li>
+            <li>방어·체력·전기·플레이어 피격을 색으로 구분한 충격 링과 방사선을 0.18초 동안 표시합니다.</li>
+            <li>적 타격·플레이어 피격·치명타 강도를 합성한 Camera Trauma를 최대 6px 안에서 감쇠합니다.</li>
+            <li>기본기·점멸 경로·지속 자기장·적 접촉이 공통 `hit_context`로 방향과 출처를 전달합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>성능·안전</b><span>타격별 Node를 만들지 않고 동시 충격 32개 상한을 유지하며, 전역 시간 정지 없이 맞은 액터만 반응합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 3</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">HitReaction2D</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>액터별 섬광·국소 경직·넉백을 독립 구성 요소로 적용합니다.</p><a href="features/hit-feedback/">타격 피드백 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">HitFeedbackDirector</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>damaged Signal을 충격 드로잉과 카메라 Trauma로 변환합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">HitFeedbackProfile</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>수명·반경·방사선·카메라 강도·동시 표시 상한을 Resource로 분리했습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">기본기·스킬 명중 인지</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>투사체와 전기 스킬이 서로 다른 색·방향 피드백을 제공합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">플레이어 위험 피드백</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>적 접촉 시 붉은 충격과 더 강한 카메라 반응으로 피해를 즉시 알립니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">피해량 단일 인자 → 선택형 명중 문맥</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>기존 호출을 유지하면서 방향·출처·표현 강도를 선택적으로 전달합니다.</p></div></details>
         </div>
       </div>
     </details>

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/hit_feedback/hit_feedback_director.gd" id="1_director"]
+
+[node name="HitFeedbackDirector" type="Node2D"]
+z_index = 70
+script = ExtResource("1_director")

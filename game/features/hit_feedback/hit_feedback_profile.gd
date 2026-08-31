@@ -1,0 +1,42 @@
+class_name HitFeedbackProfile
+extends Resource
+
+## 피해량과 무관한 화면 피드백 강도를 데이터로 조정합니다.
+
+@export_range(0.05, 1.0, 0.01) var impact_lifetime_seconds: float = 0.18
+@export_range(4.0, 96.0, 1.0) var impact_radius: float = 26.0
+@export_range(3, 16, 1) var impact_ray_count: int = 8
+@export_range(1, 128, 1) var maximum_active_impacts: int = 32
+@export_range(0.1, 100.0, 0.1) var reference_damage: float = 10.0
+@export_range(0.0, 1.0, 0.01) var enemy_hit_trauma: float = 0.13
+@export_range(0.0, 1.0, 0.01) var player_hit_trauma: float = 0.34
+@export_range(0.0, 1.0, 0.01) var lethal_bonus_trauma: float = 0.16
+@export_range(0.0, 24.0, 0.1) var maximum_camera_offset: float = 6.0
+@export_range(0.1, 30.0, 0.1) var camera_decay_per_second: float = 3.8
+
+
+func is_valid() -> bool:
+	return (
+		impact_lifetime_seconds > 0.0
+		and impact_radius > 0.0
+		and impact_ray_count >= 3
+		and maximum_active_impacts > 0
+		and reference_damage > 0.0
+		and maximum_camera_offset >= 0.0
+		and camera_decay_per_second > 0.0
+	)
+
+
+func get_snapshot() -> Dictionary:
+	return {
+		&"impact_lifetime_seconds": impact_lifetime_seconds,
+		&"impact_radius": impact_radius,
+		&"impact_ray_count": impact_ray_count,
+		&"maximum_active_impacts": maximum_active_impacts,
+		&"reference_damage": reference_damage,
+		&"enemy_hit_trauma": enemy_hit_trauma,
+		&"player_hit_trauma": player_hit_trauma,
+		&"lethal_bonus_trauma": lethal_bonus_trauma,
+		&"maximum_camera_offset": maximum_camera_offset,
+		&"camera_decay_per_second": camera_decay_per_second,
+	}

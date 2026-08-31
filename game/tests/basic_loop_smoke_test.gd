@@ -129,6 +129,8 @@ func _init() -> void:
 		return
 	if not await _verify_optional_combat_skill_module(game_scene):
 		return
+	if not await _verify_optional_hit_feedback_module(game_scene):
+		return
 	if not await _verify_optional_combat_resource_module(game_scene):
 		return
 	if not await _verify_optional_room_encounter_module(game_scene):
@@ -1260,6 +1262,44 @@ func _verify_optional_combat_skill_module(game_scene: PackedScene) -> bool:
 	await process_frame
 	if not failure_message.is_empty():
 		_fail("전투 스킬 선택 모듈 실패: %s" % failure_message)
+		return false
+	return true
+
+
+func _verify_optional_hit_feedback_module(game_scene: PackedScene) -> bool:
+	var feedback_free_game := game_scene.instantiate()
+	var feedback_free_features = feedback_free_game.get("features").duplicate(true)
+	feedback_free_features.set("hit_feedback_enabled", false)
+	feedback_free_features.set("start_hub_enabled", false)
+	feedback_free_features.set("run_setup_enabled", false)
+	feedback_free_game.set("features", feedback_free_features)
+	root.add_child(feedback_free_game)
+	await process_frame
+	var feedback_free_player = feedback_free_game.get("player")
+	var reaction: Node = (
+		feedback_free_player.get_node_or_null("HitReaction")
+		if feedback_free_player != null else null
+	)
+	var failure_message := ""
+	if not bool(feedback_free_game.get("run_started")):
+		failure_message = "타격 피드백 비활성 구성에서 작전을 시작하지 못했습니다."
+	elif feedback_free_game.get("hit_feedback_director") != null:
+		failure_message = "비활성화했지만 타격 피드백 Director가 설치됐습니다."
+	elif reaction == null or bool(reaction.get("enabled")):
+		failure_message = "비활성화했지만 액터의 국소 피격 반응이 남았습니다."
+	else:
+		feedback_free_player.call(&"take_damage", 1.0, {
+			&"impact_direction": Vector2.RIGHT,
+			&"impact_strength": 1.0,
+		})
+		if int(reaction.call(&"get_snapshot").get(&"reaction_count", -1)) != 0:
+			failure_message = "비활성 피격 반응이 피해 이벤트를 소비했습니다."
+	paused = false
+	root.remove_child(feedback_free_game)
+	feedback_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("타격 피드백 선택 모듈 실패: %s" % failure_message)
 		return false
 	return true
 
@@ -3000,7 +3040,31 @@ func _process(_delta: float) -> bool:
 		if not equipment.call(&"switch_active_weapon"):
 			return _fail("런타임 Q 무기 교체 상태 전환이 실패했습니다.")
 
-		enemies[0].call(&"take_damage", 9999.0)
+		var hit_feedback = game_instance.get("hit_feedback_director")
+		var enemy_reaction := enemies[0].get_node_or_null("HitReaction")
+		if hit_feedback == null or enemy_reaction == null:
+			return _fail("타격 피드백 Director 또는 적 피격 반응이 설치되지 않았습니다.")
+		enemies[0].call(&"take_damage", 1.0, {
+			&"source_kind": &"weapon_projectile",
+			&"impact_direction": Vector2.RIGHT,
+			&"impact_strength": 1.0,
+		})
+		var feedback_snapshot: Dictionary = hit_feedback.call(&"get_snapshot")
+		var reaction_snapshot: Dictionary = enemy_reaction.call(&"get_snapshot")
+		if (
+			int(feedback_snapshot.get(&"total_hits", 0)) < 1
+			or int(feedback_snapshot.get(&"active_impacts", 0)) < 1
+			or float(feedback_snapshot.get(&"trauma", 0.0)) <= 0.0
+			or int(reaction_snapshot.get(&"reaction_count", 0)) < 1
+			or float(reaction_snapshot.get(&"flash_remaining", 0.0)) <= 0.0
+			or float(reaction_snapshot.get(&"knockback_speed", 0.0)) <= 0.0
+		):
+			return _fail("피해가 섬광·넉백·충격 VFX·카메라 반응으로 연결되지 않았습니다.")
+		enemies[0].call(&"take_damage", 9999.0, {
+			&"source_kind": &"weapon_projectile",
+			&"impact_direction": Vector2.RIGHT,
+			&"impact_strength": 1.5,
+		})
 		progression.call(&"gain_experience", 5)
 
 	if frame_count == 121:
@@ -3044,6 +3108,17 @@ func _process(_delta: float) -> bool:
 		player.call(&"take_damage", 9999.0)
 
 	if frame_count == 130:
+		var feedback_snapshot: Dictionary = game_instance.get(
+			"hit_feedback_director"
+		).call(&"get_snapshot")
+		if (
+			int(feedback_snapshot.get(&"total_player_hits", 0)) < 1
+			or int(feedback_snapshot.get(&"total_lethal_hits", 0)) < 2
+			or int(feedback_snapshot.get(&"peak_active_impacts", 0)) > int(
+				feedback_snapshot.get(&"maximum_active_impacts", 0)
+			)
+		):
+			return _fail("플레이어 피격·치명타·충격 이펙트 상한 계약이 유지되지 않았습니다.")
 		var overlay := game_instance.get_node("UI/GameOverOverlay") as Control
 		if not paused or not overlay.visible:
 			return _fail("게임오버 상태가 적용되지 않았습니다.")
@@ -3054,7 +3129,7 @@ func _process(_delta: float) -> bool:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 
 		paused = false
-		print("SMOKE_TEST_OK operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

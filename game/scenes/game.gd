@@ -33,6 +33,9 @@ const COMBAT_SKILL_HUD_SCENE_PATH := (
 const DASH_COOLDOWN_HUD_SCENE_PATH := (
 	"res://game/features/movement_hud/dash_cooldown_hud.tscn"
 )
+const HIT_FEEDBACK_SCENE_PATH := (
+	"res://game/features/hit_feedback/hit_feedback_director.tscn"
+)
 const COMBAT_RESOURCE_SCENE_PATH := (
 	"res://game/features/combat_resources/combat_resource_system.tscn"
 )
@@ -223,6 +226,7 @@ const COMBAT_SKILL_METHODS := [
 ]
 const COMBAT_SKILL_HUD_METHODS := [&"configure", &"get_snapshot"]
 const DASH_COOLDOWN_HUD_METHODS := [&"configure", &"get_snapshot"]
+const HIT_FEEDBACK_METHODS := [&"configure", &"register_actor", &"get_snapshot"]
 const COMBAT_RESOURCE_METHODS := [
 	&"configure", &"can_activate", &"consume_for_skill", &"restore_energy",
 	&"spawn_enemy_drops", &"get_skill_resource_snapshot", &"get_snapshot",
@@ -321,6 +325,7 @@ var auto_weapon
 var combat_skill_system
 var combat_skill_hud
 var dash_cooldown_hud
+var hit_feedback_director
 var combat_resource_system
 var weapon_balance_service
 var growth_balance_service
@@ -982,6 +987,7 @@ func _reset_run_references() -> void:
 	combat_skill_system = null
 	combat_skill_hud = null
 	dash_cooldown_hud = null
+	hit_feedback_director = null
 	combat_resource_system = null
 	weapon_balance_service = null
 	growth_balance_service = null
@@ -1057,6 +1063,9 @@ func _assemble_game() -> bool:
 
 	player.global_position = player_spawn_position
 	player.call(&"configure_damage", features.damage_enabled)
+	var player_hit_reaction: Node = player.get_node_or_null("HitReaction")
+	if player_hit_reaction != null:
+		player_hit_reaction.set("enabled", features.hit_feedback_enabled)
 	_apply_consumable_loadout()
 	player.connect(&"health_changed", Callable(self, &"_on_player_health_changed"))
 	player.connect(&"died", Callable(self, &"_on_player_died"))
@@ -1065,6 +1074,8 @@ func _assemble_game() -> bool:
 		float(health_snapshot.get(&"current", 0.0)),
 		float(health_snapshot.get(&"maximum", 1.0))
 	)
+	if features.hit_feedback_enabled and not _install_hit_feedback():
+		return false
 	if not _install_dash_cooldown_hud():
 		return false
 	if features.fog_of_war_enabled and not _install_fog_of_war():
@@ -1254,6 +1265,23 @@ func _install_dash_cooldown_hud() -> bool:
 		or not dash_cooldown_hud.call(&"configure", player)
 	):
 		_report_configuration_error("대시 쿨타임 HUD를 구성하지 못했습니다.")
+		return false
+	return true
+
+
+func _install_hit_feedback() -> bool:
+	var profile := load(features.hit_feedback_profile_path)
+	var player_camera := player.get_node_or_null("Camera2D") as Camera2D
+	hit_feedback_director = _instantiate_feature(
+		HIT_FEEDBACK_SCENE_PATH, world_container, &"HitFeedback"
+	)
+	if (
+		not _supports_methods(hit_feedback_director, HIT_FEEDBACK_METHODS)
+		or profile == null
+		or not hit_feedback_director.call(&"configure", player_camera, profile)
+		or not hit_feedback_director.call(&"register_actor", player)
+	):
+		_report_configuration_error("타격 피드백 모듈을 구성하지 못했습니다.")
 		return false
 	return true
 
@@ -2115,6 +2143,11 @@ func _supports_methods(candidate: Node, methods: Array) -> bool:
 func _on_enemy_spawned(enemy: Node) -> void:
 	if enemy.has_signal(&"defeated"):
 		enemy.connect(&"defeated", Callable(self, &"_on_enemy_defeated"))
+	var enemy_hit_reaction: Node = enemy.get_node_or_null("HitReaction")
+	if enemy_hit_reaction != null:
+		enemy_hit_reaction.set("enabled", features.hit_feedback_enabled)
+	if is_instance_valid(hit_feedback_director):
+		hit_feedback_director.call(&"register_actor", enemy)
 
 
 func _on_combat_skill_activated(

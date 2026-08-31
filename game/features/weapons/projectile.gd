@@ -53,7 +53,12 @@ func _on_body_entered(body: Node) -> void:
 	if not body.has_method(&"take_damage"):
 		queue_free()
 		return
-	body.call(&"take_damage", damage)
+	body.call(&"take_damage", damage, {
+		&"source_kind": &"weapon_projectile",
+		&"source_position": global_position - direction * 10.0,
+		&"impact_direction": direction,
+		&"impact_strength": clampf(damage / 10.0, 0.45, 1.5),
+	})
 	if remaining_pierces > 0:
 		remaining_pierces -= 1
 		damage *= pierce_damage_retention

@@ -3,13 +3,21 @@ extends CharacterBody2D
 
 signal health_changed(current: float, maximum: float)
 signal runtime_stats_changed(stats: Dictionary)
+signal damaged(
+	health_damage: float,
+	armor_damage: float,
+	world_position: Vector2,
+	context: Dictionary
+)
 signal died
 
 @export_range(1.0, 10000.0, 1.0) var max_health: float = 100.0
 @export_range(0.0, 10000.0, 0.1) var defense: float = 0.0
 
 @onready var movement: PlayerMovement = $Movement
+@onready var body_visual: Polygon2D = $Body
 @onready var heading: Polygon2D = $Heading
+@onready var hit_reaction: Node = get_node_or_null("HitReaction")
 
 var current_health: float
 var damage_enabled: bool = true
@@ -28,14 +36,20 @@ func _ready() -> void:
 	}
 	runtime_stats = base_stats.duplicate(true)
 	current_health = max_health
+	if hit_reaction != null:
+		hit_reaction.configure(self, [body_visual, heading])
 
 
 func _physics_process(delta: float) -> void:
-	velocity = movement.get_velocity(velocity, delta)
+	var desired_velocity := movement.get_velocity(velocity, delta)
+	velocity = (
+		hit_reaction.advance(delta, desired_velocity)
+		if hit_reaction != null else desired_velocity
+	)
 	move_and_slide()
 
-	if velocity != Vector2.ZERO:
-		facing_direction = velocity.normalized()
+	if desired_velocity != Vector2.ZERO:
+		facing_direction = desired_velocity.normalized()
 		heading.rotation = facing_direction.angle()
 
 
@@ -121,12 +135,17 @@ func get_facing_direction() -> Vector2:
 	return facing_direction
 
 
-func take_damage(amount: float) -> void:
+func take_damage(amount: float, hit_context: Dictionary = {}) -> void:
 	if not damage_enabled or current_health <= 0.0:
 		return
 
 	var received_damage := maxf(1.0, amount - defense)
 	current_health = maxf(0.0, current_health - received_damage)
+	var context := hit_context.duplicate(true)
+	context[&"lethal"] = is_zero_approx(current_health)
+	if hit_reaction != null:
+		hit_reaction.react(context, received_damage)
+	damaged.emit(received_damage, 0.0, global_position, context)
 	health_changed.emit(current_health, max_health)
 
 	if is_zero_approx(current_health):
