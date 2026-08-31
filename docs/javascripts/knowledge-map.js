@@ -3,6 +3,9 @@
 
   var mapDataPromise = null;
   var initializedHosts = new WeakSet();
+  var knowledgeMapScriptUrl = document.currentScript && document.currentScript.src
+    ? new URL(document.currentScript.src, window.location.href)
+    : null;
 
   function element(tagName, className, text) {
     var node = document.createElement(tagName);
@@ -12,6 +15,11 @@
   }
 
   function getSiteRoot() {
+    // Material instant navigation keeps the first page's __config node alive.
+    // The script URL is stable across page depth changes, so prefer it as the
+    // canonical root and only use __config as a non-JavaScript fallback.
+    if (knowledgeMapScriptUrl) return new URL("../", knowledgeMapScriptUrl);
+
     var configNode = document.getElementById("__config");
     var base = ".";
     if (configNode) {
@@ -26,6 +34,11 @@
 
   function getDataUrl() {
     return new URL("assets/knowledge-map.json", getSiteRoot()).href;
+  }
+
+  function getRouteUrl(route, siteRoot) {
+    var normalizedRoute = String(route || "").replace(/^\/+/, "");
+    return new URL(normalizedRoute, siteRoot).href;
   }
 
   function loadMapData() {
@@ -51,7 +64,7 @@
         var group = category.groups[groupIndex];
         for (var documentIndex = 0; documentIndex < group.documents.length; documentIndex += 1) {
           var documentNode = group.documents[documentIndex];
-          if (normalizedPath(new URL(documentNode.route, siteRoot)) === currentPath) {
+          if (normalizedPath(getRouteUrl(documentNode.route, siteRoot)) === currentPath) {
             return { categoryIndex: categoryIndex, groupIndex: groupIndex, documentIndex: documentIndex };
           }
         }
@@ -98,7 +111,7 @@
     var intro = element("p", "sfh-knowledge-map__intro", "대분류에서 세부 문서까지 연결을 따라가거나, 문서명을 입력해 전체 노드에서 바로 찾습니다.");
     var search = element("input", "sfh-knowledge-map__search");
     search.type = "search";
-    search.placeholder = "전체 55개 문서 노드 검색";
+    search.placeholder = "전체 " + countDocuments(root) + "개 문서 노드 검색";
     search.setAttribute("aria-label", "전체 문서 노드 검색");
     var searchResults = element("div", "sfh-knowledge-map__results");
     searchResults.hidden = true;
@@ -172,7 +185,7 @@
       documentColumn.replaceChildren(columnHeader("L4 · 세부", group.label + " · " + group.documents.length));
       group.documents.forEach(function (documentNode, index) {
         var link = element("a", "sfh-map-node sfh-map-node--document" + (index === state.documentIndex ? " is-selected is-current" : ""));
-        link.href = new URL(documentNode.route, siteRoot).href;
+        link.href = getRouteUrl(documentNode.route, siteRoot);
         link.append(element("strong", "", documentNode.label), element("small", "", documentNode.summary));
         if (index === state.documentIndex) link.setAttribute("aria-current", "page");
         link.addEventListener("focus", function () {
@@ -220,7 +233,7 @@
       }
       matches.forEach(function (entry) {
         var link = element("a", "sfh-map-search-result");
-        link.href = new URL(entry.documentNode.route, siteRoot).href;
+        link.href = getRouteUrl(entry.documentNode.route, siteRoot);
         var copy = element("span", "");
         copy.append(element("strong", "", entry.documentNode.label), element("small", "", entry.documentNode.summary));
         link.append(copy, element("em", "", entry.category.label + " → " + entry.group.label));
@@ -254,9 +267,10 @@
   }
 
   function initializeKnowledgeMap() {
-    var host = document.querySelector(".md-content__inner");
-    if (!host || initializedHosts.has(host)) return;
-    initializedHosts.add(host);
+    var article = document.querySelector(".md-content__inner");
+    if (!article || initializedHosts.has(article)) return;
+    initializedHosts.add(article);
+    var host = article.querySelector("[data-sfh-knowledge-map-host]") || article;
     loadMapData().then(function (data) {
       if (!host.isConnected || host.querySelector("[data-sfh-knowledge-map]")) return;
       host.append(buildMap(data));

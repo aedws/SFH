@@ -69,14 +69,14 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>3 DAYS · 39 TOPICS</span><span>M MAP · CLEAR → EARLY EXIT</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>3 DAYS · 40 TOPICS</span><span>55 DOCS · ROOT-SAFE LINKS</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLE · BUILD 4 · IMPROVE 4 · CHANGE 3 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 5 · IMPROVE 7 · CHANGE 5 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>1</b><small>UPDATE BUNDLE</small></span><span><b>4</b><small>BUILD</small></span><span><b>4</b><small>IMPROVE</small></span><span><b>3</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span>
+      <span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 방 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
@@ -100,6 +100,23 @@ hide:
         <div class="sfh-group"><h3>⚡ 개선 · 4</h3><p>탐색 종료 동선, 전체 지도 조작성, 보상 회수 감각, 실제 입력 E2E를 함께 개선했습니다.</p></div>
         <div class="sfh-group"><h3>🧭 수정 · 3</h3><p>방 보상을 내부 경험치에서 크레딧으로, 키 카탈로그를 22개 Action으로, 맵 스냅샷을 방향 연결 정보 포함 형태로 수정했습니다.</p></div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>확장 지도 초기 레이아웃에서 0 이하 크기 사각형이 생길 수 있던 클릭 판정을 양수 영역으로 보정했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>전체 문서 노드맵 · 404 차단 · 반응형 탐색 UI</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 홈의 고정 추천 카드 대신 55개 문서를 실제 계층과 배포 주소로 탐색합니다.</strong>
+          <ul>
+            <li>Material 즉시 이동 뒤에도 최초 페이지의 상대 경로를 재사용하지 않고, 고정된 위키 스크립트 주소에서 배포 루트를 계산합니다.</li>
+            <li>홈의 <code>자주 찾는 문서</code> 블록을 전체 노드맵의 전용 위치로 교체하고 모든 일반 문서 하단에도 같은 탐색기를 유지합니다.</li>
+            <li>4열·2열·1열 반응형 레이아웃, 연결 레일, 44px급 터치 노드와 줄바꿈 요약으로 화면 폭에 따른 탐색 밀도를 정리했습니다.</li>
+          </ul>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 1</h3><p>홈 전용 노드맵 마운트 지점과 전체 문서 동적 검색을 하나의 컴포넌트로 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>⚡ 개선 · 3</h3><p>전체 문서 가시성, 노드 연결선, 데스크톱·태블릿·모바일 레이아웃을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>🧭 수정 · 2</h3><p>추천 카드 중심 홈을 전체 계층 탐색 중심으로 바꾸고 노드 데이터 버전을 2026-09-01 기준으로 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>즉시 페이지 이동 후 상대 경로가 중첩되어 일부 노드가 404로 열리던 문제를 배포 루트 고정으로 차단했습니다.</p></div>
       </div>
     </details>
   </div>
@@ -1149,21 +1166,7 @@ hide:
 </details>
 </div>
 
-<div class="sfh-section-head">
-  <div><span class="sfh-kicker">KNOWLEDGE BASE</span><h2>자주 찾는 문서</h2></div>
-  <p>처음 시작하는 사람은 실행 문서부터, 공동 작업자는 모듈 규칙과 개발 현황부터 확인합니다.</p>
-</div>
-
-<div class="sfh-link-grid">
-  <a class="sfh-link-card" href="getting-started/run-project/"><b>프로젝트 실행</b><span>Godot에서 소·중·대형 작전을 시작하고 Q/F/I/U 입력을 확인합니다.</span><small>GETTING STARTED →</small></a>
-  <a class="sfh-link-card" href="development-status/"><b>전체 업데이트</b><span>날짜와 구현·개선·수정·버그픽스 태그별 변경 내역을 확인합니다.</span><small>RELEASE NOTES →</small></a>
-  <a class="sfh-link-card" href="architecture/module-rules/"><b>모듈 작성 규칙</b><span>기능을 독립적으로 켜고 끄기 위한 폴더·Signal·의존성 규칙입니다.</span><small>ARCHITECTURE →</small></a>
-  <a class="sfh-link-card" href="features/weapon-balance/"><b>무기 밸런스</b><span>Google Sheets 실시간 테스트와 확정 CSV 운영 절차를 설명합니다.</span><small>BALANCE PIPELINE →</small></a>
-  <a class="sfh-link-card" href="features/progression/"><b>로그라이크 성장</b><span>한 판 임시 버프와 작전 종료 후 외부 성장 정산을 설명합니다.</span><small>RUN + META →</small></a>
-  <a class="sfh-link-card" href="features/fog-of-war/"><b>전장의 안개</b><span>월드 시야 제한과 전체 미니맵의 분리된 동작을 설명합니다.</span><small>WORLD VISIBILITY →</small></a>
-  <a class="sfh-link-card" href="features/grid-inventory/"><b>격자 가방</b><span>아이템별 점유 크기와 I 키 인벤토리의 현재 구현을 확인합니다.</span><small>INVENTORY →</small></a>
-  <a class="sfh-link-card" href="getting-started/edit-wiki-online/"><b>웹에서 위키 수정</b><span>GitHub 웹 편집과 자동 Pages 배포 흐름을 따라갑니다.</span><small>COLLABORATE →</small></a>
-</div>
+<div data-sfh-knowledge-map-host></div>
 
 ## 검색 요령
 

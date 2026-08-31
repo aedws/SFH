@@ -19,6 +19,11 @@ if (-not $map.root -or -not $map.root.categories) {
 $mappedSources = [System.Collections.Generic.List[string]]::new()
 $mappedRoutes = [System.Collections.Generic.List[string]]::new()
 $groupCount = 0
+$siteUrlMatch = [regex]::Match((Get-Content -LiteralPath $mkdocsPath -Raw -Encoding UTF8), '(?m)^site_url:\s*(?<url>\S+)\s*$')
+if (-not $siteUrlMatch.Success) {
+    throw "MkDocs site_url is required for node route validation."
+}
+$siteUrl = [Uri]::new($siteUrlMatch.Groups['url'].Value.TrimEnd('/') + '/')
 
 foreach ($category in $map.root.categories) {
     if ([string]::IsNullOrWhiteSpace($category.id) -or [string]::IsNullOrWhiteSpace($category.label)) {
@@ -65,6 +70,13 @@ foreach ($category in $map.root.categories) {
             if ($route -ne $expectedRoute) {
                 $errors.Add("Route mismatch for '$source': expected '$expectedRoute', got '$route'.")
             }
+            if ($route.StartsWith('/') -or $route.Contains('..') -or $route.Contains('?') -or $route.Contains('#')) {
+                $errors.Add("Route must stay canonical and site-root relative for '$source': '$route'.")
+            }
+            $publishedUrl = [Uri]::new($siteUrl, $route)
+            if (-not $publishedUrl.AbsoluteUri.StartsWith($siteUrl.AbsoluteUri, [System.StringComparison]::OrdinalIgnoreCase)) {
+                $errors.Add("Route escapes the published wiki root for '$source': '$publishedUrl'.")
+            }
         }
     }
 }
@@ -107,6 +119,14 @@ $stylesheet = Get-Content -LiteralPath $stylesheetPath -Raw -Encoding UTF8
 $mkdocs = Get-Content -LiteralPath $mkdocsPath -Raw -Encoding UTF8
 if ($javascript -notmatch 'data-sfh-knowledge-map' -or $javascript -notmatch 'assets/knowledge-map.json') {
     $errors.Add("Knowledge map JavaScript does not install or load the graph data.")
+}
+if ($javascript -notmatch 'document\.currentScript' -or
+    $javascript -notmatch 'new URL\("\.\./", knowledgeMapScriptUrl\)' -or
+    $javascript -notmatch 'getRouteUrl\(documentNode\.route, siteRoot\)') {
+    $errors.Add("Knowledge map routes are not anchored to the stable script-derived site root.")
+}
+if ($javascript -notmatch 'data-sfh-knowledge-map-host') {
+    $errors.Add("The home page cannot mount the full document map in place of quick links.")
 }
 if ($stylesheet -notmatch '\.sfh-knowledge-map__graph' -or $stylesheet -notmatch '\.sfh-map-node--document') {
     $errors.Add("Knowledge map HUD styles are incomplete.")
