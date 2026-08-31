@@ -58,12 +58,12 @@ jobs:
           test -s "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/SOURCE.md"
           grep -q "Creative Commons Zero" "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/LICENSE.txt"
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
-          grep -q "SMOKE_TEST_OK key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx" /tmp/sfh-smoke.log
+          grep -q "SMOKE_TEST_OK operation_briefing selected_then_launch tactical_hud key_mapping_21" /tmp/sfh-smoke.log
 
       - name: Test real-input play session
         run: |
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
-          grep -q "E2E_PLAY_SESSION_OK ui_state_contracts_21 viewport_bounds modal_exclusivity hud_non_overlap" /tmp/sfh-e2e.log
+          grep -q "E2E_PLAY_SESSION_OK ui_state_contracts_21 viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud" /tmp/sfh-e2e.log
 
       - name: Export browser game
         run: |

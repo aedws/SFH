@@ -69,17 +69,17 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 23 TOPICS</span><span>기획 진행도 96% · UI 상태 E2E</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 24 TOPICS</span><span>기획 진행도 96% · 작전 브리핑 UI</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>5 UPDATE BUNDLES &middot; BUILD 12 &middot; IMPROVE 8 &middot; CHANGE 7 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>6 UPDATE BUNDLES &middot; BUILD 14 &middot; IMPROVE 10 &middot; CHANGE 8 &middot; FIX 2</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>5</b><small>UPDATE BUNDLES</small></span>
-      <span><b>12</b><small>BUILD</small></span>
-      <span><b>8</b><small>IMPROVE</small></span>
-      <span><b>7</b><small>CHANGE</small></span>
+      <span><b>6</b><small>UPDATE BUNDLES</small></span>
+      <span><b>14</b><small>BUILD</small></span>
+      <span><b>10</b><small>IMPROVE</small></span>
+      <span><b>8</b><small>CHANGE</small></span>
       <span><b>2</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -209,6 +209,32 @@ hide:
         </div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">정산 화면 뒤 전투 HUD 잔류</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>성공·실패 결과에서는 전투 HUD·미니맵·스킬·대시를 모두 숨기고 결과만 표시합니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 6</small><b>작전 브리핑 UI · 선택 후 투입 확정 · 전술 HUD 재배치</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 작은 설정 버튼 모음에서 작전 판단을 위한 양쪽 브리핑 화면으로 전환</strong>
+          <ul>
+            <li>왼쪽에 지역·규모·난이도, 전술 경로, 목표 시간·방·적 범위, 투입 대비 회수·고등급·보스 정보를 묶었습니다.</li>
+            <li>오른쪽에 지역·난이도·페널티·준비 기능, 규모 카드, 위험 배율, 소모품과 최종 투입 비용을 계층화했습니다.</li>
+            <li>소·중·대형 카드는 선택만 수행하고 별도 작전 투입 버튼으로 계약을 확정해 오입력을 막습니다.</li>
+            <li>전투 상단 HUD를 1040×144 전술 카드로 압축하고 장비와 현재 무기를 나란히 배치했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>검증 결과</b><span>양쪽 열 500px, 패널·투입 버튼 경계, 선택→확정, 21상태 E2E와 HUD 비겹침을 통과했습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">작전 브리핑 Presenter</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>기존 계약 스냅샷을 임무·위험·회수·확정 영역과 코드 전술 프리뷰에 투영합니다.</p><a href="features/raid-setup-extraction/">브리핑 구조 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">전투 HUD Presenter</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>기존 체력·경험치·장비·무기 데이터를 유지하며 상단 정보 계층만 교체합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">투입 전 판단 가시성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>실제 비용·회수·고등급·보스·적 배율과 소모품을 출격 전에 한 화면에서 비교합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">상단 HUD 점유율</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전투 정보를 144px 높이로 압축하고 우측 미니맵과 수직으로 분리합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">규모 클릭 즉시 출격 → 선택 후 확정</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>규모 변경은 계약 표시만 갱신하며 명시적 투입 버튼에서만 비용을 차감합니다.</p></div></details>
         </div>
       </div>
     </details>

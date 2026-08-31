@@ -75,6 +75,12 @@ const KEY_MAPPING_SERVICE_SCENE_PATH := (
 const KEY_MAPPING_PANEL_SCENE_PATH := (
 	"res://game/features/key_mapping/key_mapping_panel.tscn"
 )
+const OPERATION_SETUP_PRESENTER_SCRIPT := preload(
+	"res://game/features/run_setup/operation_setup_presenter.gd"
+)
+const COMBAT_HUD_PRESENTER_SCRIPT := preload(
+	"res://game/features/run_setup/combat_hud_presenter.gd"
+)
 const MAP_GENERATOR_METHODS := [
 	&"configure_obstacles",
 	&"generate",
@@ -333,6 +339,9 @@ var conditional_ranking_system
 var operation_result_service
 var key_mapping_service
 var key_mapping_panel
+var operation_setup_presenter := OPERATION_SETUP_PRESENTER_SCRIPT.new()
+var combat_hud_presenter := COMBAT_HUD_PRESENTER_SCRIPT.new()
+var operation_launch_button: Button
 var active_contract: Dictionary = {}
 var consumed_run_items: Array[StringName] = []
 var current_map_config: Resource
@@ -357,6 +366,9 @@ func _ready() -> void:
 	control_hint_label.text = "이동 WASD · Space 대시 · LMB 기본기 · 1~9 스킬 · Q/F/I/U/E · K 키 설정"
 	hub_control_hint_label.text = "이동 WASD · I 가방 · U 장비 · E 모듈·파츠 · Q 무기 · F 게이트 · K 키 설정"
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	var operation_controls: Dictionary = operation_setup_presenter.call(&"install", run_setup_overlay)
+	operation_launch_button = operation_controls.get(&"launch_button") as Button
+	combat_hud_presenter.call(&"install", hud_margin)
 	restart_button.pressed.connect(_restart_run)
 	setup_close_button.pressed.connect(_close_run_setup)
 	locked_balance_button.pressed.connect(
@@ -365,9 +377,11 @@ func _ready() -> void:
 	live_balance_button.pressed.connect(
 		_select_balance_source_mode.bind(WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET)
 	)
-	small_map_button.pressed.connect(start_run.bind("small"))
-	medium_map_button.pressed.connect(start_run.bind("medium"))
-	large_map_button.pressed.connect(start_run.bind("large"))
+	small_map_button.pressed.connect(_select_map_tier.bind("small"))
+	medium_map_button.pressed.connect(_select_map_tier.bind("medium"))
+	large_map_button.pressed.connect(_select_map_tier.bind("large"))
+	if operation_launch_button != null:
+		operation_launch_button.pressed.connect(_start_selected_run)
 	region_button.pressed.connect(_cycle_region)
 	difficulty_button.pressed.connect(_cycle_difficulty)
 	penalty_button.pressed.connect(_cycle_penalty)
@@ -601,6 +615,17 @@ func _cycle_region() -> void:
 	_refresh_contract_setup_ui()
 
 
+func _select_map_tier(tier_id: String) -> void:
+	if tier_id not in MAP_TIER_IDS:
+		return
+	selected_map_size = tier_id
+	_refresh_contract_setup_ui()
+
+
+func _start_selected_run() -> void:
+	start_run(selected_map_size)
+
+
 func _cycle_difficulty() -> void:
 	if operation_contract_service != null:
 		operation_contract_service.call(&"cycle_difficulty", 1)
@@ -726,6 +751,36 @@ func _refresh_contract_setup_ui() -> void:
 			{"small": small_map_button, "medium": medium_map_button, "large": large_map_button}[tier_id],
 			tier_id
 		)
+	if operation_setup_presenter != null and ResourceLoader.exists(tier_path):
+		var tier_config: Resource = load(tier_path)
+		var spawn_snapshot := {}
+		var spawn_path := SPAWN_CONFIG_PATH_PATTERN % selected_tier
+		if ResourceLoader.exists(spawn_path):
+			var spawn_config: Resource = load(spawn_path)
+			spawn_snapshot = {
+				&"minimum_enemies": int(spawn_config.get("minimum_active_enemies")),
+				&"maximum_enemies": int(spawn_config.get("maximum_active_enemies")),
+			}
+		operation_setup_presenter.call(&"update", {
+			&"tier_id": StringName(selected_tier),
+			&"region_id": contract_snapshot.get(&"selected_region_id", &"ruined_city"),
+			&"region_name": contract_snapshot.get(&"selected_region_name", "기본"),
+			&"difficulty_id": contract_snapshot.get(&"selected_difficulty_id", &"standard"),
+			&"difficulty_name": contract_snapshot.get(&"selected_difficulty_name", "표준"),
+			&"quote": quote,
+			&"penalty_names": penalty_names,
+			&"loadout": "응급키트" if not loadout.is_empty() else "비어 있음",
+			&"can_launch": not ({
+				"small": small_map_button, "medium": medium_map_button, "large": large_map_button,
+			}[selected_tier] as Button).disabled,
+			&"map": {
+				&"display_name": tier_config.get("display_name"),
+				&"target_seconds": tier_config.get("target_run_duration_seconds"),
+				&"minimum_rooms": tier_config.get("minimum_rooms"),
+				&"maximum_rooms": tier_config.get("maximum_rooms"),
+			},
+			&"spawn": spawn_snapshot,
+		})
 
 
 func start_run(map_size: String) -> bool:
