@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ElectricEffectProfile" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ElectricEffectProfile" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://game/features/combat_skills/effects/electric_effect_profile.gd" id="1_profile"]
+[ext_resource type="Texture2D" path="res://game/assets/vfx/kenney_particle_pack/spark_01.png" id="2_spark"]
 
 [resource]
 script = ExtResource("1_profile")
@@ -15,3 +16,7 @@ core_width = 2.5
 field_fill_alpha = 0.1
 glow_color = Color(0.2, 0.32, 1, 0.5)
 core_color = Color(0.72, 0.86, 1, 1)
+accent_texture = ExtResource("2_spark")
+accent_count = 8
+accent_size = 48.0
+accent_alpha = 0.58

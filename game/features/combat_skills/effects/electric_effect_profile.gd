@@ -14,6 +14,10 @@ extends Resource
 @export_range(0.0, 0.5, 0.01) var field_fill_alpha: float = 0.08
 @export var glow_color: Color = Color(0.16, 0.55, 1.0, 0.48)
 @export var core_color: Color = Color(0.76, 0.94, 1.0, 1.0)
+@export var accent_texture: Texture2D
+@export_range(0, 16, 1) var accent_count: int = 0
+@export_range(8.0, 96.0, 1.0) var accent_size: float = 36.0
+@export_range(0.0, 1.0, 0.05) var accent_alpha: float = 0.65
 
 
 func is_valid() -> bool:
@@ -24,6 +28,7 @@ func is_valid() -> bool:
 		and arc_count > 0
 		and points_per_arc >= 3
 		and estimated_line_segments() <= 128
+		and accent_count <= 16
 		and core_width <= glow_width
 	)
 
@@ -40,4 +45,6 @@ func get_snapshot() -> Dictionary:
 		&"arc_count": arc_count,
 		&"points_per_arc": points_per_arc,
 		&"estimated_line_segments": estimated_line_segments(),
+		&"accent_count": accent_count,
+		&"accent_texture_path": accent_texture.resource_path if accent_texture != null else "",
 	}

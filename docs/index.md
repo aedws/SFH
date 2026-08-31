@@ -34,9 +34,9 @@ hide:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>93%</b>
+        <b>96%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="93"><i style="width: 93%"></i></div>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
       <p>우선순위 10개 구현 완료 · 입력·전투 3× · 타게팅·탈출 2× · 기타 1×</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
       <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
@@ -50,7 +50,7 @@ hide:
       </a>
       <div class="sfh-operation-meta" aria-label="현재 플레이 빌드 요약">
         <span><b>3</b><small>MAP TIERS</small></span>
-        <span><b>LMB·1~9·⇧·Q·F</b><small>ACTIVE INPUTS</small></span>
+        <span><b>K · 21 ACTIONS</b><small>FREE KEY MAPPING</small></span>
         <span><b>PASS</b><small>WEB BUILD</small></span>
       </div>
     </div>
@@ -69,17 +69,17 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 21 TOPICS</span><span>기획 진행도 93% · 실제 플레이 E2E</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 22 TOPICS</span><span>기획 진행도 96% · K 키 설정</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>3 UPDATE BUNDLES &middot; BUILD 9 &middot; IMPROVE 5 &middot; CHANGE 6 &middot; FIX 1</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>4 UPDATE BUNDLES &middot; BUILD 11 &middot; IMPROVE 7 &middot; CHANGE 7 &middot; FIX 1</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>3</b><small>UPDATE BUNDLES</small></span>
-      <span><b>9</b><small>BUILD</small></span>
-      <span><b>5</b><small>IMPROVE</small></span>
-      <span><b>6</b><small>CHANGE</small></span>
+      <span><b>4</b><small>UPDATE BUNDLES</small></span>
+      <span><b>11</b><small>BUILD</small></span>
+      <span><b>7</b><small>IMPROVE</small></span>
+      <span><b>7</b><small>CHANGE</small></span>
       <span><b>1</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -111,7 +111,7 @@ hide:
             <li>투입 비용은 보스 보장·고등급 가중치·지역 드랍표로 실제 파밍 결과에 연결되고, 파산 시 무료 기본 계약과 무장이 복구됩니다.</li>
             <li>무기 전투 태그·등급별 스킬 변형과 감전→점멸 트리거를 연결하고, 회복·시야·탈출 페널티와 가치·시간·처치 3종 랭킹을 분리했습니다.</li>
           </ul>
-          <p class="sfh-intent"><b>남은 7%</b><span>사용자용 키 설정 저장, 구매품의 I/U 영구 인벤토리 연결, 온라인 검증 랭킹, 4~9번 콘텐츠와 고유 보스가 후속 범위입니다.</span></p>
+          <p class="sfh-intent"><b>당시 남은 7%</b><span>이 업데이트 뒤 K 키 설정·영구 저장을 완료했습니다. 현재 후속 범위는 구매품의 I/U 영구 인벤토리 연결, 온라인 검증 랭킹, 4~9번 콘텐츠와 고유 보스입니다.</span></p>
         </div>
         <div class="sfh-group"><h3>🧱 구현 · 7</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">좌클릭 홀드·1~9 슬롯</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>공격 의사와 발사 주기는 분리하고 9개 입력 슬롯과 런타임 재설정 계약을 추가했습니다.</p><a href="features/combat-skills/">전투 입력 →</a></div></details>
@@ -160,6 +160,32 @@ hide:
         </div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Web U→E 창 닫힘</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>열린 장비 화면에서 E가 닫기 토글이 아니라 모듈·파츠 탭 전환으로 작동합니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 4</small><b>K 자유 키 설정 · CC0 상업 VFX · 입력 완전 Action화</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 고정 조작과 출처 불명 표현에서 재설정 가능한 입력·감사 가능한 VFX로 전환</strong>
+          <ul>
+            <li>K 화면에서 이동·대시·기본기·Q/F·1~9·I/U/E와 K 자체까지 21개 Action을 키보드·마우스로 변경하고 재실행 뒤에도 유지합니다.</li>
+            <li>중복 키는 기존 Action과 교환하고 ESC는 입력 취소·화면 닫기용으로 고정해 설정 실수로 UI에 갇히지 않습니다.</li>
+            <li>물리 WASD·Space 직접 조회를 제거해 실제 이동과 대시도 저장된 Action을 사용합니다.</li>
+            <li>상업 이용 가능한 Kenney Particle Pack의 CC0 전기 텍스처 2개만 반입하고 원문·커밋·SHA-256을 함께 보존했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>검증 결과</b><span>21 Action·ESC·중복 교환·JSON 저장·CC0 원장·효과 예산 스모크와 실제 K/ESC E2E를 통과했습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">K 키 설정·영구 저장</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>카탈로그·저장 서비스·모달 UI를 분리하고 브라우저와 PC의 user 경로에 즉시 저장합니다.</p><a href="features/key-mapping/">키 변경 방법 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">상업 에셋 라이선스 원장</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>CC0 원문, 원본 커밋, 선별 파일과 해시를 배포 가능한 감사 기록으로 남깁니다.</p><a href="architecture/third-party-assets/">라이선스 확인 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">현재 키 기반 HUD 안내</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>변경 직후 거점·전투 안내를 저장된 키 이름으로 다시 구성합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">전기 스킬 텍스처 강조</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>점멸·자기장·기동 가속에 프로필별 CC0 전기 구름을 제한된 수로 합성합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">물리키 직결 → Action 입력</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>플레이어 이동·대시가 WASD와 Space를 직접 읽지 않아 모든 변경값이 실제 조작에 반영됩니다.</p></div></details>
         </div>
       </div>
     </details>

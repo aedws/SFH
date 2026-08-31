@@ -17,8 +17,9 @@ tags:
 
 ## 조작
 
-- 이동: `WASD` 또는 방향키
-- 회피 이동: `Shift` 또는 `Space`
+- 이동 기본값: `WASD`
+- 회피 이동 기본값: `Space`
+- `K`의 [키 설정 화면](key-mapping.md)에서 이동과 대시를 다른 키로 자유롭게 바꿀 수 있습니다.
 - 대각선 이동 속도는 정규화되어 직선 이동과 같습니다.
 - 입력 순간 기본 속도의 68%를 확보하고 60 FPS 기준 한 프레임 안에 기본 속도의 90% 이상으로 진입합니다.
 - 손을 떼면 강하게 감속하며 남은 속도가 50px/s 이하일 때 정확히 정지시켜 저속 미끄러짐을 없앱니다.
@@ -51,7 +52,8 @@ Player (CharacterBody2D)
 
 ## 의존성
 
-- Godot 기본 `ui_left`, `ui_right`, `ui_up`, `ui_down` 입력
+- 프로젝트 `move_left`, `move_right`, `move_up`, `move_down`, `dash` Action
+- 선택 기능인 [K 키 설정과 영구 바인딩](key-mapping.md)
 - `game/scenes/game.gd`의 플레이어 설치 지점
 - `FeatureManifest.player_enabled`
 - 장비가 켜진 경우 `apply_equipment_modifiers(modifiers)` 공개 계약
@@ -62,4 +64,4 @@ Player (CharacterBody2D)
 
 ## 검색 별칭
 
-캐릭터 이동, WASD, 방향키, 속도 변경, 초동 가속, 급선회, 감속, 제동, 정지 스냅, 횡그립, 역선회, 대시, 회피, 대시 쿨타임 UI, 대시 준비, READY, 대시 관성, 탑뷰 핵앤슬래시, 플랫포머 스타일, 쫄깃한 조작감, 카메라 추적, Shift, Space
+캐릭터 이동, WASD, 키 변경, 속도 변경, 초동 가속, 급선회, 감속, 제동, 정지 스냅, 횡그립, 역선회, 대시, 회피, 대시 쿨타임 UI, 대시 준비, READY, 대시 관성, 탑뷰 핵앤슬래시, 플랫포머 스타일, 쫄깃한 조작감, 카메라 추적, Space, K 키 설정

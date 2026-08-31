@@ -2,7 +2,7 @@ class_name PlayerMovement
 extends Node
 
 ## 입력을 플랫포머처럼 즉각적인 가속·제동·선회·대시가 있는 탑다운 속도로 바꾸는 독립 컴포넌트입니다.
-## 방향키는 Godot 기본 ui_* 입력을 사용하고 WASD는 물리 키로 읽습니다.
+## 이동과 대시는 프로젝트 Action만 읽으므로 키 설정 모듈에서 자유롭게 교체할 수 있습니다.
 
 @export_range(0.0, 2000.0, 10.0, "or_greater") var speed: float = 280.0
 @export_range(100.0, 20000.0, 50.0) var acceleration: float = 6500.0
@@ -30,18 +30,8 @@ var dash_was_down: bool = false
 
 
 func get_velocity(current_velocity: Vector2, delta: float) -> Vector2:
-	var direction := Input.get_vector(&"ui_left", &"ui_right", &"ui_up", &"ui_down")
-	var wasd_direction := Vector2(
-		float(Input.is_physical_key_pressed(KEY_D)) - float(Input.is_physical_key_pressed(KEY_A)),
-		float(Input.is_physical_key_pressed(KEY_S)) - float(Input.is_physical_key_pressed(KEY_W))
-	)
-
-	if wasd_direction != Vector2.ZERO:
-		direction = wasd_direction.normalized()
-	var dash_down := (
-		Input.is_physical_key_pressed(KEY_SHIFT)
-		or Input.is_physical_key_pressed(KEY_SPACE)
-	)
+	var direction := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
+	var dash_down := Input.is_action_pressed(&"dash")
 	var dash_pressed := dash_down and not dash_was_down
 	dash_was_down = dash_down
 	return step_velocity(current_velocity, direction, delta, dash_pressed)

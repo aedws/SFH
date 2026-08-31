@@ -35,6 +35,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-performance.p
 | 단계 | 실제 동작 | 합격 기준 | 2026-08-31 |
 |---|---|---|---|
 | 첫 진입 | 게임 시작 | 거점 HUD만 보이고 작전 설정은 닫힘 | 통과 |
+| 키 설정 | `K` → `ESC` | 21개 Action 화면만 열리고 게임 정지, 종료 후 거점 HUD 복원 | 통과 |
 | 거점 이동 | 오른쪽 이동 지속 입력 | 플레이어가 작전 게이트 범위까지 실제 이동 | 통과 |
 | 가방 | `I` → `ESC` | 가방만 열리고 게임 정지, 종료 후 거점 HUD 복원 | 통과 |
 | 장비 | `U` → `E` → `U` → `ESC` | 장비↔모듈·파츠 탭 전환 중 창이 닫히지 않음 | 통과 |
@@ -48,7 +49,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-performance.p
 | 성공 정산 | 방어 완료 → `Enter` | 성공 결과와 회수 정산 후 거점 복귀 | 통과 |
 | 실패 정산 | 재투입 후 체력 0 → `Enter` | 실패 결과와 손실 정산 후 거점 복귀 | 통과 |
 
-자동화는 `game/tests/e2e_play_session_test.gd`가 소유합니다. 기능 내부 함수를 순서대로 호출하는 대신 `InputEventKey`와 지속 이동 Action을 전달하여 Web과 데스크톱의 입력 라우팅 차이도 회귀 범위에 포함합니다. 테스트 전용 프로필·랭킹·외부 성장 경로를 사용하므로 실제 플레이 저장 데이터는 읽거나 지우지 않습니다.
+자동화는 `game/tests/e2e_play_session_test.gd`가 소유합니다. 기능 내부 함수를 순서대로 호출하는 대신 `InputEventKey`와 지속 이동 Action을 전달하여 Web과 데스크톱의 입력 라우팅 차이도 회귀 범위에 포함합니다. 테스트 전용 프로필·랭킹·외부 성장·키 설정 경로를 사용하므로 실제 플레이 저장 데이터는 읽거나 지우지 않습니다.
 
 ## 브라우저 육안 검수 목록
 
@@ -87,4 +88,4 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-performance.p
 
 ## 검색 별칭
 
-E2E, 실제 플레이, 플레이 테스트, 회귀 테스트, QA 체크리스트, 거점 작전 탈출, 성공 정산, 실패 정산, U E 입력, 브라우저 입력
+E2E, 실제 플레이, 플레이 테스트, 회귀 테스트, QA 체크리스트, 거점 작전 탈출, 성공 정산, 실패 정산, K 키 설정, U E 입력, 브라우저 입력

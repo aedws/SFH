@@ -17,17 +17,17 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 25 TOPICS</span><span>NOTION IMPLEMENTATION · E2E VERIFIED</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 26 TOPICS</span><span>96% · K KEY MAPPING · CC0 VFX</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>PLANNING PROGRESS · 2026-08-31</small><strong>현재 기획 진행도</strong></span>
-    <b>93%</b>
+    <b>96%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="93"><i style="width: 93%"></i></div>
-  <p>2026-08-31 공개 기획 원문의 우선순위 10개를 구현·검증한 뒤, 남은 사용자 UI·온라인 서비스·콘텐츠 범위를 제외해 계산했습니다.</p>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
+  <p>2026-08-31 공개 기획 원문의 우선순위 10개를 구현·검증한 뒤, 남은 영구 상점 UI·온라인 서비스·추가 콘텐츠 범위를 제외해 계산했습니다.</p>
 </div>
 
 권위 있는 기획 원본은 로그인 없이 열리는 [게시된 SFH 프로젝트 노션](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-08-31 공개 페이지의 실제 렌더링 본문을 읽어 최신 조작·타게팅·탈출·경제 요구를 확인했습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 요구사항으로 다루되, 플레이의 핵심인 입력·전투는 ×3, 타게팅과 탈출은 ×2로 더 크게 반영했습니다. 마일스톤 체크박스는 완료 증거로 사용하지 않고 실제 코드·데이터·자동 검증만 판정 근거로 삼습니다.
@@ -35,12 +35,12 @@ tags:
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
 | 기술 기반 | ×1 | 100% | Godot 4.x·GDScript·CharacterBody2D·Area2D·TileMapLayer·Camera2D와 기능별 Node/Scene 경계 구현 |
-| 입력·전투 자원 | ×3 | 92% | WASD·회피·Q·F·좌클릭 홀드·1~9 슬롯과 런타임 키 재설정 구현. 사용자 설정 화면·바인딩 영구 저장과 4~9 콘텐츠가 남음 |
+| 입력·전투 자원 | ×3 | 100% | K 화면에서 이동·대시·Q·F·좌클릭·1~9·I/U/E를 변경·초기화하고 재실행 뒤 유지. 확장 콘텐츠는 별도 범위 |
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
 | 탈출·정산 | ×2 | 94% | F 방어전, 구역 이탈 일시정지·재개, 성공 영구 등록, 사망 런 획득물·장착 로드아웃 소실 구현. 전리품 종류 확장이 남음 |
 | 메타·경제 | ×1 | 85% | 보스 보장·고등급·지역 드랍·무료 진입·영구 상점·태그 변형·상태 연계·요구 페널티·3종 로컬 랭킹 구현. 구매품 I/U 연결과 서버 랭킹이 남음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`입니다. 현재 결과는 `(100×1 + 92×3 + 95×2 + 94×2 + 85×1) ÷ 9 ≈ 93%`입니다. 같은 기능을 코어 루프와 세부 시스템 양쪽에 중복 가산하지 않았습니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ Σ가중치`입니다. 현재 결과는 `(100×1 + 100×3 + 95×2 + 94×2 + 85×1) ÷ 9 ≈ 96%`입니다. 같은 기능을 코어 루프와 세부 시스템 양쪽에 중복 가산하지 않았습니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -48,7 +48,7 @@ tags:
 
 | Phase | 판정 | 저장소 대조 |
 |---|---|---|
-| Phase 1 · 이동·좌클릭·1~9·타게팅 | 기능 완료·UI 후속 | 좌클릭 홀드, 1~9 입력, 런타임 재설정, 최근접·HP·엘리트·밀집·이동 벡터 정책 구현. 키 설정 화면·저장만 남음 |
+| Phase 1 · 이동·좌클릭·1~9·타게팅 | 완료 | 좌클릭 홀드, 1~9 입력, K 키 설정·영구 저장, 최근접·HP·엘리트·밀집·이동 벡터 정책 구현 |
 | Phase 2 · Q 교체·AP·쿨타임 | 완료 | 주·보조 교체와 무기 특색, 에너지·충전·쿨타임 및 HUD가 연결됨 |
 | Phase 3 · 탈출·정산 | 완료 | 구역 이탈 일시정지·재개, 성공 등록·정산과 사망 로드아웃 소실까지 자동 검증 |
 | Phase 4 · 태그·투자·해금 상점 | 기능 완료·UI 후속 | 태그 발동 제한·등급 변형·투자 드랍·무료 진입·상점 등록 구현. 구매품 I/U 생성 화면이 남음 |
@@ -68,22 +68,21 @@ tags:
 
 | 우선순위 | 작업 | 현재 차이 | 완료 조건 |
 |---:|---|---|---|
-| 1 | 사용자용 키 설정 화면·영구 저장 | 런타임 재설정 API와 1~9 입력은 구현 | 거점 설정 UI에서 변경·초기화하고 재실행 뒤 유지 |
-| 2 | 상점 구매품→I/U 영구 인벤토리 | 도면 등록·견적·구매·프로필 저장 구현 | 구매 직후 장비·스킬 아이템이 가방/장비 편집에 생성 |
-| 3 | 온라인 조건부 랭킹 | 3종 로컬 저장·이전 데이터 이관 구현 | 서버 신원·비동기 제출·검증·부정 방지 제공자 교체 |
-| 4 | 4~9 스킬 콘텐츠 | 슬롯과 입력 계약만 확보 | 전투 태그·타게팅·자원·상태 연계를 사용하는 6개 정의 추가 |
-| 5 | 고유 보스 콘텐츠 | 투자 조건의 강화 보스 개체 구현 | 지역별 Scene·AI·고유 도면·전투 텔레그래프 추가 |
-| 6 | 밸런스·실기 최적화 | 자동 성능 예산 통과 | Google Sheets 실시간 튜닝과 저사양 GPU·브라우저 실기 인증 |
+| 1 | 상점 구매품→I/U 영구 인벤토리 | 도면 등록·견적·구매·프로필 저장 구현 | 구매 직후 장비·스킬 아이템이 가방/장비 편집에 생성 |
+| 2 | 온라인 조건부 랭킹 | 3종 로컬 저장·이전 데이터 이관 구현 | 서버 신원·비동기 제출·검증·부정 방지 제공자 교체 |
+| 3 | 4~9 스킬 콘텐츠 | 슬롯과 입력 계약만 확보 | 전투 태그·타게팅·자원·상태 연계를 사용하는 6개 정의 추가 |
+| 4 | 고유 보스 콘텐츠 | 투자 조건의 강화 보스 개체 구현 | 지역별 Scene·AI·고유 도면·전투 텔레그래프 추가 |
+| 5 | 밸런스·실기 최적화 | 자동 성능 예산 통과 | Google Sheets 실시간 튜닝과 저사양 GPU·브라우저 실기 인증 |
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>3 UPDATE BUNDLES &middot; BUILD 9 &middot; IMPROVE 5 &middot; CHANGE 6 &middot; FIX 1</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>4 UPDATE BUNDLES &middot; BUILD 11 &middot; IMPROVE 7 &middot; CHANGE 7 &middot; FIX 1</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>3</b><small>UPDATE BUNDLES</small></span>
-      <span><b>9</b><small>BUILD</small></span>
-      <span><b>5</b><small>IMPROVE</small></span>
-      <span><b>6</b><small>CHANGE</small></span>
+      <span><b>4</b><small>UPDATE BUNDLES</small></span>
+      <span><b>11</b><small>BUILD</small></span>
+      <span><b>7</b><small>IMPROVE</small></span>
+      <span><b>7</b><small>CHANGE</small></span>
       <span><b>1</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -165,6 +164,32 @@ tags:
         </div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">열린 U 화면의 E 닫힘</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>E 입력이 창을 닫지 않고 모듈·파츠 탭으로 전환됩니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 4</small><b>K 자유 키 설정 · CC0 상업 VFX · 입력 모듈 감사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>입력 카탈로그</b> · 이동·전투·1~9·메뉴 21개 Action의 표시명과 분류를 Resource로 정의했습니다.</li>
+            <li><b>저장 서비스</b> · 키·마우스 변경, 중복 교환, 기본값 복원과 JSON 영속화를 UI 밖으로 분리했습니다.</li>
+            <li><b>K 화면</b> · 거점·작전 어디서든 열고 ESC로 취소·종료하며 현재 조작 안내를 즉시 갱신합니다.</li>
+            <li><b>승인 VFX</b> · Kenney CC0 2개 파일만 프로필에 주입하고 출처·원문·해시를 원장화했습니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>자동화 경계</b><span>스모크는 저장·충돌·라이선스·드로우 예산, E2E는 실제 K/ESC와 모달 복원을 검사합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">21 Action K 설정</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>브라우저·PC 공통 저장과 중복 키 교환, 전체 초기화를 제공합니다.</p><a href="../features/key-mapping/">모듈 계약 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">외부 자산 상업 이용 감사</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>CC0 원문과 원본 커밋·파일 해시를 저장소에 동봉합니다.</p><a href="../architecture/third-party-assets/">라이선스 원장 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">동적 조작 안내</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>HUD와 거점 안내가 현재 InputMap 바인딩을 표시합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">CC0 전기 강조 레이어</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>기존 캐시 선분 위에 프로필별 제한 텍스처를 합성합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">이동·대시 Action화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>물리 키 직접 조회를 제거해 재지정 값이 실제 조작에 반영됩니다.</p></div></details>
         </div>
       </div>
     </details>
