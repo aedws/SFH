@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 35 TOPICS</span><span>96% · MOVEMENT FEEDBACK</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 36 TOPICS</span><span>96% · AUGMENT CARD UI</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,13 +76,13 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>13 UPDATE BUNDLES &middot; BUILD 26 &middot; IMPROVE 32 &middot; CHANGE 15 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>14 UPDATE BUNDLES &middot; BUILD 28 &middot; IMPROVE 36 &middot; CHANGE 16 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>13</b><small>UPDATE BUNDLES</small></span>
-      <span><b>26</b><small>BUILD</small></span>
-      <span><b>32</b><small>IMPROVE</small></span>
-      <span><b>15</b><small>CHANGE</small></span>
+      <span><b>14</b><small>UPDATE BUNDLES</small></span>
+      <span><b>28</b><small>BUILD</small></span>
+      <span><b>36</b><small>IMPROVE</small></span>
+      <span><b>16</b><small>CHANGE</small></span>
       <span><b>6</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -435,6 +435,35 @@ tags:
         </div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Linux import 후 엔진 종료 오류</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Godot exit 134를 무조건 허용하지 않고 한글 글꼴 2종 산출물과 전체 후속 계약·Web export 성공을 필수 조건으로 제한했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 14</small><b>내부 증강 카드 UI · 선택 표현과 성장 규칙 분리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>표시기 분리</b> · `RunBuffChoiceCard`가 선택 스냅샷만 받아 계열·이름·중첩·효과를 그립니다.</li>
+            <li><b>3장 비교</b> · 동일한 세로 구조에 CHARACTER·WEAPON·ARMOR, 작전 한정과 실제 수치를 정렬했습니다.</li>
+            <li><b>SFH 재해석</b> · 외부 이미지 없이 #02e5e1 각진 프레임·증강 코어·레일을 코드 드로잉으로 구성했습니다.</li>
+            <li><b>입력·모달</b> · 1~3 즉시 선택과 포커스 이동을 추가하고 선택 중 다른 전투 HUD를 숨겼습니다.</li>
+            <li><b>인식 검증</b> · 1280×720 경계, 보이는 문구, 실제 `2` 적용과 전투 복귀를 E2E에 추가했습니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>교체성</b><span>카드 Scene을 제거하거나 교체해도 RunBuffSystem의 후보·효과·중첩·외부 정산 계약은 바뀌지 않습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">독립 증강 카드 프레젠터</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>버프 적용 권한 없이 스냅샷을 카드 정보와 코드 드로잉으로 변환합니다.</p><a href="../features/progression/">성장 UI 계약 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">Run buff choice E2E 상태</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>UI 상태를 23개, 플레이어 인식 체크포인트를 20개로 확장했습니다.</p><a href="../quality/e2e-play-session/">E2E 계약 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">증강 비교 정보 계층</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>계열→이름→중첩→효과→입력의 동일한 순서로 카드 3장을 읽습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">식별 코드·회로 프레임</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>VIT·MOV·DMG·RATE·ARM과 포커스 청록광으로 효과와 현재 선택을 구분합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">숫자·방향·Enter 입력</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>즉시 선택과 탐색 후 확정 방식을 동시에 지원합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">모달 배타성과 복원</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>증강 선택 중 HUD를 숨기고 선택 뒤 정확한 전투 레이어만 복원합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">임시 버프 목록의 화면 역할</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>가로 알림 목록에서 런 빌드 결정을 위한 집중 선택 화면으로 전환했습니다.</p></div></details>
         </div>
       </div>
     </details>

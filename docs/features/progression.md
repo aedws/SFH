@@ -23,7 +23,21 @@ tags:
 
 ## 내부 성장
 
-`ProgressionSystem`이 경험치·내부 레벨을 관리하고, 레벨이 오르면 `RunBuffSystem`이 선택 가능한 버프를 준비합니다. `RunBuffSelector`는 게임을 일시정지하고 최대 3개 선택지를 표시합니다.
+`ProgressionSystem`이 경험치·내부 레벨을 관리하고, 레벨이 오르면 `RunBuffSystem`이 선택 가능한 버프를 준비합니다. `RunBuffSelector`는 게임을 일시정지하고 최대 3개 증강 카드를 표시합니다. 카드가 열린 동안 전투 HUD와 미니맵은 숨겨져 선택 정보와 경쟁하지 않으며, 선택 직후 직전 전투 화면이 그대로 복원됩니다.
+
+### 내부 증강 카드 읽는 법
+
+세로형 카드 3장을 같은 높이와 정보 순서로 배치해 효과를 좌우로 비교합니다. 외부 작품의 카드 그림은 사용하지 않고 `#02e5e1` 신호색, 각진 프레임과 코드 드로잉 증강 코어로 SFH 전술 단말기 형태를 구성합니다.
+
+| 카드 영역 | 표시 정보 | 플레이 판단 |
+|---|---|---|
+| 상단 식별 | `AUGMENT // 01~03`, VIT·MOV·DMG·RATE·ARM 코드 | 카드와 효과 계열을 빠르게 구분 |
+| 계열 태그 | `CHARACTER`·`WEAPON`·`ARMOR`, `작전 한정` | 외부 경험치 계열과 이번 판 한정 여부 확인 |
+| 핵심 정보 | 증강 이름, 현재 런 레벨, `STACK 현재/최대` | 신규 획득과 중첩 투자를 비교 |
+| 효과 본문 | Google Sheets/확정 CSV에서 온 실제 효과 설명 | 수치 이득을 선택 전에 확인 |
+| 선택 안내 | `[1]`·`[2]`·`[3]`, A/D·방향키, Enter | 마우스와 키보드 중 원하는 방식으로 확정 |
+
+첫 카드는 자동 포커스됩니다. 숫자 `1`·`2`·`3`은 해당 카드를 즉시 선택하고, A/D 또는 좌우 방향키는 포커스를 순환하며 Enter가 현재 카드를 확정합니다. 1280×720 기준 세 카드의 화면 경계, 첫 포커스, 실제 `2` 입력 적용과 전투 복귀를 E2E에서 함께 검사합니다.
 
 내부 레벨이 오를 때마다 플레이어는 **HP 12를 즉시 회복**합니다. 이 기본 회복은 임시 버프 선택과 별도이므로 `run_buffs`를 꺼도 유지되고, 이후 선택한 `생존 본능`의 즉시 회복과는 각각 적용됩니다.
 
@@ -60,6 +74,8 @@ tags:
 | `experience` | 결정 생성과 획득 | `experience_collected` |
 | `leveling` | 한 판 XP·레벨 | `level_gained`, `get_run_snapshot` |
 | `run_buffs` | 선택지·중첩·임시 효과·정산 분류 | `prepare_choices`, `select_buff`, `get_meta_experience_breakdown` |
+| `run_buff_choice_card` | 선택 스냅샷의 계열·이름·중첩·효과 표시 | `configure`, `get_snapshot`, Button `pressed` |
+| `run_buff_selector` | 카드 3장 조립·포커스·입력·일시정지 | `open_choices`, `close_panel`, `buff_selected` |
 | `growth_balance` | RunBuff·Upgrade CSV 검증, 실시간 갱신, 확정값 폴백 | `get_run_buff_catalog`, `get_*_modifiers`, `quote_upgrade` |
 | `meta_progression` | 세 계열 외부 XP·레벨·저장 | `settle_run`, `apply_to_targets`, `get_snapshot` |
 
@@ -74,4 +90,4 @@ tags:
 
 ## 검색 별칭
 
-XP, 내부 경험치, 외부 경험치, 런 경험치, 메타 성장, 영구 성장, 임시 버프, 버프 선택, 캐릭터 레벨, 무기 레벨, 방어구 레벨, 레벨업 체력 회복, 레벨업 힐
+XP, 내부 경험치, 외부 경험치, 런 경험치, 메타 성장, 영구 성장, 임시 버프, 내부 증강, 증강 카드, 버프 선택, 캐릭터 레벨, 무기 레벨, 방어구 레벨, 레벨업 체력 회복, 레벨업 힐

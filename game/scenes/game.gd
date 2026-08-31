@@ -1370,6 +1370,7 @@ func _install_run_buffs() -> bool:
 		_report_configuration_error("런 버프 선택 UI를 구성하지 못했습니다.")
 		return false
 	run_buff_selector.connect(&"buff_selected", Callable(self, &"_on_run_buff_selected"))
+	_connect_modal_panel(run_buff_selector)
 	return true
 
 

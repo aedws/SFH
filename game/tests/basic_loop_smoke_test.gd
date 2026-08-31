@@ -33,6 +33,7 @@ const DASH_COOLDOWN_HUD_SCENE_PATH := (
 const WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
 const RUN_BUFF_SCENE_PATH := "res://game/features/run_buffs/run_buff_system.tscn"
+const RUN_BUFF_SELECTOR_PATH := "res://game/features/run_buffs/run_buff_selector.tscn"
 const RUN_BUFF_CATALOG_PATH := "res://game/features/run_buffs/configs/default_run_buffs.tres"
 const META_PROGRESSION_SCENE_PATH := "res://game/features/meta_progression/meta_progression_system.tscn"
 const CREDIT_LEDGER_SCENE_PATH := "res://game/features/credits/credit_ledger.tscn"
@@ -1814,6 +1815,34 @@ func _verify_roguelike_progression_modules() -> bool:
 		return false
 	var previous_max_health := float(player.get("max_health"))
 	var choices: Array[Dictionary] = buff_system.call(&"prepare_choices", 1, 5)
+	var selector_scene := load(RUN_BUFF_SELECTOR_PATH) as PackedScene
+	if selector_scene == null:
+		_fail("내부 증강 선택 Scene을 불러오지 못했습니다.")
+		return false
+	var selector := selector_scene.instantiate()
+	host.add_child(selector)
+	var ui_choices: Array[Dictionary] = []
+	for choice_index in range(mini(3, choices.size())):
+		ui_choices.append(choices[choice_index])
+	if not selector.call(&"open_choices", 1, ui_choices):
+		_fail("내부 증강 카드 선택 화면을 열지 못했습니다.")
+		return false
+	var selector_snapshot: Dictionary = selector.call(&"get_snapshot")
+	var card_snapshots: Array = selector_snapshot.get(&"card_snapshots", [])
+	if int(selector_snapshot.get(&"visible_card_count", 0)) != 3 or card_snapshots.size() != 3:
+		_fail("내부 증강 선택지가 세 장의 독립 카드로 표시되지 않았습니다.")
+		return false
+	for card_snapshot_variant in card_snapshots:
+		var card_snapshot: Dictionary = card_snapshot_variant
+		if (
+			String(card_snapshot.get(&"title", "")).is_empty()
+			or String(card_snapshot.get(&"description", "")).is_empty()
+			or String(card_snapshot.get(&"category", "")).is_empty()
+			or String(card_snapshot.get(&"icon_code", "")).is_empty()
+		):
+			_fail("증강 카드가 비교에 필요한 계열·이름·효과·식별 정보를 누락했습니다.")
+			return false
+	selector.call(&"close_panel")
 	var vitality_id: StringName = &""
 	for choice in choices:
 		if choice[&"buff_id"] == &"vitality":
@@ -3269,6 +3298,7 @@ func _process(_delta: float) -> bool:
 
 		paused = false
 		print("WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction")
+		print("RUN_AUGMENT_UI_OK cards_3 category_title_effect_stack keyboard_selection optional_presenter")
 		print("CYBERPUNK_THEME_OK accent_02e5e1 pixel_korean scanlines static_noise blink_state optional_overlay")
 		print("SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud key_mapping_21 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx commercial_ofl_pixel_font vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font cyberpunk_theme cyberpunk_theme_optional cyberpunk_motion cyberpunk_static_noise web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_door_lock room_clear_reward room_encounters_optional run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement movement_feedback dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
