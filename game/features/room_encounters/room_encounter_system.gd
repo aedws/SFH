@@ -36,6 +36,9 @@ var active_rewards: Array[Node] = []
 var rewards_spawned: int = 0
 var rewards_collected: int = 0
 var last_cleared_room_index: int = -1
+var last_requested_enemy_count: int = 0
+var last_spawned_enemy_count: int = 0
+var last_trigger_source: StringName = &"none"
 var random := RandomNumberGenerator.new()
 
 
@@ -74,6 +77,9 @@ func configure(
 	rewards_spawned = 0
 	rewards_collected = 0
 	last_cleared_room_index = -1
+	last_requested_enemy_count = 0
+	last_spawned_enemy_count = 0
+	last_trigger_source = &"none"
 	_clear_doors()
 	random.randomize()
 	enemy_spawner.call(&"set_reinforcement_paused", &"room_encounters", true)
@@ -103,6 +109,15 @@ func get_snapshot() -> Dictionary:
 		&"rewards_spawned": rewards_spawned,
 		&"rewards_collected": rewards_collected,
 		&"last_cleared_room_index": last_cleared_room_index,
+		&"minimum_horde_size": int(tier_values.get(&"minimum_enemies", 0)),
+		&"maximum_horde_size": int(tier_values.get(&"maximum_enemies", 0)),
+		&"last_requested_enemy_count": last_requested_enemy_count,
+		&"last_spawned_enemy_count": last_spawned_enemy_count,
+		&"last_trigger_source": last_trigger_source,
+		&"minimum_horde_met": (
+			active_room_index < 0
+			or active_enemies.size() >= int(tier_values.get(&"minimum_enemies", 0))
+		),
 		&"reinforcement_mode": &"room_triggered",
 	}
 
@@ -112,7 +127,7 @@ func get_active_rewards() -> Array[Node]:
 	return active_rewards.duplicate()
 
 
-func try_start_room(room_index: int) -> bool:
+func try_start_room(room_index: int, trigger_source: StringName = &"external") -> bool:
 	if active_room_index >= 0 or completed_rooms.has(room_index):
 		return false
 	if completed_rooms.size() >= int(tier_values.get(&"maximum_encounters", 0)):
@@ -120,26 +135,36 @@ func try_start_room(room_index: int) -> bool:
 	var room: Dictionary = room_definitions.get(room_index, {})
 	if room.is_empty() or _room_is_excluded(room):
 		return false
+	var minimum_horde_size := int(tier_values[&"minimum_enemies"])
 	var remaining_budget := int(enemy_spawner.call(&"get_remaining_spawn_budget"))
+	if remaining_budget < minimum_horde_size:
+		return false
 	var requested_count := random.randi_range(
-		int(tier_values[&"minimum_enemies"]),
+		minimum_horde_size,
 		int(tier_values[&"maximum_enemies"])
 	)
 	requested_count = mini(requested_count, remaining_budget)
-	if requested_count <= 0:
-		return false
 	var positions: PackedVector2Array = map_provider.call(
 		&"get_room_spawn_positions", room_index, requested_count
 	)
+	if positions.size() < minimum_horde_size:
+		return false
 	var encounter_id := StringName("room_%d" % room_index)
 	for world_position in positions:
 		var enemy: Node2D = enemy_spawner.call(&"spawn_enemy_at", world_position, encounter_id)
 		if is_instance_valid(enemy):
 			active_enemies.append(enemy)
 			enemy.tree_exited.connect(_on_active_enemy_tree_exited.bind(enemy), CONNECT_ONE_SHOT)
-	if active_enemies.is_empty():
+	if active_enemies.size() < minimum_horde_size:
+		for enemy in active_enemies:
+			if is_instance_valid(enemy):
+				enemy.queue_free()
+		active_enemies.clear()
 		return false
 	active_room_index = room_index
+	last_requested_enemy_count = requested_count
+	last_spawned_enemy_count = active_enemies.size()
+	last_trigger_source = trigger_source
 	_lock_doors(room)
 	encounter_started.emit(room_index, active_enemies.size())
 	return true
@@ -158,7 +183,7 @@ func _try_start_current_room() -> void:
 	var entry_rect: Rect2 = room[&"world_rect"]
 	entry_rect = entry_rect.grow(-float(config.get("room_entry_inset")))
 	if entry_rect.has_point(player.global_position):
-		try_start_room(room_index)
+		try_start_room(room_index, &"room_entry")
 
 
 func _lock_doors(room: Dictionary) -> void:

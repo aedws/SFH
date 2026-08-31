@@ -4,16 +4,16 @@
 
 [resource]
 script = ExtResource("1_config")
-small_minimum_enemies = 6
-small_maximum_enemies = 8
+small_minimum_enemies = 12
+small_maximum_enemies = 18
 small_maximum_encounters = 12
 small_reward_experience = 4
-medium_minimum_enemies = 8
-medium_maximum_enemies = 11
+medium_minimum_enemies = 18
+medium_maximum_enemies = 26
 medium_maximum_encounters = 18
 medium_reward_experience = 6
-large_minimum_enemies = 10
-large_maximum_enemies = 14
+large_minimum_enemies = 24
+large_maximum_enemies = 34
 large_maximum_encounters = 24
 large_reward_experience = 8
 room_entry_inset = 48.0

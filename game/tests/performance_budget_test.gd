@@ -7,6 +7,7 @@ const TARGET_FRAME_MS := 16.667
 const MAXIMUM_PEAK_FRAME_MS := 33.334
 const MAXIMUM_NODE_BUDGET := 6000
 const MAXIMUM_ELECTRIC_EFFECTS := 3
+const MINIMUM_LARGE_ROOM_HORDE := 24
 
 
 func _init() -> void:
@@ -118,6 +119,9 @@ func _run() -> void:
 		return
 	if maximum_electric_effects > MAXIMUM_ELECTRIC_EFFECTS:
 		_fail("동시 전기 이펙트 수가 예산을 초과했습니다.")
+		return
+	if int(result[&"active_room_enemies"]) < MINIMUM_LARGE_ROOM_HORDE:
+		_fail("대형 방 핵앤슬래시 최소 무리 수를 성능 시나리오가 충족하지 못했습니다.")
 		return
 	if float(map_performance.get(&"collision_compression_ratio", 1.0)) > 0.25:
 		_fail("맵 충돌 병합률이 25% 예산을 초과했습니다.")
