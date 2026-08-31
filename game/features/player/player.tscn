@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://game/features/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://game/features/player/player_movement.gd" id="2_movement"]
 [ext_resource type="Script" path="res://game/features/hit_feedback/hit_reaction.gd" id="3_hit_reaction"]
+[ext_resource type="Script" path="res://game/features/player/player_movement_feedback.gd" id="4_movement_feedback"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
@@ -21,6 +22,9 @@ stagger_seconds = 0.045
 knockback_impulse = 46.0
 knockback_decay = 30.0
 flash_seconds = 0.08
+
+[node name="MovementFeedback" type="Node2D" parent="."]
+script = ExtResource("4_movement_feedback")
 
 [node name="Body" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)

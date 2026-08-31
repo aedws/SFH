@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 34 TOPICS</span><span>96% · 플레이어 인식 E2E</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 35 TOPICS</span><span>96% · MOVEMENT FEEDBACK</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,14 +76,14 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>12 UPDATE BUNDLES &middot; BUILD 25 &middot; IMPROVE 28 &middot; CHANGE 14 &middot; FIX 5</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>13 UPDATE BUNDLES &middot; BUILD 26 &middot; IMPROVE 32 &middot; CHANGE 15 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>12</b><small>UPDATE BUNDLES</small></span>
-      <span><b>25</b><small>BUILD</small></span>
-      <span><b>28</b><small>IMPROVE</small></span>
-      <span><b>14</b><small>CHANGE</small></span>
-      <span><b>5</b><small>FIX</small></span>
+      <span><b>13</b><small>UPDATE BUNDLES</small></span>
+      <span><b>26</b><small>BUILD</small></span>
+      <span><b>32</b><small>IMPROVE</small></span>
+      <span><b>15</b><small>CHANGE</small></span>
+      <span><b>6</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>공개 기획 재대조 · 진행률 69% · 잔여 개발 순서 확정</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -404,6 +404,37 @@ tags:
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Q 피드백의 숨은 HUD 의존</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>전투 HUD가 꺼진 거점에서도 교체 결과를 확인하도록 표시 위치를 보완했습니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">재매핑 뒤 대시 키 오안내</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>정적인 SHIFT/SPACE 문구를 키 설정과 충돌하지 않는 DASH·회피 식별자로 변경했습니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Pages 글꼴 import 런타임 누락</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Linux 컨테이너에 fontconfig를 명시해 Galmuri import 중 Godot가 종료되던 병합 후 배포 실패를 해결했습니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 13</small><b>조작감 가시화 · 이동 규칙과 독립된 모션 피드백 계층</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>원인 분리</b> · 기존 초동·정지는 이미 한 프레임 수준이므로 속도를 더 높이는 대신 표현 대비 부족을 해결했습니다.</li>
+            <li><b>상태 신호</b> · 출발·급정지·큰 선회에 서로 다른 코드 드로잉 펄스·링·선을 표시합니다.</li>
+            <li><b>방향 강조</b> · Body·Heading을 진행 방향으로 기울이고 Camera2D를 최대 30px 앞서 보간합니다.</li>
+            <li><b>대시 강조</b> · 최대 10점 Line2D 궤적과 축 변형·확장 카메라 리드를 하나의 짧은 피드백으로 합성합니다.</li>
+            <li><b>자동 검증</b> · 실제 Space 입력의 궤적·리드·표현 강도와 모듈 비활성 원상 복구를 CI에서 검사합니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>성능·교체성</b><span>런타임 Node는 Line2D 하나뿐이고 점은 최대 10개입니다. MovementFeedback을 제거해도 PlayerMovement·충돌·장비 속도는 유지됩니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">MovementFeedback 표현 어댑터</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>velocity와 이동 스냅샷을 캐릭터 변형·카메라 리드·신호·궤적으로 바꿉니다.</p><a href="../features/player/">수치·표현·검증 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">초동 펀치</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>입력이 시작되는 프레임을 청록 전방 신호와 캐릭터 리드로 강조합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">정지·선회 가독성</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>브레이크 링과 선회 선으로 속도 변화의 종류를 구분합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">카메라 방향 리드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>플레이어 앞 공간을 열되 정지 시 기준 위치로 빠르게 돌아옵니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">대시 모션·E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>청록 궤적·축 변형과 플레이어 인식 하한을 함께 추가했습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">조작감 판정 기준</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>속도 계산 통과만으로 완료하지 않고 플레이어에게 보이는 모션 피드백까지 검증합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Linux import 후 엔진 종료 오류</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Godot exit 134를 무조건 허용하지 않고 한글 글꼴 2종 산출물과 전체 후속 계약·Web export 성공을 필수 조건으로 제한했습니다.</p></div></details>
         </div>
       </div>
     </details>

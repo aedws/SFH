@@ -68,7 +68,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort ui_state_contracts_%d player_perception_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud skill_action_feedback dash_action_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort ui_state_contracts_%d player_perception_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(),
 	])
 	_cleanup_test_profile()
@@ -468,12 +468,22 @@ func _verify_combat_action_feedback(player: Node2D, skills: Control, dash: Contr
 		return _fail("실제 Space 입력 뒤 대시 쿨타임이 시작되지 않았습니다.")
 	if String(dash_after.get(&"status", "READY")) == "READY":
 		return _fail("실제 대시 뒤 HUD가 READY 상태에서 바뀌지 않았습니다.")
+	var movement_feedback := player.get_node_or_null("MovementFeedback")
+	if movement_feedback == null:
+		return _fail("실제 플레이어에 이동 체감 피드백 모듈이 없습니다.")
+	var movement_feedback_after: Dictionary = movement_feedback.call(&"get_feedback_snapshot")
 	if not _judge_player_perception(&"dash_activation_feedback", "대시 재사용 피드백 인지", {
 		&"before_text": String(dash_before.get(&"status", "")),
 		&"after_text": String(dash_after.get(&"status", "")),
 		&"before_value": dash_before_remaining,
 		&"after_value": dash_after_remaining,
 		&"value_direction": &"increase",
+		&"visual_intensity": float(movement_feedback_after.get(&"visual_intensity", 0.0)),
+		&"minimum_visual_intensity": 0.55,
+		&"trail_point_count": int(movement_feedback_after.get(&"trail_point_count", 0)),
+		&"minimum_trail_points": 2,
+		&"camera_lead_pixels": float(movement_feedback_after.get(&"camera_lead_pixels", 0.0)),
+		&"minimum_camera_lead_pixels": 8.0,
 	}):
 		return false
 	return true
