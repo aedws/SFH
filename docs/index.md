@@ -69,17 +69,17 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 31 TOPICS</span><span>기획 진행도 96% · MOVEMENT FEEDBACK</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>2 DAYS · 32 TOPICS</span><span>기획 진행도 96% · AUGMENT CARD UI</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>13 UPDATE BUNDLES &middot; BUILD 26 &middot; IMPROVE 32 &middot; CHANGE 15 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>14 UPDATE BUNDLES &middot; BUILD 28 &middot; IMPROVE 36 &middot; CHANGE 16 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>13</b><small>UPDATE BUNDLES</small></span>
-      <span><b>26</b><small>BUILD</small></span>
-      <span><b>32</b><small>IMPROVE</small></span>
-      <span><b>15</b><small>CHANGE</small></span>
+      <span><b>14</b><small>UPDATE BUNDLES</small></span>
+      <span><b>28</b><small>BUILD</small></span>
+      <span><b>36</b><small>IMPROVE</small></span>
+      <span><b>16</b><small>CHANGE</small></span>
       <span><b>6</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
@@ -425,6 +425,35 @@ hide:
         </div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Godot Linux import 종료 불안정</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>exit 134는 두 한글 글꼴 import가 완성된 경우에만 후속 검증으로 넘기며 게임·E2E·Web export가 모두 통과해야 배포합니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 14</small><b>내부 증강 3장 카드 · 효과 비교 · 실제 숫자 선택 E2E</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 가로 텍스트 버튼을 작전 중 성장 결정을 위한 세로 증강 카드로 전환</strong>
+          <ul>
+            <li>3개 선택지를 같은 높이의 카드로 나누고 계열·작전 한정·이름·중첩·효과·선택 키를 고정 순서로 표시합니다.</li>
+            <li>VIT·MOV·DMG·RATE·ARM 증강 코어와 각진 레일을 코드로 그려 외부 카드 이미지를 복제하지 않고 SFH #02e5e1 단말기 테마에 맞췄습니다.</li>
+            <li>첫 카드 자동 포커스, 1·2·3 즉시 선택, A/D·좌우 이동, Enter 확정을 지원합니다.</li>
+            <li>선택 중 전투 HUD를 숨기고 종료 뒤 직전 가시 상태를 복원해 증강 정보만 집중해서 비교합니다.</li>
+            <li>실제 `2` 입력으로 두 번째 증강 적용과 전투 복귀까지 23개 UI 상태·20개 플레이어 인식 E2E에서 검증합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>모듈 경계</b><span>카드는 선택 스냅샷만 표시하고, 후보·중첩·효과·Google Sheets/CSV·외부 경험치 계산은 기존 RunBuffSystem에 그대로 남습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">RunBuffChoiceCard 표시 모듈</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>계열·식별 코어·이름·STACK·효과·키 안내를 하나의 교체 가능한 세로 카드로 표현합니다.</p><a href="features/progression/">내부 증강 UI →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">증강 선택 상태·인식 E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>3장 경계, 첫 포커스, 표시 의미, 숫자 선택, 적용과 전투 복원을 배포 전에 검사합니다.</p><a href="quality/e2e-play-session/">검증 목록 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>개선 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">좌우 비교 정보 계층</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>버프 이름과 설명을 한 버튼에 합치지 않고 모든 카드의 정보 순서를 통일했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">SFH 증강 코어 시각화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>효과 계열을 도트 문자 코드와 청록 회로 프레임으로 빠르게 구분합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">키보드 선택 흐름</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>직접 숫자 선택과 포커스 이동·확정을 모두 제공하고 현재 카드 테두리를 강조합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">선택 집중·HUD 복원</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>배경 HUD 경쟁을 제거하고 선택이 끝나면 전투 문맥을 손실 없이 복원합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>수정 · 1</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">가로 텍스트 목록 → 세로 증강 카드</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>내부 강화가 단순 알림이 아니라 이번 작전의 빌드 선택으로 인식되도록 화면 구조를 바꿨습니다.</p></div></details>
         </div>
       </div>
     </details>

@@ -44,6 +44,11 @@ const CHECKPOINT_RULES := {
 		&"surfaces": [&"combat", &"combat_skills", &"dash", &"minimap"],
 		&"phrases": ["MISSION", "HP", "ENERGY", "DASH"],
 	},
+	&"run_buff_choice_comprehension": {
+		&"unit": &"choice",
+		&"surfaces": [&"run_buff_selector"],
+		&"phrases": ["내부 증강 선택", "작전 한정", "STACK", "즉시 적용", "이 증강 선택"],
+	},
 	&"hub_context_restored": {
 		&"unit": &"continuity",
 		&"surfaces": [&"hub"],
@@ -198,6 +203,8 @@ func _resolve_surface(game: Node, surface_id: StringName) -> Control:
 			return game.get("minimap") as Control
 		&"result":
 			return game.get_node_or_null("UI/GameOverOverlay") as Control
+		&"run_buff_selector":
+			return game.get("run_buff_selector") as Control
 	return null
 
 

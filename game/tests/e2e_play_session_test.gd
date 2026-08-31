@@ -68,7 +68,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort ui_state_contracts_%d player_perception_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(),
 	])
 	_cleanup_test_profile()
@@ -270,6 +270,8 @@ func _verify_operation_session() -> bool:
 		return false
 	if not await _verify_combat_action_feedback(player, skills, dash):
 		return false
+	if not await _verify_run_augment_choice():
+		return false
 
 	await _tap_key(KEY_I)
 	var inventory = game.get("inventory_window") as Control
@@ -377,6 +379,52 @@ func _verify_operation_session() -> bool:
 		&"expected_context": &"hub",
 		&"actual_context": &"hub" if not bool(game.get("run_started")) else &"combat",
 	}):
+		return false
+	return true
+
+
+func _verify_run_augment_choice() -> bool:
+	var selector = game.get("run_buff_selector") as Control
+	var run_buffs = game.get("run_buff_system")
+	if selector == null or run_buffs == null:
+		return _fail("내부 증강 선택 UI 또는 런 버프 규칙 모듈이 없습니다.")
+	var choices: Array[Dictionary] = run_buffs.call(&"prepare_choices", 2, 3)
+	if choices.size() != 3 or not selector.call(&"open_choices", 2, choices):
+		return _fail("런 레벨업이 비교 가능한 증강 카드 3장을 열지 못했습니다.")
+	await process_frame
+	await process_frame
+	var snapshot: Dictionary = selector.call(&"get_snapshot")
+	var card_snapshots: Array = snapshot.get(&"card_snapshots", [])
+	if (
+		int(snapshot.get(&"visible_card_count", 0)) != 3
+		or int(snapshot.get(&"focused_index", -1)) != 0
+		or not bool(snapshot.get(&"cards_inside_viewport", false))
+		or card_snapshots.size() != 3
+	):
+		return _fail("증강 카드가 3열·첫 포커스·화면 경계 계약을 지키지 못했습니다: %s" % snapshot)
+	var titles := PackedStringArray()
+	var categories := PackedStringArray()
+	for card_snapshot_variant in card_snapshots:
+		var card_snapshot: Dictionary = card_snapshot_variant
+		var title := String(card_snapshot.get(&"title", ""))
+		var description := String(card_snapshot.get(&"description", ""))
+		if title.is_empty() or description.is_empty() or String(card_snapshot.get(&"icon_code", "")).is_empty():
+			return _fail("증강 카드가 이름·효과·식별 코드를 함께 제시하지 않습니다: %s" % card_snapshot)
+		titles.append(title)
+		categories.append(String(card_snapshot.get(&"category", "")))
+	if titles.size() != 3 or categories.size() != 3:
+		return _fail("증강 비교 정보가 세 카드에 분리되지 않았습니다.")
+	if not _judge_ui_state(&"run_buff_choice", "내부 증강 3장 선택"):
+		return false
+	if not _judge_player_perception(&"run_buff_choice_comprehension", "증강 비교·작전 한정 이해"):
+		return false
+	var selected_before := int(run_buffs.call(&"selected_buff_count"))
+	await _tap_key(KEY_2)
+	if selector.visible or paused:
+		return _fail("실제 2 입력 뒤 증강 선택 화면이 닫히고 전투가 재개되지 않았습니다.")
+	if int(run_buffs.call(&"selected_buff_count")) != selected_before + 1:
+		return _fail("실제 2 입력으로 두 번째 증강이 런 상태에 적용되지 않았습니다.")
+	if not _judge_ui_state(&"combat", "증강 선택 후 전투 복원"):
 		return false
 	return true
 

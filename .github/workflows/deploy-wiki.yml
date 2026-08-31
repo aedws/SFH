@@ -81,14 +81,15 @@ jobs:
           grep -q "WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction" /tmp/sfh-smoke.log
           grep -q "CYBERPUNK_THEME_OK accent_02e5e1 pixel_korean scanlines static_noise blink_state optional_overlay" /tmp/sfh-smoke.log
           grep -q "MOVEMENT_FEEDBACK_OK launch_punch camera_lead turn_brake_cues dash_trail optional_module" /tmp/sfh-smoke.log
+          grep -q "RUN_AUGMENT_UI_OK cards_3 category_title_effect_stack keyboard_selection optional_presenter" /tmp/sfh-smoke.log
 
       - name: Test real-input play session
         run: |
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
-          grep -q "E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort ui_state_contracts_21 player_perception_contracts_19 viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback" /tmp/sfh-e2e.log
+          grep -q "E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_23 player_perception_contracts_20 viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback" /tmp/sfh-e2e.log
           grep -q "E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe" /tmp/sfh-e2e.log
           grep -q "E2E_CYBERPUNK_THEME_OK viewport_safe input_passthrough accent_02e5e1" /tmp/sfh-e2e.log
-          grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_19 units_9" /tmp/sfh-e2e.log
+          grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_20 units_9" /tmp/sfh-e2e.log
 
       - name: Export browser game
         run: |

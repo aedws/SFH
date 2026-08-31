@@ -1,6 +1,23 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://game/features/run_buffs/run_buff_selector.gd" id="1_selector"]
+[ext_resource type="Script" path="res://game/features/run_buffs/run_buff_choice_card.gd" id="2_card"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
+bg_color = Color(0.004, 0.02, 0.027, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.00784314, 0.898039, 0.882353, 0.68)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxLine" id="StyleBox_separator"]
+color = Color(0.00784314, 0.898039, 0.882353, 0.34)
+thickness = 1
 
 [node name="RunBuffSelector" type="Control"]
 process_mode = 3
@@ -21,61 +38,104 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.015, 0.025, 0.04, 0.9)
+mouse_filter = 2
+color = Color(0.001, 0.006, 0.01, 0.93)
+
+[node name="TopAccent" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 3.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0.00784314, 0.898039, 0.882353, 0.85)
 
 [node name="Center" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 22.0
+offset_top = 18.0
+offset_right = -22.0
+offset_bottom = -18.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="Panel" type="PanelContainer" parent="Center"]
-custom_minimum_size = Vector2(720, 400)
+custom_minimum_size = Vector2(880, 630)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_panel")
 
 [node name="Margin" type="MarginContainer" parent="Center/Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 26
+theme_override_constants/margin_left = 28
 theme_override_constants/margin_top = 22
-theme_override_constants/margin_right = 26
-theme_override_constants/margin_bottom = 22
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 18
 
 [node name="Content" type="VBoxContainer" parent="Center/Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 7
+
+[node name="RunLevel" type="Label" parent="Center/Panel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.00784314, 0.898039, 0.882353, 1)
+theme_override_font_sizes/font_size = 12
+text = "RUN LEVEL // 01"
+horizontal_alignment = 1
 
 [node name="Title" type="Label" parent="Center/Panel/Margin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 25
-text = "런 레벨업 · 임시 버프 선택"
+theme_override_colors/font_color = Color(0.85098, 1, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "내부 증강 선택"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Center/Panel/Margin/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.75, 0.8, 1)
-text = "선택한 효과는 이번 작전에서만 유지되며, 작전 종료 시 외부 경험치로 환산됩니다."
+theme_override_colors/font_color = Color(0.494118, 0.666667, 0.686275, 1)
+theme_override_font_sizes/font_size = 12
+text = "작전 중 획득한 임시 강화입니다. 하나를 선택하면 이번 작전에 즉시 적용됩니다."
 horizontal_alignment = 1
 
-[node name="Choice1" type="Button" parent="Center/Panel/Margin/Content"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 72)
+[node name="Separator" type="HSeparator" parent="Center/Panel/Margin/Content"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "선택지 1"
+theme_override_styles/separator = SubResource("StyleBox_separator")
 
-[node name="Choice2" type="Button" parent="Center/Panel/Margin/Content"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 72)
+[node name="Cards" type="HBoxContainer" parent="Center/Panel/Margin/Content"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "선택지 2"
+size_flags_vertical = 3
+theme_override_constants/separation = 18
+alignment = 1
 
-[node name="Choice3" type="Button" parent="Center/Panel/Margin/Content"]
+[node name="Choice1" type="Button" parent="Center/Panel/Margin/Content/Cards"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 72)
+custom_minimum_size = Vector2(244, 360)
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "선택지 3"
+size_flags_horizontal = 3
+script = ExtResource("2_card")
+
+[node name="Choice2" type="Button" parent="Center/Panel/Margin/Content/Cards"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(244, 360)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_card")
+
+[node name="Choice3" type="Button" parent="Center/Panel/Margin/Content/Cards"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(244, 360)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_card")
+
+[node name="Hint" type="Label" parent="Center/Panel/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.494118, 0.666667, 0.686275, 1)
+theme_override_font_sizes/font_size = 11
+text = "1 / 2 / 3 즉시 선택  ·  A/D 또는 방향키 카드 이동  ·  Enter 확정"
+horizontal_alignment = 1

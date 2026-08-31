@@ -14,6 +14,7 @@ const LAYER_IDS := [
 	&"combat_skills",
 	&"dash_cooldown",
 	&"interaction",
+	&"run_buff_selector",
 ]
 
 const STATE_RULES := {
@@ -68,6 +69,13 @@ const STATE_RULES := {
 		&"modal_count": 0,
 		&"inside_viewport": [&"combat_hud", &"minimap", &"combat_skills", &"dash_cooldown"],
 		&"non_overlapping": [[&"minimap", &"combat_skills"], [&"minimap", &"dash_cooldown"], [&"combat_skills", &"dash_cooldown"]],
+	},
+	&"run_buff_choice": {
+		&"visible": [&"run_buff_selector"],
+		&"hidden": [&"hub_hud", &"run_setup", &"combat_hud", &"game_result", &"key_mapping", &"inventory", &"equipment", &"minimap", &"combat_skills", &"dash_cooldown", &"interaction"],
+		&"paused": true,
+		&"modal_count": 1,
+		&"inside_viewport": [&"run_buff_selector"],
 	},
 	&"inventory_combat": {
 		&"visible": [&"inventory"],
@@ -183,6 +191,8 @@ func _resolve_layer(game: Node, layer_id: StringName) -> Node:
 			return game.get("dash_cooldown_hud")
 		&"interaction":
 			return game.get_node_or_null("UI/InteractionLabel")
+		&"run_buff_selector":
+			return game.get("run_buff_selector")
 	return null
 
 
