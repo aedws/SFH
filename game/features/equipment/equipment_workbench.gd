@@ -35,6 +35,7 @@ const MODULE_UI_PRESENTER_SCRIPT := preload(
 @onready var module_effect_summary: Label = %ModuleEffectSummary
 @onready var installed_module_grid: GridContainer = %InstalledModuleGrid
 @onready var installed_part_grid: GridContainer = %InstalledPartGrid
+@onready var weapon_parts_board: Control = %WeaponPartsBoard
 @onready var installed_selection_detail: Label = %InstalledSelectionDetail
 @onready var modification_inventory_count: Label = %ModificationInventoryCount
 @onready var modification_inventory_grid: GridContainer = %ModificationInventoryGrid
@@ -78,6 +79,7 @@ func _ready() -> void:
 	%PartFilter.pressed.connect(_set_modification_filter.bind(&"part"))
 	%CompatibilitySort.pressed.connect(_set_modification_sort.bind(&"compatibility"))
 	%CostSort.pressed.connect(_set_modification_sort.bind(&"cost"))
+	weapon_parts_board.connect(&"socket_selected", _on_weapon_part_socket_selected)
 	equip_selected_button.pressed.connect(_equip_selected_candidate)
 	unequip_equipment_button.pressed.connect(_unequip_selected_equipment)
 	install_selected_modification_button.pressed.connect(_install_selected_modification)
@@ -346,6 +348,7 @@ func _refresh_installed_customization() -> void:
 		module_cost_bar.value = 0
 		module_cost_bar.self_modulate = Color(0.45, 0.52, 0.56)
 		module_effect_summary.text = module_ui_presenter.call(&"applied_effects_text", null)
+		weapon_parts_board.call(&"configure", null)
 		_add_empty_card(installed_module_grid, "장비 필요")
 		_add_empty_card(installed_part_grid, "장비 필요")
 		_refresh_installed_selection_detail()
@@ -367,6 +370,12 @@ func _refresh_installed_customization() -> void:
 		else Color(0.42, 1.0, 0.78)
 	)
 	module_effect_summary.text = module_ui_presenter.call(&"applied_effects_text", state)
+	var selected_socket_id: StringName = &""
+	if selected_installed_kind == &"part" and selected_installed_id != &"":
+		var selected_part = state.get_part(selected_installed_id)
+		if selected_part != null:
+			selected_socket_id = selected_part.socket_id
+	weapon_parts_board.call(&"configure", state, selected_socket_id)
 	for module_instance in state.installed_modules:
 		var selected: bool = (
 			selected_installed_kind == &"module"
@@ -455,6 +464,25 @@ func _select_installed(kind: StringName, target_id: StringName) -> void:
 	selected_installed_kind = kind
 	selected_installed_id = target_id
 	_refresh()
+
+
+func _on_weapon_part_socket_selected(socket_id: StringName) -> void:
+	var state := _get_state(selected_slot_id)
+	if state == null or not state.is_weapon():
+		return
+	modification_filter = &"part"
+	selected_inventory_entry.clear()
+	for part in state.installed_parts:
+		if part.socket_id == socket_id:
+			selected_installed_kind = &"part"
+			selected_installed_id = part.part_id
+			_set_status("%s 소켓의 %s 선택 · 강화·교체·해제 가능" % [
+				socket_id, part.display_name,
+			])
+			return
+	selected_installed_kind = &""
+	selected_installed_id = &""
+	_set_status("%s 소켓 비어 있음 · 오른쪽 호환 파츠를 선택하세요." % socket_id)
 
 
 func _refresh_inventory_candidate_detail() -> void:
@@ -1006,6 +1034,7 @@ func get_density_snapshot() -> Dictionary:
 			or String((child as Button).text).begins_with("PART  |")
 		):
 			metadata_card_count += 1
+	var parts_board_snapshot: Dictionary = weapon_parts_board.call(&"get_snapshot")
 	return {
 		&"window_size": size,
 		&"slot_rail_width": %SlotRail.custom_minimum_size.x,
@@ -1019,6 +1048,11 @@ func get_density_snapshot() -> Dictionary:
 		&"module_inventory_metadata_card_count": metadata_card_count,
 		&"module_sort_control_count": 2,
 		&"modification_sort": modification_sort,
+		&"weapon_parts_board_visible": weapon_parts_board.visible,
+		&"weapon_parts_board_size": parts_board_snapshot.get(&"board_size", Vector2.ZERO),
+		&"weapon_parts_socket_count": parts_board_snapshot.get(&"socket_count", 0),
+		&"weapon_parts_installed_count": parts_board_snapshot.get(&"installed_socket_count", 0),
+		&"weapon_parts_minor_tag": parts_board_snapshot.get(&"minor_tag", &""),
 		&"active_tab": tabs.current_tab,
 	}
 

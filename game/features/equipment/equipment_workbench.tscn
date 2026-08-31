@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://game/features/equipment/equipment_workbench.gd" id="1_workbench"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_parts_board.gd" id="2_parts_board"]
 
 [sub_resource type="StyleBoxFlat" id="RootPanel"]
 bg_color = Color(0.018, 0.024, 0.035, 0.985)
@@ -504,7 +505,7 @@ theme_override_styles/fill = SubResource("ProgressFill")
 
 [node name="ModuleEffectSummary" type="Label" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(296, 82)
+custom_minimum_size = Vector2(296, 62)
 layout_mode = 2
 text = "적용 수치\n장착된 모듈이 없습니다."
 theme_override_colors/font_color = Color(0.76, 0.84, 0.88, 1)
@@ -521,13 +522,21 @@ theme_override_font_sizes/font_size = 14
 
 [node name="InstalledModuleGrid" type="GridContainer" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 82)
+custom_minimum_size = Vector2(0, 72)
 layout_mode = 2
 columns = 3
 theme_override_constants/h_separation = 7
 theme_override_constants/v_separation = 7
 
+[node name="WeaponPartsBoard" type="Control" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(296, 122)
+layout_mode = 2
+mouse_filter = 1
+script = ExtResource("2_parts_board")
+
 [node name="InstalledPartCaption" type="Label" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
+visible = false
 layout_mode = 2
 text = "고유 파츠"
 theme_override_colors/font_color = Color(0.72, 0.8, 0.84, 1)
@@ -535,7 +544,7 @@ theme_override_font_sizes/font_size = 14
 
 [node name="InstalledPartGrid" type="GridContainer" parent="Margin/Content/Main/Tabs/모듈_파츠/InstalledPanel/Margin/Content"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 56)
+visible = false
 layout_mode = 2
 columns = 2
 theme_override_constants/h_separation = 7
