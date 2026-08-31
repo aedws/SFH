@@ -73,14 +73,14 @@ hide:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>12 UPDATE BUNDLES &middot; BUILD 25 &middot; IMPROVE 28 &middot; CHANGE 14 &middot; FIX 4</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>12 UPDATE BUNDLES &middot; BUILD 25 &middot; IMPROVE 28 &middot; CHANGE 14 &middot; FIX 5</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>12</b><small>UPDATE BUNDLES</small></span>
       <span><b>25</b><small>BUILD</small></span>
       <span><b>28</b><small>IMPROVE</small></span>
       <span><b>14</b><small>CHANGE</small></span>
-      <span><b>4</b><small>FIX</small></span>
+      <span><b>5</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>공개 기획 재대조 · 진행률 69% · 남은 작업 재정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
@@ -391,9 +391,10 @@ hide:
         <div class="sfh-group"><h3>수정 · 1</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">기능 보유 판정 → 인식 가능한 결과 판정</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>UI 상태 21개 계약은 유지하고 그 위에 19개 플레이어 인식 계약을 독립 추가했습니다.</p></div></details>
         </div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">거점 Q 결과가 보이지 않음</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>숨겨진 전투 HUD에만 있던 무기 교체 결과를 거점의 표시 영역에도 반영했습니다.</p></div></details>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">대시 HUD 고정 키 오안내</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>K에서 키를 바꿔도 SHIFT/SPACE로 보이던 문구를 키 독립 DASH·회피 표기로 교체했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">Linux 글꼴 import 배포 중단</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>Pages 컨테이너에 fontconfig 런타임을 명시해 Galmuri 첫 import의 Godot 종료와 배포 실패를 막았습니다.</p></div></details>
         </div>
       </div>
     </details>
