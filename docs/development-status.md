@@ -116,7 +116,7 @@ tags:
         </div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 2</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">피격 중 드랍 생성 오류</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>픽업 노드 생성을 지연해 Godot 물리 flushing queries 오류를 제거했습니다.</p></div></details>
-          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">방 이벤트 안내 덮어쓰기</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>클리어 메시지가 같은 프레임의 자원 획득 문구로 사라지지 않습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">방 이벤트·배포 E2E 판정 안정화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>클리어 안내의 덮어쓰기를 막고 CI도 23개 인식·5개 인과 흐름을 현재 계약으로 판정합니다.</p></div></details>
         </div>
       </div>
     </details>

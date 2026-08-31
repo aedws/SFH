@@ -113,7 +113,7 @@ hide:
         </div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 2</h3>
           <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">피격 중 드랍 물리 쿼리 오류</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>적 처치 콜백의 픽업 생성을 물리 프레임 뒤로 지연해 flushing queries 오류를 제거했습니다.</p></div></details>
-          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">방 이벤트 피드백 즉시 소실</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>중요도와 유지 시간을 적용해 클리어 문구가 같은 프레임 획득 메시지에 덮이지 않습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">방 이벤트·배포 E2E 판정 안정화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>중요도와 유지 시간을 적용해 클리어 문구 덮어쓰기를 막고, 배포 검사는 23개 인식·5개 인과 흐름을 현재 계약으로 판정합니다.</p></div></details>
         </div>
       </div>
     </details>
