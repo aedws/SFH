@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "updated": "2026-09-01",
   "root": {
     "id": "sfh",
@@ -127,7 +127,8 @@
             "description": "기능이 아니라 플레이어 인식으로 검증",
             "documents": [
               {"label": "실제 플레이 세션 E2E", "source": "quality/e2e-play-session.md", "route": "quality/e2e-play-session/", "summary": "실제 입력·화면 상태·복귀 검증"},
-              {"label": "플레이어 인식 단위 E2E 감사", "source": "quality/player-perception-audit.md", "route": "quality/player-perception-audit/", "summary": "단서·피드백·결말 이해 판정"}
+              {"label": "플레이어 인식 단위 E2E 감사", "source": "quality/player-perception-audit.md", "route": "quality/player-perception-audit/", "summary": "단서·피드백·결말 이해 판정"},
+              {"label": "모바일 위키 반응형 E2E", "source": "quality/wiki-responsive-e2e.md", "route": "quality/wiki-responsive-e2e/", "summary": "4개 뷰포트·검색·표·링크 검증"}
             ]
           }
         ]

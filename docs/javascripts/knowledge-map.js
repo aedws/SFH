@@ -98,6 +98,7 @@
       documentIndex: initial.documentIndex
     };
     var wrapper = element("section", "sfh-knowledge-map");
+    wrapper.id = "sfh-knowledge-map";
     wrapper.setAttribute("aria-label", "SFH 전체 문서 노드맵");
     wrapper.setAttribute("data-sfh-knowledge-map", "");
 
