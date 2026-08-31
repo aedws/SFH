@@ -13,6 +13,7 @@ var recovery_target: Node
 var level: int = 1
 var current_experience: int = 0
 var required_experience: int = 5
+var total_experience_gained: int = 0
 
 
 func configure(
@@ -47,6 +48,7 @@ func spawn_pickup(world_position: Vector2, amount: int) -> void:
 func gain_experience(amount: int) -> void:
 	if amount <= 0:
 		return
+	total_experience_gained += amount
 	current_experience += amount
 
 	if leveling_enabled:
@@ -66,6 +68,7 @@ func get_run_snapshot() -> Dictionary:
 		&"level": level,
 		&"current_experience": current_experience,
 		&"required_experience": required_experience,
+		&"total_experience_gained": total_experience_gained,
 		&"level_up_heal_amount": level_up_heal_amount,
 	}
 

@@ -82,6 +82,7 @@ func get_snapshot() -> Dictionary:
 		&"tracks_actor": is_instance_valid(tracked_actor),
 		&"has_visibility_provider": is_instance_valid(visibility_provider),
 		&"visibility_mode": visibility_mode,
+		&"transition_phase": _transition_phase(),
 		&"active_room_index": active_room_index,
 		&"transition_room_index": transition_room_index,
 		&"facing_direction": current_facing_direction,
@@ -89,7 +90,16 @@ func get_snapshot() -> Dictionary:
 		&"screen_room_rect_count": active_screen_room_count,
 		&"canvas_layer": layer,
 		&"visibility_multiplier": visibility_multiplier,
+		&"room_occlusion_policy": &"active_room_only",
+		&"non_active_rooms_occluded": not room_world_rects.is_empty(),
+		&"minimap_visibility_independent": true,
 	}
+
+
+func _transition_phase() -> StringName:
+	if visibility_mode == &"room":
+		return &"room" if room_visibility_blend >= 0.999 else &"entering_room"
+	return &"corridor" if room_visibility_blend <= 0.001 else &"leaving_room"
 
 
 func _process(delta: float) -> void:

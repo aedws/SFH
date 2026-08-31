@@ -32,6 +32,10 @@ var completed_rooms: Dictionary = {}
 var active_room_index: int = -1
 var active_enemies: Array[Node] = []
 var active_doors: Array[Node] = []
+var active_rewards: Array[Node] = []
+var rewards_spawned: int = 0
+var rewards_collected: int = 0
+var last_cleared_room_index: int = -1
 var random := RandomNumberGenerator.new()
 
 
@@ -66,6 +70,10 @@ func configure(
 	completed_rooms.clear()
 	active_room_index = -1
 	active_enemies.clear()
+	active_rewards.clear()
+	rewards_spawned = 0
+	rewards_collected = 0
+	last_cleared_room_index = -1
 	_clear_doors()
 	random.randomize()
 	enemy_spawner.call(&"set_reinforcement_paused", &"room_encounters", true)
@@ -82,6 +90,7 @@ func _process(_delta: float) -> void:
 
 
 func get_snapshot() -> Dictionary:
+	_prune_active_rewards()
 	return {
 		&"tier_id": tier_id,
 		&"room_count": room_definitions.size(),
@@ -90,8 +99,17 @@ func get_snapshot() -> Dictionary:
 		&"active_room_index": active_room_index,
 		&"active_enemy_count": active_enemies.size(),
 		&"locked_door_count": active_doors.size(),
+		&"active_reward_count": active_rewards.size(),
+		&"rewards_spawned": rewards_spawned,
+		&"rewards_collected": rewards_collected,
+		&"last_cleared_room_index": last_cleared_room_index,
 		&"reinforcement_mode": &"room_triggered",
 	}
+
+
+func get_active_rewards() -> Array[Node]:
+	_prune_active_rewards()
+	return active_rewards.duplicate()
 
 
 func try_start_room(room_index: int) -> bool:
@@ -160,6 +178,7 @@ func _complete_active_encounter() -> void:
 		return
 	var cleared_room := active_room_index
 	completed_rooms[cleared_room] = true
+	last_cleared_room_index = cleared_room
 	active_room_index = -1
 	_clear_doors()
 	encounter_cleared.emit(cleared_room)
@@ -177,12 +196,20 @@ func _spawn_reward(room_index: int) -> void:
 	if not reward.call(&"configure", room_index, experience_amount):
 		reward.queue_free()
 		return
+	active_rewards.append(reward)
+	rewards_spawned += 1
+	reward.tree_exited.connect(_on_reward_tree_exited.bind(reward), CONNECT_ONE_SHOT)
 	reward.connect(&"collected", Callable(self, &"_on_reward_collected"))
 	reward_spawned.emit(room_index, experience_amount)
 
 
 func _on_reward_collected(room_index: int, experience_amount: int) -> void:
+	rewards_collected += 1
 	reward_collected.emit(room_index, experience_amount)
+
+
+func _on_reward_tree_exited(reward: Node) -> void:
+	active_rewards.erase(reward)
 
 
 func _on_active_enemy_tree_exited(enemy: Node) -> void:
@@ -195,6 +222,12 @@ func _prune_active_enemies() -> void:
 	for index in range(active_enemies.size() - 1, -1, -1):
 		if not is_instance_valid(active_enemies[index]):
 			active_enemies.remove_at(index)
+
+
+func _prune_active_rewards() -> void:
+	for index in range(active_rewards.size() - 1, -1, -1):
+		if not is_instance_valid(active_rewards[index]):
+			active_rewards.remove_at(index)
 
 
 func _clear_doors() -> void:

@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 40 TOPICS</span><span>96% · LOW OBSTRUCTION UI</span></div>
+<div class="sfh-release-stats"><span>최신 2026-08-31</span><span>SEARCH COMMAND</span><span>3 DAYS · 41 TOPICS</span><span>GAMEPLAY E2E · 5 FLOWS</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,17 +76,52 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>18 UPDATE BUNDLES &middot; BUILD 36 &middot; IMPROVE 55 &middot; CHANGE 21 &middot; FIX 6</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-31</b><i class="sfh-latest">&#xCD5C;&#xC2E0;</i><small>19 UPDATE BUNDLES &middot; BUILD 40 &middot; IMPROVE 59 &middot; CHANGE 23 &middot; FIX 8</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>18</b><small>UPDATE BUNDLES</small></span>
-      <span><b>36</b><small>BUILD</small></span>
-      <span><b>55</b><small>IMPROVE</small></span>
-      <span><b>21</b><small>CHANGE</small></span>
-      <span><b>6</b><small>FIX</small></span>
+      <span><b>19</b><small>UPDATE BUNDLES</small></span>
+      <span><b>40</b><small>BUILD</small></span>
+      <span><b>59</b><small>IMPROVE</small></span>
+      <span><b>23</b><small>CHANGE</small></span>
+      <span><b>8</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>공개 기획 재대조 · 진행률 69% · 잔여 개발 순서 확정</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 1</small><b>핵심 게임플레이 인과 E2E · 방 전투 · 10분 세션 · 안개 전환</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>구현 단계와 플레이 변화</strong>
+          <ol>
+            <li><b>좌클릭 전투</b> · 실제 마우스 입력이 대상 선택, 발사체, 피격, 처치, 드랍까지 이어지는지 한 체인으로 검증합니다.</li>
+            <li><b>방 전투</b> · 실제 방 진입으로 적과 문이 활성화되고 전멸 뒤 문 개방, 보상 생성·회수까지 확인합니다.</li>
+            <li><b>10분 페이싱</b> · 중형·대형 모두 599초 잠금, 600초 탈출 신호 개방을 별도 세션에서 확인합니다.</li>
+            <li><b>전장의 안개</b> · 방→이탈 경계→통로→진입 경계→방의 상태 전환과 전체 미니맵 독립성을 확인합니다.</li>
+          </ol>
+          <p class="sfh-intent"><b>사람 기준 수정</b><span>처치 순간의 물리 오류와 방 클리어 문구가 즉시 사라지는 현상을 실제 E2E에서 발견해 수정했습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">GameplayFlowJudge</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>다섯 핵심 흐름을 입력 전후의 읽기 전용 스냅샷으로 독립 판정합니다.</p><a href="../quality/e2e-play-session/">E2E 규격 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">기본기 인과 텔레메트리</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>대상·트리거·발사체·피격·치명타격·드랍 누적값을 외부 검증에 제공합니다.</p><a href="../features/weapons/">무기 전투 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">방 보상 생명주기 스냅샷</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>활성 방, 마지막 클리어 방, 생성·회수 보상을 모듈 공개 계약으로 제공합니다.</p><a href="../features/room-encounters/">방 전투 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-build">구현</i><span class="sfh-entry-title">런 시계·안개 상태 계약</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>등급별 목표·신호 상태와 다섯 안개 전환, 미니맵 독립 표시를 조회합니다.</p><a href="../features/fog-of-war/">전장의 안개 →</a></div></details>
+        </div>
+        <div class="sfh-group"><h3>⚡ 개선 · 4</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">실제 좌클릭→드랍 E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>물리 마우스 입력과 적 제거·드랍 결과 사이의 인과 관계를 확인합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">실제 방 봉쇄→보상 E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>생성 맵의 방에서 자동 진입·전투·문 개방·보상 획득을 재현합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">중·대형 600초 경계 E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>논리 시계를 사용해 10분 경계를 빠르고 결정적으로 검사합니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">방·통로 안개 전환 E2E</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>활성 방 전체 공개와 통로 정면 시야가 경계에서 자연스럽게 교대하는지 판정합니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🧭 수정 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">대형 작전 10분 통일</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>대형 목표·탈출 개방을 660초에서 600초로 조정했습니다.</p><a href="../features/raid-setup-extraction/">작전 페이싱 →</a></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">전투 상태 알림 우선순위</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>방 시작·클리어·보상 안내의 중요도와 유지 시간을 일반 획득보다 높였습니다.</p></div></details>
+        </div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 2</h3>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">피격 중 드랍 생성 오류</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>픽업 노드 생성을 지연해 Godot 물리 flushing queries 오류를 제거했습니다.</p></div></details>
+          <details class="sfh-entry"><summary><i class="sfh-badge is-fix">버그픽스</i><span class="sfh-entry-title">방 이벤트·배포 E2E 판정 안정화</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>클리어 안내의 덮어쓰기를 막고 CI도 23개 인식·5개 인과 흐름을 현재 계약으로 판정합니다.</p></div></details>
+        </div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 2</small><b>공개 기획 재대조 · 진행률 69% · 잔여 개발 순서 확정</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>핵심 변경 · 최신 Notion 수용 기준과 실제 코드 사이의 차이를 공개</strong>
@@ -103,7 +138,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>우선순위 10개 구현 · 전투 운용·탈출·경제·랭킹 연결 · 93%</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 3</small><b>우선순위 10개 구현 · 전투 운용·탈출·경제·랭킹 연결 · 93%</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -139,7 +174,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>실제 플레이 E2E · Web U/E 입력 수정 · 사람 기준 오작동 점검</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 4</small><b>실제 플레이 E2E · Web U/E 입력 수정 · 사람 기준 오작동 점검</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -168,7 +203,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 4</small><b>K 자유 키 설정 · CC0 상업 VFX · 입력 모듈 감사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 5</small><b>K 자유 키 설정 · CC0 상업 VFX · 입력 모듈 감사</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -194,7 +229,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 5</small><b>UI 상태 판정 E2E · 화면 경계·모달·HUD 비겹침</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 6</small><b>UI 상태 판정 E2E · 화면 경계·모달·HUD 비겹침</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -218,7 +253,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 6</small><b>참조 기반 작전 브리핑 · 명시적 투입 · 전술 HUD</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 7</small><b>참조 기반 작전 브리핑 · 명시적 투입 · 전술 HUD</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -244,7 +279,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 7</small><b>전투 HUD 분산 시선권 · 목표·생존·행동 정보 재정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 8</small><b>전투 HUD 분산 시선권 · 목표·생존·행동 정보 재정렬</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -267,7 +302,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 8</small><b>타격감 1차 · 명중 문맥·액터 반응·월드 충격 분리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 9</small><b>타격감 1차 · 명중 문맥·액터 반응·월드 충격 분리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -294,7 +329,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 9</small><b>모듈 UI 참조 재설계 · 세팅 결과와 후보 비교 일원화</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 10</small><b>모듈 UI 참조 재설계 · 세팅 결과와 후보 비교 일원화</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -321,7 +356,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 10</small><b>총기 파츠 UI · 코드 무기 도식과 실제 소켓 지도</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 11</small><b>총기 파츠 UI · 코드 무기 도식과 실제 소켓 지도</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -348,7 +383,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 11</small><b>#02e5e1 사이버펑크 테마 · 게임·위키 공통 시각 언어</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 12</small><b>#02e5e1 사이버펑크 테마 · 게임·위키 공통 시각 언어</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -376,7 +411,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 12</small><b>플레이어 인식 E2E 재작업 · 전체 범위 감사와 다음 검수 순서</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 13</small><b>플레이어 인식 E2E 재작업 · 전체 범위 감사와 다음 검수 순서</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -408,7 +443,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 13</small><b>조작감 가시화 · 이동 규칙과 독립된 모션 피드백 계층</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 14</small><b>조작감 가시화 · 이동 규칙과 독립된 모션 피드백 계층</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -439,7 +474,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 14</small><b>내부 증강 카드 UI · 선택 표현과 성장 규칙 분리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 15</small><b>내부 증강 카드 UI · 선택 표현과 성장 규칙 분리</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 변화</strong>
@@ -468,7 +503,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 15</small><b>위키 지식 그래프 · 55문서 L1-L4 전역 HUD</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 16</small><b>위키 지식 그래프 · 55문서 L1-L4 전역 HUD</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 탐색 변화</strong>
@@ -497,7 +532,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 16</small><b>위키 가독성 팔레트 · 22개 대비 계약</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 17</small><b>위키 가독성 팔레트 · 22개 대비 계약</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 인식 변화</strong>
@@ -523,7 +558,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 17</small><b>아이콘형 전투 HUD · 캐릭터 중심 배치 · 반응형 압축</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 18</small><b>아이콘형 전투 HUD · 캐릭터 중심 배치 · 반응형 압축</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 인식 변화</strong>
@@ -556,7 +591,7 @@ tags:
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 18</small><b>반응형 UI 핵심 기조 · 시야 방해 최소화 · 상황별 정보 확장</b></span><em class="sfh-chevron">&#x2304;</em></summary>
+      <summary><span><small>UPDATE 19</small><b>반응형 UI 핵심 기조 · 시야 방해 최소화 · 상황별 정보 확장</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
           <strong>구현 단계와 플레이 인식 변화</strong>
@@ -1186,7 +1221,7 @@ tags:
 
 | 기능 | 상태 | 현재 완료 범위 | 다음 확장 |
 |---|---:|---|---|
-| 기본 작전 루프 | ✅ 플레이 가능 | 9~11분 작전 선택 → 전투·파밍 → 신호 개방 후 F 탈출 또는 사망 | 로비·반출 결과 |
+| 기본 작전 루프 | ✅ 플레이 가능 | 소형 9분·중형/대형 10분 작전 → 전투·파밍 → 신호 개방 후 F 탈출 또는 사망 | 로비·반출 결과 |
 | 랜덤 맵·미니맵 | 🧱 확장 완료 | 18~60방, 실내 벽·기둥, A*, 전체 지도 | 바이옴·특수 방 |
 | 이동·생존 | 🧱 기반 완료 | 가속·제동·역선회·회피·대시 HUD, 지연형 65% 부분 회복 | 피격 연출·회피 무적 판정 |
 | 장비·스킬 | 🧱 기반 완료 | 태그, 파츠, 모듈, 강화, 개조 | 특수 효과 실행기 |
@@ -1199,7 +1234,7 @@ tags:
 
 `./scripts/test-game.cmd`가 다음을 한 번에 확인합니다.
 
-- 소·중·대형 확장 맵과 9~11분 목표·시간 잠금 탈출
+- 소형 9분·중형/대형 10분 확장 맵과 목표 시간 잠금 탈출
 - 가속·제동·역선회·회피 이동 응답, 대시 재사용 HUD와 부분 체력 회복 상한
 - Q 무기 교체, 소총 3점사, 권총 관통, 확정 CSV
 - I 가변 격자 가방과 U 파츠·모듈·강화·개조
