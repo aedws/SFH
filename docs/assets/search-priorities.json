@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "updated": "2026-09-01",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
@@ -7,14 +7,21 @@
     {
       "query": "개발 진행도",
       "label": "개발 진행도",
-      "description": "Notion 기준 93% 진행률과 구현·후속 범위 근거",
+      "description": "Master GDD 기준 72% 진행률과 구현·후속 범위 근거",
       "category": "기획",
       "priority": 100
     },
     {
+      "query": "Master GDD",
+      "label": "Master GDD 구현 대조",
+      "description": "최신 확정 기획, 8개 시스템 산식, 6개 Phase 차이와 작업 순서",
+      "category": "기획",
+      "priority": 99
+    },
+    {
       "query": "앞으로 해야 할 작업",
       "label": "앞으로 해야 할 작업",
-      "description": "I/U 구매품·온라인 랭킹·추가 콘텐츠·실기 인증 순서",
+      "description": "전리품 순환·현장 교체·룬 소켓·자유 바인딩·온라인 랭킹 순서",
       "category": "기획",
       "priority": 96
     },
@@ -28,7 +35,7 @@
     {
       "query": "문서 노드맵",
       "label": "전체 문서 4단계 노드맵",
-      "description": "56개 문서를 대·중·소·세부 구조와 현재 위치로 탐색",
+      "description": "57개 문서를 대·중·소·세부 구조와 현재 위치로 탐색",
       "category": "위키",
       "priority": 95
     },
