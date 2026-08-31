@@ -32,6 +32,10 @@ if ($config.planner_groups.Count -lt 4) {
 if (-not (Test-Path -LiteralPath $scriptPath)) {
     throw "The search dashboard script is missing."
 }
+$script = Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8
+if ($script -notmatch 'document\.currentScript' -or $script -notmatch 'new URL\("\.\./assets/search-priorities\.json", searchDashboardScriptUrl\)') {
+    throw "Search dashboard data must resolve from the stable script-derived site root."
+}
 $mkdocs = Get-Content -LiteralPath $mkdocsPath -Raw
 if ($mkdocs -notmatch 'javascripts/search-dashboard\.js') {
     throw "mkdocs.yml does not load the search dashboard script."

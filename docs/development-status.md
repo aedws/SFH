@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 44 TOPICS</span><span>55 DOCS · ROOT-SAFE LINKS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 45 TOPICS</span><span>56 DOCS · MOBILE E2E</span></div>
 
 ## 기획 기준 진행도
 
@@ -76,10 +76,10 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 5 · IMPROVE 7 · CHANGE 5 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 7 · IMPROVE 13 · CHANGE 8 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
-    <details class="sfh-bundle" open>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>13</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>4</b><small>FIX</small></span></div>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -99,7 +99,7 @@ tags:
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>확장 레이아웃 첫 프레임에도 클릭 영역이 음수 또는 0이 되지 않도록 양수 사각형으로 보정했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>전체 문서 노드맵 · 안정 주소 · 반응형 계층 탐색</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -115,6 +115,26 @@ tags:
         <div class="sfh-group"><h3>⚡ 개선 · 3</h3><p>계층 인지, 터치 조작성, 화면 폭별 정보 밀도를 개선했습니다.</p></div>
         <div class="sfh-group"><h3>🧭 수정 · 2</h3><p>홈 탐색 구조와 지식 그래프 데이터 날짜·버전을 현재 빌드 기준으로 수정했습니다.</p></div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>Material 즉시 이동 뒤 최초 문서의 `base`가 남아 노드 경로가 중첩되던 404를 제거했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>모바일 위키 전면 최적화 · 전체 화면 검색 · 4단계 실브라우저 E2E</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 기획자와 개발자가 휴대폰에서도 같은 정보 구조를 읽고 검색하고 검증 근거까지 추적합니다.</strong>
+          <ul>
+            <li><b>모바일 검색:</b> 6px로 접혀 보이지 않던 출력 영역을 <code>100dvh</code> 전체 화면과 독립 스크롤로 복구하고, 입력 전 우선 문서와 입력 후 실시간 결과를 모두 검증했습니다.</li>
+            <li><b>반응형 읽기:</b> 320·390px에서 페이지 가로 넘침 없이 본문 15.2~16px, 44px 터치 목표, 1열 노드맵을 유지합니다.</li>
+            <li><b>태블릿·데스크톱:</b> 768px에서는 넓은 표만 내부 스크롤하고 2열 노드맵을, 1440px에서는 4열 노드맵과 4열 요약을 유지합니다.</li>
+            <li><b>동선:</b> PLAN·DEV·QA·DOCS 역할 링크, 문서 맵 검색, 중첩 경로 즉시 이동, 브라우저 플레이 루트까지 실제 클릭으로 확인했습니다.</li>
+            <li><b>회귀 게이트:</b> CSS·내비게이션·검색/플레이 루트·56개 문서 데이터 계약을 strict 빌드와 배포 작업에 연결했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>측정 결과</b><span>320×568, 390×844, 768×1024, 1440×900 모두 문서 clientWidth=scrollWidth. 모바일 검색 795px 출력·796px 스크롤 영역, 태블릿 표 724→992px 내부 스크롤, 브라우저 콘솔 오류 0.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 2</h3><p>역할 기반 홈 내비게이션과 모바일 위키 E2E 계약·CI 게이트를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>⚡ 개선 · 6</h3><p>safe-area, 읽기 폭, 터치 목표, 검색, 표·코드, 고대비·감소 모션까지 반응형 CSS를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>🧭 수정 · 3</h3><p>홈 정보 순서, 4·2·1열 문서맵, 최신 일일 묶음 기본 펼침 규칙을 사용자 동선 기준으로 수정했습니다.</p></div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 2</h3><p>모바일 검색 빈 화면과 1440px 헤더가 우측으로 101px 넘치던 문제를 실제 브라우저 측정으로 제거했습니다.</p></div>
       </div>
     </details>
   </div>

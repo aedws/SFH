@@ -144,7 +144,7 @@ foreach ($path in $targetFiles) {
         }
         foreach ($block in $blocks) {
             $blockContent = $block.Lines -join "`n"
-            $bundleMatches = [regex]::Matches($blockContent, '<details class="sfh-bundle">')
+            $bundleMatches = [regex]::Matches($blockContent, '<details class="sfh-bundle"(?<open> open)?>')
             if ($bundleMatches.Count -eq 0) {
                 continue
             }
@@ -158,17 +158,29 @@ foreach ($path in $targetFiles) {
                     throw "Daily bundle numbering is not sequential ($path / $($block.Date))."
                 }
             }
+            $openBundles = @($bundleMatches | Where-Object { $_.Groups['open'].Success })
+            if ($openBundles.Count -gt 1 -or ($openBundles.Count -eq 1 -and -not $bundleMatches[$bundleMatches.Count - 1].Groups['open'].Success)) {
+                throw "Only the latest daily bundle may be expanded by default ($path / $($block.Date))."
+            }
             $badgeSummary = @(
-                @{ Label = 'BUILD'; Class = 'is-build' },
-                @{ Label = 'IMPROVE'; Class = 'is-improve' },
-                @{ Label = 'CHANGE'; Class = 'is-change' },
-                @{ Label = 'FIX'; Class = 'is-fix' }
+                @{ Label = 'BUILD'; Class = 'is-build'; GroupIndex = 0 },
+                @{ Label = 'IMPROVE'; Class = 'is-improve'; GroupIndex = 1 },
+                @{ Label = 'CHANGE'; Class = 'is-change'; GroupIndex = 2 },
+                @{ Label = 'FIX'; Class = 'is-fix'; GroupIndex = 3 }
             )
+            $headingMatches = [regex]::Matches($blockContent, '<div class="sfh-group"><h3>[^<]*?(?<count>\d+)</h3>')
             foreach ($badge in $badgeSummary) {
-                $actualBadgeCount = ([regex]::Matches($blockContent, "sfh-badge $($badge.Class)")).Count
+                if ($openBundles.Count -gt 0 -and $headingMatches.Count -gt 0) {
+                    $actualBadgeCount = 0
+                    for ($headingIndex = [int]$badge.GroupIndex; $headingIndex -lt $headingMatches.Count; $headingIndex += 4) {
+                        $actualBadgeCount += [int]$headingMatches[$headingIndex].Groups['count'].Value
+                    }
+                } else {
+                    $actualBadgeCount = ([regex]::Matches($blockContent, "sfh-badge $($badge.Class)")).Count
+                }
                 $declaredBadgeCount = [regex]::Match($blockContent, "$($badge.Label) (?<count>\d+)")
                 if ((-not $declaredBadgeCount.Success) -or ([int]$declaredBadgeCount.Groups['count'].Value -ne $actualBadgeCount)) {
-                    throw "The $($badge.Label) daily total is stale ($path / $($block.Date))."
+                    throw "The $($badge.Label) daily total is stale ($path / $($block.Date)): declared=$($declaredBadgeCount.Groups['count'].Value) actual=$actualBadgeCount headings=$($headingMatches.Count)."
                 }
             }
         }

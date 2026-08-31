@@ -4,6 +4,9 @@
   var STORAGE_KEY = "sfh-wiki-search-signals-v1";
   var dashboardConfigPromise = null;
   var initializedSearchRoots = new WeakSet();
+  var searchDashboardScriptUrl = document.currentScript && document.currentScript.src
+    ? new URL(document.currentScript.src, window.location.href)
+    : null;
   var fallbackConfig = {
     title: "기획자 검색 허브",
     description: "입력 즉시 전체 문서를 검색합니다.",
@@ -27,6 +30,9 @@
   }
 
   function getConfigUrl() {
+    if (searchDashboardScriptUrl) {
+      return new URL("../assets/search-priorities.json", searchDashboardScriptUrl).href;
+    }
     var configNode = document.getElementById("__config");
     var base = ".";
     if (configNode) {

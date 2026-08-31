@@ -22,6 +22,9 @@ if ($index -notmatch 'class="sfh-operation-play" href="play/"') {
 if ($script -notmatch 'data-sfh-global-play' -or $script -notmatch 'document\$\.subscribe') {
     throw "The global browser play entry does not support Material instant navigation."
 }
+if ($script -notmatch 'document\.currentScript' -or $script -notmatch 'new URL\("\.\./play/", playEntryScriptUrl\)') {
+    throw "The global browser play entry must resolve from the stable script-derived site root."
+}
 if ($style -notmatch 'a\.sfh-global-play' -or $style -notmatch '\.sfh-operation-play') {
     throw "The browser play entry styles are missing."
 }

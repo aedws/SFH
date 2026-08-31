@@ -86,6 +86,7 @@ nav:
   - 품질 검수:
       - 실제 플레이 세션 E2E: quality/e2e-play-session.md
       - 플레이어 인식 단위 E2E 감사: quality/player-perception-audit.md
+      - 모바일 위키 반응형 E2E: quality/wiki-responsive-e2e.md
   - 기능:
       - features/index.md
       - 랜덤 맵 생성: features/map-generation.md

@@ -57,6 +57,13 @@ hide:
   </aside>
 </section>
 
+<nav class="sfh-role-nav" aria-label="기획자와 개발자 빠른 이동">
+  <a href="development-status/"><small>PLAN</small><strong>기획·진행 현황</strong><span>확정 근거와 다음 작업</span></a>
+  <a href="architecture/module-rules/"><small>DEV</small><strong>개발·모듈 규칙</strong><span>계약과 확장 경계</span></a>
+  <a href="quality/wiki-responsive-e2e/"><small>QA</small><strong>위키 E2E</strong><span>모바일·검색·링크 검증</span></a>
+  <a href="#sfh-knowledge-map"><small>DOCS</small><strong>전체 문서 맵</strong><span>대·중·소·세부 탐색</span></a>
+</nav>
+
 <div class="sfh-stats">
   <div class="sfh-stat"><small>Core loop</small><strong>HUB → RAID → HUB</strong><span>게이트 진입 · 전투 세션 · 결과 후 복귀</span></div>
   <div class="sfh-stat"><small>World</small><strong>ROOM + CONE VISION</strong><span>방 전체 공개 · 통로 정면 시야 · 전체 미니맵</span></div>
@@ -69,16 +76,16 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>3 DAYS · 40 TOPICS</span><span>55 DOCS · ROOT-SAFE LINKS</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>3 DAYS · 41 TOPICS</span><span>56 DOCS · MOBILE E2E</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 5 · IMPROVE 7 · CHANGE 5 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 7 · IMPROVE 13 · CHANGE 8 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span>
+      <span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>13</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>4</b><small>FIX</small></span>
     </div>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 방 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -102,7 +109,7 @@ hide:
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>확장 지도 초기 레이아웃에서 0 이하 크기 사각형이 생길 수 있던 클릭 판정을 양수 영역으로 보정했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>전체 문서 노드맵 · 404 차단 · 반응형 탐색 UI</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -117,6 +124,26 @@ hide:
         <div class="sfh-group"><h3>⚡ 개선 · 3</h3><p>전체 문서 가시성, 노드 연결선, 데스크톱·태블릿·모바일 레이아웃을 개선했습니다.</p></div>
         <div class="sfh-group"><h3>🧭 수정 · 2</h3><p>추천 카드 중심 홈을 전체 계층 탐색 중심으로 바꾸고 노드 데이터 버전을 2026-09-01 기준으로 갱신했습니다.</p></div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>즉시 페이지 이동 후 상대 경로가 중첩되어 일부 노드가 404로 열리던 문제를 배포 루트 고정으로 차단했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>모바일 위키 전면 최적화 · 전체 화면 검색 · 4단계 실브라우저 E2E</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 휴대폰에서도 기획 현황을 찾고, 개발 계약을 읽고, 관련 문서로 이동하는 전 과정을 확대 없이 완료합니다.</strong>
+          <ul>
+            <li><b>검색 복구:</b> 모바일에서 6px로 접히던 검색 결과 영역을 <code>100dvh</code> 기반 전체 화면 패널과 독립 스크롤로 바꿨습니다.</li>
+            <li><b>읽기 최적화:</b> 320px부터 제목·본문·버튼·카드가 화면 안에 유지되고, 넓은 표와 코드는 해당 블록 안에서만 가로 스크롤합니다.</li>
+            <li><b>역할 동선:</b> 홈에서 PLAN·DEV·QA·DOCS를 바로 선택하고, 전체 56개 문서를 4·2·1열 노드맵으로 탐색합니다.</li>
+            <li><b>주소 안정화:</b> 검색 결과와 브라우저 플레이 링크도 현재 문서의 깊이에 영향받지 않는 <code>/SFH/</code> 루트를 사용합니다.</li>
+            <li><b>실기 검증:</b> 320×568·390×844·768×1024·1440×900에서 페이지 가로 넘침 0, 검색 입력·닫기, 역할 링크, 노드 검색·이동을 실제 브라우저로 통과했습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>기획↔개발 연결</b><span>기획자는 진행 현황, 개발자는 모듈 계약, 공동 검수자는 E2E 근거로 두 번 이하의 선택 안에 이동합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 2</h3><p>역할별 빠른 이동 허브와 모바일 위키 전용 실브라우저 E2E 계약·빌드 게이트를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>⚡ 개선 · 6</h3><p>안전 영역, 터치 목표, 본문 행 길이, 반응형 카드, 표·코드 스크롤, 고대비·감소 모션 대응을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>🧭 수정 · 3</h3><p>검색을 전체 화면으로, 문서 맵을 4·2·1열로, 최신 묶음만 기본 펼침 상태로 수정했습니다.</p></div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 2</h3><p>모바일 검색 빈 화면과 데스크톱 헤더의 브라우저 플레이 버튼으로 생긴 101px 가로 넘침을 제거했습니다.</p></div>
       </div>
     </details>
   </div>

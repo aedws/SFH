@@ -1,7 +1,14 @@
 (function () {
   "use strict";
 
+  var playEntryScriptUrl = document.currentScript && document.currentScript.src
+    ? new URL(document.currentScript.src, window.location.href)
+    : null;
+
   function getPlayUrl() {
+    if (playEntryScriptUrl) {
+      return new URL("../play/", playEntryScriptUrl).href;
+    }
     var configNode = document.getElementById("__config");
     var base = ".";
     if (configNode) {
