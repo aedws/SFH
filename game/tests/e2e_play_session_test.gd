@@ -41,7 +41,7 @@ func _run() -> void:
 		return
 
 	paused = false
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort ui_state_contracts_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud loot extraction_pause_resume settlement_return death_return" % judged_ui_states.size())
 	_cleanup_test_profile()
 	quit(0)
 
@@ -107,6 +107,14 @@ func _verify_hub_input_session() -> bool:
 	await _tap_key(KEY_E)
 	if not workbench.visible or int((workbench.get("tabs") as TabContainer).current_tab) != 1:
 		return _fail("열린 U 화면에서 실제 E 입력이 창을 닫지 않고 모듈·파츠 탭으로 전환하지 못했습니다.")
+	var module_ui: Dictionary = workbench.call(&"get_density_snapshot")
+	if (
+		int(module_ui.get(&"modification_columns", 0)) != 4
+		or int(module_ui.get(&"module_inventory_metadata_card_count", 0)) < 1
+		or not bool(module_ui.get(&"module_effect_summary_visible", false))
+		or module_ui.get(&"modification_sort", &"") != &"compatibility"
+	):
+		return _fail("E 모듈 화면이 적용 수치·4열 메타 카드·추천 정렬을 함께 표시하지 못했습니다.")
 	if not _judge_ui_state(&"modification_hub", "거점 E 모듈·파츠"):
 		return false
 	await _tap_key(KEY_U)
