@@ -3,14 +3,18 @@ extends CanvasLayer
 
 const MAX_SHADER_ROOM_RECTS := 64
 
-@export_range(80.0, 500.0, 10.0) var corridor_near_radius: float = 170.0
+@export_range(80.0, 500.0, 10.0) var corridor_near_radius: float = 220.0
 @export_range(300.0, 1600.0, 10.0) var corridor_forward_distance: float = 780.0
-@export_range(20.0, 85.0, 1.0) var corridor_half_angle_degrees: float = 62.0
+@export_range(20.0, 85.0, 1.0) var corridor_half_angle_degrees: float = 68.0
 @export_range(1.0, 30.0, 1.0) var corridor_angle_softness_degrees: float = 12.0
 @export_range(10.0, 300.0, 10.0) var corridor_distance_softness: float = 130.0
+@export_range(100.0, 600.0, 10.0) var corridor_comfort_shell_radius: float = 320.0
+@export_range(0.0, 0.6, 0.01) var corridor_comfort_shell_visibility: float = 0.24
 @export_range(0.0, 80.0, 2.0) var room_edge_softness: float = 18.0
 @export_range(0.05, 1.0, 0.01) var room_enter_transition_seconds: float = 0.22
 @export_range(0.05, 1.0, 0.01) var room_exit_transition_seconds: float = 0.32
+@export_range(0.0, 1.5, 0.05) var doorway_grace_seconds: float = 0.55
+@export_range(1.0, 30.0, 1.0) var facing_smoothing_speed: float = 14.0
 @export var fog_color := Color(0.008, 0.014, 0.025, 0.97)
 
 @onready var overlay: ColorRect = %FogOverlay
@@ -27,6 +31,7 @@ var current_facing_direction := Vector2.RIGHT
 var active_screen_room_count: int = 0
 var focus_initialized: bool = false
 var visibility_multiplier: float = 1.0
+var doorway_grace_remaining: float = 0.0
 
 
 func _ready() -> void:
@@ -47,6 +52,7 @@ func configure(actor: Node2D, new_visibility_provider: Node = null) -> bool:
 	transition_room_index = -1
 	transition_room_world_rect = Rect2()
 	room_visibility_blend = 0.0
+	doorway_grace_remaining = 0.0
 	focus_initialized = false
 	if is_instance_valid(new_visibility_provider):
 		if (
@@ -74,9 +80,14 @@ func get_snapshot() -> Dictionary:
 		&"corridor_near_radius": corridor_near_radius,
 		&"corridor_forward_distance": corridor_forward_distance,
 		&"corridor_half_angle_degrees": corridor_half_angle_degrees,
+		&"corridor_comfort_shell_radius": corridor_comfort_shell_radius,
+		&"corridor_comfort_shell_visibility": corridor_comfort_shell_visibility,
 		&"room_edge_softness": room_edge_softness,
 		&"room_enter_transition_seconds": room_enter_transition_seconds,
 		&"room_exit_transition_seconds": room_exit_transition_seconds,
+		&"doorway_grace_seconds": doorway_grace_seconds,
+		&"doorway_grace_remaining": doorway_grace_remaining,
+		&"facing_smoothing_speed": facing_smoothing_speed,
 		&"room_visibility_blend": room_visibility_blend,
 		&"fog_color": fog_color,
 		&"tracks_actor": is_instance_valid(tracked_actor),
@@ -91,6 +102,7 @@ func get_snapshot() -> Dictionary:
 		&"canvas_layer": layer,
 		&"visibility_multiplier": visibility_multiplier,
 		&"room_occlusion_policy": &"active_room_only",
+		&"corridor_comfort_policy": &"wide_front_near_shell_doorway_grace",
 		&"non_active_rooms_occluded": not room_world_rects.is_empty(),
 		&"minimap_visibility_independent": true,
 	}
@@ -99,6 +111,8 @@ func get_snapshot() -> Dictionary:
 func _transition_phase() -> StringName:
 	if visibility_mode == &"room":
 		return &"room" if room_visibility_blend >= 0.999 else &"entering_room"
+	if doorway_grace_remaining > 0.0 and room_visibility_blend >= 0.999:
+		return &"doorway_grace"
 	return &"corridor" if room_visibility_blend <= 0.001 else &"leaving_room"
 
 
@@ -122,6 +136,12 @@ func _apply_static_shader_parameters() -> void:
 	shader_material.set_shader_parameter(
 		&"corridor_distance_softness", corridor_distance_softness
 	)
+	shader_material.set_shader_parameter(
+		&"corridor_comfort_shell_radius", corridor_comfort_shell_radius * visibility_multiplier
+	)
+	shader_material.set_shader_parameter(
+		&"corridor_comfort_shell_visibility", corridor_comfort_shell_visibility
+	)
 	shader_material.set_shader_parameter(&"room_edge_softness", room_edge_softness)
 	shader_material.set_shader_parameter(&"fog_color", fog_color)
 
@@ -136,11 +156,18 @@ func _update_focus(delta: float = 0.0, snap_transition: bool = false) -> void:
 	var viewport_size := get_viewport().get_visible_rect().size
 	var screen_position := tracked_actor.get_global_transform_with_canvas().origin
 	var canvas_transform := tracked_actor.get_canvas_transform()
-	current_facing_direction = Vector2.RIGHT
+	var requested_direction := current_facing_direction
 	if tracked_actor.has_method(&"get_facing_direction"):
-		current_facing_direction = tracked_actor.call(&"get_facing_direction")
-	if current_facing_direction == Vector2.ZERO:
-		current_facing_direction = Vector2.RIGHT
+		requested_direction = tracked_actor.call(&"get_facing_direction")
+	if requested_direction == Vector2.ZERO:
+		requested_direction = current_facing_direction if current_facing_direction != Vector2.ZERO else Vector2.RIGHT
+	requested_direction = requested_direction.normalized()
+	if not focus_initialized or snap_transition:
+		current_facing_direction = requested_direction
+	else:
+		current_facing_direction = current_facing_direction.lerp(
+			requested_direction, clampf(maxf(0.0, delta) * facing_smoothing_speed, 0.0, 1.0)
+		).normalized()
 	var screen_direction := (
 		(canvas_transform * current_facing_direction - canvas_transform * Vector2.ZERO).normalized()
 	)
@@ -198,11 +225,15 @@ func _update_room_transition(
 	var target_blend := 0.0
 	if detected_mode == &"room" and detected_room_index >= 0:
 		target_blend = 1.0
+		doorway_grace_remaining = doorway_grace_seconds
 		if transition_room_index != detected_room_index:
 			transition_room_index = detected_room_index
 			transition_room_world_rect = detected_room_rect
 			if focus_initialized:
 				room_visibility_blend = 0.0
+	elif transition_room_index >= 0 and doorway_grace_remaining > 0.0:
+		doorway_grace_remaining = maxf(0.0, doorway_grace_remaining - maxf(0.0, delta))
+		target_blend = 1.0
 	if not focus_initialized or snap_transition:
 		room_visibility_blend = target_blend
 		focus_initialized = true
@@ -219,6 +250,7 @@ func _update_room_transition(
 		room_visibility_blend = 0.0
 		transition_room_index = -1
 		transition_room_world_rect = Rect2()
+		doorway_grace_remaining = 0.0
 
 
 func _world_rect_to_screen(world_rect: Rect2, canvas_transform: Transform2D) -> Rect2:

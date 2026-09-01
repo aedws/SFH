@@ -12,6 +12,7 @@
 - [영구 해금·상점·창고·소모품 로드아웃](hub-economy.md)
 - [크레딧 파밍과 회수](credit-loot.md)
 - [전리품 생명 주기](loot-lifecycle.md)
+- [지역·난이도 전리품 테이블](loot-tables.md)
 - [플레이어 이동](player.md)
 - [K 키 설정과 영구 바인딩](key-mapping.md)
 - [부분 체력 회복](health-recovery.md)

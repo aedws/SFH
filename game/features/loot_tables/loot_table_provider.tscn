@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/loot_tables/loot_table_provider.gd" id="1_provider"]
+
+[node name="LootTableProvider" type="Node"]
+script = ExtResource("1_provider")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]

@@ -158,12 +158,18 @@ foreach ($path in $targetFiles) {
             }
             $numberMatches = [regex]::Matches($blockContent, '<small>UPDATE (?<number>\d+)</small>')
             for ($numberIndex = 0; $numberIndex -lt $numberMatches.Count; $numberIndex += 1) {
-                if ([int]$numberMatches[$numberIndex].Groups['number'].Value -ne $numberIndex + 1) {
-                    throw "Daily bundle numbering is not sequential ($path / $($block.Date))."
+                $expectedNumber = if ($isHomePage) {
+                    $numberMatches.Count - $numberIndex
+                } else {
+                    $numberIndex + 1
+                }
+                if ([int]$numberMatches[$numberIndex].Groups['number'].Value -ne $expectedNumber) {
+                    throw "Daily bundle numbering does not match the page order ($path / $($block.Date))."
                 }
             }
             $openBundles = @($bundleMatches | Where-Object { $_.Groups['open'].Success })
-            if ($openBundles.Count -gt 1 -or ($openBundles.Count -eq 1 -and -not $bundleMatches[$bundleMatches.Count - 1].Groups['open'].Success)) {
+            $expectedOpenIndex = if ($isHomePage) { 0 } else { $bundleMatches.Count - 1 }
+            if ($openBundles.Count -gt 1 -or ($openBundles.Count -eq 1 -and -not $bundleMatches[$expectedOpenIndex].Groups['open'].Success)) {
                 throw "Only the latest daily bundle may be expanded by default ($path / $($block.Date))."
             }
             $badgeSummary = @(

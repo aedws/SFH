@@ -16,6 +16,11 @@ on:
       - "requirements-docs.txt"
       - "scripts/package_release.py"
       - "scripts/sync_item_lifecycle.py"
+      - "scripts/sync_loot_table.py"
+      - "scripts/loot-table.ps1"
+      - "scripts/wiki.ps1"
+      - "scripts/compress-wiki-release-days.ps1"
+      - "scripts/check-wiki-no-github-backlinks.ps1"
       - "scripts/deploy_cloudflare_assets.py"
       - "scripts/test_cloudflare_worker.mjs"
       - "scripts/check-backup-workflows.ps1"
@@ -35,6 +40,11 @@ on:
       - "requirements-docs.txt"
       - "scripts/package_release.py"
       - "scripts/sync_item_lifecycle.py"
+      - "scripts/sync_loot_table.py"
+      - "scripts/loot-table.ps1"
+      - "scripts/wiki.ps1"
+      - "scripts/compress-wiki-release-days.ps1"
+      - "scripts/check-wiki-no-github-backlinks.ps1"
       - "scripts/deploy_cloudflare_assets.py"
       - "scripts/test_cloudflare_worker.mjs"
       - "scripts/check-backup-workflows.ps1"
@@ -93,6 +103,9 @@ jobs:
           test -s "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/SOURCE.md"
           grep -q "Creative Commons Zero" "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/LICENSE.txt"
           python3 scripts/sync_item_lifecycle.py --check
+          python3 scripts/sync_loot_table.py --check
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loot_table_contract_test.gd" | tee /tmp/sfh-loot-table.log
+          grep -q "LOOT_TABLE_TEST_OK rows_27 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link" /tmp/sfh-loot-table.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
           grep -q "SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing" /tmp/sfh-smoke.log
           grep -q "WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction" /tmp/sfh-smoke.log
@@ -152,11 +165,12 @@ jobs:
         run: |
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK" /tmp/sfh-e2e.log
-          grep -q "ui_state_contracts_23 player_perception_contracts_23 gameplay_flows_5" /tmp/sfh-e2e.log
-          grep -q "physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition" /tmp/sfh-e2e.log
+          grep -q "ui_state_contracts_23 player_perception_contracts_24 gameplay_flows_6" /tmp/sfh-e2e.log
+          grep -q "physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace" /tmp/sfh-e2e.log
+          grep -q "loot_table_targeting" /tmp/sfh-e2e.log
           grep -q "E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe" /tmp/sfh-e2e.log
           grep -q "E2E_CYBERPUNK_THEME_OK viewport_safe input_passthrough accent_02e5e1" /tmp/sfh-e2e.log
-          grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_23 units_9" /tmp/sfh-e2e.log
+          grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_24 units_9" /tmp/sfh-e2e.log
 
   package-windows:
     runs-on: ubuntu-24.04
@@ -225,6 +239,7 @@ jobs:
             --csv game/features/growth_balance/data/run_buff_balance.csv \
             --csv game/features/growth_balance/data/upgrade_balance.csv \
             --csv game/features/loot_lifecycle/data/item_lifecycle.csv \
+            --csv game/features/loot_tables/data/loot_table.csv \
             --commit "$GITHUB_SHA"
 
       - name: Upload Windows release
@@ -273,8 +288,10 @@ jobs:
           ./scripts/check-wiki-knowledge-map.ps1
           ./scripts/check-wiki-color-contrast.ps1
           ./scripts/check-wiki-responsive.ps1
+          ./scripts/check-wiki-no-github-backlinks.ps1
           python -m mkdocs build --strict
           python scripts/check_wiki_search_index.py .wiki-site/search/search_index.json
+          ./scripts/check-wiki-no-github-backlinks.ps1 -SiteRoot .wiki-site
 
       - name: Upload Cloudflare wiki artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

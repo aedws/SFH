@@ -83,9 +83,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 33 · IMPROVE 43 · CHANGE 47 · FIX 18</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 38 · IMPROVE 48 · CHANGE 53 · FIX 21</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>33</b><small>BUILD</small></span><span><b>43</b><small>IMPROVE</small></span><span><b>47</b><small>CHANGE</small></span><span><b>18</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>38</b><small>BUILD</small></span><span><b>48</b><small>IMPROVE</small></span><span><b>53</b><small>CHANGE</small></span><span><b>21</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -312,7 +312,7 @@ tags:
         <p><a href="getting-started/run-project/#cloudflare">배포 표면 계약 →</a> · <a href="design/master-gdd-alignment/">Master GDD 재대조 →</a> · <a href="design/current-milestone-workline/">다음 작업 라인 →</a> · <a href="architecture/module-audit/">보안·모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 12</small><b>전리품 생명 주기 P4-01 · Item Sheet 15종 · 탈출·사망 결과 계약</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -332,6 +332,27 @@ tags:
         <div class="sfh-group"><h3>수정 · 5</h3><p>Manifest·밸런스 UI·export·release metadata·마일스톤을 P4-01 완료 상태로 변경했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>상충 정책 수용과 오류 갱신 시 마지막 정상 데이터 유실을 차단했습니다.</p></div>
         <p><a href="features/loot-lifecycle/">전리품 생명 주기 →</a> · <a href="design/current-milestone-workline/">P4 작업 라인 →</a> · <a href="architecture/module-audit/">P4-01 모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 13</small><b>지역·난이도 타겟 파밍 · 안개 문턱 UX · 위키 최신순</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · P4-02를 완료해 작전 조건과 실제 전리품 후보를 연결하고, 방↔통로 시야 전환의 급격한 끊김을 완화했습니다.</strong>
+          <ul>
+            <li><b>Sheet/CSV:</b> 독립 LootTable 탭에 세 지역 27행을 추가하고 Item 정의·지역 태그를 교차 검증합니다.</li>
+            <li><b>Provider:</b> 지역·난이도·규모·출처·투자 배율로 후보를 만들고 동일 seed 추첨과 실시간/확정 폴백을 제공합니다.</li>
+            <li><b>브리핑:</b> 대표 전리품 3개·후보 수·최고 등급을 표시해 지역 선택의 결과를 투입 전에 이해할 수 있습니다.</li>
+            <li><b>안개:</b> 문턱 유예→퇴장→통로→입장 여섯 상태, 220px 주변·320px 안심 외곽과 정면 보간을 적용했습니다.</li>
+            <li><b>위키:</b> 홈 일일 업데이트를 최신 작업 우선으로 뒤집고 소스·생성 HTML 모두에서 GitHub 역링크를 금지합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>검증 결과</b><span>전리품 계약·게임 smoke·실제 입력 E2E 24/6·대형 성능 6.882ms·위키 링크/검색/반응형 게이트를 통과 기준으로 고정했습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>전리품 행·테이블·설정·결정적 공급자·작전 타겟 브리핑을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>지역 파밍 판단, 문턱 시야 연속성, 정면 가독성, Web 데이터 추적, 기획 검색을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 6</h3><p>Manifest·작전 조립·E2E·성능 문서·마일스톤·홈 일일 묶음 순서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>잘못된 지역 태그 수용, 문턱 밝기 단절, 위키 GitHub 역링크와 오래된 최신순 판정을 차단했습니다.</p></div>
+        <p><a href="features/loot-tables/">지역·난이도 전리품 →</a> · <a href="features/fog-of-war/">전장의 안개 →</a> · <a href="quality/e2e-play-session/">E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
   </div>

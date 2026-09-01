@@ -14,6 +14,8 @@ func judge(flow_id: StringName, evidence: Dictionary) -> Dictionary:
 			_judge_ten_minute_session(evidence, errors)
 		&"fog_room_corridor_transition":
 			_judge_fog_transition(evidence, errors)
+		&"loot_table_targeting":
+			_judge_loot_table_targeting(evidence, errors)
 		_:
 			errors.append("알 수 없는 게임플레이 흐름입니다: %s" % flow_id)
 	return {
@@ -84,12 +86,19 @@ func _judge_ten_minute_session(evidence: Dictionary, errors: PackedStringArray) 
 
 func _judge_fog_transition(evidence: Dictionary, errors: PackedStringArray) -> void:
 	var room: Dictionary = evidence.get(&"room", {})
+	var grace: Dictionary = evidence.get(&"grace", {})
 	var leaving: Dictionary = evidence.get(&"leaving", {})
 	var corridor: Dictionary = evidence.get(&"corridor", {})
 	var entering: Dictionary = evidence.get(&"entering", {})
 	var returned: Dictionary = evidence.get(&"returned", {})
 	if room.get(&"transition_phase") != &"room" or float(room.get(&"room_visibility_blend", 0.0)) < 0.999:
 		errors.append("방 안에서 방 전체 시야가 안정적으로 열리지 않았습니다.")
+	if (
+		grace.get(&"transition_phase") != &"doorway_grace"
+		or float(grace.get(&"room_visibility_blend", 0.0)) < 0.999
+		or float(grace.get(&"doorway_grace_remaining", 0.0)) <= 0.0
+	):
+		errors.append("문턱을 지날 때 방 시야를 잠시 유지하는 완충 단계가 없습니다.")
 	if leaving.get(&"transition_phase") != &"leaving_room":
 		errors.append("방에서 통로로 나갈 때 부드러운 감쇠 단계가 없습니다.")
 	if corridor.get(&"transition_phase") != &"corridor" or float(corridor.get(&"room_visibility_blend", 1.0)) > 0.001:
@@ -98,13 +107,34 @@ func _judge_fog_transition(evidence: Dictionary, errors: PackedStringArray) -> v
 		errors.append("통로에서 방으로 들어갈 때 부드러운 개방 단계가 없습니다.")
 	if returned.get(&"transition_phase") != &"room":
 		errors.append("방 재진입 뒤 방 전체 시야가 복원되지 않았습니다.")
-	for snapshot in [room, leaving, corridor, entering, returned]:
+	if (
+		float(corridor.get(&"corridor_comfort_shell_radius", 0.0))
+		<= float(corridor.get(&"corridor_near_radius", 0.0))
+		or float(corridor.get(&"corridor_comfort_shell_visibility", 0.0)) <= 0.0
+		or corridor.get(&"corridor_comfort_policy") != &"wide_front_near_shell_doorway_grace"
+	):
+		errors.append("통로 이동을 위한 근거리 완충 시야가 활성화되지 않았습니다.")
+	for snapshot in [room, grace, leaving, corridor, entering, returned]:
 		if not bool(snapshot.get(&"non_active_rooms_occluded", false)):
 			errors.append("현재 방 밖의 다른 방을 가리는 정책이 유지되지 않습니다.")
 			break
 		if not bool(snapshot.get(&"minimap_visibility_independent", false)):
 			errors.append("전장의 안개가 전체 미니맵 정보까지 숨깁니다.")
 			break
+
+
+func _judge_loot_table_targeting(evidence: Dictionary, errors: PackedStringArray) -> void:
+	var briefing: Dictionary = evidence.get(&"briefing", {})
+	var first: Dictionary = evidence.get(&"first_roll", {})
+	var repeated: Dictionary = evidence.get(&"repeated_roll", {})
+	if int(briefing.get(&"candidate_count", 0)) <= 0:
+		errors.append("선택한 지역·난이도의 드랍 후보가 없습니다.")
+	if (briefing.get(&"target_item_labels", PackedStringArray()) as PackedStringArray).is_empty():
+		errors.append("플레이어가 타겟 파밍 품목 이름을 확인할 수 없습니다.")
+	if first.is_empty() or first != repeated:
+		errors.append("동일 시드의 드랍 결과가 결정적으로 재현되지 않습니다.")
+	if first.get(&"region_id") != evidence.get(&"selected_region_id"):
+		errors.append("선택 지역과 추첨 결과의 지역이 다릅니다.")
 
 
 func _require_increase(
