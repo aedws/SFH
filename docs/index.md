@@ -13,6 +13,8 @@ tags:
 hide:
   - navigation
   - toc
+search:
+  exclude: true
 ---
 
 <section class="sfh-hero">
@@ -84,10 +86,10 @@ hide:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 17 · IMPROVE 28 · CHANGE 28 · FIX 10</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 17 · IMPROVE 28 · CHANGE 29 · FIX 11</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>17</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>28</b><small>CHANGE</small></span><span><b>10</b><small>FIX</small></span>
+      <span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>17</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>29</b><small>CHANGE</small></span><span><b>11</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 방 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
@@ -237,17 +239,18 @@ hide:
         <div class="sfh-summary">
           <strong>무엇이 변했나 · 검증된 동일 산출물만 Cloudflare 후보 환경에 올리고 기존 GitHub Pages는 유지합니다.</strong>
           <ul>
-            <li><b>위키 분리:</b> MkDocs 결과만 `sfh-wiki.pages.dev`에 Direct Upload하며 `/play/`는 별도 게임 Worker로 전달합니다.</li>
+            <li><b>위키 분리:</b> MkDocs 결과만 실제 공개 프로젝트 `sfh-dev-wiki.pages.dev`에 Direct Upload하며 `/play/`는 별도 게임 Worker로 전달합니다.</li>
             <li><b>대용량 게임:</b> 39MiB WASM을 포함한 Web 빌드는 R2 `game/releases/&lt;commit&gt;/`에 불변 업로드한 뒤 `sfh-game` Worker를 전환합니다.</li>
             <li><b>다운로드:</b> Windows ZIP·SHA-256은 R2 `/downloads/v0.1.0/`에 함께 배치합니다.</li>
             <li><b>서빙 계약:</b> Worker가 COOP·COEP·CORP, MIME, ETag, Range 206, 캐시와 다운로드 헤더를 제공합니다.</li>
             <li><b>전환 게이트:</b> 위키·게임·Range·ZIP 해시 E2E가 성공할 때까지 README·기본 링크와 저장소 공개 상태를 바꾸지 않습니다.</li>
+            <li><b>검색 복구:</b> 대형 홈 대시보드를 검색 색인에서 제외해 첫 선택이 홈으로 회귀하지 않고 실제 상세 문서로 이동합니다.</li>
           </ul>
         </div>
         <div class="sfh-group"><h3>구현 · 3</h3><p>R2 업로더·manifest, 게임 Worker, Cloudflare Direct Upload/E2E 작업을 추가했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 3</h3><p>대용량 Web 전달, 원자적 커밋 전환, Windows 다운로드 무결성을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 4</h3><p>위키·게임 저장 경계, 두 배포 주소, 캐시·보안 헤더, 무중단 전환 순서를 명시했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>Cloudflare Pages 25MiB 단일 파일 제한으로 Godot WASM 업로드가 실패할 구조를 Worker+R2로 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>실제 Pages 프로젝트명, 위키·게임 저장 경계, 두 배포 주소, 캐시·보안 헤더, 무중단 전환 순서를 명시했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>Pages 단일 파일 제한은 Worker+R2 분리로 해소하고, 검색 첫 결과가 홈으로 회귀하던 색인 오류는 홈 검색 제외로 차단했습니다.</p></div>
         <p><a href="getting-started/run-project/#cloudflare">Cloudflare 배포 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>

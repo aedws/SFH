@@ -74,6 +74,9 @@ if ($playScript -notmatch 'new URL\("\.\./play/", playEntryScriptUrl\)') {
 if ($mkdocs -notmatch 'quality/wiki-responsive-e2e\.md') {
     $errors.Add("MkDocs navigation does not expose the responsive wiki E2E document.")
 }
+if ($index -notmatch 'search:\s*\r?\n\s+exclude:\s*true') {
+    $errors.Add("The dashboard home must be excluded from the wiki search index.")
+}
 
 if ($errors.Count -gt 0) {
     throw ($errors -join [Environment]::NewLine)

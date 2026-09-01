@@ -262,6 +262,7 @@ jobs:
           ./scripts/check-wiki-color-contrast.ps1
           ./scripts/check-wiki-responsive.ps1
           python -m mkdocs build --strict
+          python scripts/check_wiki_search_index.py .wiki-site/search/search_index.json
 
       - name: Upload Cloudflare wiki artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -308,36 +309,53 @@ jobs:
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_WIKI_URL: https://sfh-wiki.pages.dev
+      CLOUDFLARE_WIKI_URL: https://sfh-dev-wiki.pages.dev
       CLOUDFLARE_GAME_URL: https://sfh-game.vstock-market.workers.dev
       RELEASE_VERSION: ${{ needs.package-windows.outputs.release-version }}
       WRANGLER_VERSION: 4.127.1
     steps:
+      - name: Detect Cloudflare deployment credentials
+        id: cloudflare_config
+        shell: bash
+        run: |
+          if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Cloudflare credentials are not configured; keeping the verified manual deployment unchanged."
+          fi
+
       - name: Check out repository
+        if: steps.cloudflare_config.outputs.ready == 'true'
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Download verified wiki
+        if: steps.cloudflare_config.outputs.ready == 'true'
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
           name: wiki-site
           path: .cloudflare-wiki
 
       - name: Download verified browser game
+        if: steps.cloudflare_config.outputs.ready == 'true'
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
           name: game-web
           path: .cloudflare-game
 
       - name: Download verified Windows release
+        if: steps.cloudflare_config.outputs.ready == 'true'
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
           name: SFH-Windows-x64-${{ env.RELEASE_VERSION }}
           path: .cloudflare-windows
 
       - name: Install pinned Wrangler
+        if: steps.cloudflare_config.outputs.ready == 'true'
         run: npm install --global "wrangler@${WRANGLER_VERSION}"
 
       - name: Upload immutable R2 release objects
+        if: steps.cloudflare_config.outputs.ready == 'true'
         run: |
           python3 scripts/deploy_cloudflare_assets.py \
             --game-dir .cloudflare-game \
@@ -347,6 +365,7 @@ jobs:
             --manifest .cloudflare-release/asset-manifest.json
 
       - name: Switch game Worker to verified commit
+        if: steps.cloudflare_config.outputs.ready == 'true'
         run: |
           wrangler deploy --config cloudflare/wrangler.jsonc \
             --var "RELEASE_PREFIX:game/releases/$GITHUB_SHA" \
@@ -354,14 +373,16 @@ jobs:
             --var "BUILD_COMMIT:$GITHUB_SHA"
 
       - name: Direct Upload verified wiki
+        if: steps.cloudflare_config.outputs.ready == 'true'
         run: |
           wrangler pages deploy .cloudflare-wiki \
-            --project-name=sfh-wiki \
+            --project-name=sfh-dev-wiki \
             --branch=main \
             --commit-hash="$GITHUB_SHA" \
             --commit-dirty=false
 
       - name: Verify Cloudflare wiki, game, range, and download
+        if: steps.cloudflare_config.outputs.ready == 'true'
         run: |
           for attempt in $(seq 1 24); do
             if curl --silent --show-error --fail "$CLOUDFLARE_WIKI_URL/" --output /tmp/wiki.html \

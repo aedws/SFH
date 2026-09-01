@@ -832,7 +832,7 @@ E2E 실행기는 기능 내부 구현을 복제하지 않습니다. 실제 Input
 | 공급망 경계 | 통과 | 워크플로의 GitHub Action 7종을 실제 태그 커밋 SHA로 고정하고 저장소 허용 목록도 동일 SHA만 수락 |
 | 산출물 단일성 | 통과 | Cloudflare 작업은 `game-web`, `wiki-site`, `SFH-Windows-x64-v0.1.0` 검증 산출물을 내려받기만 하며 재빌드하지 않음 |
 | 원자적 게임 전환 | 통과 | R2 `game/releases/<commit>/`에 모든 파일과 manifest를 먼저 업로드한 뒤 Worker의 `RELEASE_PREFIX`를 변경 |
-| 위키·게임 분리 | 통과 | MkDocs 정적 파일만 `sfh-wiki` Pages에 Direct Upload하고 39MiB WASM·PCK는 R2 결합 Worker가 제공 |
+| 위키·게임 분리 | 통과 | MkDocs 정적 파일만 기존 `sfh-dev-wiki` Pages에 Direct Upload하고 39MiB WASM·PCK는 R2 결합 Worker가 제공 |
 | 다운로드 무결성 | 통과 | `/downloads/<version>/`에서 ZIP과 SHA-256을 함께 제공하고 Cloudflare E2E가 다시 내려받아 검증 |
 | Web 런타임 헤더 | 통과 | Worker가 COOP·COEP·CORP, MIME, ETag, Range 206과 캐시 정책을 중앙 관리 |
 | 무중단 폴백 | 통과 | Cloudflare E2E와 링크 전환이 끝날 때까지 기존 GitHub Pages 배포를 병렬 유지 |

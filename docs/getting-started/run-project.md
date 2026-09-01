@@ -20,7 +20,7 @@ tags:
 
 ## Cloudflare 병렬 배포
 
-무중단 전환 동안 GitHub Pages와 Cloudflare를 함께 유지합니다. 위키 후보 주소는 `https://sfh-wiki.pages.dev/`, 게임 후보 주소는 계정 고유 workers.dev 하위의 `https://sfh-game.vstock-market.workers.dev/`입니다. Windows 다운로드는 같은 게임 게이트웨이의 `/downloads/v0.1.0/` 아래에 둡니다.
+무중단 전환 동안 GitHub Pages와 Cloudflare를 함께 유지합니다. 공개 위키 주소는 `https://sfh-dev-wiki.pages.dev/`, 게임 후보 주소는 계정 고유 workers.dev 하위의 `https://sfh-game.vstock-market.workers.dev/`입니다. Windows 다운로드는 같은 게임 게이트웨이의 `/downloads/v0.1.0/` 아래에 둡니다.
 
 CI는 Web·Windows·위키를 다시 만들지 않고 앞 단계에서 검증해 업로드한 GitHub Actions 산출물만 내려받습니다. Web 파일은 R2의 `game/releases/<commit>/` 불변 경로에 먼저 저장하고 마지막에 Worker의 활성 커밋만 바꿉니다. 위키는 게임 대용량 파일을 제외해 Pages Direct Upload 제한을 지키며 `/play/` 요청은 게임 Worker로 넘깁니다. 위키·게임·WASM Range·ZIP SHA-256 E2E가 모두 성공하기 전에는 README와 기본 링크를 Cloudflare로 전환하지 않습니다.
 

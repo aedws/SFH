@@ -49,7 +49,7 @@
     {
       "query": "Cloudflare 배포",
       "label": "Cloudflare 이중 배포와 무중단 전환",
-      "description": "sfh-wiki Pages, sfh-game Worker+R2, 커밋별 불변 업로드와 GitHub Pages 병행 E2E",
+      "description": "sfh-dev-wiki Pages, sfh-game Worker+R2, 커밋별 불변 업로드와 GitHub Pages 병행 E2E",
       "category": "배포",
       "priority": 97
     },
