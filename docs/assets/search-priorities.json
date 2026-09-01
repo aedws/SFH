@@ -1,9 +1,30 @@
 {
-  "version": 14,
+  "version": 15,
   "updated": "2026-09-01",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "모바일 플레이 HUD 설정",
+      "label": "모바일 키패드·HUD 위치·키 포맷",
+      "description": "브라우저 터치 Action, 좌하단 기본 상태 HUD와 K 설정의 위치·키 표시·키패드 모드",
+      "category": "입력",
+      "priority": 100
+    },
+    {
+      "query": "엘리트 추격자",
+      "label": "투입액 회수 전역 엘리트",
+      "description": "휴대 크레딧이 투입 비용에 도달할 때 1~2마리 랜덤 생성, 방·문 독립 무한 추격",
+      "category": "전투",
+      "priority": 100
+    },
+    {
+      "query": "위키 수정 방법",
+      "label": "제안 초안·Notion·PR 반영 흐름",
+      "description": "읽기 전용 공개 위키에서 수정 요청을 만들고 근거와 검증을 거쳐 Cloudflare에 반영하는 현행 안내",
+      "category": "위키",
+      "priority": 100
+    },
     {
       "query": "남은 작업",
       "label": "남은 9개 마일스톤 패킷",
@@ -140,7 +161,7 @@
     {
       "query": "문서 노드맵",
       "label": "전체 문서 4단계 노드맵",
-      "description": "69개 문서를 대·중·소·세부 구조와 현재 위치로 탐색",
+      "description": "71개 문서를 대·중·소·세부 구조와 현재 위치로 탐색",
       "category": "위키",
       "priority": 95
     },
@@ -301,7 +322,7 @@
     {
       "query": "플레이어 인식 E2E",
       "label": "플레이어 인식·게임플레이 인과 E2E",
-      "description": "28개 체크포인트, 13개 게임플레이 흐름, 9개 인식 단위와 남은 실기 검수",
+      "description": "30개 체크포인트, 15개 게임플레이 흐름, 9개 인식 단위와 남은 실기 검수",
       "category": "검증",
       "priority": 93
     },

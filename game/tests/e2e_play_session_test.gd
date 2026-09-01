@@ -6,6 +6,7 @@ const E2E_RANKINGS_PATH := "user://sfh_e2e_rankings.json"
 const E2E_META_PATH := "user://sfh_e2e_meta_progression.json"
 const E2E_KEY_MAPPING_PATH := "user://sfh_e2e_key_mapping.json"
 const E2E_SKILL_BINDING_PATH := "user://sfh_e2e_skill_bindings.json"
+const E2E_PRESENTATION_SETTINGS_PATH := "user://sfh_e2e_presentation_settings.json"
 const UI_STATE_JUDGE_SCRIPT := preload("res://game/tests/support/ui_state_judge.gd")
 const PLAYER_PERCEPTION_JUDGE_SCRIPT := preload(
 	"res://game/tests/support/player_perception_judge.gd"
@@ -41,6 +42,7 @@ func _run() -> void:
 	isolated_features.set("meta_progression_storage_path", E2E_META_PATH)
 	isolated_features.set("key_mapping_storage_path", E2E_KEY_MAPPING_PATH)
 	isolated_features.set("skill_binding_storage_path", E2E_SKILL_BINDING_PATH)
+	isolated_features.set("presentation_settings_storage_path", E2E_PRESENTATION_SETTINGS_PATH)
 	game.set("features", isolated_features)
 	root.add_child(game)
 	await process_frame
@@ -79,7 +81,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -124,9 +126,57 @@ func _verify_hub_input_session() -> bool:
 		return false
 	if not _judge_player_perception(&"key_mapping_comprehension", "키 설정 선택 이해"):
 		return false
+	var presentation = game.get("presentation_settings_service")
+	var mobile_pad = game.get("mobile_control_pad") as Control
+	var combat_presenter = game.get("combat_hud_presenter")
+	if presentation == null or mobile_pad == null or combat_presenter == null:
+		return _fail("HUD 위치·키 포맷·모바일 패드 설정 모듈이 설치되지 않았습니다.")
+	var presentation_before: Dictionary = presentation.call(&"get_snapshot")
+	key_panel.call(&"_cycle_presentation_setting", &"hud_anchor")
+	key_panel.call(&"_cycle_presentation_setting", &"key_label_format")
+	key_panel.call(&"_cycle_presentation_setting", &"mobile_controls_mode")
+	await process_frame
+	var presentation_changed: Dictionary = presentation.call(&"get_snapshot")
+	if (
+		presentation_changed.get(&"hud_anchor") != &"bottom_center"
+		or presentation_changed.get(&"key_label_format") != &"boxed"
+		or presentation_changed.get(&"mobile_controls_mode") != &"on"
+	):
+		return _fail("K 설정의 HUD·키 포맷·모바일 패드 선택이 실제 설정에 반영되지 않았습니다: %s" % presentation_changed)
 	await _tap_key(KEY_ESCAPE)
 	if key_panel.visible or paused or not hub_hud.visible:
 		return _fail("실제 ESC 입력이 키 설정을 닫고 거점 HUD를 복원하지 못했습니다.")
+	if not mobile_pad.visible:
+		return _fail("모바일 키패드 항상 표시 설정이 모달 종료 뒤 적용되지 않았습니다.")
+	var mobile_before: Vector2 = player.global_position
+	mobile_pad.call(&"simulate_action", &"move_right", true)
+	for _frame in range(5):
+		await physics_frame
+	mobile_pad.call(&"simulate_action", &"move_right", false)
+	var mobile_delta: float = player.global_position.distance_to(mobile_before)
+	if mobile_delta < 1.0:
+		return _fail("모바일 방향 패드가 기존 이동 Action을 통해 플레이어를 움직이지 못했습니다.")
+	if not _judge_player_perception(&"mobile_controls_comprehension", "모바일 키패드 의미 인지", {
+		&"minimum_world_delta": 1.0,
+		&"world_delta": mobile_delta,
+	}):
+		return false
+	var presenter_changed: Dictionary = combat_presenter.call(&"get_snapshot", game.get_node("UI/HUDMargin"))
+	presentation.call(&"reset_defaults", true)
+	await process_frame
+	var presentation_restored: Dictionary = presentation.call(&"get_snapshot")
+	var presenter_restored: Dictionary = combat_presenter.call(&"get_snapshot", game.get_node("UI/HUDMargin"))
+	if not _judge_gameplay_flow(&"presentation_mobile_settings", "설정→HUD 이동·키 형식·모바일 입력→복원", {
+		&"before": presentation_before,
+		&"changed": presentation_changed,
+		&"presenter_changed": presenter_changed,
+		&"mobile_visible_after_modal": true,
+		&"mobile_world_delta": mobile_delta,
+		&"restored": presentation_restored,
+		&"presenter_restored": presenter_restored,
+		&"mobile_hidden_after_restore": not mobile_pad.visible,
+	}):
+		return false
 	if not _judge_ui_state(&"hub", "K 종료 후 거점"):
 		return false
 
@@ -725,7 +775,8 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 	var progression = game.get("progression_system")
 	var credit_ledger = game.get("credit_ledger")
 	var fog = game.get("fog_of_war")
-	if encounters == null or spawner == null or generator == null or progression == null or credit_ledger == null or fog == null:
+	var elite_pursuit = game.get("elite_pursuit_service")
+	if encounters == null or spawner == null or generator == null or progression == null or credit_ledger == null or fog == null or elite_pursuit == null:
 		return _fail("방 전투 E2E에 필요한 모듈이 설치되지 않았습니다.")
 	var room := {}
 	var fallback_room := {}
@@ -756,6 +807,30 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 		return false
 	var credits_before := int(credit_ledger.call(&"get_snapshot").get(&"carried", 0))
 	var room_id := StringName("room_%d" % int(room[&"room_index"]))
+	var elite_before: Dictionary = elite_pursuit.call(&"get_snapshot")
+	var spawner_before_elite: Dictionary = spawner.call(&"get_snapshot")
+	var threshold := int(elite_before.get(&"threshold_credits", 0))
+	var required_credits := maxi(0, threshold - credits_before)
+	if required_credits > 0:
+		credit_ledger.call(&"add_carried", required_credits)
+	await process_frame
+	await physics_frame
+	var elite_after: Dictionary = elite_pursuit.call(&"get_snapshot")
+	var encounter_after_elite: Dictionary = encounters.call(&"get_snapshot")
+	var spawner_after_elite: Dictionary = spawner.call(&"get_snapshot")
+	var elite_target: Node2D
+	for target in spawner.call(&"get_active_targets"):
+		if bool(target.get_meta(&"elite_pursuer", false)):
+			elite_target = target as Node2D
+			break
+	if elite_target == null:
+		return _fail("투입 비용만큼 휴대 크레딧을 모았지만 엘리트 추격자가 생성되지 않았습니다: %s" % elite_after)
+	var elite_distance_before := elite_target.global_position.distance_to(player.global_position)
+	for _frame in range(4):
+		await physics_frame
+	var elite_distance_after := elite_target.global_position.distance_to(player.global_position)
+	if not _judge_player_perception(&"elite_pursuit_warning", "엘리트 전역 추격 경보 인지"):
+		return false
 	player.global_position = (room[&"world_rect"] as Rect2).position + Vector2(160.0, 160.0)
 	await physics_frame
 	await physics_frame
@@ -771,12 +846,27 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 	encounters.call(&"_process", 0.0)
 	await process_frame
 	var cleared: Dictionary = encounters.call(&"get_snapshot")
+	var elite_alive_after_clear := is_instance_valid(elite_target)
 	var visible_status := String((game.get("status_label") as Label).text)
 	if int(cleared.get(&"active_room_index", -2)) != -1 or "확보" not in visible_status:
 		return _fail("방 섬멸 후 확보 상태가 화면에 유지되지 않습니다: %s / %s" % [
 			visible_status, cleared,
 		])
 	if not _judge_player_perception(&"room_clear_feedback", "방 클리어와 보상 생성 인지"):
+		return false
+	if not _judge_gameplay_flow(&"elite_pursuit", "투입액 회수→전역 엘리트 생성→방 독립 추격", {
+		&"before": elite_before,
+		&"after": elite_after,
+		&"active_room_before": active,
+		&"active_room_after_spawn": encounter_after_elite,
+		&"spawner_before": spawner_before_elite,
+		&"spawner_after": spawner_after_elite,
+		&"distance_before": elite_distance_before,
+		&"distance_after": elite_distance_after,
+		&"elite_visible_to_targeting": elite_target in spawner.call(&"get_active_targets"),
+		&"elite_alive_after_room_clear": elite_alive_after_clear,
+		&"cleared": cleared,
+	}):
 		return false
 	if not await _verify_field_loot_acquisition(player):
 		return false
@@ -1053,6 +1143,7 @@ func _verify_ten_minute_sessions(game_scene: PackedScene) -> bool:
 		tier_features.set("meta_progression_storage_path", "user://sfh_e2e_%s_meta.json" % suffix)
 		tier_features.set("key_mapping_storage_path", "user://sfh_e2e_%s_keys.json" % suffix)
 		tier_features.set("skill_binding_storage_path", "user://sfh_e2e_%s_skills.json" % suffix)
+		tier_features.set("presentation_settings_storage_path", "user://sfh_e2e_%s_presentation.json" % suffix)
 		tier_game.set("features", tier_features)
 		root.add_child(tier_game)
 		await process_frame
@@ -1101,6 +1192,7 @@ func _verify_operation_combination_matrix(game_scene: PackedScene) -> bool:
 			combo_features.set("meta_progression_storage_path", "user://sfh_e2e_%s_meta.json" % suffix)
 			combo_features.set("key_mapping_storage_path", "user://sfh_e2e_%s_keys.json" % suffix)
 			combo_features.set("skill_binding_storage_path", "user://sfh_e2e_%s_skills.json" % suffix)
+			combo_features.set("presentation_settings_storage_path", "user://sfh_e2e_%s_presentation.json" % suffix)
 			combo_game.set("features", combo_features)
 			root.add_child(combo_game)
 			await process_frame
@@ -1177,6 +1269,7 @@ func _cleanup_tier_profile(suffix: String) -> void:
 		"user://sfh_e2e_%s_meta.json" % suffix,
 		"user://sfh_e2e_%s_keys.json" % suffix,
 		"user://sfh_e2e_%s_skills.json" % suffix,
+		"user://sfh_e2e_%s_presentation.json" % suffix,
 	]:
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
@@ -1256,7 +1349,7 @@ func _reset_test_profile() -> void:
 
 
 func _cleanup_test_profile() -> void:
-	for path in [E2E_PROFILE_PATH, E2E_RANKINGS_PATH, E2E_META_PATH, E2E_KEY_MAPPING_PATH, E2E_SKILL_BINDING_PATH]:
+	for path in [E2E_PROFILE_PATH, E2E_RANKINGS_PATH, E2E_META_PATH, E2E_KEY_MAPPING_PATH, E2E_SKILL_BINDING_PATH, E2E_PRESENTATION_SETTINGS_PATH]:
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 

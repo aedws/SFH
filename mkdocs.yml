@@ -112,6 +112,7 @@ nav:
       - 현장 전리품 비교·획득: features/field-loot-acquisition.md
       - 플레이어: features/player.md
       - K 입력 설정과 자유 스킬 배치: features/key-mapping.md
+      - 모바일 키패드와 HUD 표시 설정: features/mobile-hud-settings.md
       - 부분 체력 회복: features/health-recovery.md
       - 전투 스킬과 쿨타임 HUD: features/combat-skills.md
       - 타격감과 피격 피드백: features/hit-feedback.md
@@ -124,6 +125,7 @@ nav:
       - 장비 파츠·모듈 개조: features/equipment-customization.md
       - 모듈·고유 파츠 강화 경제: features/equipment-upgrade-economy.md
       - 적과 증원형 생성 시스템: features/enemies.md
+      - 투입액 회수 엘리트 추격자: features/elite-pursuit.md
       - 방 진입 전투와 봉쇄 보상: features/room-encounters.md
       - 적 체력과 방어력: features/enemy-defense.md
       - 자동 무기: features/weapons.md

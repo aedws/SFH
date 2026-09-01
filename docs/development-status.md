@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 59 TOPICS</span><span>69 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 60 TOPICS</span><span>71 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -93,9 +93,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>19 UPDATE BUNDLES · BUILD 63 · IMPROVE 75 · CHANGE 91 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>20 UPDATE BUNDLES · BUILD 69 · IMPROVE 80 · CHANGE 99 · FIX 31</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>19</b><small>UPDATE BUNDLES</small></span><span><b>63</b><small>BUILD</small></span><span><b>75</b><small>IMPROVE</small></span><span><b>91</b><small>CHANGE</small></span><span><b>29</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>20</b><small>UPDATE BUNDLES</small></span><span><b>69</b><small>BUILD</small></span><span><b>80</b><small>IMPROVE</small></span><span><b>99</b><small>CHANGE</small></span><span><b>31</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -452,7 +452,7 @@ tags:
         <p><a href="features/session-sockets/">세션 소켓 →</a> · <a href="design/current-milestone-workline/">다음 P4-06 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 19</small><b>9개 작전 조합 복구 · P4-06 전리품 정산 · Phase 4 완료</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 작전 조립 회귀를 고치고 전리품 획득부터 성공·사망 정산까지 Phase 4 전체 인과를 닫았습니다.</strong><ul>
@@ -468,6 +468,24 @@ tags:
         <div class="sfh-group"><h3>수정 · 8</h3><p>진행률 87%, Phase 4 완료, CI·검색·노드맵·품질 문서를 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>배치 불가능한 전리품 목표의 전투 조립 실패와 실제 오류 문구 유실을 해결했습니다.</p></div>
         <p><a href="features/run-settlement/">런 전리품 정산 →</a> · <a href="quality/e2e-play-session/">실제 플레이 E2E →</a> · <a href="design/p5-p6-preimplementation/">P5·P6 사전 설계 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 20</small><b>모바일 플레이 · 이동 가능한 상태 HUD · 투입액 회수 엘리트</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 모바일 브라우저 조작과 플레이어별 HUD 표현 설정을 추가하고, 투입 비용을 회수한 뒤의 위험을 전역 엘리트 추격으로 연결했습니다.</strong><ul>
+          <li><b>모바일 입력:</b> 16개 터치 버튼이 키보드와 동일한 semantic Action을 사용하며 모달에서는 숨고 전투·거점 복귀 시 다시 표시됩니다.</li>
+          <li><b>HUD 설정:</b> 상태 HUD 좌하단 기본, 하단 좌·중·우 이동, 키 표시 간결·대괄호·숨김, 터치 자동·표시·숨김을 K에서 저장합니다.</li>
+          <li><b>엘리트:</b> 실제 작전 투입액과 같은 휴대 크레딧 임계에서 랜덤 1~2명을 한 번 생성하고 현재 플레이어보다 8% 빠르게 전역 추적합니다.</li>
+          <li><b>방 독립:</b> 일반 적 예산·방 ID·문 충돌을 분리해 엘리트가 남아도 방 문이 열리고 보상이 생성됩니다.</li>
+          <li><b>배포:</b> 브라우저·Windows가 같은 CI 커밋과 데이터 입력에서 생성되고 E2E·ZIP 체크섬을 함께 통과해야 최신으로 판정합니다.</li>
+          <li><b>문서:</b> 위키 수정 안내를 제안 초안·Notion 근거·비공개 원본 PR·Cloudflare 배포 순서로 바꾸고 71개 전체 노드맵에 신규 문서를 연결했습니다.</li>
+        </ul><p class="sfh-intent"><b>종료 판단</b><span>23 UI·30 플레이어 인식·15 인과 흐름, 신규 모듈 on/off·의존성 계약을 통과했습니다. 목록 추가가 없어 Sheet와 과금 모델은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 6</h3><p>표시 설정·터치 패드·K 설정·HUD 이동·엘리트 정책·전역 추격을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>모바일 조작, 전투 시야, 키 가독성, 위험 인지, Web/Windows 동기 가시성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 8</h3><p>Manifest·조립·CI·E2E·위키 수정 안내·검색·노드맵·배포 계약을 수정했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>터치 입력 부재와 엘리트가 방 문 개방을 막을 결합 위험을 제거했습니다.</p></div>
+        <p><a href="features/mobile-hud-settings/">모바일·HUD 설정 →</a> · <a href="features/elite-pursuit/">엘리트 추격자 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
   </div>

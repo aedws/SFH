@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "updated": "2026-09-01",
   "root": {
     "id": "sfh",
@@ -43,7 +43,7 @@
             "label": "협업·탐색",
             "description": "문서를 찾고 웹에서 수정",
             "documents": [
-              {"label": "웹에서 위키 수정", "source": "getting-started/edit-wiki-online.md", "route": "getting-started/edit-wiki-online/", "summary": "GitHub 기반 온라인 편집 흐름"},
+              {"label": "위키 수정 요청과 반영", "source": "getting-started/edit-wiki-online.md", "route": "getting-started/edit-wiki-online/", "summary": "제안 초안→Notion 근거→비공개 원본 PR→Cloudflare 배포"},
               {"label": "위키 실시간 검색", "source": "getting-started/search-wiki.md", "route": "getting-started/search-wiki/", "summary": "검색 순위·빠른 탐색·노드맵"}
             ]
           }
@@ -173,6 +173,7 @@
             "documents": [
               {"label": "플레이어", "source": "features/player.md", "route": "features/player/", "summary": "탑다운 이동·대시·조작감"},
               {"label": "K 입력 설정과 자유 스킬 배치", "source": "features/key-mapping.md", "route": "features/key-mapping/", "summary": "23개 물리 키와 별도인 1~9 스킬 위치 교환·저장"},
+              {"label": "모바일 키패드와 HUD 표시 설정", "source": "features/mobile-hud-settings.md", "route": "features/mobile-hud-settings/", "summary": "터치 Action·상태 HUD 위치·키 표시 형식"},
               {"label": "부분 체력 회복", "source": "features/health-recovery.md", "route": "features/health-recovery/", "summary": "회복 규칙과 제한"},
               {"label": "전투 스킬과 쿨타임 HUD", "source": "features/combat-skills.md", "route": "features/combat-skills/", "summary": "점멸·자기장·기동 가속"},
               {"label": "타격감과 피격 피드백", "source": "features/hit-feedback.md", "route": "features/hit-feedback/", "summary": "섬광·넉백·충격·카메라 반응"},
@@ -212,6 +213,7 @@
             "description": "핵앤슬래시 물량과 방 봉쇄",
             "documents": [
               {"label": "적과 증원형 생성 시스템", "source": "features/enemies.md", "route": "features/enemies/", "summary": "규모별 물량·분리·재생성 한계"},
+              {"label": "투입액 회수 엘리트 추격자", "source": "features/elite-pursuit.md", "route": "features/elite-pursuit/", "summary": "투입액 임계·랜덤 생성·방과 문 독립 전역 추적"},
               {"label": "방 진입 전투와 봉쇄 보상", "source": "features/room-encounters.md", "route": "features/room-encounters/", "summary": "문 폐쇄·1~5개 크레딧 박스·조기 탈출"},
               {"label": "적 체력과 방어력", "source": "features/enemy-defense.md", "route": "features/enemy-defense/", "summary": "적 생존 스탯과 상태 바"}
             ]

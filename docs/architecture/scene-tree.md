@@ -21,6 +21,8 @@ Game
 │     └─ RoomCreditRewardBox # 방 전멸 뒤 1~5개 생성되는 F 크레딧 보상 박스
 ├─ Modules
 │  ├─ EnemySpawner          # 등급별 목표 수량·총 생성 한계와 묶음 증원
+│  ├─ ElitePursuit          # 투입액 회수 임계·방 독립 전역 엘리트 발생
+│  ├─ PresentationSettings  # HUD 위치·키 형식·모바일 표시 JSON 설정
 │  ├─ RoomWarpSystem        # 시작·끝·클리어 4방향 방 워프 검증
 │  ├─ ProgressionSystem     # 실행 시 생성
 │  ├─ HealthRecovery        # 지연·상한이 있는 부분 체력 회복
@@ -34,6 +36,7 @@ Game
 │  └─ LootSpawner           # 1회성 회수 지점과 투입 코스트 2.5~5배 목표 배치
 └─ UI
    ├─ StartHubHUD           # 거점 목표와 조작 안내
+   ├─ MobileControlPad      # 터치를 기존 16개 InputMap Action으로 변환
    ├─ HUDMargin
    ├─ CombatSkillHud        # 실행 시 설치되는 하단 3슬롯 쿨타임 HUD
    ├─ TacticalMinimap      # 우측 상단 저점유/M 확장 클릭 전술 지도
@@ -65,6 +68,9 @@ Game
 - `game/features/credits/credit_ledger.tscn`: 작전 크레딧 원장
 - `game/features/loot/loot_spawner.tscn`: 파밍 오브젝트 배치
 - `game/features/spawning/enemy_spawner.tscn`: 적 생성 기능
+- `game/features/elite_pursuit/elite_pursuit_service.tscn`: 투입액 회수 임계와 방 독립 엘리트 발생 조정
+- `game/features/presentation_settings/presentation_settings_service.tscn`: HUD 위치·키 형식·모바일 표시 영속 설정
+- `game/features/mobile_controls/mobile_control_pad.tscn`: 반응형 터치 키패드와 semantic Action 변환
 - `game/features/room_encounters/room_encounter_system.tscn`: 방 진입·문 봉쇄·전멸·보상 조정
 - `game/features/room_navigation/room_warp_system.tscn`: 조건부 확장 지도 워프 검증
 - `game/features/weapons/auto_weapon.tscn`: 자동 공격 기능

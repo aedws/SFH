@@ -26,6 +26,7 @@ func _run() -> void:
 			features.set("meta_progression_storage_path", "user://sfh_combo_%s_meta.json" % suffix)
 			features.set("key_mapping_storage_path", "user://sfh_combo_%s_keys.json" % suffix)
 			features.set("skill_binding_storage_path", "user://sfh_combo_%s_skills.json" % suffix)
+			features.set("presentation_settings_storage_path", "user://sfh_combo_%s_presentation.json" % suffix)
 			game.set("features", features)
 			root.add_child(game)
 			await process_frame
@@ -76,7 +77,7 @@ func _cleanup_paths(features: Resource) -> void:
 	for property_name in [
 		"persistent_profile_storage_path", "conditional_ranking_storage_path",
 		"meta_progression_storage_path", "key_mapping_storage_path",
-		"skill_binding_storage_path",
+		"skill_binding_storage_path", "presentation_settings_storage_path",
 	]:
 		var path := String(features.get(property_name))
 		if FileAccess.file_exists(path):

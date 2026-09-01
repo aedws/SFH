@@ -121,16 +121,34 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 19 TOPICS</span><span>69 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 20 TOPICS</span><span>71 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>19 UPDATE BUNDLES · BUILD 63 · IMPROVE 75 · CHANGE 91 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>20 UPDATE BUNDLES · BUILD 69 · IMPROVE 80 · CHANGE 99 · FIX 31</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>19</b><small>UPDATE BUNDLES</small></span><span><b>63</b><small>BUILD</small></span><span><b>75</b><small>IMPROVE</small></span><span><b>91</b><small>CHANGE</small></span><span><b>29</b><small>FIX</small></span>
+      <span><b>20</b><small>UPDATE BUNDLES</small></span><span><b>69</b><small>BUILD</small></span><span><b>80</b><small>IMPROVE</small></span><span><b>99</b><small>CHANGE</small></span><span><b>31</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 20</small><b>모바일 플레이 · 이동 가능한 상태 HUD · 투입액 회수 엘리트</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 모바일 브라우저에서 화면 패드로 한 판을 조작하고, 상태 정보 위치를 직접 고르며, 투입액을 회수한 순간부터 전역 엘리트의 추격을 받습니다.</strong><ul>
+          <li><b>모바일:</b> 이동·공격·대시·스킬·상호작용·메뉴 16개 터치 버튼을 기존 InputMap Action에 연결했습니다.</li>
+          <li><b>표시 설정:</b> 플레이어 상태는 좌하단이 기본이며 K의 HUD·모바일 탭에서 하단 좌·중·우, 키 간결·대괄호·숨김, 터치 자동·표시·숨김을 저장합니다.</li>
+          <li><b>엘리트:</b> 휴대 크레딧이 실제 투입 비용에 도달하면 1~2명이 랜덤 생성되어 플레이어보다 8% 빠르고 기준 공격보다 12% 강하게 무한 추격합니다.</li>
+          <li><b>방 독립:</b> 엘리트는 일반 스폰 예산과 방 적 수를 쓰지 않고 문을 무시하므로 살아 있어도 방 클리어·문 개방·보상이 정상 진행됩니다.</li>
+          <li><b>배포 동기:</b> 브라우저와 Windows를 같은 검증 커밋·PCK 입력에서 내보내고 하나라도 실패하면 운영 전환을 막는 계약을 명시했습니다.</li>
+          <li><b>위키 수정:</b> 오래된 연필 편집 안내를 읽기 전용 위키→제안 초안→Notion 근거→비공개 원본 PR→Cloudflare 배포 흐름으로 교체했습니다.</li>
+        </ul><p class="sfh-intent"><b>모듈·데이터·과금 경계</b><span>표시 설정·터치 어댑터·엘리트 정책·생성 경계를 독립 Manifest 모듈로 검증했습니다. 신규 목록이 없어 Sheet는 늘리지 않았고 과금 플랜·결제는 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 6</h3><p>표시 설정, 터치 패드, K 설정 탭, 이동형 HUD, 엘리트 정책·전역 추격을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>모바일 조작성, 전장 시야, 키 가독성, 방 전투 독립성, 빌드 동기 가시성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 8</h3><p>Manifest·작전 조립·CI·E2E 30/15·수정 안내·검색·노드맵·배포 문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>모바일 무입력 상태와 엘리트가 방 문 조건에 섞일 가능성을 구조적으로 차단했습니다.</p></div>
+        <p><a href="features/mobile-hud-settings/">모바일·HUD 설정 →</a> · <a href="features/elite-pursuit/">엘리트 추격자 →</a> · <a href="getting-started/edit-wiki-online/">위키 수정 안내 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 19</small><b>9개 작전 조합 복구 · P4-06 전리품 정산 · 진행도 87%</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 소형·표준 외 작전이 생성 직후 거점으로 돌아오던 문제를 제거하고, 획득 전리품의 성공·사망 결말을 실제 정산까지 연결했습니다.</strong><ul>

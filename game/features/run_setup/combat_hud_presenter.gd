@@ -30,6 +30,10 @@ var survival_ratio := 1.0
 var status_priority: int = 0
 var status_priority_until_msec: int = 0
 var icon_count := 0
+var hud_anchor: StringName = &"bottom_left"
+var key_label_format: StringName = &"compact"
+var raw_action_bindings: Dictionary = {}
+var avoid_mobile_controls := false
 
 
 func install(hud: Control) -> bool:
@@ -89,10 +93,27 @@ func install(hud: Control) -> bool:
 
 
 func update_action_bindings(bindings: Dictionary) -> void:
+	raw_action_bindings = bindings.duplicate(true)
 	for action_name in action_labels:
 		var label := action_labels[action_name] as Label
 		if label != null:
-			label.text = str(bindings.get(action_name, label.text))
+			label.text = _format_key_label(str(bindings.get(action_name, label.text)))
+
+
+func apply_user_preferences(snapshot: Dictionary) -> bool:
+	var new_anchor := StringName(snapshot.get(&"hud_anchor", &"bottom_left"))
+	var new_format := StringName(snapshot.get(&"key_label_format", &"compact"))
+	if new_anchor not in [&"bottom_left", &"bottom_center", &"bottom_right"]:
+		return false
+	if new_format not in [&"compact", &"boxed", &"hidden"]:
+		return false
+	hud_anchor = new_anchor
+	key_label_format = new_format
+	avoid_mobile_controls = bool(snapshot.get(&"mobile_controls_visible", false))
+	if not raw_action_bindings.is_empty():
+		update_action_bindings(raw_action_bindings)
+	_apply_responsive_layout()
+	return true
 
 
 func reveal_detail(detail_id: StringName, duration_seconds: float = DETAIL_REVEAL_SECONDS) -> void:
@@ -195,6 +216,10 @@ func get_snapshot(hud: Control) -> Dictionary:
 		&"passive_alpha": PASSIVE_ALPHA,
 		&"low_obstruction": true,
 		&"persistent_area_ratio": persistent_area / viewport_area,
+		&"hud_anchor": hud_anchor,
+		&"key_label_format": key_label_format,
+		&"avoids_mobile_controls": avoid_mobile_controls,
+		&"player_status_lower_edge": core_rect.end.y >= hud.size.y - 210.0 if hud != null else false,
 	}
 
 
@@ -348,23 +373,53 @@ func _apply_layout_for_width(viewport_width: float) -> void:
 	layout_mode = &"player_orbit" if viewport_width >= WIDE_LAYOUT_MINIMUM else &"compact_edge"
 	if layout_mode == &"player_orbit":
 		_set_top_left_rect(mission_tracker, 18, 18, MISSION_WIDTH, MISSION_HEIGHT)
-		_set_center_rect(telemetry_panel, -155, -244, 310, 40)
-		_set_center_rect(core_panel, -112, -198, 224, 86)
 		_set_center_rect(equipment_panel, -252, -104, 132, 100)
 		_set_center_rect(weapon_panel, -112, -104, 224, 100)
 		_set_center_rect(combat_skill_hud, 140, -244, 104, 240)
-		_set_bottom_left_rect(dash_cooldown_hud, 18, -74, 166, 62)
 		_set_bottom_right_rect(action_dock, -410, -58, 392, 46)
 		_set_center_rect(interaction_prompt, -170, 38, 340, 32)
 	else:
 		_set_top_left_rect(mission_tracker, 12, 12, 292, 104)
-		_set_top_left_rect(telemetry_panel, 12, 122, 286, 36)
-		_set_bottom_center_rect(core_panel, -200, -92, 400, 80)
 		_set_center_right_rect(combat_skill_hud, -76, -140, 64, 280)
-		_set_bottom_left_rect(dash_cooldown_hud, 12, -74, 166, 62)
 		_set_bottom_right_rect(action_dock, -334, -142, 322, 46)
 		_set_center_rect(interaction_prompt, -160, 42, 320, 30)
+	_place_player_status_cluster(viewport_width)
 	_apply_detail_visibility()
+
+
+func _place_player_status_cluster(viewport_width: float) -> void:
+	var compact := viewport_width < WIDE_LAYOUT_MINIMUM
+	var core_width := 286.0 if compact else 360.0
+	var core_height := 80.0 if compact else 86.0
+	var telemetry_width := core_width
+	var telemetry_height := 36.0
+	var core_y := -270.0 if compact else -148.0
+	if avoid_mobile_controls and hud_anchor in [&"bottom_left", &"bottom_right"]:
+		core_y = -290.0
+	var telemetry_y := core_y - telemetry_height - 6.0
+	var dash_y := minf(core_y + core_height + 6.0, -68.0)
+	match hud_anchor:
+		&"bottom_center":
+			_set_bottom_center_rect(core_panel, -core_width * 0.5, core_y, core_width, core_height)
+			_set_bottom_center_rect(telemetry_panel, -telemetry_width * 0.5, telemetry_y, telemetry_width, telemetry_height)
+			_set_bottom_center_rect(dash_cooldown_hud, -83, dash_y, 166, 62)
+		&"bottom_right":
+			_set_bottom_right_rect(core_panel, -core_width - 18, core_y, core_width, core_height)
+			_set_bottom_right_rect(telemetry_panel, -telemetry_width - 18, telemetry_y, telemetry_width, telemetry_height)
+			_set_bottom_right_rect(dash_cooldown_hud, -184, dash_y, 166, 62)
+		_:
+			_set_bottom_left_rect(core_panel, 18, core_y, core_width, core_height)
+			_set_bottom_left_rect(telemetry_panel, 18, telemetry_y, telemetry_width, telemetry_height)
+			_set_bottom_left_rect(dash_cooldown_hud, 18, dash_y, 166, 62)
+
+
+func _format_key_label(label: String) -> String:
+	match key_label_format:
+		&"boxed":
+			return "[%s]" % label
+		&"hidden":
+			return ""
+	return label
 
 
 func _apply_detail_visibility() -> void:
