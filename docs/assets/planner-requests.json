@@ -35,6 +35,27 @@
       "evidence": [{"label": "전리품 생명 주기", "href": "features/loot-lifecycle/"}]
     },
     {
+      "id": "DATA-P5-01-01", "status": "data", "state": "needs_planner", "state_label": "카탈로그 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
+      "tag": "후속 데이터", "title": "캐릭터·유틸리티 투자 카탈로그",
+      "decision_id": "DEC-P5-LOADOUT-PENDING", "source_anchor": "3cd5b728-0040-81dc-b35a-d7d5be1ee5b1", "source_revision": 797, "supersedes": [], "conflicts_with": [],
+      "summary": "Phase 5 착수 전에 캐릭터 고유 특성·가격과 가방·회복/공격 소모품·긴급 탈출 도구의 가격·사용·소실 규칙이 필요합니다.",
+      "basis": "Master GDD Phase 5 로비 4대 세팅과 손익분기점 경제",
+      "notion_prompt": "DATA-P5-01-01 제목으로 캐릭터와 유틸리티별 ID·표시명·가격·효과·해금·소실 규칙을 작성해 주세요.",
+      "sheet_target": "P5 착수 시 Character 신규 탭 + Item 열/행 확장",
+      "acceptance": ["캐릭터별 기본 능력·패시브·투입 가격", "유틸리티별 수량·사용 조건·소실 결과", "무료 기본 프리셋 포함 여부"],
+      "evidence": [{"label": "현행 작업 라인", "href": "design/current-milestone-workline/"}, {"label": "로비 경제", "href": "features/hub-economy/"}]
+    },
+    {
+      "id": "PLAN-P6-01-01", "status": "request", "state": "needs_planner", "state_label": "운영 정책 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
+      "tag": "후속 정책", "title": "비동기 랭킹·시즌 운영 경계",
+      "decision_id": "DEC-P6-ONLINE-PENDING", "source_anchor": "3cd5b728-0040-811c-94db-c7053459f591", "source_revision": 797, "supersedes": [], "conflicts_with": [],
+      "summary": "Phase 6 서버 구현 전에 플레이어 신원, 공식 기록 조건, 시즌 기간, 부정 기록 처리와 칭호·오라 보상 범위를 확정해야 합니다.",
+      "basis": "Master GDD Phase 6 비동기 3대 보드와 주간 명예 보상",
+      "notion_prompt": "PLAN-P6-01-01 제목으로 로그인 방식·제출 검증·시즌 주기·동점·제재·보상 지급 규칙을 작성해 주세요.",
+      "acceptance": ["신원과 기록 소유권 정의", "검증·재시도·중복·변조 처리 정의", "시즌 기간·동점·칭호·오라 지급 규칙"],
+      "evidence": [{"label": "조건부 랭킹", "href": "features/penalties-ranking/"}, {"label": "현행 작업 라인", "href": "design/current-milestone-workline/"}]
+    },
+    {
       "id": "DEV-P4-04B-01", "status": "complete", "state": "implemented_verified", "state_label": "구현·검증 완료", "owner_role": "ai_developer", "owner_label": "AI 개발자", "blocking": false,
       "tag": "완료 안내", "title": "현장 스킬 즉시 교체 계약 분리",
       "decision_id": "DEC-P4-04", "source_anchor": "3cd5b728-0040-815e-b852-cbbebe681670", "source_revision": 797, "supersedes": [], "conflicts_with": [],

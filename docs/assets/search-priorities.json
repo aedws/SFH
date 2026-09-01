@@ -1,9 +1,16 @@
 {
-  "version": 11,
+  "version": 12,
   "updated": "2026-09-01",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "남은 작업",
+      "label": "남은 11개 마일스톤 패킷",
+      "description": "P4-05~06, P5-01~05, P6-01~04의 선행 조건·기획 데이터·플레이어 완료 기준",
+      "category": "기획",
+      "priority": 100
+    },
     {
       "query": "현장 스킬 즉시 교체",
       "label": "P4-04B 현장 스킬 즉시 교체",
@@ -35,7 +42,7 @@
     {
       "query": "개발 진행도",
       "label": "개발 진행도",
-      "description": "Master GDD 기준 75% 진행률과 구현·후속 범위 근거",
+      "description": "Master GDD 기준 78% 진행률과 남은 11개 구현 패킷 근거",
       "category": "기획",
       "priority": 100
     },
@@ -49,14 +56,14 @@
     {
       "query": "마일스톤 작업 라인",
       "label": "현행 마일스톤 작업 라인",
-      "description": "완료된 Phase 1·P4-01~03 뒤 P4-04부터 이어지는 작업 ID, 선행 조건, 모듈 경계, 플레이어 완료 조건과 E2E 게이트",
+      "description": "완료된 P4-04B 뒤 P4-05부터 이어지는 작업 ID, 선행 조건, 모듈 경계, 플레이어 완료 조건과 E2E 게이트",
       "category": "기획",
       "priority": 98
     },
     {
       "query": "앞으로 해야 할 작업",
       "label": "앞으로 해야 할 작업",
-      "description": "완료한 P4-03 뒤 현장 즉시 장착·룬 소켓·로비 세팅·온라인 랭킹으로 이어지는 순서",
+      "description": "P4 세션 소켓·정산, P5 로비 4대 세팅, P6 온라인 랭킹·시즌 보상으로 이어지는 11개 순서",
       "category": "기획",
       "priority": 96
     },
