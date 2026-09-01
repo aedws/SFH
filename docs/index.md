@@ -50,7 +50,7 @@ search:
         <span><small>PLAY CURRENT MAIN</small><strong>브라우저로 플레이</strong><em>설치 없이 바로 작전 준비</em></span>
         <b aria-hidden="true">▶</b>
       </a>
-      <a class="sfh-operation-download" href="https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml">
+      <a class="sfh-operation-download" href="https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip">
         <span><small>WINDOWS X86_64 · v0.1.0</small><strong>Windows 빌드 다운로드</strong><em>검증 완료 실행의 ZIP · SHA-256 제공</em></span>
         <b aria-hidden="true">↓</b>
       </a>
@@ -82,14 +82,14 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 8 TOPICS</span><span>58 DOCS · CLOUDFLARE CANARY</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 9 TOPICS</span><span>58 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 17 · IMPROVE 28 · CHANGE 29 · FIX 11</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 20 · IMPROVE 31 · CHANGE 33 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>17</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>29</b><small>CHANGE</small></span><span><b>11</b><small>FIX</small></span>
+      <span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>20</b><small>BUILD</small></span><span><b>31</b><small>IMPROVE</small></span><span><b>33</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 방 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
@@ -233,7 +233,7 @@ search:
         <p><a href="getting-started/run-project/#windows-x86_64">Windows 빌드 규격 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 8</small><b>Cloudflare 무중단 이중 배포 · Worker+R2 게임 게이트웨이</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -252,6 +252,27 @@ search:
         <div class="sfh-group"><h3>수정 · 5</h3><p>실제 Pages 프로젝트명, 위키·게임 저장 경계, 두 배포 주소, 캐시·보안 헤더, 무중단 전환 순서를 명시했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>Pages 단일 파일 제한은 Worker+R2 분리로 해소하고, 검색 첫 결과가 홈으로 회귀하던 색인 오류는 홈 검색 제외로 차단했습니다.</p></div>
         <p><a href="getting-started/run-project/#cloudflare">Cloudflare 배포 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 9</small><b>Cloudflare 운영 전환 · 직접 플레이·Windows 다운로드</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 검증된 main 산출물을 Cloudflare 정식 경로에서 바로 플레이하고 다운로드합니다.</strong>
+          <ul>
+            <li><b>정식 주소:</b> 위키는 기존 <code>sfh-dev-wiki.pages.dev</code>를 유지하고, 게임은 <code>sfh-game.vstock-market.workers.dev</code>에서 제공합니다.</li>
+            <li><b>동일 산출물:</b> Actions 실행 33470418826의 Web·Windows·위키 산출물만 R2·Worker·Pages에 배포했으며 Worker 상태의 커밋과 빌드 커밋이 일치합니다.</li>
+            <li><b>실제 검증:</b> 게임 Canvas 로딩, WASM Range 206, COOP·COEP, Windows ZIP 재다운로드와 SHA-256 일치를 통과했습니다.</li>
+            <li><b>직접 다운로드:</b> 홈과 README가 Windows ZIP과 체크섬을 분리 제공해 Actions 화면을 거치지 않습니다.</li>
+            <li><b>안전 경계:</b> 새 <code>sfh-game-artifacts</code> 버킷만 사용했고 기존 Cloudflare 프로젝트·버킷과 과금 플랜·결제 설정은 변경하지 않았습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>최종 전환</b><span>Cloudflare 배포와 E2E 성공 뒤 README·위키 기준 주소를 전환했으며, GitHub Pages 폴백은 저장소 비공개 전환 직전까지 조건부로 유지합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>R2 운영 버킷, 커밋 고정 Worker 배포, 검증 산출물 직접 다운로드 경로를 구성했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>브라우저 플레이 접근성, Windows 다운로드 무결성, 배포 추적성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>README·위키 기준 URL, 다운로드 카드, MkDocs 정식 주소, GitHub Pages 폴백 조건을 운영 환경에 맞췄습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>Cloudflare 검색 진입 오류와 대용량 Godot Web 파일의 Pages 제한을 각각 검색 색인 보정과 Worker+R2 분리로 해소했습니다.</p></div>
+        <p><a href="getting-started/run-project/#cloudflare">Cloudflare 운영·다운로드 규격 →</a></p>
       </div>
     </details>
   </div>

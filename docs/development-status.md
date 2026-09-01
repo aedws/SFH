@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 49 TOPICS</span><span>58 DOCS · CLOUDFLARE CANARY</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 50 TOPICS</span><span>58 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -80,9 +80,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 17 · IMPROVE 28 · CHANGE 29 · FIX 11</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 20 · IMPROVE 31 · CHANGE 33 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>17</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>29</b><small>CHANGE</small></span><span><b>11</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>20</b><small>BUILD</small></span><span><b>31</b><small>IMPROVE</small></span><span><b>33</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -223,7 +223,7 @@ tags:
         <p><a href="getting-started/run-project/#windows-x86_64">Windows 빌드 규격 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 8</small><b>Cloudflare 무중단 이중 배포 · Worker+R2 게임 게이트웨이</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -243,6 +243,27 @@ tags:
         <div class="sfh-group"><h3>수정 · 5</h3><p>실제 Pages 프로젝트명, 배포 주소, 저장 경계, 응답 헤더, 전환 순서를 수정했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>Pages 단일 파일 제한은 Worker+R2 분리로 해소하고, 검색 첫 결과가 홈으로 회귀하던 색인 오류는 홈 검색 제외로 차단했습니다.</p></div>
         <p><a href="getting-started/run-project/#cloudflare">Cloudflare 배포 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 9</small><b>Cloudflare 운영 전환 · 직접 플레이·Windows 다운로드</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · Cloudflare 후보 배포를 실제 운영 주소와 다운로드 경로로 승격했습니다.</strong>
+          <ul>
+            <li><b>배포:</b> 기존 <code>sfh-dev-wiki.pages.dev</code>와 새 게임 Worker·R2 버킷을 연결하고 다른 프로젝트와 버킷은 변경하지 않았습니다.</li>
+            <li><b>산출물:</b> Actions 실행 33470418826이 통과한 Web·Windows·위키 파일만 업로드했으며 활성 Worker 커밋은 <code>88eeba2d5bb20c23e51241bbba322419231f840f</code>입니다.</li>
+            <li><b>플레이 E2E:</b> 위키 PLAY 카드→게임 Canvas, 콘솔 오류 0, 필수 보안 헤더와 WASM Range 206을 실제 배포에서 확인했습니다.</li>
+            <li><b>다운로드 E2E:</b> 40,364,917바이트 Windows ZIP을 다시 받아 게시 체크섬과 SHA-256이 일치함을 확인했습니다.</li>
+            <li><b>운영 안전:</b> Cloudflare API 토큰은 Pages·Workers Scripts·R2 쓰기만 허용하고, 과금 플랜·결제 설정은 손대지 않았습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>전환 순서</b><span>정식 링크 반영 PR과 main 재배포를 통과한 뒤 GitHub Pages 폴백을 끄고 저장소를 Private으로 전환합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>운영 R2 버킷, 게임 Worker 활성 릴리스, 직접 Windows 다운로드를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>배포 추적성, 실행 접근성, 다운로드 무결성 확인을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>정식 위키·게임·다운로드 주소와 MkDocs 기준 URL, 폴백 종료 스위치를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>검색 시작 시 잘못된 문서로 향하던 색인과 Pages 대용량 제한을 운영 배포에서 재검증했습니다.</p></div>
+        <p><a href="getting-started/run-project/#cloudflare">Cloudflare 운영·다운로드 규격 →</a> · <a href="architecture/module-audit/">배포 모듈 감사 →</a></p>
       </div>
     </details>
   </div>

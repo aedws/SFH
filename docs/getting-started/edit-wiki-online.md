@@ -4,13 +4,13 @@ description: GitHub 웹 편집기로 위키 문서를 수정하고 자동 배포
 tags:
   - 위키
   - 웹 편집
-  - GitHub Pages
+  - Cloudflare Pages
   - 배포
 ---
 
 # 웹에서 위키 수정
 
-온라인 위키는 [https://aedws.github.io/SFH/](https://aedws.github.io/SFH/)에서 확인합니다.
+온라인 위키는 [https://sfh-dev-wiki.pages.dev/](https://sfh-dev-wiki.pages.dev/)에서 확인합니다.
 
 ## 문서 한 페이지 수정
 

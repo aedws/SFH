@@ -8,9 +8,9 @@
 거점에서 투자하고, 밀려드는 적을 뚫고, 살아서 전리품을 회수하는<br>
 Godot 4 기반 모듈형 탑다운 익스트랙션 액션입니다.
 
-[![브라우저에서 바로 플레이](https://img.shields.io/badge/PLAY-브라우저에서_바로_플레이-20d9b0?style=for-the-badge&logo=godotengine&logoColor=white)](https://aedws.github.io/SFH/play/)
-[![Windows x64 빌드](https://img.shields.io/badge/WINDOWS-x64_%EB%B9%8C%EB%93%9C-02e5e1?style=for-the-badge&logo=windows&logoColor=061314)](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml)
-[![개발 위키](https://img.shields.io/badge/WIKI-개발_현황과_기획-253b4b?style=for-the-badge)](https://aedws.github.io/SFH/)
+[![브라우저에서 바로 플레이](https://img.shields.io/badge/PLAY-브라우저에서_바로_플레이-20d9b0?style=for-the-badge&logo=godotengine&logoColor=white)](https://sfh-game.vstock-market.workers.dev/)
+[![Windows x64 빌드](https://img.shields.io/badge/WINDOWS-x64_%EB%B9%8C%EB%93%9C-02e5e1?style=for-the-badge&logo=windows&logoColor=061314)](https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip)
+[![개발 위키](https://img.shields.io/badge/WIKI-개발_현황과_기획-253b4b?style=for-the-badge)](https://sfh-dev-wiki.pages.dev/)
 [![Web deployment](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml/badge.svg)](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml)
 
 `PLAYABLE PROTOTYPE` · `DESKTOP WEB` · `1280 × 720`
@@ -35,13 +35,13 @@ Godot 4 기반 모듈형 탑다운 익스트랙션 액션입니다.
 
 ## 지금 바로 플레이
 
-별도 설치 없이 [SFH Web 빌드](https://aedws.github.io/SFH/play/)를 열면 현재 `main` 기준 프로토타입을 실행할 수 있습니다.
+별도 설치 없이 [SFH Web 빌드](https://sfh-game.vstock-market.workers.dev/)를 열면 현재 `main` 기준 프로토타입을 실행할 수 있습니다.
 
 - 데스크톱 Chrome, Edge, Whale 등 최신 Chromium 브라우저와 키보드를 권장합니다.
 - 첫 로딩에는 Godot WebAssembly와 게임 데이터 다운로드 시간이 필요합니다.
-- Windows 빌드는 Actions의 최신 성공 실행에서 `SFH-Windows-x64-v0.1.0` 산출물로 받습니다. ZIP과 SHA-256 파일이 함께 제공되며, R2 무중단 전환이 끝나면 같은 검증 산출물을 직접 다운로드 링크로 제공합니다.
+- Windows 빌드는 [SFH-Windows-x64-v0.1.0.zip](https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip)으로 바로 받고 [SHA-256 체크섬](https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip.sha256)으로 무결성을 확인합니다.
 - 개발 중인 프로토타입이므로 세이브 호환성과 밸런스는 변경될 수 있습니다.
-- Web 빌드는 `main` 변경 시 자동 생성되며, 내보내기에 실패하면 Pages 배포도 중단됩니다.
+- Web 빌드는 `main` 변경 시 자동 생성되며, 내보내기나 E2E에 실패하면 Cloudflare 운영 배포도 중단됩니다.
 
 ### 기본 조작
 
@@ -58,7 +58,7 @@ Godot 4 기반 모듈형 탑다운 익스트랙션 액션입니다.
 | `K` | 전체 키 설정·영구 저장 |
 | `ESC` | 현재 창 닫기 |
 
-K 화면에서 이동·전투·스킬·I/U/E/M 메뉴까지 22개 Action을 키보드나 마우스 버튼으로 자유롭게 바꿀 수 있습니다. 외부 VFX는 상업 이용이 확인된 CC0 파일만 반입하며 원문과 출처는 [라이선스 원장](https://aedws.github.io/SFH/architecture/third-party-assets/)에 공개합니다.
+K 화면에서 이동·전투·스킬·I/U/E/M 메뉴까지 22개 Action을 키보드나 마우스 버튼으로 자유롭게 바꿀 수 있습니다. 외부 VFX는 상업 이용이 확인된 CC0 파일만 반입하며 원문과 출처는 [라이선스 원장](https://sfh-dev-wiki.pages.dev/architecture/third-party-assets/)에 공개합니다.
 
 ## 현재 플레이 가능한 범위
 
@@ -71,7 +71,7 @@ K 화면에서 이동·전투·스킬·I/U/E/M 메뉴까지 22개 Action을 키�
 - 한 판 임시 성장과 캐릭터·무기·방어구 영구 성장
 - Google Sheets 실시간 밸런스 테스트와 검증된 CSV 확정 모드
 
-세부 진행률과 최신 변경은 [개발 현황 위키](https://aedws.github.io/SFH/development-status/)에서 확인합니다.
+세부 진행률과 최신 변경은 [개발 현황 위키](https://sfh-dev-wiki.pages.dev/development-status/)에서 확인합니다.
 
 ## 로컬 실행
 
@@ -97,4 +97,4 @@ game/tests/      게임 루프·모듈·성능 자동 검증
 docs/            검색 가능한 한국어 개발 위키 원문
 ```
 
-설계 원칙은 [모듈 규칙](https://aedws.github.io/SFH/architecture/module-rules/), 처음 참여하는 작업자를 위한 실행·문서 절차는 [개발 위키](https://aedws.github.io/SFH/)에서 확인할 수 있습니다.
+설계 원칙은 [모듈 규칙](https://sfh-dev-wiki.pages.dev/architecture/module-rules/), 처음 참여하는 작업자를 위한 실행·문서 절차는 [개발 위키](https://sfh-dev-wiki.pages.dev/)에서 확인할 수 있습니다.

@@ -412,7 +412,7 @@ jobs:
           echo "CLOUDFLARE_E2E_OK wiki game range download commit=$GITHUB_SHA"
 
   deploy:
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && vars.GITHUB_PAGES_FALLBACK != 'disabled'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
