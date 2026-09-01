@@ -32,6 +32,15 @@ Web 빌드는 게임 코드와 문서가 `main`에 반영될 때 GitHub Actions�
 
 브라우저 빌드는 개발 프로토타입입니다. 최초 로딩 시간이 필요하고 밸런스와 로컬 저장 데이터 호환성은 개발 중 변경될 수 있습니다.
 
+<a id="private-repository-backup"></a>
+## Private 저장소 백업과 복구
+
+저장소는 Private 상태를 유지합니다. `main`이 갱신될 때마다 변경 직전 커밋을 `backup/pre-main/<40자리 커밋 SHA>`에 자동 보존하고, 새 커밋이 게임·위키 빌드와 Cloudflare 배포 E2E를 모두 통과하면 `backup/verified-main/<40자리 커밋 SHA>`에도 보존합니다. 전체 SHA를 브랜치 이름에 사용하므로 어느 커밋의 백업인지 모호하지 않으며, 같은 이름이 다른 커밋을 가리키면 워크플로가 실패합니다.
+
+복구는 GitHub Actions의 `Prepare main recovery PR`에서 검증된 전체 백업 브랜치를 입력해 시작합니다. 워크플로는 허용된 두 네임스페이스와 SHA를 다시 검증한 뒤 현재 `main`에서 `recovery/main/...` 브랜치를 만들고, 백업 시점의 파일 트리를 새 커밋으로 복원합니다. 자동 PR 생성 권한이 제한된 경우에는 출력된 compare URL로 같은 PR을 열 수 있습니다. 이후 `export-game`, `e2e`, `package-windows`, `build`가 다시 통과한 경우에만 병합합니다.
+
+이 방식은 강제 푸시·reset·`main` 이력 재작성을 사용하지 않아 현재 상태와 복구 변경을 PR에서 비교할 수 있습니다. GitHub Free Private 저장소의 서버 측 Ruleset 제한을 대체하는 운영 안전망이며, Cloudflare 배포 대상·스토리지·과금 플랜·결제 설정은 변경하지 않습니다.
+
 ## Godot에서 로컬 실행
 
 1. Godot에서 `project.godot`을 가져옵니다.

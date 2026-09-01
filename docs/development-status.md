@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 50 TOPICS</span><span>58 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 51 TOPICS</span><span>58 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -80,9 +80,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 20 · IMPROVE 31 · CHANGE 33 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 24 · IMPROVE 34 · CHANGE 37 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>20</b><small>BUILD</small></span><span><b>31</b><small>IMPROVE</small></span><span><b>33</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>24</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>37</b><small>CHANGE</small></span><span><b>14</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -245,7 +245,7 @@ tags:
         <p><a href="getting-started/run-project/#cloudflare">Cloudflare 배포 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>Cloudflare 운영 전환 · 직접 플레이·Windows 다운로드</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -264,6 +264,27 @@ tags:
         <div class="sfh-group"><h3>수정 · 4</h3><p>정식 위키·게임·다운로드 주소와 MkDocs 기준 URL, 폴백 종료 스위치를 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>검색 시작 시 잘못된 문서로 향하던 색인과 Pages 대용량 제한을 운영 배포에서 재검증했습니다.</p></div>
         <p><a href="getting-started/run-project/#cloudflare">Cloudflare 운영·다운로드 규격 →</a> · <a href="architecture/module-audit/">배포 모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 10</small><b>Private 저장소 복구망 · 변경 직전·검증 완료 이중 백업</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 문제 발생 시 검증된 파일 상태를 새 복구 커밋과 PR로 되살립니다.</strong>
+          <ul>
+            <li><b>pre-main:</b> 모든 <code>main</code> push에서 직전 전체 SHA를 커밋 주소형 백업 브랜치로 보존합니다.</li>
+            <li><b>verified-main:</b> Cloudflare 배포 E2E가 성공한 현재 전체 SHA만 별도 기준점으로 보존합니다.</li>
+            <li><b>복구:</b> 허용 네임스페이스·브랜치 SHA를 검증하고 현재 <code>main</code> 위에 백업 트리 복원 커밋을 생성합니다.</li>
+            <li><b>PR 게이트:</b> 자동 PR 권한이 없으면 compare URL을 제공하며, 어느 경로든 필수 검사를 다시 통과해야 합니다.</li>
+            <li><b>운영 경계:</b> Private 상태와 현행 위키 도메인을 유지하고 Cloudflare 과금·결제·배포 자원은 건드리지 않습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>제약 공개</b><span>GitHub Free Private 저장소의 Ruleset 미지원은 숨기지 않고, PR 관례·정적 계약 검사·두 백업 계층으로 보완합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>pre-main, verified-main, recovery PR, 워크플로 정적 계약 검사를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>복구 가능성, SHA 추적성, PR 생성 권한 제한 대응을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>Private 운영과 백업·복구 책임 경계, 검증 완료 시점, 운영 절차를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>Actions가 PR을 열지 못하는 환경에서 복구 동선이 끊기던 경우를 compare URL 폴백으로 막았습니다.</p></div>
+        <p><a href="getting-started/run-project/#private-repository-backup">백업·복구 절차 →</a> · <a href="architecture/module-audit/#private-repository-backup-audit">복구 모듈 감사 →</a></p>
       </div>
     </details>
   </div>

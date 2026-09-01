@@ -1,0 +1,88 @@
+name: Prepare main recovery PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_branch:
+        description: Full backup branch, for example backup/verified-main/<40-char commit>
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare-recovery:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out current main
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Validate backup and create recovery commit
+        id: recovery
+        env:
+          BACKUP_BRANCH: ${{ inputs.backup_branch }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$BACKUP_BRANCH" =~ ^backup/(pre-main|verified-main)/[0-9a-f]{40}$ ]]; then
+            echo "Backup branch must use an approved namespace and full commit SHA." >&2
+            exit 1
+          fi
+          expected_sha="${BACKUP_BRANCH##*/}"
+          remote_sha=$(git ls-remote --exit-code --heads origin "refs/heads/$BACKUP_BRANCH" | awk '{print $1}')
+          test "$remote_sha" = "$expected_sha"
+          git fetch --no-tags origin "refs/heads/$BACKUP_BRANCH:refs/remotes/origin/$BACKUP_BRANCH"
+          recovery_branch="recovery/main/${expected_sha}-${GITHUB_RUN_ID}"
+          git switch -c "$recovery_branch" origin/main
+          git restore --source="$expected_sha" --staged --worktree -- .
+          if git diff --cached --quiet; then
+            echo "Current main already matches $BACKUP_BRANCH."
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "restore: recover main from $expected_sha"
+          git push origin "HEAD:refs/heads/$recovery_branch"
+          echo "branch=$recovery_branch" >> "$GITHUB_OUTPUT"
+          echo "backup_sha=$expected_sha" >> "$GITHUB_OUTPUT"
+
+      - name: Open recovery pull request
+        id: open-pr
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RECOVERY_BRANCH: ${{ steps.recovery.outputs.branch }}
+          BACKUP_SHA: ${{ steps.recovery.outputs.backup_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh pr create \
+            --base main \
+            --head "$RECOVERY_BRANCH" \
+            --title "Restore main from verified backup ${BACKUP_SHA:0:12}" \
+            --body "Restores the repository tree to backup commit \`$BACKUP_SHA\`. Merge only after export-game, e2e, package-windows, and build pass."
+
+      - name: Report recovery pull request path
+        if: always() && steps.recovery.outcome == 'success'
+        env:
+          RECOVERY_BRANCH: ${{ steps.recovery.outputs.branch }}
+          SERVER_URL: ${{ github.server_url }}
+          REPOSITORY: ${{ github.repository }}
+          PR_OUTCOME: ${{ steps.open-pr.outcome }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          compare_url="$SERVER_URL/$REPOSITORY/compare/main...$RECOVERY_BRANCH?expand=1"
+          if [[ "$PR_OUTCOME" = "success" ]]; then
+            echo "Recovery pull request created."
+          else
+            echo "GitHub Actions could not open the pull request automatically." >&2
+            echo "Open this compare URL and create it manually: $compare_url" >&2
+          fi
+          echo "Recovery branch: $RECOVERY_BRANCH"
+          echo "Compare URL: $compare_url"
