@@ -47,6 +47,9 @@ func show_comparison(snapshot: Dictionary) -> void:
 		String(snapshot.get(&"death_label", "")),
 	]
 	var equip_preview: Dictionary = snapshot.get(&"equip_preview", {})
+	var session_socket_candidate := StringName(snapshot.get(&"item_type", &"")) in [
+		&"rune", &"core", &"artifact",
+	]
 	if StringName(equip_preview.get(&"equip_kind", &"")) == &"skill":
 		comparison_label.text = "교체  %s → %s · 슬롯 %d · 키 %s" % [
 			String(equip_preview.get(&"previous_name", "없음")),
@@ -60,6 +63,8 @@ func show_comparison(snapshot: Dictionary) -> void:
 			int(equip_preview.get(&"maximum_charges", 0)),
 		]
 	controls_label.text = (
+		"F 런 소켓 장착   ·   ESC 보류"
+		if session_socket_candidate else
 		(
 			"R 스킬 교체   ·   F 런 보관   ·   ESC 보류"
 			if StringName(equip_preview.get(&"equip_kind", &"")) == &"skill"
@@ -96,6 +101,7 @@ func get_snapshot() -> Dictionary:
 		) if controls_label != null else false,
 		&"shows_immediate_equip": "R " in controls_label.text if controls_label != null else false,
 		&"shows_skill_swap": "R 스킬 교체" in controls_label.text if controls_label != null else false,
+		&"shows_session_socket": "F 런 소켓 장착" in controls_label.text if controls_label != null else false,
 		&"viewport_safe": _inside_viewport(),
 	}
 

@@ -11,6 +11,24 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-01 P4-05 런 전용 세션 소켓 감사
+
+| 점검 대상 | 결과 | 독립성·검증 근거 |
+|---|---|---|
+| 데이터 정의 | 통과 | `SessionSocketRule/Table`이 RunAsset 14열의 ID·용량·중복·교체·효과를 검증하고 Item 생명 주기와 교차 확인 |
+| 공급자 교체 | 통과 | `SessionSocketConfig` 뒤에 Google Sheet 실시간 CSV와 저장소 확정 CSV·Web payload를 배치 |
+| 런 상태 | 통과 | `SessionSocketService`만 소켓 점유·순서·중복·교체와 modifier source 수명을 소유 |
+| 영구 장비 분리 | 통과 | 장비 모듈 슬롯·강화·태그를 변경하지 않고 무기·스킬·플레이어의 이름 있는 런타임 modifier source만 사용 |
+| 획득 조정 | 통과 | `FieldLootAcquisitionService`는 세션 자산 F 획득을 서비스 명령으로 전달하고 효과 수치나 정산을 계산하지 않음 |
+| 표현 경계 | 통과 | `SessionSocketHUD`는 읽기 전용 스냅샷과 해제 명령만 사용하고 340~680px 반응형 폭·RUN ONLY 의미를 제공 |
+| 선택적 비활성화 | 통과 | `session_sockets_enabled=false`이면 서비스·HUD만 제거되고 현장 비교·획득과 영구 장비는 유지 |
+| 런 초기화 | 통과 | 런 종료 노드 제거와 `clear_run()`이 점유·무기 피해·스킬 쿨다운·이동 속도를 기준값으로 원복 |
+| 플레이어 인식 | 통과 | 실제 F 입력→전도 룬 장착→피해 증가→HUD 점유 버튼 해제→피해 원복을 28개 인식·10개 인과 E2E에 포함 |
+| 과금 영향 | 없음 | 기존 Google Sheet와 저장소/Cloudflare 배포만 사용하며 과금 플랜·결제·유료 서비스 설정을 변경하지 않음 |
+| 성능 예산 | 통과 | 대형 방 34기·전기 효과 3개·세션 HUD 조건에서 평균 6.879ms, 피크 8.581ms, Node 최대 1,838개로 60 FPS CPU 예산 유지 |
+
+판단 결과, `RunAsset → Rule/Table → Service → Weapon/Skill/Player + HUD` 단방향 경계가 유지됩니다. P4-06은 이 서비스의 점유 효과가 아니라 기존 LootLifecycle 결과와 획득 목록을 소비해 자동 환전·해금·소실을 정산합니다.
+
 ## 2026-09-01 현장 즉시 장착 P4-04A·협업 위키 감사
 
 | 점검 대상 | 결과 | 독립성·검증 근거 |

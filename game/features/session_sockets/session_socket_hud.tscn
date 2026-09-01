@@ -1,0 +1,59 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/session_sockets/session_socket_hud.gd" id="1_hud"]
+
+[sub_resource type="StyleBoxFlat" id="Panel"]
+bg_color = Color(0.015, 0.055, 0.075, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.0078, 0.898, 0.882, 0.75)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxEmpty" id="Empty"]
+
+[node name="SessionSocketHUD" type="PanelContainer"]
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -340.0
+offset_top = 88.0
+offset_right = 340.0
+offset_bottom = 140.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("Panel")
+script = ExtResource("1_hud")
+
+[node name="Margin" type="MarginContainer" parent="."]
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 5
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+theme_override_constants/separation = 2
+
+[node name="Header" type="HBoxContainer" parent="Margin/Content"]
+
+[node name="Title" type="Label" parent="Margin/Content/Header"]
+layout_mode = 2
+text = "SESSION SOCKETS"
+
+[node name="Spacer" type="Control" parent="Margin/Content/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SourceLabel" type="Label" parent="Margin/Content/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "RUN ONLY · 확정 CSV"
+
+[node name="SlotsRow" type="HBoxContainer" parent="Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 4

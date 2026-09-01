@@ -47,7 +47,7 @@ foreach ($item in $data.items) {
     if ($item.owner_role -notin @("planner", "ai_developer")) {
         throw "Unsupported planner request owner: $($item.owner_role)"
     }
-    if ($item.state -notin @("needs_planner", "ready_for_dev", "in_implementation", "implemented_verified", "accepted")) {
+    if ($item.state -notin @("needs_planner", "ready_for_dev", "in_implementation", "provisional_implemented", "implemented_verified", "accepted")) {
         throw "Unsupported planner request state: $($item.state)"
     }
     if ($null -eq $item.blocking -or $item.acceptance.Count -lt 1 -or $item.evidence.Count -lt 1) {
@@ -104,7 +104,7 @@ if (
 if ($workflow -notmatch 'sfh-standing-sheet-extension: authorized-without-separate-approval') {
     throw "Standing Google Sheet extension authorization is not documented."
 }
-if ($wikiHomeContent -notmatch 'data-sfh-proposal-composer' -or $proposalScript -notmatch 'navigator\.clipboard' -or $proposalScript -notmatch 'Notion 승인 전 미확정') {
+if ($wikiHomeContent -notmatch 'data-sfh-proposal-composer' -or $proposalScript -notmatch 'navigator\.clipboard' -or $proposalScript -notmatch 'data-sfh-proposal-output') {
 	throw "Safe local proposal composer contract is missing."
 }
 if (-not [string]::IsNullOrWhiteSpace($SiteRoot)) {

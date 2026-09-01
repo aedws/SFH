@@ -22,6 +22,8 @@ func judge(flow_id: StringName, evidence: Dictionary) -> Dictionary:
 			_judge_field_loot_immediate_equip(evidence, errors)
 		&"field_loot_skill_swap":
 			_judge_field_loot_skill_swap(evidence, errors)
+		&"session_socket_runtime":
+			_judge_session_socket_runtime(evidence, errors)
 		_:
 			errors.append("알 수 없는 게임플레이 흐름입니다: %s" % flow_id)
 	return {
@@ -208,6 +210,33 @@ func _judge_field_loot_skill_swap(evidence: Dictionary, errors: PackedStringArra
 		errors.append("기존 스킬·쿨다운·충전 상태가 런 복구 기록에 남지 않았습니다.")
 	if bool(immediate.get(&"bindings_persisted", true)):
 		errors.append("런 전용 키 바인딩이 영구 저장되는 것으로 표시됩니다.")
+
+
+func _judge_session_socket_runtime(evidence: Dictionary, errors: PackedStringArray) -> void:
+	var before: Dictionary = evidence.get(&"before", {})
+	var after: Dictionary = evidence.get(&"after", {})
+	var panel: Dictionary = before.get(&"panel", {})
+	var socket_state: Dictionary = after.get(&"session_sockets", {})
+	var hud: Dictionary = evidence.get(&"hud", {})
+	if not bool(panel.get(&"shows_session_socket", false)):
+		errors.append("세션 자산에 F 런 소켓 장착 선택지가 보이지 않습니다.")
+	if StringName(after.get(&"last_socket_result", {}).get(&"item_id", &"")) != &"arc_rune":
+		errors.append("F 입력 결과가 접근한 전도 룬 소켓 장착이 아닙니다.")
+	if int(socket_state.get(&"installed_count", 0)) != 1:
+		errors.append("전도 룬 획득 뒤 런 소켓 점유가 HUD 상태에 반영되지 않았습니다.")
+	if not bool(socket_state.get(&"runtime_only", false)):
+		errors.append("세션 소켓이 작전 한정 상태로 표시되지 않습니다.")
+	if int(hud.get(&"occupied_count", 0)) != 1 or not bool(hud.get(&"runtime_only_visible", false)):
+		errors.append("세션 소켓 HUD가 점유 슬롯과 RUN ONLY 의미를 함께 보여주지 않습니다.")
+	if float(evidence.get(&"damage_after", 0.0)) <= float(evidence.get(&"damage_before", 0.0)):
+		errors.append("전도 룬 장착 뒤 실제 무기 피해가 증가하지 않았습니다.")
+	if not bool(evidence.get(&"unsocket_success", false)):
+		errors.append("HUD 슬롯 선택으로 세션 자산을 해제하지 못했습니다.")
+	if not is_equal_approx(
+		float(evidence.get(&"damage_restored", -1.0)),
+		float(evidence.get(&"damage_before", 0.0))
+	):
+		errors.append("세션 자산 해제 뒤 임시 무기 효과가 원복되지 않았습니다.")
 
 
 func _require_increase(

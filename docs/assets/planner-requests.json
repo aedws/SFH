@@ -24,15 +24,15 @@
       "evidence": [{"label": "현장 교체 결정", "href": "decisions/DEC-P4-04-field-replacement-policy/"}, {"label": "작업 라인", "href": "design/current-milestone-workline/"}]
     },
     {
-      "id": "DATA-P4-05-01", "status": "data", "state": "needs_planner", "state_label": "밸런스 표 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": true,
+      "id": "DATA-P4-05-01", "status": "data", "state": "provisional_implemented", "state_label": "임시값 구현·교체 대기", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "밸런스 데이터", "title": "룬·코어·유물 소켓 수와 효과 상한",
       "decision_id": "DEC-P4-05-PENDING", "source_anchor": "3cd5b728-0040-815e-b852-cbbebe681670", "source_revision": 797, "supersedes": [], "conflicts_with": [],
-      "summary": "세션 소켓 개수, 중복 장착, 등급별 효과량과 자동 환전 가치의 확정값이 필요합니다.",
+      "summary": "진행 차단을 피하기 위해 룬 2·코어 1·유물 1, 동일 아이템 1개, 오래된 항목 교체와 3종 임시 효과를 RunAsset에 구현했습니다. 기획 확정 시 데이터만 교체합니다.",
       "basis": "Master GDD Phase 4 런 전용 자산 순환과 현재 Item 생명 주기 3종",
       "notion_prompt": "DATA-P4-05-01 제목으로 소켓 종류별 수량·중복 규칙·효과 범위·환전 배율을 작성해 주세요.",
-      "sheet_target": "새 RunAsset 탭 후보 · 정책 확정 뒤 생성",
+      "sheet_target": "RunAsset!A1:N5 생성 완료 · 1행 변수명·2행 설명·3행 이후 데이터",
       "acceptance": ["소켓 종류별 최소·기본·최대 수량", "중복 장착 규칙과 등급별 효과 범위", "탈출 자동 환전 공식과 반올림 규칙"],
-      "evidence": [{"label": "전리품 생명 주기", "href": "features/loot-lifecycle/"}]
+      "evidence": [{"label": "P4-05 세션 소켓", "href": "features/session-sockets/"}, {"label": "전리품 생명 주기", "href": "features/loot-lifecycle/"}]
     },
     {
       "id": "DATA-P5-01-01", "status": "data", "state": "needs_planner", "state_label": "카탈로그 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,

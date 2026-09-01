@@ -16,6 +16,7 @@
 - [현장 전리품 비교·획득](field-loot-acquisition.md)
 - [현장 무기 즉시 장착](field-loot-immediate-equip.md)
 - [현장 스킬 즉시 교체](field-loot-skill-swap.md)
+- [런 전용 룬·코어·유물 소켓](session-sockets.md)
 - [플레이어 이동](player.md)
 - [K 키 설정과 영구 바인딩](key-mapping.md)
 - [부분 체력 회복](health-recovery.md)

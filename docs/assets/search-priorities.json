@@ -1,14 +1,21 @@
 {
-  "version": 12,
+  "version": 13,
   "updated": "2026-09-01",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
     {
       "query": "남은 작업",
-      "label": "남은 11개 마일스톤 패킷",
-      "description": "P4-05~06, P5-01~05, P6-01~04의 선행 조건·기획 데이터·플레이어 완료 기준",
+      "label": "남은 10개 마일스톤 패킷",
+      "description": "P4-06, P5-01~05, P6-01~04의 선행 조건·기획 데이터·플레이어 완료 기준",
       "category": "기획",
+      "priority": 100
+    },
+    {
+      "query": "세션 소켓",
+      "label": "P4-05 룬·코어·유물 런 소켓",
+      "description": "RunAsset 임시 데이터, 룬 2·코어 1·유물 1, F 장착·즉시 효과·HUD 해제와 기획 교체 지점",
+      "category": "파밍",
       "priority": 100
     },
     {
@@ -42,7 +49,7 @@
     {
       "query": "개발 진행도",
       "label": "개발 진행도",
-      "description": "Master GDD 기준 78% 진행률과 남은 11개 구현 패킷 근거",
+      "description": "Master GDD 기준 80% 진행률과 남은 10개 구현 패킷 근거",
       "category": "기획",
       "priority": 100
     },
@@ -56,14 +63,14 @@
     {
       "query": "마일스톤 작업 라인",
       "label": "현행 마일스톤 작업 라인",
-      "description": "완료된 P4-04B 뒤 P4-05부터 이어지는 작업 ID, 선행 조건, 모듈 경계, 플레이어 완료 조건과 E2E 게이트",
+      "description": "완료된 P4-05 뒤 P4-06부터 이어지는 작업 ID, 선행 조건, 모듈 경계, 플레이어 완료 조건과 E2E 게이트",
       "category": "기획",
       "priority": 98
     },
     {
       "query": "앞으로 해야 할 작업",
       "label": "앞으로 해야 할 작업",
-      "description": "P4 세션 소켓·정산, P5 로비 4대 세팅, P6 온라인 랭킹·시즌 보상으로 이어지는 11개 순서",
+      "description": "P4 정산, P5 로비 4대 세팅, P6 온라인 랭킹·시즌 보상으로 이어지는 10개 순서",
       "category": "기획",
       "priority": 96
     },
