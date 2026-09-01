@@ -72,6 +72,7 @@ nav:
   - 게임 설계:
       - design/index.md
       - Master GDD 구현 대조: design/master-gdd-alignment.md
+      - 현행 마일스톤 작업 라인: design/current-milestone-workline.md
       - 게임 개요: design/game-overview.md
       - MVP 범위: design/mvp-scope.md
       - 사이버펑크 비주얼 테마: design/cyberpunk-visual-theme.md

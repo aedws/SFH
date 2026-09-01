@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 46 TOPICS</span><span>57 DOCS · MASTER GDD</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 47 TOPICS</span><span>58 DOCS · MILESTONE LINE</span></div>
 
 ## 기획 기준 진행도
 
@@ -70,18 +70,19 @@ tags:
 
 | 우선순위 | 작업 | 현재 차이 | 완료 조건 |
 |---:|---|---|---|
-| 1 | 전리품 2대 분류 계약 | 크레딧·도면 중심 | 영구 자산형과 세션 증폭·환금형 정의·생명주기 분리 |
-| 2 | 현장 장비·스킬 획득/교체 | I/U 장착 기반만 존재 | 드랍→비교→즉시 교체→탈출 해금 E2E 통과 |
-| 3 | 세션 룬·코어·유물 | 영구 모듈·런 증강은 별도 존재 | 소켓 장착·런 한정 효과·탈출 자동 환전 연결 |
-| 4 | 완전 자유 스킬 바인딩 | 22 Action 키 재설정 구현 | 스킬 정의를 마우스·Space·Q·E·1~9 Action에 저장·교체 |
-| 5 | 로비 4대 세팅 | 맵·페널티·상점·소모품 일부 구현 | 캐릭터·무기·스킬·유틸리티 투자와 BEP 미리보기 연결 |
-| 6 | 비동기 랭킹·시즌 보상 | 3대 로컬 랭킹 구현 | 서버 검증 제공자와 주간 칭호·오라 보상 모듈 연결 |
+| 1 | Phase 1 자유 스킬 배치 | 22 Action의 물리 키 재설정만 구현 | 스킬 정의를 허용 Action에 배치·교환·저장하고 HUD/발동 동기화 |
+| 2 | Phase 4 전리품 생명주기 | 크레딧·도면 중심 | 영구 자산형과 세션 증폭·환금형의 획득·탈출·사망 정책 분리 |
+| 3 | Phase 4 현장 순환 | I/U 장착·영구 모듈 기반만 존재 | 드랍→비교→교체/소켓→전투 변화→해금/환전 E2E 통과 |
+| 4 | Phase 5 로비 4대 세팅 | 맵·페널티·상점·소모품 일부 구현 | 캐릭터·무기·스킬·유틸리티 투자와 BEP 미리보기 연결 |
+| 5 | Phase 6 비동기 시즌 | 3대 로컬 랭킹 구현 | 서버 검증 제공자와 주간 칭호·오라 보상 모듈 연결 |
+
+세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 7 · IMPROVE 15 · CHANGE 12 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 7 · IMPROVE 18 · CHANGE 17 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>18</b><small>IMPROVE</small></span><span><b>17</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -140,7 +141,7 @@ tags:
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 2</h3><p>모바일 검색 빈 화면과 1440px 헤더가 우측으로 101px 넘치던 문제를 실제 브라우저 측정으로 제거했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>Master GDD 재대조 · 진행률 72% · 확정 범위 재분류</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -159,6 +160,27 @@ tags:
         <div class="sfh-group"><h3>🧭 수정 · 4</h3><p>진행률 72%, 8개 시스템 근거표, 6개 Phase 판정, 6단계 후속 순서를 갱신했습니다.</p></div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>이전 기획 기준의 96%가 최신 Master GDD를 대표하던 상태 문서 오류를 수정했습니다.</p></div>
         <p><a href="design/master-gdd-alignment/">Master GDD 상세 대조 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 5</small><b>현행 마일스톤 작업 라인 · Phase 1→4→5→6 실행 게이트</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 72% 이후 범위를 기능 목록이 아니라 구현·체감·검증이 끝나는 실행 단위로 다시 작성했습니다.</strong>
+          <ul>
+            <li><b>BASE:</b> 현재 코어 루프와 모듈 의존 방향을 잠그고 Phase 2·3을 전 구간 회귀선으로 둡니다.</li>
+            <li><b>Phase 1:</b> `SkillBindingProfile/Service`로 자유 스킬 배치·충돌·저장·HUD 반영을 완결합니다.</li>
+            <li><b>Phase 4:</b> 전리품 정책→드랍·비교→현장 교체·소켓→해금·환전·소실 순으로 연결합니다.</li>
+            <li><b>Phase 5·6:</b> 로비 4대 투자와 무료 프리셋을 먼저 안정화한 뒤 비동기 검증과 시즌 보상을 붙입니다.</li>
+            <li><b>공통:</b> 모듈 감사, 플레이어 인식 E2E, 평균 PC·웹 성능, Sheet/CSV 공급자, 위키 배포를 묶음마다 통과합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>중단 규칙</b><span>필수 E2E 실패, Phase 2·3 회귀, 데이터 마이그레이션 미정, 서버 검증 부재가 있으면 다음 작업 번호로 넘어가지 않습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 0</h3><p>로드맵 작성만 수행했으며 게임 기능 완료율은 72%로 유지합니다.</p></div>
+        <div class="sfh-group"><h3>⚡ 개선 · 3</h3><p>선행 조건, 플레이어 완료 조건, 자동 E2E 추적성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>🧭 수정 · 5</h3><p>2개 기준선·20개 Phase 작업, 5개 공통 게이트, 착수 순서, 모듈 경계, 중단 규칙을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 0</h3><p>별도 게임 버그 수정은 없습니다.</p></div>
+        <p><a href="design/current-milestone-workline/">현행 마일스톤 작업 라인 →</a></p>
       </div>
     </details>
   </div>
