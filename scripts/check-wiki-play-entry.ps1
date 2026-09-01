@@ -25,6 +25,9 @@ if ($script -notmatch 'data-sfh-global-play' -or $script -notmatch 'document\$\.
 if ($script -notmatch 'GAMEPLAY_ORIGIN = "https://sfh-game\.vstock-market\.workers\.dev"' -or $script -notmatch 'target = "_blank"' -or $script -notmatch 'noopener noreferrer') {
     throw "The global browser play entry must open the distinct gameplay Worker safely."
 }
+if ($script -notmatch 'deployment-surfaces\.json' -or $script -notmatch 'cutover_status === "ready"' -or $script -notmatch 'desired_origin') {
+    throw "The play entry does not implement the DNS-gated play-preview.dev cutover contract."
+}
 if ($style -notmatch 'a\.sfh-global-play' -or $style -notmatch '\.sfh-operation-play') {
     throw "The browser play entry styles are missing."
 }
@@ -32,4 +35,4 @@ if ($mkdocs -notmatch 'javascripts/play-entry\.js') {
     throw "mkdocs.yml does not load the global browser play entry."
 }
 
-Write-Host "WIKI_PLAY_ENTRY_OK home_card=1 global_header=1 external_game_origin=1"
+Write-Host "WIKI_PLAY_ENTRY_OK home_card=1 global_header=1 effective_origin=1 desired_origin_dns_gated=1"

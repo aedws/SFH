@@ -49,6 +49,16 @@
     workflow.append(element("span", item.blocking ? "is-blocking" : "", item.blocking ? "차단 중" : "진행 가능"));
     workflow.append(element("span", "", "상태 · " + (item.state_label || item.state || item.status)));
     article.append(workflow);
+	var lineage = element("div", "sfh-planner-request__lineage");
+	lineage.append(element("span", "", "DEC · " + (item.decision_id || "PENDING")));
+	lineage.append(element("span", "", "SOURCE v" + (item.source_revision || "?")));
+	if (Array.isArray(item.supersedes) && item.supersedes.length) {
+	  lineage.append(element("span", "", "대체 · " + item.supersedes.join(", ")));
+	}
+	if (Array.isArray(item.conflicts_with) && item.conflicts_with.length) {
+	  lineage.append(element("span", "is-conflict", "충돌 · " + item.conflicts_with.join(", ")));
+	}
+	article.append(lineage);
     var basis = element("p", "sfh-planner-request__basis");
     basis.append(element("b", "", "작성 근거"));
     basis.append(document.createTextNode(" · " + item.basis));
@@ -75,8 +85,8 @@
       });
       article.append(evidence);
     }
-    var link = element("a", "sfh-planner-request__notion", "Notion 근거 작성·확인 →");
-    link.href = notionUrl;
+	var link = element("a", "sfh-planner-request__notion", "Notion 근거 작성·확인 →");
+	link.href = notionUrl + (item.source_anchor ? "#" + item.source_anchor.replace(/-/g, "") : "");
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.setAttribute("aria-label", item.id + " Notion 근거 작성 또는 확인");
@@ -102,7 +112,11 @@
     items.forEach(function (item) { grid.append(buildCard(item, data.notion_url)); });
     var source = host.querySelector("[data-sfh-planner-source]");
     if (source && data.source) {
-      source.textContent = "SOURCE // " + data.source.sync_mode_label + " · 마지막 확인 " + data.source.last_checked_at + " · 자동 동기화 아님";
+	  source.replaceChildren();
+	  source.append(document.createTextNode("SOURCE // " + data.source.sync_mode_label + " · v" + data.source.root_version + " · " + data.source.content_sha256.slice(0, 12) + " · "));
+	  var snapshotLink = element("a", "", "스냅샷 원장");
+	  snapshotLink.href = new URL(data.source.snapshot_href, siteRoot()).href;
+	  source.append(snapshotLink);
     }
     var instruction = host.querySelector("[data-sfh-planner-request-instruction]");
     if (instruction) instruction.textContent = data.instruction;

@@ -47,7 +47,12 @@ const CHECKPOINT_RULES := {
 	&"field_loot_immediate_equip": {
 		&"unit": &"decision",
 		&"surfaces": [&"field_loot"],
-		&"phrases": ["R 즉시 장착", "F 런 보관", "ESC 보류", "임시 정책", "기존 장비"],
+		&"phrases": ["R 무기 장착", "F 런 보관", "ESC 보류", "임시 정책", "기존 장비"],
+	},
+	&"field_loot_skill_swap": {
+		&"unit": &"decision",
+		&"surfaces": [&"field_loot"],
+		&"phrases": ["R 스킬 교체", "슬롯", "키", "ENERGY", "CD", "충전", "F 런 보관"],
 	},
 	&"combat_glance": {
 		&"unit": &"glance",

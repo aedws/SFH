@@ -254,7 +254,8 @@ const EQUIPMENT_UPGRADE_METHODS := [
 const HEALTH_RECOVERY_METHODS := [&"configure", &"advance", &"get_snapshot", &"set_recovery_multiplier"]
 const COMBAT_SKILL_METHODS := [
 	&"configure", &"try_activate", &"advance", &"set_activation_enabled",
-	&"get_skill_states", &"get_snapshot",
+	&"get_skill_states", &"get_snapshot", &"preview_skill_replacement",
+	&"replace_skill", &"restore_skill_replacement",
 ]
 const COMBAT_SKILL_HUD_METHODS := [&"configure", &"get_snapshot"]
 const DASH_COOLDOWN_HUD_METHODS := [&"configure", &"get_snapshot"]
@@ -262,7 +263,8 @@ const HIT_FEEDBACK_METHODS := [&"configure", &"register_actor", &"get_snapshot"]
 const COMBAT_RESOURCE_METHODS := [
 	&"configure", &"can_activate", &"consume_for_skill", &"restore_energy",
 	&"spawn_enemy_drops", &"get_skill_resource_snapshot", &"get_snapshot",
-	&"set_recovery_multiplier",
+	&"set_recovery_multiplier", &"capture_skill_slot_state", &"reset_skill_slot",
+	&"restore_skill_slot_state",
 ]
 const PERSISTENT_PROFILE_METHODS := [
 	&"configure", &"can_spend", &"spend", &"add_credits", &"get_snapshot",
@@ -292,7 +294,8 @@ const KEY_MAPPING_METHODS := [
 const SKILL_BINDING_METHODS := [
 	&"configure", &"assign_skill", &"reset_defaults", &"action_for_skill",
 	&"skill_for_action", &"input_label_for_skill", &"get_entries",
-	&"get_allowed_actions", &"get_snapshot",
+	&"get_allowed_actions", &"get_snapshot", &"replace_runtime_skill",
+	&"restore_runtime_skill",
 ]
 const CYBERPUNK_OVERLAY_METHODS := [&"configure", &"get_snapshot"]
 const MAP_TIER_IDS := ["small", "medium", "large"]
@@ -1047,12 +1050,12 @@ func _clear_start_hub() -> void:
 
 
 func _return_to_start_hub() -> void:
+	if field_loot_acquisition_service != null:
+		field_loot_acquisition_service.call(&"restore_equipment_swaps")
 	if lose_equipped_loadout_on_return:
 		prepared_equipment_state.clear()
 		lose_equipped_loadout_on_return = false
 	else:
-		if field_loot_acquisition_service != null:
-			field_loot_acquisition_service.call(&"restore_equipment_swaps")
 		_capture_prepared_loadout()
 	get_tree().paused = false
 	game_over_overlay.visible = false
@@ -1281,11 +1284,11 @@ func _assemble_game() -> bool:
 			return false
 	if features.room_encounters_enabled and not _install_room_encounters():
 		return false
-	if features.field_loot_acquisition_enabled and not _install_field_loot_acquisition():
-		return false
 	if features.room_warp_enabled and not _install_room_warp():
 		return false
 	if features.combat_skills_enabled and not _install_combat_skills():
+		return false
+	if features.field_loot_acquisition_enabled and not _install_field_loot_acquisition():
 		return false
 	combat_hud_presenter.call(
 		&"attach_runtime_layers",
@@ -2105,7 +2108,9 @@ func _install_field_loot_acquisition() -> bool:
 		inventory_system,
 		context,
 		effective_seed,
-		field_loot_equip_catalog if features.field_loot_immediate_equip_enabled else null
+		field_loot_equip_catalog if features.field_loot_immediate_equip_enabled else null,
+		combat_skill_system if features.field_loot_skill_equip_enabled else null,
+		skill_binding_service if features.field_loot_skill_equip_enabled else null
 	):
 		_report_configuration_error("현장 전리품 비교·획득 모듈을 작전 문맥에 연결하지 못했습니다.")
 		return false

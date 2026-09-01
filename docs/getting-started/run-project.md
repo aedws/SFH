@@ -22,6 +22,8 @@ tags:
 
 공개 위키는 `https://sfh-dev-wiki.pages.dev/`, 게임은 계정 고유 workers.dev 하위의 `https://sfh-game.vstock-market.workers.dev/`를 사용합니다. Windows 다운로드는 같은 게임 게이트웨이의 `/downloads/v0.1.0/` 아래에 둡니다. Cloudflare E2E 통과 뒤 저장소를 Private으로 전환하고 GitHub Pages 폴백은 종료했습니다.
 
+목표 실행 주소는 `https://sfh-game.play-preview.dev/`입니다. 현재 `play-preview.dev`가 등록·DNS 없음 상태이므로 즉시 전환하면 게임이 열리지 않습니다. 저장소는 목표·현행 주소를 분리해 고정했으며, 도메인 등록→Worker custom domain→게임·Range 206·ZIP 해시 E2E가 모두 통과할 때만 링크를 자동 전환합니다. 이 안전장치는 도메인 구매·Cloudflare 플랜·결제를 자동으로 변경하지 않습니다.
+
 | 구분 | 공개 접점 | 저장 책임 | 제공 범위 |
 |---|---|---|---|
 | 개발 위키 | `sfh-dev-wiki.pages.dev` | Cloudflare Pages `sfh-dev-wiki` | 문서·검색·진행률만 제공 |

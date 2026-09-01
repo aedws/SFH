@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 55 TOPICS</span><span>64 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 56 TOPICS</span><span>66 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -30,7 +30,7 @@ tags:
   <p>공개 Master GDD의 8개 확정 시스템을 저장소와 재대조하고 2026-09-01에 다시 확인했습니다. 원문 범위 변화가 없어 게임 기능 진행도는 75%를 유지하며, 배포·보안 작업은 이 수치에 가산하지 않았습니다.</p>
 </div>
 
-권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-01 공개 페이지의 실제 렌더링 본문 `0~8장`을 읽었습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 확정 요구로 처리합니다. 핵심 플레이 흐름은 ×2, 기반·확장 서비스는 ×1을 적용하며 실제 코드·데이터·자동 검증만 완료 근거로 사용합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
+권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-01 공개 본문 57블록·root v797을 읽고 `b22dce53d706`으로 검증했습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 확정 요구로 처리합니다. 핵심 플레이 흐름은 ×2, 기반·확장 서비스는 ×1을 적용하며 실제 코드·데이터·자동 검증만 완료 근거로 사용합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
 재확인 시 공개 원문의 요구와 Phase 1~6 체크 상태는 이전 대조 이후 달라지지 않았습니다. Notion 체크박스는 수동 현황이므로 완료 근거로 승격하지 않고, 저장소 구현과 플레이어 인식 E2E를 기준으로 판정합니다.
 
@@ -40,12 +40,12 @@ tags:
 | 입력·자유 스킬 바인딩 | ×2 | 100% | 물리 키와 스킬→Action 배치를 분리하고 충돌 교환·HUD 반영·JSON 저장·초기화를 구현 |
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
 | 로비 인베스트먼트·타겟 파밍 | ×2 | 65% | 맵·지역·난이도·페널티·상점 구현. 캐릭터와 완성형 무기·스킬·유틸리티 투자 UI가 남음 |
-| 전리품 2대 분류·현장 파밍 | ×2 | 30% | 생명 주기·지역 테이블·현장 비교·획득과 무기 즉시 장착·안전 복구 구현. 스킬 교체, 세션 소켓과 자동 환전은 없음 |
+| 전리품 2대 분류·현장 파밍 | ×2 | 40% | 생명 주기·지역 테이블·현장 비교·획득·무기·스킬 즉시 교체·안전 복구 구현. 세션 소켓과 자동 환전은 없음 |
 | 가변 태그·등급 확장 | ×1 | 80% | 동적 태그·등급·불일치 비활성·메커니즘 변형 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
 | 비동기 랭킹·시즌 보상 | ×1 | 40% | 동일 조건 3대 로컬 랭킹 구현. 서버 검증과 주간 칭호·오라 보상은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 13`입니다. 현재 결과는 `(100×1 + 100×2 + 95×2 + 65×2 + 30×2 + 80×1 + 95×2 + 40×1) ÷ 13 ≈ 76%`지만, P4-04가 무기만 완료된 중간 단계이므로 외부 표시값은 다음 완결 게이트까지 보수적으로 75%를 유지합니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 13`입니다. P4-04B를 반영한 현재 수치는 약 78%지만 P4-05 소켓·P4-06 정산이 플레이 루프로 연결되기 전이므로 외부 표시값은 보수적으로 75%를 유지합니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -56,7 +56,7 @@ tags:
 | Phase 1 · 이동·타게팅·자유 바인딩 | 완료 | 키 배치와 스킬 배치를 분리하고 실제 발동·HUD·영구 저장까지 연결 |
 | Phase 2 · Q·태그·AP·쿨타임 | 완료 | 주·보조 교체, 태그 호환성, 에너지·충전·개별 쿨타임 구현 |
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
-| Phase 4 · 현장 교체·룬 소켓·환전 | 기반 완료 | 현장 무기 R 즉시 장착·안전 복구까지 완료. 스킬 교체와 세션 룬 자동 환전이 남음 |
+| Phase 4 · 현장 교체·룬 소켓·환전 | 기반 완료 | 현장 무기·스킬 R 즉시 교체·안전 복구 완료. 세션 룬 소켓·자동 환전이 남음 |
 | Phase 5 · 로비 4대 세팅·계약·상점 | 부분 완료 | 계약·페널티·상점은 구현. 캐릭터·무기·스킬·유틸리티 선택 흐름이 불완전 |
 | Phase 6 · 비동기 랭킹·시즌 보상 | 로컬 기반 | 3대 로컬 보드만 구현. 서버 제공자와 칭호·오라 보상이 없음 |
 
@@ -76,8 +76,9 @@ tags:
 | 완료 | 배포·보안 작업선 | Pages·Worker·비공개 R2가 섞여 보일 수 있었음 | 문서·플레이·원본 보관 표면 분리, 이중 백업·복구 PR·정적 경계 검사 완료 |
 | 완료 | Phase 4 P4-01~03 기반 | 생명 주기·타겟 파밍·현장 획득 계약 필요 | Item/LootTable→드랍→비교→ESC 보류→F 런 임시 보관 E2E 완료 |
 | 완료 | Phase 4 P4-04A 현장 무기 교체 | 비교·런 임시 보관까지 존재 | R 즉시 장착·활성 무기 변화·거점 복구·임시 정책 표시 완료 |
-| 1 | Phase 4 P4-04B 현장 스킬 교체 | 스킬 슬롯·태그·키 배치 교체 없음 | 호환 검증→즉시 교체→HUD/실제 발동→복구 연결 |
-| 2 | Phase 4 P4-05~06 순환 | 세션 소켓·자동 환전 미구현 | 소켓→전투 변화→해금/환전 E2E 통과 |
+| 완료 | Phase 4 P4-04B 현장 스킬 교체 | 슬롯·태그·키·자원 교체 필요 | Skill Sheet→R 교체→3번 키→상태 복구 완료 |
+| 1 | Phase 4 P4-05 세션 소켓 | 룬·코어·유물 소켓 미구현 | 소켓→실제 피해/쿨다운 변화→해제/교환 E2E |
+| 2 | Phase 4 P4-06 순환 | 자동 환전·영구 해금·사망 소실 미연결 | 성공/사망 정산·중복 방지 E2E |
 | 3 | Phase 5 로비 4대 세팅 | 맵·페널티·상점·소모품 일부 구현 | 캐릭터·무기·스킬·유틸리티 투자와 BEP 미리보기 연결 |
 | 4 | Phase 6 비동기 시즌 | 3대 로컬 랭킹 구현 | 서버 검증 제공자와 주간 칭호·오라 보상 모듈 연결 |
 
@@ -85,9 +86,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 48 · IMPROVE 58 · CHANGE 64 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 53 · IMPROVE 64 · CHANGE 72 · FIX 25</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>58</b><small>IMPROVE</small></span><span><b>64</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>53</b><small>BUILD</small></span><span><b>64</b><small>IMPROVE</small></span><span><b>72</b><small>CHANGE</small></span><span><b>25</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -378,7 +379,7 @@ tags:
         <p><a href="features/field-loot-acquisition/">현장 전리품 →</a> · <a href="design/planner-request-workflow/">기획 요청 운영 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 15</small><b>P4-04A 현장 무기 즉시 장착 · 역할형 협업 위키</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 방 보상 무기를 R로 바로 사용하고, 기획자와 AI 개발자의 다음 행동·완료 근거를 첫 화면에서 분리합니다.</strong><ul>
@@ -391,6 +392,22 @@ tags:
         <div class="sfh-group"><h3>수정 · 5</h3><p>Sheet·CSV·Manifest·키 설정·작업 라인을 갱신했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>미확정 정책의 영구 반영을 구조적으로 차단했습니다.</p></div>
         <p><a href="features/field-loot-immediate-equip/">현장 즉시 장착 →</a> · <a href="design/wiki-collaboration-workflow/">협업 개선안 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 16</small><b>P4-04B 현장 스킬 교체 · Notion 결정 계보·안전 제안 UI</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 현장 스킬을 실제 R로 교체하고 기획 원본→결정→구현→E2E를 한 ID 계보로 연결했습니다.</strong><ul>
+          <li><b>구현:</b> 아크 질주, 슬롯 3·3번 키 유지, 태그 거부, 자원·쿨다운·충전 비교와 복구.</li>
+          <li><b>데이터:</b> Skill 14열·4행, LootTable 29행, 확정 CSV·Web PCK·Windows 해시 연결.</li>
+          <li><b>협업:</b> Notion root v797·57블록·SHA-256, source anchor·DEC·supersedes/conflict, 로컬 초안 복사 UI.</li>
+          <li><b>배포:</b> 목표 `sfh-game.play-preview.dev`는 미등록으로 차단하고 현행 Worker를 유지해 무중단·무과금 경계를 지켰습니다.</li>
+        </ul></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>스킬 정의·교체 서비스·시트 동기·상태 복구·제안 초안기를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 6</h3><p>플레이 판단, 키 연속성, 기획 출처·결정 계보, 모바일 입력, 역할 인계를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 8</h3><p>Manifest·빌드·E2E·마일스톤·검색·노드맵·요청 JSON·배포 표면을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>런 키 영구 저장, 미등록 도메인 무중단 절체, 추천 검색의 색인 미실행 위험을 차단했습니다.</p></div>
+        <p><a href="features/field-loot-skill-swap/">현장 스킬 교체 →</a> · <a href="design/wiki-collaboration-workflow/">협업 운영 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
   </div>

@@ -47,10 +47,30 @@ func show_comparison(snapshot: Dictionary) -> void:
 		String(snapshot.get(&"death_label", "")),
 	]
 	var equip_preview: Dictionary = snapshot.get(&"equip_preview", {})
+	if StringName(equip_preview.get(&"equip_kind", &"")) == &"skill":
+		comparison_label.text = "교체  %s → %s · 슬롯 %d · 키 %s" % [
+			String(equip_preview.get(&"previous_name", "없음")),
+			String(equip_preview.get(&"candidate_name", snapshot.get(&"display_name", "스킬"))),
+			int(equip_preview.get(&"slot_index", 0)) + 1,
+			String(equip_preview.get(&"input_label", "?")),
+		]
+		lifecycle_label.text = "ENERGY %d · CD %.1fs · 충전 %d" % [
+			roundi(float(equip_preview.get(&"energy_cost", 0.0))),
+			float(equip_preview.get(&"cooldown_seconds", 0.0)),
+			int(equip_preview.get(&"maximum_charges", 0)),
+		]
 	controls_label.text = (
-		"R 즉시 장착   ·   F 런 보관   ·   ESC 보류"
+		(
+			"R 스킬 교체   ·   F 런 보관   ·   ESC 보류"
+			if StringName(equip_preview.get(&"equip_kind", &"")) == &"skill"
+			else "R 무기 장착   ·   F 런 보관   ·   ESC 보류"
+		)
 		if bool(equip_preview.get(&"available", false))
-		else "F 획득   ·   ESC 보류"
+		else (
+			"무기 태그 불일치   ·   F 런 보관   ·   ESC 보류"
+			if StringName(equip_preview.get(&"reason", &"")) == &"weapon_tags_mismatch"
+			else "F 획득   ·   ESC 보류"
+		)
 	)
 	if bool(equip_preview.get(&"available", false)):
 		outcome_label.text += "\n%s · %s" % [
@@ -74,7 +94,8 @@ func get_snapshot() -> Dictionary:
 		&"shows_cancel_and_select": (
 			"F" in controls_label.text and "ESC 보류" in controls_label.text
 		) if controls_label != null else false,
-		&"shows_immediate_equip": "R 즉시 장착" in controls_label.text if controls_label != null else false,
+		&"shows_immediate_equip": "R " in controls_label.text if controls_label != null else false,
+		&"shows_skill_swap": "R 스킬 교체" in controls_label.text if controls_label != null else false,
 		&"viewport_safe": _inside_viewport(),
 	}
 

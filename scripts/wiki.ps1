@@ -40,12 +40,14 @@ try {
     & (Join-Path $PSScriptRoot "compress-wiki-release-days.ps1") -Check
     & (Join-Path $PSScriptRoot "check-wiki-search.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-play-entry.ps1")
+	& (Join-Path $PSScriptRoot "check-game-domain-cutover.ps1")
     & (Join-Path $PSScriptRoot "check-deployment-boundaries.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-knowledge-map.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-color-contrast.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-responsive.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-planner-requests.ps1")
+	& $virtualPython (Join-Path $PSScriptRoot "snapshot_notion_source.py") --check
     & $virtualPython -m mkdocs $Action --strict
     if ($Action -eq "build") {
         & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1") -SiteRoot ".wiki-site"

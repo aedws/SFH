@@ -88,6 +88,7 @@ const WEB_EXPORT_DATA_PATHS := [
 	"game/features/growth_balance/data/upgrade_balance.csv",
 	"game/features/loot_lifecycle/data/item_lifecycle.csv",
 	"game/features/loot_tables/data/loot_table.csv",
+	"game/features/combat_skills/data/skill_catalog.csv",
 ]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 const ROOM_HORDE_MINIMUMS := {&"small": 12, &"medium": 18, &"large": 24}
@@ -1396,6 +1397,7 @@ func _verify_optional_combat_skill_module(game_scene: PackedScene) -> bool:
 	var skill_free_features = skill_free_game.get("features").duplicate(true)
 	skill_free_features.set("combat_skills_enabled", false)
 	skill_free_features.set("skill_binding_enabled", false)
+	skill_free_features.set("field_loot_skill_equip_enabled", false)
 	skill_free_game.set("features", skill_free_features)
 	root.add_child(skill_free_game)
 	await process_frame
@@ -2534,6 +2536,7 @@ func _verify_optional_equipment_module(game_scene: PackedScene) -> bool:
 	equipment_free_features.set("run_setup_enabled", false)
 	equipment_free_features.set("field_loot_acquisition_enabled", false)
 	equipment_free_features.set("field_loot_immediate_equip_enabled", false)
+	equipment_free_features.set("field_loot_skill_equip_enabled", false)
 	equipment_free_game.set("features", equipment_free_features)
 	root.add_child(equipment_free_game)
 	await process_frame
@@ -2618,6 +2621,7 @@ func _verify_optional_loot_table_module(game_scene: PackedScene) -> bool:
 	table_free_features.set("loot_tables_enabled", false)
 	table_free_features.set("field_loot_acquisition_enabled", false)
 	table_free_features.set("field_loot_immediate_equip_enabled", false)
+	table_free_features.set("field_loot_skill_equip_enabled", false)
 	table_free_features.set("run_setup_enabled", false)
 	table_free_game.set("features", table_free_features)
 	root.add_child(table_free_game)
@@ -2641,6 +2645,7 @@ func _verify_optional_field_loot_module(game_scene: PackedScene) -> bool:
 	var field_free_features = field_free_game.get("features").duplicate(true)
 	field_free_features.set("field_loot_acquisition_enabled", false)
 	field_free_features.set("field_loot_immediate_equip_enabled", false)
+	field_free_features.set("field_loot_skill_equip_enabled", false)
 	field_free_features.set("run_setup_enabled", false)
 	field_free_game.set("features", field_free_features)
 	root.add_child(field_free_game)

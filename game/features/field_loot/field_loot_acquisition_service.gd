@@ -17,6 +17,8 @@ var lifecycle_provider: Node
 var table_provider: Node
 var comparison_service := FieldLootComparisonService.new()
 var equip_service := FieldLootEquipService.new()
+var skill_equip_service := FieldLootSkillEquipService.new()
+var skill_equip_available := false
 var equip_catalog: FieldLootEquipCatalog
 var operation_context: Dictionary = {}
 var run_seed := 0
@@ -27,6 +29,7 @@ var panel: FieldLootComparisonPanel
 var total_spawned := 0
 var total_acquired := 0
 var total_cancelled := 0
+var last_equip_result: Dictionary = {}
 
 
 func configure(
@@ -39,16 +42,15 @@ func configure(
 	inventory_provider: Node,
 	new_operation_context: Dictionary,
 	new_run_seed: int,
-	new_equip_catalog: FieldLootEquipCatalog = null
+	new_equip_catalog: FieldLootEquipCatalog = null,
+	new_combat_skill_system: Node = null,
+	new_skill_binding_provider: Node = null
 ) -> bool:
 	if (
 		not is_instance_valid(new_player)
 		or not is_instance_valid(new_drop_parent)
 		or not is_instance_valid(ui_parent)
 		or not _supports(new_table_provider, [&"roll_drop"])
-		or not comparison_service.configure(
-			new_lifecycle_provider, equipment_provider, inventory_provider, new_equip_catalog
-		)
 	):
 		return false
 	player = new_player
@@ -58,7 +60,32 @@ func configure(
 	operation_context = new_operation_context.duplicate(true)
 	run_seed = new_run_seed
 	equip_catalog = new_equip_catalog
+	skill_equip_available = false
 	if equip_catalog != null and not equip_service.configure(equipment_provider, equip_catalog):
+		return false
+	if (
+		equip_catalog != null
+		and not equip_catalog.skill_entries.is_empty()
+		and is_instance_valid(new_combat_skill_system)
+		and is_instance_valid(new_skill_binding_provider)
+		and not skill_equip_service.configure(
+			new_combat_skill_system, new_skill_binding_provider, equip_catalog
+		)
+	):
+		return false
+	skill_equip_available = (
+		equip_catalog != null
+		and not equip_catalog.skill_entries.is_empty()
+		and is_instance_valid(new_combat_skill_system)
+		and is_instance_valid(new_skill_binding_provider)
+	)
+	if not comparison_service.configure(
+		new_lifecycle_provider,
+		equipment_provider,
+		inventory_provider,
+		new_equip_catalog,
+		skill_equip_service if skill_equip_available else null
+	):
 		return false
 	acquired_items.clear()
 	active_drops.clear()
@@ -66,6 +93,7 @@ func configure(
 	total_spawned = 0
 	total_acquired = 0
 	total_cancelled = 0
+	last_equip_result.clear()
 	panel = PANEL_SCRIPT.new()
 	ui_parent.add_child(panel)
 	return true
@@ -109,10 +137,19 @@ func acquire_focused() -> bool:
 
 func equip_focused() -> bool:
 	if not is_instance_valid(focused_drop) or equip_catalog == null:
+		last_equip_result = {&"success": false, &"reason": &"no_focused_drop"}
 		return false
 	var comparison: Dictionary = focused_drop.get("comparison")
 	var item_id := StringName(comparison.get(&"item_id", &""))
-	var equip_result := equip_service.equip(item_id)
+	if equip_catalog.get_skill_entry(item_id) != null and not skill_equip_available:
+		last_equip_result = {&"success": false, &"reason": &"skill_equip_unavailable"}
+		return false
+	var equip_result := (
+		skill_equip_service.equip(item_id)
+		if equip_catalog.get_skill_entry(item_id) != null
+		else equip_service.equip(item_id)
+	)
+	last_equip_result = equip_result.duplicate(true)
 	if not bool(equip_result.get(&"success", false)):
 		return false
 	var completed := _finalize_focused_acquisition(&"equipped", equip_result)
@@ -122,7 +159,9 @@ func equip_focused() -> bool:
 
 
 func restore_equipment_swaps() -> int:
-	return equip_service.restore_swaps() if equip_catalog != null else 0
+	if equip_catalog == null:
+		return 0
+	return equip_service.restore_swaps() + skill_equip_service.restore_swaps()
 
 
 func _finalize_focused_acquisition(mode: StringName, equip_result: Dictionary = {}) -> bool:
@@ -198,6 +237,8 @@ func get_snapshot() -> Dictionary:
 		&"separate_from_equipment_mutation": true,
 		&"equipment_mutation_delegated": true,
 		&"immediate_equip": equip_service.get_snapshot(),
+		&"immediate_skill_equip": skill_equip_service.get_snapshot(),
+		&"last_equip_result": last_equip_result.duplicate(true),
 		&"lifecycle_linked": is_instance_valid(lifecycle_provider),
 		&"table_linked": is_instance_valid(table_provider),
 	}
@@ -226,7 +267,11 @@ func _on_drop_proximity_changed(drop: Node2D, available: bool) -> void:
 		interaction_availability_changed.emit(
 			true,
 			(
-				"R · 즉시 장착 / F · 런 보관 / ESC · 보류"
+				(
+					"R · 스킬 즉시 교체 / F · 런 보관 / ESC · 보류"
+					if StringName((comparison.get(&"equip_preview", {}) as Dictionary).get(&"equip_kind", &"")) == &"skill"
+					else "R · 무기 즉시 장착 / F · 런 보관 / ESC · 보류"
+				)
 				if not (comparison.get(&"equip_preview", {}) as Dictionary).is_empty()
 				else "F · %s 획득 / ESC · 보류" % comparison.get(&"display_name", "전리품")
 			)

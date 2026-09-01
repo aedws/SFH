@@ -1,8 +1,10 @@
-[gd_resource type="Resource" script_class="FieldLootEquipCatalog" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="FieldLootEquipCatalog" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://game/features/field_loot/field_loot_equip_catalog.gd" id="1_catalog"]
 [ext_resource type="Script" path="res://game/features/field_loot/field_loot_equip_entry.gd" id="2_entry"]
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/pulse_rifle.tres" id="3_weapon"]
+[ext_resource type="Script" path="res://game/features/field_loot/field_loot_skill_entry.gd" id="4_skill_entry"]
+[ext_resource type="Resource" path="res://game/features/combat_skills/definitions/arc_dash.tres" id="5_arc_dash"]
 
 [sub_resource type="Resource" id="PulseRifle"]
 script = ExtResource("2_entry")
@@ -11,8 +13,17 @@ target_slot = &"main"
 definition = ExtResource("3_weapon")
 region_tags = PackedStringArray("industrial_district", "research_complex")
 
+[sub_resource type="Resource" id="ArcDash"]
+script = ExtResource("4_skill_entry")
+item_id = &"arc_dash"
+target_slot_index = 2
+grade = 4
+definition = ExtResource("5_arc_dash")
+region_tags = PackedStringArray("research_complex", "industrial_district")
+
 [resource]
 script = ExtResource("1_catalog")
 entries = Array[FieldLootEquipEntry]([SubResource("PulseRifle")])
+skill_entries = Array[FieldLootSkillEntry]([SubResource("ArcDash")])
 replaced_item_destination = "run_storage"
 policy_status = "provisional"
