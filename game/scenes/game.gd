@@ -55,6 +55,12 @@ const LOOT_TABLE_PROVIDER_SCENE_PATH := (
 const FIELD_LOOT_ACQUISITION_SCENE_PATH := (
 	"res://game/features/field_loot/field_loot_acquisition_service.tscn"
 )
+const SESSION_SOCKET_SERVICE_SCENE_PATH := (
+	"res://game/features/session_sockets/session_socket_service.tscn"
+)
+const SESSION_SOCKET_HUD_SCENE_PATH := (
+	"res://game/features/session_sockets/session_socket_hud.tscn"
+)
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
 const HEALTH_RECOVERY_SCENE_PATH := (
 	"res://game/features/health_recovery/health_recovery_system.tscn"
@@ -194,6 +200,10 @@ const FIELD_LOOT_ACQUISITION_METHODS := [
 	&"equip_focused", &"restore_equipment_swaps", &"cancel_preview",
 	&"get_active_drops", &"get_panel", &"get_snapshot",
 ]
+const SESSION_SOCKET_METHODS := [
+	&"configure", &"request_live_catalog", &"load_csv_text", &"socket_item",
+	&"unsocket", &"clear_run", &"get_snapshot",
+]
 const INVENTORY_METHODS := [
 	&"configure",
 	&"add_item",
@@ -255,7 +265,8 @@ const HEALTH_RECOVERY_METHODS := [&"configure", &"advance", &"get_snapshot", &"s
 const COMBAT_SKILL_METHODS := [
 	&"configure", &"try_activate", &"advance", &"set_activation_enabled",
 	&"get_skill_states", &"get_snapshot", &"preview_skill_replacement",
-	&"replace_skill", &"restore_skill_replacement",
+	&"replace_skill", &"restore_skill_replacement", &"set_runtime_modifiers",
+	&"remove_runtime_modifiers",
 ]
 const COMBAT_SKILL_HUD_METHODS := [&"configure", &"get_snapshot"]
 const DASH_COOLDOWN_HUD_METHODS := [&"configure", &"get_snapshot"]
@@ -375,6 +386,8 @@ var loot_lifecycle_service
 var loot_table_provider
 var field_loot_acquisition_service
 var field_loot_equip_catalog: FieldLootEquipCatalog
+var session_socket_service
+var session_socket_hud
 var progression_system
 var health_recovery_system
 var run_buff_system
@@ -1063,7 +1076,7 @@ func _return_to_start_hub() -> void:
 	interaction_label.visible = false
 	for node in [
 		fog_of_war, minimap, inventory_window, equipment_workbench,
-		run_buff_selector, combat_skill_hud, dash_cooldown_hud,
+		run_buff_selector, combat_skill_hud, dash_cooldown_hud, session_socket_hud,
 	]:
 		_free_feature_node(node)
 	for container in [
@@ -1110,6 +1123,8 @@ func _reset_run_references() -> void:
 	credit_ledger = null
 	loot_spawner = null
 	field_loot_acquisition_service = null
+	session_socket_service = null
+	session_socket_hud = null
 	enemy_spawner = null
 	room_encounter_system = null
 	room_warp_system = null
@@ -1288,6 +1303,8 @@ func _assemble_game() -> bool:
 		return false
 	if features.combat_skills_enabled and not _install_combat_skills():
 		return false
+	if features.session_sockets_enabled and not _install_session_sockets():
+		return false
 	if features.field_loot_acquisition_enabled and not _install_field_loot_acquisition():
 		return false
 	combat_hud_presenter.call(
@@ -1390,6 +1407,50 @@ func _install_combat_skills() -> bool:
 		or not combat_skill_hud.call(&"configure", combat_skill_system)
 	):
 		_report_configuration_error("전투 스킬 HUD를 구성하지 못했습니다.")
+		return false
+	return true
+
+
+func _install_session_sockets() -> bool:
+	if not ResourceLoader.exists(features.session_socket_config_path):
+		_report_configuration_error("세션 소켓 설정을 찾을 수 없습니다.")
+		return false
+	var socket_config := load(features.session_socket_config_path) as SessionSocketConfig
+	if socket_config == null:
+		_report_configuration_error("세션 소켓 설정 형식이 올바르지 않습니다.")
+		return false
+	socket_config = socket_config.duplicate(true) as SessionSocketConfig
+	socket_config.source_mode = selected_balance_source_mode
+	session_socket_service = _instantiate_feature(
+		SESSION_SOCKET_SERVICE_SCENE_PATH, module_container, &"SessionSockets"
+	)
+	if (
+		not _supports_methods(session_socket_service, SESSION_SOCKET_METHODS)
+		or not session_socket_service.has_signal(&"socket_action")
+		or not session_socket_service.has_signal(&"socket_error")
+	):
+		_report_configuration_error("세션 소켓 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	if not session_socket_service.call(
+		&"configure", socket_config, loot_lifecycle_service,
+		auto_weapon, combat_skill_system, player
+	):
+		_report_configuration_error("세션 소켓 데이터를 전투 런타임에 연결하지 못했습니다.")
+		return false
+	session_socket_service.connect(
+		&"socket_action", Callable(self, &"_on_session_socket_action")
+	)
+	session_socket_service.connect(
+		&"socket_error", Callable(self, &"_on_session_socket_error")
+	)
+	session_socket_hud = _instantiate_feature(
+		SESSION_SOCKET_HUD_SCENE_PATH, ui_layer, &"SessionSocketHud"
+	)
+	if (
+		not _supports_methods(session_socket_hud, [&"configure", &"refresh", &"get_snapshot"])
+		or not session_socket_hud.call(&"configure", session_socket_service)
+	):
+		_report_configuration_error("세션 소켓 HUD를 구성하지 못했습니다.")
 		return false
 	return true
 
@@ -1644,6 +1705,7 @@ func _configure_balance_mode_selector() -> void:
 		or features.growth_balance_enabled
 		or features.loot_lifecycle_enabled
 		or features.loot_tables_enabled
+		or features.session_sockets_enabled
 	)
 	if not balance_mode_section.visible:
 		return
@@ -1651,11 +1713,16 @@ func _configure_balance_mode_selector() -> void:
 	var growth_config: Resource = load(features.growth_balance_config_path)
 	var lifecycle_config := load(features.loot_lifecycle_config_path) as LootLifecycleConfig
 	var loot_table_config := load(features.loot_table_config_path) as LootTableConfig
+	var session_socket_config := (
+		load(features.session_socket_config_path) as SessionSocketConfig
+		if features.session_sockets_enabled else null
+	)
 	if (
 		balance_config == null
 		or (features.growth_balance_enabled and growth_config == null)
 		or (features.loot_lifecycle_enabled and lifecycle_config == null)
 		or (features.loot_tables_enabled and loot_table_config == null)
+		or (features.session_sockets_enabled and session_socket_config == null)
 	):
 		live_balance_button.disabled = true
 		_select_balance_source_mode(WeaponBalanceConfig.SourceMode.LOCKED_CSV)
@@ -1675,6 +1742,10 @@ func _configure_balance_mode_selector() -> void:
 	if features.loot_tables_enabled:
 		live_balance_button.disabled = (
 			live_balance_button.disabled or loot_table_config.live_csv_url.is_empty()
+		)
+	if features.session_sockets_enabled:
+		live_balance_button.disabled = (
+			live_balance_button.disabled or session_socket_config.live_csv_url.is_empty()
 		)
 	var initial_mode := int(balance_config.source_mode)
 	if (
@@ -1700,11 +1771,11 @@ func _select_balance_source_mode(source_mode: int) -> void:
 	)
 	if source_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET:
 		balance_mode_description.text = (
-			"Weapon·Item·LootTable·RunBuff·Upgrade Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
+			"Weapon·Item·LootTable·RunAsset·RunBuff·Upgrade Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
 		)
 	else:
 		balance_mode_description.text = (
-			"무기·아이템 생명 주기·지역 드랍·내부 성장·장비 강화의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
+			"무기·아이템 생명 주기·지역 드랍·런 소켓·내부 성장·장비 강화의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
 		)
 	_reconfigure_persistent_loot_data()
 
@@ -2110,7 +2181,8 @@ func _install_field_loot_acquisition() -> bool:
 		effective_seed,
 		field_loot_equip_catalog if features.field_loot_immediate_equip_enabled else null,
 		combat_skill_system if features.field_loot_skill_equip_enabled else null,
-		skill_binding_service if features.field_loot_skill_equip_enabled else null
+		skill_binding_service if features.field_loot_skill_equip_enabled else null,
+		session_socket_service if features.session_sockets_enabled else null
 	):
 		_report_configuration_error("현장 전리품 비교·획득 모듈을 작전 문맥에 연결하지 못했습니다.")
 		return false
@@ -2782,6 +2854,40 @@ func _on_field_loot_equipped(
 		5,
 		2.8
 	)
+
+
+func _on_session_socket_action(result: Dictionary) -> void:
+	if not bool(result.get(&"success", false)):
+		var reason_labels := {
+			&"duplicate_limit": "동일 자산 중복 제한",
+			&"socket_full": "소켓 용량 부족",
+			&"invalid_slot": "해제할 소켓 없음",
+		}
+		combat_hud_presenter.call(
+			&"show_status",
+			"런 소켓 장착 실패 · %s" % reason_labels.get(
+				StringName(result.get(&"reason", &"")), "지원하지 않는 자산"
+			),
+			4,
+			2.0
+		)
+		return
+	var action_label := (
+		"해제" if result.get(&"reason", &"") == &"unsocketed" else
+		("교체" if result.get(&"reason", &"") == &"replaced_oldest" else "장착")
+	)
+	combat_hud_presenter.call(
+		&"show_status",
+		"런 소켓 %s · %s · 작전 종료 시 초기화" % [
+			action_label, result.get(&"display_name", result.get(&"item_id", "자산")),
+		],
+		5,
+		2.4
+	)
+
+
+func _on_session_socket_error(message: String) -> void:
+	_report_configuration_error("세션 소켓 데이터 오류: %s" % message)
 
 
 func _on_room_reward_collected(_room_index: int, credit_amount: int) -> void:

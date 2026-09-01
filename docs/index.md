@@ -36,10 +36,10 @@ search:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>78%</b>
+        <b>80%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="78"><i style="width: 78%"></i></div>
-      <p>Master GDD 8개 확정 시스템 · Phase 체크 6/6 · 저장소 구현/E2E 가중 산식 78%</p>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80"><i style="width: 80%"></i></div>
+      <p>Master GDD 8개 확정 시스템 · Phase 체크 6/6 · 저장소 구현/E2E 가중 산식 80%</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
       <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
     </div>
@@ -121,16 +121,33 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 17 TOPICS</span><span>66 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 18 TOPICS</span><span>67 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>17 UPDATE BUNDLES · BUILD 53 · IMPROVE 66 · CHANGE 76 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>18 UPDATE BUNDLES · BUILD 59 · IMPROVE 71 · CHANGE 83 · FIX 27</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>17</b><small>UPDATE BUNDLES</small></span><span><b>53</b><small>BUILD</small></span><span><b>66</b><small>IMPROVE</small></span><span><b>76</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span>
+      <span><b>18</b><small>UPDATE BUNDLES</small></span><span><b>59</b><small>BUILD</small></span><span><b>71</b><small>IMPROVE</small></span><span><b>83</b><small>CHANGE</small></span><span><b>27</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 18</small><b>P4-05 RunAsset 세션 소켓 · 진행도 80%</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획 수치가 없어도 임시값을 데이터로 격리해 룬·코어·유물을 실제 작전 전투에 연결했습니다.</strong><ul>
+          <li><b>플레이:</b> 현장 세션 자산에 접근해 F로 런 소켓 장착, 즉시 피해·쿨다운·이동 변화, RUN ONLY HUD 버튼 해제를 수행합니다.</li>
+          <li><b>임시값:</b> 룬 2·코어 1·유물 1, 동일 아이템 1개, 오래된 항목 교체이며 기획 확정 시 데이터만 교체합니다.</li>
+          <li><b>Sheet:</b> 새 `RunAsset` 14열·3규칙을 확정 CSV·Web payload·Windows 데이터 해시에 연결했습니다.</li>
+          <li><b>검증:</b> 실제 F→전도 룬 피해 증가→HUD 해제→원복, 중복 제한, 런 초기화, 모듈 단독 제거를 자동 판정합니다.</li>
+          <li><b>다음:</b> 남은 10개 중 P4-06 자동 환전·영구 해금·사망 소실이 바로 다음입니다.</li>
+        </ul><p class="sfh-intent"><b>기획 요청</b><span>DATA-P4-05-01은 더 이상 개발 차단이 아니며, 확정 답변을 받으면 RunAsset·Item 값만 교체합니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 6</h3><p>RunAsset 데이터, 소켓 규칙·서비스, 반응형 HUD, 세 효과, 현장 F 연결을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>런 전용 의미, 기획 교체성, HUD 밀도, Web 폴백, 플레이어 인식 E2E를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 7</h3><p>Manifest·전투 modifier·내보내기·릴리스 메타·마일스톤·검색·노드맵을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>영구 장비 모듈과 런 전용 자산의 책임 혼합 가능성을 제거했습니다.</p></div>
+        <p><a href="features/session-sockets/">세션 소켓 →</a> · <a href="development-status/#_1">남은 작업 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 17</small><b>남은 11개 작업 패킷 · Master GDD 진행도 78%</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 공개 기획과 현재 main을 다시 대조해 완료 수치와 후속 순서를 같은 기준으로 정리했습니다.</strong><ul>

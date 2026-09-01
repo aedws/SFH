@@ -19,6 +19,7 @@ var state_emission_count: int = 0
 var targeting_policy: Resource
 var equipment_provider: Node
 var binding_provider: Node
+var runtime_modifier_sources: Dictionary = {}
 
 
 func configure(
@@ -86,6 +87,7 @@ func configure(
 	hud_refresh_accumulator = 0.0
 	state_emission_count = 0
 	cooldowns.clear()
+	runtime_modifier_sources.clear()
 	for _skill in loadout.skills:
 		cooldowns.append(0.0)
 	_emit_states()
@@ -139,7 +141,7 @@ func try_activate(slot_index: int) -> bool:
 		and not bool(resource_provider.call(&"consume_for_skill", slot_index))
 	):
 		return false
-	cooldowns[slot_index] = float(skill.get("cooldown_seconds"))
+	cooldowns[slot_index] = _modified_cooldown(float(skill.get("cooldown_seconds")))
 	skill_activated.emit(slot_index, skill.get("skill_id"), result.duplicate(true))
 	_emit_states()
 	return true
@@ -172,6 +174,21 @@ func _advance_cooldowns(delta: float, force_emit: bool) -> void:
 func set_activation_enabled(is_enabled: bool) -> void:
 	activation_enabled = is_enabled
 	_emit_states()
+
+
+func set_runtime_modifiers(source_id: StringName, modifiers: Dictionary) -> void:
+	if source_id == &"":
+		return
+	if modifiers.is_empty():
+		runtime_modifier_sources.erase(source_id)
+	else:
+		runtime_modifier_sources[source_id] = modifiers.duplicate(true)
+	_emit_states()
+
+
+func remove_runtime_modifiers(source_id: StringName) -> void:
+	if runtime_modifier_sources.erase(source_id):
+		_emit_states()
 
 
 func get_slot_bindings() -> Array[Dictionary]:
@@ -292,9 +309,11 @@ func get_skill_states() -> Array[Dictionary]:
 		state[&"input_label"] = _input_label_for_skill(definition)
 		var remaining := cooldowns[index] if index < cooldowns.size() else 0.0
 		state[&"cooldown_remaining"] = remaining
-		state[&"cooldown_ratio"] = clampf(
-			remaining / float(definition.get("cooldown_seconds")), 0.0, 1.0
-		)
+		var base_cooldown := float(definition.get("cooldown_seconds"))
+		var effective_cooldown := _modified_cooldown(base_cooldown)
+		state[&"base_cooldown_seconds"] = base_cooldown
+		state[&"cooldown_seconds"] = effective_cooldown
+		state[&"cooldown_ratio"] = clampf(remaining / effective_cooldown, 0.0, 1.0)
 		var resource_state := {
 			&"energy_current": 0.0,
 			&"energy_maximum": 0.0,
@@ -333,6 +352,7 @@ func get_snapshot() -> Dictionary:
 		&"states": get_skill_states(),
 		&"resources_enabled": is_instance_valid(resource_provider),
 		&"skill_binding_enabled": is_instance_valid(binding_provider),
+		&"runtime_modifiers": _aggregated_runtime_modifiers(),
 	}
 
 
@@ -395,6 +415,21 @@ func _build_activation_context(skill: Resource) -> Dictionary:
 		mechanic_override = equipment_provider.call(
 			&"get_active_skill_mechanic_override", skill.get("skill_id")
 		)
+	mechanic_override = mechanic_override.duplicate(true)
+	var runtime_modifiers := _aggregated_runtime_modifiers()
+	for modifier_id in runtime_modifiers:
+		if modifier_id == &"cooldown_multiply":
+			continue
+		mechanic_override[modifier_id] = runtime_modifiers[modifier_id]
+	if runtime_modifiers.has(&"damage_multiply"):
+		mechanic_override[&"damage_multiplier"] = (
+			float(mechanic_override.get(&"damage_multiplier", 1.0))
+			* float(runtime_modifiers[&"damage_multiply"])
+		)
+		mechanic_override[&"tick_damage_multiplier"] = (
+			float(mechanic_override.get(&"tick_damage_multiplier", 1.0))
+			* float(runtime_modifiers[&"damage_multiply"])
+		)
 	return {
 		&"target_container": target_container,
 		&"effect_parent": effect_parent,
@@ -416,3 +451,22 @@ func _skill_matches_active_weapon(skill: Resource) -> bool:
 		equipment_provider.has_method(&"active_weapon_has_combat_tags")
 		and bool(equipment_provider.call(&"active_weapon_has_combat_tags", required))
 	)
+
+
+func _modified_cooldown(base_value: float) -> float:
+	return maxf(
+		0.05,
+		base_value * float(_aggregated_runtime_modifiers().get(&"cooldown_multiply", 1.0))
+	)
+
+
+func _aggregated_runtime_modifiers() -> Dictionary:
+	var result: Dictionary = {}
+	for source_id in runtime_modifier_sources:
+		var source: Dictionary = runtime_modifier_sources[source_id]
+		for modifier_id in source:
+			if String(modifier_id).ends_with("_multiply"):
+				result[modifier_id] = float(result.get(modifier_id, 1.0)) * float(source[modifier_id])
+			else:
+				result[modifier_id] = float(result.get(modifier_id, 0.0)) + float(source[modifier_id])
+	return result

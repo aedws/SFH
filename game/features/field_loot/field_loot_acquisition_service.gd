@@ -5,6 +5,7 @@ signal drop_spawned(drop: Node2D, candidate: Dictionary)
 signal preview_changed(visible: bool, comparison: Dictionary)
 signal loot_acquired(item_id: StringName, quantity: int, snapshot: Dictionary)
 signal loot_equipped(item_id: StringName, result: Dictionary, snapshot: Dictionary)
+signal loot_socketed(item_id: StringName, result: Dictionary, snapshot: Dictionary)
 signal acquisition_cancelled(item_id: StringName)
 signal interaction_availability_changed(available: bool, prompt: String)
 
@@ -30,6 +31,8 @@ var total_spawned := 0
 var total_acquired := 0
 var total_cancelled := 0
 var last_equip_result: Dictionary = {}
+var session_socket_provider: Node
+var last_socket_result: Dictionary = {}
 
 
 func configure(
@@ -44,7 +47,8 @@ func configure(
 	new_run_seed: int,
 	new_equip_catalog: FieldLootEquipCatalog = null,
 	new_combat_skill_system: Node = null,
-	new_skill_binding_provider: Node = null
+	new_skill_binding_provider: Node = null,
+	new_session_socket_provider: Node = null
 ) -> bool:
 	if (
 		not is_instance_valid(new_player)
@@ -79,6 +83,11 @@ func configure(
 		and is_instance_valid(new_combat_skill_system)
 		and is_instance_valid(new_skill_binding_provider)
 	)
+	session_socket_provider = (
+		new_session_socket_provider
+		if _supports(new_session_socket_provider, [&"socket_item", &"get_snapshot"])
+		else null
+	)
 	if not comparison_service.configure(
 		new_lifecycle_provider,
 		equipment_provider,
@@ -94,6 +103,7 @@ func configure(
 	total_acquired = 0
 	total_cancelled = 0
 	last_equip_result.clear()
+	last_socket_result.clear()
 	panel = PANEL_SCRIPT.new()
 	ui_parent.add_child(panel)
 	return true
@@ -185,6 +195,10 @@ func _finalize_focused_acquisition(mode: StringName, equip_result: Dictionary = 
 	if not equip_result.is_empty():
 		entry[&"previous_item_name"] = equip_result.get(&"previous_name", "")
 		entry[&"previous_destination"] = equip_result.get(&"previous_destination", &"")
+	last_socket_result.clear()
+	if _is_session_socket_item(item_id) and is_instance_valid(session_socket_provider):
+		last_socket_result = session_socket_provider.call(&"socket_item", item_id)
+		entry[&"session_socket_result"] = last_socket_result.duplicate(true)
 	acquired_items[item_id] = entry
 	var acquired_drop := focused_drop
 	focused_drop = null
@@ -194,6 +208,8 @@ func _finalize_focused_acquisition(mode: StringName, equip_result: Dictionary = 
 	interaction_availability_changed.emit(false, "")
 	total_acquired += 1
 	loot_acquired.emit(item_id, quantity, get_snapshot())
+	if bool(last_socket_result.get(&"success", false)):
+		loot_socketed.emit(item_id, last_socket_result.duplicate(true), get_snapshot())
 	acquired_drop.queue_free()
 	return true
 
@@ -239,6 +255,11 @@ func get_snapshot() -> Dictionary:
 		&"immediate_equip": equip_service.get_snapshot(),
 		&"immediate_skill_equip": skill_equip_service.get_snapshot(),
 		&"last_equip_result": last_equip_result.duplicate(true),
+		&"last_socket_result": last_socket_result.duplicate(true),
+		&"session_sockets": (
+			session_socket_provider.call(&"get_snapshot")
+			if is_instance_valid(session_socket_provider) else {}
+		),
 		&"lifecycle_linked": is_instance_valid(lifecycle_provider),
 		&"table_linked": is_instance_valid(table_provider),
 	}
@@ -264,9 +285,14 @@ func _on_drop_proximity_changed(drop: Node2D, available: bool) -> void:
 		var comparison: Dictionary = drop.get("comparison")
 		panel.show_comparison(comparison)
 		preview_changed.emit(true, comparison.duplicate(true))
+		var session_socket_candidate := _is_session_socket_item(
+			StringName(comparison.get(&"item_id", &""))
+		)
 		interaction_availability_changed.emit(
 			true,
 			(
+				"F · %s 런 소켓 장착 / ESC · 보류" % comparison.get(&"display_name", "세션 자산")
+				if session_socket_candidate else
 				(
 					"R · 스킬 즉시 교체 / F · 런 보관 / ESC · 보류"
 					if StringName((comparison.get(&"equip_preview", {}) as Dictionary).get(&"equip_kind", &"")) == &"skill"
@@ -287,6 +313,17 @@ func _prune_drops() -> void:
 	for index in range(active_drops.size() - 1, -1, -1):
 		if not is_instance_valid(active_drops[index]):
 			active_drops.remove_at(index)
+
+
+func _is_session_socket_item(item_id: StringName) -> bool:
+	if not is_instance_valid(lifecycle_provider):
+		return false
+	var definition = lifecycle_provider.call(&"get_definition", item_id)
+	return (
+		definition != null
+		and StringName(definition.get("loot_family")) == &"session_convertible"
+		and StringName(definition.get("session_behavior")) == &"session_socket"
+	)
 
 
 func _supports(candidate: Node, methods: Array[StringName]) -> bool:

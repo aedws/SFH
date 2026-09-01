@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EmbeddedCsvPayload" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/balance_data/embedded_csv_payload.gd" id="1_payload"]
+
+[resource]
+script = ExtResource("1_payload")
+source_path = "res://game/features/session_sockets/data/session_socket_rules.csv"
+csv_text = "rule_id,item_id,display_name,socket_type,slot_capacity,duplicate_limit,replacement_policy,effect_target,modifier_id,modifier_operation,modifier_value,priority,runtime_enabled,description\narc_rune_damage,arc_rune,전도 룬,rune,2,1,replace_oldest,weapon,damage_multiply,multiply,1.15,10,TRUE,임시값 · 무기 피해 +15%\ncapacitor_core_cycle,capacitor_core,축전 코어,core,1,1,replace_oldest,skill,cooldown_multiply,multiply,0.85,20,TRUE,임시값 · 스킬 쿨타임 -15%\nphase_artifact_mobility,phase_artifact,위상 유물,artifact,1,1,replace_oldest,player,movement_speed,multiply,1.12,30,TRUE,임시값 · 이동 속도 +12%\n"

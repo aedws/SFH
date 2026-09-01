@@ -49,7 +49,7 @@ tags:
 - `Armor`: 방어구 정의와 스탯만 기록합니다.
 - `Item`: 파츠·모듈·소비 아이템·크레딧·도면·룬·코어·유물만 기록합니다. 무기·방어구는 넣지 않습니다.
 
-현재 런타임 실시간 연결 대상은 `Weapon`, `Item`, `RunBuff`, `Upgrade`입니다. `Item`의 생명 주기 열은 [전리품 생명 주기](loot-lifecycle.md)가 소비하고 성장 수치는 ID로 연결된 `Upgrade` 탭이 담당합니다. `Armor`는 정의 데이터 원본으로 유지합니다.
+현재 런타임 실시간 연결 대상은 `Weapon`, `Item`, `LootTable`, `Skill`, `RunAsset`, `RunBuff`, `Upgrade`입니다. `Item`의 생명 주기 열은 [전리품 생명 주기](loot-lifecycle.md)가 소비하고 `RunAsset`은 [런 전용 세션 소켓](session-sockets.md), 성장 수치는 ID로 연결된 `Upgrade` 탭이 담당합니다. `Armor`는 정의 데이터 원본으로 유지합니다.
 
 ## 두 가지 데이터 모드
 

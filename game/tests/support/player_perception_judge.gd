@@ -54,6 +54,11 @@ const CHECKPOINT_RULES := {
 		&"surfaces": [&"field_loot"],
 		&"phrases": ["R 스킬 교체", "슬롯", "키", "ENERGY", "CD", "충전", "F 런 보관"],
 	},
+	&"session_socket_decision": {
+		&"unit": &"decision",
+		&"surfaces": [&"field_loot", &"session_sockets"],
+		&"phrases": ["F 런 소켓 장착", "ESC 보류", "SESSION SOCKETS", "RUN ONLY", "RUNE"],
+	},
 	&"combat_glance": {
 		&"unit": &"glance",
 		&"surfaces": [&"combat", &"combat_skills", &"dash", &"minimap"],
@@ -243,6 +248,8 @@ func _resolve_surface(game: Node, surface_id: StringName) -> Control:
 		&"field_loot":
 			var service = game.get("field_loot_acquisition_service")
 			return service.call(&"get_panel") as Control if service != null else null
+		&"session_sockets":
+			return game.get("session_socket_hud") as Control
 	return null
 
 

@@ -36,6 +36,7 @@ extends Resource
 @export var field_loot_acquisition_enabled: bool = true
 @export var field_loot_immediate_equip_enabled: bool = true
 @export var field_loot_skill_equip_enabled: bool = true
+@export var session_sockets_enabled: bool = true
 @export var damage_enabled: bool = true
 @export var hit_feedback_enabled: bool = true
 @export var health_recovery_enabled: bool = true
@@ -84,6 +85,9 @@ extends Resource
 )
 @export_file("*.tres") var field_loot_equip_catalog_path: String = (
 	"res://game/features/field_loot/configs/default_field_loot_equipment.tres"
+)
+@export_file("*.tres") var session_socket_config_path: String = (
+	"res://game/features/session_sockets/configs/default_session_sockets.tres"
 )
 
 @export_category("Combat skills")
@@ -231,6 +235,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"field_loot_immediate_equip")
 	if field_loot_skill_equip_enabled:
 		result.append(&"field_loot_skill_equip")
+	if session_sockets_enabled:
+		result.append(&"session_sockets")
 	if damage_enabled:
 		result.append(&"damage")
 	if hit_feedback_enabled:
@@ -402,6 +408,14 @@ func validation_errors() -> PackedStringArray:
 		errors.append("현장 스킬 교체 모듈은 combat_skills 모듈이 필요합니다.")
 	if field_loot_skill_equip_enabled and not skill_binding_enabled:
 		errors.append("현장 스킬 교체 모듈은 skill_binding 모듈이 필요합니다.")
+	if session_sockets_enabled and not loot_lifecycle_enabled:
+		errors.append("session_sockets 모듈은 loot_lifecycle 모듈이 필요합니다.")
+	if session_sockets_enabled and not weapons_enabled:
+		errors.append("session_sockets 모듈은 weapons 모듈이 필요합니다.")
+	if session_sockets_enabled and not combat_skills_enabled:
+		errors.append("session_sockets 모듈은 combat_skills 모듈이 필요합니다.")
+	if session_sockets_enabled and not _resource_exists(session_socket_config_path):
+		errors.append("세션 소켓 설정 Resource 경로가 유효하지 않습니다.")
 	if experience_enabled and not enemies_enabled:
 		errors.append("experience 모듈은 enemies 모듈이 필요합니다.")
 	if leveling_enabled and not experience_enabled:

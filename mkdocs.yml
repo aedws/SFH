@@ -95,6 +95,7 @@ nav:
       - features/index.md
       - 현장 무기 즉시 장착: features/field-loot-immediate-equip.md
       - 현장 스킬 즉시 교체: features/field-loot-skill-swap.md
+      - 런 전용 룬·코어·유물 소켓: features/session-sockets.md
       - 랜덤 맵 생성: features/map-generation.md
       - 전장의 안개: features/fog-of-war.md
       - 전술 미니맵: features/minimap.md

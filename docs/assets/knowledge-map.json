@@ -193,6 +193,7 @@
               {"label": "현장 전리품 비교·획득", "source": "features/field-loot-acquisition.md", "route": "features/field-loot-acquisition/", "summary": "접근 비교·ESC 보류·F 획득과 런 임시 보관"},
               {"label": "현장 무기 즉시 장착", "source": "features/field-loot-immediate-equip.md", "route": "features/field-loot-immediate-equip/", "summary": "R 즉시 장착·기존 무기 런 임시 보관·거점 복구"},
               {"label": "현장 스킬 즉시 교체", "source": "features/field-loot-skill-swap.md", "route": "features/field-loot-skill-swap/", "summary": "R 슬롯 교체·키 유지·쿨다운·충전 복구"},
+              {"label": "런 전용 룬·코어·유물 소켓", "source": "features/session-sockets.md", "route": "features/session-sockets/", "summary": "RunAsset 기반 작전 한정 슬롯·즉시 효과·HUD 해제"},
               {"label": "도면 제작과 랜덤 옵션", "source": "features/blueprint-crafting.md", "route": "features/blueprint-crafting/", "summary": "도면 해금·제작·옵션 정책"},
               {"label": "페널티 변형과 조건부 랭킹", "source": "features/penalty-ranking.md", "route": "features/penalty-ranking/", "summary": "리스크 보상과 3종 기록"},
               {"label": "캐릭터 장비와 로드아웃", "source": "features/character-equipment.md", "route": "features/character-equipment/", "summary": "무기·방어구·스킬 슬롯"},
