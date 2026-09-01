@@ -36,10 +36,10 @@ search:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>80%</b>
+        <b>87%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80"><i style="width: 80%"></i></div>
-      <p>Master GDD 8개 확정 시스템 · Phase 체크 6/6 · 저장소 구현/E2E 가중 산식 80%</p>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="87"><i style="width: 87%"></i></div>
+      <p>Master GDD 8개 확정 시스템 · Phase 1~4 완료 · 저장소 구현/E2E 가중 산식 87%</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
       <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
     </div>
@@ -121,16 +121,33 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 18 TOPICS</span><span>67 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 19 TOPICS</span><span>69 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>18 UPDATE BUNDLES · BUILD 59 · IMPROVE 71 · CHANGE 83 · FIX 27</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>19 UPDATE BUNDLES · BUILD 63 · IMPROVE 75 · CHANGE 91 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>18</b><small>UPDATE BUNDLES</small></span><span><b>59</b><small>BUILD</small></span><span><b>71</b><small>IMPROVE</small></span><span><b>83</b><small>CHANGE</small></span><span><b>27</b><small>FIX</small></span>
+      <span><b>19</b><small>UPDATE BUNDLES</small></span><span><b>63</b><small>BUILD</small></span><span><b>75</b><small>IMPROVE</small></span><span><b>91</b><small>CHANGE</small></span><span><b>29</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 19</small><b>9개 작전 조합 복구 · P4-06 전리품 정산 · 진행도 87%</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 소형·표준 외 작전이 생성 직후 거점으로 돌아오던 문제를 제거하고, 획득 전리품의 성공·사망 결말을 실제 정산까지 연결했습니다.</strong><ul>
+          <li><b>버그픽스:</b> 2.5~5배 회수 목표를 박스 수·단가로 실제 배치 가능한 범위와 교차해 중형·대형·고난이도 조립 실패를 제거했습니다.</li>
+          <li><b>9조합 E2E:</b> 난이도 버튼·맵 카드·투입 버튼으로 소·중·대형×표준·숙련·악몽을 모두 실행하고 전투 유지·명시적 복귀를 확인합니다.</li>
+          <li><b>P4-06:</b> 탈출 시 자동 환전·영구 해금·창고 보관, 사망 시 소실, 동일 run_id 중복 지급 방지를 분리 서비스로 구현했습니다.</li>
+          <li><b>플레이어 인식:</b> 성공 화면은 환전·해금·창고, 실패 화면은 전리품 소실 종류·수량을 직접 표시합니다.</li>
+          <li><b>다음:</b> Phase 4는 완료했으며, P5-01 캐릭터 선택부터 남은 9개 패킷을 진행합니다.</li>
+        </ul><p class="sfh-intent"><b>데이터·과금 경계</b><span>기존 Item 15종으로 충분해 Sheet를 늘리지 않았고 과금·결제 모델은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>정산 서비스·Manifest 조립·성공/사망 결과·중복 방지 계약을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>9조합 UI E2E, 플레이어 결과 인식, 조립 오류 가시성, P5·P6 사전 설계를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 8</h3><p>진행률·마일스톤·검색·노드맵·품질 문서·CI 필수 검사를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>불가능한 전리품 목표로 인한 거점 회귀와 조립 실패 원인이 거점 문구에 덮이던 문제를 해결했습니다.</p></div>
+        <p><a href="features/run-settlement/">런 전리품 정산 →</a> · <a href="design/p5-p6-preimplementation/">P5·P6 사전 설계 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 18</small><b>P4-05 RunAsset 세션 소켓 · 진행도 80%</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획 수치가 없어도 임시값을 데이터로 격리해 룬·코어·유물을 실제 작전 전투에 연결했습니다.</strong><ul>

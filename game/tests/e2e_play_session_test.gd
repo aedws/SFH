@@ -66,6 +66,8 @@ func _run() -> void:
 		return
 	if not await _verify_operation_session():
 		return
+	if not await _verify_operation_combination_matrix(game_scene):
+		return
 	if not await _verify_ten_minute_sessions(game_scene):
 		return
 	if not await _verify_failure_and_return_session():
@@ -77,7 +79,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -411,8 +413,28 @@ func _verify_operation_session() -> bool:
 	await process_frame
 	var result := game.get_node("UI/GameOverOverlay") as Control
 	var title := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/EndTitle") as Label
+	var summary := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/GameOverSummary") as Label
 	if not result.visible or title.text != "탈출 성공" or not paused:
 		return _fail("탈출 완료 후 성공 정산 화면이 표시되지 않았습니다.")
+	var settlement: Dictionary = game.get("last_loot_settlement")
+	var acquired_items: Dictionary = game.get("field_loot_acquisition_service").call(
+		&"get_snapshot"
+	).get(&"acquired_items", {})
+	var profile_after_first: Dictionary = game.get("persistent_profile").call(&"get_snapshot")
+	var duplicate: Dictionary = game.get("run_settlement_service").call(
+		&"settle", game.get("current_run_id"), acquired_items, true
+	)
+	var profile_after_duplicate: Dictionary = game.get("persistent_profile").call(&"get_snapshot")
+	if not _judge_gameplay_flow(&"run_loot_settlement", "탈출→환전·해금·창고→중복 방지", {
+		&"result": settlement,
+		&"expected_extracted": true,
+		&"acquired_count": acquired_items.size(),
+		&"summary": summary.text,
+		&"duplicate_ignored": duplicate.get(&"duplicate_ignored", false),
+		&"profile_after_first": profile_after_first,
+		&"profile_after_duplicate": profile_after_duplicate,
+	}):
+		return false
 	if not _judge_ui_state(&"result", "성공 결과"):
 		return false
 	if not _judge_player_perception(&"success_consequence", "탈출 성공 결과 이해"):
@@ -499,6 +521,21 @@ func _verify_failure_and_return_session() -> bool:
 	if not _judge_ui_state(&"combat", "실패 검증용 두 번째 전투"):
 		return false
 	var player = game.get("player")
+	var field_loot = game.get("field_loot_acquisition_service")
+	if field_loot == null:
+		return _fail("사망 전리품 소실을 검증할 현장 획득 서비스가 없습니다.")
+	var failure_drop: Node2D = field_loot.call(&"spawn_candidate", player.global_position, {
+		&"entry_id": &"e2e_death_loss", &"item_id": &"phase_artifact", &"grade": 5,
+		&"quantity": 1, &"source_type": &"room_reward",
+	})
+	if failure_drop == null:
+		return _fail("사망 소실 검증용 전리품을 생성하지 못했습니다.")
+	failure_drop.call(&"_process", 0.0)
+	await process_frame
+	await _tap_key(KEY_F)
+	var failure_acquired: Dictionary = field_loot.call(&"get_snapshot").get(&"acquired_items", {})
+	if failure_acquired.is_empty():
+		return _fail("사망 전리품 소실 전에 런 임시 보관이 비어 있습니다.")
 	player.call(&"take_damage", 999999.0)
 	await process_frame
 	var hit_feedback = game.get("hit_feedback_director")
@@ -513,8 +550,16 @@ func _verify_failure_and_return_session() -> bool:
 	):
 		return _fail("실제 플레이어 피격이 충격 VFX와 카메라 반응으로 연결되지 않았습니다.")
 	var title := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/EndTitle") as Label
+	var summary := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/GameOverSummary") as Label
 	if not bool(game.get("run_ended")) or title.text != "작전 실패" or not paused:
 		return _fail("플레이어 사망 후 실패 정산이 표시되지 않았습니다.")
+	if not _judge_gameplay_flow(&"run_loot_settlement", "사망→런 전리품 소실", {
+		&"result": game.get("last_loot_settlement"),
+		&"expected_extracted": false,
+		&"acquired_count": failure_acquired.size(),
+		&"summary": summary.text,
+	}):
+		return false
 	if not _judge_ui_state(&"result", "실패 결과"):
 		return false
 	if not _judge_player_perception(&"failure_consequence", "사망 실패 결과 이해"):
@@ -1038,6 +1083,81 @@ func _verify_ten_minute_sessions(game_scene: PackedScene) -> bool:
 		if not valid:
 			return false
 	return true
+
+
+func _verify_operation_combination_matrix(game_scene: PackedScene) -> bool:
+	var verified := 0
+	var returned_to_hub := 0
+	var launch_failures := 0
+	for tier_id in [&"small", &"medium", &"large"]:
+		for difficulty_index in range(3):
+			var difficulty_id: StringName = [&"standard", &"veteran", &"nightmare"][difficulty_index]
+			var combo_game := game_scene.instantiate()
+			var combo_features: Resource = combo_game.get("features").duplicate(true)
+			var suffix := "combo_%s_%s" % [tier_id, difficulty_id]
+			combo_features.set("map_seed", 406600 + verified)
+			combo_features.set("persistent_profile_storage_path", "user://sfh_e2e_%s_profile.json" % suffix)
+			combo_features.set("conditional_ranking_storage_path", "user://sfh_e2e_%s_rankings.json" % suffix)
+			combo_features.set("meta_progression_storage_path", "user://sfh_e2e_%s_meta.json" % suffix)
+			combo_features.set("key_mapping_storage_path", "user://sfh_e2e_%s_keys.json" % suffix)
+			combo_features.set("skill_binding_storage_path", "user://sfh_e2e_%s_skills.json" % suffix)
+			combo_game.set("features", combo_features)
+			root.add_child(combo_game)
+			await process_frame
+			await process_frame
+			combo_game.get("persistent_profile").call(&"reset_profile", true)
+			combo_game.call(&"_open_run_setup")
+			await process_frame
+			var difficulty_button := combo_game.get("difficulty_button") as Button
+			var tier_button := {
+				&"small": combo_game.get("small_map_button"),
+				&"medium": combo_game.get("medium_map_button"),
+				&"large": combo_game.get("large_map_button"),
+			}[tier_id] as Button
+			var launch_button := combo_game.get("operation_launch_button") as Button
+			for _cycle in range(difficulty_index):
+				difficulty_button.pressed.emit()
+				await process_frame
+			tier_button.pressed.emit()
+			await process_frame
+			var selected: Dictionary = combo_game.get("operation_contract_service").call(&"get_snapshot")
+			if (
+				StringName(selected.get(&"selected_difficulty_id", &"")) != difficulty_id
+				or StringName(combo_game.get("selected_map_size")) != tier_id
+				or launch_button.disabled
+			):
+				launch_failures += 1
+			else:
+				launch_button.pressed.emit()
+				await process_frame
+				var active: Dictionary = combo_game.get("active_contract")
+				if (
+					not bool(combo_game.get("run_started"))
+					or combo_game.get("start_hub") != null
+					or combo_game.get("player") == null
+					or combo_game.get("map_generator") == null
+					or StringName(active.get(&"tier_id", &"")) != tier_id
+					or StringName(active.get(&"difficulty_id", &"")) != difficulty_id
+				):
+					launch_failures += 1
+				else:
+					verified += 1
+					combo_game.call(&"_return_to_start_hub")
+					await process_frame
+					if combo_game.get("start_hub") != null and not bool(combo_game.get("run_started")):
+						returned_to_hub += 1
+			root.remove_child(combo_game)
+			combo_game.free()
+			await process_frame
+			_cleanup_tier_profile(suffix)
+	return _judge_gameplay_flow(&"operation_combination_matrix", "작전 규모×난이도 UI 투입 매트릭스", {
+		&"tested_combinations": verified,
+		&"tier_count": 3,
+		&"difficulty_count": 3,
+		&"launch_failures": launch_failures,
+		&"returned_to_hub": returned_to_hub,
+		&"used_setup_buttons": true,
+	})
 
 
 func _find_corridor_position(generator: Node) -> Vector2:

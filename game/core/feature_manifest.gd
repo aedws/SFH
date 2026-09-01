@@ -37,6 +37,7 @@ extends Resource
 @export var field_loot_immediate_equip_enabled: bool = true
 @export var field_loot_skill_equip_enabled: bool = true
 @export var session_sockets_enabled: bool = true
+@export var run_settlement_enabled: bool = true
 @export var damage_enabled: bool = true
 @export var hit_feedback_enabled: bool = true
 @export var health_recovery_enabled: bool = true
@@ -237,6 +238,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"field_loot_skill_equip")
 	if session_sockets_enabled:
 		result.append(&"session_sockets")
+	if run_settlement_enabled:
+		result.append(&"run_settlement")
 	if damage_enabled:
 		result.append(&"damage")
 	if hit_feedback_enabled:
@@ -416,6 +419,10 @@ func validation_errors() -> PackedStringArray:
 		errors.append("session_sockets 모듈은 combat_skills 모듈이 필요합니다.")
 	if session_sockets_enabled and not _resource_exists(session_socket_config_path):
 		errors.append("세션 소켓 설정 Resource 경로가 유효하지 않습니다.")
+	if run_settlement_enabled and not loot_lifecycle_enabled:
+		errors.append("run_settlement 모듈은 loot_lifecycle 모듈이 필요합니다.")
+	if run_settlement_enabled and not persistent_profile_enabled:
+		errors.append("run_settlement 모듈은 persistent_profile 모듈이 필요합니다.")
 	if experience_enabled and not enemies_enabled:
 		errors.append("experience 모듈은 enemies 모듈이 필요합니다.")
 	if leveling_enabled and not experience_enabled:

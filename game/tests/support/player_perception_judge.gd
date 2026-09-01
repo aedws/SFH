@@ -132,12 +132,12 @@ const CHECKPOINT_RULES := {
 	&"success_consequence": {
 		&"unit": &"consequence",
 		&"surfaces": [&"result"],
-		&"phrases": ["탈출 성공", "생존", "처치", "정산", "시작 거점으로 복귀"],
+		&"phrases": ["탈출 성공", "생존", "처치", "정산", "전리품", "자동 환전", "영구 해금", "창고 보관", "시작 거점으로 복귀"],
 	},
 	&"failure_consequence": {
 		&"unit": &"consequence",
 		&"surfaces": [&"result"],
-		&"phrases": ["작전 실패", "생존", "처치", "분실", "시작 거점으로 복귀"],
+		&"phrases": ["작전 실패", "생존", "처치", "분실", "전리품", "사망 소실", "시작 거점으로 복귀"],
 	},
 }
 

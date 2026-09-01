@@ -73,6 +73,7 @@ nav:
       - design/index.md
       - Master GDD 구현 대조: design/master-gdd-alignment.md
       - 현행 마일스톤 작업 라인: design/current-milestone-workline.md
+      - P5·P6 사전 구현 설계: design/p5-p6-preimplementation.md
       - 기획 요청·밸런스 데이터 운영: design/planner-request-workflow.md
       - AI 개발자·기획자 위키 협업 개선안: design/wiki-collaboration-workflow.md
       - 게임 개요: design/game-overview.md
@@ -96,6 +97,7 @@ nav:
       - 현장 무기 즉시 장착: features/field-loot-immediate-equip.md
       - 현장 스킬 즉시 교체: features/field-loot-skill-swap.md
       - 런 전용 룬·코어·유물 소켓: features/session-sockets.md
+      - 런 전리품 정산: features/run-settlement.md
       - 랜덤 맵 생성: features/map-generation.md
       - 전장의 안개: features/fog-of-war.md
       - 전술 미니맵: features/minimap.md

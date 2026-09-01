@@ -53,7 +53,17 @@
       "basis": "Master GDD Phase 6 비동기 3대 보드와 주간 명예 보상",
       "notion_prompt": "PLAN-P6-01-01 제목으로 로그인 방식·제출 검증·시즌 주기·동점·제재·보상 지급 규칙을 작성해 주세요.",
       "acceptance": ["신원과 기록 소유권 정의", "검증·재시도·중복·변조 처리 정의", "시즌 기간·동점·칭호·오라 지급 규칙"],
-      "evidence": [{"label": "조건부 랭킹", "href": "features/penalties-ranking/"}, {"label": "현행 작업 라인", "href": "design/current-milestone-workline/"}]
+      "evidence": [{"label": "조건부 랭킹", "href": "features/penalty-ranking/"}, {"label": "현행 작업 라인", "href": "design/current-milestone-workline/"}]
+    },
+    {
+      "id": "DONE-P4-06-01", "status": "complete", "state": "implemented_verified", "state_label": "구현·검증 완료", "owner_role": "ai_developer", "owner_label": "AI 개발자", "blocking": false,
+      "tag": "완료 안내", "title": "전리품 성공·사망 정산과 9개 작전 조합 복구",
+      "decision_id": "DEC-P4-06-RUNTIME", "source_anchor": "3cd5b728-0040-815e-b852-cbbebe681670", "source_revision": 797, "supersedes": [], "conflicts_with": [],
+      "summary": "Item 생명 주기를 자동 환전·영구 해금·창고 보관·사망 소실로 적용하고, 같은 run_id의 중복 지급을 차단했습니다. 소·중·대형×3난이도 9조합도 실제 UI 경로로 복구했습니다.",
+      "basis": "Master GDD Phase 4 전리품 순환과 P4-01~05 생명 주기·획득·교체·소켓 계약",
+      "notion_prompt": "P4-06 구현은 완료됐습니다. 새 아이템 정책이 필요하면 Item 생명 주기 행과 Notion 결정 ID를 함께 추가해 주세요.",
+      "acceptance": ["탈출 시 환전·해금·창고 결과가 보임", "사망 시 런 전리품 소실이 보임", "같은 run_id 중복 지급 없음", "9개 작전 조합 전투 진입"],
+      "evidence": [{"label": "런 전리품 정산", "href": "features/run-settlement/"}, {"label": "실제 플레이 E2E", "href": "quality/e2e-play-session/"}]
     },
     {
       "id": "DEV-P4-04B-01", "status": "complete", "state": "implemented_verified", "state_label": "구현·검증 완료", "owner_role": "ai_developer", "owner_label": "AI 개발자", "blocking": false,

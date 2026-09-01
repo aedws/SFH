@@ -37,6 +37,7 @@ field_loot_immediate_equip_enabled = true
 field_loot_skill_equip_enabled = true
 session_sockets_enabled = true
 session_socket_config_path = "res://game/features/session_sockets/configs/default_session_sockets.tres"
+run_settlement_enabled = true
 damage_enabled = true
 hit_feedback_enabled = true
 health_recovery_enabled = true

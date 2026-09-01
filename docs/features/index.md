@@ -17,6 +17,7 @@
 - [현장 무기 즉시 장착](field-loot-immediate-equip.md)
 - [현장 스킬 즉시 교체](field-loot-skill-swap.md)
 - [런 전용 룬·코어·유물 소켓](session-sockets.md)
+- [런 전리품 정산](run-settlement.md)
 - [플레이어 이동](player.md)
 - [K 키 설정과 영구 바인딩](key-mapping.md)
 - [부분 체력 회복](health-recovery.md)
@@ -40,9 +41,9 @@
 - [내부·외부 로그라이크 성장](progression.md)
 - [게임 루프와 HUD](game-loop.md)
 
-다음 구현 예정 기능:
+다음 구현 예정 기능은 [P5·P6 사전 구현 설계](../design/p5-p6-preimplementation.md)의 순서를 따릅니다.
 
-1. 영구 상점 구매품을 I/U 인벤토리에 생성하는 전용 거점 화면
-2. 4~9번 스킬과 지역별 고유 보스·드랍 콘텐츠
-3. 서버 기반 조건부 랭킹 검증·신원·부정 방지
-4. Google Sheets 밸런스 확정과 저사양 GPU·브라우저 실기 인증
+1. P5-01 캐릭터 선택·패시브·투입 가격
+2. P5-02~05 무기·스킬·유틸리티·단일 작전 초안·파산 방지
+3. P6-01~04 온라인 랭킹 제공자·검증 제출·시즌·칭호/오라 보상
+4. 병행 실기: 저사양 GPU·브라우저 장시간 주행과 다중 해상도
