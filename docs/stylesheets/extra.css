@@ -2758,3 +2758,172 @@ body,
     border-color: var(--sfh-cyan) !important;
   }
 }
+
+/* Planner request bridge: compact, data-driven, and intentionally above the home dashboard. */
+.sfh-planner-requests {
+  position: relative;
+  margin: 1.15rem 0 1rem;
+  padding: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(var(--sfh-accent-rgb), 0.42);
+  border-left: 3px solid var(--sfh-cyan);
+  border-radius: 10px 2px 10px 2px;
+  background: linear-gradient(110deg, rgba(var(--sfh-accent-rgb), 0.07), transparent 42%), var(--sfh-panel);
+  box-shadow: inset 0 0 26px rgba(var(--sfh-accent-rgb), 0.05);
+}
+
+.sfh-planner-requests::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  opacity: 0.16;
+  background-image: repeating-linear-gradient(0deg, transparent 0 5px, rgba(var(--sfh-accent-rgb), 0.08) 6px);
+}
+
+.sfh-planner-requests > * {
+  position: relative;
+  z-index: 1;
+}
+
+.sfh-planner-requests__heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sfh-planner-requests__heading h2 {
+  margin: 0.08rem 0 0;
+  font-size: clamp(1.05rem, 2.1vw, 1.45rem);
+}
+
+.sfh-planner-requests__status {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.58rem;
+  border: 1px solid rgba(var(--sfh-accent-rgb), 0.38);
+  border-radius: 3px;
+  color: var(--sfh-cyan);
+  font-family: var(--sfh-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+}
+
+.sfh-planner-requests__intro,
+.sfh-planner-requests__instruction {
+  margin: 0.45rem 0 0;
+  color: var(--sfh-muted);
+  font-size: 0.78rem;
+}
+
+.sfh-planner-requests__instruction { color: var(--sfh-cyan-bright); }
+
+.sfh-planner-requests__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+
+.sfh-planner-request {
+  min-width: 0;
+  padding: 0.78rem;
+  border: 1px solid rgba(var(--sfh-accent-rgb), 0.24);
+  border-radius: 5px 1px 5px 1px;
+  background: rgba(2, 9, 13, 0.68);
+}
+
+.sfh-planner-request.is-request { border-top-color: var(--sfh-amber); }
+.sfh-planner-request.is-data { border-top-color: var(--sfh-violet); }
+.sfh-planner-request.is-complete { border-top-color: var(--sfh-green); opacity: 0.84; }
+
+.sfh-planner-request__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+}
+
+.sfh-planner-request__tag {
+  padding: 0.16rem 0.36rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  color: var(--sfh-cyan);
+  font-family: var(--sfh-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+}
+
+.is-request .sfh-planner-request__tag { color: var(--sfh-amber); }
+.is-data .sfh-planner-request__tag { color: var(--sfh-violet); }
+.is-complete .sfh-planner-request__tag { color: var(--sfh-green); }
+
+.sfh-planner-request__id {
+  overflow: hidden;
+  color: var(--sfh-muted);
+  font-size: 0.57rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sfh-planner-request h3 {
+  margin: 0.48rem 0 0.28rem;
+  font-size: 0.86rem;
+}
+
+.sfh-planner-request__summary,
+.sfh-planner-request__basis,
+.sfh-planner-request__prompt {
+  margin: 0.22rem 0;
+  color: var(--sfh-muted);
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.sfh-planner-request__basis b { color: var(--sfh-text); }
+
+.sfh-planner-request__prompt {
+  padding: 0.38rem 0.45rem;
+  border-left: 2px solid rgba(var(--sfh-accent-rgb), 0.55);
+  background: rgba(var(--sfh-accent-rgb), 0.04);
+}
+
+.md-typeset .sfh-planner-request__notion,
+.md-typeset .sfh-planner-requests footer a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  margin-top: 0.36rem;
+  color: var(--sfh-cyan);
+  font-family: var(--sfh-mono);
+  font-size: 0.65rem;
+}
+
+.sfh-planner-requests footer {
+  margin-top: 0.35rem;
+  text-align: right;
+}
+
+.sfh-planner-request__error {
+  grid-column: 1 / -1;
+  color: var(--sfh-red);
+}
+
+@media screen and (max-width: 44.99em) {
+  .sfh-planner-requests { padding: 0.8rem; }
+
+  .sfh-planner-requests__heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .sfh-planner-requests__grid { grid-template-columns: 1fr; }
+
+  .sfh-planner-request__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .md-typeset .sfh-planner-request__notion { width: 100%; }
+}

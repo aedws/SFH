@@ -38,6 +38,7 @@ extra_javascript:
   - javascripts/search-dashboard.js
   - javascripts/play-entry.js
   - javascripts/knowledge-map.js
+  - javascripts/planner-requests.js
 
 plugins:
   - search:
@@ -71,6 +72,7 @@ nav:
       - design/index.md
       - Master GDD 구현 대조: design/master-gdd-alignment.md
       - 현행 마일스톤 작업 라인: design/current-milestone-workline.md
+      - 기획 요청·밸런스 데이터 운영: design/planner-request-workflow.md
       - 게임 개요: design/game-overview.md
       - MVP 범위: design/mvp-scope.md
       - 사이버펑크 비주얼 테마: design/cyberpunk-visual-theme.md
@@ -100,6 +102,7 @@ nav:
       - 크레딧 파밍과 회수: features/credit-loot.md
       - 전리품 생명 주기: features/loot-lifecycle.md
       - 지역·난이도 전리품 테이블: features/loot-tables.md
+      - 현장 전리품 비교·획득: features/field-loot-acquisition.md
       - 플레이어: features/player.md
       - K 입력 설정과 자유 스킬 배치: features/key-mapping.md
       - 부분 체력 회복: features/health-recovery.md

@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "updated": "2026-09-01",
+  "notion_url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
+  "instruction": "기획자는 요청 ID를 Notion 결정 제목에 함께 적고 확정·보류·수정 근거를 남깁니다.",
+  "items": [
+    {
+      "id": "PLAN-P4-04-01",
+      "status": "request",
+      "tag": "작업 요청",
+      "title": "현장 장비·스킬 교체 후 기존 항목 처리",
+      "summary": "새 항목을 즉시 장착할 때 기존 장비·스킬을 월드에 남길지, 런 보관으로 회수할지, 소실할지 확정이 필요합니다.",
+      "basis": "Master GDD Phase 4 현장 교체 요구와 P4-03 획득 계약의 다음 경계",
+      "notion_prompt": "PLAN-P4-04-01 제목으로 무기·방어구·스킬별 기존 항목 처리표와 예외 조건을 작성해 주세요."
+    },
+    {
+      "id": "DATA-P4-05-01",
+      "status": "data",
+      "tag": "밸런스 데이터",
+      "title": "룬·코어·유물 소켓 수와 효과 상한",
+      "summary": "세션 소켓 개수, 중복 장착, 등급별 효과량과 자동 환전 가치의 확정값이 필요합니다.",
+      "basis": "Master GDD Phase 4 런 전용 자산 순환과 현재 Item 생명 주기 3종",
+      "notion_prompt": "DATA-P4-05-01 제목으로 소켓 종류별 수량·중복 규칙·효과 범위·환전 배율을 작성해 주세요."
+    },
+    {
+      "id": "DONE-P4-03-01",
+      "status": "complete",
+      "tag": "완료 안내",
+      "title": "현장 전리품 비교·보류·획득 계약",
+      "summary": "방 클리어 드랍에 접근하면 현재 장비·보유 수량·탈출/사망 결과를 보고 ESC 보류 또는 F 획득할 수 있습니다.",
+      "basis": "P4-03 플레이어 완료 조건과 실제 입력 E2E",
+      "notion_prompt": "완료 범위는 비교와 런 임시 보관까지입니다. 즉시 장착은 PLAN-P4-04-01 확정 뒤 진행합니다."
+    },
+    {
+      "id": "DONE-P4-02-01",
+      "status": "complete",
+      "tag": "완료 안내",
+      "title": "지역·난이도 타겟 파밍 데이터",
+      "summary": "LootTable 27행과 Item 15개를 교차 검증하고 작전 브리핑에 대표 전리품을 연결했습니다.",
+      "basis": "Master GDD 로비 인베스트먼트·타겟 파밍 요구",
+      "notion_prompt": "현재 확정 CSV의 지역·난이도·출처 구성은 위키 전리품 테이블 문서에서 확인할 수 있습니다."
+    }
+  ]
+}

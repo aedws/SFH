@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/field_loot/field_loot_acquisition_service.gd" id="1_service"]
+
+[node name="FieldLootAcquisitionService" type="Node"]
+script = ExtResource("1_service")

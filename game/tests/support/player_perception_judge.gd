@@ -39,6 +39,11 @@ const CHECKPOINT_RULES := {
 		&"surfaces": [&"run_setup"],
 		&"phrases": ["TARGET LOOT", "최고 G", "후보"],
 	},
+	&"field_loot_comparison": {
+		&"unit": &"decision",
+		&"surfaces": [&"field_loot"],
+		&"phrases": ["FIELD ACQUISITION", "비교", "탈출 시", "사망 시", "F 획득", "ESC 보류"],
+	},
 	&"combat_glance": {
 		&"unit": &"glance",
 		&"surfaces": [&"combat", &"combat_skills", &"dash", &"minimap"],
@@ -225,6 +230,9 @@ func _resolve_surface(game: Node, surface_id: StringName) -> Control:
 			return game.get_node_or_null("UI/GameOverOverlay") as Control
 		&"run_buff_selector":
 			return game.get("run_buff_selector") as Control
+		&"field_loot":
+			var service = game.get("field_loot_acquisition_service")
+			return service.call(&"get_panel") as Control if service != null else null
 	return null
 
 

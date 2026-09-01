@@ -77,7 +77,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch loot_table_targeting tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch loot_table_targeting field_loot_compare_cancel_select tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -725,6 +725,8 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 		])
 	if not _judge_player_perception(&"room_clear_feedback", "방 클리어와 보상 생성 인지"):
 		return false
+	if not await _verify_field_loot_acquisition(player):
+		return false
 	var pacing: Dictionary = game.call(&"get_run_pacing_snapshot")
 	if (
 		not bool(pacing.get(&"extraction_unlocked", false))
@@ -751,6 +753,37 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 	}):
 		return false
 	return await _verify_fog_room_corridor_transition(player, generator, fog, room)
+
+
+func _verify_field_loot_acquisition(player: Node2D) -> bool:
+	var service = game.get("field_loot_acquisition_service")
+	if service == null:
+		return _fail("현장 비교·획득 서비스가 작전 세션에 설치되지 않았습니다.")
+	var drops: Array = service.call(&"get_active_drops")
+	if drops.is_empty():
+		return _fail("방 확보 뒤 접근 가능한 비교 전리품이 생성되지 않았습니다.")
+	var drop := drops[0] as Node2D
+	player.global_position = drop.global_position
+	drop.call(&"_process", 0.0)
+	await process_frame
+	var approached: Dictionary = service.call(&"get_snapshot")
+	if not _judge_player_perception(&"field_loot_comparison", "현장 전리품 비교·보존 결과 이해"):
+		return false
+	await _tap_key(KEY_ESCAPE)
+	var cancelled: Dictionary = service.call(&"get_snapshot")
+	player.global_position = drop.global_position + Vector2(220.0, 0.0)
+	drop.call(&"_process", 0.0)
+	player.global_position = drop.global_position
+	drop.call(&"_process", 0.0)
+	await process_frame
+	await _tap_key(KEY_F)
+	await process_frame
+	var acquired: Dictionary = service.call(&"get_snapshot")
+	return _judge_gameplay_flow(&"field_loot_acquisition", "드랍→접근→비교→보류→선택", {
+		&"approached": approached,
+		&"cancelled": cancelled,
+		&"acquired": acquired,
+	})
 
 
 func _verify_expanded_map_warp(player: Node2D) -> bool:
