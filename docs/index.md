@@ -68,6 +68,17 @@ search:
   </aside>
 </section>
 
+<section class="sfh-planner-requests" data-sfh-planner-requests aria-labelledby="sfh-planner-requests-title">
+  <header class="sfh-planner-requests__heading">
+    <div><span class="sfh-kicker">PLANNER REQUEST LINK</span><h2 id="sfh-planner-requests-title">기획 요청 · 데이터 결정</h2></div>
+    <span class="sfh-planner-requests__status" data-sfh-planner-request-status>요청 목록 연결 중</span>
+  </header>
+  <p class="sfh-planner-requests__intro">개발 진행에 필요한 결정만 상단에 압축합니다. 작업 규칙과 밸런스 수치를 분리하고, 완료 항목까지 같은 ID로 추적합니다.</p>
+  <p class="sfh-planner-requests__instruction" data-sfh-planner-request-instruction>요청 ID를 Notion 결정 제목에 함께 적어 주세요.</p>
+  <div class="sfh-planner-requests__grid" data-sfh-planner-request-grid aria-live="polite"></div>
+  <footer><a href="design/planner-request-workflow/">요청 작성·Sheet 확정 규칙 확인 →</a></footer>
+</section>
+
 <nav class="sfh-role-nav" aria-label="기획자와 개발자 빠른 이동">
   <a href="development-status/"><small>PLAN</small><strong>기획·진행 현황</strong><span>확정 근거와 다음 작업</span></a>
   <a href="architecture/module-rules/"><small>DEV</small><strong>개발·모듈 규칙</strong><span>계약과 확장 경계</span></a>
@@ -87,16 +98,37 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 13 TOPICS</span><span>60 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 14 TOPICS</span><span>62 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 38 · IMPROVE 48 · CHANGE 53 · FIX 21</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 44 · IMPROVE 53 · CHANGE 59 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>38</b><small>BUILD</small></span><span><b>48</b><small>IMPROVE</small></span><span><b>53</b><small>CHANGE</small></span><span><b>21</b><small>FIX</small></span>
+      <span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>44</b><small>BUILD</small></span><span><b>53</b><small>IMPROVE</small></span><span><b>59</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 14</small><b>기획 요청 허브 · P4-03 현장 비교·획득 · Sheet 상시 확장 규칙</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 기획자는 위키 첫 화면에서 지금 결정할 항목을 보고, 플레이어는 방 보상 전리품을 확인한 뒤 보류하거나 획득할 수 있습니다.</strong>
+          <ul>
+            <li><b>기획 요청:</b> 작업 요청·밸런스 데이터·완료 안내를 요청 ID로 분리하고 각 카드에서 공개 Notion 근거 작성 위치로 이동합니다.</li>
+            <li><b>상시 데이터 권한:</b> 앞으로 새 열거형 목록이 필요한 모든 작업은 별도 재승인 없이 Google Sheet→실시간 시험→확정 CSV 구조를 확장합니다.</li>
+            <li><b>P4-03:</b> 방 확보 뒤 전리품 신호에 접근하면 현재 무기·후보 등급·보유 수량과 탈출·사망 결과를 비교합니다.</li>
+            <li><b>선택:</b> ESC는 전리품을 월드에 유지한 채 패널만 닫고, 재접근 뒤 F는 런 임시 보관으로 이동합니다.</li>
+            <li><b>E2E:</b> 실제 ESC/F를 포함해 플레이어 인식 25개·인과 흐름 7개와 독립 모듈 제거를 검증합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>모듈 판단</b><span>비교·월드 신호·표시·획득을 분리하고 P4-04 장비 교체와 P4-06 정산을 호출하지 않습니다. 이번 단계는 기존 Item 15개·LootTable 27행으로 충분해 Sheet 목록을 늘리지 않았습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 6</h3><p>비교 서비스·월드 드랍·반응형 패널·획득 서비스·요청 데이터·Notion 연결 렌더러를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>기획 전달, 밸런스 요청 분리, 전리품 판단, 화면 점유, 데이터 확장 인계성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 6</h3><p>Manifest·방 보상 조립·마일스톤·검색·노드맵·위키 검증선을 P4-03 완료로 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>비교를 취소하면 전리품까지 사라질 수 있는 오해를 ESC 보류·월드 유지 계약으로 차단했습니다.</p></div>
+        <p><a href="features/field-loot-acquisition/">현장 전리품 →</a> · <a href="design/planner-request-workflow/">기획 요청 운영 →</a> · <a href="quality/e2e-play-session/">E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 13</small><b>지역·난이도 타겟 파밍 · 안개 문턱 UX · 위키 최신순</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">

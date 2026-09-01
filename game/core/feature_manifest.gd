@@ -33,6 +33,7 @@ extends Resource
 @export var growth_balance_enabled: bool = true
 @export var loot_lifecycle_enabled: bool = true
 @export var loot_tables_enabled: bool = true
+@export var field_loot_acquisition_enabled: bool = true
 @export var damage_enabled: bool = true
 @export var hit_feedback_enabled: bool = true
 @export var health_recovery_enabled: bool = true
@@ -219,6 +220,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"loot_lifecycle")
 	if loot_tables_enabled:
 		result.append(&"loot_tables")
+	if field_loot_acquisition_enabled:
+		result.append(&"field_loot_acquisition")
 	if damage_enabled:
 		result.append(&"damage")
 	if hit_feedback_enabled:
@@ -370,6 +373,14 @@ func validation_errors() -> PackedStringArray:
 		or not ResourceLoader.exists(loot_table_config_path)
 	):
 		errors.append("loot_tables 설정 Resource 경로가 유효하지 않습니다.")
+	if field_loot_acquisition_enabled and not loot_tables_enabled:
+		errors.append("field_loot_acquisition 모듈은 loot_tables 모듈이 필요합니다.")
+	if field_loot_acquisition_enabled and not loot_lifecycle_enabled:
+		errors.append("field_loot_acquisition 모듈은 loot_lifecycle 모듈이 필요합니다.")
+	if field_loot_acquisition_enabled and not equipment_enabled:
+		errors.append("field_loot_acquisition 모듈은 equipment 모듈이 필요합니다.")
+	if field_loot_acquisition_enabled and not inventory_enabled:
+		errors.append("field_loot_acquisition 모듈은 inventory 모듈이 필요합니다.")
 	if experience_enabled and not enemies_enabled:
 		errors.append("experience 모듈은 enemies 모듈이 필요합니다.")
 	if leveling_enabled and not experience_enabled:

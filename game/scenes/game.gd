@@ -52,6 +52,9 @@ const LOOT_LIFECYCLE_SCENE_PATH := (
 const LOOT_TABLE_PROVIDER_SCENE_PATH := (
 	"res://game/features/loot_tables/loot_table_provider.tscn"
 )
+const FIELD_LOOT_ACQUISITION_SCENE_PATH := (
+	"res://game/features/field_loot/field_loot_acquisition_service.tscn"
+)
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
 const HEALTH_RECOVERY_SCENE_PATH := (
 	"res://game/features/health_recovery/health_recovery_system.tscn"
@@ -185,6 +188,10 @@ const LOOT_LIFECYCLE_METHODS := [
 const LOOT_TABLE_METHODS := [
 	&"configure", &"request_live_table", &"load_csv_text", &"get_candidates",
 	&"roll_drop", &"get_briefing", &"get_snapshot",
+]
+const FIELD_LOOT_ACQUISITION_METHODS := [
+	&"configure", &"spawn_from_source", &"spawn_candidate", &"acquire_focused",
+	&"cancel_preview", &"get_active_drops", &"get_panel", &"get_snapshot",
 ]
 const INVENTORY_METHODS := [
 	&"configure",
@@ -362,6 +369,7 @@ var weapon_balance_service
 var growth_balance_service
 var loot_lifecycle_service
 var loot_table_provider
+var field_loot_acquisition_service
 var progression_system
 var health_recovery_system
 var run_buff_system
@@ -1091,6 +1099,7 @@ func _reset_run_references() -> void:
 	extraction_zone = null
 	credit_ledger = null
 	loot_spawner = null
+	field_loot_acquisition_service = null
 	enemy_spawner = null
 	room_encounter_system = null
 	room_warp_system = null
@@ -1264,6 +1273,8 @@ func _assemble_game() -> bool:
 		if not _install_enemy_spawner():
 			return false
 	if features.room_encounters_enabled and not _install_room_encounters():
+		return false
+	if features.field_loot_acquisition_enabled and not _install_field_loot_acquisition():
 		return false
 	if features.room_warp_enabled and not _install_room_warp():
 		return false
@@ -2033,6 +2044,58 @@ func _install_room_encounters() -> bool:
 	return true
 
 
+func _install_field_loot_acquisition() -> bool:
+	if (
+		loot_lifecycle_service == null
+		or loot_table_provider == null
+		or equipment_system == null
+		or inventory_system == null
+	):
+		_report_configuration_error("현장 전리품 비교에 필요한 데이터·장비·가방 계약이 준비되지 않았습니다.")
+		return false
+	field_loot_acquisition_service = _instantiate_feature(
+		FIELD_LOOT_ACQUISITION_SCENE_PATH, module_container, &"FieldLootAcquisition"
+	)
+	if (
+		not _supports_methods(field_loot_acquisition_service, FIELD_LOOT_ACQUISITION_METHODS)
+		or not field_loot_acquisition_service.has_signal(&"loot_acquired")
+		or not field_loot_acquisition_service.has_signal(&"preview_changed")
+		or not field_loot_acquisition_service.has_signal(&"interaction_availability_changed")
+	):
+		_report_configuration_error("현장 전리품 비교·획득 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	var context := {
+		&"region_id": active_contract.get(&"region_id", &"ruined_city"),
+		&"difficulty_id": active_contract.get(&"difficulty_id", &"standard"),
+		&"map_size": StringName(selected_map_size),
+		&"high_grade_drop_multiplier": active_contract.get(&"high_grade_drop_multiplier", 1.0),
+		&"boss_available": active_contract.get(&"boss_guaranteed", false),
+	}
+	var effective_seed := features.map_seed if features.map_seed != 0 else 7411
+	if not field_loot_acquisition_service.call(
+		&"configure",
+		player,
+		pickups_container,
+		ui_layer,
+		loot_lifecycle_service,
+		loot_table_provider,
+		equipment_system,
+		inventory_system,
+		context,
+		effective_seed
+	):
+		_report_configuration_error("현장 전리품 비교·획득 모듈을 작전 문맥에 연결하지 못했습니다.")
+		return false
+	field_loot_acquisition_service.connect(
+		&"loot_acquired", Callable(self, &"_on_field_loot_acquired")
+	)
+	field_loot_acquisition_service.connect(
+		&"interaction_availability_changed",
+		Callable(self, &"_on_interaction_availability_changed")
+	)
+	return true
+
+
 func _install_room_warp() -> bool:
 	if minimap == null:
 		_report_configuration_error("방 워프 모듈에는 설치된 미니맵이 필요합니다.")
@@ -2637,11 +2700,42 @@ func _on_room_encounter_started(room_index: int, enemy_count: int) -> void:
 
 
 func _on_room_encounter_cleared(room_index: int) -> void:
+	var field_drop_spawned := false
+	if field_loot_acquisition_service != null and map_generator != null:
+		var positions: PackedVector2Array = map_generator.call(
+			&"get_room_spawn_positions", room_index, 1
+		)
+		if not positions.is_empty():
+			field_drop_spawned = field_loot_acquisition_service.call(
+				&"spawn_from_source", positions[0] + Vector2(88.0, 0.0), &"room_reward", room_index
+			) != null
 	combat_hud_presenter.call(
-		&"show_status", "방 %d 확보 · 크레딧 보상 박스 생성" % [room_index + 1], 3, 2.0
+		&"show_status",
+		(
+			"방 %d 확보 · 보상 박스 + 비교 전리품 신호"
+			if field_drop_spawned else "방 %d 확보 · 크레딧 보상 박스 생성"
+		) % [room_index + 1],
+		3,
+		2.0
 	)
 	if room_warp_system != null:
 		room_warp_system.call(&"refresh_targets")
+
+
+func _on_field_loot_acquired(
+	item_id: StringName,
+	quantity: int,
+	snapshot: Dictionary
+) -> void:
+	var entry: Dictionary = (snapshot.get(&"acquired_items", {}) as Dictionary).get(item_id, {})
+	combat_hud_presenter.call(
+		&"show_status",
+		"현장 전리품 확보 · %s ×%d · 정산 전 임시 보관" % [
+			entry.get(&"display_name", item_id), quantity,
+		],
+		4,
+		2.4
+	)
 
 
 func _on_room_reward_collected(_room_index: int, credit_amount: int) -> void:

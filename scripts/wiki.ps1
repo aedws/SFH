@@ -45,9 +45,11 @@ try {
     & (Join-Path $PSScriptRoot "check-wiki-color-contrast.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-responsive.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1")
+    & (Join-Path $PSScriptRoot "check-wiki-planner-requests.ps1")
     & $virtualPython -m mkdocs $Action --strict
     if ($Action -eq "build") {
         & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1") -SiteRoot ".wiki-site"
+        & (Join-Path $PSScriptRoot "check-wiki-planner-requests.ps1") -SiteRoot ".wiki-site"
     }
 }
 finally {

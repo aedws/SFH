@@ -1,9 +1,16 @@
 {
-  "version": 8,
+  "version": 9,
   "updated": "2026-09-01",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "기획 요청",
+      "label": "기획 요청·밸런스 데이터 허브",
+      "description": "작업 요청·밸런스 데이터·완료 안내를 요청 ID와 Notion 근거로 추적",
+      "category": "기획",
+      "priority": 100
+    },
     {
       "query": "개발 진행도",
       "label": "개발 진행도",
@@ -21,14 +28,14 @@
     {
       "query": "마일스톤 작업 라인",
       "label": "현행 마일스톤 작업 라인",
-      "description": "완료된 Phase 1·P4-01·P4-02 뒤 P4-03부터 이어지는 작업 ID, 선행 조건, 모듈 경계, 플레이어 완료 조건과 E2E 게이트",
+      "description": "완료된 Phase 1·P4-01~03 뒤 P4-04부터 이어지는 작업 ID, 선행 조건, 모듈 경계, 플레이어 완료 조건과 E2E 게이트",
       "category": "기획",
       "priority": 98
     },
     {
       "query": "앞으로 해야 할 작업",
       "label": "앞으로 해야 할 작업",
-      "description": "완료한 P4-02 뒤 현장 드랍·교체·룬 소켓·로비 세팅·온라인 랭킹으로 이어지는 순서",
+      "description": "완료한 P4-03 뒤 현장 즉시 장착·룬 소켓·로비 세팅·온라인 랭킹으로 이어지는 순서",
       "category": "기획",
       "priority": 96
     },
@@ -45,6 +52,13 @@
       "description": "LootTable Sheet 27행, 세 지역·세 난이도·네 출처와 결정적 추첨·작전 브리핑",
       "category": "파밍",
       "priority": 98
+    },
+    {
+      "query": "현장 전리품 비교",
+      "label": "P4-03 현장 비교·획득",
+      "description": "방 보상 드랍 접근, 장비·보유 비교, ESC 보류, F 획득과 런 임시 보관",
+      "category": "파밍",
+      "priority": 99
     },
     {
       "query": "확정 사항",

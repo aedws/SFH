@@ -16,6 +16,8 @@ func judge(flow_id: StringName, evidence: Dictionary) -> Dictionary:
 			_judge_fog_transition(evidence, errors)
 		&"loot_table_targeting":
 			_judge_loot_table_targeting(evidence, errors)
+		&"field_loot_acquisition":
+			_judge_field_loot_acquisition(evidence, errors)
 		_:
 			errors.append("알 수 없는 게임플레이 흐름입니다: %s" % flow_id)
 	return {
@@ -135,6 +137,35 @@ func _judge_loot_table_targeting(evidence: Dictionary, errors: PackedStringArray
 		errors.append("동일 시드의 드랍 결과가 결정적으로 재현되지 않습니다.")
 	if first.get(&"region_id") != evidence.get(&"selected_region_id"):
 		errors.append("선택 지역과 추첨 결과의 지역이 다릅니다.")
+
+
+func _judge_field_loot_acquisition(evidence: Dictionary, errors: PackedStringArray) -> void:
+	var approached: Dictionary = evidence.get(&"approached", {})
+	var cancelled: Dictionary = evidence.get(&"cancelled", {})
+	var acquired: Dictionary = evidence.get(&"acquired", {})
+	var approached_panel: Dictionary = approached.get(&"panel", {})
+	if (
+		int(approached.get(&"active_drop_count", 0)) <= 0
+		or StringName(approached.get(&"focused_item_id", &"")) == &""
+		or not bool(approached_panel.get(&"visible", false))
+		or not bool(approached_panel.get(&"shows_extract_result", false))
+		or not bool(approached_panel.get(&"shows_cancel_and_select", false))
+	):
+		errors.append("전리품 접근 시 비교·생명 주기·선택 단서가 보이지 않습니다.")
+	if (
+		int(cancelled.get(&"active_drop_count", 0)) != int(approached.get(&"active_drop_count", 0))
+		or int(cancelled.get(&"total_cancelled", 0)) <= int(approached.get(&"total_cancelled", 0))
+		or bool((cancelled.get(&"panel", {}) as Dictionary).get(&"visible", true))
+	):
+		errors.append("ESC 보류가 월드 전리품은 유지하고 비교 패널만 닫지 못했습니다.")
+	if (
+		int(acquired.get(&"active_drop_count", -1)) >= int(cancelled.get(&"active_drop_count", 0))
+		or int(acquired.get(&"total_acquired", 0)) <= int(cancelled.get(&"total_acquired", 0))
+		or (acquired.get(&"acquired_items", {}) as Dictionary).is_empty()
+	):
+		errors.append("재접근 뒤 F 획득이 월드 전리품을 런 임시 보관으로 옮기지 못했습니다.")
+	if not bool(acquired.get(&"separate_from_equipment_mutation", false)):
+		errors.append("P4-03 획득 계약이 P4-04 장비 교체를 몰래 수행합니다.")
 
 
 func _require_increase(
