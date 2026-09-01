@@ -100,6 +100,15 @@ const KEY_MAPPING_PANEL_SCENE_PATH := (
 const SKILL_BINDING_SERVICE_SCENE_PATH := (
 	"res://game/features/skill_binding/skill_binding_service.tscn"
 )
+const PRESENTATION_SETTINGS_SCENE_PATH := (
+	"res://game/features/presentation_settings/presentation_settings_service.tscn"
+)
+const MOBILE_CONTROL_PAD_SCENE_PATH := (
+	"res://game/features/mobile_controls/mobile_control_pad.tscn"
+)
+const ELITE_PURSUIT_SCENE_PATH := (
+	"res://game/features/elite_pursuit/elite_pursuit_service.tscn"
+)
 const CYBERPUNK_OVERLAY_SCENE_PATH := (
 	"res://game/features/presentation_theme/cyberpunk_overlay.tscn"
 )
@@ -240,7 +249,8 @@ const CREDIT_LEDGER_METHODS := [
 const LOOT_SPAWNER_METHODS := [&"configure", &"get_spawn_snapshot"]
 const ENEMY_SPAWNER_METHODS := [
 	&"configure", &"get_snapshot", &"get_active_targets", &"spawn_enemy_at",
-	&"set_reinforcement_paused", &"get_remaining_spawn_budget", &"get_separation_vector",
+	&"spawn_elite_pursuer_at", &"set_reinforcement_paused", &"get_remaining_spawn_budget",
+	&"get_separation_vector",
 ]
 const ROOM_ENCOUNTER_METHODS := [
 	&"configure", &"try_start_room", &"get_snapshot", &"get_active_rewards", &"is_room_completed",
@@ -306,6 +316,15 @@ const OPERATION_RESULT_METHODS := [&"configure", &"settle_success", &"settle_fai
 const KEY_MAPPING_METHODS := [
 	&"configure", &"rebind_action", &"reset_defaults", &"get_entries", &"get_snapshot",
 ]
+const PRESENTATION_SETTINGS_METHODS := [
+	&"configure", &"get_snapshot", &"set_hud_anchor", &"set_key_label_format",
+	&"set_mobile_controls_mode", &"cycle_hud_anchor", &"cycle_key_label_format",
+	&"cycle_mobile_controls_mode", &"reset_defaults", &"should_show_mobile_controls",
+]
+const MOBILE_CONTROL_PAD_METHODS := [
+	&"configure", &"get_snapshot", &"simulate_action", &"release_all", &"set_context_enabled",
+]
+const ELITE_PURSUIT_METHODS := [&"configure", &"get_snapshot", &"force_evaluate"]
 const SKILL_BINDING_METHODS := [
 	&"configure", &"assign_skill", &"reset_defaults", &"action_for_skill",
 	&"skill_for_action", &"input_label_for_skill", &"get_entries",
@@ -409,6 +428,9 @@ var operation_result_service
 var key_mapping_service
 var skill_binding_service
 var key_mapping_panel
+var presentation_settings_service
+var mobile_control_pad
+var elite_pursuit_service
 var cyberpunk_overlay
 var operation_setup_presenter := OPERATION_SETUP_PRESENTER_SCRIPT.new()
 var combat_hud_presenter := COMBAT_HUD_PRESENTER_SCRIPT.new()
@@ -488,7 +510,11 @@ func _ready() -> void:
 		return
 	if not _install_persistent_services():
 		return
+	if features.presentation_settings_enabled and not _install_presentation_settings():
+		return
 	if features.key_mapping_enabled and not _install_key_mapping():
+		return
+	if features.mobile_controls_enabled and not _install_mobile_controls():
 		return
 
 	_configure_tier_button(small_map_button, "small")
@@ -645,7 +671,7 @@ func _install_key_mapping() -> bool:
 		_report_configuration_error("키 설정 UI 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
 	if not bool(key_mapping_panel.call(
-		&"configure", key_mapping_service, skill_binding_service
+		&"configure", key_mapping_service, skill_binding_service, presentation_settings_service
 	)):
 		_report_configuration_error("키 설정 UI를 입력 저장 모듈에 연결하지 못했습니다.")
 		return false
@@ -659,6 +685,41 @@ func _install_key_mapping() -> bool:
 			&"bindings_changed", Callable(self, &"_on_key_bindings_changed")
 		)
 	_refresh_control_hints()
+	return true
+
+
+func _install_presentation_settings() -> bool:
+	presentation_settings_service = _instantiate_feature(
+		PRESENTATION_SETTINGS_SCENE_PATH, self, &"PresentationSettings"
+	)
+	if (
+		not _supports_methods(presentation_settings_service, PRESENTATION_SETTINGS_METHODS)
+		or not presentation_settings_service.has_signal(&"settings_changed")
+		or not presentation_settings_service.call(
+			&"configure", features.presentation_settings_storage_path, true
+		)
+	):
+		_report_configuration_error("HUD·모바일 표시 설정 모듈을 구성하지 못했습니다.")
+		return false
+	presentation_settings_service.connect(
+		&"settings_changed", Callable(self, &"_on_presentation_settings_changed")
+	)
+	_on_presentation_settings_changed(
+		presentation_settings_service.call(&"get_snapshot")
+	)
+	return true
+
+
+func _install_mobile_controls() -> bool:
+	mobile_control_pad = _instantiate_feature(
+		MOBILE_CONTROL_PAD_SCENE_PATH, ui_layer, &"MobileControlPad"
+	)
+	if (
+		not _supports_methods(mobile_control_pad, MOBILE_CONTROL_PAD_METHODS)
+		or not mobile_control_pad.call(&"configure", presentation_settings_service)
+	):
+		_report_configuration_error("모바일 키패드 모듈을 구성하지 못했습니다.")
+		return false
 	return true
 
 
@@ -678,6 +739,19 @@ func _install_cyberpunk_theme() -> bool:
 
 
 func _on_key_bindings_changed(_snapshot: Dictionary) -> void:
+	_refresh_control_hints()
+
+
+func _on_presentation_settings_changed(snapshot: Dictionary) -> void:
+	var resolved_snapshot := snapshot.duplicate(true)
+	resolved_snapshot[&"mobile_controls_visible"] = bool(
+		presentation_settings_service.call(
+			&"should_show_mobile_controls",
+			DisplayServer.is_touchscreen_available() or OS.has_feature("mobile")
+		)
+		if is_instance_valid(presentation_settings_service) else false
+	)
+	combat_hud_presenter.call(&"apply_user_preferences", resolved_snapshot)
 	_refresh_control_hints()
 
 
@@ -767,7 +841,9 @@ func _select_map_tier(tier_id: String) -> void:
 
 
 func _start_selected_run() -> void:
-	start_run(selected_map_size)
+	var started := start_run(selected_map_size)
+	if is_instance_valid(mobile_control_pad):
+		mobile_control_pad.call(&"set_context_enabled", started or start_hub != null)
 
 
 func _cycle_difficulty() -> void:
@@ -1046,6 +1122,8 @@ func _open_run_setup() -> void:
 	start_hub_hud.visible = false
 	interaction_label.visible = false
 	get_tree().paused = true
+	if is_instance_valid(mobile_control_pad):
+		mobile_control_pad.call(&"set_context_enabled", false)
 	_refresh_contract_setup_ui()
 
 
@@ -1054,6 +1132,8 @@ func _close_run_setup() -> void:
 		return
 	run_setup_overlay.visible = false
 	get_tree().paused = false
+	if is_instance_valid(mobile_control_pad):
+		mobile_control_pad.call(&"set_context_enabled", true)
 	if start_hub != null and player != null:
 		start_hub_hud.visible = true
 		var is_near: bool = (
@@ -1090,6 +1170,8 @@ func _return_to_start_hub() -> void:
 	game_over_overlay.visible = false
 	run_setup_overlay.visible = false
 	interaction_label.visible = false
+	if is_instance_valid(mobile_control_pad):
+		mobile_control_pad.call(&"set_context_enabled", true)
 	for node in [
 		fog_of_war, minimap, inventory_window, equipment_workbench,
 		run_buff_selector, combat_skill_hud, dash_cooldown_hud, session_socket_hud,
@@ -1142,6 +1224,7 @@ func _reset_run_references() -> void:
 	session_socket_service = null
 	session_socket_hud = null
 	enemy_spawner = null
+	elite_pursuit_service = null
 	room_encounter_system = null
 	room_warp_system = null
 	auto_weapon = null
@@ -1316,6 +1399,8 @@ func _assemble_game() -> bool:
 		if not _install_enemy_spawner():
 			return false
 	if features.room_encounters_enabled and not _install_room_encounters():
+		return false
+	if features.elite_pursuit_enabled and not _install_elite_pursuit():
 		return false
 	if features.room_warp_enabled and not _install_room_warp():
 		return false
@@ -1974,6 +2059,8 @@ func _on_modal_panel_visibility_changed(is_open: bool) -> void:
 			dash_cooldown_hud.visible = false
 		if is_instance_valid(minimap):
 			minimap.visible = false
+		if is_instance_valid(mobile_control_pad):
+			mobile_control_pad.call(&"set_context_enabled", false)
 		return
 	for panel in get_tree().get_nodes_in_group(&"game_modal_panel"):
 		if panel is CanvasItem and panel.visible:
@@ -1990,6 +2077,8 @@ func _on_modal_panel_visibility_changed(is_open: bool) -> void:
 		dash_cooldown_hud.visible = bool(modal_ui_visibility_snapshot.get(&"dash", false))
 	if is_instance_valid(minimap):
 		minimap.visible = bool(modal_ui_visibility_snapshot.get(&"minimap", false))
+	if is_instance_valid(mobile_control_pad):
+		mobile_control_pad.call(&"set_context_enabled", true)
 	modal_ui_visibility_snapshot.clear()
 
 
@@ -2178,6 +2267,46 @@ func _install_room_encounters() -> bool:
 	room_encounter_system.connect(
 		&"interaction_availability_changed",
 		Callable(self, &"_on_interaction_availability_changed")
+	)
+	return true
+
+
+func _install_elite_pursuit() -> bool:
+	if (
+		credit_ledger == null
+		or enemy_spawner == null
+		or player == null
+		or not ResourceLoader.exists(features.elite_pursuit_config_path)
+	):
+		_report_configuration_error("엘리트 추격 모듈의 플레이어·크레딧·적 생성 의존성이 없습니다.")
+		return false
+	var player_attack_reference := 1.0
+	if is_instance_valid(auto_weapon) and auto_weapon.has_method(&"get_runtime_snapshot"):
+		player_attack_reference = float(
+			auto_weapon.call(&"get_runtime_snapshot").get(&"damage", 1.0)
+		)
+	elite_pursuit_service = _instantiate_feature(
+		ELITE_PURSUIT_SCENE_PATH, module_container, &"ElitePursuit"
+	)
+	if (
+		not _supports_methods(elite_pursuit_service, ELITE_PURSUIT_METHODS)
+		or not elite_pursuit_service.has_signal(&"pursuit_triggered")
+		or not elite_pursuit_service.call(
+			&"configure",
+			player,
+			credit_ledger,
+			enemy_spawner,
+			map_generator,
+			load(features.elite_pursuit_config_path),
+			int(active_contract.get(&"entry_cost", 0)),
+			player_attack_reference,
+			features.map_seed
+		)
+	):
+		_report_configuration_error("엘리트 추격 임계·생성 정책을 구성하지 못했습니다.")
+		return false
+	elite_pursuit_service.connect(
+		&"pursuit_triggered", Callable(self, &"_on_elite_pursuit_triggered")
 	)
 	return true
 
@@ -2846,6 +2975,17 @@ func _on_room_encounter_started(room_index: int, enemy_count: int) -> void:
 	)
 
 
+func _on_elite_pursuit_triggered(threshold: int, carried: int, elite_count: int) -> void:
+	combat_hud_presenter.call(
+		&"show_status",
+		"위협 경보 · 회수액 %d/%d C · 전역 엘리트 추격자 %d기 접근" % [
+			carried, threshold, elite_count,
+		],
+		5,
+		4.0
+	)
+
+
 func _on_room_encounter_cleared(room_index: int) -> void:
 	var field_drop_spawned := false
 	if field_loot_acquisition_service != null and map_generator != null:
@@ -3113,6 +3253,8 @@ func _finish_run(title: String, summary: String) -> void:
 			&"get_summary_line", settlement[&"gained_experience"]
 		))
 	_hide_active_run_ui()
+	if is_instance_valid(mobile_control_pad):
+		mobile_control_pad.call(&"set_context_enabled", false)
 	end_title.text = title
 	game_over_summary.text = final_summary
 	restart_button.text = "시작 거점으로 복귀 (Enter)"

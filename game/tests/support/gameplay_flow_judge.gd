@@ -28,6 +28,10 @@ func judge(flow_id: StringName, evidence: Dictionary) -> Dictionary:
 			_judge_field_loot_skill_swap(evidence, errors)
 		&"session_socket_runtime":
 			_judge_session_socket_runtime(evidence, errors)
+		&"presentation_mobile_settings":
+			_judge_presentation_mobile_settings(evidence, errors)
+		&"elite_pursuit":
+			_judge_elite_pursuit(evidence, errors)
 		_:
 			errors.append("알 수 없는 게임플레이 흐름입니다: %s" % flow_id)
 	return {
@@ -293,6 +297,87 @@ func _judge_session_socket_runtime(evidence: Dictionary, errors: PackedStringArr
 		float(evidence.get(&"damage_before", 0.0))
 	):
 		errors.append("세션 자산 해제 뒤 임시 무기 효과가 원복되지 않았습니다.")
+
+
+func _judge_presentation_mobile_settings(
+	evidence: Dictionary,
+	errors: PackedStringArray
+) -> void:
+	var before: Dictionary = evidence.get(&"before", {})
+	var changed: Dictionary = evidence.get(&"changed", {})
+	var presenter_changed: Dictionary = evidence.get(&"presenter_changed", {})
+	var restored: Dictionary = evidence.get(&"restored", {})
+	var presenter_restored: Dictionary = evidence.get(&"presenter_restored", {})
+	if before.get(&"hud_anchor") != &"bottom_left":
+		errors.append("플레이어 상태 HUD 기본 위치가 좌하단이 아닙니다.")
+	if (
+		changed.get(&"hud_anchor") != &"bottom_center"
+		or changed.get(&"key_label_format") != &"boxed"
+		or changed.get(&"mobile_controls_mode") != &"on"
+	):
+		errors.append("K 설정 변경이 HUD 위치·키 형식·모바일 표시 상태를 함께 바꾸지 못했습니다.")
+	if (
+		presenter_changed.get(&"hud_anchor") != &"bottom_center"
+		or presenter_changed.get(&"key_label_format") != &"boxed"
+	):
+		errors.append("표시 설정이 실제 전투 HUD 배치와 키 배지에 반영되지 않았습니다.")
+	if not bool(evidence.get(&"mobile_visible_after_modal", false)):
+		errors.append("설정 화면을 닫은 뒤 모바일 키패드가 표시되지 않았습니다.")
+	if float(evidence.get(&"mobile_world_delta", 0.0)) < 1.0:
+		errors.append("모바일 방향 입력이 실제 플레이어 이동으로 이어지지 않았습니다.")
+	if (
+		restored.get(&"hud_anchor") != &"bottom_left"
+		or restored.get(&"key_label_format") != &"compact"
+		or restored.get(&"mobile_controls_mode") != &"auto"
+		or presenter_restored.get(&"hud_anchor") != &"bottom_left"
+	):
+		errors.append("표시 설정 기본값 복원이 HUD까지 일관되게 반영되지 않았습니다.")
+	if not bool(evidence.get(&"mobile_hidden_after_restore", false)):
+		errors.append("비터치 환경의 자동 모드에서 모바일 키패드가 숨겨지지 않았습니다.")
+
+
+func _judge_elite_pursuit(evidence: Dictionary, errors: PackedStringArray) -> void:
+	var before: Dictionary = evidence.get(&"before", {})
+	var after: Dictionary = evidence.get(&"after", {})
+	var active_room_before: Dictionary = evidence.get(&"active_room_before", {})
+	var active_room_after: Dictionary = evidence.get(&"active_room_after_spawn", {})
+	var spawner_before: Dictionary = evidence.get(&"spawner_before", {})
+	var spawner_after: Dictionary = evidence.get(&"spawner_after", {})
+	var cleared: Dictionary = evidence.get(&"cleared", {})
+	if bool(before.get(&"triggered", false)) or not bool(after.get(&"triggered", false)):
+		errors.append("투입액 회수 임계 전후 엘리트 발생 상태가 바뀌지 않았습니다.")
+	if int(after.get(&"threshold_credits", -1)) != int(after.get(&"deployment_cost", -2)):
+		errors.append("엘리트 발생 임계값이 실제 투입 비용과 같지 않습니다.")
+	if int(after.get(&"spawned_elite_count", 0)) < 1 or int(after.get(&"spawned_elite_count", 0)) > 2:
+		errors.append("엘리트 랜덤 생성 수가 임시 정책 1~2마리를 벗어났습니다.")
+	if (
+		float(after.get(&"player_speed_multiplier", 1.0)) <= 1.0
+		or float(after.get(&"player_attack_multiplier", 1.0)) <= 1.0
+	):
+		errors.append("엘리트가 플레이어보다 약간 빠르고 강한 수치 계약을 충족하지 않습니다.")
+	if (
+		not bool(after.get(&"room_independent", false))
+		or not bool(after.get(&"door_state_independent", false))
+		or not bool(after.get(&"infinite_pursuit", false))
+	):
+		errors.append("엘리트의 방·문 독립 무한 추적 계약이 비활성화됐습니다.")
+	if (
+		int(active_room_after.get(&"active_enemy_count", -1))
+		!= int(active_room_before.get(&"active_enemy_count", -2))
+		or int(active_room_after.get(&"locked_door_count", -1))
+		!= int(active_room_before.get(&"locked_door_count", -2))
+	):
+		errors.append("엘리트 생성이 방 전투 적 수 또는 문 봉쇄 상태를 변경했습니다.")
+	if int(spawner_after.get(&"total_spawned", -1)) != int(spawner_before.get(&"total_spawned", -2)):
+		errors.append("엘리트가 일반 적 스폰 예산을 소비했습니다.")
+	if not bool(evidence.get(&"elite_visible_to_targeting", false)):
+		errors.append("엘리트가 스마트 자동 타게팅 대상 목록에 포함되지 않았습니다.")
+	if float(evidence.get(&"distance_after", INF)) >= float(evidence.get(&"distance_before", 0.0)):
+		errors.append("엘리트가 플레이어를 향해 실제로 추격하지 않았습니다.")
+	if not bool(evidence.get(&"elite_alive_after_room_clear", false)):
+		errors.append("방 클리어가 방 독립 엘리트까지 제거했습니다.")
+	if int(cleared.get(&"locked_door_count", -1)) != 0:
+		errors.append("엘리트가 남아 있어 방 클리어 후 문이 열리지 않았습니다.")
 
 
 func _require_increase(

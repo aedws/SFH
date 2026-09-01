@@ -122,6 +122,8 @@ jobs:
           grep -q "FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip skill_swap_slot_binding_restore provisional_policy restore_on_hub viewport_safe modular_boundary" /tmp/sfh-field-loot.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/operation_combination_contract_test.gd" | tee /tmp/sfh-operation-combinations.log
           grep -q "OPERATION_COMBINATION_OK combinations_9 tiers_3 difficulties_3 launch_assemble_return" /tmp/sfh-operation-combinations.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/mobile_hud_elite_contract_test.gd" | tee /tmp/sfh-mobile-hud-elite.log
+          grep -q "MOBILE_HUD_ELITE_OK optional_modules dependencies hud_bottom_left movable_anchor key_format mobile_semantic_pad threshold_entry_cost random_elite faster_stronger infinite_room_independent" /tmp/sfh-mobile-hud-elite.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/run_settlement_contract_test.gd" | tee /tmp/sfh-run-settlement.log
           grep -q "RUN_SETTLEMENT_OK auto_convert_450 permanent_unlock warehouse run_only_expiry death_loss idempotent_run_id" /tmp/sfh-run-settlement.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
@@ -184,8 +186,9 @@ jobs:
         run: |
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK" /tmp/sfh-e2e.log
-          grep -q "ui_state_contracts_23 player_perception_contracts_28 gameplay_flows_13" /tmp/sfh-e2e.log
-          grep -q "physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace" /tmp/sfh-e2e.log
+          grep -q "ui_state_contracts_23 player_perception_contracts_30 gameplay_flows_15" /tmp/sfh-e2e.log
+          grep -q "physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace" /tmp/sfh-e2e.log
+          grep -q "key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format" /tmp/sfh-e2e.log
           grep -q "loot_table_targeting" /tmp/sfh-e2e.log
           grep -q "field_loot_compare_cancel_select" /tmp/sfh-e2e.log
           grep -q "field_loot_immediate_equip_r_restore" /tmp/sfh-e2e.log
@@ -195,7 +198,7 @@ jobs:
           grep -q "run_loot_death_loss" /tmp/sfh-e2e.log
           grep -q "E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe" /tmp/sfh-e2e.log
           grep -q "E2E_CYBERPUNK_THEME_OK viewport_safe input_passthrough accent_02e5e1" /tmp/sfh-e2e.log
-          grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_28 units_9" /tmp/sfh-e2e.log
+          grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_30 units_9" /tmp/sfh-e2e.log
 
   package-windows:
     runs-on: ubuntu-24.04

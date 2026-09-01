@@ -14,6 +14,11 @@ const CHECKPOINT_RULES := {
 		&"surfaces": [&"key_mapping"],
 		&"phrases": ["입력 설정", "키 배치", "스킬 배치", "ESC", "전체 기본값 복원"],
 	},
+	&"mobile_controls_comprehension": {
+		&"unit": &"choice",
+		&"surfaces": [&"mobile_controls"],
+		&"phrases": ["위로 이동", "기본 공격", "대시", "스킬 1", "상호작용", "설정"],
+	},
 	&"inventory_comprehension": {
 		&"unit": &"choice",
 		&"surfaces": [&"inventory"],
@@ -108,6 +113,11 @@ const CHECKPOINT_RULES := {
 		&"unit": &"state_feedback",
 		&"surfaces": [&"combat"],
 		&"phrases": ["확보", "보상"],
+	},
+	&"elite_pursuit_warning": {
+		&"unit": &"state_feedback",
+		&"surfaces": [&"combat"],
+		&"phrases": ["위협 경보", "회수액", "전역 엘리트", "추격자"],
 	},
 	&"loot_feedback": {
 		&"unit": &"resource_feedback",
@@ -227,6 +237,8 @@ func _resolve_surface(game: Node, surface_id: StringName) -> Control:
 			return game.get_node_or_null("UI/StartHubHUD") as Control
 		&"key_mapping":
 			return game.get("key_mapping_panel") as Control
+		&"mobile_controls":
+			return game.get("mobile_control_pad") as Control
 		&"inventory":
 			return game.get("inventory_window") as Control
 		&"equipment":

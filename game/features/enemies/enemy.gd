@@ -41,6 +41,8 @@ var last_path_target_position := Vector2.INF
 var crowd_steering_cooldown: float = 0.0
 var cached_crowd_steering := Vector2.ZERO
 var active_statuses: Dictionary = {}
+var elite_pursuer: bool = false
+var ignore_room_barriers: bool = false
 
 
 func _ready() -> void:
@@ -95,6 +97,19 @@ func configure(
 			float(get_instance_id()) * 0.013,
 			float(crowd_config.get("steering_update_interval"))
 		)
+
+
+func configure_elite_pursuer(profile: Dictionary) -> void:
+	elite_pursuer = true
+	ignore_room_barriers = bool(profile.get(&"ignore_room_barriers", true))
+	priority_rank = int(profile.get(&"priority_rank", priority_rank))
+	if ignore_room_barriers:
+		collision_mask &= ~16
+		navigation_provider = null
+	body_visual.color = Color("e83e8c")
+	heading.color = Color("02e5e1")
+	scale = Vector2.ONE * 1.18
+	set_meta(&"elite_pursuer", true)
 
 
 func _physics_process(delta: float) -> void:
@@ -227,6 +242,8 @@ func get_targeting_snapshot() -> Dictionary:
 		&"current_armor": armor_component.current_value,
 		&"maximum_armor": armor_component.maximum_value,
 		&"priority_rank": priority_rank,
+		&"elite_pursuer": elite_pursuer,
+		&"ignore_room_barriers": ignore_room_barriers,
 		&"active_statuses": active_statuses.duplicate(true),
 	}
 

@@ -31,5 +31,11 @@
     "wiki_play_redirect": "/play/*",
     "status": "legacy-redirect-only",
     "activation_rule": "switch links only after DNS, Worker custom-domain route, gameplay E2E, Range 206 and Windows checksum pass"
+  },
+  "artifact_parity": {
+    "source": "single verified CI commit",
+    "browser_contract": "HTML+WASM+PCK E2E before active release switch",
+    "windows_contract": "x86_64 ZIP+SHA-256+BUILD-METADATA from the same commit and PCK inputs",
+    "activation_rule": "browser, windows, wiki and Cloudflare E2E must all pass before the deployment is considered current"
   }
 }

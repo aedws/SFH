@@ -7,6 +7,7 @@ signal panel_visibility_changed(is_open: bool)
 
 var provider: Node
 var skill_provider: Node
+var presentation_provider: Node
 var paused_before_open: bool = false
 var awaiting_action: StringName = &""
 var binding_buttons: Dictionary = {}
@@ -16,6 +17,9 @@ var skill_rows_container: VBoxContainer
 var status_label: Label
 var summary_label: Label
 var key_badge_label: Label
+var presentation_rows_container: VBoxContainer
+var presentation_summary_label: Label
+var settings_panel: PanelContainer
 
 
 func _ready() -> void:
@@ -26,7 +30,11 @@ func _ready() -> void:
 	visible = false
 
 
-func configure(new_provider: Node, new_skill_provider: Node = null) -> bool:
+func configure(
+	new_provider: Node,
+	new_skill_provider: Node = null,
+	new_presentation_provider: Node = null
+) -> bool:
 	if (
 		new_provider == null
 		or not new_provider.has_method(&"rebind_action")
@@ -36,6 +44,7 @@ func configure(new_provider: Node, new_skill_provider: Node = null) -> bool:
 		return false
 	provider = new_provider
 	skill_provider = new_skill_provider
+	presentation_provider = new_presentation_provider
 	if provider.has_signal(&"bindings_changed"):
 		var callback := Callable(self, &"_on_bindings_changed")
 		if not provider.is_connected(&"bindings_changed", callback):
@@ -44,8 +53,13 @@ func configure(new_provider: Node, new_skill_provider: Node = null) -> bool:
 		var skill_callback := Callable(self, &"_on_skill_bindings_changed")
 		if not skill_provider.is_connected(&"bindings_changed", skill_callback):
 			skill_provider.connect(&"bindings_changed", skill_callback)
+	if is_instance_valid(presentation_provider) and presentation_provider.has_signal(&"settings_changed"):
+		var presentation_callback := Callable(self, &"_on_presentation_settings_changed")
+		if not presentation_provider.is_connected(&"settings_changed", presentation_callback):
+			presentation_provider.connect(&"settings_changed", presentation_callback)
 	_refresh_rows()
 	_refresh_skill_rows()
+	_refresh_presentation_rows()
 	return true
 
 
@@ -105,6 +119,11 @@ func get_snapshot() -> Dictionary:
 		&"physical_binding_row_count": binding_buttons.size(),
 		&"skill_binding_row_count": skill_binding_buttons.size(),
 		&"separate_binding_levels": is_instance_valid(skill_provider),
+		&"presentation_settings_available": is_instance_valid(presentation_provider),
+		&"presentation_settings": (
+			presentation_provider.call(&"get_snapshot")
+			if is_instance_valid(presentation_provider) else {}
+		),
 		&"window_minimum_size": Vector2(920.0, 620.0),
 	}
 
@@ -117,8 +136,8 @@ func _build_ui() -> void:
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(center)
-	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(920.0, 620.0)
+	settings_panel = PanelContainer.new()
+	settings_panel.custom_minimum_size = Vector2(920.0, 620.0)
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.025, 0.055, 0.075, 0.98)
 	panel_style.border_color = Color("02e5e1c7")
@@ -127,14 +146,14 @@ func _build_ui() -> void:
 	panel_style.corner_radius_top_right = 2
 	panel_style.corner_radius_bottom_left = 2
 	panel_style.corner_radius_bottom_right = 2
-	panel.add_theme_stylebox_override("panel", panel_style)
-	center.add_child(panel)
+	settings_panel.add_theme_stylebox_override("panel", panel_style)
+	center.add_child(settings_panel)
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 28)
 	margin.add_theme_constant_override("margin_right", 28)
 	margin.add_theme_constant_override("margin_top", 22)
 	margin.add_theme_constant_override("margin_bottom", 22)
-	panel.add_child(margin)
+	settings_panel.add_child(margin)
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 12)
 	margin.add_child(content)
@@ -184,6 +203,15 @@ func _build_ui() -> void:
 	skill_rows_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	skill_rows_container.add_theme_constant_override("separation", 8)
 	skill_scroll.add_child(skill_rows_container)
+	var presentation_scroll := ScrollContainer.new()
+	presentation_scroll.name = "HUD·모바일"
+	presentation_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	presentation_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	tabs.add_child(presentation_scroll)
+	presentation_rows_container = VBoxContainer.new()
+	presentation_rows_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	presentation_rows_container.add_theme_constant_override("separation", 10)
+	presentation_scroll.add_child(presentation_rows_container)
 	var footer := HBoxContainer.new()
 	footer.add_theme_constant_override("separation", 12)
 	content.add_child(footer)
@@ -196,6 +224,8 @@ func _build_ui() -> void:
 	reset_button.custom_minimum_size = Vector2(170.0, 42.0)
 	reset_button.pressed.connect(_reset_defaults)
 	footer.add_child(reset_button)
+	resized.connect(_apply_responsive_size)
+	_apply_responsive_size()
 
 
 func _refresh_rows() -> void:
@@ -288,6 +318,78 @@ func _refresh_skill_rows() -> void:
 		skill_binding_buttons[skill_id] = next_button
 
 
+func _refresh_presentation_rows() -> void:
+	if presentation_rows_container == null:
+		return
+	for child in presentation_rows_container.get_children():
+		child.queue_free()
+	if not is_instance_valid(presentation_provider):
+		var unavailable := Label.new()
+		unavailable.text = "HUD·모바일 표시 설정 모듈이 비활성화되어 있습니다."
+		presentation_rows_container.add_child(unavailable)
+		return
+	var guide := Label.new()
+	guide.text = "플레이어 상태 HUD 위치, 화면 키 배지 형식, 모바일 키패드 표시 방식을 바꿉니다. 변경은 브라우저와 PC에서 각각 저장됩니다."
+	guide.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	guide.modulate = Color(0.72, 0.82, 0.86)
+	presentation_rows_container.add_child(guide)
+	var snapshot: Dictionary = presentation_provider.call(&"get_snapshot")
+	presentation_summary_label = Label.new()
+	presentation_summary_label.text = "현재 · HUD %s · 키 %s · 모바일 %s" % [
+		snapshot.get(&"hud_anchor_label", "좌하단"),
+		snapshot.get(&"key_label_format_label", "간결"),
+		snapshot.get(&"mobile_controls_mode_label", "터치 자동"),
+	]
+	presentation_summary_label.modulate = Color("02e5e1")
+	presentation_rows_container.add_child(presentation_summary_label)
+	_add_presentation_row(
+		"플레이어 상태 HUD 위치",
+		"체력·경험치·레벨·휴대 크레딧 묶음을 좌하단/중앙/우하단으로 이동합니다.",
+		String(snapshot.get(&"hud_anchor_label", "좌하단")),
+		&"hud_anchor"
+	)
+	_add_presentation_row(
+		"HUD 키 표시 포맷",
+		"행동 아이콘 아래의 키를 간결/대괄호/숨김으로 표시합니다.",
+		String(snapshot.get(&"key_label_format_label", "간결")),
+		&"key_label_format"
+	)
+	_add_presentation_row(
+		"모바일 키패드",
+		"터치 기기 자동 감지, 항상 표시, 항상 숨김 중에서 선택합니다.",
+		String(snapshot.get(&"mobile_controls_mode_label", "터치 자동")),
+		&"mobile_controls_mode"
+	)
+
+
+func _add_presentation_row(
+	title_text: String,
+	description_text: String,
+	value_text: String,
+	setting_id: StringName
+) -> void:
+	var row := VBoxContainer.new()
+	row.add_theme_constant_override("separation", 4)
+	presentation_rows_container.add_child(row)
+	var header := HBoxContainer.new()
+	row.add_child(header)
+	var title := Label.new()
+	title.text = title_text
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 18)
+	header.add_child(title)
+	var button := Button.new()
+	button.text = "%s  ›" % value_text
+	button.custom_minimum_size = Vector2(180, 44)
+	button.pressed.connect(_cycle_presentation_setting.bind(setting_id))
+	header.add_child(button)
+	var description := Label.new()
+	description.text = description_text
+	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	description.modulate = Color(0.62, 0.74, 0.8)
+	row.add_child(description)
+
+
 func _cycle_skill_slot(skill_id: StringName, direction: int) -> void:
 	var actions: Array[StringName] = skill_provider.call(&"get_allowed_actions")
 	if actions.is_empty():
@@ -329,13 +431,40 @@ func _reset_defaults() -> void:
 		bool(skill_provider.call(&"reset_defaults", true))
 		if is_instance_valid(skill_provider) else true
 	)
+	var presentation_saved := (
+		bool(presentation_provider.call(&"reset_defaults", true))
+		if is_instance_valid(presentation_provider) else true
+	)
 	status_label.text = (
 		"모든 키와 스킬 위치를 기본값으로 복원하고 저장했습니다."
-		if physical_saved and skills_saved
+		if physical_saved and skills_saved and presentation_saved
 		else "기본값을 저장하지 못했습니다."
 	)
 	_refresh_rows()
 	_refresh_skill_rows()
+	_refresh_presentation_rows()
+
+
+func _cycle_presentation_setting(setting_id: StringName) -> void:
+	if not is_instance_valid(presentation_provider):
+		return
+	match setting_id:
+		&"hud_anchor":
+			presentation_provider.call(&"cycle_hud_anchor", 1)
+		&"key_label_format":
+			presentation_provider.call(&"cycle_key_label_format", 1)
+		&"mobile_controls_mode":
+			presentation_provider.call(&"cycle_mobile_controls_mode", 1)
+	_refresh_presentation_rows()
+
+
+func _apply_responsive_size() -> void:
+	if settings_panel == null:
+		return
+	settings_panel.custom_minimum_size = Vector2(
+		clampf(size.x - 24.0, 340.0, 920.0),
+		clampf(size.y - 24.0, 520.0, 620.0)
+	)
 
 
 func _display_name(action_id: StringName) -> String:
@@ -353,3 +482,7 @@ func _on_bindings_changed(_snapshot: Dictionary) -> void:
 
 func _on_skill_bindings_changed(_snapshot: Dictionary) -> void:
 	_refresh_skill_rows()
+
+
+func _on_presentation_settings_changed(_snapshot: Dictionary) -> void:
+	_refresh_presentation_rows()

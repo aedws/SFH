@@ -57,6 +57,9 @@ extends Resource
 @export var game_over_enabled: bool = true
 @export var key_mapping_enabled: bool = true
 @export var skill_binding_enabled: bool = true
+@export var presentation_settings_enabled: bool = true
+@export var mobile_controls_enabled: bool = true
+@export var elite_pursuit_enabled: bool = true
 @export var cyberpunk_theme_enabled: bool = true
 @export var cyberpunk_motion_enabled: bool = true
 @export var cyberpunk_noise_enabled: bool = true
@@ -126,6 +129,12 @@ extends Resource
 	"res://game/features/skill_binding/configs/default_skill_bindings.tres"
 )
 @export var skill_binding_storage_path: String = "user://sfh_skill_bindings.json"
+@export var presentation_settings_storage_path: String = "user://sfh_presentation_settings.json"
+
+@export_category("Elite pursuit")
+@export_file("*.tres") var elite_pursuit_config_path: String = (
+	"res://game/features/elite_pursuit/configs/default_elite_pursuit.tres"
+)
 
 @export_category("Operation and meta systems")
 @export_file("*.tres") var operation_contract_config_path: String = (
@@ -278,6 +287,12 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"key_mapping")
 	if skill_binding_enabled:
 		result.append(&"skill_binding")
+	if presentation_settings_enabled:
+		result.append(&"presentation_settings")
+	if mobile_controls_enabled:
+		result.append(&"mobile_controls")
+	if elite_pursuit_enabled:
+		result.append(&"elite_pursuit")
 	if cyberpunk_theme_enabled:
 		result.append(&"cyberpunk_theme")
 
@@ -504,6 +519,16 @@ func validation_errors() -> PackedStringArray:
 		errors.append("스킬 배치 프로필 Resource 경로가 유효하지 않습니다.")
 	if skill_binding_enabled and skill_binding_storage_path.is_empty():
 		errors.append("스킬 배치 저장 경로가 필요합니다.")
+	if presentation_settings_enabled and presentation_settings_storage_path.is_empty():
+		errors.append("HUD·모바일 표시 설정 저장 경로가 필요합니다.")
+	if mobile_controls_enabled and not presentation_settings_enabled:
+		errors.append("mobile_controls 모듈은 presentation_settings 모듈이 필요합니다.")
+	if elite_pursuit_enabled and not spawning_enabled:
+		errors.append("elite_pursuit 모듈은 spawning 모듈이 필요합니다.")
+	if elite_pursuit_enabled and not credits_enabled:
+		errors.append("elite_pursuit 모듈은 credits 모듈이 필요합니다.")
+	if elite_pursuit_enabled and not _resource_exists(elite_pursuit_config_path):
+		errors.append("엘리트 추격 설정 Resource 경로가 유효하지 않습니다.")
 
 	return errors
 

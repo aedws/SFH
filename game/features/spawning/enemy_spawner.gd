@@ -198,6 +198,48 @@ func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"", spa
 	return enemy
 
 
+func spawn_elite_pursuer_at(world_position: Vector2, profile: Dictionary) -> Node2D:
+	if enemy_scene == null or spawn_config == null:
+		return null
+	var resolved_position := _resolve_spawn_position(world_position)
+	if not resolved_position.is_finite():
+		return null
+	var enemy := enemy_scene.instantiate() as Node2D
+	if (
+		enemy == null
+		or not enemy.has_method(&"configure")
+		or not enemy.has_method(&"configure_elite_pursuer")
+		or not enemy.has_signal(&"defeated")
+	):
+		if enemy != null:
+			enemy.free()
+		return null
+	enemy.set("move_speed", float(profile.get(&"move_speed", 300.0)))
+	enemy.set("contact_damage", float(profile.get(&"contact_damage", 4.0)))
+	enemy.set("max_health", float(profile.get(&"max_health", 24.0)))
+	enemy.set("max_armor", float(profile.get(&"max_armor", 10.0)))
+	enemy.set("priority_rank", int(profile.get(&"priority_rank", 4)))
+	enemy_parent.add_child(enemy)
+	enemy.global_position = resolved_position
+	enemy.set_meta(&"room_encounter_id", &"")
+	enemy.call(
+		&"configure",
+		target,
+		contact_damage_enabled,
+		null,
+		enemy_armor_enabled,
+		enemy_status_ui_enabled,
+		{},
+		self,
+		crowd_config
+	)
+	enemy.call(&"configure_elite_pursuer", profile)
+	tracked_enemies.append(enemy)
+	enemy.tree_exited.connect(_on_enemy_tree_exited.bind(enemy), CONNECT_ONE_SHOT)
+	enemy_spawned.emit(enemy)
+	return enemy
+
+
 func set_reinforcement_paused(source_id: StringName, is_paused: bool) -> void:
 	if source_id == &"":
 		return
@@ -241,6 +283,7 @@ func get_snapshot() -> Dictionary:
 		&"enemy_stat_multipliers": enemy_stat_multipliers.duplicate(true),
 		&"boss_spawn_guaranteed": bool(operation_spawn_rules.get(&"boss_spawn_guaranteed", false)),
 		&"boss_spawned": boss_spawned,
+		&"elite_pursuer_count": _elite_pursuer_count(),
 		&"crowd_separation_enabled": _crowd_separation_enabled(),
 		&"minimum_spawn_spacing": (
 			float(crowd_config.get("minimum_spawn_spacing"))
@@ -324,6 +367,14 @@ func _prune_invalid_enemies() -> void:
 	for index in range(tracked_enemies.size() - 1, -1, -1):
 		if not is_instance_valid(tracked_enemies[index]):
 			tracked_enemies.remove_at(index)
+
+
+func _elite_pursuer_count() -> int:
+	var count := 0
+	for enemy in tracked_enemies:
+		if is_instance_valid(enemy) and bool(enemy.get_meta(&"elite_pursuer", false)):
+			count += 1
+	return count
 
 
 func _supports_map_provider(candidate: Node) -> bool:
