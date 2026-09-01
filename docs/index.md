@@ -76,14 +76,14 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>3 DAYS · 42 TOPICS</span><span>57 DOCS · MASTER GDD</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>3 DAYS · 43 TOPICS</span><span>58 DOCS · MILESTONE LINE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 7 · IMPROVE 15 · CHANGE 12 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 7 · IMPROVE 18 · CHANGE 17 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span>
+      <span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>18</b><small>IMPROVE</small></span><span><b>17</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 방 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
@@ -146,7 +146,7 @@ hide:
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 2</h3><p>모바일 검색 빈 화면과 데스크톱 헤더의 브라우저 플레이 버튼으로 생긴 101px 가로 넘침을 제거했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>Master GDD 재대조 · 진행률 72% · 전리품 순환 우선순위</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -164,6 +164,27 @@ hide:
         <div class="sfh-group"><h3>🧭 수정 · 4</h3><p>진행률, 8개 시스템 산식, 6개 Phase 판정, 다음 개발 순서를 Master GDD 기준으로 수정했습니다.</p></div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 1</h3><p>이전 공개안 기준 96%가 최신 확정 범위를 반영하지 못하던 문서 불일치를 해소했습니다.</p></div>
         <p><a href="design/master-gdd-alignment/">Master GDD 상세 대조 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 5</small><b>현행 마일스톤 작업 라인 · Phase 1→4→5→6 실행 게이트</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 72% 뒤에 남은 기능을 2개 기준선·20개 Phase 작업 ID와 5개 공통 품질 게이트로 분해했습니다.</strong>
+          <ul>
+            <li><b>Phase 1:</b> 물리 키 설정과 스킬↔Action 배치를 분리해 자유 스킬 바인딩을 먼저 완결합니다.</li>
+            <li><b>Phase 4:</b> 전리품 생명주기를 동결한 뒤 현장 교체, 런 전용 소켓, 자동 환전을 하나의 플레이 인과로 연결합니다.</li>
+            <li><b>Phase 5:</b> 캐릭터·무기·스킬·유틸리티와 계약·페널티를 단일 작전 초안과 BEP 견적으로 묶습니다.</li>
+            <li><b>Phase 6:</b> 로컬 랭킹 뒤에 온라인 제공자·검증·시즌·칭호/오라 보상을 순서대로 연결합니다.</li>
+            <li><b>완료 기준:</b> 각 작업선은 모듈 경계, 플레이어가 인식할 결과, 자동 E2E를 모두 통과해야 다음 단계로 이동합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>공통 회귀선</b><span>완료된 Phase 2의 무기 교체·태그·AP·쿨타임과 Phase 3의 탈출 방어·정산을 모든 작업의 필수 게이트로 유지합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>🧱 구현 · 0</h3><p>이번 변경은 실행 로드맵을 고정한 문서 작업이며 미완료 게임 기능을 구현으로 표시하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>⚡ 개선 · 3</h3><p>작업 선행 관계, 플레이어 완료 조건, 각 단계 E2E 추적성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>🧭 수정 · 5</h3><p>착수 순서, Phase별 종료 게이트, 모듈 경계, 중단 규칙, 공통 품질선을 현행 Master GDD에 맞췄습니다.</p></div>
+        <div class="sfh-group"><h3>🛠️ 버그픽스 · 0</h3><p>별도 게임 버그 수정은 없습니다.</p></div>
+        <p><a href="design/current-milestone-workline/">현행 마일스톤 작업 라인 →</a></p>
       </div>
     </details>
   </div>
