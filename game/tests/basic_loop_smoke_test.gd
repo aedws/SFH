@@ -17,6 +17,8 @@ const WEAPON_BALANCE_SCENE_PATH := "res://game/features/weapon_balance/weapon_ba
 const WEAPON_BALANCE_CONFIG_PATH := "res://game/features/weapon_balance/configs/default_weapon_balance.tres"
 const GROWTH_BALANCE_SCENE_PATH := "res://game/features/growth_balance/growth_balance_service.tscn"
 const GROWTH_BALANCE_CONFIG_PATH := "res://game/features/growth_balance/configs/default_growth_balance.tres"
+const LOOT_LIFECYCLE_SCENE_PATH := "res://game/features/loot_lifecycle/loot_lifecycle_service.tscn"
+const LOOT_LIFECYCLE_CONFIG_PATH := "res://game/features/loot_lifecycle/configs/default_loot_lifecycle.tres"
 const WEAPON_BALANCE_PAYLOAD_PATH := (
 	"res://game/features/weapon_balance/data/weapon_balance_payload.tres"
 )
@@ -25,6 +27,9 @@ const RUN_BUFF_BALANCE_PAYLOAD_PATH := (
 )
 const UPGRADE_BALANCE_PAYLOAD_PATH := (
 	"res://game/features/growth_balance/data/upgrade_balance_payload.tres"
+)
+const ITEM_LIFECYCLE_PAYLOAD_PATH := (
+	"res://game/features/loot_lifecycle/data/item_lifecycle_payload.tres"
 )
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const DASH_COOLDOWN_HUD_SCENE_PATH := (
@@ -80,6 +85,7 @@ const WEB_EXPORT_DATA_PATHS := [
 	"game/features/weapon_balance/data/weapon_balance.csv",
 	"game/features/growth_balance/data/run_buff_balance.csv",
 	"game/features/growth_balance/data/upgrade_balance.csv",
+	"game/features/loot_lifecycle/data/item_lifecycle.csv",
 ]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 const ROOM_HORDE_MINIMUMS := {&"small": 12, &"medium": 18, &"large": 24}
@@ -109,6 +115,8 @@ func _init() -> void:
 	if not await _verify_weapon_balance_modules():
 		return
 	if not await _verify_growth_balance_modules():
+		return
+	if not await _verify_loot_lifecycle_modules():
 		return
 	if not await _verify_balance_mode_selector():
 		return
@@ -383,6 +391,7 @@ func _verify_web_export_data_contract() -> bool:
 		[WEB_EXPORT_DATA_PATHS[0], WEAPON_BALANCE_PAYLOAD_PATH],
 		[WEB_EXPORT_DATA_PATHS[1], RUN_BUFF_BALANCE_PAYLOAD_PATH],
 		[WEB_EXPORT_DATA_PATHS[2], UPGRADE_BALANCE_PAYLOAD_PATH],
+		[WEB_EXPORT_DATA_PATHS[3], ITEM_LIFECYCLE_PAYLOAD_PATH],
 	]
 	for contract in payload_contracts:
 		var source_path := "res://%s" % String(contract[0])
@@ -2352,6 +2361,61 @@ func _verify_growth_balance_modules() -> bool:
 	if not failure_message.is_empty():
 		_fail("성장 밸런스 모듈 실패: %s" % failure_message)
 		return false
+	return true
+
+
+func _verify_loot_lifecycle_modules() -> bool:
+	var lifecycle_scene := load(LOOT_LIFECYCLE_SCENE_PATH) as PackedScene
+	var lifecycle_config := load(LOOT_LIFECYCLE_CONFIG_PATH) as LootLifecycleConfig
+	if lifecycle_scene == null or lifecycle_config == null:
+		return _fail("전리품 생명 주기 Scene 또는 Config를 불러오지 못했습니다.")
+	var service := lifecycle_scene.instantiate()
+	root.add_child(service)
+	await process_frame
+	var failure_message := ""
+	if not service.call(&"configure", lifecycle_config):
+		failure_message = "확정 Item CSV 로드에 실패했습니다."
+	else:
+		var snapshot: Dictionary = service.call(&"get_snapshot")
+		var blueprint := service.call(&"get_definition", &"assault_rifle_blueprint") as LootLifecycleDefinition
+		var rune := service.call(&"get_definition", &"arc_rune") as LootLifecycleDefinition
+		var research_items: Array = service.call(&"get_for_region", &"research_complex")
+		var conflicting := blueprint.duplicate(true) as LootLifecycleDefinition if blueprint != null else null
+		if conflicting != null:
+			conflicting.session_behavior = &"carry_currency"
+		if snapshot.size() != 15:
+			failure_message = "활성 전리품 15개를 읽지 못했습니다."
+		elif blueprint == null or blueprint.loot_family != &"persistent_asset":
+			failure_message = "영구 도면 자산 계약을 읽지 못했습니다."
+		elif rune == null or rune.loot_family != &"session_convertible":
+			failure_message = "세션 증폭·환금 자산 계약을 읽지 못했습니다."
+		elif conflicting == null or conflicting.validation_errors().is_empty():
+			failure_message = "사용 방식과 탈출 결과가 충돌하는 영구 자산을 허용했습니다."
+		elif int(service.call(&"resolve_outcome", &"arc_rune", true).get(&"credit_value", 0)) != 60:
+			failure_message = "세션 자산 탈출 자동 환전 결과가 올바르지 않습니다."
+		elif service.call(&"resolve_outcome", &"assault_rifle_blueprint", true).get(&"result") != &"permanent_unlock":
+			failure_message = "도면 탈출 결과가 영구 해금이 아닙니다."
+		elif service.call(&"resolve_outcome", &"assault_rifle_blueprint", false).get(&"result") != &"lost":
+			failure_message = "도면 사망 결과가 소실이 아닙니다."
+		elif research_items.size() < 4:
+			failure_message = "연구 단지 지역 필터가 전리품 후보를 반환하지 못했습니다."
+		else:
+			var blueprint_view := LootLifecyclePresenter.present(blueprint)
+			var rune_view := LootLifecyclePresenter.present(rune)
+			if "영구" not in String(blueprint_view.get(&"family_label", "")):
+				failure_message = "영구 자산 표시가 플레이어에게 노출되지 않습니다."
+			elif "자동 환전" not in String(rune_view.get(&"extract_label", "")):
+				failure_message = "세션 자산 자동 환전 표시가 누락됐습니다."
+			elif not service.call(&"load_csv_text", "item_id,display_name\nbroken,broken", "오류 테스트"):
+				if (service.call(&"get_snapshot") as Dictionary).size() != 15:
+					failure_message = "잘못된 갱신 뒤 마지막 정상 카탈로그가 보존되지 않았습니다."
+			else:
+				failure_message = "필수 열이 없는 Item CSV를 허용했습니다."
+	root.remove_child(service)
+	service.free()
+	if not failure_message.is_empty():
+		return _fail("전리품 생명 주기 모듈 실패: %s" % failure_message)
+	print("LOOT_LIFECYCLE_OK items_15 families_2 session_convertible_3 policy_validation presenter")
 	return true
 
 

@@ -11,6 +11,22 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-01 전리품 생명 주기 P4-01 감사
+
+| 점검 대상 | 결과 | 독립성·검증 근거 |
+|---|---|---|
+| 정책 정의 | 통과 | `LootLifecycleDefinition` Resource가 두 분류와 허용된 사용·탈출·사망 조합만 소유 |
+| 데이터 공급 | 통과 | Item Sheet J:P와 확정 CSV·Web payload가 같은 16열 스키마를 사용하고 15개 항목을 검증 |
+| 런타임 제공자 | 통과 | `LootLifecycleService`가 실시간/확정 전환, 지역 후보 조회와 순수 결과 계산만 담당 |
+| 상태 변경 격리 | 통과 | 서비스가 Inventory·PersistentProfile·CreditLedger를 참조하거나 변경하지 않음 |
+| 플레이어 표현 | 통과 | `LootLifecyclePresenter`는 Definition 사본을 영구/이번 런·탈출·사망 단문으로 변환 |
+| 잘못된 갱신 | 통과 | 필수 열 누락·중복 ID·상충 조합을 거부하고 마지막 정상 15개 카탈로그를 보존 |
+| 선택적 비활성화 | 통과 | Manifest의 `loot_lifecycle_enabled`와 Config 경로로 조립을 제거하며 기존 전리품 상자는 유지 |
+| 배포 데이터 | 통과 | Web/Windows export와 release CSV 해시에 Item 확정 CSV를 포함하고 payload 일치를 스모크로 검사 |
+| Scene 격리 | 통과 | 독립 Scene·Resource만 추가했고 사용자 소유 `game/scenes/game.tscn`은 수정하지 않음 |
+
+P4-01에서 지역 태그는 “후보가 될 수 있는가”만 나타냅니다. 실제 확률·등급·난이도 보정은 P4-02 `LootTableProvider`, 획득·교체 적용은 P4-03, 프로필·크레딧 정산은 P4-06이 맡으므로 현재 서비스에 드랍·저장 책임이 섞이지 않습니다.
+
 ## 2026-09-01 위키 접근성·자유 스킬 배치 감사
 
 | 점검 대상 | 결과 | 독립성·검증 근거 |

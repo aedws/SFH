@@ -87,14 +87,14 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 11 TOPICS</span><span>58 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 12 TOPICS</span><span>59 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 27 · IMPROVE 39 · CHANGE 42 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 33 · IMPROVE 43 · CHANGE 47 · FIX 18</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>27</b><small>BUILD</small></span><span><b>39</b><small>IMPROVE</small></span><span><b>42</b><small>CHANGE</small></span><span><b>16</b><small>FIX</small></span>
+      <span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>33</b><small>BUILD</small></span><span><b>43</b><small>IMPROVE</small></span><span><b>47</b><small>CHANGE</small></span><span><b>18</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 방 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
@@ -301,7 +301,7 @@ search:
         <p><a href="getting-started/run-project/#private-repository-backup">백업·복구 절차 →</a> · <a href="architecture/module-audit/#private-repository-backup-audit">복구 모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 11</small><b>배포 표면 분리 · Notion 75% 재확인 · 보안 모듈 재감사</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -320,6 +320,27 @@ search:
         <div class="sfh-group"><h3>수정 · 5</h3><p>플레이 링크, R2 prefix 인자, GDD 재확인 기록, P4-01 작업 패킷, 보안·모듈 감사표를 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>상대 <code>/play/</code> 링크가 위키와 게임을 같은 배포로 오인시키던 문제와 노드맵의 오래된 72% 요약을 바로잡았습니다.</p></div>
         <p><a href="getting-started/run-project/#cloudflare">배포 표면 계약 →</a> · <a href="design/master-gdd-alignment/">Master GDD 재대조 →</a> · <a href="design/current-milestone-workline/">다음 작업 라인 →</a> · <a href="architecture/module-audit/">보안·모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>전리품 생명 주기 P4-01 · Item Sheet 15종 · 탈출·사망 결과 계약</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 전리품을 줍기 전부터 이번 런 사용, 영구 해금, 자동 환전과 사망 소실 결과를 일관된 데이터로 알 수 있습니다.</strong>
+          <ul>
+            <li><b>두 분류:</b> 파츠·모듈·소모품·크레딧·도면은 영구 자산 후보, 룬·코어·유물은 이번 런 증폭 후 탈출 자동 환전 자산으로 분리했습니다.</li>
+            <li><b>15개 목록:</b> Google Sheet <code>Item</code> 탭에 기존 9개, 도면 3개, 세션 자산 3개와 생명 주기 7열을 추가하고 같은 16열 확정 CSV를 만들었습니다.</li>
+            <li><b>결과 계약:</b> 성공 시 창고·지갑·영구 해금·자동 환전, 사망 시 획득분 소실을 순수 결과로 계산합니다.</li>
+            <li><b>플레이어 표시:</b> 브라우저 이모지 깨짐을 피한 단색 기호와 짧은 문구로 영구/이번 런·탈출·사망 결과를 제공합니다.</li>
+            <li><b>다음 단계:</b> 지역 태그는 후보만 동결했으며 실제 지역·난이도별 드랍 확률은 P4-02에서 연결합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>안전 경계</b><span>서비스는 인벤토리·프로필·크레딧을 직접 수정하지 않으며 Cloudflare 과금·결제·배포 자원도 변경하지 않았습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 6</h3><p>Definition, Table, Service, Config, Presenter, Sheet 동기화 검사를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>기획 입력성, 탈출 결과 이해, 실시간/확정 공급자 일치, Web 배포 데이터 추적을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>Manifest, 작전 밸런스 모드, export, release 해시, P4 작업 라인을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>상충 생명 주기와 잘못된 실시간 CSV가 정상 카탈로그를 오염시키지 않도록 차단했습니다.</p></div>
+        <p><a href="features/loot-lifecycle/">전리품 생명 주기 →</a> · <a href="design/current-milestone-workline/">P4 작업 라인 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
   </div>

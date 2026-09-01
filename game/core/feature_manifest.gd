@@ -31,6 +31,7 @@ extends Resource
 @export var combat_resources_enabled: bool = true
 @export var weapon_balance_enabled: bool = true
 @export var growth_balance_enabled: bool = true
+@export var loot_lifecycle_enabled: bool = true
 @export var damage_enabled: bool = true
 @export var hit_feedback_enabled: bool = true
 @export var health_recovery_enabled: bool = true
@@ -70,6 +71,9 @@ extends Resource
 )
 @export_file("*.tres") var growth_balance_config_path: String = (
 	"res://game/features/growth_balance/configs/default_growth_balance.tres"
+)
+@export_file("*.tres") var loot_lifecycle_config_path: String = (
+	"res://game/features/loot_lifecycle/configs/default_loot_lifecycle.tres"
 )
 
 @export_category("Combat skills")
@@ -207,6 +211,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"weapon_balance")
 	if growth_balance_enabled:
 		result.append(&"growth_balance")
+	if loot_lifecycle_enabled:
+		result.append(&"loot_lifecycle")
 	if damage_enabled:
 		result.append(&"damage")
 	if hit_feedback_enabled:
@@ -344,6 +350,13 @@ func validation_errors() -> PackedStringArray:
 		or not ResourceLoader.exists(growth_balance_config_path)
 	):
 		errors.append("growth_balance 설정 Resource 경로가 유효하지 않습니다.")
+	if loot_lifecycle_enabled and not inventory_enabled:
+		errors.append("loot_lifecycle 모듈은 inventory 모듈이 필요합니다.")
+	if loot_lifecycle_enabled and (
+		loot_lifecycle_config_path.is_empty()
+		or not ResourceLoader.exists(loot_lifecycle_config_path)
+	):
+		errors.append("loot_lifecycle 설정 Resource 경로가 유효하지 않습니다.")
 	if experience_enabled and not enemies_enabled:
 		errors.append("experience 모듈은 enemies 모듈이 필요합니다.")
 	if leveling_enabled and not experience_enabled:

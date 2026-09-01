@@ -43,6 +43,7 @@ tags:
 - `combat_skills`는 `player`와 유효한 전투 스킬 로드아웃 Resource 필요
 - `weapon_balance`는 `weapons` 필요
 - `growth_balance`는 `run_buffs`, `equipment` 필요
+- `loot_lifecycle`는 `inventory`와 유효한 Item 생명 주기 Config 필요
 - `experience`는 `enemies` 필요
 - `leveling`은 `experience` 필요
 - `run_buffs`는 `leveling` 필요
@@ -75,6 +76,8 @@ tags:
 공간 가시성도 같은 규칙을 따릅니다. 맵은 `get_visibility_region()`과 `get_visibility_room_rects()`로 복사된 경계만 제공하고, 안개는 방 배열·바닥 셀·길찾기 내부 자료구조에 접근하지 않습니다. 플레이어의 방향도 `get_facing_direction()` 공개 메서드로만 읽습니다.
 
 밸런스 데이터도 같은 규칙을 따릅니다. `growth_balance`는 CSV를 파싱해 카탈로그·수정자·견적만 공개하고 장비 상태나 내부 버프 선택을 직접 변경하지 않습니다. 소비 모듈은 제공자가 없으면 기존 Resource 값으로 폴백합니다.
+
+전리품 생명 주기도 데이터와 적용을 분리합니다. `LootLifecycleService`는 Item Sheet/확정 CSV를 검증하고 탈출·사망 결과 사본만 반환합니다. 인벤토리·영구 프로필·크레딧 저장소를 직접 수정하지 않으며, 실제 획득과 정산은 후속 명령 모듈이 결과를 소비합니다.
 
 전투 스킬도 입력·쿨타임을 실행기, 수치를 정의 Resource, 실제 행동을 효과 Resource, 지속 수명을 런타임 효과, 표현을 HUD Scene으로 나눕니다. 효과는 Player나 Enemy의 내부 필드를 읽지 않고 방향·수정자·피해 공개 계약만 사용합니다.
 
