@@ -789,7 +789,7 @@ Presenter는 도메인 결과를 새로 계산하지 않습니다. 비용·배�
 | 원인 분리 | 통과 | Web PCK에는 CSV가 포함됐지만 브라우저 런타임의 `FileAccess.open()`이 비-Resource CSV 스트림을 제공하지 않아 `GrowthBalanceService.configure()`가 실패하고 조립 롤백이 거점을 복구했음을 배포 아티팩트 콘솔로 재현 |
 | 데이터 패키징 | 통과 | 무기·내부 성장·장비 강화 CSV 3종을 Web 프리셋에 포함하고, Web-safe `EmbeddedCsvPayload` 미러를 설정 Resource로 주입 |
 | 자동 회귀 | 통과 | 동기화 스크립트와 게임 스모크가 세 CSV의 실제 존재, Web 내보내기 목록, 내장 미러의 원문·원본 경로 일치를 함께 검사 |
-| 플레이 링크 단일화 | 통과 | 홈 실행 카드와 전역 고정 도크가 모두 배포 루트 기준 `/play/`를 계산 |
+| 플레이 링크 표면 분리 | 통과 | 홈 실행 카드와 전역 고정 도크가 위키 상대 `/play/`가 아니라 별도 게임 Worker 절대 주소를 열고 `data-sfh-surface="gameplay"`로 표시 |
 | 즉시 탐색 호환 | 통과 | 전역 도크는 Material `document$` 재탐색마다 기존 요소를 재사용하고 링크만 갱신 |
 
 밸런스 서비스는 계속 확정 CSV 또는 실시간 Google Sheets 제공자만 소비합니다. 로컬·에디터에서는 `FileAccess.open()`으로 CSV를 우선 읽고, 브라우저에서 그 스트림을 얻지 못할 때만 설정 Resource에 주입된 동일 원문의 `EmbeddedCsvPayload`를 사용합니다. Google Sheets 동기화 스크립트가 CSV 저장과 미러 생성을 하나의 작업으로 처리하고 `--check`가 불일치를 거부하므로 두 데이터 경로가 별도 기준으로 갈라지지 않습니다.
@@ -856,6 +856,25 @@ Worker는 R2 객체 읽기와 HTTP 전달만 소유하고 게임 코드를 알�
 | 범위 격리 | 통과 | 백업 워크플로는 Git 객체와 GitHub PR만 다루며 Cloudflare 프로젝트·R2·과금·결제 설정을 참조하지 않음 |
 
 두 백업은 목적이 다릅니다. `pre-main`은 새 커밋 자체가 검증에 실패해도 직전 상태를 즉시 찾기 위한 안전망이고, `verified-main`은 실제 Cloudflare E2E까지 통과한 복귀 기준점입니다. 저장소가 GitHub Free Private이어서 서버 측 Ruleset 강제가 불가능한 현재 상태는 숨기지 않고, PR 관례·정적 계약 검사·불변 백업으로 보완합니다.
+
+## 배포 표면·보안 재감사 (2026-09-01)
+
+| 검사 항목 | 결과 | 근거 |
+|---|---|---|
+| 주소 분리 | 통과 | 위키는 `sfh-dev-wiki.pages.dev`, 플레이는 `sfh-game.vstock-market.workers.dev`로 호스트가 다름 |
+| 계정 접미사 오인 방지 | 통과 | `vstock-market`은 workers.dev 계정 접미사이고 SFH는 별도 `sfh-game` Worker임을 홈·실행 문서에 명시 |
+| 위키 산출물 격리 | 통과 | Cloudflare Pages 아티팩트에 게임 WASM·PCK를 결합하지 않고 CI가 `.wiki-site/play` 부재를 검사 |
+| 레거시 경로 | 통과 | 위키 `/play/*`는 기존 북마크 호환 302만 유지하고 신규 UI는 사용하지 않음 |
+| R2 비공개 | 통과 | `sfh-game-artifacts`는 공개 origin이 없고 `ASSETS` Worker 바인딩으로만 읽음 |
+| R2 네임스페이스 | 통과 | Web은 `game/releases/<SHA>`, Windows는 `downloads/<version>`으로 겹치지 않으며 업로더가 중첩 접두사를 거부 |
+| HTTP 표면 식별 | 통과 | 게임·다운로드 응답에 각각 `x-sfh-surface: gameplay`, `windows-download`를 부여하고 health가 Private Worker 바인딩을 보고 |
+| 최소 메서드 | 통과 | Worker는 GET·HEAD만 허용하고 경로 정규화·순회 차단·MIME·nosniff·게임 격리 헤더·Range를 중앙 적용 |
+| 자격 증명 격리 | 통과 | Cloudflare 토큰은 GitHub Secret 참조로만 전달되며 저장소·위키·R2 manifest에 값이 기록되지 않음 |
+| 토큰 수명 | 후속 필요 | 현재 토큰은 2027-09-02 만료이며 무기한 교체·기존 토큰 폐기는 별도 사용자 확인 후 수행 |
+| 복구 권한 | 통과 | 복구 입력은 허용 백업 네임스페이스와 전체 SHA로 제한되고 강제 푸시 없이 PR로 복귀 |
+| 비용 경계 | 통과 | 새 Pages·Worker·R2를 만들거나 플랜·결제 설정을 변경하지 않고 기존 SFH 전용 자원의 계약만 명확화 |
+
+모듈 책임은 `deployment-surfaces.json`이 배포 식별자와 공개 경계를, R2 업로더가 키·해시 manifest를, Worker가 읽기·HTTP 보안을, Pages가 문서만, GitHub Actions가 검증 순서와 활성 전환을 소유하도록 나눴습니다. 정적 계약 검사는 이 값들의 불일치, 위키 런타임 혼입, 공개 R2 설정, 접두사 중첩을 빌드 단계에서 거부합니다.
 
 ## 의도된 결합
 

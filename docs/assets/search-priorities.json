@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "updated": "2026-09-01",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
@@ -21,14 +21,14 @@
     {
       "query": "마일스톤 작업 라인",
       "label": "현행 마일스톤 작업 라인",
-      "description": "Phase 1·4·5·6의 작업 ID, 선행 조건, 모듈 경계, 플레이어 완료 조건과 E2E 게이트",
+      "description": "완료된 Phase 1 뒤 P4-01부터 이어지는 작업 ID, 선행 조건, 모듈 경계, 플레이어 완료 조건과 E2E 게이트",
       "category": "기획",
       "priority": 98
     },
     {
       "query": "앞으로 해야 할 작업",
       "label": "앞으로 해야 할 작업",
-      "description": "전리품 순환·현장 교체·룬 소켓·자유 바인딩·온라인 랭킹 순서",
+      "description": "P4-01 전리품 생명주기부터 현장 교체·룬 소켓·로비 세팅·온라인 랭킹으로 이어지는 순서",
       "category": "기획",
       "priority": 96
     },
@@ -48,8 +48,15 @@
     },
     {
       "query": "Cloudflare 배포",
-      "label": "Cloudflare 이중 배포와 무중단 전환",
-      "description": "sfh-dev-wiki Pages, sfh-game Worker+R2, 커밋별 불변 업로드와 GitHub Pages 병행 E2E",
+      "label": "Cloudflare 배포 표면 분리",
+      "description": "sfh-dev-wiki 문서 Pages, sfh-game 플레이 Worker, 비공개 R2 원본과 호환 302의 책임 경계",
+      "category": "배포",
+      "priority": 97
+    },
+    {
+      "query": "배포 표면 보안",
+      "label": "배포 표면·보안 모듈 감사",
+      "description": "문서·플레이·원본 보관 주소 분리, R2 비공개 prefix, Actions SHA·Secret·백업 복구 자동 검사",
       "category": "배포",
       "priority": 97
     },
@@ -255,7 +262,7 @@
     },
     {
       "label": "검증·구조",
-      "queries": ["Cloudflare 배포", "Windows 다운로드", "모바일 위키 E2E", "플레이어 인식 E2E", "UI 상태 판정 E2E", "E2E 플레이 세션", "상업 에셋 라이선스", "모듈 감사", "성능 예산", "페널티 랭킹", "버그픽스", "검색 별칭"]
+      "queries": ["Cloudflare 배포", "배포 표면 보안", "Windows 다운로드", "모바일 위키 E2E", "플레이어 인식 E2E", "UI 상태 판정 E2E", "E2E 플레이 세션", "상업 에셋 라이선스", "모듈 감사", "성능 예산", "페널티 랭킹", "버그픽스", "검색 별칭"]
     }
   ]
 }

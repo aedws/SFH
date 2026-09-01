@@ -68,8 +68,8 @@ if ($e2e -notmatch 'REAL_BROWSER_REQUIRED') {
 if ($searchScript -notmatch 'new URL\("\.\./assets/search-priorities\.json", searchDashboardScriptUrl\)') {
     $errors.Add("Search data does not use the stable script-derived site root.")
 }
-if ($playScript -notmatch 'new URL\("\.\./play/", playEntryScriptUrl\)') {
-    $errors.Add("Browser play does not use the stable script-derived site root.")
+if ($playScript -notmatch 'GAMEPLAY_ORIGIN = "https://sfh-game\.vstock-market\.workers\.dev"') {
+    $errors.Add("Browser play does not use the distinct gameplay Worker origin.")
 }
 if ($mkdocs -notmatch 'quality/wiki-responsive-e2e\.md') {
     $errors.Add("MkDocs navigation does not expose the responsive wiki E2E document.")

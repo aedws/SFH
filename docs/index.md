@@ -46,14 +46,19 @@ search:
     <header><strong>현재 빌드 상태</strong><b class="sfh-live">PLAYABLE</b></header>
     <p>거점에서 지역·난이도·페널티·소모품을 준비하고, 투입 비용을 지불해 전투·파밍·탈출 방어·영구 정산 뒤 복귀합니다.</p>
     <div class="sfh-operation-launch">
-      <a class="sfh-operation-play" href="play/">
+      <a class="sfh-operation-play" data-sfh-surface="gameplay" href="https://sfh-game.vstock-market.workers.dev/" target="_blank" rel="noopener noreferrer">
         <span><small>PLAY CURRENT MAIN</small><strong>브라우저로 플레이</strong><em>설치 없이 바로 작전 준비</em></span>
         <b aria-hidden="true">▶</b>
       </a>
-      <a class="sfh-operation-download" href="https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip">
+      <a class="sfh-operation-download" data-sfh-surface="windows-download" href="https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip">
         <span><small>WINDOWS X86_64 · v0.1.0</small><strong>Windows 빌드 다운로드</strong><em>검증 완료 실행의 ZIP · SHA-256 제공</em></span>
         <b aria-hidden="true">↓</b>
       </a>
+      <div class="sfh-surface-map" aria-label="배포 영역 분리 상태">
+        <span data-sfh-surface="wiki"><small>DOCS · PAGES</small><strong>SFH DEV WIKI</strong><em>문서·검색만 제공</em></span>
+        <span data-sfh-surface="gameplay"><small>PLAY · WORKER</small><strong>SFH GAME</strong><em>브라우저 실행 전용</em></span>
+        <span data-sfh-surface="r2"><small>ASSETS · PRIVATE R2</small><strong>NO PUBLIC LINK</strong><em>Worker 바인딩만 허용</em></span>
+      </div>
       <div class="sfh-operation-meta" aria-label="현재 플레이 빌드 요약">
         <span><b>3</b><small>MAP TIERS</small></span>
         <span><b>K · 22 + 9</b><small>KEY + SKILL BINDING</small></span>
@@ -82,14 +87,14 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 10 TOPICS</span><span>58 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 11 TOPICS</span><span>58 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 24 · IMPROVE 34 · CHANGE 37 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 27 · IMPROVE 39 · CHANGE 42 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>24</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>37</b><small>CHANGE</small></span><span><b>14</b><small>FIX</small></span>
+      <span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>27</b><small>BUILD</small></span><span><b>39</b><small>IMPROVE</small></span><span><b>42</b><small>CHANGE</small></span><span><b>16</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 방 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
@@ -275,7 +280,7 @@ search:
         <p><a href="getting-started/run-project/#cloudflare">Cloudflare 운영·다운로드 규격 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 10</small><b>Private 저장소 복구망 · 변경 직전·검증 완료 이중 백업</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -294,6 +299,27 @@ search:
         <div class="sfh-group"><h3>수정 · 4</h3><p>Private 운영 규칙, 백업 네임스페이스, 복구 검증선, 배포 후 기준점 기록을 명문화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>자동 PR 권한이 꺼진 저장소에서 복구 브랜치만 남고 다음 동선을 알 수 없던 상태를 compare URL 출력으로 보완했습니다.</p></div>
         <p><a href="getting-started/run-project/#private-repository-backup">백업·복구 절차 →</a> · <a href="architecture/module-audit/#private-repository-backup-audit">복구 모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>배포 표면 분리 · Notion 75% 재확인 · 보안 모듈 재감사</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 문서를 여는 주소, 게임을 실행하는 주소, 원본을 보관하는 공간을 서로 다른 책임으로 고정했습니다.</strong>
+          <ul>
+            <li><b>문서:</b> 기존 <code>sfh-dev-wiki.pages.dev</code>는 검색·기획·개발 현황만 제공하며 게임 WASM/PCK를 위키 산출물에 섞지 않습니다.</li>
+            <li><b>플레이:</b> 모든 PLAY 버튼은 별도 <code>sfh-game.vstock-market.workers.dev</code>를 새 탭으로 직접 열고, 위키의 <code>/play/*</code>는 이전 링크용 302 호환 경로로만 남깁니다.</li>
+            <li><b>보관:</b> R2 <code>sfh-game-artifacts</code>는 공개 주소가 없는 Worker 전용 원본 저장소이며 런타임과 다운로드를 서로 겹치지 않는 prefix로 분리합니다.</li>
+            <li><b>기획:</b> 공개 Master GDD 0~8장을 다시 읽은 결과 요구 범위 변화가 없어 진행도는 <b>75%</b>를 유지합니다. 다음 기능 작업은 P4-01 전리품 생명주기 계약입니다.</li>
+            <li><b>안전:</b> Private 저장소 이중 백업·복구 PR·Actions SHA 고정과 Cloudflare secret 경계를 다시 검사했습니다. 새 서비스나 과금 설정은 추가·변경하지 않습니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>주소 식별</b><span><code>vstock-market</code>는 이 계정의 Workers.dev 하위 도메인일 뿐 기존 VStock 서비스 재사용을 뜻하지 않습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>배포 표면 원장, 자동 경계 검사, Worker 응답 표면 식별 헤더를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>직접 플레이 동선, 문서 전용 Pages 산출물, 주소 의미, 반응형 표면 지도, 다음 마일스톤 인계성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>플레이 링크, R2 prefix 인자, GDD 재확인 기록, P4-01 작업 패킷, 보안·모듈 감사표를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>상대 <code>/play/</code> 링크가 위키와 게임을 같은 배포로 오인시키던 문제와 노드맵의 오래된 72% 요약을 바로잡았습니다.</p></div>
+        <p><a href="getting-started/run-project/#cloudflare">배포 표면 계약 →</a> · <a href="design/master-gdd-alignment/">Master GDD 재대조 →</a> · <a href="design/current-milestone-workline/">다음 작업 라인 →</a> · <a href="architecture/module-audit/">보안·모듈 감사 →</a></p>
       </div>
     </details>
   </div>

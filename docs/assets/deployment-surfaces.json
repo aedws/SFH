@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "updated": "2026-09-01",
+  "wiki": {
+    "kind": "cloudflare_pages",
+    "project": "sfh-dev-wiki",
+    "public_origin": "https://sfh-dev-wiki.pages.dev",
+    "serves": ["documentation", "search", "development-status"]
+  },
+  "game": {
+    "kind": "cloudflare_worker",
+    "service": "sfh-game",
+    "public_origin": "https://sfh-game.vstock-market.workers.dev",
+    "serves": ["browser-runtime", "windows-download-gateway"]
+  },
+  "storage": {
+    "kind": "cloudflare_r2_private",
+    "bucket": "sfh-game-artifacts",
+    "public_origin": null,
+    "access": "worker-binding-only",
+    "runtime_prefix": "game/releases",
+    "download_prefix": "downloads"
+  },
+  "compatibility": {
+    "wiki_play_redirect": "/play/*",
+    "status": "legacy-redirect-only"
+  }
+}

@@ -16,14 +16,14 @@ $script = Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8
 $style = Get-Content -LiteralPath $stylePath -Raw -Encoding UTF8
 $mkdocs = Get-Content -LiteralPath $mkdocsPath -Raw -Encoding UTF8
 
-if ($index -notmatch 'class="sfh-operation-play" href="play/"') {
-    throw "The home build card does not expose the browser play entry."
+if ($index -notmatch 'class="sfh-operation-play" data-sfh-surface="gameplay" href="https://sfh-game\.vstock-market\.workers\.dev/"') {
+    throw "The home build card does not expose the distinct gameplay Worker entry."
 }
 if ($script -notmatch 'data-sfh-global-play' -or $script -notmatch 'document\$\.subscribe') {
     throw "The global browser play entry does not support Material instant navigation."
 }
-if ($script -notmatch 'document\.currentScript' -or $script -notmatch 'new URL\("\.\./play/", playEntryScriptUrl\)') {
-    throw "The global browser play entry must resolve from the stable script-derived site root."
+if ($script -notmatch 'GAMEPLAY_ORIGIN = "https://sfh-game\.vstock-market\.workers\.dev"' -or $script -notmatch 'target = "_blank"' -or $script -notmatch 'noopener noreferrer') {
+    throw "The global browser play entry must open the distinct gameplay Worker safely."
 }
 if ($style -notmatch 'a\.sfh-global-play' -or $style -notmatch '\.sfh-operation-play') {
     throw "The browser play entry styles are missing."
@@ -32,4 +32,4 @@ if ($mkdocs -notmatch 'javascripts/play-entry\.js') {
     throw "mkdocs.yml does not load the global browser play entry."
 }
 
-Write-Host "WIKI_PLAY_ENTRY_OK home_card=1 global_header=1"
+Write-Host "WIKI_PLAY_ENTRY_OK home_card=1 global_header=1 external_game_origin=1"
