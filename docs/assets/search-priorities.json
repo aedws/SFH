@@ -47,6 +47,13 @@
       "priority": 96
     },
     {
+      "query": "Cloudflare 배포",
+      "label": "Cloudflare 이중 배포와 무중단 전환",
+      "description": "sfh-wiki Pages, sfh-game Worker+R2, 커밋별 불변 업로드와 GitHub Pages 병행 E2E",
+      "category": "배포",
+      "priority": 97
+    },
+    {
       "query": "문서 노드맵",
       "label": "전체 문서 4단계 노드맵",
       "description": "58개 문서를 대·중·소·세부 구조와 현재 위치로 탐색",
@@ -241,7 +248,7 @@
     },
     {
       "label": "검증·구조",
-      "queries": ["Windows 다운로드", "모바일 위키 E2E", "플레이어 인식 E2E", "UI 상태 판정 E2E", "E2E 플레이 세션", "상업 에셋 라이선스", "모듈 감사", "성능 예산", "페널티 랭킹", "버그픽스", "검색 별칭"]
+      "queries": ["Cloudflare 배포", "Windows 다운로드", "모바일 위키 E2E", "플레이어 인식 E2E", "UI 상태 판정 E2E", "E2E 플레이 세션", "상업 에셋 라이선스", "모듈 감사", "성능 예산", "페널티 랭킹", "버그픽스", "검색 별칭"]
     }
   ]
 }

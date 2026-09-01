@@ -824,6 +824,21 @@ E2E 실행기는 기능 내부 구현을 복제하지 않습니다. 실제 Input
 
 기존 `RoomRewardPickup`은 제거했습니다. 방 교전 내부 경험치라는 별도 경제 경로가 남지 않고, 로컬 `RoomCreditRewardBox`가 일반 파밍과 같은 F 상호작용 Signal 계약만 구현합니다. 따라서 `loot` 폴더의 Scene을 직접 참조하지 않습니다. 입력 카탈로그는 `toggle_map`을 추가해 22개 Action이 되었으며 M 역시 K 화면에서 변경·저장할 수 있습니다.
 
+## 보호된 이중 배포 감사 (2026-09-01)
+
+| 검사 항목 | 결과 | 근거 |
+|---|---|---|
+| main 변경 경계 | 통과 | PR·대화 해결과 `export-game`, `build`, `e2e`를 요구하고 승인 0명, 강제 푸시·삭제 금지, 우회 없음으로 설정 |
+| 공급망 경계 | 통과 | 워크플로의 GitHub Action 7종을 실제 태그 커밋 SHA로 고정하고 저장소 허용 목록도 동일 SHA만 수락 |
+| 산출물 단일성 | 통과 | Cloudflare 작업은 `game-web`, `wiki-site`, `SFH-Windows-x64-v0.1.0` 검증 산출물을 내려받기만 하며 재빌드하지 않음 |
+| 원자적 게임 전환 | 통과 | R2 `game/releases/<commit>/`에 모든 파일과 manifest를 먼저 업로드한 뒤 Worker의 `RELEASE_PREFIX`를 변경 |
+| 위키·게임 분리 | 통과 | MkDocs 정적 파일만 `sfh-wiki` Pages에 Direct Upload하고 39MiB WASM·PCK는 R2 결합 Worker가 제공 |
+| 다운로드 무결성 | 통과 | `/downloads/<version>/`에서 ZIP과 SHA-256을 함께 제공하고 Cloudflare E2E가 다시 내려받아 검증 |
+| Web 런타임 헤더 | 통과 | Worker가 COOP·COEP·CORP, MIME, ETag, Range 206과 캐시 정책을 중앙 관리 |
+| 무중단 폴백 | 통과 | Cloudflare E2E와 링크 전환이 끝날 때까지 기존 GitHub Pages 배포를 병렬 유지 |
+
+Worker는 R2 객체 읽기와 HTTP 전달만 소유하고 게임 코드를 알지 않습니다. 업로더는 빌드 산출물의 키·MIME·해시 manifest만 소유하며 활성 Worker 설정을 바꾸지 않습니다. CI 조립부가 업로드 성공 뒤 Worker, 그 뒤 Pages, 마지막 E2E 순서를 소유하므로 저장소·스토리지·서빙 책임을 개별 모듈로 교체할 수 있습니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.

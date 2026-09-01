@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - ".github/workflows/deploy-wiki.yml"
+      - "cloudflare/**"
       - "docs/**"
       - "game/**"
       - "project.godot"
@@ -14,11 +15,14 @@ on:
       - "mkdocs.yml"
       - "requirements-docs.txt"
       - "scripts/package_release.py"
+      - "scripts/deploy_cloudflare_assets.py"
+      - "scripts/test_cloudflare_worker.mjs"
   push:
     branches:
       - main
     paths:
       - ".github/workflows/deploy-wiki.yml"
+      - "cloudflare/**"
       - "docs/**"
       - "game/**"
       - "project.godot"
@@ -27,6 +31,8 @@ on:
       - "mkdocs.yml"
       - "requirements-docs.txt"
       - "scripts/package_release.py"
+      - "scripts/deploy_cloudflare_assets.py"
+      - "scripts/test_cloudflare_worker.mjs"
   workflow_dispatch:
 
 permissions:
@@ -146,6 +152,8 @@ jobs:
 
   package-windows:
     runs-on: ubuntu-24.04
+    outputs:
+      release-version: ${{ steps.release.outputs.version }}
     needs:
       - export-game
       - e2e
@@ -242,6 +250,11 @@ jobs:
       - name: Install wiki dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-docs.txt
 
+      - name: Test Cloudflare release gateway
+        run: |
+          node scripts/test_cloudflare_worker.mjs
+          python -m py_compile scripts/deploy_cloudflare_assets.py
+
       - name: Build wiki
         shell: pwsh
         run: |
@@ -249,6 +262,13 @@ jobs:
           ./scripts/check-wiki-color-contrast.ps1
           ./scripts/check-wiki-responsive.ps1
           python -m mkdocs build --strict
+
+      - name: Upload Cloudflare wiki artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: wiki-site
+          path: .wiki-site
+          if-no-files-found: error
 
       - name: Add browser game to wiki site
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
@@ -277,6 +297,97 @@ jobs:
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: .wiki-site
+
+  cloudflare-deploy:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    needs:
+      - build
+      - package-windows
+    env:
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_WIKI_URL: https://sfh-wiki.pages.dev
+      CLOUDFLARE_GAME_URL: https://sfh-game.vstock-market.workers.dev
+      RELEASE_VERSION: ${{ needs.package-windows.outputs.release-version }}
+      WRANGLER_VERSION: 4.127.1
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Download verified wiki
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: wiki-site
+          path: .cloudflare-wiki
+
+      - name: Download verified browser game
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: game-web
+          path: .cloudflare-game
+
+      - name: Download verified Windows release
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: SFH-Windows-x64-${{ env.RELEASE_VERSION }}
+          path: .cloudflare-windows
+
+      - name: Install pinned Wrangler
+        run: npm install --global "wrangler@${WRANGLER_VERSION}"
+
+      - name: Upload immutable R2 release objects
+        run: |
+          python3 scripts/deploy_cloudflare_assets.py \
+            --game-dir .cloudflare-game \
+            --windows-dir .cloudflare-windows \
+            --version "$RELEASE_VERSION" \
+            --commit "$GITHUB_SHA" \
+            --manifest .cloudflare-release/asset-manifest.json
+
+      - name: Switch game Worker to verified commit
+        run: |
+          wrangler deploy --config cloudflare/wrangler.jsonc \
+            --var "RELEASE_PREFIX:game/releases/$GITHUB_SHA" \
+            --var "RELEASE_VERSION:$RELEASE_VERSION" \
+            --var "BUILD_COMMIT:$GITHUB_SHA"
+
+      - name: Direct Upload verified wiki
+        run: |
+          wrangler pages deploy .cloudflare-wiki \
+            --project-name=sfh-wiki \
+            --branch=main \
+            --commit-hash="$GITHUB_SHA" \
+            --commit-dirty=false
+
+      - name: Verify Cloudflare wiki, game, range, and download
+        run: |
+          for attempt in $(seq 1 24); do
+            if curl --silent --show-error --fail "$CLOUDFLARE_WIKI_URL/" --output /tmp/wiki.html \
+              && grep -q 'SFH' /tmp/wiki.html \
+              && curl --silent --show-error --fail "$CLOUDFLARE_GAME_URL/healthz" --output /tmp/health.json \
+              && grep -q "$GITHUB_SHA" /tmp/health.json; then
+              break
+            fi
+            if [ "$attempt" -eq 24 ]; then
+              echo "Cloudflare deployment did not become healthy in time" >&2
+              exit 1
+            fi
+            sleep 5
+          done
+          curl --silent --show-error --fail --dump-header /tmp/game.headers "$CLOUDFLARE_GAME_URL/" --output /tmp/game.html
+          grep -qi '^cross-origin-opener-policy: same-origin' /tmp/game.headers
+          grep -qi '^cross-origin-embedder-policy: require-corp' /tmp/game.headers
+          range_status=$(curl --silent --show-error --output /tmp/wasm.range --write-out '%{http_code}' \
+            --header 'Range: bytes=0-31' "$CLOUDFLARE_GAME_URL/index.wasm")
+          test "$range_status" = "206"
+          test "$(wc -c < /tmp/wasm.range)" -eq 32
+          archive="SFH-Windows-x64-${RELEASE_VERSION}.zip"
+          download_base="$CLOUDFLARE_GAME_URL/downloads/${RELEASE_VERSION}"
+          curl --silent --show-error --fail "$download_base/$archive" --output "/tmp/$archive"
+          curl --silent --show-error --fail "$download_base/$archive.sha256" --output "/tmp/$archive.sha256"
+          (cd /tmp && sha256sum --check "$archive.sha256")
+          echo "CLOUDFLARE_E2E_OK wiki game range download commit=$GITHUB_SHA"
 
   deploy:
     if: github.event_name != 'pull_request'

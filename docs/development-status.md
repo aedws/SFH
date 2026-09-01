@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 48 TOPICS</span><span>58 DOCS · PROTECTED RELEASE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 49 TOPICS</span><span>58 DOCS · CLOUDFLARE CANARY</span></div>
 
 ## 기획 기준 진행도
 
@@ -80,9 +80,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 14 · IMPROVE 25 · CHANGE 24 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 17 · IMPROVE 28 · CHANGE 28 · FIX 10</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>25</b><small>IMPROVE</small></span><span><b>24</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>17</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>28</b><small>CHANGE</small></span><span><b>10</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -202,7 +202,7 @@ tags:
         <p><a href="features/key-mapping/">자유 스킬 배치 →</a> · <a href="design/current-milestone-workline/">다음 작업 라인 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 7</small><b>main 보호 · 독립 E2E · Windows x64 검증 빌드</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -221,6 +221,27 @@ tags:
         <div class="sfh-group"><h3>수정 · 4</h3><p>검사 구조와 릴리스 데이터 원장, 화면의 실행 방식 구분, 무중단 전환 순서를 수정했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>존재하지 않는 E2E 컨텍스트를 먼저 요구해 main이 잠길 수 있는 순서 오류를 제거했습니다.</p></div>
         <p><a href="getting-started/run-project/#windows-x86_64">Windows 빌드 규격 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>Cloudflare 무중단 이중 배포 · Worker+R2 게임 게이트웨이</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 검증된 동일 산출물만 Cloudflare 후보 환경에 올리고 기존 GitHub Pages는 유지합니다.</strong>
+          <ul>
+            <li>위키는 `sfh-wiki` Pages에 Direct Upload하고 `/play/`는 게임 Worker로 넘깁니다.</li>
+            <li>Web 빌드는 R2 커밋별 불변 경로에 먼저 저장한 뒤 Worker 활성 커밋을 바꿉니다.</li>
+            <li>Windows ZIP·체크섬은 `/downloads/v0.1.0/`에 함께 제공하며 E2E가 다시 내려받아 SHA-256을 확인합니다.</li>
+            <li>Worker는 Godot에 필요한 COOP·COEP·Range·MIME·ETag·캐시 계약을 소유합니다.</li>
+            <li>Cloudflare 위키·게임 E2E 전에는 기존 Pages·README 링크·저장소 공개 상태를 유지합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>다음 게이트</b><span>새 `sfh-wiki`, `sfh-game`, `sfh-game-artifacts`만 생성하고 기존 Cloudflare 프로젝트·버킷은 변경하지 않습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>R2 업로더·manifest, Worker, Direct Upload/E2E 작업을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>원자적 전환, 대용량 Web 전달, 다운로드 무결성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>배포 주소, 저장 경계, 응답 헤더, 전환 순서를 수정했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>Pages 단일 파일 제한으로 39MiB WASM이 배포되지 않는 구조를 분리했습니다.</p></div>
+        <p><a href="getting-started/run-project/#cloudflare">Cloudflare 배포 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
   </div>
