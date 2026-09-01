@@ -67,7 +67,7 @@ jobs:
       - name: Install font import runtime
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends fontconfig
+          apt-get install -y --no-install-recommends fontconfig python3
 
       - name: Import game resources
         run: |
