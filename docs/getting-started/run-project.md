@@ -18,11 +18,17 @@ tags:
 
 메타데이터에는 빌드 커밋, Godot 4.7.2, CSV 데이터 버전과 Weapon·런 버프·업그레이드 CSV별 SHA-256이 기록됩니다. Cloudflare R2 검증이 끝날 때까지 이 Actions 산출물이 기준 원본이며, 이후에도 R2에는 검증을 통과한 동일 파일만 업로드합니다.
 
+## Cloudflare 병렬 배포
+
+무중단 전환 동안 GitHub Pages와 Cloudflare를 함께 유지합니다. 공개 위키 주소는 `https://sfh-dev-wiki.pages.dev/`, 게임 후보 주소는 계정 고유 workers.dev 하위의 `https://sfh-game.vstock-market.workers.dev/`입니다. Windows 다운로드는 같은 게임 게이트웨이의 `/downloads/v0.1.0/` 아래에 둡니다.
+
+CI는 Web·Windows·위키를 다시 만들지 않고 앞 단계에서 검증해 업로드한 GitHub Actions 산출물만 내려받습니다. Web 파일은 R2의 `game/releases/<commit>/` 불변 경로에 먼저 저장하고 마지막에 Worker의 활성 커밋만 바꿉니다. 위키는 게임 대용량 파일을 제외해 Pages Direct Upload 제한을 지키며 `/play/` 요청은 게임 Worker로 넘깁니다. 위키·게임·WASM Range·ZIP SHA-256 E2E가 모두 성공하기 전에는 README와 기본 링크를 Cloudflare로 전환하지 않습니다.
+
 Web 빌드는 게임 코드와 문서가 `main`에 반영될 때 GitHub Actions가 자동 생성해 개발 위키의 `/play/` 경로에 결합합니다. 게임 내보내기, 위키 빌드, 필수 `HTML·WASM·PCK` 검증 중 하나라도 실패하면 Pages 배포를 중단하므로 README의 플레이 버튼은 마지막으로 검증된 빌드를 유지합니다. 한글 UI는 프로젝트에 포함된 OFL 1.1 `Nanum Gothic` 전역 폰트를 사용해 운영체제 폰트에 의존하지 않습니다.
 
 무기, 내부 성장, 장비 강화의 확정 CSV도 Web PCK에 명시적으로 포함합니다. 브라우저 런타임이 비-Resource CSV 스트림을 제공하지 못하는 환경에서는 원본과 함께 자동 생성한 `EmbeddedCsvPayload`를 읽습니다. 동기화 스크립트와 스모크 테스트가 세 CSV와 내장 미러의 완전 일치, 원본 경로, 내보내기 포함 계약을 함께 검사하므로 데이터가 빠지거나 어긋나면 작전 조립 전에 빌드를 차단합니다.
 
-위키 홈의 현재 빌드 카드와 모든 문서 상단 고정 헤더의 `브라우저로 플레이` 버튼은 같은 `/play/` 빌드를 엽니다. 따라서 문서를 읽는 중에도 홈으로 돌아갈 필요 없이 현재 검증된 게임을 실행할 수 있습니다.
+위키 홈의 현재 빌드 카드와 모든 문서 상단 고정 헤더의 `브라우저로 플레이` 버튼은 같은 `/play/` 빌드를 엽니다. GitHub Pages에서는 결합된 게임을, Cloudflare Pages에서는 `_redirects`를 통해 별도 게임 Worker를 열므로 문서를 읽는 중에도 홈으로 돌아갈 필요가 없습니다.
 
 브라우저 빌드는 개발 프로토타입입니다. 최초 로딩 시간이 필요하고 밸런스와 로컬 저장 데이터 호환성은 개발 중 변경될 수 있습니다.
 
