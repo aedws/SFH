@@ -12,6 +12,10 @@ func judge(flow_id: StringName, evidence: Dictionary) -> Dictionary:
 			_judge_room_encounter(evidence, errors)
 		&"ten_minute_session":
 			_judge_ten_minute_session(evidence, errors)
+		&"operation_combination_matrix":
+			_judge_operation_combination_matrix(evidence, errors)
+		&"run_loot_settlement":
+			_judge_run_loot_settlement(evidence, errors)
 		&"fog_room_corridor_transition":
 			_judge_fog_transition(evidence, errors)
 		&"loot_table_targeting":
@@ -90,6 +94,58 @@ func _judge_ten_minute_session(evidence: Dictionary, errors: PackedStringArray) 
 		errors.append("10분 경과 시점에 작전 세션이 유지되지 않습니다.")
 	if "10:00" not in String(after.get(&"hud_text", "")):
 		errors.append("플레이어 HUD가 10분 경과를 표시하지 않습니다.")
+
+
+func _judge_operation_combination_matrix(
+	evidence: Dictionary,
+	errors: PackedStringArray
+) -> void:
+	if int(evidence.get(&"tested_combinations", 0)) != 9:
+		errors.append("소·중·대형 × 표준·숙련·악몽 9개 조합을 모두 실행하지 않았습니다.")
+	if int(evidence.get(&"tier_count", 0)) != 3 or int(evidence.get(&"difficulty_count", 0)) != 3:
+		errors.append("맵 규모 또는 난이도 축이 일부 누락됐습니다.")
+	if int(evidence.get(&"launch_failures", 1)) != 0:
+		errors.append("작전 투입 뒤 전투 대신 거점으로 회귀한 조합이 있습니다.")
+	if int(evidence.get(&"returned_to_hub", 0)) != 9:
+		errors.append("검증한 모든 조합이 명시적 종료 뒤 거점으로 복귀하지 못했습니다.")
+	if not bool(evidence.get(&"used_setup_buttons", false)):
+		errors.append("작전 설정 UI의 난이도·맵·투입 버튼을 거치지 않았습니다.")
+
+
+func _judge_run_loot_settlement(evidence: Dictionary, errors: PackedStringArray) -> void:
+	var result: Dictionary = evidence.get(&"result", {})
+	var acquired_count := int(evidence.get(&"acquired_count", 0))
+	var summary := String(evidence.get(&"summary", ""))
+	if acquired_count <= 0 or (result.get(&"outcomes", []) as Array).is_empty():
+		errors.append("획득한 전리품이 정산 결과로 이어지지 않았습니다.")
+	if not bool(result.get(&"success", false)):
+		errors.append("런 전리품 정산 서비스가 성공 결과를 반환하지 않았습니다.")
+	if bool(evidence.get(&"expected_extracted", false)):
+		if not bool(result.get(&"extracted", false)):
+			errors.append("탈출 성공 전리품이 생환 결과로 처리되지 않았습니다.")
+		var retained_result_count := (
+			int(result.get(&"converted_credits", 0))
+			+ int(result.get(&"wallet_credits", 0))
+			+ (result.get(&"warehouse_items", {}) as Dictionary).size()
+			+ (result.get(&"permanent_unlocks", {}) as Dictionary).size()
+		)
+		if retained_result_count <= 0:
+			errors.append("탈출 성공 전리품 중 환전·보관·해금된 결과가 없습니다.")
+		if "전리품" not in summary or "자동 환전" not in summary or "영구 해금" not in summary or "창고 보관" not in summary:
+			errors.append("성공 정산 화면이 환전·해금·창고 결과를 분리해 보여주지 않습니다.")
+		if not (result.get(&"expired_items", {}) as Dictionary).is_empty() and "런 종료" not in summary:
+			errors.append("런 전용·미등록 후보의 종료 결과가 성공 화면에 보이지 않습니다.")
+		if not bool(evidence.get(&"duplicate_ignored", false)):
+			errors.append("동일 run_id 재정산이 차단되지 않았습니다.")
+		if evidence.get(&"profile_after_first", {}) != evidence.get(&"profile_after_duplicate", {}):
+			errors.append("중복 정산이 프로필 자산을 다시 변경했습니다.")
+	else:
+		if bool(result.get(&"extracted", true)):
+			errors.append("사망 전리품이 탈출 성공으로 처리됐습니다.")
+		if (result.get(&"lost_items", {}) as Dictionary).size() <= 0:
+			errors.append("사망한 런의 전리품 소실 목록이 비어 있습니다.")
+		if "전리품" not in summary or "사망 소실" not in summary:
+			errors.append("실패 정산 화면이 전리품 소실을 명시하지 않습니다.")
 
 
 func _judge_fog_transition(evidence: Dictionary, errors: PackedStringArray) -> void:

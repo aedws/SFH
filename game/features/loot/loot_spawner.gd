@@ -48,18 +48,33 @@ func configure(
 	maximum_total_credits = floori(
 		float(deployment_cost) * config.maximum_deployment_value_multiplier
 	)
+	var feasible_minimum_total := config.minimum_cache_count * config.minimum_cache_credits
+	var feasible_maximum_total := config.maximum_cache_count * config.maximum_cache_credits
+	var selectable_minimum_total := maxi(minimum_total_credits, feasible_minimum_total)
+	var selectable_maximum_total := mini(maximum_total_credits, feasible_maximum_total)
+	if selectable_minimum_total > selectable_maximum_total:
+		push_error("회수 지점 정책이 최소 배치 배수조차 구성할 수 없습니다.")
+		return false
+	var selectable_minimum_multiplier := (
+		float(selectable_minimum_total) / float(deployment_cost)
+		if deployment_cost > 0 else 0.0
+	)
+	var selectable_maximum_multiplier := (
+		float(selectable_maximum_total) / float(deployment_cost)
+		if deployment_cost > 0 else 0.0
+	)
 	selected_value_multiplier = clampf(
 		snappedf(random.randf_range(
-			config.minimum_deployment_value_multiplier,
-			config.maximum_deployment_value_multiplier
+			selectable_minimum_multiplier,
+			selectable_maximum_multiplier
 		), 0.1),
-		config.minimum_deployment_value_multiplier,
-		config.maximum_deployment_value_multiplier
+		selectable_minimum_multiplier,
+		selectable_maximum_multiplier
 	)
 	target_total_credits = clampi(
 		ceili(float(deployment_cost) * selected_value_multiplier),
-		minimum_total_credits,
-		maximum_total_credits
+		selectable_minimum_total,
+		selectable_maximum_total
 	)
 	var minimum_count := config.minimum_cache_count
 	var maximum_count := config.maximum_cache_count

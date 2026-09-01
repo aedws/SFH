@@ -61,6 +61,9 @@ const SESSION_SOCKET_SERVICE_SCENE_PATH := (
 const SESSION_SOCKET_HUD_SCENE_PATH := (
 	"res://game/features/session_sockets/session_socket_hud.tscn"
 )
+const RUN_SETTLEMENT_SCENE_PATH := (
+	"res://game/features/run_settlement/run_settlement_service.tscn"
+)
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
 const HEALTH_RECOVERY_SCENE_PATH := (
 	"res://game/features/health_recovery/health_recovery_system.tscn"
@@ -204,6 +207,7 @@ const SESSION_SOCKET_METHODS := [
 	&"configure", &"request_live_catalog", &"load_csv_text", &"socket_item",
 	&"unsocket", &"clear_run", &"get_snapshot",
 ]
+const RUN_SETTLEMENT_METHODS := [&"configure", &"settle", &"get_snapshot"]
 const INVENTORY_METHODS := [
 	&"configure",
 	&"add_item",
@@ -388,6 +392,7 @@ var field_loot_acquisition_service
 var field_loot_equip_catalog: FieldLootEquipCatalog
 var session_socket_service
 var session_socket_hud
+var run_settlement_service
 var progression_system
 var health_recovery_system
 var run_buff_system
@@ -409,6 +414,9 @@ var operation_setup_presenter := OPERATION_SETUP_PRESENTER_SCRIPT.new()
 var combat_hud_presenter := COMBAT_HUD_PRESENTER_SCRIPT.new()
 var operation_launch_button: Button
 var active_contract: Dictionary = {}
+var current_run_id: StringName = &""
+var run_sequence: int = 0
+var last_loot_settlement: Dictionary = {}
 var consumed_run_items: Array[StringName] = []
 var current_map_config: Resource
 var selected_map_size: String = "small"
@@ -488,6 +496,8 @@ func _ready() -> void:
 	_configure_tier_button(large_map_button, "large")
 	_configure_balance_mode_selector()
 	if features.loot_lifecycle_enabled and not _install_loot_lifecycle():
+		return
+	if features.run_settlement_enabled and not _install_run_settlement():
 		return
 	if features.loot_tables_enabled and not _load_field_loot_equip_catalog():
 		return
@@ -951,6 +961,9 @@ func start_run(map_size: String) -> bool:
 		consumed_run_items = persistent_profile.call(&"consume_loadout_for_run")
 
 	selected_map_size = map_size
+	run_sequence += 1
+	current_run_id = StringName("%d-%d" % [Time.get_ticks_usec(), run_sequence])
+	last_loot_settlement.clear()
 	get_tree().paused = false
 	_capture_prepared_loadout()
 	_clear_start_hub()
@@ -960,11 +973,13 @@ func start_run(map_size: String) -> bool:
 	map_label.visible = features.map_generation_enabled
 	status_label.text = "%s 작전 생성 중..." % _selected_map_display_name()
 	if not _assemble_game():
+		var assembly_failure_message := status_label.text
 		_rollback_operation_investment()
 		run_started = false
 		hud_margin.visible = false
 		if features.start_hub_enabled and features.run_setup_enabled:
 			_return_to_start_hub()
+			status_label.text = "작전 생성 실패 · %s" % assembly_failure_message
 		else:
 			run_setup_overlay.visible = features.run_setup_enabled
 		return false
@@ -980,6 +995,7 @@ func _rollback_operation_investment() -> void:
 	if operation_contract_service != null:
 		operation_contract_service.call(&"clear_active_contract")
 	active_contract.clear()
+	current_run_id = &""
 
 
 func _install_start_hub() -> bool:
@@ -1153,6 +1169,8 @@ func _reset_run_state() -> void:
 	defeated_enemies = 0
 	pending_buff_levels.clear()
 	active_contract.clear()
+	current_run_id = &""
+	last_loot_settlement.clear()
 	consumed_run_items.clear()
 	hud_margin.visible = false
 	map_label.visible = false
@@ -1669,6 +1687,30 @@ func _install_loot_lifecycle() -> bool:
 	lifecycle_config.source_mode = selected_balance_source_mode
 	if not loot_lifecycle_service.call(&"configure", lifecycle_config):
 		_report_configuration_error("전리품 생명 주기 데이터를 불러오지 못했습니다.")
+		return false
+	return true
+
+
+func _install_run_settlement() -> bool:
+	if (
+		loot_lifecycle_service == null
+		or persistent_profile == null
+		or not ResourceLoader.exists(features.operation_result_config_path)
+	):
+		_report_configuration_error("런 전리품 정산 모듈의 생명 주기·프로필 의존성이 없습니다.")
+		return false
+	run_settlement_service = _instantiate_feature(
+		RUN_SETTLEMENT_SCENE_PATH, self, &"RunSettlement"
+	)
+	if (
+		not _supports_methods(run_settlement_service, RUN_SETTLEMENT_METHODS)
+		or not run_settlement_service.has_signal(&"run_loot_settled")
+		or not run_settlement_service.call(
+			&"configure", loot_lifecycle_service, persistent_profile,
+			load(features.operation_result_config_path)
+		)
+	):
+		_report_configuration_error("런 전리품 정산 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
 	return true
 
@@ -2726,6 +2768,7 @@ func _on_extraction_completed(_actor: Node2D) -> void:
 	var carried_credits := 0
 	if credit_ledger != null:
 		carried_credits = int(credit_ledger.call(&"secure_carried"))
+	var loot_settlement := _settle_run_loot(true)
 	var settlement := {&"recovered_credits": carried_credits, &"salvage": 0, &"ranking": {}}
 	if operation_result_service != null:
 		settlement = operation_result_service.call(&"settle_success", {
@@ -2740,7 +2783,7 @@ func _on_extraction_completed(_actor: Node2D) -> void:
 		blueprint_label = " · 도면 획득"
 	_finish_run(
 		"탈출 성공",
-		"%s 작전 · 생존 %s · 처치 %d · 정산 %d C · 고철 %d%s · 가치 #%d / 시간 #%d / 처치 #%d" % [
+		"%s 작전 · 생존 %s · 처치 %d · 정산 %d C · 고철 %d%s · 가치 #%d / 시간 #%d / 처치 #%d%s" % [
 			_selected_map_display_name(),
 			_format_time(elapsed_time),
 			defeated_enemies,
@@ -2750,6 +2793,7 @@ func _on_extraction_completed(_actor: Node2D) -> void:
 			int(ranks.get(&"recovered_value", ranking.get(&"rank", 0))),
 			int(ranks.get(&"elapsed_seconds", 0)),
 			int(ranks.get(&"kills", 0)),
+			_format_run_loot_settlement(loot_settlement),
 		]
 	)
 
@@ -3006,15 +3050,48 @@ func _on_player_died() -> void:
 			&"elapsed_seconds": elapsed_time,
 			&"kills": defeated_enemies,
 		}, active_contract)
+	var loot_settlement := _settle_run_loot(false)
 	lose_equipped_loadout_on_return = true
 	_finish_run(
 		"작전 실패",
-		"생존 %s · 처치 %d · 분실 %d 크레딧" % [
+		"생존 %s · 처치 %d · 분실 %d 크레딧%s" % [
 			_format_time(elapsed_time),
 			defeated_enemies,
 			lost_credits,
+			_format_run_loot_settlement(loot_settlement),
 		]
 	)
+
+
+func _settle_run_loot(extracted: bool) -> Dictionary:
+	if run_settlement_service == null or current_run_id == &"":
+		return {}
+	var acquired_items: Dictionary = {}
+	if is_instance_valid(field_loot_acquisition_service):
+		acquired_items = field_loot_acquisition_service.call(&"get_snapshot").get(
+			&"acquired_items", {}
+		)
+	last_loot_settlement = run_settlement_service.call(
+		&"settle", current_run_id, acquired_items, extracted
+	)
+	return last_loot_settlement.duplicate(true)
+
+
+func _format_run_loot_settlement(result: Dictionary) -> String:
+	if not bool(result.get(&"success", false)):
+		return ""
+	if bool(result.get(&"extracted", false)):
+		return "\n전리품 · 자동 환전 %d C · 영구 해금 %d종 · 창고 보관 %d종 · 런 종료 %d종" % [
+			int(result.get(&"converted_credits", 0)) + int(result.get(&"wallet_credits", 0)),
+			(result.get(&"permanent_unlocks", {}) as Dictionary).size(),
+			(result.get(&"warehouse_items", {}) as Dictionary).size(),
+			(result.get(&"expired_items", {}) as Dictionary).size(),
+		]
+	var lost: Dictionary = result.get(&"lost_items", {})
+	var lost_quantity := 0
+	for quantity in lost.values():
+		lost_quantity += int(quantity)
+	return "\n전리품 · 사망 소실 %d종 · %d개" % [lost.size(), lost_quantity]
 
 
 func _finish_run(title: String, summary: String) -> void:

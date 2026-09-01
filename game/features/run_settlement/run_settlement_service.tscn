@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/run_settlement/run_settlement_service.gd" id="1_service"]
+
+[node name="RunSettlementService" type="Node"]
+script = ExtResource("1_service")

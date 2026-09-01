@@ -983,6 +983,20 @@ Worker는 R2 객체 읽기와 HTTP 전달만 소유하고 게임 코드를 알�
 
 `play-preview.dev`는 현재 등록·DNS가 없으므로 실행 주소를 즉시 전환하면 서비스가 끊깁니다. 배포 표면 원장에 목표 주소와 현행 안전 주소를 분리했고, DNS·Worker custom domain·게임 E2E·Range 206·ZIP 해시가 모두 통과할 때만 `ready`로 올리도록 차단했습니다.
 
+## P4-06 정산·작전 조합 회귀 감사 (2026-09-01)
+
+| 대상 | 소유 책임 | 의존 방향 | 제거·교체 검증 | 판정 |
+|---|---|---|---|---|
+| `LootSpawner` 가치 범위 | 박스 수·단가 한계 안에서 2.5~5배 목표를 샘플링 | Map config→Loot config→Spawner | 소·중·대형×3난이도 9조합 조립 | 통과 |
+| `RunSettlementService` | 획득 스냅샷을 환전·창고·해금·소실로 분배, `run_id` 멱등성 | Lifecycle/Policy→Settlement→Profile | 정산만 끄면 생명주기·프로필 유지 | 통과 |
+| `OperationResultService` | 휴대 크레딧·고철·랭킹 | Contract→OperationResult→Profile/Ranking | 전리품 정산과 별도 호출·별도 결과 | 통과 |
+| 결과 UI | 두 서비스의 읽기 전용 결과를 문구로 합성 | Service snapshots→Presenter | 화면이 정책·저장을 직접 변경하지 않음 | 통과 |
+| 성능 예산 | 정산은 결말 시 1회 순회, 전투 프레임에는 작업 없음 | Acquired snapshot→Settlement | 대형 평균 6.879ms·피크 8.658ms·Node 1,841 | 통과 |
+
+순환 의존은 없습니다. `FieldLootAcquisitionService`는 영구 프로필을 모르고, `RunSettlementService`는 월드 드랍이나 HUD를 모르며, 프로필은 전리품 규칙을 해석하지 않습니다. `game.gd`는 작전 결말에서 서비스 호출과 Presenter 합성만 담당합니다.
+
+신규 목록은 필요하지 않았습니다. 기존 Item 생명 주기 15종이 P4-06 결과를 모두 표현하며, 이후 새 정산 항목이 필요할 때만 Google Sheet→실시간 시험→확정 CSV 계약을 확장합니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.

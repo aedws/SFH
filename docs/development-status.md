@@ -17,17 +17,17 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 58 TOPICS</span><span>67 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 59 TOPICS</span><span>69 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>MASTER GDD ALIGNED · 2026-09-01</small><strong>현재 기획 진행도</strong></span>
-    <b>80%</b>
+    <b>87%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80"><i style="width: 80%"></i></div>
-  <p>공개 Master GDD의 8개 확정 시스템을 현재 main과 재대조했습니다. P4-05 런 소켓의 실제 F 장착·효과·HUD 해제를 전리품 흐름에 반영해 게임 기능 가중 진행도는 80%이며, 배포·보안 작업은 이 수치에 가산하지 않았습니다.</p>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="87"><i style="width: 87%"></i></div>
+  <p>공개 Master GDD의 8개 확정 시스템을 현재 main과 재대조했습니다. P4-06 자동 환전·영구 해금·창고 보관·사망 소실을 실제 결과 화면에 반영해 게임 기능 가중 진행도는 87%이며, 배포·보안 작업은 이 수치에 가산하지 않았습니다.</p>
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-01 공개 본문 57블록·root v797을 읽고 `b22dce53d706`으로 검증했습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 확정 요구로 처리합니다. 핵심 플레이 흐름은 ×2, 기반·확장 서비스는 ×1을 적용하며 실제 코드·데이터·자동 검증만 완료 근거로 사용합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
@@ -40,12 +40,12 @@ tags:
 | 입력·자유 스킬 바인딩 | ×2 | 100% | 물리 키와 스킬→Action 배치를 분리하고 충돌 교환·HUD 반영·JSON 저장·초기화를 구현 |
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
 | 로비 인베스트먼트·타겟 파밍 | ×2 | 65% | 맵·지역·난이도·페널티·상점 구현. 캐릭터와 완성형 무기·스킬·유틸리티 투자 UI가 남음 |
-| 전리품 2대 분류·현장 파밍 | ×2 | 55% | 생명 주기·지역 테이블·현장 비교·획득·무기·스킬 교체·룬/코어/유물 런 소켓 구현. 자동 환전·영구 해금·사망 소실은 없음 |
+| 전리품 2대 분류·현장 파밍 | ×2 | 100% | 생명 주기·지역 테이블·현장 비교·획득·교체·소켓과 탈출 환전·영구 해금·창고/사망 소실·중복 방지 구현 |
 | 가변 태그·등급 확장 | ×1 | 80% | 동적 태그·등급·불일치 비활성·메커니즘 변형 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
 | 비동기 랭킹·시즌 보상 | ×1 | 40% | 동일 조건 3대 로컬 랭킹 구현. 서버 검증과 주간 칭호·오라 보상은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 13`입니다. `(100×1 + 100×2 + 95×2 + 65×2 + 55×2 + 80×1 + 95×2 + 40×1) ÷ 13 ≈ 80%`이며, P4-06 정산이 연결되기 전까지 Phase 4 판정은 완료가 아닌 진행 중으로 유지합니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 13`입니다. `(100×1 + 100×2 + 95×2 + 65×2 + 100×2 + 80×1 + 95×2 + 40×1) ÷ 13 ≈ 87%`이며, Phase 4는 P4-01~06 인과와 실제 E2E가 연결되어 완료로 판정합니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -56,7 +56,7 @@ tags:
 | Phase 1 · 이동·타게팅·자유 바인딩 | 완료 | 키 배치와 스킬 배치를 분리하고 실제 발동·HUD·영구 저장까지 연결 |
 | Phase 2 · Q·태그·AP·쿨타임 | 완료 | 주·보조 교체, 태그 호환성, 에너지·충전·개별 쿨타임 구현 |
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
-| Phase 4 · 현장 교체·룬 소켓·환전 | 기반 완료 | 현장 무기·스킬 교체와 룬·코어·유물 런 소켓 완료. 자동 환전·영구 해금·사망 소실이 남음 |
+| Phase 4 · 현장 교체·룬 소켓·환전 | 완료 | 현장 교체·룬/코어/유물 소켓→탈출 환전·영구 해금·창고/사망 소실과 중복 방지 E2E 완료 |
 | Phase 5 · 로비 4대 세팅·계약·상점 | 부분 완료 | 계약·페널티·상점은 구현. 캐릭터·무기·스킬·유틸리티 선택 흐름이 불완전 |
 | Phase 6 · 비동기 랭킹·시즌 보상 | 로컬 기반 | 3대 로컬 보드만 구현. 서버 제공자와 칭호·오라 보상이 없음 |
 
@@ -78,24 +78,24 @@ tags:
 | 완료 | Phase 4 P4-04A 현장 무기 교체 | 비교·런 임시 보관까지 존재 | R 즉시 장착·활성 무기 변화·거점 복구·임시 정책 표시 완료 |
 | 완료 | Phase 4 P4-04B 현장 스킬 교체 | 슬롯·태그·키·자원 교체 필요 | Skill Sheet→R 교체→3번 키→상태 복구 완료 |
 | 완료 | Phase 4 P4-05 세션 소켓 | 기획 수치 없이 진행 필요 | RunAsset 임시값→F 장착→효과→HUD 해제→원복 E2E 완료 |
-| 1 | Phase 4 P4-06 순환 | 자동 환전·영구 해금·사망 소실 미연결 | 성공/사망 정산·중복 방지 E2E |
-| 2 | Phase 5 P5-01 캐릭터 선택 | 캐릭터 목록·패시브·가격 미정 | 선택→견적→작전 내 패시브 확인 E2E |
-| 3 | Phase 5 P5-02 무기·스킬 투자 | 소유·미해금·이번 런 구매 구분 부족 | 구매→장착→태그 적합성→실전 발동 E2E |
-| 4 | Phase 5 P5-03 유틸리티 투자 | 가방·회복/공격템·긴급 탈출 목록 부족 | 구매→실전 사용→잔량·소실 정산 E2E |
-| 5 | Phase 5 P5-04 작전 초안·BEP | 선택별 견적과 확정 거래 원자성 미연결 | 변경 견적→한 번 결제→취소 무과금 E2E |
-| 6 | Phase 5 P5-05 파산 방지 프리셋 | 무료 기본 진입 기반은 있으나 최종 초안과 미통합 | 0 재화→무료 출격→복귀→재출격 E2E |
-| 7 | Phase 6 P6-01 랭킹 제공자 | 3대 로컬 랭킹만 존재 | 온라인/로컬 교체·오프라인 폴백 E2E |
-| 8 | Phase 6 P6-02 제출·검증 | 신원·서명·멱등·재시도·변조 거부 없음 | 중복/단절/변조 기록 서버 판정 E2E |
-| 9 | Phase 6 P6-03 시즌 규칙 | 기간·조건·종료 스냅샷 없음 | 시즌 경계·조건 불일치·종료 읽기 전용 E2E |
-| 10 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
+| 완료 | Phase 4 P4-06 순환 | 자동 환전·영구 해금·사망 소실 미연결 | 성공/사망 정산·중복 방지·9작전 조합 E2E 완료 |
+| 1 | Phase 5 P5-01 캐릭터 선택 | 캐릭터 목록·패시브·가격 미정 | 선택→견적→작전 내 패시브 확인 E2E |
+| 2 | Phase 5 P5-02 무기·스킬 투자 | 소유·미해금·이번 런 구매 구분 부족 | 구매→장착→태그 적합성→실전 발동 E2E |
+| 3 | Phase 5 P5-03 유틸리티 투자 | 가방·회복/공격템·긴급 탈출 목록 부족 | 구매→실전 사용→잔량·소실 정산 E2E |
+| 4 | Phase 5 P5-04 작전 초안·BEP | 선택별 견적과 확정 거래 원자성 미연결 | 변경 견적→한 번 결제→취소 무과금 E2E |
+| 5 | Phase 5 P5-05 파산 방지 프리셋 | 무료 기본 진입 기반은 있으나 최종 초안과 미통합 | 0 재화→무료 출격→복귀→재출격 E2E |
+| 6 | Phase 6 P6-01 랭킹 제공자 | 3대 로컬 랭킹만 존재 | 온라인/로컬 교체·오프라인 폴백 E2E |
+| 7 | Phase 6 P6-02 제출·검증 | 신원·서명·멱등·재시도·변조 거부 없음 | 중복/단절/변조 기록 서버 판정 E2E |
+| 8 | Phase 6 P6-03 시즌 규칙 | 기간·조건·종료 스냅샷 없음 | 시즌 경계·조건 불일치·종료 읽기 전용 E2E |
+| 9 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>18 UPDATE BUNDLES · BUILD 59 · IMPROVE 71 · CHANGE 83 · FIX 27</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>19 UPDATE BUNDLES · BUILD 63 · IMPROVE 75 · CHANGE 91 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>18</b><small>UPDATE BUNDLES</small></span><span><b>59</b><small>BUILD</small></span><span><b>71</b><small>IMPROVE</small></span><span><b>83</b><small>CHANGE</small></span><span><b>27</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>19</b><small>UPDATE BUNDLES</small></span><span><b>63</b><small>BUILD</small></span><span><b>75</b><small>IMPROVE</small></span><span><b>91</b><small>CHANGE</small></span><span><b>29</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -434,7 +434,7 @@ tags:
         <p><a href="#_1">진행도·남은 작업 →</a> · <a href="design/master-gdd-alignment/">Master GDD 대조 →</a> · <a href="design/current-milestone-workline/">작업 라인 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 18</small><b>P4-05 RunAsset 세션 소켓 · 임시값 교체형 모듈</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획 수치가 없어도 안전한 임시값으로 룬·코어·유물을 실제 런 전투에 연결하고, 최종값은 데이터만 교체할 수 있게 했습니다.</strong><ul>
@@ -450,6 +450,24 @@ tags:
         <div class="sfh-group"><h3>수정 · 7</h3><p>Manifest·전투 modifier·내보내기·릴리스 메타·마일스톤·검색·노드맵을 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>영구 장비 모듈과 런 전용 자산이 같은 슬롯으로 오인될 수 있는 책임 혼합을 제거했습니다.</p></div>
         <p><a href="features/session-sockets/">세션 소켓 →</a> · <a href="design/current-milestone-workline/">다음 P4-06 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 19</small><b>9개 작전 조합 복구 · P4-06 전리품 정산 · Phase 4 완료</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 작전 조립 회귀를 고치고 전리품 획득부터 성공·사망 정산까지 Phase 4 전체 인과를 닫았습니다.</strong><ul>
+          <li><b>작전 진입:</b> 전리품 가치 목표를 실제 박스 수·단가 용량과 교차해 소·중·대형×표준·숙련·악몽 9개 조합이 모두 전투를 시작합니다.</li>
+          <li><b>오류 가시성:</b> 조립 실패 시 거점 복귀 문구가 원인을 덮지 않고 실제 실패 메시지를 보존합니다.</li>
+          <li><b>탈출:</b> Item 생명 주기대로 자동 환전·영구 해금·상점 등록·창고 보관을 한 번만 적용합니다.</li>
+          <li><b>사망:</b> 런 획득 전리품을 영구 프로필에 반영하지 않고 소실 종류와 수량을 결과 화면에 표시합니다.</li>
+          <li><b>E2E:</b> 실제 설정 UI 9조합, 성공 정산·중복 방지, 사망 소실을 더해 23 UI·28 인식·13 인과 흐름을 판정합니다.</li>
+          <li><b>다음:</b> [P5·P6 사전 구현 설계](design/p5-p6-preimplementation.md)에 따라 P5-01 캐릭터 선택부터 시작합니다.</li>
+        </ul><p class="sfh-intent"><b>모듈·데이터 경계</b><span>Lifecycle→Settlement→Profile 단방향을 유지하고 정산 모듈만 제거 가능하게 검증했습니다. 기존 Item 15종으로 충분해 Sheet와 과금 모델은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>정산 서비스·Manifest 조립·성공/사망 결과·중복 방지 계약을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>9개 조합 UI E2E, 플레이어 손익 인식, 오류 가시성, 후속 사전 설계를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 8</h3><p>진행률 87%, Phase 4 완료, CI·검색·노드맵·품질 문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>배치 불가능한 전리품 목표의 전투 조립 실패와 실제 오류 문구 유실을 해결했습니다.</p></div>
+        <p><a href="features/run-settlement/">런 전리품 정산 →</a> · <a href="quality/e2e-play-session/">실제 플레이 E2E →</a> · <a href="design/p5-p6-preimplementation/">P5·P6 사전 설계 →</a></p>
       </div>
     </details>
   </div>
