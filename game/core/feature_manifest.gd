@@ -34,6 +34,7 @@ extends Resource
 @export var loot_lifecycle_enabled: bool = true
 @export var loot_tables_enabled: bool = true
 @export var field_loot_acquisition_enabled: bool = true
+@export var field_loot_immediate_equip_enabled: bool = true
 @export var damage_enabled: bool = true
 @export var hit_feedback_enabled: bool = true
 @export var health_recovery_enabled: bool = true
@@ -79,6 +80,9 @@ extends Resource
 )
 @export_file("*.tres") var loot_table_config_path: String = (
 	"res://game/features/loot_tables/configs/default_loot_table.tres"
+)
+@export_file("*.tres") var field_loot_equip_catalog_path: String = (
+	"res://game/features/field_loot/configs/default_field_loot_equipment.tres"
 )
 
 @export_category("Combat skills")
@@ -222,6 +226,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"loot_tables")
 	if field_loot_acquisition_enabled:
 		result.append(&"field_loot_acquisition")
+	if field_loot_immediate_equip_enabled:
+		result.append(&"field_loot_immediate_equip")
 	if damage_enabled:
 		result.append(&"damage")
 	if hit_feedback_enabled:
@@ -381,6 +387,12 @@ func validation_errors() -> PackedStringArray:
 		errors.append("field_loot_acquisition 모듈은 equipment 모듈이 필요합니다.")
 	if field_loot_acquisition_enabled and not inventory_enabled:
 		errors.append("field_loot_acquisition 모듈은 inventory 모듈이 필요합니다.")
+	if field_loot_immediate_equip_enabled and not field_loot_acquisition_enabled:
+		errors.append("field_loot_immediate_equip 모듈은 field_loot_acquisition 모듈이 필요합니다.")
+	if field_loot_immediate_equip_enabled and not equipment_weapons_enabled:
+		errors.append("field_loot_immediate_equip 모듈은 equipment_weapons 모듈이 필요합니다.")
+	if field_loot_immediate_equip_enabled and not _resource_exists(field_loot_equip_catalog_path):
+		errors.append("현장 즉시 장착 카탈로그 Resource 경로가 유효하지 않습니다.")
 	if experience_enabled and not enemies_enabled:
 		errors.append("experience 모듈은 enemies 모듈이 필요합니다.")
 	if leveling_enabled and not experience_enabled:

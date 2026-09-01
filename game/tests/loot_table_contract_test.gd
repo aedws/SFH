@@ -10,7 +10,7 @@ func _run() -> void:
 	var parsed := LootTable.parse(file.get_as_text() if file != null else "")
 	var errors: PackedStringArray = parsed.get(&"errors", PackedStringArray())
 	var entries: Array = parsed.get(&"data", [])
-	if not errors.is_empty() or entries.size() != 27:
+	if not errors.is_empty() or entries.size() != 28:
 		_fail("rows=%d errors=%s" % [entries.size(), " / ".join(errors)])
 		return
 	var lifecycle_scene := load("res://game/features/loot_lifecycle/loot_lifecycle_service.tscn") as PackedScene
@@ -24,7 +24,15 @@ func _run() -> void:
 	var provider := provider_scene.instantiate()
 	root.add_child(provider)
 	await process_frame
-	if not provider.call(&"configure", load("res://game/features/loot_tables/configs/default_loot_table.tres"), lifecycle):
+	var equip_catalog := load(
+		"res://game/features/field_loot/configs/default_field_loot_equipment.tres"
+	)
+	if not provider.call(
+		&"configure",
+		load("res://game/features/loot_tables/configs/default_loot_table.tres"),
+		lifecycle,
+		equip_catalog
+	):
 		_fail("드랍 제공자 구성 실패")
 		return
 	var standard := {
@@ -66,7 +74,18 @@ func _run() -> void:
 	):
 		_fail("작전 브리핑 요약 실패")
 		return
-	print("LOOT_TABLE_TEST_OK rows_27 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link")
+	var industrial := standard.duplicate(true)
+	industrial[&"region_id"] = &"industrial_district"
+	industrial[&"difficulty_id"] = &"veteran"
+	industrial[&"map_size"] = &"medium"
+	industrial[&"source_type"] = &"room_reward"
+	var industrial_ids: PackedStringArray = provider.call(&"get_briefing", industrial).get(
+		&"target_item_ids", PackedStringArray()
+	)
+	if "pulse_rifle" not in industrial_ids:
+		_fail("Weapon 탭 기반 현장 장비가 산업 지구 드랍 후보에 연결되지 않았습니다.")
+		return
+	print("LOOT_TABLE_TEST_OK rows_28 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link")
 	quit(0)
 
 

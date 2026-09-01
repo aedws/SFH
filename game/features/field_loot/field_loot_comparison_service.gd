@@ -4,12 +4,14 @@ extends RefCounted
 var lifecycle_provider: Node
 var equipment_provider: Node
 var inventory_provider: Node
+var equip_catalog: FieldLootEquipCatalog
 
 
 func configure(
 	new_lifecycle_provider: Node,
 	new_equipment_provider: Node,
-	new_inventory_provider: Node
+	new_inventory_provider: Node,
+	new_equip_catalog: FieldLootEquipCatalog = null
 ) -> bool:
 	if (
 		not _supports(new_lifecycle_provider, [&"get_definition"])
@@ -20,12 +22,15 @@ func configure(
 	lifecycle_provider = new_lifecycle_provider
 	equipment_provider = new_equipment_provider
 	inventory_provider = new_inventory_provider
+	equip_catalog = new_equip_catalog
 	return true
 
 
 func compare(candidate: Dictionary) -> Dictionary:
 	var item_id := StringName(candidate.get(&"item_id", &""))
 	var definition := lifecycle_provider.call(&"get_definition", item_id) as LootLifecycleDefinition
+	if definition == null and equip_catalog != null:
+		definition = equip_catalog.get_definition(item_id)
 	if definition == null:
 		return {}
 	var equipment: Dictionary = equipment_provider.call(&"get_summary")
@@ -40,6 +45,20 @@ func compare(candidate: Dictionary) -> Dictionary:
 		comparison_label = "등급 %+d" % grade_delta if grade_delta != 0 else "동급"
 	elif owned_count > 0:
 		comparison_label = "보유 +%d" % int(candidate.get(&"quantity", 1))
+	var equip_preview := {}
+	if equip_catalog != null and equip_catalog.get_entry(item_id) != null:
+		var entry := equip_catalog.get_entry(item_id)
+		var current = equipment_provider.call(&"get_equipment_state", entry.target_slot)
+		equip_preview = {
+			&"available": true,
+			&"target_slot": entry.target_slot,
+			&"previous_name": (
+				String(current.definition.get("display_name"))
+				if current != null and current.definition != null else "없음"
+			),
+			&"previous_destination_label": equip_catalog.destination_label(),
+			&"policy_status": StringName(equip_catalog.policy_status),
+		}
 	return {
 		&"item_id": item_id,
 		&"display_name": definition.display_name,
@@ -58,6 +77,7 @@ func compare(candidate: Dictionary) -> Dictionary:
 		&"description": definition.description,
 		&"source_type": candidate.get(&"source_type", &"unknown"),
 		&"entry_id": candidate.get(&"entry_id", &""),
+		&"equip_preview": equip_preview,
 	}
 
 

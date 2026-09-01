@@ -8,6 +8,7 @@ signal table_error(message: String)
 
 var config: LootTableConfig
 var lifecycle_provider: Node
+var additional_definition_provider: Resource
 var entries: Array[LootDropEntry] = []
 var current_source_label := ""
 var refresh_remaining := 0.0
@@ -18,11 +19,21 @@ func _ready() -> void:
 	http_request.request_completed.connect(_on_request_completed)
 
 
-func configure(new_config: LootTableConfig, new_lifecycle_provider: Node) -> bool:
+func configure(
+	new_config: LootTableConfig,
+	new_lifecycle_provider: Node,
+	new_additional_definition_provider: Resource = null
+) -> bool:
 	if new_config == null or not _supports_lifecycle_provider(new_lifecycle_provider):
 		return false
 	config = new_config.duplicate(true) as LootTableConfig
 	lifecycle_provider = new_lifecycle_provider
+	additional_definition_provider = new_additional_definition_provider
+	if (
+		additional_definition_provider != null
+		and not additional_definition_provider.has_method(&"get_definition")
+	):
+		return false
 	var errors := config.validation_errors()
 	if not errors.is_empty():
 		table_error.emit(" / ".join(errors))
@@ -56,9 +67,11 @@ func load_csv_text(csv_text: String, source_label: String) -> bool:
 	var errors: PackedStringArray = parsed[&"errors"]
 	var parsed_entries: Array[LootDropEntry] = parsed[&"data"]
 	for entry in parsed_entries:
-		var definition: Resource = lifecycle_provider.call(&"get_definition", entry.item_id)
+		var definition := _definition_for(entry.item_id)
 		if definition == null:
-			errors.append("%s: Item 탭에 없는 item_id입니다: %s" % [entry.entry_id, entry.item_id])
+			errors.append(
+				"%s: Item/Weapon 목록에 없는 item_id입니다: %s" % [entry.entry_id, entry.item_id]
+			)
 			continue
 		var region_tags: PackedStringArray = definition.get("region_tags")
 		if "global" not in region_tags and String(entry.region_id) not in region_tags:
@@ -124,7 +137,7 @@ func get_briefing(context: Dictionary) -> Dictionary:
 			continue
 		seen[item_id] = true
 		ids.append(String(item_id))
-		var definition: Resource = lifecycle_provider.call(&"get_definition", item_id)
+		var definition := _definition_for(item_id)
 		labels.append(String(definition.get("display_name")) if definition != null else String(item_id))
 		if labels.size() >= config.briefing_item_count:
 			break
@@ -146,6 +159,7 @@ func get_snapshot() -> Dictionary:
 		&"by_region": by_region,
 		&"source_label": current_source_label,
 		&"lifecycle_linked": _supports_lifecycle_provider(lifecycle_provider),
+		&"equipment_definition_linked": additional_definition_provider != null,
 		&"deterministic_rolls": true,
 	}
 
@@ -180,6 +194,13 @@ func _read_locked_text(path: String, payload: Resource) -> String:
 
 func _supports_lifecycle_provider(candidate: Node) -> bool:
 	return is_instance_valid(candidate) and candidate.has_method(&"get_definition")
+
+
+func _definition_for(item_id: StringName) -> Resource:
+	var definition: Resource = lifecycle_provider.call(&"get_definition", item_id)
+	if definition == null and additional_definition_provider != null:
+		definition = additional_definition_provider.call(&"get_definition", item_id)
+	return definition
 
 
 func _on_request_completed(_result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:

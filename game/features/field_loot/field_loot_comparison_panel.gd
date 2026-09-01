@@ -46,6 +46,17 @@ func show_comparison(snapshot: Dictionary) -> void:
 		String(snapshot.get(&"extract_label", "")),
 		String(snapshot.get(&"death_label", "")),
 	]
+	var equip_preview: Dictionary = snapshot.get(&"equip_preview", {})
+	controls_label.text = (
+		"R 즉시 장착   ·   F 런 보관   ·   ESC 보류"
+		if bool(equip_preview.get(&"available", false))
+		else "F 획득   ·   ESC 보류"
+	)
+	if bool(equip_preview.get(&"available", false)):
+		outcome_label.text += "\n%s · %s" % [
+			"임시 정책" if equip_preview.get(&"policy_status", &"") == &"provisional" else "확정 정책",
+			String(equip_preview.get(&"previous_destination_label", "")),
+		]
 	visible = true
 
 
@@ -61,8 +72,9 @@ func get_snapshot() -> Dictionary:
 		&"has_comparison": not current_snapshot.is_empty(),
 		&"shows_extract_result": not outcome_label.text.is_empty() if outcome_label != null else false,
 		&"shows_cancel_and_select": (
-			"F 획득" in controls_label.text and "ESC 보류" in controls_label.text
+			"F" in controls_label.text and "ESC 보류" in controls_label.text
 		) if controls_label != null else false,
+		&"shows_immediate_equip": "R 즉시 장착" in controls_label.text if controls_label != null else false,
 		&"viewport_safe": _inside_viewport(),
 	}
 

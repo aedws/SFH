@@ -4,6 +4,7 @@ extends Node
 signal drop_spawned(drop: Node2D, candidate: Dictionary)
 signal preview_changed(visible: bool, comparison: Dictionary)
 signal loot_acquired(item_id: StringName, quantity: int, snapshot: Dictionary)
+signal loot_equipped(item_id: StringName, result: Dictionary, snapshot: Dictionary)
 signal acquisition_cancelled(item_id: StringName)
 signal interaction_availability_changed(available: bool, prompt: String)
 
@@ -15,6 +16,8 @@ var drop_parent: Node2D
 var lifecycle_provider: Node
 var table_provider: Node
 var comparison_service := FieldLootComparisonService.new()
+var equip_service := FieldLootEquipService.new()
+var equip_catalog: FieldLootEquipCatalog
 var operation_context: Dictionary = {}
 var run_seed := 0
 var active_drops: Array[Node2D] = []
@@ -35,7 +38,8 @@ func configure(
 	equipment_provider: Node,
 	inventory_provider: Node,
 	new_operation_context: Dictionary,
-	new_run_seed: int
+	new_run_seed: int,
+	new_equip_catalog: FieldLootEquipCatalog = null
 ) -> bool:
 	if (
 		not is_instance_valid(new_player)
@@ -43,7 +47,7 @@ func configure(
 		or not is_instance_valid(ui_parent)
 		or not _supports(new_table_provider, [&"roll_drop"])
 		or not comparison_service.configure(
-			new_lifecycle_provider, equipment_provider, inventory_provider
+			new_lifecycle_provider, equipment_provider, inventory_provider, new_equip_catalog
 		)
 	):
 		return false
@@ -53,6 +57,9 @@ func configure(
 	table_provider = new_table_provider
 	operation_context = new_operation_context.duplicate(true)
 	run_seed = new_run_seed
+	equip_catalog = new_equip_catalog
+	if equip_catalog != null and not equip_service.configure(equipment_provider, equip_catalog):
+		return false
 	acquired_items.clear()
 	active_drops.clear()
 	focused_drop = null
@@ -97,6 +104,28 @@ func spawn_candidate(world_position: Vector2, candidate: Dictionary) -> Node2D:
 func acquire_focused() -> bool:
 	if not is_instance_valid(focused_drop):
 		return false
+	return _finalize_focused_acquisition(&"run_storage")
+
+
+func equip_focused() -> bool:
+	if not is_instance_valid(focused_drop) or equip_catalog == null:
+		return false
+	var comparison: Dictionary = focused_drop.get("comparison")
+	var item_id := StringName(comparison.get(&"item_id", &""))
+	var equip_result := equip_service.equip(item_id)
+	if not bool(equip_result.get(&"success", false)):
+		return false
+	var completed := _finalize_focused_acquisition(&"equipped", equip_result)
+	if completed:
+		loot_equipped.emit(item_id, equip_result.duplicate(true), get_snapshot())
+	return completed
+
+
+func restore_equipment_swaps() -> int:
+	return equip_service.restore_swaps() if equip_catalog != null else 0
+
+
+func _finalize_focused_acquisition(mode: StringName, equip_result: Dictionary = {}) -> bool:
 	var comparison: Dictionary = focused_drop.get("comparison")
 	var item_id := StringName(comparison.get(&"item_id", &""))
 	var quantity := maxi(1, int(comparison.get(&"quantity", 1)))
@@ -113,6 +142,10 @@ func acquire_focused() -> bool:
 	entry[&"highest_grade"] = maxi(
 		int(entry.get(&"highest_grade", 0)), int(comparison.get(&"candidate_grade", 1))
 	)
+	entry[&"last_acquisition_mode"] = mode
+	if not equip_result.is_empty():
+		entry[&"previous_item_name"] = equip_result.get(&"previous_name", "")
+		entry[&"previous_destination"] = equip_result.get(&"previous_destination", &"")
 	acquired_items[item_id] = entry
 	var acquired_drop := focused_drop
 	focused_drop = null
@@ -163,6 +196,8 @@ func get_snapshot() -> Dictionary:
 		&"total_cancelled": total_cancelled,
 		&"panel": panel.get_snapshot() if is_instance_valid(panel) else {},
 		&"separate_from_equipment_mutation": true,
+		&"equipment_mutation_delegated": true,
+		&"immediate_equip": equip_service.get_snapshot(),
 		&"lifecycle_linked": is_instance_valid(lifecycle_provider),
 		&"table_linked": is_instance_valid(table_provider),
 	}
@@ -173,6 +208,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed(&"interact"):
 		if acquire_focused():
+			get_viewport().set_input_as_handled()
+	elif event.is_action_pressed(&"equip_field_loot"):
+		if equip_focused():
 			get_viewport().set_input_as_handled()
 	elif event.is_action_pressed(&"ui_cancel"):
 		if cancel_preview():
@@ -186,7 +224,12 @@ func _on_drop_proximity_changed(drop: Node2D, available: bool) -> void:
 		panel.show_comparison(comparison)
 		preview_changed.emit(true, comparison.duplicate(true))
 		interaction_availability_changed.emit(
-			true, "F · %s 획득 / ESC · 보류" % comparison.get(&"display_name", "전리품")
+			true,
+			(
+				"R · 즉시 장착 / F · 런 보관 / ESC · 보류"
+				if not (comparison.get(&"equip_preview", {}) as Dictionary).is_empty()
+				else "F · %s 획득 / ESC · 보류" % comparison.get(&"display_name", "전리품")
+			)
 		)
 	elif focused_drop == drop:
 		focused_drop = null

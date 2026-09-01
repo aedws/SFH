@@ -61,7 +61,7 @@ search:
       </div>
       <div class="sfh-operation-meta" aria-label="현재 플레이 빌드 요약">
         <span><b>3</b><small>MAP TIERS</small></span>
-        <span><b>K · 22 + 9</b><small>KEY + SKILL BINDING</small></span>
+        <span><b>K · 23 + 9</b><small>KEY + SKILL BINDING</small></span>
         <span><b>PASS</b><small>WEB BUILD</small></span>
       </div>
     </div>
@@ -73,10 +73,17 @@ search:
     <div><span class="sfh-kicker">PLANNER REQUEST LINK</span><h2 id="sfh-planner-requests-title">기획 요청 · 데이터 결정</h2></div>
     <span class="sfh-planner-requests__status" data-sfh-planner-request-status>요청 목록 연결 중</span>
   </header>
-  <p class="sfh-planner-requests__intro">개발 진행에 필요한 결정만 상단에 압축합니다. 작업 규칙과 밸런스 수치를 분리하고, 완료 항목까지 같은 ID로 추적합니다.</p>
+  <p class="sfh-planner-requests__intro">개발 진행에 필요한 결정만 상단에 압축합니다. 담당 역할·차단 상태·수락 기준·검증 근거까지 같은 ID로 추적합니다.</p>
+  <div class="sfh-planner-source" data-sfh-planner-source aria-live="polite">공개 Notion 확인 시각을 불러오는 중</div>
   <p class="sfh-planner-requests__instruction" data-sfh-planner-request-instruction>요청 ID를 Notion 결정 제목에 함께 적어 주세요.</p>
+  <div class="sfh-planner-filters" data-sfh-planner-filters aria-label="협업 요청 역할 필터">
+    <button type="button" data-filter="all" aria-pressed="true">전체</button>
+    <button type="button" data-filter="planner" aria-pressed="false">기획자 할 일</button>
+    <button type="button" data-filter="ai_developer" aria-pressed="false">AI 개발자 할 일</button>
+    <button type="button" data-filter="complete" aria-pressed="false">검증 완료</button>
+  </div>
   <div class="sfh-planner-requests__grid" data-sfh-planner-request-grid aria-live="polite"></div>
-  <footer><a href="design/planner-request-workflow/">요청 작성·Sheet 확정 규칙 확인 →</a></footer>
+  <footer><a href="design/wiki-collaboration-workflow/">협업 문제·수정 대안 →</a> · <a href="design/planner-request-workflow/">요청 작성·Sheet 확정 규칙 →</a></footer>
 </section>
 
 <nav class="sfh-role-nav" aria-label="기획자와 개발자 빠른 이동">
@@ -98,16 +105,32 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 14 TOPICS</span><span>62 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 15 TOPICS</span><span>64 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 44 · IMPROVE 53 · CHANGE 59 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 48 · IMPROVE 58 · CHANGE 64 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>44</b><small>BUILD</small></span><span><b>53</b><small>IMPROVE</small></span><span><b>59</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span>
+      <span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>58</b><small>IMPROVE</small></span><span><b>64</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 15</small><b>P4-04A 현장 무기 즉시 장착 · 역할형 협업 위키</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 방 보상 무기를 R로 바로 사용하고, 위키 첫 화면에서 기획자와 AI 개발자의 다음 행동을 분리합니다.</strong><ul>
+          <li><b>현장 교체:</b> 전격 펄스 소총을 Weapon·LootTable에 추가하고 R 즉시 장착, F 런 보관, ESC 보류를 분리했습니다.</li>
+          <li><b>안전 정책:</b> 기존 무기는 런 임시 보관 뒤 거점 복귀 전에 복구해 미확정 영구 해금·소실을 만들지 않습니다.</li>
+          <li><b>협업 위키:</b> 담당 역할·차단·상태·수락 기준·Sheet 위치·검증 근거·Notion 확인 시각과 역할 필터를 추가했습니다.</li>
+          <li><b>다음 작업:</b> P4-04B 현장 스킬 즉시 교체 뒤 P4-05 세션 소켓, P4-06 정산으로 진행합니다.</li>
+        </ul><p class="sfh-intent"><b>모듈 판단</b><span>장착 정의·정책·변경 서비스·획득 조정·표시를 분리하고 유료 협업 기능은 추가하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>무기 정의·장착 카탈로그·교체 서비스·R 입력을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>위키 역할 필터, 최신성, 담당자, 수락 기준, 검증 근거를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>Sheet·CSV·Manifest·키 설정·마일스톤을 P4-04A 기준으로 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>별도 결함 수정 없이 미확정 정책의 선행 적용을 구조적으로 차단했습니다.</p></div>
+        <p><a href="features/field-loot-immediate-equip/">현장 즉시 장착 →</a> · <a href="design/wiki-collaboration-workflow/">협업 개선안 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 14</small><b>기획 요청 허브 · P4-03 현장 비교·획득 · Sheet 상시 확장 규칙</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">

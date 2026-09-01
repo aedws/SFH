@@ -19,6 +19,9 @@ $workflow = Get-Content -LiteralPath $workflowPath -Raw -Encoding UTF8
 if ($data.notion_url -notmatch '^https://[^/]+\.notion\.site/') {
     throw "Planner request Notion URL is invalid."
 }
+if ($data.version -lt 2 -or $data.source.sync_mode -ne "manual_verified_snapshot" -or [string]::IsNullOrWhiteSpace($data.source.last_checked_at)) {
+    throw "Planner request source freshness contract is missing."
+}
 if ($data.items.Count -lt 3) {
     throw "Planner request hub requires request, data, and complete states."
 }
@@ -32,6 +35,15 @@ foreach ($item in $data.items) {
     if ($item.status -notin @("request", "data", "complete")) {
         throw "Unsupported planner request status: $($item.status)"
     }
+    if ($item.owner_role -notin @("planner", "ai_developer")) {
+        throw "Unsupported planner request owner: $($item.owner_role)"
+    }
+    if ($item.state -notin @("needs_planner", "ready_for_dev", "in_implementation", "implemented_verified", "accepted")) {
+        throw "Unsupported planner request state: $($item.state)"
+    }
+    if ($null -eq $item.blocking -or $item.acceptance.Count -lt 1 -or $item.evidence.Count -lt 1) {
+        throw "$($item.id) requires blocking, acceptance, and evidence fields."
+    }
     $statuses[$item.status] = $true
     foreach ($field in @("tag", "title", "summary", "basis", "notion_prompt")) {
         if ([string]::IsNullOrWhiteSpace($item.$field)) {
@@ -44,14 +56,26 @@ foreach ($requiredStatus in @("request", "data", "complete")) {
         throw "Planner request status is missing: $requiredStatus"
     }
 }
-if ($wikiHomeContent -notmatch 'data-sfh-planner-requests' -or $wikiHomeContent -notmatch 'data-sfh-planner-request-grid') {
+if (
+    $wikiHomeContent -notmatch 'data-sfh-planner-requests' -or
+    $wikiHomeContent -notmatch 'data-sfh-planner-request-grid' -or
+    $wikiHomeContent -notmatch 'data-sfh-planner-filters' -or
+    $wikiHomeContent -notmatch 'data-sfh-planner-source'
+) {
     throw "Wiki home planner request hub is missing."
 }
-if ($javascript -notmatch 'planner-requests\.json' -or $javascript -notmatch 'sfh-planner-request__notion') {
+if (
+    $javascript -notmatch 'planner-requests\.json' -or
+    $javascript -notmatch 'sfh-planner-request__notion' -or
+    $javascript -notmatch 'ownerRole' -or
+    $javascript -notmatch 'installFilters'
+) {
     throw "Planner request renderer is not linked to data and Notion action."
 }
 if (
     $stylesheet -notmatch '\.sfh-planner-requests__grid' -or
+    $stylesheet -notmatch '\.sfh-planner-filters' -or
+    $stylesheet -notmatch '\.sfh-planner-source' -or
     $stylesheet -notmatch 'grid-template-columns:\s*1fr' -or
     $stylesheet -notmatch 'min-height:\s*44px'
 ) {
@@ -74,4 +98,4 @@ if (-not [string]::IsNullOrWhiteSpace($SiteRoot)) {
     }
 }
 
-Write-Output "WIKI_PLANNER_REQUESTS_OK items=$($data.items.Count) statuses=3 notion_link responsive touch_44px sheet_extension_authorized"
+Write-Output "WIKI_PLANNER_REQUESTS_OK items=$($data.items.Count) schema_v2 owners states blocking acceptance evidence source_freshness role_filters notion_link responsive touch_44px sheet_extension_authorized"

@@ -44,6 +44,11 @@ const CHECKPOINT_RULES := {
 		&"surfaces": [&"field_loot"],
 		&"phrases": ["FIELD ACQUISITION", "비교", "탈출 시", "사망 시", "F 획득", "ESC 보류"],
 	},
+	&"field_loot_immediate_equip": {
+		&"unit": &"decision",
+		&"surfaces": [&"field_loot"],
+		&"phrases": ["R 즉시 장착", "F 런 보관", "ESC 보류", "임시 정책", "기존 장비"],
+	},
 	&"combat_glance": {
 		&"unit": &"glance",
 		&"surfaces": [&"combat", &"combat_skills", &"dash", &"minimap"],

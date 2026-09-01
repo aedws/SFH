@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "updated": "2026-09-01",
   "root": {
     "id": "sfh",
@@ -63,6 +63,7 @@
               {"label": "Master GDD 구현 대조", "source": "design/master-gdd-alignment.md", "route": "design/master-gdd-alignment/", "summary": "확정 기획·75% 산식·마일스톤 차이"},
               {"label": "현행 마일스톤 작업 라인", "source": "design/current-milestone-workline.md", "route": "design/current-milestone-workline/", "summary": "Phase 1·4·5·6 구현 순서·모듈 경계·E2E 게이트"},
               {"label": "기획 요청·밸런스 데이터 운영", "source": "design/planner-request-workflow.md", "route": "design/planner-request-workflow/", "summary": "요청 ID·Notion 근거·Sheet 상시 확장·완료 안내"},
+              {"label": "AI 개발자·기획자 위키 협업 개선안", "source": "design/wiki-collaboration-workflow.md", "route": "design/wiki-collaboration-workflow/", "summary": "역할·상태·차단·수락 기준·근거와 단계별 수정 대안"},
               {"label": "게임 개요", "source": "design/game-overview.md", "route": "design/game-overview/", "summary": "장르·캐치프레이즈·핵심 노선"},
               {"label": "MVP 범위", "source": "design/mvp-scope.md", "route": "design/mvp-scope/", "summary": "최소 구현과 후속 범위"}
             ]
@@ -170,7 +171,7 @@
             "description": "이동·공격·스킬·피드백",
             "documents": [
               {"label": "플레이어", "source": "features/player.md", "route": "features/player/", "summary": "탑다운 이동·대시·조작감"},
-              {"label": "K 입력 설정과 자유 스킬 배치", "source": "features/key-mapping.md", "route": "features/key-mapping/", "summary": "22개 물리 키와 별도인 1~9 스킬 위치 교환·저장"},
+              {"label": "K 입력 설정과 자유 스킬 배치", "source": "features/key-mapping.md", "route": "features/key-mapping/", "summary": "23개 물리 키와 별도인 1~9 스킬 위치 교환·저장"},
               {"label": "부분 체력 회복", "source": "features/health-recovery.md", "route": "features/health-recovery/", "summary": "회복 규칙과 제한"},
               {"label": "전투 스킬과 쿨타임 HUD", "source": "features/combat-skills.md", "route": "features/combat-skills/", "summary": "점멸·자기장·기동 가속"},
               {"label": "타격감과 피격 피드백", "source": "features/hit-feedback.md", "route": "features/hit-feedback/", "summary": "섬광·넉백·충격·카메라 반응"},
@@ -188,8 +189,9 @@
               {"label": "영구 해금·상점·창고·소모품", "source": "features/hub-economy.md", "route": "features/hub-economy/", "summary": "거점 경제와 파산 방지"},
               {"label": "크레딧 파밍과 회수", "source": "features/credit-loot.md", "route": "features/credit-loot/", "summary": "현장 자원·금고·회수 배율"},
               {"label": "전리품 생명 주기", "source": "features/loot-lifecycle.md", "route": "features/loot-lifecycle/", "summary": "영구·이번 런 자산, 탈출·사망 결과와 Item Sheet"},
-              {"label": "지역·난이도 전리품 테이블", "source": "features/loot-tables.md", "route": "features/loot-tables/", "summary": "세 지역 27행·난이도·출처별 타겟 파밍과 브리핑"},
+              {"label": "지역·난이도 전리품 테이블", "source": "features/loot-tables.md", "route": "features/loot-tables/", "summary": "세 지역 28행·난이도·출처별 타겟 파밍과 브리핑"},
               {"label": "현장 전리품 비교·획득", "source": "features/field-loot-acquisition.md", "route": "features/field-loot-acquisition/", "summary": "접근 비교·ESC 보류·F 획득과 런 임시 보관"},
+              {"label": "현장 무기 즉시 장착", "source": "features/field-loot-immediate-equip.md", "route": "features/field-loot-immediate-equip/", "summary": "R 즉시 장착·기존 무기 런 임시 보관·거점 복구"},
               {"label": "도면 제작과 랜덤 옵션", "source": "features/blueprint-crafting.md", "route": "features/blueprint-crafting/", "summary": "도면 해금·제작·옵션 정책"},
               {"label": "페널티 변형과 조건부 랭킹", "source": "features/penalty-ranking.md", "route": "features/penalty-ranking/", "summary": "리스크 보상과 3종 기록"},
               {"label": "캐릭터 장비와 로드아웃", "source": "features/character-equipment.md", "route": "features/character-equipment/", "summary": "무기·방어구·스킬 슬롯"},
