@@ -2,9 +2,6 @@ site_name: SFH 개발 위키
 site_description: Godot 4 기반 모듈형 탑다운 뱀서라이크 개발 문서
 site_url: https://sfh-dev-wiki.pages.dev/
 site_dir: .wiki-site
-repo_url: https://github.com/aedws/SFH
-repo_name: aedws/SFH
-edit_uri: edit/main/docs/
 
 theme:
   name: material
@@ -30,8 +27,9 @@ theme:
     - search.highlight
     - search.share
     - content.code.copy
-    - content.action.edit
-    - content.action.view
+
+extra:
+  generator: false
 
 extra_css:
   - stylesheets/extra.css
@@ -101,6 +99,7 @@ nav:
       - 영구 해금·상점·창고·소모품: features/hub-economy.md
       - 크레딧 파밍과 회수: features/credit-loot.md
       - 전리품 생명 주기: features/loot-lifecycle.md
+      - 지역·난이도 전리품 테이블: features/loot-tables.md
       - 플레이어: features/player.md
       - K 입력 설정과 자유 스킬 배치: features/key-mapping.md
       - 부분 체력 회복: features/health-recovery.md

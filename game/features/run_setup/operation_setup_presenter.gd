@@ -9,6 +9,7 @@ var mission_title: Label
 var mission_code: Label
 var mission_intel: Label
 var reward_summary: Label
+var target_farming_summary: Label
 var risk_summary: Label
 var selection_summary: Label
 var preview: Control
@@ -112,6 +113,9 @@ func install(overlay: Control) -> Dictionary:
 	reward_summary = _label("회수 계약 계산 중...", 13, Color("ffd579"))
 	reward_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	left.add_child(reward_summary)
+	target_farming_summary = _label("타겟 파밍 표 계산 중...", 12, Color("8ffffc"))
+	target_farming_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	left.add_child(target_farming_summary)
 
 	right.add_child(_section_title("작전 조건 선택"))
 	var contract_section := content.get_node("ContractSection") as VBoxContainer
@@ -199,6 +203,13 @@ func update(payload: Dictionary) -> void:
 		float(quote.get(&"high_grade_drop_multiplier", 1.0)),
 		"보스 출현 확정" if bool(quote.get(&"boss_spawn_guaranteed", false)) else "일반 보스 확률",
 	]
+	var loot_briefing: Dictionary = payload.get(&"loot_briefing", {})
+	var target_labels: PackedStringArray = loot_briefing.get(&"target_item_labels", PackedStringArray())
+	target_farming_summary.text = "TARGET LOOT  ·  %s  ·  최고 G%d  ·  후보 %d개" % [
+		" / ".join(target_labels) if not target_labels.is_empty() else "드랍 표 없음",
+		int(loot_briefing.get(&"highest_grade", 0)),
+		int(loot_briefing.get(&"candidate_count", 0)),
+	]
 	var enemy: Dictionary = quote.get(&"enemy_modifiers", {})
 	risk_summary.text = "위험 보정  HP ×%.2f · 공격 ×%.2f · 방어 ×%.2f · 이동 ×%.2f\n페널티  %s" % [
 		float(enemy.get(&"health_multiplier", 1.0)), float(enemy.get(&"damage_multiplier", 1.0)),
@@ -232,6 +243,7 @@ func get_snapshot() -> Dictionary:
 		&"panel_size": root_panel.size if root_panel != null else Vector2.ZERO,
 		&"mission_title": mission_title.text if mission_title != null else "",
 		&"selection_summary": selection_summary.text if selection_summary != null else "",
+		&"target_farming_summary": target_farming_summary.text if target_farming_summary != null else "",
 		&"selected_tiers": tier_buttons.keys().filter(
 			func(id): return bool((tier_buttons[id] as Button).get_meta(&"selected", false))
 		),

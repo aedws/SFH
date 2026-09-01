@@ -9,6 +9,8 @@ uniform float corridor_forward_distance = 780.0;
 uniform float corridor_half_angle_radians = 1.0821;
 uniform float corridor_angle_softness_radians = 0.2094;
 uniform float corridor_distance_softness = 130.0;
+uniform float corridor_comfort_shell_radius = 320.0;
+uniform float corridor_comfort_shell_visibility = 0.24;
 uniform float room_edge_softness = 18.0;
 uniform float room_visibility_blend = 0.0;
 uniform vec4 active_room_rect = vec4(0.0);
@@ -69,7 +71,10 @@ float corridor_visibility(vec2 pixel_position) {
 	float near_visibility = 1.0 - smoothstep(
 		corridor_near_radius * 0.62, corridor_near_radius, radial_distance
 	);
-	float visibility = max(near_visibility, cone * in_front * distance_visibility);
+	float comfort_shell = (
+		1.0 - smoothstep(corridor_near_radius, corridor_comfort_shell_radius, radial_distance)
+	) * corridor_comfort_shell_visibility;
+	float visibility = max(max(near_visibility, comfort_shell), cone * in_front * distance_visibility);
 	return visibility * (1.0 - room_block_mask(pixel_position));
 }
 

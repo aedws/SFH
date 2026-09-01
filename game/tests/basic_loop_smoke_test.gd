@@ -31,6 +31,7 @@ const UPGRADE_BALANCE_PAYLOAD_PATH := (
 const ITEM_LIFECYCLE_PAYLOAD_PATH := (
 	"res://game/features/loot_lifecycle/data/item_lifecycle_payload.tres"
 )
+const LOOT_TABLE_PAYLOAD_PATH := "res://game/features/loot_tables/data/loot_table_payload.tres"
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const DASH_COOLDOWN_HUD_SCENE_PATH := (
 	"res://game/features/movement_hud/dash_cooldown_hud.tscn"
@@ -86,6 +87,7 @@ const WEB_EXPORT_DATA_PATHS := [
 	"game/features/growth_balance/data/run_buff_balance.csv",
 	"game/features/growth_balance/data/upgrade_balance.csv",
 	"game/features/loot_lifecycle/data/item_lifecycle.csv",
+	"game/features/loot_tables/data/loot_table.csv",
 ]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 const ROOM_HORDE_MINIMUMS := {&"small": 12, &"medium": 18, &"large": 24}
@@ -164,6 +166,8 @@ func _init() -> void:
 	if not await _verify_optional_weapon_balance_module(game_scene):
 		return
 	if not await _verify_optional_growth_balance_module(game_scene):
+		return
+	if not await _verify_optional_loot_table_module(game_scene):
 		return
 	if not await _verify_optional_progression_modules(game_scene):
 		return
@@ -392,6 +396,7 @@ func _verify_web_export_data_contract() -> bool:
 		[WEB_EXPORT_DATA_PATHS[1], RUN_BUFF_BALANCE_PAYLOAD_PATH],
 		[WEB_EXPORT_DATA_PATHS[2], UPGRADE_BALANCE_PAYLOAD_PATH],
 		[WEB_EXPORT_DATA_PATHS[3], ITEM_LIFECYCLE_PAYLOAD_PATH],
+		[WEB_EXPORT_DATA_PATHS[4], LOOT_TABLE_PAYLOAD_PATH],
 	]
 	for contract in payload_contracts:
 		var source_path := "res://%s" % String(contract[0])
@@ -2600,6 +2605,28 @@ func _verify_optional_growth_balance_module(game_scene: PackedScene) -> bool:
 	return true
 
 
+func _verify_optional_loot_table_module(game_scene: PackedScene) -> bool:
+	var table_free_game := game_scene.instantiate()
+	var table_free_features = table_free_game.get("features").duplicate(true)
+	table_free_features.set("loot_tables_enabled", false)
+	table_free_features.set("run_setup_enabled", false)
+	table_free_game.set("features", table_free_features)
+	root.add_child(table_free_game)
+	await process_frame
+	var failure_message := ""
+	if table_free_game.get("loot_table_provider") != null:
+		failure_message = "비활성화했지만 지역 드랍 테이블 제공자가 설치됐습니다."
+	elif table_free_game.get("loot_lifecycle_service") == null:
+		failure_message = "드랍 테이블 비활성화가 기존 전리품 생명 주기까지 제거했습니다."
+	root.remove_child(table_free_game)
+	table_free_game.free()
+	await process_frame
+	if not failure_message.is_empty():
+		_fail("지역 드랍 테이블 선택 모듈 비활성화 실패: %s" % failure_message)
+		return false
+	return true
+
+
 func _verify_optional_progression_modules(game_scene: PackedScene) -> bool:
 	var progression_free_game := game_scene.instantiate()
 	var progression_free_features = progression_free_game.get("features").duplicate(true)
@@ -2775,6 +2802,10 @@ func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -
 	var original_position := player.global_position
 	player.global_position = corridor_position
 	var exit_seconds := float(room_snapshot.get(&"room_exit_transition_seconds", 0.0))
+	var grace_seconds := float(room_snapshot.get(&"doorway_grace_seconds", 0.0))
+	fog.call(&"_process", grace_seconds * 0.5)
+	var doorway_grace_snapshot: Dictionary = fog.call(&"get_snapshot")
+	fog.call(&"_process", grace_seconds * 0.5 + 0.001)
 	fog.call(&"_process", exit_seconds * 0.5)
 	var doorway_exit_snapshot: Dictionary = fog.call(&"get_snapshot")
 	fog.call(&"_process", exit_seconds)
@@ -2786,7 +2817,11 @@ func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -
 	fog.call(&"_process", enter_seconds)
 	var settled_room_snapshot: Dictionary = fog.call(&"get_snapshot")
 	return (
-		doorway_exit_snapshot.get(&"visibility_mode") == &"corridor"
+		doorway_grace_snapshot.get(&"visibility_mode") == &"corridor"
+		and doorway_grace_snapshot.get(&"transition_phase") == &"doorway_grace"
+		and is_equal_approx(float(doorway_grace_snapshot.get(&"room_visibility_blend", 0.0)), 1.0)
+		and float(doorway_grace_snapshot.get(&"doorway_grace_remaining", 0.0)) > 0.0
+		and doorway_exit_snapshot.get(&"visibility_mode") == &"corridor"
 		and float(doorway_exit_snapshot.get(&"room_visibility_blend", 0.0)) > 0.0
 		and float(doorway_exit_snapshot.get(&"room_visibility_blend", 1.0)) < 1.0
 		and int(doorway_exit_snapshot.get(&"transition_room_index", -1)) >= 0
@@ -2796,6 +2831,9 @@ func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -
 		and is_zero_approx(float(corridor_snapshot.get(&"room_visibility_blend", 1.0)))
 		and float(corridor_snapshot.get(&"corridor_forward_distance", 0.0))
 		> float(corridor_snapshot.get(&"corridor_near_radius", 0.0))
+		and float(corridor_snapshot.get(&"corridor_comfort_shell_radius", 0.0))
+		> float(corridor_snapshot.get(&"corridor_near_radius", 0.0))
+		and float(corridor_snapshot.get(&"corridor_comfort_shell_visibility", 0.0)) > 0.0
 		and (corridor_snapshot.get(&"facing_direction", Vector2.ZERO) as Vector2)
 		== player.call(&"get_facing_direction")
 		and doorway_enter_snapshot.get(&"visibility_mode") == &"room"
@@ -3560,7 +3598,7 @@ func _process(_delta: float) -> bool:
 		print("WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction")
 		print("RUN_AUGMENT_UI_OK cards_3 category_title_effect_stack keyboard_selection optional_presenter")
 		print("CYBERPUNK_THEME_OK accent_02e5e1 pixel_korean scanlines static_noise blink_state optional_overlay")
-		print("SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud key_mapping_22 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx commercial_ofl_pixel_font vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font cyberpunk_theme cyberpunk_theme_optional cyberpunk_motion cyberpunk_static_noise web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_entry_horde_minimum room_door_lock room_credit_boxes_1_5 early_extraction room_encounters_optional room_warp_optional minimap_expanded_warp run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement movement_feedback dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
+		print("SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud key_mapping_22 persistent_rebind conflict_swap esc_reserved commercial_cc0_vfx commercial_ofl_pixel_font vfx_draw_budget primary_attack_hold skill_slots_1_9 runtime_rebind targeting_policy_modes extraction_pause_resume failure_loadout_loss boss_guarantee regional_drop_table bankruptcy_protection permanent_shop_registration combat_tag_gating grade_skill_override status_trigger_chain recovery_vision_extraction_penalties conditional_rankings_3 web_korean_font cyberpunk_theme cyberpunk_theme_optional cyberpunk_motion cyberpunk_static_noise web_export_data web_embedded_balance_data electric_skill_effects electric_effect_budget cooldown_ui_10hz timer_stat_modifier combat_skills combat_skills_optional persistent_magnetic_field skill_1_blink skill_2_magnetic_field skill_3_speed_boost skill_cooldown_hud start_hub start_hub_optional hub_inventory_i_escape hub_equipment_u_e_escape hub_loadout_ui_density hub_u_e_direct_tabs hub_u_e_action_split human_readable_equipment_summary hub_loadout_editable hub_item_equip_swap_unequip hub_module_equip_swap_unequip hub_part_equip_unequip hub_loadout_session_persistence hub_weapon_q_persisted single_room_hub operation_gate optimized_setup_ui combat_session hub_return run_setup balance_mode_ui tier_entry map map_scale screen_sized_rooms indoor_structures room_visibility corridor_visibility facing_vision room_triggered_encounter room_entry_horde_minimum room_door_lock room_credit_boxes_1_5 early_extraction room_encounters_optional room_warp_optional minimap_expanded_warp run_pacing extraction_lock extraction_defense operation_settlement persistent_profile operation_contracts hub_economy warehouse consumable_loadout smart_targeting blueprint_crafting random_affixes penalty_modifiers conditional_ranking fog_of_war minimap minimap_full_map equipment loadout loadout_ui module_inventory_ui direct_item_selection weapon_tags skills_0_10 armor_stats inventory_grid item_footprints inventory_i equipment_u weapon_switch_q weapon_balance_csv weapon_balance_optional growth_balance_csv growth_balance_optional loot_table_optional run_buff_sheet upgrade_sheet weapon_upgrade_spec armor_upgrade_spec module_upgrade_spec rifle_burst pistol_pierce parts module_cost module_upgrade part_upgrade upgrade_materials upgrade_credits modification_tag equipment_optional realistic_obstacles resource_recovery recovery_multiplier_range recovery_target_exact loot credits map_optional player responsive_movement platformer_response dynamic_hack_slash_movement movement_feedback dash dash_exit_momentum health_recovery health_ui enemies reinforcement_population finite_spawn_budget armor status_bars pathfinding weapon target_provider run_experience run_buffs buff_choice meta_experience character_level weapon_level armor_level extraction_f game_over modular_progression")
 		quit(0)
 		return true
 

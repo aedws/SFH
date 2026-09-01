@@ -23,8 +23,15 @@ if (-not (Test-Path -LiteralPath $virtualPython)) {
     }
 }
 
+$previousNativePreference = $PSNativeCommandUseErrorActionPreference
+$previousErrorPreference = $ErrorActionPreference
+$PSNativeCommandUseErrorActionPreference = $false
+$ErrorActionPreference = "SilentlyContinue"
 & $virtualPython -c "import mkdocs" 2>$null
-if ($LASTEXITCODE -ne 0) {
+$mkdocsImportExitCode = $LASTEXITCODE
+$ErrorActionPreference = $previousErrorPreference
+$PSNativeCommandUseErrorActionPreference = $previousNativePreference
+if ($mkdocsImportExitCode -ne 0) {
     & $virtualPython -m pip install --disable-pip-version-check -r (Join-Path $repositoryRoot "requirements-docs.txt")
 }
 
@@ -37,7 +44,11 @@ try {
     & (Join-Path $PSScriptRoot "check-wiki-knowledge-map.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-color-contrast.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-responsive.ps1")
+    & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1")
     & $virtualPython -m mkdocs $Action --strict
+    if ($Action -eq "build") {
+        & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1") -SiteRoot ".wiki-site"
+    }
 }
 finally {
     Pop-Location

@@ -34,6 +34,11 @@ const CHECKPOINT_RULES := {
 		&"surfaces": [&"run_setup"],
 		&"phrases": ["작전 브리핑", "작전 정보", "예상 회수", "위험", "소모품", "작전 투입"],
 	},
+	&"target_farming_decision": {
+		&"unit": &"decision",
+		&"surfaces": [&"run_setup"],
+		&"phrases": ["TARGET LOOT", "최고 G", "후보"],
+	},
 	&"combat_glance": {
 		&"unit": &"glance",
 		&"surfaces": [&"combat", &"combat_skills", &"dash", &"minimap"],

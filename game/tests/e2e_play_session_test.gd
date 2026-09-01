@@ -77,7 +77,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch loot_table_targeting tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -219,9 +219,31 @@ func _verify_hub_input_session() -> bool:
 		or not bool(setup_snapshot.get(&"layout_fits", false))
 		or "폐허 도시" not in String(setup_snapshot.get(&"mission_title", ""))
 		or "소모품" not in String(setup_snapshot.get(&"selection_summary", ""))
+		or "TARGET LOOT" not in String(setup_snapshot.get(&"target_farming_summary", ""))
 	):
 		return _fail("작전 진입 화면이 브리핑·계약·명시적 투입 구조를 제공하지 않습니다.")
 	if not _judge_player_perception(&"operation_decision", "작전 위험·비용 결정 이해"):
+		return false
+	if not _judge_player_perception(&"target_farming_decision", "지역·난이도 타겟 파밍 이해"):
+		return false
+	var loot_provider = game.get("loot_table_provider")
+	var contract = game.get("operation_contract_service")
+	if loot_provider == null or contract == null:
+		return _fail("타겟 파밍 제공자 또는 작전 계약이 준비되지 않았습니다.")
+	var contract_snapshot: Dictionary = contract.call(&"get_snapshot")
+	var loot_context := {
+		&"region_id": contract_snapshot.get(&"selected_region_id", &"ruined_city"),
+		&"difficulty_id": contract_snapshot.get(&"selected_difficulty_id", &"standard"),
+		&"map_size": &"small", &"source_type": &"any",
+		&"high_grade_drop_multiplier": 1.0, &"boss_available": true,
+	}
+	var first_roll: Dictionary = loot_provider.call(&"roll_drop", loot_context, 9137, 4)
+	if not _judge_gameplay_flow(&"loot_table_targeting", "지역·난이도 타겟 파밍", {
+		&"briefing": loot_provider.call(&"get_briefing", loot_context),
+		&"first_roll": first_roll,
+		&"repeated_roll": loot_provider.call(&"roll_drop", loot_context, 9137, 4),
+		&"selected_region_id": loot_context[&"region_id"],
+	}):
 		return false
 	return true
 
@@ -807,6 +829,10 @@ func _verify_fog_room_corridor_transition(
 	if corridor_position == Vector2.INF:
 		return _fail("방·통로 안개 전환을 확인할 통로 좌표가 없습니다.")
 	player.global_position = corridor_position
+	var grace_seconds := float(fog.get("doorway_grace_seconds"))
+	fog.call(&"_process", grace_seconds * 0.5)
+	var grace_snapshot: Dictionary = fog.call(&"get_snapshot")
+	fog.call(&"_process", grace_seconds * 0.5 + 0.001)
 	fog.call(&"_process", exit_seconds * 0.5)
 	var leaving_snapshot: Dictionary = fog.call(&"get_snapshot")
 	fog.call(&"_process", exit_seconds)
@@ -818,6 +844,7 @@ func _verify_fog_room_corridor_transition(
 	var returned_snapshot: Dictionary = fog.call(&"get_snapshot")
 	return _judge_gameplay_flow(&"fog_room_corridor_transition", "방↔통로 전장의 안개", {
 		&"room": room_snapshot,
+		&"grace": grace_snapshot,
 		&"leaving": leaving_snapshot,
 		&"corridor": corridor_snapshot,
 		&"entering": entering_snapshot,

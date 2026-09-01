@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="LootTableConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/loot_tables/loot_table_config.gd" id="1_config"]
+[ext_resource type="Resource" path="res://game/features/loot_tables/data/loot_table_payload.tres" id="2_payload"]
+
+[resource]
+script = ExtResource("1_config")
+locked_csv_path = "res://game/features/loot_tables/data/loot_table.csv"
+locked_csv_payload = ExtResource("2_payload")
+live_csv_url = "https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/gviz/tq?tqx=out:csv&headers=1&sheet=LootTable"
+live_refresh_seconds = 3.0
+fallback_to_locked_csv = true
+briefing_item_count = 3

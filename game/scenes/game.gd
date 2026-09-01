@@ -49,6 +49,9 @@ const GROWTH_BALANCE_SCENE_PATH := (
 const LOOT_LIFECYCLE_SCENE_PATH := (
 	"res://game/features/loot_lifecycle/loot_lifecycle_service.tscn"
 )
+const LOOT_TABLE_PROVIDER_SCENE_PATH := (
+	"res://game/features/loot_tables/loot_table_provider.tscn"
+)
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
 const HEALTH_RECOVERY_SCENE_PATH := (
 	"res://game/features/health_recovery/health_recovery_system.tscn"
@@ -178,6 +181,10 @@ const GROWTH_BALANCE_METHODS := [
 const LOOT_LIFECYCLE_METHODS := [
 	&"configure", &"request_live_catalog", &"load_csv_text", &"get_definition",
 	&"get_snapshot", &"get_for_region", &"resolve_outcome",
+]
+const LOOT_TABLE_METHODS := [
+	&"configure", &"request_live_table", &"load_csv_text", &"get_candidates",
+	&"roll_drop", &"get_briefing", &"get_snapshot",
 ]
 const INVENTORY_METHODS := [
 	&"configure",
@@ -354,6 +361,7 @@ var combat_resource_system
 var weapon_balance_service
 var growth_balance_service
 var loot_lifecycle_service
+var loot_table_provider
 var progression_system
 var health_recovery_system
 var run_buff_system
@@ -453,6 +461,10 @@ func _ready() -> void:
 	_configure_tier_button(medium_map_button, "medium")
 	_configure_tier_button(large_map_button, "large")
 	_configure_balance_mode_selector()
+	if features.loot_lifecycle_enabled and not _install_loot_lifecycle():
+		return
+	if features.loot_tables_enabled and not _install_loot_table_provider():
+		return
 	_refresh_contract_setup_ui()
 
 	if features.run_setup_enabled:
@@ -832,6 +844,15 @@ func _refresh_contract_setup_ui() -> void:
 		quote = operation_contract_service.call(
 			&"quote", load(tier_path), penalty_snapshot
 		)
+	var loot_briefing := {}
+	if loot_table_provider != null:
+		loot_briefing = loot_table_provider.call(&"get_briefing", {
+			&"region_id": contract_snapshot.get(&"selected_region_id", &"ruined_city"),
+			&"difficulty_id": contract_snapshot.get(&"selected_difficulty_id", &"standard"),
+			&"map_size": StringName(selected_tier),
+			&"high_grade_drop_multiplier": quote.get(&"high_grade_drop_multiplier", 1.0),
+			&"boss_available": true,
+		})
 	contract_summary.text = "선택 계약 · 투입 %d C%s · 회수 ×%.2f · 고등급 ×%.2f · %s" % [
 		int(quote.get(&"entry_cost", 0)),
 		" 무료 지원" if bool(quote.get(&"bankruptcy_protection", false)) else "",
@@ -873,6 +894,7 @@ func _refresh_contract_setup_ui() -> void:
 				&"maximum_rooms": tier_config.get("maximum_rooms"),
 			},
 			&"spawn": spawn_snapshot,
+			&"loot_briefing": loot_briefing,
 		})
 
 
@@ -1080,7 +1102,6 @@ func _reset_run_references() -> void:
 	combat_resource_system = null
 	weapon_balance_service = null
 	growth_balance_service = null
-	loot_lifecycle_service = null
 	progression_system = null
 	health_recovery_system = null
 	run_buff_system = null
@@ -1183,8 +1204,6 @@ func _assemble_game() -> bool:
 	if features.credits_enabled:
 		_install_credit_ledger()
 	if features.growth_balance_enabled and not _install_growth_balance():
-		return false
-	if features.loot_lifecycle_enabled and not _install_loot_lifecycle():
 		return false
 	if features.equipment_upgrade_economy_enabled and not _install_equipment_upgrade_service():
 		return false
@@ -1552,7 +1571,7 @@ func _install_loot_lifecycle() -> bool:
 		_report_configuration_error("전리품 생명 주기 설정을 찾을 수 없습니다.")
 		return false
 	loot_lifecycle_service = _instantiate_feature(
-		LOOT_LIFECYCLE_SCENE_PATH, module_container, &"LootLifecycle"
+		LOOT_LIFECYCLE_SCENE_PATH, self, &"LootLifecycle"
 	)
 	if not _supports_loot_lifecycle(loot_lifecycle_service):
 		_report_configuration_error("전리품 생명 주기 모듈의 공개 계약이 올바르지 않습니다.")
@@ -1572,21 +1591,48 @@ func _install_loot_lifecycle() -> bool:
 	return true
 
 
+func _install_loot_table_provider() -> bool:
+	if loot_lifecycle_service == null or not ResourceLoader.exists(features.loot_table_config_path):
+		_report_configuration_error("드랍 테이블 제공자의 생명 주기·설정 의존성이 준비되지 않았습니다.")
+		return false
+	loot_table_provider = _instantiate_feature(
+		LOOT_TABLE_PROVIDER_SCENE_PATH, self, &"LootTableProvider"
+	)
+	if not _supports_methods(loot_table_provider, LOOT_TABLE_METHODS):
+		_report_configuration_error("드랍 테이블 제공자의 공개 계약이 올바르지 않습니다.")
+		return false
+	loot_table_provider.connect(&"table_error", Callable(self, &"_on_loot_table_error"))
+	loot_table_provider.connect(&"table_updated", Callable(self, &"_on_loot_table_updated"))
+	var table_config := load(features.loot_table_config_path) as LootTableConfig
+	if table_config == null:
+		_report_configuration_error("드랍 테이블 설정 형식이 올바르지 않습니다.")
+		return false
+	table_config = table_config.duplicate(true) as LootTableConfig
+	table_config.source_mode = selected_balance_source_mode
+	if not loot_table_provider.call(&"configure", table_config, loot_lifecycle_service):
+		_report_configuration_error("지역·난이도 드랍 테이블을 불러오지 못했습니다.")
+		return false
+	return true
+
+
 func _configure_balance_mode_selector() -> void:
 	balance_mode_section.visible = (
 		features.weapon_balance_enabled
 		or features.growth_balance_enabled
 		or features.loot_lifecycle_enabled
+		or features.loot_tables_enabled
 	)
 	if not balance_mode_section.visible:
 		return
 	var balance_config := load(features.weapon_balance_config_path) as WeaponBalanceConfig
 	var growth_config: Resource = load(features.growth_balance_config_path)
 	var lifecycle_config := load(features.loot_lifecycle_config_path) as LootLifecycleConfig
+	var loot_table_config := load(features.loot_table_config_path) as LootTableConfig
 	if (
 		balance_config == null
 		or (features.growth_balance_enabled and growth_config == null)
 		or (features.loot_lifecycle_enabled and lifecycle_config == null)
+		or (features.loot_tables_enabled and loot_table_config == null)
 	):
 		live_balance_button.disabled = true
 		_select_balance_source_mode(WeaponBalanceConfig.SourceMode.LOCKED_CSV)
@@ -1602,6 +1648,10 @@ func _configure_balance_mode_selector() -> void:
 	if features.loot_lifecycle_enabled:
 		live_balance_button.disabled = (
 			live_balance_button.disabled or lifecycle_config.live_csv_url.is_empty()
+		)
+	if features.loot_tables_enabled:
+		live_balance_button.disabled = (
+			live_balance_button.disabled or loot_table_config.live_csv_url.is_empty()
 		)
 	var initial_mode := int(balance_config.source_mode)
 	if (
@@ -1627,12 +1677,29 @@ func _select_balance_source_mode(source_mode: int) -> void:
 	)
 	if source_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET:
 		balance_mode_description.text = (
-			"Weapon·Item·RunBuff·Upgrade Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
+			"Weapon·Item·LootTable·RunBuff·Upgrade Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
 		)
 	else:
 		balance_mode_description.text = (
-			"무기·아이템 생명 주기·내부 성장·장비 강화의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
+			"무기·아이템 생명 주기·지역 드랍·내부 성장·장비 강화의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
 		)
+	_reconfigure_persistent_loot_data()
+
+
+func _reconfigure_persistent_loot_data() -> void:
+	if loot_lifecycle_service != null:
+		var lifecycle_config := load(features.loot_lifecycle_config_path) as LootLifecycleConfig
+		if lifecycle_config != null:
+			lifecycle_config = lifecycle_config.duplicate(true) as LootLifecycleConfig
+			lifecycle_config.source_mode = selected_balance_source_mode
+			loot_lifecycle_service.call(&"configure", lifecycle_config)
+	if loot_table_provider != null and loot_lifecycle_service != null:
+		var table_config := load(features.loot_table_config_path) as LootTableConfig
+		if table_config != null:
+			table_config = table_config.duplicate(true) as LootTableConfig
+			table_config.source_mode = selected_balance_source_mode
+			loot_table_provider.call(&"configure", table_config, loot_lifecycle_service)
+	_refresh_contract_setup_ui()
 
 
 func _install_equipment() -> bool:
@@ -2468,6 +2535,14 @@ func _on_growth_balance_error(message: String) -> void:
 
 func _on_loot_lifecycle_error(message: String) -> void:
 	push_warning(message)
+
+
+func _on_loot_table_error(message: String) -> void:
+	push_warning(message)
+
+
+func _on_loot_table_updated(_snapshot: Dictionary, _source_label: String) -> void:
+	_refresh_contract_setup_ui()
 
 
 func _on_growth_balance_updated(_snapshot: Dictionary, _source_label: String) -> void:

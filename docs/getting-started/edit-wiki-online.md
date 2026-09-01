@@ -23,7 +23,7 @@ tags:
 
 ## 여러 문서 수정
 
-[SFH 저장소](https://github.com/aedws/SFH)를 연 상태에서 `.` 키를 누르면 브라우저용 VS Code 편집기인 GitHub.dev가 열립니다. `docs/` 아래의 Markdown 파일을 수정하고 Source Control에서 커밋할 수 있습니다.
+권한이 있는 공동 작업자는 비공개 SFH 저장소를 자신의 계정에서 연 뒤 `.` 키를 눌러 브라우저용 VS Code 편집기를 사용할 수 있습니다. `docs/` 아래의 Markdown 파일을 수정하고 작업 브랜치에 커밋한 다음 Pull Request로 제출합니다. 공개 위키에는 저장소·편집 바로가기를 노출하지 않습니다.
 
 ## 어떤 파일을 수정해야 하나
 
