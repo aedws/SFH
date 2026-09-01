@@ -47,6 +47,91 @@ class EquipmentStub:
 		active_slot = slot_id
 		return true
 
+	func active_weapon_has_combat_tags(required_tags: Array[StringName]) -> bool:
+		var state: EquipmentItemState = states.get(active_slot)
+		if state == null:
+			return required_tags.is_empty()
+		for required_tag in required_tags:
+			if required_tag not in state.definition.combat_tags:
+				return false
+		return true
+
+
+class SkillSystemStub:
+	extends Node
+	var definitions: Array[Resource] = [
+		load("res://game/features/combat_skills/definitions/blink.tres"),
+		load("res://game/features/combat_skills/definitions/magnetic_field.tres"),
+		load("res://game/features/combat_skills/definitions/speed_boost.tres"),
+	]
+
+	func preview_skill_replacement(slot_index: int, candidate: Resource) -> Dictionary:
+		if slot_index < 0 or slot_index >= definitions.size() or candidate == null:
+			return {&"available": false, &"reason": &"invalid_slot"}
+		return {
+			&"available": true,
+			&"slot_index": slot_index,
+			&"previous_skill_id": definitions[slot_index].skill_id,
+			&"previous_name": definitions[slot_index].display_name,
+			&"candidate_skill_id": candidate.skill_id,
+			&"candidate_name": candidate.display_name,
+		}
+
+	func replace_skill(slot_index: int, candidate: Resource) -> Dictionary:
+		var preview := preview_skill_replacement(slot_index, candidate)
+		if not bool(preview.get(&"available", false)):
+			return {&"success": false}
+		var previous := definitions[slot_index]
+		definitions[slot_index] = candidate
+		return {
+			&"success": true, &"previous_definition": previous,
+			&"previous_cooldown": 2.5,
+			&"previous_resource_state": {&"charges": 1},
+		}
+
+	func restore_skill_replacement(
+		slot_index: int, previous_definition: Resource, _cooldown: float, _resources: Dictionary
+	) -> bool:
+		if slot_index < 0 or slot_index >= definitions.size() or previous_definition == null:
+			return false
+		definitions[slot_index] = previous_definition
+		return true
+
+	func get_skill_states() -> Array[Dictionary]:
+		var result: Array[Dictionary] = []
+		for definition in definitions:
+			result.append({&"skill_id": definition.skill_id, &"display_name": definition.display_name})
+		return result
+
+
+class BindingStub:
+	extends Node
+	var bindings := {
+		&"blink": &"combat_skill_1",
+		&"magnetic_field": &"combat_skill_2",
+		&"speed_boost": &"combat_skill_3",
+	}
+
+	func action_for_skill(skill_id: StringName) -> StringName:
+		return StringName(bindings.get(skill_id, &""))
+
+	func input_label_for_skill(skill_id: StringName) -> String:
+		return "3" if action_for_skill(skill_id) == &"combat_skill_3" else "?"
+
+	func replace_runtime_skill(previous_id: StringName, current_id: StringName, action_id: StringName) -> bool:
+		if StringName(bindings.get(previous_id, &"")) != action_id:
+			return false
+		bindings.erase(previous_id)
+		bindings[current_id] = action_id
+		return true
+
+	func restore_runtime_skill(current_id: StringName, previous_id: StringName, action_id: StringName) -> bool:
+		if StringName(bindings.get(current_id, &"")) != action_id:
+			return false
+		bindings.erase(current_id)
+		bindings[previous_id] = action_id
+		return true
+
 
 class InventoryStub:
 	extends Node
@@ -85,10 +170,12 @@ func _run() -> void:
 	var ui := CanvasLayer.new()
 	var equipment := EquipmentStub.new()
 	var inventory := InventoryStub.new()
+	var skills := SkillSystemStub.new()
+	var bindings := BindingStub.new()
 	var equip_catalog := load(
 		"res://game/features/field_loot/configs/default_field_loot_equipment.tres"
 	) as FieldLootEquipCatalog
-	for node in [lifecycle, table, service, player, drops, ui, equipment, inventory]:
+	for node in [lifecycle, table, service, player, drops, ui, equipment, inventory, skills, bindings]:
 		root.add_child(node)
 	await process_frame
 	if not lifecycle.call(
@@ -111,7 +198,7 @@ func _run() -> void:
 	}
 	if not service.call(
 		&"configure", player, drops, ui, lifecycle, table, equipment, inventory, context, 7411,
-		equip_catalog
+		equip_catalog, skills, bindings
 	):
 		return _fail("현장 전리품 서비스를 구성하지 못했습니다.")
 	var drop: Node2D = service.call(&"spawn_from_source", Vector2.ZERO, &"room_reward", 1)
@@ -183,7 +270,36 @@ func _run() -> void:
 		return _fail("거점 복귀용 장비 복구가 동작하지 않았습니다.")
 	if equipment.get_summary().get(&"active_weapon_id", &"") != &"assault_rifle":
 		return _fail("거점 복귀 전에 원래 장비가 복구되지 않았습니다.")
-	print("FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip provisional_policy restore_on_hub viewport_safe modular_boundary")
+	var skill_drop: Node2D = service.call(&"spawn_candidate", Vector2.ZERO, {
+		&"entry_id": &"test_arc_dash", &"item_id": &"arc_dash", &"grade": 4,
+		&"quantity": 1, &"source_type": &"room_reward",
+	})
+	if skill_drop == null:
+		return _fail("현장 스킬 교체 후보를 생성하지 못했습니다.")
+	player.global_position = skill_drop.global_position
+	skill_drop.call(&"_process", 0.0)
+	var skill_preview: Dictionary = service.call(&"get_snapshot")
+	var skill_panel: Dictionary = skill_preview.get(&"panel", {})
+	if (
+		not bool(skill_panel.get(&"shows_skill_swap", false))
+		or not bool(skill_panel.get(&"shows_immediate_equip", false))
+	):
+		return _fail("스킬 교체·키·자원 비교가 패널에 표시되지 않았습니다: %s" % skill_preview)
+	if not service.call(&"equip_focused"):
+		return _fail("현장 스킬 즉시 교체에 실패했습니다.")
+	if (
+		skills.definitions[2].skill_id != &"arc_dash"
+		or bindings.action_for_skill(&"arc_dash") != &"combat_skill_3"
+	):
+		return _fail("슬롯 3·기존 키 바인딩을 유지한 스킬 교체가 아닙니다.")
+	if int(service.call(&"restore_equipment_swaps")) != 1:
+		return _fail("거점 복귀용 스킬 복구가 동작하지 않았습니다.")
+	if (
+		skills.definitions[2].skill_id != &"speed_boost"
+		or bindings.action_for_skill(&"speed_boost") != &"combat_skill_3"
+	):
+		return _fail("스킬·키 바인딩이 런 이전 상태로 복구되지 않았습니다.")
+	print("FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip skill_swap_slot_binding_restore provisional_policy restore_on_hub viewport_safe modular_boundary")
 	quit(0)
 
 

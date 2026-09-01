@@ -20,6 +20,8 @@ func judge(flow_id: StringName, evidence: Dictionary) -> Dictionary:
 			_judge_field_loot_acquisition(evidence, errors)
 		&"field_loot_immediate_equip":
 			_judge_field_loot_immediate_equip(evidence, errors)
+		&"field_loot_skill_swap":
+			_judge_field_loot_skill_swap(evidence, errors)
 		_:
 			errors.append("알 수 없는 게임플레이 흐름입니다: %s" % flow_id)
 	return {
@@ -187,6 +189,25 @@ func _judge_field_loot_immediate_equip(evidence: Dictionary, errors: PackedStrin
 		errors.append("기존 무기가 런 임시 보관 복구 기록에 남지 않았습니다.")
 	if (immediate.get(&"policy", {}) as Dictionary).get(&"policy_status", &"") != &"provisional":
 		errors.append("미확정 기존 장비 처리 정책이 임시 상태로 표시되지 않습니다.")
+
+
+func _judge_field_loot_skill_swap(evidence: Dictionary, errors: PackedStringArray) -> void:
+	var before: Dictionary = evidence.get(&"before", {})
+	var after: Dictionary = evidence.get(&"after", {})
+	var panel: Dictionary = before.get(&"panel", {})
+	var immediate: Dictionary = after.get(&"immediate_skill_equip", {})
+	if not bool(panel.get(&"shows_skill_swap", false)):
+		errors.append("현장 스킬 후보에 R 스킬 교체 선택지가 보이지 않습니다.")
+	if evidence.get(&"before_skill", &"") == evidence.get(&"after_skill", &""):
+		errors.append("R 입력 뒤 슬롯 3 스킬이 바뀌지 않았습니다.")
+	if evidence.get(&"after_skill", &"") != &"arc_dash":
+		errors.append("R 입력 결과가 선택한 아크 질주가 아닙니다.")
+	if evidence.get(&"after_action", &"") != &"combat_skill_3":
+		errors.append("스킬 교체 후 기존 3번 키 바인딩이 유지되지 않았습니다.")
+	if int(immediate.get(&"pending_swap_count", 0)) != 1:
+		errors.append("기존 스킬·쿨다운·충전 상태가 런 복구 기록에 남지 않았습니다.")
+	if bool(immediate.get(&"bindings_persisted", true)):
+		errors.append("런 전용 키 바인딩이 영구 저장되는 것으로 표시됩니다.")
 
 
 func _require_increase(

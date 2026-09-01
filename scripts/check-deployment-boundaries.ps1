@@ -14,12 +14,20 @@ $surfaceRaw = Read-RequiredFile "docs/assets/deployment-surfaces.json"
 $surface = $surfaceRaw | ConvertFrom-Json
 $wikiOrigin = [Uri]$surface.wiki.public_origin
 $gameOrigin = [Uri]$surface.game.public_origin
+$desiredGameOrigin = [Uri]$surface.game.desired_origin
+$effectiveGameOrigin = [Uri]$surface.game.effective_origin
 $runtimePrefix = ([string]$surface.storage.runtime_prefix).Trim('/')
 $downloadPrefix = ([string]$surface.storage.download_prefix).Trim('/')
 
 if ($surface.schema_version -ne 1) { throw "Unsupported deployment surface schema." }
 if ($wikiOrigin.Scheme -ne "https" -or $gameOrigin.Scheme -ne "https") { throw "Public surfaces must use HTTPS." }
 if ($wikiOrigin.Host -eq $gameOrigin.Host) { throw "Wiki and gameplay must use different public hosts." }
+if ($desiredGameOrigin.Host -ne "sfh-game.play-preview.dev" -or $effectiveGameOrigin.AbsoluteUri -ne $gameOrigin.AbsoluteUri) {
+    throw "Desired and effective gameplay origins are not separated correctly."
+}
+if ($surface.game.cutover_status -notin @("blocked_domain_unregistered", "ready") -or $surface.game.billing_touched -ne $false) {
+    throw "Game domain cutover status or no-billing guard is invalid."
+}
 if ($surface.wiki.project -eq $surface.game.service -or $surface.game.service -eq $surface.storage.bucket -or $surface.wiki.project -eq $surface.storage.bucket) {
     throw "Pages, Worker, and R2 identifiers must be distinct."
 }
@@ -77,4 +85,4 @@ if ($workflow -notmatch 'CLOUDFLARE_API_TOKEN:\s*\$\{\{\s*secrets\.CLOUDFLARE_AP
     throw "Cloudflare credentials must be provided only through GitHub Secrets."
 }
 
-Write-Host "DEPLOYMENT_BOUNDARIES_OK wiki=$($wikiOrigin.Host) game=$($gameOrigin.Host) r2=private prefixes=2 actions=sha-pinned"
+Write-Host "DEPLOYMENT_BOUNDARIES_OK wiki=$($wikiOrigin.Host) game=$($gameOrigin.Host) desired=$($desiredGameOrigin.Host) cutover=$($surface.game.cutover_status) billing_untouched=true r2=private prefixes=2 actions=sha-pinned"

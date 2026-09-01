@@ -77,7 +77,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -810,12 +810,52 @@ func _verify_field_loot_acquisition(player: Node2D) -> bool:
 	await process_frame
 	var equip_after: Dictionary = service.call(&"get_snapshot")
 	var after_weapon: StringName = equipment.call(&"get_summary").get(&"active_weapon_id", &"")
-	return _judge_gameplay_flow(&"field_loot_immediate_equip", "드랍→R 장착→무기 변화→복구 가능", {
+	if not _judge_gameplay_flow(&"field_loot_immediate_equip", "드랍→R 장착→무기 변화→복구 가능", {
 		&"before_weapon": before_weapon,
 		&"after_weapon": after_weapon,
 		&"before": equip_before,
 		&"after": equip_after,
+	}):
+		return false
+	var skill_system = game.get("combat_skill_system")
+	var before_skill: StringName = (skill_system.call(&"get_skill_states") as Array)[2].get(&"skill_id", &"")
+	var skill_drop: Node2D = service.call(&"spawn_candidate", player.global_position, {
+		&"entry_id": &"e2e_arc_dash", &"item_id": &"arc_dash", &"grade": 4,
+		&"quantity": 1, &"source_type": &"room_reward",
 	})
+	if skill_drop == null:
+		return _fail("P4-04B 현장 스킬 후보를 생성하지 못했습니다.")
+	skill_drop.call(&"_process", 0.0)
+	await process_frame
+	if not _judge_player_perception(&"field_loot_skill_swap", "현장 스킬·키·자원 교체 이해"):
+		return false
+	var skill_before: Dictionary = service.call(&"get_snapshot")
+	if (
+		StringName(skill_before.get(&"focused_item_id", &"")) != &"arc_dash"
+		or not bool((skill_before.get(&"panel", {}) as Dictionary).get(&"shows_skill_swap", false))
+	):
+		return _fail("아크 질주 드랍이 실제 R 입력 대상으로 고정되지 않았습니다: %s" % skill_before)
+	await _tap_key(KEY_R)
+	await process_frame
+	var skill_after: Dictionary = service.call(&"get_snapshot")
+	var active_skill_state: Dictionary = (skill_system.call(&"get_skill_states") as Array)[2]
+	if not _judge_gameplay_flow(&"field_loot_skill_swap", "드랍→R 스킬 교체→키 유지→런 복구 가능", {
+		&"before_skill": before_skill,
+		&"after_skill": active_skill_state.get(&"skill_id", &""),
+		&"after_action": active_skill_state.get(&"input_action", &""),
+		&"before": skill_before,
+		&"after": skill_after,
+	}):
+		return false
+	if int(service.call(&"restore_equipment_swaps")) != 2:
+		return _fail("현장 무기·스킬 교체 기록을 함께 복구하지 못했습니다.")
+	var restored_skill: Dictionary = (skill_system.call(&"get_skill_states") as Array)[2]
+	if (
+		equipment.call(&"get_summary").get(&"active_weapon_id", &"") != before_weapon
+		or restored_skill.get(&"skill_id", &"") != before_skill
+	):
+		return _fail("거점 복귀 전 무기·스킬 런 상태 복구에 실패했습니다.")
+	return true
 
 
 func _verify_expanded_map_warp(player: Node2D) -> bool:

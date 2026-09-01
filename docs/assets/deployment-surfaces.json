@@ -10,7 +10,13 @@
   "game": {
     "kind": "cloudflare_worker",
     "service": "sfh-game",
+    "desired_origin": "https://sfh-game.play-preview.dev",
+    "effective_origin": "https://sfh-game.vstock-market.workers.dev",
     "public_origin": "https://sfh-game.vstock-market.workers.dev",
+    "legacy_origin": "https://sfh-game.vstock-market.workers.dev",
+    "cutover_status": "blocked_domain_unregistered",
+    "cutover_reason": "play-preview.dev is not registered and no billing or domain purchase was authorized",
+    "billing_touched": false,
     "serves": ["browser-runtime", "windows-download-gateway"]
   },
   "storage": {
@@ -23,6 +29,7 @@
   },
   "compatibility": {
     "wiki_play_redirect": "/play/*",
-    "status": "legacy-redirect-only"
+    "status": "legacy-redirect-only",
+    "activation_rule": "switch links only after DNS, Worker custom-domain route, gameplay E2E, Range 206 and Windows checksum pass"
   }
 }

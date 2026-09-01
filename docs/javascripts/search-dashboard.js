@@ -245,6 +245,11 @@
           recordQuery(query);
         }
         input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new KeyboardEvent("keyup", {
+          bubbles: true,
+          key: "End",
+          code: "End"
+        }));
         input.focus();
       }
 

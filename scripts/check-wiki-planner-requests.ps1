@@ -9,19 +9,28 @@ $homePath = Join-Path $repositoryRoot "docs\index.md"
 $scriptPath = Join-Path $repositoryRoot "docs\javascripts\planner-requests.js"
 $stylePath = Join-Path $repositoryRoot "docs\stylesheets\extra.css"
 $workflowPath = Join-Path $repositoryRoot "docs\design\planner-request-workflow.md"
+$snapshotPath = Join-Path $repositoryRoot "docs\assets\notion-source-snapshot.json"
+$proposalScriptPath = Join-Path $repositoryRoot "docs\javascripts\planner-proposal.js"
 
 $data = Get-Content -LiteralPath $dataPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $wikiHomeContent = Get-Content -LiteralPath $homePath -Raw -Encoding UTF8
 $javascript = Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8
 $stylesheet = Get-Content -LiteralPath $stylePath -Raw -Encoding UTF8
 $workflow = Get-Content -LiteralPath $workflowPath -Raw -Encoding UTF8
+$snapshot = Get-Content -LiteralPath $snapshotPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$proposalScript = Get-Content -LiteralPath $proposalScriptPath -Raw -Encoding UTF8
 
 if ($data.notion_url -notmatch '^https://[^/]+\.notion\.site/') {
     throw "Planner request Notion URL is invalid."
 }
-if ($data.version -lt 2 -or $data.source.sync_mode -ne "manual_verified_snapshot" -or [string]::IsNullOrWhiteSpace($data.source.last_checked_at)) {
+if ($data.version -lt 3 -or $data.source.sync_mode -ne "ci_verified_public_snapshot" -or [string]::IsNullOrWhiteSpace($data.source.content_sha256)) {
     throw "Planner request source freshness contract is missing."
 }
+if ($snapshot.content_sha256 -ne $data.source.content_sha256 -or $snapshot.root_version -ne $data.source.root_version) {
+    throw "Planner request source does not match the committed Notion snapshot."
+}
+$sourceBlockIds = @{}
+foreach ($block in $snapshot.blocks) { $sourceBlockIds[$block.id] = $true }
 if ($data.items.Count -lt 3) {
     throw "Planner request hub requires request, data, and complete states."
 }
@@ -44,6 +53,15 @@ foreach ($item in $data.items) {
     if ($null -eq $item.blocking -or $item.acceptance.Count -lt 1 -or $item.evidence.Count -lt 1) {
         throw "$($item.id) requires blocking, acceptance, and evidence fields."
     }
+	foreach ($field in @("decision_id", "source_anchor", "source_revision")) {
+		if ([string]::IsNullOrWhiteSpace($item.$field)) { throw "$($item.id) has an empty $field field." }
+	}
+	if (-not $sourceBlockIds.ContainsKey($item.source_anchor) -or $item.source_revision -ne $snapshot.root_version) {
+		throw "$($item.id) source anchor or revision is not in the verified Notion snapshot."
+	}
+	if ($null -eq $item.supersedes -or $null -eq $item.conflicts_with) {
+		throw "$($item.id) requires supersedes and conflicts_with arrays."
+	}
     $statuses[$item.status] = $true
     foreach ($field in @("tag", "title", "summary", "basis", "notion_prompt")) {
         if ([string]::IsNullOrWhiteSpace($item.$field)) {
@@ -68,7 +86,9 @@ if (
     $javascript -notmatch 'planner-requests\.json' -or
     $javascript -notmatch 'sfh-planner-request__notion' -or
     $javascript -notmatch 'ownerRole' -or
-    $javascript -notmatch 'installFilters'
+	$javascript -notmatch 'installFilters' -or
+	$javascript -notmatch 'source_anchor' -or
+	$javascript -notmatch 'decision_id'
 ) {
     throw "Planner request renderer is not linked to data and Notion action."
 }
@@ -84,6 +104,9 @@ if (
 if ($workflow -notmatch 'sfh-standing-sheet-extension: authorized-without-separate-approval') {
     throw "Standing Google Sheet extension authorization is not documented."
 }
+if ($wikiHomeContent -notmatch 'data-sfh-proposal-composer' -or $proposalScript -notmatch 'navigator\.clipboard' -or $proposalScript -notmatch 'Notion 승인 전 미확정') {
+	throw "Safe local proposal composer contract is missing."
+}
 if (-not [string]::IsNullOrWhiteSpace($SiteRoot)) {
     $resolvedSite = Join-Path $repositoryRoot $SiteRoot
     $siteHome = Get-Content -LiteralPath (Join-Path $resolvedSite "index.html") -Raw -Encoding UTF8
@@ -98,4 +121,4 @@ if (-not [string]::IsNullOrWhiteSpace($SiteRoot)) {
     }
 }
 
-Write-Output "WIKI_PLANNER_REQUESTS_OK items=$($data.items.Count) schema_v2 owners states blocking acceptance evidence source_freshness role_filters notion_link responsive touch_44px sheet_extension_authorized"
+Write-Output "WIKI_PLANNER_REQUESTS_OK items=$($data.items.Count) schema_v3 owners states blocking acceptance evidence notion_snapshot_hash source_anchor decision_lineage role_filters safe_local_proposal responsive touch_44px sheet_extension_authorized"

@@ -161,6 +161,38 @@ func get_skill_resource_snapshot(slot_index: int) -> Dictionary:
 	}
 
 
+func capture_skill_slot_state(slot_index: int) -> Dictionary:
+	if not _valid_slot(slot_index):
+		return {}
+	return {
+		&"charges": charges[slot_index],
+		&"recharge_remaining": recharge_remaining[slot_index],
+	}
+
+
+func reset_skill_slot(slot_index: int) -> bool:
+	if not _valid_slot(slot_index):
+		return false
+	var skill: Resource = loadout.get("skills")[slot_index]
+	charges[slot_index] = int(skill.get("maximum_charges"))
+	recharge_remaining[slot_index] = 0.0
+	_emit_changed()
+	return true
+
+
+func restore_skill_slot_state(slot_index: int, saved_state: Dictionary) -> bool:
+	if not _valid_slot(slot_index) or saved_state.is_empty():
+		return false
+	var skill: Resource = loadout.get("skills")[slot_index]
+	var maximum := int(skill.get("maximum_charges"))
+	charges[slot_index] = clampi(int(saved_state.get(&"charges", maximum)), 0, maximum)
+	recharge_remaining[slot_index] = maxf(
+		0.0, float(saved_state.get(&"recharge_remaining", 0.0))
+	)
+	_emit_changed()
+	return true
+
+
 func get_snapshot() -> Dictionary:
 	var slots: Array[Dictionary] = []
 	for slot_index in charges.size():

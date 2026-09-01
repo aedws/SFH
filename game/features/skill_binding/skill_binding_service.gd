@@ -13,6 +13,7 @@ var storage_path: String = "user://sfh_skill_bindings.json"
 var skill_to_action: Dictionary = {}
 var action_to_skill: Dictionary = {}
 var configured: bool = false
+var runtime_replacement_count: int = 0
 
 
 func configure(
@@ -46,6 +47,7 @@ func configure(
 		)
 	_apply_defaults()
 	configured = true
+	runtime_replacement_count = 0
 	if load_saved and FileAccess.file_exists(storage_path):
 		_load_saved_bindings()
 	bindings_changed.emit(get_snapshot())
@@ -90,6 +92,53 @@ func reset_defaults(save_after_reset: bool = true) -> bool:
 	var saved := not save_after_reset or _save_bindings()
 	bindings_changed.emit(get_snapshot())
 	return saved
+
+
+func replace_runtime_skill(
+	previous_skill_id: StringName,
+	new_skill_id: StringName,
+	action_id: StringName
+) -> bool:
+	if (
+		not configured
+		or previous_skill_id.is_empty()
+		or new_skill_id.is_empty()
+		or not _is_allowed_action(action_id)
+		or StringName(skill_to_action.get(previous_skill_id, &"")) != action_id
+	):
+		return false
+	skill_to_action.erase(previous_skill_id)
+	var prior_action: StringName = skill_to_action.get(new_skill_id, &"")
+	if not prior_action.is_empty():
+		action_to_skill.erase(prior_action)
+	var displaced: StringName = action_to_skill.get(action_id, &"")
+	if not displaced.is_empty() and displaced != previous_skill_id:
+		skill_to_action.erase(displaced)
+	skill_to_action[new_skill_id] = action_id
+	action_to_skill[action_id] = new_skill_id
+	runtime_replacement_count += 1
+	bindings_changed.emit(get_snapshot())
+	return true
+
+
+func restore_runtime_skill(
+	current_skill_id: StringName,
+	previous_skill_id: StringName,
+	action_id: StringName
+) -> bool:
+	if (
+		not configured
+		or not _has_skill(previous_skill_id)
+		or not _is_allowed_action(action_id)
+	):
+		return false
+	skill_to_action.erase(current_skill_id)
+	action_to_skill.erase(action_id)
+	skill_to_action[previous_skill_id] = action_id
+	action_to_skill[action_id] = previous_skill_id
+	runtime_replacement_count = maxi(0, runtime_replacement_count - 1)
+	bindings_changed.emit(get_snapshot())
+	return true
 
 
 func action_for_skill(skill_id: StringName) -> StringName:
@@ -138,6 +187,8 @@ func get_snapshot() -> Dictionary:
 		&"skill_binding_count": skill_to_action.size(),
 		&"allowed_action_count": get_allowed_actions().size(),
 		&"entries": get_entries(),
+		&"runtime_replacement_count": runtime_replacement_count,
+		&"runtime_replacements_persisted": false,
 	}
 
 

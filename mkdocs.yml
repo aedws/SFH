@@ -39,6 +39,7 @@ extra_javascript:
   - javascripts/play-entry.js
   - javascripts/knowledge-map.js
   - javascripts/planner-requests.js
+  - javascripts/planner-proposal.js
 
 plugins:
   - search:
@@ -93,6 +94,7 @@ nav:
   - 기능:
       - features/index.md
       - 현장 무기 즉시 장착: features/field-loot-immediate-equip.md
+      - 현장 스킬 즉시 교체: features/field-loot-skill-swap.md
       - 랜덤 맵 생성: features/map-generation.md
       - 전장의 안개: features/fog-of-war.md
       - 전술 미니맵: features/minimap.md
@@ -131,3 +133,4 @@ nav:
   - 결정 기록:
       - decisions/index.md
       - 0001 기술 스택: decisions/0001-technology-stack.md
+      - DEC-P4-04 현장 교체 안전 정책: decisions/DEC-P4-04-field-replacement-policy.md

@@ -10,6 +10,8 @@ Godot 4 기반 모듈형 탑다운 익스트랙션 액션입니다.
 
 [![브라우저에서 바로 플레이](https://img.shields.io/badge/PLAY-브라우저에서_바로_플레이-20d9b0?style=for-the-badge&logo=godotengine&logoColor=white)](https://sfh-game.vstock-market.workers.dev/)
 [![Windows x64 빌드](https://img.shields.io/badge/WINDOWS-x64_%EB%B9%8C%EB%93%9C-02e5e1?style=for-the-badge&logo=windows&logoColor=061314)](https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip)
+
+> 목표 플레이 주소는 `sfh-game.play-preview.dev`입니다. 현재 도메인이 미등록이라 무중단 게이트가 현행 Worker를 유지하며, 도메인·DNS·E2E 완료 후만 전환합니다. 구매·플랜·결제 설정은 변경하지 않았습니다.
 [![개발 위키](https://img.shields.io/badge/WIKI-개발_현황과_기획-253b4b?style=for-the-badge)](https://sfh-dev-wiki.pages.dev/)
 [![Web deployment](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml/badge.svg)](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml)
 

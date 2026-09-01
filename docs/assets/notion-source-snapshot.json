@@ -1,0 +1,468 @@
+{
+  "schema_version": 1,
+  "source_url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
+  "page_id": "6b45b728-0040-82af-8a4a-811ef0a1c5e9",
+  "root_version": 797,
+  "root_last_edited_time": 1788190305789,
+  "block_count": 57,
+  "content_sha256": "b22dce53d706365934dd930e408c1500fe4b5eaf3ea151e7ee2f2960a65bf767",
+  "blocks": [
+    {
+      "id": "3cd5b728-0040-8100-8db9-e6c831c56c04",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "제작 엔진: Godot Engine 4.x (2D 탑다운)",
+      "checked": null,
+      "last_edited_time": 1788190305747
+    },
+    {
+      "id": "3cd5b728-0040-8102-9d3b-cacc0f7c571d",
+      "type": "to_do",
+      "version": 3,
+      "title": "Phase 1: 2D 탑다운 CharacterBody2D 이동(WASD), Area2D 스마트 오토 타겟팅, 자유 스킬 바인딩 시스템 구현",
+      "checked": true,
+      "last_edited_time": 1788190305784
+    },
+    {
+      "id": "3cd5b728-0040-8104-b48a-e894d96c1d74",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "1. 영구 자산형 전리품 (무기, 스킬, 도면/설계도):",
+      "checked": null,
+      "last_edited_time": 1788190305767
+    },
+    {
+      "id": "3cd5b728-0040-8106-9878-d49ca634dcb6",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "손익분기점(BEP) 경제: 사전 투자액이 클수록 클리어는 쉬워지나, 투자금 이상의 전리품을 벌어와야 흑자 달성.",
+      "checked": null,
+      "last_edited_time": 1788190305763
+    },
+    {
+      "id": "3cd5b728-0040-810a-9635-dd72c6466cd6",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "- 1) 최다 루팅 랭킹 (The Collector): 맵에서 획득한 전리품 총 환산 가치 순위.",
+      "checked": null,
+      "last_edited_time": 1788190305780
+    },
+    {
+      "id": "3cd5b728-0040-810d-a7a7-fea113294c56",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "구역 생존 방어: 탈출 반경(원형 Area) 내에서 N초간 생존.",
+      "checked": null,
+      "last_edited_time": 1788190305775
+    },
+    {
+      "id": "3cd5b728-0040-810e-914b-fa202c79570c",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "- 인게임: 획득 즉시 [현장 장착/스왑] 가능.",
+      "checked": null,
+      "last_edited_time": 1788190305767
+    },
+    {
+      "id": "3cd5b728-0040-810e-a8b8-eae60c99a42e",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "2. 세션 증폭 & 환금형 전리품 (모디파이어 룬, 증폭 코어, 환금 유물):",
+      "checked": null,
+      "last_edited_time": 1788190305768
+    },
+    {
+      "id": "3cd5b728-0040-8112-8791-d5a9fdf58cca",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "- 2) 스피드런 랭킹 (The Ghost): 입장부터 탈출까지 걸린 최단 시간 순위.",
+      "checked": null,
+      "last_edited_time": 1788190305781
+    },
+    {
+      "id": "3cd5b728-0040-8113-bbe0-f3b51481f5fc",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "3. 스킬 지참: 재화 투자에 비례하여 더 강력한 스킬을 사전에 구매하여 장착.",
+      "checked": null,
+      "last_edited_time": 1788190305760
+    },
+    {
+      "id": "3cd5b728-0040-8115-b49a-f788f33972ff",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "- 탈출 시: 로비 상점에 [영구 해금(Unlock)] 등록되어 다음 런부터 구매 가능.",
+      "checked": null,
+      "last_edited_time": 1788190305768
+    },
+    {
+      "id": "3cd5b728-0040-811b-8550-fc49cfc5b2ce",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "완전 자유 스킬 바인딩 (Any Skill to Any Key): 특정 버튼별 스킬 강제 분류 없음. 플레이어가 원하는 입력 키(마우스 좌/우클릭, Space, Q, E, 숫자 1~9 등)에 원하는 스킬을 1:1 자유 매핑.",
+      "checked": null,
+      "last_edited_time": 1788190305752
+    },
+    {
+      "id": "3cd5b728-0040-811c-94db-c7053459f591",
+      "type": "to_do",
+      "version": 3,
+      "title": "Phase 6: 비동기 랭킹 3대 보드 및 시즌 보상 시스템 연동",
+      "checked": true,
+      "last_edited_time": 1788190305788
+    },
+    {
+      "id": "3cd5b728-0040-811d-96d9-cf45d1363716",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "- 3) 학살자 랭킹 (The Slayer): 단일 런 최다 킬 스코어 및 보스 격파 수 순위.",
+      "checked": null,
+      "last_edited_time": 1788190305782
+    },
+    {
+      "id": "3cd5b728-0040-8129-b907-d20a319dcdbc",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "1. 캐릭터 선택: 캐릭터별 고유 특성 및 추가 능력치 적용 (코스튬/패시브 시스템).",
+      "checked": null,
+      "last_edited_time": 1788190305759
+    },
+    {
+      "id": "3cd5b728-0040-812d-ab74-c05a41056697",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "가변 무기 태그 (Dynamic Tags): 세계관/내러티브 확정에 따라 자유롭게 정의 및 확장 가능한 태그 시스템 적용.",
+      "checked": null,
+      "last_edited_time": 1788190305771
+    },
+    {
+      "id": "3cd5b728-0040-8132-8346-fd50fc9cacd1",
+      "type": "header",
+      "version": 2,
+      "title": "7. 비동기식 조건부 랭킹 시스템 (Leaderboard)",
+      "checked": null,
+      "last_edited_time": 1788190305778
+    },
+    {
+      "id": "3cd5b728-0040-8132-b460-deb3a7792c0a",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "2. 주무기 / 보조무기 지참: 재화 투자에 비례하여 더 높은 등급/티어의 무기 지참.",
+      "checked": null,
+      "last_edited_time": 1788190305759
+    },
+    {
+      "id": "3cd5b728-0040-8137-bf65-fd32ce3f30bc",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "5. 맵/던전 계약 (Map Contract): 재화를 소모하여 맵 크기(소/중/대), 지역 유형(Biome별 고유 드랍 테이블), 난이도를 직접 조절. (투자액 비례 보스 스폰 확정 및 고등급 드랍률 증가).",
+      "checked": null,
+      "last_edited_time": 1788190305762
+    },
+    {
+      "id": "3cd5b728-0040-813a-bc74-ee49ef96649d",
+      "type": "header",
+      "version": 2,
+      "title": "6. 탈출 및 생환 시스템 (Extraction System)",
+      "checked": null,
+      "last_edited_time": 1788190305774
+    },
+    {
+      "id": "3cd5b728-0040-8141-8b6b-e2e55b0eb4c0",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "이동/방향 스킬: 현재 입력된 이동 방향 벡터로 즉시 발동.",
+      "checked": null,
+      "last_edited_time": 1788190305756
+    },
+    {
+      "id": "3cd5b728-0040-8143-aa56-c24f2b1ae2ae",
+      "type": "header",
+      "version": 2,
+      "title": "3. 로비 인베스트먼트 & 타겟 파밍 (Pre-Run Setup)",
+      "checked": null,
+      "last_edited_time": 1788190305758
+    },
+    {
+      "id": "3cd5b728-0040-8143-ab1a-cb1ad413c54a",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "단일 대상 스킬: 사거리(TargetingArea) 내 [최단 거리(Closest)] 적 기본 타겟팅. (특정 스킬/장비 옵션 시 [최고 체력/엘리트(Highest HP)] 모드로 동적 전환).",
+      "checked": null,
+      "last_edited_time": 1788190305755
+    },
+    {
+      "id": "3cd5b728-0040-8146-ad97-fa168516b52c",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "다단계 등급 체계: 세분화된 등급(Tier/Rarity) 확장을 지원하여 스탯 계수, 소켓 수, 고유 메커니즘 변형 옵션 부여.",
+      "checked": null,
+      "last_edited_time": 1788190305772
+    },
+    {
+      "id": "3cd5b728-0040-815e-b852-cbbebe681670",
+      "type": "to_do",
+      "version": 3,
+      "title": "Phase 4: 인게임 장비 즉시 스왑 및 모디파이어 룬 소켓 결합, 탈출 시 골드 환전 정산 시스템 연동",
+      "checked": true,
+      "last_edited_time": 1788190305787
+    },
+    {
+      "id": "3cd5b728-0040-8160-8501-e57963514999",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "자원 시스템: 공용 자원(AP/스태미나) 소모 + 스킬별 개별 쿨타임 복합 모델 적용.",
+      "checked": null,
+      "last_edited_time": 1788190305753
+    },
+    {
+      "id": "3cd5b728-0040-8166-8243-e87df5447270",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "상호작용 (F): 맵 내 오브젝트 조작 (탈출 신호기 가동 등).",
+      "checked": null,
+      "last_edited_time": 1788190305752
+    },
+    {
+      "id": "3cd5b728-0040-816a-ba7d-e86a6baebffe",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "결과 정산: 성공 시 전리품 영구 해금 및 룬 환전 정산 / 사망 시 런 획득물 및 지참 로드아웃 소실.",
+      "checked": null,
+      "last_edited_time": 1788190305776
+    },
+    {
+      "id": "3cd5b728-0040-816d-9036-e585dbc8898b",
+      "type": "header",
+      "version": 2,
+      "title": "5. 가변 무기 태그 및 등급 확장 구조",
+      "checked": null,
+      "last_edited_time": 1788190305771
+    },
+    {
+      "id": "3cd5b728-0040-816f-92a6-c67b78e63064",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "- 탈출 시: 런 종료와 함께 [대량의 골드/재화로 자동 환전] ➔ 투자금 회수 및 순이익 달성의 핵심 자산.",
+      "checked": null,
+      "last_edited_time": 1788190305770
+    },
+    {
+      "id": "3cd5b728-0040-8172-9562-ca3712b53838",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "3대 랭킹 보드:",
+      "checked": null,
+      "last_edited_time": 1788190305780
+    },
+    {
+      "id": "3cd5b728-0040-8175-b6b8-ee9fc5950f59",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "기본 이동 (W, A, S, D): 2D 평면 8방향/360도 이동 (조준 방향과 무관하게 이동 벡터로 직접 조작).",
+      "checked": null,
+      "last_edited_time": 1788190305750
+    },
+    {
+      "id": "3cd5b728-0040-817a-be67-fa05518a20b2",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "기본 스킬 홀드(Hold) 지원: 키/마우스 입력 유지 시 공속/쿨타임에 맞춰 자동 연속 시전.",
+      "checked": null,
+      "last_edited_time": 1788190305753
+    },
+    {
+      "id": "3cd5b728-0040-817b-849e-d63651771024",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "랭킹 집계 규격: 동일 조건(대형 맵 + 페널티 점수 기준) 환경에서만 공식 기록 집계.",
+      "checked": null,
+      "last_edited_time": 1788190305779
+    },
+    {
+      "id": "3cd5b728-0040-817e-9a7d-c3dd28a55392",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "조작 피로도 제거: 마우스 수동 조준을 배제하고, [스킬 시너지/AP 자원 관리/회피 및 탈출 동선 확보]에만 집중.",
+      "checked": null,
+      "last_edited_time": 1788190305757
+    },
+    {
+      "id": "3cd5b728-0040-8193-b964-ede97fe6a869",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "무기 스왑 (Q): 주무기 ↔ 보조무기 실시간 교체 (장착 무기 태그 및 사용 가능 스킬셋 즉시 전환).",
+      "checked": null,
+      "last_edited_time": 1788190305751
+    },
+    {
+      "id": "3cd5b728-0040-8196-b1ae-fd3b93d267b4",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "파산 방지 시스템 (Zero-Risk Recovery): 재화를 모두 잃은 유저를 위해 무료 기본 무장 및 기본 맵 상시 제공.",
+      "checked": null,
+      "last_edited_time": 1788190305777
+    },
+    {
+      "id": "3cd5b728-0040-8198-a32e-cbb163edbf5f",
+      "type": "to_do",
+      "version": 3,
+      "title": "Phase 2: Q 무기 스왑, 가변 태그 호환성 검사 및 공용 자원(AP)+쿨타임 복합 관리 구현",
+      "checked": true,
+      "last_edited_time": 1788190305785
+    },
+    {
+      "id": "3cd5b728-0040-819e-9b76-da356da2bf08",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "시즌 명예 보상: 주간 상위 랭커 전용 칭호(Title) 및 캐릭터 오라 이펙트 지급.",
+      "checked": null,
+      "last_edited_time": 1788190305782
+    },
+    {
+      "id": "3cd5b728-0040-81a2-85dc-ec8032ca01c6",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "무기 스왑 호환성: 무기 태그와 불일치하는 스킬은 비활성화(UI 딤드) 또는 무기별 독립 프리셋 전환.",
+      "checked": null,
+      "last_edited_time": 1788190305773
+    },
+    {
+      "id": "3cd5b728-0040-81a4-91fa-dfd460b975b5",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "일시정지 메커니즘 (Pause & Resume): 회피를 위해 구역 이탈 시 타이머 일시정지, 재진입 시 남은 시간부터 재개.",
+      "checked": null,
+      "last_edited_time": 1788190305776
+    },
+    {
+      "id": "3cd5b728-0040-81ad-b002-f4687b10675c",
+      "type": "to_do",
+      "version": 3,
+      "title": "Phase 3: 탈출 신호기(F) 상호작용 및 Area2D Timer 일시정지/재개 방어전, 생존/사망 정산 로직 구현",
+      "checked": true,
+      "last_edited_time": 1788190305786
+    },
+    {
+      "id": "3cd5b728-0040-81ae-9bc8-e10f96dbe9c5",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "광역/장판 스킬: 사거리 내 스킬 피격 반경 기준 [최대 적 밀집 클러스터 중심점]에 자동 투하.",
+      "checked": null,
+      "last_edited_time": 1788190305756
+    },
+    {
+      "id": "3cd5b728-0040-81b1-ba15-c28f420a80b8",
+      "type": "callout",
+      "version": 2,
+      "title": "프로젝트: 탑다운 익스트랙션 액션 프로토타입 (Master GDD)\n제작 엔진: Godot Engine 4.x (2D 탑다운, GDScript)\n핵심 목표: 수동 조준 없는 스마트 오토 타겟팅, 자유 스킬 빌드업 및 로비 투자 기반 리스크-리턴 익스트랙션의 결합",
+      "checked": null,
+      "last_edited_time": 1788190305744
+    },
+    {
+      "id": "3cd5b728-0040-81b3-991b-e34ff15e9a37",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "4. 유틸리티 장비: 추가 배낭, 소모성 회복제/공격템, 긴급 탈출 도구 등 변수 통제 장비 지참.",
+      "checked": null,
+      "last_edited_time": 1788190305761
+    },
+    {
+      "id": "3cd5b728-0040-81b7-bac2-d75aaef15367",
+      "type": "header",
+      "version": 2,
+      "title": "4. 전리품 2대 분류 및 인게임 파밍 메커니즘",
+      "checked": null,
+      "last_edited_time": 1788190305766
+    },
+    {
+      "id": "3cd5b728-0040-81c1-896e-e9e04069087d",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "핵심 노드 아키텍처: CharacterBody2D (이동/회피), Area2D (타겟팅 감지 및 탈출 구역), TileMapLayer (던전 맵), Custom Resource (무기/스킬/룬/드랍테이블 데이터 관리)",
+      "checked": null,
+      "last_edited_time": 1788190305748
+    },
+    {
+      "id": "3cd5b728-0040-81c1-ba01-cc57b4760512",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "6. 페널티 모디파이어 (Risk-Reward): 자원 회복 저하, 시야 제한 등 자발적으로 악조건을 부여하여 최종 전리품 배율(Multiplier) 극대화.",
+      "checked": null,
+      "last_edited_time": 1788190305762
+    },
+    {
+      "id": "3cd5b728-0040-81dc-b35a-d7d5be1ee5b1",
+      "type": "to_do",
+      "version": 3,
+      "title": "Phase 5: 로비 4대 세팅 UI(캐릭터, 무기, 스킬, 유틸리티), 맵 계약/페널티 UI 및 상점 영구 해금 연동",
+      "checked": true,
+      "last_edited_time": 1788190305787
+    },
+    {
+      "id": "3cd5b728-0040-81dd-9490-d58b25984dbb",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "- 인게임: 무기/스킬 소켓에 실시간 장착하여 세션 내 화력 폭발 (투사체 증가, 연쇄 폭발, AP 효율 등).",
+      "checked": null,
+      "last_edited_time": 1788190305769
+    },
+    {
+      "id": "3cd5b728-0040-81e0-a5d5-cb29d63d12aa",
+      "type": "header",
+      "version": 2,
+      "title": "8. Godot 프로토타입 구현 마일스톤",
+      "checked": null,
+      "last_edited_time": 1788190305783
+    },
+    {
+      "id": "3cd5b728-0040-81e5-97a9-f62b71a850f3",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "신호기 상호작용: 맵 내 탈출 신호기(Beacon) 접근 후 F키로 방어전 개시.",
+      "checked": null,
+      "last_edited_time": 1788190305774
+    },
+    {
+      "id": "3cd5b728-0040-81ef-96ad-f51f2efd81f6",
+      "type": "header",
+      "version": 2,
+      "title": "0. 기술 스택 및 개발 환경",
+      "checked": null,
+      "last_edited_time": 1788190305746
+    },
+    {
+      "id": "3cd5b728-0040-81f1-9e30-d3478ed20997",
+      "type": "header",
+      "version": 2,
+      "title": "2. 스마트 오토 타겟팅 시스템 (Smart Auto-Targeting)",
+      "checked": null,
+      "last_edited_time": 1788190305754
+    },
+    {
+      "id": "3cd5b728-0040-81f8-81b6-ed521792b0b4",
+      "type": "bulleted_list",
+      "version": 2,
+      "title": "개발 언어: GDScript",
+      "checked": null,
+      "last_edited_time": 1788190305747
+    },
+    {
+      "id": "3cd5b728-0040-81fe-b7a0-d8cd63dacddb",
+      "type": "header",
+      "version": 2,
+      "title": "1. 조작 및 완전 자유 스킬 바인딩 체계 (Input & Controls)",
+      "checked": null,
+      "last_edited_time": 1788190305749
+    },
+    {
+      "id": "6b45b728-0040-82af-8a4a-811ef0a1c5e9",
+      "type": "page",
+      "version": 797,
+      "title": "SFH 프로젝트",
+      "checked": null,
+      "last_edited_time": 1788190305789
+    }
+  ],
+  "captured_at": "2026-09-01T10:52:08+00:00"
+}

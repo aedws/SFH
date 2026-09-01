@@ -194,6 +194,93 @@ func get_slot_bindings() -> Array[Dictionary]:
 	return result
 
 
+func preview_skill_replacement(slot_index: int, candidate: Resource) -> Dictionary:
+	if (
+		loadout == null
+		or slot_index < 0
+		or slot_index >= loadout.skills.size()
+		or candidate == null
+		or not candidate.has_method(&"is_valid")
+		or not bool(candidate.call(&"is_valid"))
+	):
+		return {&"available": false, &"reason": &"invalid_candidate"}
+	var candidate_id := StringName(candidate.get("skill_id"))
+	for index in loadout.skills.size():
+		if index != slot_index and StringName(loadout.skills[index].get("skill_id")) == candidate_id:
+			return {&"available": false, &"reason": &"duplicate_skill"}
+	var previous: Resource = loadout.skills[slot_index]
+	var compatible := _skill_matches_active_weapon(candidate)
+	return {
+		&"available": compatible,
+		&"reason": &"" if compatible else &"weapon_tags_mismatch",
+		&"slot_index": slot_index,
+		&"candidate_skill_id": candidate_id,
+		&"candidate_name": String(candidate.get("display_name")),
+		&"previous_skill_id": StringName(previous.get("skill_id")),
+		&"previous_name": String(previous.get("display_name")),
+		&"required_combat_tags": (candidate.get("required_combat_tags") as Array).duplicate(),
+		&"weapon_tags_ready": compatible,
+	}
+
+
+func replace_skill(slot_index: int, candidate: Resource) -> Dictionary:
+	var preview := preview_skill_replacement(slot_index, candidate)
+	if not bool(preview.get(&"available", false)):
+		return {&"success": false, &"reason": preview.get(&"reason", &"rejected")}
+	var previous: Resource = loadout.skills[slot_index]
+	var previous_cooldown := cooldowns[slot_index]
+	var previous_resource_state := {}
+	if is_instance_valid(resource_provider) and resource_provider.has_method(&"capture_skill_slot_state"):
+		previous_resource_state = resource_provider.call(&"capture_skill_slot_state", slot_index)
+	loadout.skills[slot_index] = candidate
+	cooldowns[slot_index] = 0.0
+	if (
+		is_instance_valid(resource_provider)
+		and resource_provider.has_method(&"reset_skill_slot")
+		and not bool(resource_provider.call(&"reset_skill_slot", slot_index))
+	):
+		loadout.skills[slot_index] = previous
+		cooldowns[slot_index] = previous_cooldown
+		return {&"success": false, &"reason": &"resource_reset_failed"}
+	_emit_states()
+	return {
+		&"success": true,
+		&"slot_index": slot_index,
+		&"previous_definition": previous,
+		&"previous_cooldown": previous_cooldown,
+		&"previous_resource_state": previous_resource_state,
+	}
+
+
+func restore_skill_replacement(
+	slot_index: int,
+	previous_definition: Resource,
+	previous_cooldown: float,
+	previous_resource_state: Dictionary
+) -> bool:
+	if (
+		loadout == null
+		or slot_index < 0
+		or slot_index >= loadout.skills.size()
+		or previous_definition == null
+		or not previous_definition.has_method(&"is_valid")
+		or not bool(previous_definition.call(&"is_valid"))
+	):
+		return false
+	loadout.skills[slot_index] = previous_definition
+	cooldowns[slot_index] = maxf(0.0, previous_cooldown)
+	if (
+		is_instance_valid(resource_provider)
+		and resource_provider.has_method(&"restore_skill_slot_state")
+		and not bool(resource_provider.call(
+			&"restore_skill_slot_state", slot_index, previous_resource_state
+		))
+	):
+		return false
+	_emit_states()
+	return true
+
+
 func get_skill_states() -> Array[Dictionary]:
 	var states: Array[Dictionary] = []
 	if loadout == null:

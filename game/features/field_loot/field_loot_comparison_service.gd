@@ -5,13 +5,15 @@ var lifecycle_provider: Node
 var equipment_provider: Node
 var inventory_provider: Node
 var equip_catalog: FieldLootEquipCatalog
+var skill_equip_provider: Variant
 
 
 func configure(
 	new_lifecycle_provider: Node,
 	new_equipment_provider: Node,
 	new_inventory_provider: Node,
-	new_equip_catalog: FieldLootEquipCatalog = null
+	new_equip_catalog: FieldLootEquipCatalog = null,
+	new_skill_equip_provider: Variant = null
 ) -> bool:
 	if (
 		not _supports(new_lifecycle_provider, [&"get_definition"])
@@ -23,6 +25,7 @@ func configure(
 	equipment_provider = new_equipment_provider
 	inventory_provider = new_inventory_provider
 	equip_catalog = new_equip_catalog
+	skill_equip_provider = new_skill_equip_provider
 	return true
 
 
@@ -51,6 +54,7 @@ func compare(candidate: Dictionary) -> Dictionary:
 		var current = equipment_provider.call(&"get_equipment_state", entry.target_slot)
 		equip_preview = {
 			&"available": true,
+			&"equip_kind": &"weapon",
 			&"target_slot": entry.target_slot,
 			&"previous_name": (
 				String(current.definition.get("display_name"))
@@ -59,6 +63,13 @@ func compare(candidate: Dictionary) -> Dictionary:
 			&"previous_destination_label": equip_catalog.destination_label(),
 			&"policy_status": StringName(equip_catalog.policy_status),
 		}
+	elif (
+		equip_catalog != null
+		and equip_catalog.get_skill_entry(item_id) != null
+		and skill_equip_provider != null
+		and skill_equip_provider.has_method(&"preview")
+	):
+		equip_preview = skill_equip_provider.call(&"preview", item_id)
 	return {
 		&"item_id": item_id,
 		&"display_name": definition.display_name,

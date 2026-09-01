@@ -59,6 +59,7 @@ search:
         <span data-sfh-surface="gameplay"><small>PLAY · WORKER</small><strong>SFH GAME</strong><em>브라우저 실행 전용</em></span>
         <span data-sfh-surface="r2"><small>ASSETS · PRIVATE R2</small><strong>NO PUBLIC LINK</strong><em>Worker 바인딩만 허용</em></span>
       </div>
+      <p class="sfh-cutover-note"><b>NEXT ORIGIN</b><span>sfh-game.play-preview.dev · 도메인 등록·DNS·E2E 완료 후 무중단 전환</span></p>
       <div class="sfh-operation-meta" aria-label="현재 플레이 빌드 요약">
         <span><b>3</b><small>MAP TIERS</small></span>
         <span><b>K · 23 + 9</b><small>KEY + SKILL BINDING</small></span>
@@ -86,6 +87,21 @@ search:
   <footer><a href="design/wiki-collaboration-workflow/">협업 문제·수정 대안 →</a> · <a href="design/planner-request-workflow/">요청 작성·Sheet 확정 규칙 →</a></footer>
 </section>
 
+<section class="sfh-proposal-composer" data-sfh-proposal-composer aria-labelledby="sfh-proposal-title">
+  <header><div><span class="sfh-kicker">SAFE COLLABORATION INTAKE</span><h2 id="sfh-proposal-title">기획 제안 초안 생성</h2></div><span>LOCAL ONLY · NO PUBLIC WRITE</span></header>
+  <p>위키는 익명 편집을 받지 않습니다. 아래에서 제안을 정규화해 복사한 뒤, 인증된 Notion에 붙여넣으면 AI 개발자가 다음 스냅샷·PR에서 동일 ID로 추적합니다.</p>
+  <div class="sfh-proposal-grid">
+    <label>종류<select name="kind"><option>PLAN</option><option>DATA</option><option>DEV</option><option>BUG</option></select></label>
+    <label>요청 ID<input name="request_id" placeholder="PLAN-P4-04-01"></label>
+    <label class="is-wide">제목<input name="title" placeholder="현장 교체 최종 처리 확정"></label>
+    <label class="is-wide">작성 근거<input name="basis" placeholder="Notion Phase 4 블록 또는 DEC ID"></label>
+    <label class="is-wide">수락 기준<input name="acceptance" placeholder="플레이어가 실제로 확인할 수 있는 결과"></label>
+    <label class="is-wide">Sheet 대상<input name="sheet_target" placeholder="필요 시 Skill/Item 탭 확장"></label>
+  </div>
+  <textarea data-sfh-proposal-output readonly aria-label="Notion에 붙여넣을 제안 초안"></textarea>
+  <div class="sfh-proposal-actions"><button type="button" data-sfh-proposal-copy>초안 복사</button><span data-sfh-proposal-state>이 화면은 외부로 전송하지 않습니다.</span></div>
+</section>
+
 <nav class="sfh-role-nav" aria-label="기획자와 개발자 빠른 이동">
   <a href="development-status/"><small>PLAN</small><strong>기획·진행 현황</strong><span>확정 근거와 다음 작업</span></a>
   <a href="architecture/module-rules/"><small>DEV</small><strong>개발·모듈 규칙</strong><span>계약과 확장 경계</span></a>
@@ -105,16 +121,33 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 15 TOPICS</span><span>64 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 16 TOPICS</span><span>66 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 48 · IMPROVE 58 · CHANGE 64 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 53 · IMPROVE 64 · CHANGE 72 · FIX 25</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>58</b><small>IMPROVE</small></span><span><b>64</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span>
+      <span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>53</b><small>BUILD</small></span><span><b>64</b><small>IMPROVE</small></span><span><b>72</b><small>CHANGE</small></span><span><b>25</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 16</small><b>P4-04B 현장 스킬 교체 · 결정 계보형 협업 위키</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 방 보상 스킬을 즉시 교체하고, 기획 요구의 원본·결정·검증 계보를 위키 한 화면에서 추적합니다.</strong><ul>
+          <li><b>현장 스킬:</b> 아크 질주의 슬롯·키·ENERGY·CD·충전을 비교한 뒤 R로 3번 스킬을 교체합니다.</li>
+          <li><b>안전 복구:</b> 기존 스킬 정의·쿨다운·충전·Action을 런에만 보관하고 거점 복귀 전 복원합니다.</li>
+          <li><b>Sheet:</b> 새 `Skill` 14열·4행과 `LootTable` 29행을 확정 CSV·Web PCK·Windows 메타데이터에 연결했습니다.</li>
+          <li><b>협업 위키:</b> Notion 57블록 v797 해시, source anchor, DEC, supersedes/conflict, 로컬 제안 초안기를 추가했습니다.</li>
+          <li><b>배포 안전:</b> `sfh-game.play-preview.dev`는 미등록이므로 목표로 고정하되 현행 Worker를 유지하고 과금·구매를 건드리지 않았습니다.</li>
+        </ul><p class="sfh-intent"><b>다음 작업</b><span>P4-05 런 전용 룬·코어·유물 소켓. 수치·목록 확정이 필요하면 기존 권한에 따라 Google Sheet를 확장합니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>스킬 정의·교체 서비스·시트 동기·복구 스택·제안 초안기를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 6</h3><p>현장 판단 정보, 키 연속성, 기획 출처, 결정 이력, 역할 전달, 모바일 입력성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 8</h3><p>Manifest·빌드 CSV·E2E·마일스톤·검색·노드맵·요청 JSON·배포 표면 원장을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>런 키 영구 저장, 미등록 도메인 즉시 절체, 추천 검색이 실제 색인을 시작하지 않는 회귀를 차단했습니다.</p></div>
+        <p><a href="features/field-loot-skill-swap/">현장 스킬 교체 →</a> · <a href="design/wiki-collaboration-workflow/">협업 운영 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 15</small><b>P4-04A 현장 무기 즉시 장착 · 역할형 협업 위키</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 방 보상 무기를 R로 바로 사용하고, 위키 첫 화면에서 기획자와 AI 개발자의 다음 행동을 분리합니다.</strong><ul>

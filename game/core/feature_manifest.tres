@@ -34,6 +34,7 @@ loot_lifecycle_enabled = true
 loot_tables_enabled = true
 field_loot_acquisition_enabled = true
 field_loot_immediate_equip_enabled = true
+field_loot_skill_equip_enabled = true
 damage_enabled = true
 hit_feedback_enabled = true
 health_recovery_enabled = true

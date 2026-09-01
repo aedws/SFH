@@ -1,0 +1,5 @@
+skill_id,display_name,target_slot_index,targeting_mode,required_combat_tags,cooldown_seconds,energy_cost,maximum_charges,charge_recovery_seconds,grade,region_tags,acquisition_mode,runtime_enabled,planner_note
+blink,점멸,0,direction,,5,20,2,7,2,global,default,TRUE,기본 1번 · 이동 방향 즉시 발동·경로 피해
+magnetic_field,원형 자기장,1,self,electric,8,35,1,10,3,global,default,TRUE,기본 2번 · 플레이어 추적 지속 범위 피해
+speed_boost,기동 가속,2,self,,12,25,2,14,2,global,default,TRUE,기본 3번 · 이동 속도 증가
+arc_dash,아크 질주,2,direction,electric,7,30,1,9,4,research_complex|industrial_district,field_loot,TRUE,P4-04B 현장 즉시 교체 검증 스킬
