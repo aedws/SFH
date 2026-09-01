@@ -835,7 +835,9 @@ E2E 실행기는 기능 내부 구현을 복제하지 않습니다. 실제 Input
 | 위키·게임 분리 | 통과 | MkDocs 정적 파일만 기존 `sfh-dev-wiki` Pages에 Direct Upload하고 39MiB WASM·PCK는 R2 결합 Worker가 제공 |
 | 다운로드 무결성 | 통과 | `/downloads/<version>/`에서 ZIP과 SHA-256을 함께 제공하고 Cloudflare E2E가 다시 내려받아 검증 |
 | Web 런타임 헤더 | 통과 | Worker가 COOP·COEP·CORP, MIME, ETag, Range 206과 캐시 정책을 중앙 관리 |
-| 무중단 폴백 | 통과 | Cloudflare E2E와 링크 전환이 끝날 때까지 기존 GitHub Pages 배포를 병렬 유지 |
+| 운영 전환 | 통과 | 실행 33470418826의 Cloudflare 위키·게임·Range·ZIP 해시 E2E 뒤 정식 링크를 전환하고, 저장소 비공개 직전까지 GitHub Pages만 조건부 폴백으로 유지 |
+
+실배포에서 게임 Canvas와 콘솔 오류 0, WASM Range 206, 40,364,917바이트 Windows ZIP의 게시 SHA-256 일치를 다시 확인했습니다. 새 `sfh-game-artifacts` 버킷 이외의 Cloudflare 프로젝트·버킷과 과금 플랜·결제 설정은 변경하지 않았습니다.
 
 Worker는 R2 객체 읽기와 HTTP 전달만 소유하고 게임 코드를 알지 않습니다. 업로더는 빌드 산출물의 키·MIME·해시 manifest만 소유하며 활성 Worker 설정을 바꾸지 않습니다. CI 조립부가 업로드 성공 뒤 Worker, 그 뒤 Pages, 마지막 E2E 순서를 소유하므로 저장소·스토리지·서빙 책임을 개별 모듈로 교체할 수 있습니다.
 

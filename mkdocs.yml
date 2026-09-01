@@ -1,6 +1,6 @@
 site_name: SFH 개발 위키
 site_description: Godot 4 기반 모듈형 탑다운 뱀서라이크 개발 문서
-site_url: https://aedws.github.io/SFH/
+site_url: https://sfh-dev-wiki.pages.dev/
 site_dir: .wiki-site
 repo_url: https://github.com/aedws/SFH
 repo_name: aedws/SFH
