@@ -15,6 +15,7 @@ on:
       - "mkdocs.yml"
       - "requirements-docs.txt"
       - "scripts/package_release.py"
+      - "scripts/sync_item_lifecycle.py"
       - "scripts/deploy_cloudflare_assets.py"
       - "scripts/test_cloudflare_worker.mjs"
       - "scripts/check-backup-workflows.ps1"
@@ -33,6 +34,7 @@ on:
       - "mkdocs.yml"
       - "requirements-docs.txt"
       - "scripts/package_release.py"
+      - "scripts/sync_item_lifecycle.py"
       - "scripts/deploy_cloudflare_assets.py"
       - "scripts/test_cloudflare_worker.mjs"
       - "scripts/check-backup-workflows.ps1"
@@ -65,7 +67,7 @@ jobs:
       - name: Install font import runtime
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends fontconfig
+          apt-get install -y --no-install-recommends fontconfig python3
 
       - name: Import game resources
         run: |
@@ -90,12 +92,14 @@ jobs:
           test -s "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/LICENSE.txt"
           test -s "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/SOURCE.md"
           grep -q "Creative Commons Zero" "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/LICENSE.txt"
+          python3 scripts/sync_item_lifecycle.py --check
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
           grep -q "SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing" /tmp/sfh-smoke.log
           grep -q "WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction" /tmp/sfh-smoke.log
           grep -q "CYBERPUNK_THEME_OK accent_02e5e1 pixel_korean scanlines static_noise blink_state optional_overlay" /tmp/sfh-smoke.log
           grep -q "MOVEMENT_FEEDBACK_OK launch_punch camera_lead turn_brake_cues dash_trail optional_module" /tmp/sfh-smoke.log
           grep -q "RUN_AUGMENT_UI_OK cards_3 category_title_effect_stack keyboard_selection optional_presenter" /tmp/sfh-smoke.log
+          grep -q "LOOT_LIFECYCLE_OK items_15 families_2 session_convertible_3 policy_validation presenter" /tmp/sfh-smoke.log
 
       - name: Export browser game
         run: |
@@ -220,6 +224,7 @@ jobs:
             --csv game/features/weapon_balance/data/weapon_balance.csv \
             --csv game/features/growth_balance/data/run_buff_balance.csv \
             --csv game/features/growth_balance/data/upgrade_balance.csv \
+            --csv game/features/loot_lifecycle/data/item_lifecycle.csv \
             --commit "$GITHUB_SHA"
 
       - name: Upload Windows release

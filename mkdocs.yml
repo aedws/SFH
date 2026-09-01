@@ -100,6 +100,7 @@ nav:
       - 시작 거점과 전투 세션 전환: features/start-hub.md
       - 영구 해금·상점·창고·소모품: features/hub-economy.md
       - 크레딧 파밍과 회수: features/credit-loot.md
+      - 전리품 생명 주기: features/loot-lifecycle.md
       - 플레이어: features/player.md
       - K 입력 설정과 자유 스킬 배치: features/key-mapping.md
       - 부분 체력 회복: features/health-recovery.md

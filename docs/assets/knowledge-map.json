@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "updated": "2026-09-01",
   "root": {
     "id": "sfh",
@@ -186,6 +186,7 @@
             "documents": [
               {"label": "영구 해금·상점·창고·소모품", "source": "features/hub-economy.md", "route": "features/hub-economy/", "summary": "거점 경제와 파산 방지"},
               {"label": "크레딧 파밍과 회수", "source": "features/credit-loot.md", "route": "features/credit-loot/", "summary": "현장 자원·금고·회수 배율"},
+              {"label": "전리품 생명 주기", "source": "features/loot-lifecycle.md", "route": "features/loot-lifecycle/", "summary": "영구·이번 런 자산, 탈출·사망 결과와 Item Sheet"},
               {"label": "도면 제작과 랜덤 옵션", "source": "features/blueprint-crafting.md", "route": "features/blueprint-crafting/", "summary": "도면 해금·제작·옵션 정책"},
               {"label": "페널티 변형과 조건부 랭킹", "source": "features/penalty-ranking.md", "route": "features/penalty-ranking/", "summary": "리스크 보상과 3종 기록"},
               {"label": "캐릭터 장비와 로드아웃", "source": "features/character-equipment.md", "route": "features/character-equipment/", "summary": "무기·방어구·스킬 슬롯"},

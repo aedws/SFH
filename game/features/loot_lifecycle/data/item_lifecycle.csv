@@ -1,0 +1,16 @@
+item_id,display_name,item_type,grid_width,grid_height,linked_resource,credit_value,consumable,description,loot_family,session_behavior,extract_result,death_result,convert_value,region_tags,runtime_enabled
+rifle_scope_item,소총 정밀 조준경,part,2,1,rifle_scope,0,FALSE,소총 소분류 optic 소켓 전용 파츠,persistent_asset,warehouse_item,warehouse,lost,0,global,TRUE
+pistol_compensator_item,권총 컴펜세이터,part,2,1,pistol_compensator,0,FALSE,권총 소분류 muzzle 소켓 전용 파츠,persistent_asset,warehouse_item,warehouse,lost,0,global,TRUE
+greatsword_edge_item,대검 강화 날,part,3,1,greatsword_edge,0,FALSE,대검 소분류 blade 소켓 전용 파츠,persistent_asset,warehouse_item,warehouse,lost,0,global,TRUE
+ballistic_core_item,탄도 코어 모듈,module,1,1,ballistic_core,0,FALSE,강화하면 장착 코스트가 감소하는 공격 모듈,persistent_asset,warehouse_item,warehouse,lost,0,global,TRUE
+vitality_matrix_item,생존 매트릭스 모듈,module,1,1,vitality_matrix,0,FALSE,가방 한 칸을 사용하는 생존 모듈,persistent_asset,warehouse_item,warehouse,lost,0,global,TRUE
+mobility_chip_item,기동 칩 모듈,module,1,1,mobility_chip,0,FALSE,기동 태그 기반 능력치 모듈,persistent_asset,warehouse_item,warehouse,lost,0,global,TRUE
+armor_plate_item,장갑판 모듈,module,1,1,armor_plate,0,FALSE,방어 능력치를 추가하는 모듈,persistent_asset,warehouse_item,warehouse,lost,0,global,TRUE
+field_medkit,야전 구급품,consumable,2,2,,0,TRUE,향후 소비·회복 시스템이 연결될 2×2 아이템,persistent_asset,warehouse_item,warehouse,lost,0,global,TRUE
+credits,크레딧,currency,0,0,,1,FALSE,작전 중 휴대하고 탈출 시 확보되는 기본 재화 단위,persistent_asset,carry_currency,wallet,lost,0,global,TRUE
+assault_rifle_blueprint,돌격소총 도면,blueprint,1,1,,0,FALSE,탈출 성공 시 돌격소총 제작·상점 해금을 등록하는 영구 자산 도면,persistent_asset,permanent_unlock,permanent_unlock,lost,0,ruined_city|industrial_district,TRUE
+tactical_vest_blueprint,전술 조끼 도면,blueprint,1,1,,0,FALSE,탈출 성공 시 전술 조끼 제작·상점 해금을 등록하는 영구 자산 도면,persistent_asset,permanent_unlock,permanent_unlock,lost,0,industrial_district|research_complex,TRUE
+magnetic_field_blueprint,원형 자기장 스킬 도면,blueprint,1,1,,0,FALSE,탈출 성공 시 원형 자기장 스킬 해금을 등록하는 영구 자산 도면,persistent_asset,permanent_unlock,permanent_unlock,lost,0,research_complex,TRUE
+arc_rune,전도 룬,rune,1,1,,0,FALSE,이번 런의 룬 소켓에서 사용하고 탈출 시 크레딧으로 자동 환전,session_convertible,session_socket,auto_convert,lost,60,ruined_city|industrial_district,TRUE
+capacitor_core,축전 코어,core,1,1,,0,FALSE,이번 런의 코어 소켓에서 사용하고 탈출 시 크레딧으로 자동 환전,session_convertible,session_socket,auto_convert,lost,110,industrial_district|research_complex,TRUE
+phase_artifact,위상 유물,artifact,2,2,,0,FALSE,이번 런의 유물 소켓에서 사용하고 탈출 시 크레딧으로 자동 환전,session_convertible,session_socket,auto_convert,lost,220,research_complex,TRUE

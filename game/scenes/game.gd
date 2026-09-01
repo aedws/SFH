@@ -46,6 +46,9 @@ const WEAPON_BALANCE_SCENE_PATH := (
 const GROWTH_BALANCE_SCENE_PATH := (
 	"res://game/features/growth_balance/growth_balance_service.tscn"
 )
+const LOOT_LIFECYCLE_SCENE_PATH := (
+	"res://game/features/loot_lifecycle/loot_lifecycle_service.tscn"
+)
 const PROGRESSION_SCENE_PATH := "res://game/features/experience/progression_system.tscn"
 const HEALTH_RECOVERY_SCENE_PATH := (
 	"res://game/features/health_recovery/health_recovery_system.tscn"
@@ -171,6 +174,10 @@ const GROWTH_BALANCE_METHODS := [
 	&"get_weapon_modifiers",
 	&"quote_upgrade",
 	&"get_snapshot",
+]
+const LOOT_LIFECYCLE_METHODS := [
+	&"configure", &"request_live_catalog", &"load_csv_text", &"get_definition",
+	&"get_snapshot", &"get_for_region", &"resolve_outcome",
 ]
 const INVENTORY_METHODS := [
 	&"configure",
@@ -346,6 +353,7 @@ var hit_feedback_director
 var combat_resource_system
 var weapon_balance_service
 var growth_balance_service
+var loot_lifecycle_service
 var progression_system
 var health_recovery_system
 var run_buff_system
@@ -1072,6 +1080,7 @@ func _reset_run_references() -> void:
 	combat_resource_system = null
 	weapon_balance_service = null
 	growth_balance_service = null
+	loot_lifecycle_service = null
 	progression_system = null
 	health_recovery_system = null
 	run_buff_system = null
@@ -1174,6 +1183,8 @@ func _assemble_game() -> bool:
 	if features.credits_enabled:
 		_install_credit_ledger()
 	if features.growth_balance_enabled and not _install_growth_balance():
+		return false
+	if features.loot_lifecycle_enabled and not _install_loot_lifecycle():
 		return false
 	if features.equipment_upgrade_economy_enabled and not _install_equipment_upgrade_service():
 		return false
@@ -1536,13 +1547,47 @@ func _install_weapon_balance() -> bool:
 	return true
 
 
+func _install_loot_lifecycle() -> bool:
+	if not ResourceLoader.exists(features.loot_lifecycle_config_path):
+		_report_configuration_error("전리품 생명 주기 설정을 찾을 수 없습니다.")
+		return false
+	loot_lifecycle_service = _instantiate_feature(
+		LOOT_LIFECYCLE_SCENE_PATH, module_container, &"LootLifecycle"
+	)
+	if not _supports_loot_lifecycle(loot_lifecycle_service):
+		_report_configuration_error("전리품 생명 주기 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	loot_lifecycle_service.connect(
+		&"lifecycle_error", Callable(self, &"_on_loot_lifecycle_error")
+	)
+	var lifecycle_config := load(features.loot_lifecycle_config_path) as LootLifecycleConfig
+	if lifecycle_config == null:
+		_report_configuration_error("전리품 생명 주기 설정 형식이 올바르지 않습니다.")
+		return false
+	lifecycle_config = lifecycle_config.duplicate(true) as LootLifecycleConfig
+	lifecycle_config.source_mode = selected_balance_source_mode
+	if not loot_lifecycle_service.call(&"configure", lifecycle_config):
+		_report_configuration_error("전리품 생명 주기 데이터를 불러오지 못했습니다.")
+		return false
+	return true
+
+
 func _configure_balance_mode_selector() -> void:
-	balance_mode_section.visible = features.weapon_balance_enabled or features.growth_balance_enabled
+	balance_mode_section.visible = (
+		features.weapon_balance_enabled
+		or features.growth_balance_enabled
+		or features.loot_lifecycle_enabled
+	)
 	if not balance_mode_section.visible:
 		return
 	var balance_config := load(features.weapon_balance_config_path) as WeaponBalanceConfig
 	var growth_config: Resource = load(features.growth_balance_config_path)
-	if balance_config == null or (features.growth_balance_enabled and growth_config == null):
+	var lifecycle_config := load(features.loot_lifecycle_config_path) as LootLifecycleConfig
+	if (
+		balance_config == null
+		or (features.growth_balance_enabled and growth_config == null)
+		or (features.loot_lifecycle_enabled and lifecycle_config == null)
+	):
 		live_balance_button.disabled = true
 		_select_balance_source_mode(WeaponBalanceConfig.SourceMode.LOCKED_CSV)
 		balance_mode_description.text = "밸런스 설정을 읽을 수 없어 확정 CSV만 선택할 수 있습니다."
@@ -1553,6 +1598,10 @@ func _configure_balance_mode_selector() -> void:
 			live_balance_button.disabled
 			or growth_config.live_run_buff_csv_url.is_empty()
 			or growth_config.live_upgrade_csv_url.is_empty()
+		)
+	if features.loot_lifecycle_enabled:
+		live_balance_button.disabled = (
+			live_balance_button.disabled or lifecycle_config.live_csv_url.is_empty()
 		)
 	var initial_mode := int(balance_config.source_mode)
 	if (
@@ -1578,11 +1627,11 @@ func _select_balance_source_mode(source_mode: int) -> void:
 	)
 	if source_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET:
 		balance_mode_description.text = (
-			"Weapon·RunBuff·Upgrade Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
+			"Weapon·Item·RunBuff·Upgrade Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
 		)
 	else:
 		balance_mode_description.text = (
-			"무기·내부 성장·장비 강화의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
+			"무기·아이템 생명 주기·내부 성장·장비 강화의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
 		)
 
 
@@ -2218,6 +2267,16 @@ func _supports_growth_balance(candidate: Node) -> bool:
 	return _supports_methods(candidate, GROWTH_BALANCE_METHODS)
 
 
+func _supports_loot_lifecycle(candidate: Node) -> bool:
+	if (
+		not is_instance_valid(candidate)
+		or not candidate.has_signal(&"lifecycle_updated")
+		or not candidate.has_signal(&"lifecycle_error")
+	):
+		return false
+	return _supports_methods(candidate, LOOT_LIFECYCLE_METHODS)
+
+
 func _supports_inventory(candidate: Node) -> bool:
 	if not is_instance_valid(candidate) or not candidate.has_signal(&"inventory_changed"):
 		return false
@@ -2404,6 +2463,10 @@ func _on_weapon_balance_error(message: String) -> void:
 
 
 func _on_growth_balance_error(message: String) -> void:
+	push_warning(message)
+
+
+func _on_loot_lifecycle_error(message: String) -> void:
 	push_warning(message)
 
 

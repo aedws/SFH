@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 52 TOPICS</span><span>58 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 53 TOPICS</span><span>59 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -83,9 +83,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 27 · IMPROVE 39 · CHANGE 42 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 33 · IMPROVE 43 · CHANGE 47 · FIX 18</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>27</b><small>BUILD</small></span><span><b>39</b><small>IMPROVE</small></span><span><b>42</b><small>CHANGE</small></span><span><b>16</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>33</b><small>BUILD</small></span><span><b>43</b><small>IMPROVE</small></span><span><b>47</b><small>CHANGE</small></span><span><b>18</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -290,7 +290,7 @@ tags:
         <p><a href="getting-started/run-project/#private-repository-backup">백업·복구 절차 →</a> · <a href="architecture/module-audit/#private-repository-backup-audit">복구 모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 11</small><b>배포 표면 분리 · Notion 75% 재확인 · 보안 모듈 재감사</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -310,6 +310,28 @@ tags:
         <div class="sfh-group"><h3>수정 · 5</h3><p>링크·prefix·GDD 스냅샷·P4-01 패킷·보안 감사표를 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>위키와 게임이 같은 배포처럼 보이던 상대 링크와 노드맵의 오래된 72% 요약을 수정했습니다.</p></div>
         <p><a href="getting-started/run-project/#cloudflare">배포 표면 계약 →</a> · <a href="design/master-gdd-alignment/">Master GDD 재대조 →</a> · <a href="design/current-milestone-workline/">다음 작업 라인 →</a> · <a href="architecture/module-audit/">보안·모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>전리품 생명 주기 P4-01 · Item Sheet 15종 · 탈출·사망 결과 계약</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 전리품의 소유 기간과 성공·실패 결과를 드랍 구현보다 먼저 데이터 계약으로 동결했습니다.</strong>
+          <ul>
+            <li><b>영구 자산:</b> 기존 파츠·모듈·소모품·크레딧과 도면은 탈출 시 창고·지갑·영구 해금 결과를 가집니다.</li>
+            <li><b>세션 자산:</b> 룬·코어·유물은 이번 런의 별도 소켓에서 사용하고 성공 시 지정 크레딧으로 자동 환전합니다.</li>
+            <li><b>Sheet/CSV:</b> Item 탭 1행 변수·2행 설명을 유지한 채 J:P 7열을 추가하고 15개 활성 행을 확정 CSV·Web payload와 동기화했습니다.</li>
+            <li><b>표현:</b> Presenter가 `◆ 영구 자산`, `◇ 이번 런 자산`, 탈출 결과와 사망 소실을 아이템 상세용 단문으로 만듭니다.</li>
+            <li><b>검증:</b> 중복 ID, 누락 지역, 상충 정책, 잘못된 실시간 갱신과 payload 불일치를 자동 차단합니다.</li>
+            <li><b>작업선:</b> P4-01은 완료했고 다음은 지역·난이도별 후보와 확률을 분리하는 P4-02입니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>모듈 경계</b><span>생명 주기 서비스는 결과만 계산합니다. 실제 획득·현장 교체·프로필 저장·크레딧 정산은 후속 명령 모듈이 맡습니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 6</h3><p>정의·파서·서비스·설정·표현·Sheet 동기화 계약을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>전리품 의미 가시성, 데이터 입력성, 공급자 교체성, 배포 추적성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>Manifest·밸런스 UI·export·release metadata·마일스톤을 P4-01 완료 상태로 변경했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>상충 정책 수용과 오류 갱신 시 마지막 정상 데이터 유실을 차단했습니다.</p></div>
+        <p><a href="features/loot-lifecycle/">전리품 생명 주기 →</a> · <a href="design/current-milestone-workline/">P4 작업 라인 →</a> · <a href="architecture/module-audit/">P4-01 모듈 감사 →</a></p>
       </div>
     </details>
   </div>
