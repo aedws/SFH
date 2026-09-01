@@ -36,10 +36,10 @@ search:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>75%</b>
+        <b>78%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75"><i style="width: 75%"></i></div>
-      <p>Master GDD 8개 확정 시스템 재대조 · 현장 전리품·룬 순환·자유 바인딩·비동기 시즌 범위 반영</p>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="78"><i style="width: 78%"></i></div>
+      <p>Master GDD 8개 확정 시스템 · Phase 체크 6/6 · 저장소 구현/E2E 가중 산식 78%</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
       <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
     </div>
@@ -121,16 +121,33 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 16 TOPICS</span><span>66 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 17 TOPICS</span><span>66 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 53 · IMPROVE 64 · CHANGE 72 · FIX 25</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>17 UPDATE BUNDLES · BUILD 53 · IMPROVE 66 · CHANGE 76 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>53</b><small>BUILD</small></span><span><b>64</b><small>IMPROVE</small></span><span><b>72</b><small>CHANGE</small></span><span><b>25</b><small>FIX</small></span>
+      <span><b>17</b><small>UPDATE BUNDLES</small></span><span><b>53</b><small>BUILD</small></span><span><b>66</b><small>IMPROVE</small></span><span><b>76</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 17</small><b>남은 11개 작업 패킷 · Master GDD 진행도 78%</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 공개 기획과 현재 main을 다시 대조해 완료 수치와 후속 순서를 같은 기준으로 정리했습니다.</strong><ul>
+          <li><b>원문:</b> 공개 Notion v797·57블록·해시 `b22dce53d706`은 유지됐고 Phase 1~6 체크 6개가 모두 활성 상태입니다.</li>
+          <li><b>진행도:</b> P4-04A/B 현장 무기·스킬 교체를 전리품 항목 40%로 반영해 가중 산식을 75%에서 78%로 수정했습니다.</li>
+          <li><b>남은 범위:</b> P4-05~06 2개, P5-01~05 5개, P6-01~04 4개로 총 11개 구현 패킷입니다.</li>
+          <li><b>즉시 순서:</b> P4-05 세션 소켓 → P4-06 자동 환전/해금/소실 → P5 로비 4대 세팅 → P6 비동기 시즌입니다.</li>
+          <li><b>기획 요청:</b> P4 소켓 수치, P5 캐릭터·유틸리티 목록, P6 온라인 운영 정책을 역할형 카드로 분리했습니다.</li>
+        </ul><p class="sfh-intent"><b>완료 판단</b><span>Notion 체크는 확정 범위의 근거이고, 실제 완료는 코드·데이터·플레이어 인식 E2E로만 판정합니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>이번 묶음은 기능 추가 없이 현행 구현 근거를 재감사했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>남은 작업 가독성과 기획자 선행 데이터 가시성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>진행률, 산식, 마일스톤, 검색 우선순위를 P4-04B 이후 기준으로 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>Notion Phase 체크가 미체크라고 남아 있던 오래된 상태 설명을 수정했습니다.</p></div>
+        <p><a href="development-status/#_1">남은 작업표 →</a> · <a href="design/master-gdd-alignment/">진행 산식 →</a> · <a href="design/current-milestone-workline/">실행 순서 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 16</small><b>P4-04B 현장 스킬 교체 · 결정 계보형 협업 위키</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 방 보상 스킬을 즉시 교체하고, 기획 요구의 원본·결정·검증 계보를 위키 한 화면에서 추적합니다.</strong><ul>
