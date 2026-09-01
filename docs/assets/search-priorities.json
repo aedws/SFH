@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "updated": "2026-09-01",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
@@ -52,6 +52,13 @@
       "description": "sfh-dev-wiki Pages, sfh-game Worker+R2, 커밋별 불변 업로드와 GitHub Pages 병행 E2E",
       "category": "배포",
       "priority": 97
+    },
+    {
+      "query": "백업 복구",
+      "label": "Private 저장소 백업·복구",
+      "description": "pre-main·verified-main 불변 백업과 PR 기반 복구 절차",
+      "category": "배포",
+      "priority": 96
     },
     {
       "query": "문서 노드맵",

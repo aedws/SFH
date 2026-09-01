@@ -87,6 +87,12 @@ cd SFH
 
 `SMOKE_TEST_OK`가 표시되면 현재 게임 루프와 모듈 계약이 정상입니다. 대형 작전 CPU 예산은 `scripts\test-performance.ps1`, 위키와 검색은 `scripts\wiki.cmd build`로 검사합니다.
 
+## Private 저장소 복구 안전장치
+
+`main`에 변경이 들어오기 직전 커밋은 `backup/pre-main/<전체 SHA>`, Cloudflare 배포 E2E까지 통과한 커밋은 `backup/verified-main/<전체 SHA>`에 자동 보관합니다. 문제가 생기면 `Prepare main recovery PR` Actions를 실행해 선택한 백업의 트리를 새 `recovery/main/...` 브랜치에 복원하고, 필수 검사를 다시 통과한 PR로만 되돌립니다. `main` 강제 푸시나 이력 재작성은 사용하지 않습니다.
+
+저장소는 Private 상태를 유지합니다. GitHub Free의 Private 저장소에서는 서버 측 Ruleset 강제가 제한되므로, 현재 안전장치는 PR 작업 관례와 두 종류의 불변 백업 브랜치로 보완합니다. Cloudflare 프로젝트·버킷·과금 플랜·결제 설정은 이 백업 절차의 범위 밖입니다.
+
 ## 저장소 구조
 
 ```text

@@ -828,7 +828,7 @@ E2E 실행기는 기능 내부 구현을 복제하지 않습니다. 실제 Input
 
 | 검사 항목 | 결과 | 근거 |
 |---|---|---|
-| main 변경 경계 | 통과 | PR·대화 해결과 `export-game`, `build`, `e2e`를 요구하고 승인 0명, 강제 푸시·삭제 금지, 우회 없음으로 설정 |
+| main 변경 경계 | 제한 공개 | GitHub Free Private 저장소에서는 Ruleset 강제가 거부되어 PR 작업 관례와 아래의 이중 불변 백업으로 보완 |
 | 공급망 경계 | 통과 | 워크플로의 GitHub Action 7종을 실제 태그 커밋 SHA로 고정하고 저장소 허용 목록도 동일 SHA만 수락 |
 | 산출물 단일성 | 통과 | Cloudflare 작업은 `game-web`, `wiki-site`, `SFH-Windows-x64-v0.1.0` 검증 산출물을 내려받기만 하며 재빌드하지 않음 |
 | 원자적 게임 전환 | 통과 | R2 `game/releases/<commit>/`에 모든 파일과 manifest를 먼저 업로드한 뒤 Worker의 `RELEASE_PREFIX`를 변경 |
@@ -840,6 +840,22 @@ E2E 실행기는 기능 내부 구현을 복제하지 않습니다. 실제 Input
 실배포에서 게임 Canvas와 콘솔 오류 0, WASM Range 206, 40,364,917바이트 Windows ZIP의 게시 SHA-256 일치를 다시 확인했습니다. 새 `sfh-game-artifacts` 버킷 이외의 Cloudflare 프로젝트·버킷과 과금 플랜·결제 설정은 변경하지 않았습니다.
 
 Worker는 R2 객체 읽기와 HTTP 전달만 소유하고 게임 코드를 알지 않습니다. 업로더는 빌드 산출물의 키·MIME·해시 manifest만 소유하며 활성 Worker 설정을 바꾸지 않습니다. CI 조립부가 업로드 성공 뒤 Worker, 그 뒤 Pages, 마지막 E2E 순서를 소유하므로 저장소·스토리지·서빙 책임을 개별 모듈로 교체할 수 있습니다.
+
+<a id="private-repository-backup-audit"></a>
+## Private 저장소 백업·복구 감사 (2026-09-01)
+
+| 검사 항목 | 결과 | 근거 |
+|---|---|---|
+| 변경 직전 보존 | 통과 | `backup-main.yml`이 모든 `main` push의 `github.event.before` 전체 SHA를 `backup/pre-main/<SHA>`에 저장 |
+| 검증 완료 보존 | 통과 | `deploy-wiki.yml`의 백업 Job은 Cloudflare 배포·E2E Job 성공 뒤 정확한 `GITHUB_SHA`를 `backup/verified-main/<SHA>`에 저장 |
+| 불변 이름 계약 | 통과 | 같은 백업 브랜치가 이미 있으면 동일 SHA인지 검사하고 다르면 덮어쓰지 않고 실패 |
+| 복구 입력 제한 | 통과 | 수동 복구는 두 허용 네임스페이스와 40자리 소문자 SHA만 받고 원격 브랜치 대상과 이름의 SHA 일치를 재검증 |
+| 이력 보존 | 통과 | 백업으로 reset·force-push하지 않고 현재 `main`에서 파일 트리 복원 커밋과 `recovery/main/...` 브랜치를 생성 |
+| 재검증 경계 | 통과 | 복구 결과는 PR로 제출하고 `export-game`, `e2e`, `package-windows`, `build` 통과 후 병합 |
+| 권한 폴백 | 통과 | Actions가 PR을 자동 생성하지 못해도 복구 브랜치와 정확한 compare URL을 남김 |
+| 범위 격리 | 통과 | 백업 워크플로는 Git 객체와 GitHub PR만 다루며 Cloudflare 프로젝트·R2·과금·결제 설정을 참조하지 않음 |
+
+두 백업은 목적이 다릅니다. `pre-main`은 새 커밋 자체가 검증에 실패해도 직전 상태를 즉시 찾기 위한 안전망이고, `verified-main`은 실제 Cloudflare E2E까지 통과한 복귀 기준점입니다. 저장소가 GitHub Free Private이어서 서버 측 Ruleset 강제가 불가능한 현재 상태는 숨기지 않고, PR 관례·정적 계약 검사·불변 백업으로 보완합니다.
 
 ## 의도된 결합
 

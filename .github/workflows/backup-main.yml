@@ -1,0 +1,45 @@
+name: Snapshot previous main
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: backup-main
+  cancel-in-progress: false
+
+jobs:
+  backup-previous-main:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out main history
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+
+      - name: Snapshot the commit that main replaced
+        env:
+          PREVIOUS_MAIN_SHA: ${{ github.event.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$PREVIOUS_MAIN_SHA" =~ ^[0-9a-f]{40}$ ]] || [[ "$PREVIOUS_MAIN_SHA" =~ ^0+$ ]]; then
+            echo "No previous main commit to snapshot."
+            exit 0
+          fi
+          git cat-file -e "$PREVIOUS_MAIN_SHA^{commit}"
+          backup_branch="backup/pre-main/$PREVIOUS_MAIN_SHA"
+          backup_ref="refs/heads/$backup_branch"
+          git check-ref-format "$backup_ref"
+          existing_sha=$(git ls-remote --heads origin "$backup_ref" | awk '{print $1}')
+          if [ -n "$existing_sha" ]; then
+            test "$existing_sha" = "$PREVIOUS_MAIN_SHA"
+            echo "PRE_MAIN_BACKUP_EXISTS branch=$backup_branch commit=$PREVIOUS_MAIN_SHA"
+            exit 0
+          fi
+          git push origin "$PREVIOUS_MAIN_SHA:$backup_ref"
+          echo "PRE_MAIN_BACKUP_CREATED branch=$backup_branch commit=$PREVIOUS_MAIN_SHA"
