@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 47 TOPICS</span><span>58 DOCS · MILESTONE LINE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 48 TOPICS</span><span>58 DOCS · PROTECTED RELEASE</span></div>
 
 ## 기획 기준 진행도
 
@@ -80,9 +80,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 10 · IMPROVE 22 · CHANGE 20 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 14 · IMPROVE 25 · CHANGE 24 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>22</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>8</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>25</b><small>IMPROVE</small></span><span><b>24</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -183,7 +183,7 @@ tags:
         <p><a href="design/current-milestone-workline/">현행 마일스톤 작업 라인 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>위키 접근성·클릭 명확화 · Phase 1 자유 스킬 배치 완료</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -200,6 +200,27 @@ tags:
         <div class="sfh-group"><h3>수정 · 3</h3><p>물리 키·스킬 위치 저장을 분리하고 홈을 최신 하루로 제한했으며 진행도를 75%로 갱신했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>노드 클릭 범위 교차, 재렌더링 포커스 소실, 비활성 버튼처럼 읽히던 루트 노드 의미를 바로잡았습니다.</p></div>
         <p><a href="features/key-mapping/">자유 스킬 배치 →</a> · <a href="design/current-milestone-workline/">다음 작업 라인 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>main 보호 · 독립 E2E · Windows x64 검증 빌드</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 저장소 변경과 배포 산출물이 같은 필수 검증선을 통과합니다.</strong>
+          <ul>
+            <li>main 직접·강제 푸시와 삭제를 막고 PR·대화 해결·필수 검사를 적용했습니다. 1인 개발 중 승인 수는 0명입니다.</li>
+            <li>기존 export-game 내부 E2E 단계를 독립 <code>e2e</code> 잡으로 분리해 보호 규칙에서 직접 요구할 수 있습니다.</li>
+            <li>Windows Desktop x86_64 프리셋과 v0.1.0 ZIP·SHA-256 생성기를 추가했습니다.</li>
+            <li>BUILD-METADATA.json은 커밋·Godot 4.7.2·CSV 데이터 버전·CSV별 해시를 기록합니다.</li>
+            <li>Actions 전체 SHA 고정과 Dependabot 주간 갱신을 구성하고, Cloudflare는 검증 후 GitHub Pages와 병행하는 순서를 유지합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>다음 게이트</b><span>이 PR의 export-game·e2e·package-windows·build가 통과한 뒤 e2e를 필수 검사에 추가하고 Actions 허용 목록·SHA 강제를 활성화합니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>보호 규칙, 독립 E2E, Windows 패키지, 메타데이터·체크섬을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>공급망과 병합 안전성, 실행물 추적성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>검사 구조와 릴리스 데이터 원장, 화면의 실행 방식 구분, 무중단 전환 순서를 수정했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>존재하지 않는 E2E 컨텍스트를 먼저 요구해 main이 잠길 수 있는 순서 오류를 제거했습니다.</p></div>
+        <p><a href="getting-started/run-project/#windows-x86_64">Windows 빌드 규격 →</a></p>
       </div>
     </details>
   </div>

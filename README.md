@@ -9,6 +9,7 @@
 Godot 4 기반 모듈형 탑다운 익스트랙션 액션입니다.
 
 [![브라우저에서 바로 플레이](https://img.shields.io/badge/PLAY-브라우저에서_바로_플레이-20d9b0?style=for-the-badge&logo=godotengine&logoColor=white)](https://aedws.github.io/SFH/play/)
+[![Windows x64 빌드](https://img.shields.io/badge/WINDOWS-x64_%EB%B9%8C%EB%93%9C-02e5e1?style=for-the-badge&logo=windows&logoColor=061314)](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml)
 [![개발 위키](https://img.shields.io/badge/WIKI-개발_현황과_기획-253b4b?style=for-the-badge)](https://aedws.github.io/SFH/)
 [![Web deployment](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml/badge.svg)](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml)
 
@@ -38,6 +39,7 @@ Godot 4 기반 모듈형 탑다운 익스트랙션 액션입니다.
 
 - 데스크톱 Chrome, Edge, Whale 등 최신 Chromium 브라우저와 키보드를 권장합니다.
 - 첫 로딩에는 Godot WebAssembly와 게임 데이터 다운로드 시간이 필요합니다.
+- Windows 빌드는 Actions의 최신 성공 실행에서 `SFH-Windows-x64-v0.1.0` 산출물로 받습니다. ZIP과 SHA-256 파일이 함께 제공되며, R2 무중단 전환이 끝나면 같은 검증 산출물을 직접 다운로드 링크로 제공합니다.
 - 개발 중인 프로토타입이므로 세이브 호환성과 밸런스는 변경될 수 있습니다.
 - Web 빌드는 `main` 변경 시 자동 생성되며, 내보내기에 실패하면 Pages 배포도 중단됩니다.
 

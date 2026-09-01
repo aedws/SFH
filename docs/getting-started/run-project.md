@@ -12,6 +12,12 @@ tags:
 
 [SFH Web 빌드 바로 실행](https://aedws.github.io/SFH/play/)을 열면 Godot 설치 없이 현재 `main` 기준 프로토타입을 플레이할 수 있습니다. 데스크톱 Chrome·Edge·Whale 등 최신 Chromium 브라우저와 키보드, 1280×720 이상의 화면을 권장합니다.
 
+## Windows x86_64
+
+[Windows 빌드 작업](https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml)의 최신 성공 실행에서 `SFH-Windows-x64-v0.1.0` 산출물을 받습니다. ZIP에는 `SFH.exe`, `SFH.pck`, 라이선스 원문과 `BUILD-METADATA.json`이 들어 있으며 같은 산출물에 `.zip.sha256` 체크섬이 제공됩니다.
+
+메타데이터에는 빌드 커밋, Godot 4.7.2, CSV 데이터 버전과 Weapon·런 버프·업그레이드 CSV별 SHA-256이 기록됩니다. Cloudflare R2 검증이 끝날 때까지 이 Actions 산출물이 기준 원본이며, 이후에도 R2에는 검증을 통과한 동일 파일만 업로드합니다.
+
 Web 빌드는 게임 코드와 문서가 `main`에 반영될 때 GitHub Actions가 자동 생성해 개발 위키의 `/play/` 경로에 결합합니다. 게임 내보내기, 위키 빌드, 필수 `HTML·WASM·PCK` 검증 중 하나라도 실패하면 Pages 배포를 중단하므로 README의 플레이 버튼은 마지막으로 검증된 빌드를 유지합니다. 한글 UI는 프로젝트에 포함된 OFL 1.1 `Nanum Gothic` 전역 폰트를 사용해 운영체제 폰트에 의존하지 않습니다.
 
 무기, 내부 성장, 장비 강화의 확정 CSV도 Web PCK에 명시적으로 포함합니다. 브라우저 런타임이 비-Resource CSV 스트림을 제공하지 못하는 환경에서는 원본과 함께 자동 생성한 `EmbeddedCsvPayload`를 읽습니다. 동기화 스크립트와 스모크 테스트가 세 CSV와 내장 미러의 완전 일치, 원본 경로, 내보내기 포함 계약을 함께 검사하므로 데이터가 빠지거나 어긋나면 작전 조립 전에 빌드를 차단합니다.
