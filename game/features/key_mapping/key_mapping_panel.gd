@@ -6,10 +6,13 @@ signal panel_visibility_changed(is_open: bool)
 ## K로 열고, 선택한 Action의 다음 키보드/마우스 입력을 서비스에 전달합니다.
 
 var provider: Node
+var skill_provider: Node
 var paused_before_open: bool = false
 var awaiting_action: StringName = &""
 var binding_buttons: Dictionary = {}
+var skill_binding_buttons: Dictionary = {}
 var rows_container: VBoxContainer
+var skill_rows_container: VBoxContainer
 var status_label: Label
 var summary_label: Label
 var key_badge_label: Label
@@ -23,7 +26,7 @@ func _ready() -> void:
 	visible = false
 
 
-func configure(new_provider: Node) -> bool:
+func configure(new_provider: Node, new_skill_provider: Node = null) -> bool:
 	if (
 		new_provider == null
 		or not new_provider.has_method(&"rebind_action")
@@ -32,11 +35,17 @@ func configure(new_provider: Node) -> bool:
 	):
 		return false
 	provider = new_provider
+	skill_provider = new_skill_provider
 	if provider.has_signal(&"bindings_changed"):
 		var callback := Callable(self, &"_on_bindings_changed")
 		if not provider.is_connected(&"bindings_changed", callback):
 			provider.connect(&"bindings_changed", callback)
+	if is_instance_valid(skill_provider) and skill_provider.has_signal(&"bindings_changed"):
+		var skill_callback := Callable(self, &"_on_skill_bindings_changed")
+		if not skill_provider.is_connected(&"bindings_changed", skill_callback):
+			skill_provider.connect(&"bindings_changed", skill_callback)
 	_refresh_rows()
+	_refresh_skill_rows()
 	return true
 
 
@@ -75,6 +84,7 @@ func open_panel() -> void:
 	get_tree().paused = true
 	status_label.text = "바꿀 항목을 선택한 뒤 원하는 키 또는 마우스 버튼을 누르세요."
 	_refresh_rows()
+	_refresh_skill_rows()
 	panel_visibility_changed.emit(true)
 
 
@@ -92,6 +102,9 @@ func get_snapshot() -> Dictionary:
 		&"visible": visible,
 		&"awaiting_action": awaiting_action,
 		&"binding_row_count": binding_buttons.size(),
+		&"physical_binding_row_count": binding_buttons.size(),
+		&"skill_binding_row_count": skill_binding_buttons.size(),
+		&"separate_binding_levels": is_instance_valid(skill_provider),
 		&"window_minimum_size": Vector2(920.0, 620.0),
 	}
 
@@ -128,7 +141,7 @@ func _build_ui() -> void:
 	var header := HBoxContainer.new()
 	content.add_child(header)
 	var title := Label.new()
-	title.text = "키 설정"
+	title.text = "입력 설정"
 	title.add_theme_font_size_override("font_size", 30)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
@@ -142,21 +155,35 @@ func _build_ui() -> void:
 	close_button.pressed.connect(close_panel)
 	header.add_child(close_button)
 	var description := Label.new()
-	description.text = "이동·전투·스킬·메뉴 키를 직접 교체합니다. 중복 키는 기존 항목과 자동 교환되며 ESC는 안전을 위해 고정됩니다."
+	description.text = "키 배치에서는 물리 키를, 스킬 배치에서는 원하는 스킬의 1~9 슬롯을 바꿉니다. 충돌 항목은 자동 교환되며 ESC는 안전을 위해 고정됩니다."
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description.modulate = Color(0.72, 0.82, 0.86)
 	content.add_child(description)
 	summary_label = Label.new()
 	summary_label.modulate = Color("02e5e1")
 	content.add_child(summary_label)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	content.add_child(scroll)
+	var tabs := TabContainer.new()
+	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	tabs.add_theme_font_size_override("font_size", 18)
+	content.add_child(tabs)
+	var key_scroll := ScrollContainer.new()
+	key_scroll.name = "키 배치"
+	key_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	key_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	tabs.add_child(key_scroll)
 	rows_container = VBoxContainer.new()
 	rows_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	rows_container.add_theme_constant_override("separation", 6)
-	scroll.add_child(rows_container)
+	key_scroll.add_child(rows_container)
+	var skill_scroll := ScrollContainer.new()
+	skill_scroll.name = "스킬 배치"
+	skill_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	skill_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	tabs.add_child(skill_scroll)
+	skill_rows_container = VBoxContainer.new()
+	skill_rows_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	skill_rows_container.add_theme_constant_override("separation", 8)
+	skill_scroll.add_child(skill_rows_container)
 	var footer := HBoxContainer.new()
 	footer.add_theme_constant_override("separation", 12)
 	content.add_child(footer)
@@ -216,6 +243,63 @@ func _refresh_rows() -> void:
 		binding_buttons[action_id] = button
 
 
+func _refresh_skill_rows() -> void:
+	if skill_rows_container == null:
+		return
+	for child in skill_rows_container.get_children():
+		child.queue_free()
+	skill_binding_buttons.clear()
+	if not is_instance_valid(skill_provider):
+		var unavailable := Label.new()
+		unavailable.text = "스킬 배치 모듈이 비활성화되어 있습니다."
+		skill_rows_container.add_child(unavailable)
+		return
+	var guide := Label.new()
+	guide.text = "스킬마다 이전/다음 슬롯을 선택합니다. 사용 중인 슬롯을 고르면 두 스킬이 서로 교환됩니다."
+	guide.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	guide.modulate = Color(0.72, 0.82, 0.86)
+	skill_rows_container.add_child(guide)
+	for entry: Dictionary in skill_provider.call(&"get_entries"):
+		var row := HBoxContainer.new()
+		row.custom_minimum_size.y = 54.0
+		row.add_theme_constant_override("separation", 10)
+		var name_label := Label.new()
+		name_label.text = String(entry[&"display_name"])
+		name_label.custom_minimum_size.x = 280.0
+		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(name_label)
+		var binding_label := Label.new()
+		binding_label.text = "%s · 물리 키 %s" % [entry[&"action_slot_label"], entry[&"binding_text"]]
+		binding_label.custom_minimum_size.x = 260.0
+		binding_label.modulate = Color("02e5e1")
+		row.add_child(binding_label)
+		var previous_button := Button.new()
+		previous_button.text = "< 이전"
+		previous_button.custom_minimum_size = Vector2(100.0, 40.0)
+		var skill_id: StringName = entry[&"skill_id"]
+		previous_button.pressed.connect(_cycle_skill_slot.bind(skill_id, -1))
+		row.add_child(previous_button)
+		var next_button := Button.new()
+		next_button.text = "다음 >"
+		next_button.custom_minimum_size = Vector2(100.0, 40.0)
+		next_button.pressed.connect(_cycle_skill_slot.bind(skill_id, 1))
+		row.add_child(next_button)
+		skill_rows_container.add_child(row)
+		skill_binding_buttons[skill_id] = next_button
+
+
+func _cycle_skill_slot(skill_id: StringName, direction: int) -> void:
+	var actions: Array[StringName] = skill_provider.call(&"get_allowed_actions")
+	if actions.is_empty():
+		return
+	var current: StringName = skill_provider.call(&"action_for_skill", skill_id)
+	var current_index := actions.find(current)
+	var target_index := posmod(current_index + direction, actions.size())
+	var result: Dictionary = skill_provider.call(&"assign_skill", skill_id, actions[target_index])
+	status_label.text = String(result.get(&"message", "스킬 배치를 변경하지 못했습니다."))
+	_refresh_skill_rows()
+
+
 func _begin_capture(action_id: StringName) -> void:
 	awaiting_action = action_id
 	for id: StringName in binding_buttons:
@@ -240,12 +324,18 @@ func _cancel_capture(message: String) -> void:
 
 func _reset_defaults() -> void:
 	awaiting_action = &""
+	var physical_saved := bool(provider.call(&"reset_defaults", true))
+	var skills_saved := (
+		bool(skill_provider.call(&"reset_defaults", true))
+		if is_instance_valid(skill_provider) else true
+	)
 	status_label.text = (
-		"모든 키를 기본값으로 복원하고 저장했습니다."
-		if bool(provider.call(&"reset_defaults", true))
+		"모든 키와 스킬 위치를 기본값으로 복원하고 저장했습니다."
+		if physical_saved and skills_saved
 		else "기본값을 저장하지 못했습니다."
 	)
 	_refresh_rows()
+	_refresh_skill_rows()
 
 
 func _display_name(action_id: StringName) -> String:
@@ -258,3 +348,8 @@ func _display_name(action_id: StringName) -> String:
 func _on_bindings_changed(_snapshot: Dictionary) -> void:
 	if awaiting_action.is_empty():
 		_refresh_rows()
+		_refresh_skill_rows()
+
+
+func _on_skill_bindings_changed(_snapshot: Dictionary) -> void:
+	_refresh_skill_rows()

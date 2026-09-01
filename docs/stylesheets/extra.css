@@ -1477,6 +1477,7 @@ a.sfh-global-play:hover {
   height: 1px;
   background: rgba(var(--sfh-accent-rgb), 0.45);
   content: "";
+	 pointer-events: none;
 }
 
 .sfh-map-column::after {
@@ -1488,6 +1489,7 @@ a.sfh-global-play:hover {
   right: 0.36rem;
   border-inline: 1px solid rgba(var(--sfh-accent-rgb), 0.26);
   content: "";
+	 pointer-events: none;
 }
 
 .sfh-map-column__header {
@@ -1529,7 +1531,9 @@ a.sfh-global-play:hover {
   text-align: left;
   text-decoration: none !important;
   cursor: pointer;
-  transition: border-color 120ms ease, background-color 120ms ease, transform 120ms ease;
+  isolation: isolate;
+  touch-action: manipulation;
+  transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
 }
 
 .sfh-map-column:not(:first-child) .sfh-map-node::before {
@@ -1540,6 +1544,7 @@ a.sfh-global-play:hover {
   height: 1px;
   background: rgba(var(--sfh-accent-rgb), 0.45);
   content: "";
+	 pointer-events: none;
 }
 
 .sfh-map-node::after {
@@ -1551,6 +1556,7 @@ a.sfh-global-play:hover {
   background: rgba(var(--sfh-accent-rgb), 0.45);
   content: "";
   transform: translateY(-50%);
+	 pointer-events: none;
 }
 
 .sfh-map-node strong,
@@ -1587,7 +1593,7 @@ a.sfh-global-play:hover {
 }
 
 .sfh-map-node:hover {
-  transform: translateX(2px);
+  box-shadow: inset 3px 0 0 var(--sfh-cyan), 0 0 0 1px rgba(var(--sfh-accent-rgb), 0.2);
 }
 
 .sfh-map-node.is-selected::after {
@@ -1602,13 +1608,12 @@ a.sfh-global-play:hover {
   box-shadow: 0 0 0.45rem rgba(var(--sfh-accent-rgb), 0.55);
 }
 
-.sfh-map-node--root:disabled {
+.sfh-map-node--root {
   min-height: 6.5rem;
   cursor: default;
-  opacity: 1;
 }
 
-.sfh-map-node--root:disabled strong {
+.sfh-map-node--root strong {
   color: var(--sfh-cyan);
   font-size: 0.76rem;
 }
@@ -1643,6 +1648,7 @@ a.sfh-global-play:hover {
   background: color-mix(in srgb, var(--sfh-panel-raised) 90%, transparent);
   color: var(--sfh-text) !important;
   text-decoration: none !important;
+	 touch-action: manipulation;
 }
 
 .sfh-map-search-result:hover,
@@ -1738,7 +1744,7 @@ a.sfh-global-play:hover {
     grid-template-columns: 1fr;
   }
 
-  .sfh-map-column--root .sfh-map-node--root:disabled {
+  .sfh-map-column--root .sfh-map-node--root {
     min-height: 3.8rem;
   }
 
@@ -1889,6 +1895,17 @@ body::after {
 .md-search__output {
   border-color: rgba(var(--sfh-accent-rgb), 0.24);
   background: color-mix(in srgb, var(--sfh-panel) 96%, transparent);
+}
+
+/* Material keeps the transparent search result layer mounted on desktop.
+   It must not intercept wiki links until search is actually active. */
+.md-search__output {
+  pointer-events: none;
+}
+
+.md-search__inner:focus-within .md-search__output,
+#__search:checked ~ .md-header .md-search__output {
+  pointer-events: auto;
 }
 
 .md-nav__link:hover,
@@ -2615,7 +2632,7 @@ body,
   .sfh-map-node,
   .sfh-map-search-result,
   .md-typeset details > summary {
-    min-height: 2.2rem;
+    min-height: 2.75rem;
   }
 
   .sfh-search-chip {
@@ -2623,6 +2640,24 @@ body,
     align-items: center;
     padding-inline: 0.62rem;
   }
+}
+
+/* Hit areas and focus rings must never be intercepted by decorative HUD lines. */
+.md-typeset details > summary::before,
+.md-typeset details > summary::after,
+.sfh-chevron {
+  pointer-events: none;
+}
+
+.md-typeset details > summary > * {
+  pointer-events: none;
+}
+
+.sfh-map-node:focus-visible,
+.sfh-map-search-result:focus-visible,
+.md-typeset details > summary:focus-visible {
+  outline: 2px solid var(--sfh-cyan);
+  outline-offset: -3px;
 }
 
 @media (hover: none) {

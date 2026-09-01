@@ -85,6 +85,7 @@
     var button = element("button", "sfh-map-node sfh-map-node--" + level + (selected ? " is-selected" : ""));
     button.type = "button";
     button.append(element("strong", "", label), element("small", "", detail || ""));
+	 button.setAttribute("aria-label", label + (detail ? ". " + detail : ""));
     return button;
   }
 
@@ -99,12 +100,15 @@
     };
     var wrapper = element("section", "sfh-knowledge-map");
     wrapper.id = "sfh-knowledge-map";
-    wrapper.setAttribute("aria-label", "SFH 전체 문서 노드맵");
+    wrapper.setAttribute("role", "region");
     wrapper.setAttribute("data-sfh-knowledge-map", "");
 
     var header = element("header", "sfh-knowledge-map__header");
     var heading = element("div", "");
-    heading.append(element("small", "", "KNOWLEDGE GRAPH // L1-L4"), element("h2", "", "전체 문서 노드맵"));
+    var headingTitle = element("h2", "", "전체 문서 노드맵");
+    headingTitle.id = "sfh-knowledge-map-title";
+    heading.append(element("small", "", "KNOWLEDGE GRAPH // L1-L4"), headingTitle);
+	 wrapper.setAttribute("aria-labelledby", headingTitle.id);
     var status = element("div", "sfh-knowledge-map__status");
     status.append(element("b", "", String(countDocuments(root))), element("span", "", "DOCUMENT NODES"));
     header.append(heading, status);
@@ -114,12 +118,19 @@
     search.type = "search";
     search.placeholder = "전체 " + countDocuments(root) + "개 문서 노드 검색";
     search.setAttribute("aria-label", "전체 문서 노드 검색");
+	 search.setAttribute("aria-controls", "sfh-knowledge-map-results");
     var searchResults = element("div", "sfh-knowledge-map__results");
+	 searchResults.id = "sfh-knowledge-map-results";
+	 searchResults.setAttribute("role", "status");
+	 searchResults.setAttribute("aria-live", "polite");
+	 searchResults.setAttribute("aria-label", "문서 검색 결과");
     searchResults.hidden = true;
     var breadcrumb = element("div", "sfh-knowledge-map__path");
     breadcrumb.setAttribute("aria-live", "polite");
 
     var graph = element("div", "sfh-knowledge-map__graph");
+	 graph.setAttribute("role", "group");
+	 graph.setAttribute("aria-label", "대분류부터 세부 문서까지 네 단계 문서 탐색");
     var rootColumn = element("section", "sfh-map-column sfh-map-column--root");
     var categoryColumn = element("section", "sfh-map-column");
     var groupColumn = element("section", "sfh-map-column");
@@ -145,21 +156,27 @@
 
     function renderRoot() {
       rootColumn.replaceChildren(columnHeader("L1 · 대", "프로젝트"));
-      var rootNode = buildNode(root.label, root.description, "root", true);
-      rootNode.disabled = true;
+	  rootColumn.setAttribute("aria-label", "1단계 프로젝트");
+	  var rootNode = element("div", "sfh-map-node sfh-map-node--root is-selected");
+	  rootNode.append(element("strong", "", root.label), element("small", "", root.description));
+	  rootNode.setAttribute("aria-label", root.label + ". " + root.description);
       rootColumn.append(rootNode);
     }
 
     function renderCategories() {
       categoryColumn.replaceChildren(columnHeader("L2 · 중", "큰 영역"));
+	  categoryColumn.setAttribute("aria-label", "2단계 큰 영역");
       root.categories.forEach(function (category, index) {
         var node = buildNode(category.label, category.description, "category", index === state.categoryIndex);
         node.setAttribute("aria-pressed", index === state.categoryIndex ? "true" : "false");
+		node.dataset.mapLevel = "category";
+		node.dataset.mapIndex = String(index);
+		node.setAttribute("aria-controls", "sfh-map-groups");
         node.addEventListener("click", function () {
           state.categoryIndex = index;
           state.groupIndex = 0;
           state.documentIndex = -1;
-          renderAll();
+		  renderAll({ level: "category", index: index });
         });
         categoryColumn.append(node);
       });
@@ -168,13 +185,18 @@
     function renderGroups() {
       var category = root.categories[state.categoryIndex];
       groupColumn.replaceChildren(columnHeader("L3 · 소", category.label));
+	  groupColumn.id = "sfh-map-groups";
+	  groupColumn.setAttribute("aria-label", "3단계 " + category.label + " 하위 영역");
       category.groups.forEach(function (group, index) {
         var node = buildNode(group.label, group.description, "group", index === state.groupIndex);
         node.setAttribute("aria-pressed", index === state.groupIndex ? "true" : "false");
+		node.dataset.mapLevel = "group";
+		node.dataset.mapIndex = String(index);
+		node.setAttribute("aria-controls", "sfh-map-documents");
         node.addEventListener("click", function () {
           state.groupIndex = index;
           state.documentIndex = -1;
-          renderAll();
+		  renderAll({ level: "group", index: index });
         });
         groupColumn.append(node);
       });
@@ -184,9 +206,12 @@
       var category = root.categories[state.categoryIndex];
       var group = category.groups[state.groupIndex];
       documentColumn.replaceChildren(columnHeader("L4 · 세부", group.label + " · " + group.documents.length));
+	  documentColumn.id = "sfh-map-documents";
+	  documentColumn.setAttribute("aria-label", "4단계 " + group.label + " 세부 문서");
       group.documents.forEach(function (documentNode, index) {
         var link = element("a", "sfh-map-node sfh-map-node--document" + (index === state.documentIndex ? " is-selected is-current" : ""));
         link.href = getRouteUrl(documentNode.route, siteRoot);
+		link.setAttribute("aria-label", documentNode.label + ". " + documentNode.summary);
         link.append(element("strong", "", documentNode.label), element("small", "", documentNode.summary));
         if (index === state.documentIndex) link.setAttribute("aria-current", "page");
         link.addEventListener("focus", function () {
@@ -197,12 +222,17 @@
       });
     }
 
-    function renderAll() {
+    function renderAll(focusTarget) {
       renderRoot();
       renderCategories();
       renderGroups();
       renderDocuments();
       renderPath();
+	  if (focusTarget) {
+		var selector = '[data-map-level="' + focusTarget.level + '"][data-map-index="' + focusTarget.index + '"]';
+		var restored = graph.querySelector(selector);
+		if (restored) restored.focus({ preventScroll: true });
+	  }
     }
 
     function allDocuments() {
@@ -229,12 +259,15 @@
           .join(" ").toLocaleLowerCase("ko").includes(query);
       }).slice(0, 12);
       if (!matches.length) {
+		searchResults.setAttribute("aria-label", "문서 검색 결과 0개");
         searchResults.append(element("p", "sfh-knowledge-map__empty", "일치하는 문서 노드가 없습니다."));
         return;
       }
+	  searchResults.setAttribute("aria-label", "문서 검색 결과 " + matches.length + "개");
       matches.forEach(function (entry) {
         var link = element("a", "sfh-map-search-result");
         link.href = getRouteUrl(entry.documentNode.route, siteRoot);
+		link.setAttribute("aria-label", entry.documentNode.label + ". " + entry.category.label + ", " + entry.group.label);
         var copy = element("span", "");
         copy.append(element("strong", "", entry.documentNode.label), element("small", "", entry.documentNode.summary));
         link.append(copy, element("em", "", entry.category.label + " → " + entry.group.label));

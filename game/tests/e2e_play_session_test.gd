@@ -5,6 +5,7 @@ const E2E_PROFILE_PATH := "user://sfh_e2e_profile.json"
 const E2E_RANKINGS_PATH := "user://sfh_e2e_rankings.json"
 const E2E_META_PATH := "user://sfh_e2e_meta_progression.json"
 const E2E_KEY_MAPPING_PATH := "user://sfh_e2e_key_mapping.json"
+const E2E_SKILL_BINDING_PATH := "user://sfh_e2e_skill_bindings.json"
 const UI_STATE_JUDGE_SCRIPT := preload("res://game/tests/support/ui_state_judge.gd")
 const PLAYER_PERCEPTION_JUDGE_SCRIPT := preload(
 	"res://game/tests/support/player_perception_judge.gd"
@@ -39,6 +40,7 @@ func _run() -> void:
 	isolated_features.set("conditional_ranking_storage_path", E2E_RANKINGS_PATH)
 	isolated_features.set("meta_progression_storage_path", E2E_META_PATH)
 	isolated_features.set("key_mapping_storage_path", E2E_KEY_MAPPING_PATH)
+	isolated_features.set("skill_binding_storage_path", E2E_SKILL_BINDING_PATH)
 	game.set("features", isolated_features)
 	root.add_child(game)
 	await process_frame
@@ -111,9 +113,11 @@ func _verify_hub_input_session() -> bool:
 		or not key_panel.visible
 		or not paused
 		or hub_hud.visible
-		or int(key_panel.call(&"get_snapshot").get(&"binding_row_count", 0)) != 22
+		or int(key_panel.call(&"get_snapshot").get(&"physical_binding_row_count", 0)) != 22
+		or int(key_panel.call(&"get_snapshot").get(&"skill_binding_row_count", 0)) != 3
+		or not bool(key_panel.call(&"get_snapshot").get(&"separate_binding_levels", false))
 	):
-		return _fail("실제 K 입력이 전체 Action 키 설정 화면을 열지 못했습니다.")
+		return _fail("실제 K 입력이 물리 키·스킬 배치를 분리한 입력 설정 화면을 열지 못했습니다.")
 	if not _judge_ui_state(&"key_mapping_hub", "거점 K 키 설정"):
 		return false
 	if not _judge_player_perception(&"key_mapping_comprehension", "키 설정 선택 이해"):
@@ -830,6 +834,7 @@ func _verify_ten_minute_sessions(game_scene: PackedScene) -> bool:
 		tier_features.set("conditional_ranking_storage_path", "user://sfh_e2e_%s_rankings.json" % suffix)
 		tier_features.set("meta_progression_storage_path", "user://sfh_e2e_%s_meta.json" % suffix)
 		tier_features.set("key_mapping_storage_path", "user://sfh_e2e_%s_keys.json" % suffix)
+		tier_features.set("skill_binding_storage_path", "user://sfh_e2e_%s_skills.json" % suffix)
 		tier_game.set("features", tier_features)
 		root.add_child(tier_game)
 		await process_frame
@@ -878,6 +883,7 @@ func _cleanup_tier_profile(suffix: String) -> void:
 		"user://sfh_e2e_%s_rankings.json" % suffix,
 		"user://sfh_e2e_%s_meta.json" % suffix,
 		"user://sfh_e2e_%s_keys.json" % suffix,
+		"user://sfh_e2e_%s_skills.json" % suffix,
 	]:
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
@@ -957,7 +963,7 @@ func _reset_test_profile() -> void:
 
 
 func _cleanup_test_profile() -> void:
-	for path in [E2E_PROFILE_PATH, E2E_RANKINGS_PATH, E2E_META_PATH, E2E_KEY_MAPPING_PATH]:
+	for path in [E2E_PROFILE_PATH, E2E_RANKINGS_PATH, E2E_META_PATH, E2E_KEY_MAPPING_PATH, E2E_SKILL_BINDING_PATH]:
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 

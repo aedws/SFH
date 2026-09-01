@@ -101,7 +101,7 @@ nav:
       - 영구 해금·상점·창고·소모품: features/hub-economy.md
       - 크레딧 파밍과 회수: features/credit-loot.md
       - 플레이어: features/player.md
-      - K 키 설정과 영구 바인딩: features/key-mapping.md
+      - K 입력 설정과 자유 스킬 배치: features/key-mapping.md
       - 부분 체력 회복: features/health-recovery.md
       - 전투 스킬과 쿨타임 HUD: features/combat-skills.md
       - 타격감과 피격 피드백: features/hit-feedback.md
