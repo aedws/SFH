@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 51 TOPICS</span><span>58 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 52 TOPICS</span><span>58 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -27,10 +27,12 @@ tags:
     <b>75%</b>
   </div>
   <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75"><i style="width: 75%"></i></div>
-  <p>새 Master GDD의 8개 확정 시스템을 저장소와 재대조했습니다. 자유 스킬 배치·현장 전리품 교체·세션 룬 환전·비동기 시즌 범위가 추가되어 기존 96%에서 재산정했습니다.</p>
+  <p>공개 Master GDD의 8개 확정 시스템을 저장소와 재대조하고 2026-09-01에 다시 확인했습니다. 원문 범위 변화가 없어 게임 기능 진행도는 75%를 유지하며, 배포·보안 작업은 이 수치에 가산하지 않았습니다.</p>
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-01 공개 페이지의 실제 렌더링 본문 `0~8장`을 읽었습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 확정 요구로 처리합니다. 핵심 플레이 흐름은 ×2, 기반·확장 서비스는 ×1을 적용하며 실제 코드·데이터·자동 검증만 완료 근거로 사용합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
+
+재확인 시 공개 원문의 요구와 Phase 1~6 체크 상태는 이전 대조 이후 달라지지 않았습니다. Notion 체크박스는 수동 현황이므로 완료 근거로 승격하지 않고, 저장소 구현과 플레이어 인식 E2E를 기준으로 판정합니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
@@ -58,7 +60,7 @@ tags:
 | Phase 5 · 로비 4대 세팅·계약·상점 | 부분 완료 | 계약·페널티·상점은 구현. 캐릭터·무기·스킬·유틸리티 선택 흐름이 불완전 |
 | Phase 6 · 비동기 랭킹·시즌 보상 | 로컬 기반 | 3대 로컬 보드만 구현. 서버 제공자와 칭호·오라 보상이 없음 |
 
-### 2026-09-01 Master GDD 재대조
+### 2026-09-01 Master GDD 재대조·재확인
 
 - **새 확정:** 단순 키 변경이 아닌 스킬과 Action의 자유로운 1:1 배치가 필요합니다.
 - **새 확정:** 무기·스킬·도면은 현장 교체와 영구 해금, 룬·코어·유물은 세션 증폭과 탈출 자동 환전으로 분리됩니다.
@@ -71,6 +73,7 @@ tags:
 | 우선순위 | 작업 | 현재 차이 | 완료 조건 |
 |---:|---|---|---|
 | 완료 | Phase 1 자유 스킬 배치 | 물리 키와 스킬 위치의 두 단계 편집 구현 | 충돌 교환·HUD/발동·JSON 복구와 실제 K/ESC E2E 완료 |
+| 완료 | 배포·보안 작업선 | Pages·Worker·비공개 R2가 섞여 보일 수 있었음 | 문서·플레이·원본 보관 표면 분리, 이중 백업·복구 PR·정적 경계 검사 완료 |
 | 1 | Phase 4 전리품 생명주기 | 크레딧·도면 중심 | 영구 자산형과 세션 증폭·환금형의 획득·탈출·사망 정책 분리 |
 | 2 | Phase 4 현장 순환 | I/U 장착·영구 모듈 기반만 존재 | 드랍→비교→교체/소켓→전투 변화→해금/환전 E2E 통과 |
 | 3 | Phase 5 로비 4대 세팅 | 맵·페널티·상점·소모품 일부 구현 | 캐릭터·무기·스킬·유틸리티 투자와 BEP 미리보기 연결 |
@@ -80,9 +83,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 24 · IMPROVE 34 · CHANGE 37 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 27 · IMPROVE 39 · CHANGE 42 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>24</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>37</b><small>CHANGE</small></span><span><b>14</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>27</b><small>BUILD</small></span><span><b>39</b><small>IMPROVE</small></span><span><b>42</b><small>CHANGE</small></span><span><b>16</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -266,7 +269,7 @@ tags:
         <p><a href="getting-started/run-project/#cloudflare">Cloudflare 운영·다운로드 규격 →</a> · <a href="architecture/module-audit/">배포 모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 10</small><b>Private 저장소 복구망 · 변경 직전·검증 완료 이중 백업</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -285,6 +288,28 @@ tags:
         <div class="sfh-group"><h3>수정 · 4</h3><p>Private 운영과 백업·복구 책임 경계, 검증 완료 시점, 운영 절차를 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>Actions가 PR을 열지 못하는 환경에서 복구 동선이 끊기던 경우를 compare URL 폴백으로 막았습니다.</p></div>
         <p><a href="getting-started/run-project/#private-repository-backup">백업·복구 절차 →</a> · <a href="architecture/module-audit/#private-repository-backup-audit">복구 모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>배포 표면 분리 · Notion 75% 재확인 · 보안 모듈 재감사</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · Wiki Pages, Game Worker, Private R2의 주소와 책임을 분리하고 다음 기능 착수점을 다시 고정했습니다.</strong>
+          <ul>
+            <li><b>Wiki Pages:</b> 문서·검색·개발 현황만 제공하고 게임 WASM/PCK는 Pages 산출물에 합치지 않습니다.</li>
+            <li><b>Game Worker:</b> 위키의 모든 PLAY 버튼이 별도 Worker를 직접 열며 <code>/play/*</code>는 이전 링크 호환 302로만 유지합니다.</li>
+            <li><b>Private R2:</b> 공개 원본 주소 없이 Worker binding으로만 접근하고 <code>game/releases</code>와 <code>downloads</code>를 겹치지 않게 고정합니다.</li>
+            <li><b>Master GDD:</b> 공개 0~8장을 재확인했으며 요구 변화가 없어 게임 기능 진행률은 75%입니다. 인프라 완료를 기능 진행률에 더하지 않습니다.</li>
+            <li><b>다음 작업:</b> P4-01에서 영구 자산형과 세션 증폭·환금형 전리품의 획득·탈출·사망 생명주기를 먼저 동결합니다.</li>
+            <li><b>운영 안전:</b> Private 이중 백업, 복구 PR, Actions SHA 고정, Secret 주입, 과금 비변경 경계를 자동 검사합니다.</li>
+          </ul>
+          <p class="sfh-intent"><b>주소 주의</b><span><code>vstock-market</code>는 Cloudflare 계정의 Workers.dev suffix이며 기존 VStock 프로젝트나 저장소를 함께 쓴다는 뜻이 아닙니다.</span></p>
+        </div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>배포 표면 원장, 자동 경계 검사, Worker 표면 식별 응답을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>직접 플레이 동선, 문서 전용 산출물, 주소 설명, 반응형 표면 지도, 기능 작업 인계성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>링크·prefix·GDD 스냅샷·P4-01 패킷·보안 감사표를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>위키와 게임이 같은 배포처럼 보이던 상대 링크와 노드맵의 오래된 72% 요약을 수정했습니다.</p></div>
+        <p><a href="getting-started/run-project/#cloudflare">배포 표면 계약 →</a> · <a href="design/master-gdd-alignment/">Master GDD 재대조 →</a> · <a href="design/current-milestone-workline/">다음 작업 라인 →</a> · <a href="architecture/module-audit/">보안·모듈 감사 →</a></p>
       </div>
     </details>
   </div>

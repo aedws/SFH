@@ -41,6 +41,7 @@ const bucket = new FakeBucket();
 const env = {
   ASSETS: bucket,
   RELEASE_PREFIX: "game/releases/test-commit",
+  DOWNLOAD_PREFIX: "downloads",
   RELEASE_VERSION: "v0.1.0",
   BUILD_COMMIT: "test-commit",
 };
@@ -50,6 +51,7 @@ assert.equal(response.status, 200);
 assert.equal(bucket.lastKey, "game/releases/test-commit/index.html");
 assert.equal(response.headers.get("cross-origin-opener-policy"), "same-origin");
 assert.equal(response.headers.get("cross-origin-embedder-policy"), "require-corp");
+assert.equal(response.headers.get("x-sfh-surface"), "gameplay");
 
 response = await worker.fetch(
   new Request("https://sfh-game.example/index.wasm", { headers: { range: "bytes=0-3" } }),
@@ -64,10 +66,15 @@ response = await worker.fetch(
 );
 assert.equal(bucket.lastKey, "downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip");
 assert.match(response.headers.get("content-disposition"), /attachment/);
+assert.equal(response.headers.get("x-sfh-surface"), "windows-download");
 
 response = await worker.fetch(new Request("https://sfh-game.example/healthz"), env);
 assert.equal(response.status, 200);
-assert.equal((await response.json()).build_commit, "test-commit");
+const health = await response.json();
+assert.equal(health.build_commit, "test-commit");
+assert.equal(health.public_surface, "gameplay");
+assert.equal(health.storage_access, "private_worker_binding");
+assert.equal(health.download_prefix, "downloads");
 
 response = await worker.fetch(new Request("https://sfh-game.example/missing.wasm"), env);
 assert.equal(response.status, 404);

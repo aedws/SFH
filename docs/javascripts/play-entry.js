@@ -1,24 +1,10 @@
 (function () {
   "use strict";
 
-  var playEntryScriptUrl = document.currentScript && document.currentScript.src
-    ? new URL(document.currentScript.src, window.location.href)
-    : null;
+  var GAMEPLAY_ORIGIN = "https://sfh-game.vstock-market.workers.dev";
 
   function getPlayUrl() {
-    if (playEntryScriptUrl) {
-      return new URL("../play/", playEntryScriptUrl).href;
-    }
-    var configNode = document.getElementById("__config");
-    var base = ".";
-    if (configNode) {
-      try {
-        base = JSON.parse(configNode.textContent || "{}").base || ".";
-      } catch (_error) {
-        base = ".";
-      }
-    }
-    return new URL(base.replace(/\/$/, "") + "/play/", window.location.href).href;
+    return GAMEPLAY_ORIGIN + "/";
   }
 
   function initializePlayEntry() {
@@ -31,6 +17,7 @@
       entry = document.createElement("a");
       entry.className = "sfh-global-play";
       entry.setAttribute("data-sfh-global-play", "");
+      entry.setAttribute("data-sfh-surface", "gameplay");
       entry.setAttribute("aria-label", "SFH 브라우저 빌드 플레이");
       entry.title = "브라우저로 플레이";
       entry.innerHTML = [
@@ -39,6 +26,8 @@
       ].join("");
     }
     entry.href = getPlayUrl();
+    entry.target = "_blank";
+    entry.rel = "noopener noreferrer";
     if (entry.parentElement !== host) {
       host.insertBefore(entry, host.querySelector('.md-header__source'));
     }

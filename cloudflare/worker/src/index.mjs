@@ -42,6 +42,7 @@ function contentTypeFor(key) {
 }
 
 function gameHeaders(headers, key) {
+  headers.set("x-sfh-surface", "gameplay");
   headers.set("cross-origin-opener-policy", "same-origin");
   headers.set("cross-origin-embedder-policy", "require-corp");
   headers.set("cross-origin-resource-policy", "same-origin");
@@ -55,6 +56,7 @@ function gameHeaders(headers, key) {
 }
 
 function downloadHeaders(headers, key) {
+  headers.set("x-sfh-surface", "windows-download");
   headers.set("x-content-type-options", "nosniff");
   headers.set("content-type", headers.get("content-type") || contentTypeFor(key));
   headers.set("cache-control", "public, max-age=31536000, immutable");
@@ -98,6 +100,9 @@ export default {
         release_version: env.RELEASE_VERSION,
         build_commit: env.BUILD_COMMIT,
         release_prefix: env.RELEASE_PREFIX,
+        download_prefix: env.DOWNLOAD_PREFIX || "downloads",
+        public_surface: "gameplay",
+        storage_access: "private_worker_binding",
       });
     }
 
@@ -111,7 +116,8 @@ export default {
       path = path.slice("play/".length);
     }
 
-    const isDownload = path.startsWith("downloads/");
+    const downloadPrefix = `${env.DOWNLOAD_PREFIX || "downloads"}/`;
+    const isDownload = path.startsWith(downloadPrefix);
     const key = isDownload ? path : `${env.RELEASE_PREFIX}/${path}`;
     const rangeRequested = request.headers.has("range");
     const object = request.method === "HEAD"

@@ -22,13 +22,22 @@ tags:
 
 공개 위키는 `https://sfh-dev-wiki.pages.dev/`, 게임은 계정 고유 workers.dev 하위의 `https://sfh-game.vstock-market.workers.dev/`를 사용합니다. Windows 다운로드는 같은 게임 게이트웨이의 `/downloads/v0.1.0/` 아래에 둡니다. Cloudflare E2E 통과 뒤 저장소를 Private으로 전환하고 GitHub Pages 폴백은 종료했습니다.
 
-CI는 Web·Windows·위키를 다시 만들지 않고 앞 단계에서 검증해 업로드한 GitHub Actions 산출물만 내려받습니다. Web 파일은 R2의 `game/releases/<commit>/` 불변 경로에 먼저 저장하고 마지막에 Worker의 활성 커밋만 바꿉니다. 위키는 게임 대용량 파일을 제외해 Pages Direct Upload 제한을 지키며 `/play/` 요청은 게임 Worker로 넘깁니다. 위키·게임·WASM Range·ZIP SHA-256 E2E를 모두 통과한 뒤 README와 기본 링크를 Cloudflare로 전환했습니다.
+| 구분 | 공개 접점 | 저장 책임 | 제공 범위 |
+|---|---|---|---|
+| 개발 위키 | `sfh-dev-wiki.pages.dev` | Cloudflare Pages `sfh-dev-wiki` | 문서·검색·진행률만 제공 |
+| 브라우저 게임 | `sfh-game.vstock-market.workers.dev` | Worker `sfh-game` | Godot Web 런타임과 보안·Range 헤더 제공 |
+| Windows 다운로드 | 게임 Worker의 `/downloads/<version>/` | 같은 Worker 게이트웨이 | 검증 ZIP·SHA-256만 제공 |
+| 원본 산출물 | 공개 주소 없음 | Private R2 `sfh-game-artifacts` | `game/releases/<commit>/`과 `downloads/<version>/`를 분리 저장 |
 
-Web 빌드는 게임 코드와 문서가 `main`에 반영될 때 GitHub Actions가 자동 생성해 개발 위키의 `/play/` 경로에 결합합니다. 게임 내보내기, 위키 빌드, 필수 `HTML·WASM·PCK` 검증 중 하나라도 실패하면 Pages 배포를 중단하므로 README의 플레이 버튼은 마지막으로 검증된 빌드를 유지합니다. 한글 UI는 프로젝트에 포함된 OFL 1.1 `Nanum Gothic` 전역 폰트를 사용해 운영체제 폰트에 의존하지 않습니다.
+`vstock-market`은 Cloudflare 계정의 공통 workers.dev 접미사입니다. SFH는 별도 Worker `sfh-game`, 별도 Private R2 `sfh-game-artifacts`를 사용하며 기존 VStock 애플리케이션의 Worker·R2 키를 읽거나 덮어쓰지 않습니다.
+
+CI는 Web·Windows·위키를 다시 만들지 않고 앞 단계에서 검증해 업로드한 GitHub Actions 산출물만 내려받습니다. Web 파일은 R2의 `game/releases/<commit>/` 불변 경로에 먼저 저장하고 마지막에 Worker의 활성 커밋만 바꿉니다. Windows 파일은 겹치지 않는 `downloads/<version>/`에 저장합니다. 위키 Pages 산출물에는 게임 WASM·PCK를 결합하지 않습니다. 모든 위키 플레이 버튼은 게임 Worker 절대 주소를 새 탭에서 직접 열며, 기존 `/play/`는 오래된 링크를 위한 302 호환 경로로만 유지합니다.
+
+Web 빌드는 게임 코드와 문서가 `main`에 반영될 때 GitHub Actions가 자동 생성하지만 개발 위키 파일과는 별도 산출물로 유지합니다. 게임 내보내기, 위키 빌드, 필수 `HTML·WASM·PCK` 검증 중 하나라도 실패하면 운영 전환을 중단하므로 플레이 버튼은 마지막으로 검증된 Worker 릴리스를 유지합니다. 한글 UI는 프로젝트에 포함된 OFL 1.1 `Nanum Gothic` 전역 폰트를 사용해 운영체제 폰트에 의존하지 않습니다.
 
 무기, 내부 성장, 장비 강화의 확정 CSV도 Web PCK에 명시적으로 포함합니다. 브라우저 런타임이 비-Resource CSV 스트림을 제공하지 못하는 환경에서는 원본과 함께 자동 생성한 `EmbeddedCsvPayload`를 읽습니다. 동기화 스크립트와 스모크 테스트가 세 CSV와 내장 미러의 완전 일치, 원본 경로, 내보내기 포함 계약을 함께 검사하므로 데이터가 빠지거나 어긋나면 작전 조립 전에 빌드를 차단합니다.
 
-위키 홈의 현재 빌드 카드와 모든 문서 상단 고정 헤더의 `브라우저로 플레이` 버튼은 Cloudflare Pages의 `/play/` 리디렉션을 통해 같은 게임 Worker를 엽니다. 문서를 읽는 중에도 홈으로 돌아갈 필요가 없습니다.
+위키 홈의 현재 빌드 카드와 모든 문서 상단 고정 헤더의 `브라우저로 플레이` 버튼은 `data-sfh-surface="gameplay"`로 표시되고 게임 Worker를 직접 엽니다. 위키·게임·Private R2의 역할은 홈 카드의 `DOCS · PLAY · ASSETS` 표식과 `deployment-surfaces.json` 계약에서 함께 확인할 수 있습니다.
 
 브라우저 빌드는 개발 프로토타입입니다. 최초 로딩 시간이 필요하고 밸런스와 로컬 저장 데이터 호환성은 개발 중 변경될 수 있습니다.
 

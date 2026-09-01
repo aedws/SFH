@@ -18,6 +18,7 @@ on:
       - "scripts/deploy_cloudflare_assets.py"
       - "scripts/test_cloudflare_worker.mjs"
       - "scripts/check-backup-workflows.ps1"
+      - "scripts/check-deployment-boundaries.ps1"
   push:
     branches:
       - main
@@ -35,6 +36,7 @@ on:
       - "scripts/deploy_cloudflare_assets.py"
       - "scripts/test_cloudflare_worker.mjs"
       - "scripts/check-backup-workflows.ps1"
+      - "scripts/check-deployment-boundaries.ps1"
   workflow_dispatch:
 
 permissions:
@@ -262,6 +264,7 @@ jobs:
         shell: pwsh
         run: |
           ./scripts/check-backup-workflows.ps1
+          ./scripts/check-deployment-boundaries.ps1
           ./scripts/check-wiki-knowledge-map.ps1
           ./scripts/check-wiki-color-contrast.ps1
           ./scripts/check-wiki-responsive.ps1
@@ -276,13 +279,7 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
 
-      - name: Add browser game to wiki site
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
-        with:
-          name: game-web
-          path: .wiki-site/play
-
-      - name: Verify combined Pages artifact
+      - name: Verify documentation-only Pages artifact
         run: |
           test -s .wiki-site/index.html
           test -s .wiki-site/assets/fonts/galmuri/Galmuri11.woff2
@@ -292,12 +289,12 @@ jobs:
           test -s .wiki-site/assets/knowledge-map.json
           grep -q '#02e5e1' .wiki-site/stylesheets/extra.css
           grep -q 'Galmuri11.woff2' .wiki-site/stylesheets/extra.css
-          grep -q 'class="sfh-operation-play" href="play/"' .wiki-site/index.html
+          grep -q 'class="sfh-operation-play" href="https://sfh-game.vstock-market.workers.dev/"' .wiki-site/index.html
           grep -q 'data-sfh-global-play' .wiki-site/javascripts/play-entry.js
           grep -q 'data-sfh-knowledge-map' .wiki-site/javascripts/knowledge-map.js
-          test -s .wiki-site/play/index.html
-          test -s .wiki-site/play/index.wasm
-          test -s .wiki-site/play/index.pck
+          test -s .wiki-site/assets/deployment-surfaces.json
+          test ! -e .wiki-site/play/index.wasm
+          test ! -e .wiki-site/play/index.pck
 
       - name: Upload GitHub Pages artifact
         if: vars.SFH_PAGES_FALLBACK != 'disabled'
@@ -318,6 +315,9 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_WIKI_URL: https://sfh-dev-wiki.pages.dev
       CLOUDFLARE_GAME_URL: https://sfh-game.vstock-market.workers.dev
+      CLOUDFLARE_R2_BUCKET: sfh-game-artifacts
+      R2_RUNTIME_PREFIX: game/releases
+      R2_DOWNLOAD_PREFIX: downloads
       RELEASE_VERSION: ${{ needs.package-windows.outputs.release-version }}
       WRANGLER_VERSION: 4.127.1
     steps:
@@ -365,6 +365,9 @@ jobs:
         if: steps.cloudflare_config.outputs.ready == 'true'
         run: |
           python3 scripts/deploy_cloudflare_assets.py \
+            --bucket "$CLOUDFLARE_R2_BUCKET" \
+            --runtime-prefix "$R2_RUNTIME_PREFIX" \
+            --download-prefix "$R2_DOWNLOAD_PREFIX" \
             --game-dir .cloudflare-game \
             --windows-dir .cloudflare-windows \
             --version "$RELEASE_VERSION" \
@@ -376,6 +379,7 @@ jobs:
         run: |
           wrangler deploy --config cloudflare/wrangler.jsonc \
             --var "RELEASE_PREFIX:game/releases/$GITHUB_SHA" \
+            --var "DOWNLOAD_PREFIX:$R2_DOWNLOAD_PREFIX" \
             --var "RELEASE_VERSION:$RELEASE_VERSION" \
             --var "BUILD_COMMIT:$GITHUB_SHA"
 

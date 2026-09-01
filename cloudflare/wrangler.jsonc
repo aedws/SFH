@@ -13,6 +13,7 @@
   ],
   "vars": {
     "RELEASE_PREFIX": "game/releases/local",
+    "DOWNLOAD_PREFIX": "downloads",
     "RELEASE_VERSION": "v0.1.0",
     "BUILD_COMMIT": "local"
   }

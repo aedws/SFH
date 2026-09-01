@@ -38,6 +38,8 @@ def content_type(path: Path) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--bucket", default="sfh-game-artifacts")
+    parser.add_argument("--runtime-prefix", default="game/releases")
+    parser.add_argument("--download-prefix", default="downloads")
     parser.add_argument("--game-dir", type=Path, required=True)
     parser.add_argument("--windows-dir", type=Path, required=True)
     parser.add_argument("--version", required=True)
@@ -45,6 +47,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
+
+
+def normalized_prefix(value: str, label: str) -> str:
+    prefix = value.strip("/")
+    if not prefix or "//" in prefix or any(part in {".", ".."} for part in prefix.split("/")):
+        raise ValueError(f"invalid {label}: {value}")
+    return prefix
 
 
 def add_entry(entries: list[dict[str, str]], source: Path, key: str, cache_control: str) -> None:
@@ -72,7 +81,11 @@ def main() -> None:
             raise FileNotFoundError(f"missing required Web export: {path}")
 
     entries: list[dict[str, str]] = []
-    game_prefix = f"game/releases/{args.commit}"
+    runtime_prefix = normalized_prefix(args.runtime_prefix, "runtime prefix")
+    download_prefix = normalized_prefix(args.download_prefix, "download prefix")
+    if runtime_prefix == download_prefix or runtime_prefix.startswith(f"{download_prefix}/") or download_prefix.startswith(f"{runtime_prefix}/"):
+        raise ValueError("runtime and download prefixes must be disjoint")
+    game_prefix = f"{runtime_prefix}/{args.commit}"
     for path in sorted(item for item in game_dir.rglob("*") if item.is_file()):
         relative = path.relative_to(game_dir).as_posix()
         add_entry(entries, path, f"{game_prefix}/{relative}", "public, max-age=31536000, immutable")
@@ -82,7 +95,7 @@ def main() -> None:
         add_entry(
             entries,
             windows_dir / name,
-            f"downloads/{args.version}/{name}",
+            f"{download_prefix}/{args.version}/{name}",
             "public, max-age=31536000, immutable",
         )
 
@@ -92,6 +105,7 @@ def main() -> None:
         "release_version": args.version,
         "build_commit": args.commit,
         "game_prefix": game_prefix,
+        "download_prefix": download_prefix,
         "wrangler_version": WRANGLER_VERSION,
         "objects": [{key: value for key, value in entry.items() if key != "source"} for entry in entries],
     }

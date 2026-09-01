@@ -33,6 +33,7 @@ try {
     & (Join-Path $PSScriptRoot "compress-wiki-release-days.ps1") -Check
     & (Join-Path $PSScriptRoot "check-wiki-search.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-play-entry.ps1")
+    & (Join-Path $PSScriptRoot "check-deployment-boundaries.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-knowledge-map.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-color-contrast.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-responsive.ps1")

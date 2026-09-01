@@ -738,6 +738,52 @@ body {
   gap: 0.45rem;
 }
 
+.sfh-surface-map {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.sfh-surface-map span {
+  min-width: 0;
+  padding: 0.48rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--sfh-cyan) 20%, var(--sfh-line));
+  border-radius: 0.52rem;
+  background: color-mix(in srgb, var(--sfh-panel-raised) 90%, transparent);
+}
+
+.sfh-surface-map small,
+.sfh-surface-map strong,
+.sfh-surface-map em {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.sfh-surface-map small {
+  color: var(--sfh-cyan);
+  font: 800 0.43rem var(--sfh-mono);
+  letter-spacing: 0.06em;
+}
+
+.sfh-surface-map strong {
+  margin-top: 0.16rem;
+  color: var(--sfh-text);
+  font: 800 0.53rem var(--sfh-mono);
+}
+
+.sfh-surface-map em {
+  margin-top: 0.12rem;
+  color: var(--sfh-muted);
+  font-size: 0.46rem;
+  font-style: normal;
+  line-height: 1.4;
+}
+
+.sfh-surface-map [data-sfh-surface="r2"] {
+  border-style: dashed;
+  opacity: 0.84;
+}
+
 .sfh-operation-meta span {
   padding: 0.42rem;
   border: 1px solid var(--sfh-line);
@@ -2503,6 +2549,10 @@ body,
 
   .sfh-operation-meta {
     gap: 0.3rem;
+  }
+
+  .sfh-surface-map {
+    grid-template-columns: 1fr;
   }
 
   .sfh-operation-meta span {

@@ -43,6 +43,8 @@ Godot 4 기반 모듈형 탑다운 익스트랙션 액션입니다.
 - 개발 중인 프로토타입이므로 세이브 호환성과 밸런스는 변경될 수 있습니다.
 - Web 빌드는 `main` 변경 시 자동 생성되며, 내보내기나 E2E에 실패하면 Cloudflare 운영 배포도 중단됩니다.
 
+배포 영역은 혼동되지 않도록 분리합니다. `sfh-dev-wiki.pages.dev`는 문서·검색만 제공하고, 실제 플레이와 Windows 다운로드는 `sfh-game.vstock-market.workers.dev` Worker가 제공합니다. 주소의 `vstock-market`은 Cloudflare 계정의 workers.dev 접미사일 뿐 기존 VStock 서비스나 저장소를 재사용한다는 뜻이 아닙니다. `sfh-game-artifacts` R2 버킷은 공개 주소가 없으며 게임 Worker 바인딩으로만 읽습니다.
+
 ### 기본 조작
 
 | 입력 | 기능 |
