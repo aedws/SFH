@@ -48,6 +48,10 @@ hide:
         <span><small>PLAY CURRENT MAIN</small><strong>브라우저로 플레이</strong><em>설치 없이 바로 작전 준비</em></span>
         <b aria-hidden="true">▶</b>
       </a>
+      <a class="sfh-operation-download" href="https://github.com/aedws/SFH/actions/workflows/deploy-wiki.yml">
+        <span><small>WINDOWS X86_64 · v0.1.0</small><strong>Windows 빌드 다운로드</strong><em>검증 완료 실행의 ZIP · SHA-256 제공</em></span>
+        <b aria-hidden="true">↓</b>
+      </a>
       <div class="sfh-operation-meta" aria-label="현재 플레이 빌드 요약">
         <span><b>3</b><small>MAP TIERS</small></span>
         <span><b>K · 22 + 9</b><small>KEY + SKILL BINDING</small></span>
@@ -76,14 +80,14 @@ hide:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 6 TOPICS</span><span>58 DOCS · PHASE 1 COMPLETE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>1 DAY · 7 TOPICS</span><span>58 DOCS · PROTECTED RELEASE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 10 · IMPROVE 22 · CHANGE 20 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 14 · IMPROVE 25 · CHANGE 24 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
-      <span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>22</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>8</b><small>FIX</small></span>
+      <span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>25</b><small>IMPROVE</small></span><span><b>24</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span>
     </div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 방 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
@@ -187,7 +191,7 @@ hide:
         <p><a href="design/current-milestone-workline/">현행 마일스톤 작업 라인 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>위키 접근성·클릭 명확화 · Phase 1 자유 스킬 배치 완료</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -205,6 +209,26 @@ hide:
         <div class="sfh-group"><h3>수정 · 3</h3><p>물리 키와 스킬 위치 저장을 분리하고 홈을 최신 하루로 제한했으며 진행도를 75%로 갱신했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>노드 클릭 범위 교차, 재렌더링 포커스 소실, 비활성 버튼처럼 읽히던 루트 노드 의미를 바로잡았습니다.</p></div>
         <p><a href="features/key-mapping/">자유 스킬 배치 →</a> · <a href="design/current-milestone-workline/">다음 작업 라인 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>main 보호 · 독립 E2E · Windows x64 검증 빌드</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 검증을 우회한 main 변경을 차단하고 같은 커밋에서 브라우저와 Windows 실행물을 만듭니다.</strong>
+          <ul>
+            <li><b>저장소 보호:</b> main은 PR, 대화 해결, export-game·build 성공이 필요하며 직접 푸시·강제 푸시·삭제를 차단합니다.</li>
+            <li><b>E2E 분리:</b> 실제 입력 플레이 검증을 독립 <code>e2e</code> 상태 검사로 승격해 병합 조건으로 추적할 수 있게 했습니다.</li>
+            <li><b>Windows:</b> Godot 4.7.2 x86_64 실행 파일과 PCK를 <code>SFH-Windows-x64-v0.1.0.zip</code>으로 묶습니다.</li>
+            <li><b>추적성:</b> ZIP 안에 빌드 커밋·Godot 버전·CSV 데이터 버전과 CSV별 SHA-256을 기록하고 ZIP 체크섬을 별도 제공합니다.</li>
+            <li><b>공급망:</b> GitHub Actions를 전체 커밋 SHA로 고정하고 Dependabot이 매주 안전한 갱신 PR을 제안합니다.</li>
+          </ul>
+        </div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>독립 E2E 잡, Windows 프리셋, 릴리스 패키저, 빌드 메타데이터 계약을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>병합 안전성, 실행물 추적성, 브라우저·Windows 선택 가시성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>승인 0명 1인 개발 규칙, Actions SHA 고정, CSV 버전 원장, 단계적 Cloudflare 전환 순서를 명시했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>필수 E2E 컨텍스트가 존재하지 않은 채 보호를 켜 main이 잠길 수 있던 배포 순서 문제를 단계 적용으로 차단했습니다.</p></div>
+        <p><a href="getting-started/run-project/#windows-x86_64">Windows 빌드 규격 →</a></p>
       </div>
     </details>
   </div>
