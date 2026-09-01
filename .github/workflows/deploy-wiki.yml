@@ -180,7 +180,7 @@ jobs:
         run: |
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK" /tmp/sfh-e2e.log
-          grep -q "ui_state_contracts_23 player_perception_contracts_27 gameplay_flows_9" /tmp/sfh-e2e.log
+          grep -q "ui_state_contracts_23 player_perception_contracts_28 gameplay_flows_10" /tmp/sfh-e2e.log
           grep -q "physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace" /tmp/sfh-e2e.log
           grep -q "loot_table_targeting" /tmp/sfh-e2e.log
           grep -q "field_loot_compare_cancel_select" /tmp/sfh-e2e.log
