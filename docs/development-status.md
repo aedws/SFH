@@ -257,7 +257,7 @@ tags:
             <li><b>다운로드 E2E:</b> 40,364,917바이트 Windows ZIP을 다시 받아 게시 체크섬과 SHA-256이 일치함을 확인했습니다.</li>
             <li><b>운영 안전:</b> Cloudflare API 토큰은 Pages·Workers Scripts·R2 쓰기만 허용하고, 과금 플랜·결제 설정은 손대지 않았습니다.</li>
           </ul>
-          <p class="sfh-intent"><b>전환 순서</b><span>정식 링크 반영 PR과 main 재배포를 통과한 뒤 GitHub Pages 폴백을 끄고 저장소를 Private으로 전환합니다.</span></p>
+          <p class="sfh-intent"><b>전환 완료</b><span>정식 링크 반영 PR과 main 재배포를 통과한 뒤 저장소를 Private으로 전환하고 GitHub Pages 폴백을 종료했습니다.</span></p>
         </div>
         <div class="sfh-group"><h3>구현 · 3</h3><p>운영 R2 버킷, 게임 Worker 활성 릴리스, 직접 Windows 다운로드를 구현했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 3</h3><p>배포 추적성, 실행 접근성, 다운로드 무결성 확인을 개선했습니다.</p></div>

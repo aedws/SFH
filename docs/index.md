@@ -266,7 +266,7 @@ search:
             <li><b>직접 다운로드:</b> 홈과 README가 Windows ZIP과 체크섬을 분리 제공해 Actions 화면을 거치지 않습니다.</li>
             <li><b>안전 경계:</b> 새 <code>sfh-game-artifacts</code> 버킷만 사용했고 기존 Cloudflare 프로젝트·버킷과 과금 플랜·결제 설정은 변경하지 않았습니다.</li>
           </ul>
-          <p class="sfh-intent"><b>최종 전환</b><span>Cloudflare 배포와 E2E 성공 뒤 README·위키 기준 주소를 전환했으며, GitHub Pages 폴백은 저장소 비공개 전환 직전까지 조건부로 유지합니다.</span></p>
+          <p class="sfh-intent"><b>최종 전환</b><span>Cloudflare 배포와 E2E 성공 뒤 README·위키 기준 주소를 전환하고 저장소를 Private으로 보호했으며, GitHub Pages 폴백은 종료했습니다.</span></p>
         </div>
         <div class="sfh-group"><h3>구현 · 3</h3><p>R2 운영 버킷, 커밋 고정 Worker 배포, 검증 산출물 직접 다운로드 경로를 구성했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 3</h3><p>브라우저 플레이 접근성, Windows 다운로드 무결성, 배포 추적성을 개선했습니다.</p></div>

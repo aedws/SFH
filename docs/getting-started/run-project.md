@@ -20,7 +20,7 @@ tags:
 
 ## Cloudflare 병렬 배포
 
-공개 위키는 `https://sfh-dev-wiki.pages.dev/`, 게임은 계정 고유 workers.dev 하위의 `https://sfh-game.vstock-market.workers.dev/`를 사용합니다. Windows 다운로드는 같은 게임 게이트웨이의 `/downloads/v0.1.0/` 아래에 둡니다. 전환 검증 동안만 GitHub Pages를 병행하고 Cloudflare E2E 통과 뒤 종료합니다.
+공개 위키는 `https://sfh-dev-wiki.pages.dev/`, 게임은 계정 고유 workers.dev 하위의 `https://sfh-game.vstock-market.workers.dev/`를 사용합니다. Windows 다운로드는 같은 게임 게이트웨이의 `/downloads/v0.1.0/` 아래에 둡니다. Cloudflare E2E 통과 뒤 저장소를 Private으로 전환하고 GitHub Pages 폴백은 종료했습니다.
 
 CI는 Web·Windows·위키를 다시 만들지 않고 앞 단계에서 검증해 업로드한 GitHub Actions 산출물만 내려받습니다. Web 파일은 R2의 `game/releases/<commit>/` 불변 경로에 먼저 저장하고 마지막에 Worker의 활성 커밋만 바꿉니다. 위키는 게임 대용량 파일을 제외해 Pages Direct Upload 제한을 지키며 `/play/` 요청은 게임 Worker로 넘깁니다. 위키·게임·WASM Range·ZIP SHA-256 E2E를 모두 통과한 뒤 README와 기본 링크를 Cloudflare로 전환했습니다.
 

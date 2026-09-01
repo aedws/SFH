@@ -835,7 +835,7 @@ E2E 실행기는 기능 내부 구현을 복제하지 않습니다. 실제 Input
 | 위키·게임 분리 | 통과 | MkDocs 정적 파일만 기존 `sfh-dev-wiki` Pages에 Direct Upload하고 39MiB WASM·PCK는 R2 결합 Worker가 제공 |
 | 다운로드 무결성 | 통과 | `/downloads/<version>/`에서 ZIP과 SHA-256을 함께 제공하고 Cloudflare E2E가 다시 내려받아 검증 |
 | Web 런타임 헤더 | 통과 | Worker가 COOP·COEP·CORP, MIME, ETag, Range 206과 캐시 정책을 중앙 관리 |
-| 운영 전환 | 통과 | 실행 33470418826의 Cloudflare 위키·게임·Range·ZIP 해시 E2E 뒤 정식 링크를 전환하고, 저장소 비공개 직전까지 GitHub Pages만 조건부 폴백으로 유지 |
+| 운영 전환 | 통과 | 실행 33471766919의 Cloudflare 위키·게임·Range·ZIP 해시 E2E 뒤 정식 링크를 전환하고 저장소를 Private으로 보호했으며 GitHub Pages를 종료 |
 
 실배포에서 게임 Canvas와 콘솔 오류 0, WASM Range 206, 40,364,917바이트 Windows ZIP의 게시 SHA-256 일치를 다시 확인했습니다. 새 `sfh-game-artifacts` 버킷 이외의 Cloudflare 프로젝트·버킷과 과금 플랜·결제 설정은 변경하지 않았습니다.
 
