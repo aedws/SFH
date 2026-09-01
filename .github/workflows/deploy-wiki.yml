@@ -289,7 +289,8 @@ jobs:
           test -s .wiki-site/assets/knowledge-map.json
           grep -q '#02e5e1' .wiki-site/stylesheets/extra.css
           grep -q 'Galmuri11.woff2' .wiki-site/stylesheets/extra.css
-          grep -q 'class="sfh-operation-play" href="https://sfh-game.vstock-market.workers.dev/"' .wiki-site/index.html
+          grep -q 'href="https://sfh-game.vstock-market.workers.dev/"' .wiki-site/index.html
+          grep -q 'data-sfh-surface="gameplay"' .wiki-site/index.html
           grep -q 'data-sfh-global-play' .wiki-site/javascripts/play-entry.js
           grep -q 'data-sfh-knowledge-map' .wiki-site/javascripts/knowledge-map.js
           test -s .wiki-site/assets/deployment-surfaces.json
