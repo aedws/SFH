@@ -131,6 +131,15 @@ if ($javascript -notmatch 'data-sfh-knowledge-map-host') {
 if ($stylesheet -notmatch '\.sfh-knowledge-map__graph' -or $stylesheet -notmatch '\.sfh-map-node--document') {
     $errors.Add("Knowledge map HUD styles are incomplete.")
 }
+if (
+	$stylesheet -notmatch 'pointer-events:\s*none' -or
+	$javascript -notmatch 'aria-labelledby' -or
+	$javascript -notmatch 'aria-controls' -or
+	$javascript -notmatch 'restored\.focus' -or
+	$javascript -match 'rootNode\.disabled\s*=\s*true'
+) {
+	$errors.Add("Knowledge map accessibility contract is incomplete: non-blocking decoration, named relationships, and focus restoration are required.")
+}
 if ($mkdocs -notmatch 'javascripts/knowledge-map\.js') {
     $errors.Add("MkDocs does not load knowledge-map.js.")
 }

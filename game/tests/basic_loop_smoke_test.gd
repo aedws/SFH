@@ -71,6 +71,9 @@ const KEY_MAPPING_SERVICE_PATH := "res://game/features/key_mapping/key_mapping_s
 const KEY_MAPPING_PANEL_PATH := "res://game/features/key_mapping/key_mapping_panel.tscn"
 const KEY_MAPPING_CATALOG_PATH := "res://game/features/key_mapping/configs/default_key_mapping.tres"
 const KEY_MAPPING_TEST_STORAGE_PATH := "user://sfh_key_mapping_smoke.json"
+const SKILL_BINDING_SERVICE_PATH := "res://game/features/skill_binding/skill_binding_service.tscn"
+const SKILL_BINDING_PROFILE_PATH := "res://game/features/skill_binding/configs/default_skill_bindings.tres"
+const SKILL_BINDING_TEST_STORAGE_PATH := "user://sfh_skill_bindings_smoke.json"
 const COMMERCIAL_VFX_SOURCE_PATH := "res://game/assets/vfx/kenney_particle_pack/SOURCE.md"
 const COMMERCIAL_VFX_LICENSE_PATH := "res://game/assets/vfx/kenney_particle_pack/LICENSE.txt"
 const WEB_EXPORT_DATA_PATHS := [
@@ -227,10 +230,14 @@ func _verify_korean_ui_font() -> bool:
 func _verify_key_mapping_and_commercial_vfx() -> bool:
 	if FileAccess.file_exists(KEY_MAPPING_TEST_STORAGE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(KEY_MAPPING_TEST_STORAGE_PATH))
+	if FileAccess.file_exists(SKILL_BINDING_TEST_STORAGE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SKILL_BINDING_TEST_STORAGE_PATH))
 	for required_path in [
 		KEY_MAPPING_SERVICE_PATH,
 		KEY_MAPPING_PANEL_PATH,
 		KEY_MAPPING_CATALOG_PATH,
+		SKILL_BINDING_SERVICE_PATH,
+		SKILL_BINDING_PROFILE_PATH,
 		COMMERCIAL_VFX_SOURCE_PATH,
 		COMMERCIAL_VFX_LICENSE_PATH,
 	]:
@@ -304,12 +311,42 @@ func _verify_key_mapping_and_commercial_vfx() -> bool:
 		return _fail("재실행 시 저장된 중복 교환 키가 InputMap에 복원되지 않았습니다.")
 	var panel := (load(KEY_MAPPING_PANEL_PATH) as PackedScene).instantiate()
 	sandbox.add_child(panel)
-	if not panel.call(&"configure", reloaded_service):
+	var skill_binding := (load(SKILL_BINDING_SERVICE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(skill_binding)
+	if not skill_binding.call(
+		&"configure",
+		load("res://game/features/combat_skills/configs/default_combat_skills.tres"),
+		load(SKILL_BINDING_PROFILE_PATH),
+		SKILL_BINDING_TEST_STORAGE_PATH,
+		reloaded_service,
+		false
+	):
+		reloaded_service.call(&"reset_defaults", false)
+		sandbox.queue_free()
+		return _fail("스킬 배치 서비스를 구성하지 못했습니다.")
+	var skill_swap: Dictionary = skill_binding.call(
+		&"assign_skill", &"blink", &"combat_skill_2"
+	)
+	if (
+		not bool(skill_swap.get(&"success", false))
+		or skill_binding.call(&"action_for_skill", &"blink") != &"combat_skill_2"
+		or skill_binding.call(&"action_for_skill", &"magnetic_field") != &"combat_skill_1"
+		or not FileAccess.file_exists(SKILL_BINDING_TEST_STORAGE_PATH)
+	):
+		reloaded_service.call(&"reset_defaults", false)
+		sandbox.queue_free()
+		return _fail("스킬 슬롯 충돌 교환 또는 JSON 저장이 올바르지 않습니다.")
+	if not panel.call(&"configure", reloaded_service, skill_binding):
 		reloaded_service.call(&"reset_defaults", false)
 		sandbox.queue_free()
 		return _fail("K 키 설정 UI를 서비스에 연결하지 못했습니다.")
 	await process_frame
-	if int(panel.call(&"get_snapshot").get(&"binding_row_count", 0)) != 22:
+	var panel_snapshot: Dictionary = panel.call(&"get_snapshot")
+	if (
+		int(panel_snapshot.get(&"physical_binding_row_count", 0)) != 22
+		or int(panel_snapshot.get(&"skill_binding_row_count", 0)) != 3
+		or not bool(panel_snapshot.get(&"separate_binding_levels", false))
+	):
 		reloaded_service.call(&"reset_defaults", false)
 		sandbox.queue_free()
 		return _fail("K 키 설정 UI에 전체 Action이 표시되지 않습니다.")
@@ -317,6 +354,8 @@ func _verify_key_mapping_and_commercial_vfx() -> bool:
 	sandbox.queue_free()
 	if FileAccess.file_exists(KEY_MAPPING_TEST_STORAGE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(KEY_MAPPING_TEST_STORAGE_PATH))
+	if FileAccess.file_exists(SKILL_BINDING_TEST_STORAGE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SKILL_BINDING_TEST_STORAGE_PATH))
 	return true
 
 
@@ -1177,7 +1216,16 @@ func _verify_combat_skill_modules() -> bool:
 	var system := (load(COMBAT_SKILL_SYSTEM_SCENE_PATH) as PackedScene).instantiate()
 	sandbox.add_child(system)
 	var loadout: Resource = load(COMBAT_SKILL_LOADOUT_PATH)
+	var skill_binding := (load(SKILL_BINDING_SERVICE_PATH) as PackedScene).instantiate()
+	sandbox.add_child(skill_binding)
+	if FileAccess.file_exists(SKILL_BINDING_TEST_STORAGE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SKILL_BINDING_TEST_STORAGE_PATH))
 	var failure_message := ""
+	if not skill_binding.call(
+		&"configure", loadout, load(SKILL_BINDING_PROFILE_PATH),
+		SKILL_BINDING_TEST_STORAGE_PATH, null, false
+	):
+		failure_message = "전투 스킬 배치 제공자를 구성하지 못했습니다."
 	var expected_patterns := ["trail", "ring", "burst"]
 	var loadout_skills: Array = loadout.get("skills")
 	for skill_index in loadout_skills.size():
@@ -1203,7 +1251,7 @@ func _verify_combat_skill_modules() -> bool:
 				failure_message = "점멸 경로 피해 정책의 데이터가 유효하지 않습니다."
 				break
 	if failure_message.is_empty() and not system.call(
-		&"configure", player, enemies, effects, loadout, true
+		&"configure", player, enemies, effects, loadout, true, null, null, null, skill_binding
 	):
 		failure_message = "전투 스킬 실행기 구성이 실패했습니다."
 	elif failure_message.is_empty():
@@ -1218,14 +1266,19 @@ func _verify_combat_skill_modules() -> bool:
 			or String(states[2].get(&"display_name", "")) != "기동 가속"
 		):
 			failure_message = "기본 전투 스킬 세 종류가 순서대로 로드되지 않았습니다."
+		elif not bool(skill_binding.call(
+			&"assign_skill", &"blink", &"combat_skill_2"
+		).get(&"success", false)):
+			failure_message = "점멸 스킬을 다른 Action으로 배치하지 못했습니다."
 		else:
-			var rebound := InputEventKey.new()
-			rebound.physical_keycode = KEY_0
-			if not system.call(&"rebind_slot", 8, rebound) or not _has_key_binding(&"combat_skill_9", KEY_0):
-				failure_message = "스킬 슬롯 런타임 키 재설정이 적용되지 않았습니다."
-			var restored := InputEventKey.new()
-			restored.physical_keycode = KEY_9
-			system.call(&"rebind_slot", 8, restored)
+			states = system.call(&"get_skill_states")
+			if (
+				states[0].get(&"input_action", &"") != &"combat_skill_2"
+				or states[1].get(&"input_action", &"") != &"combat_skill_1"
+				or not bool(system.call(&"get_snapshot").get(&"skill_binding_enabled", false))
+			):
+				failure_message = "스킬 배치 교환이 전투 상태와 HUD 입력 계약에 반영되지 않았습니다."
+			skill_binding.call(&"reset_defaults", false)
 		if failure_message.is_empty():
 			var start_position: Vector2 = player.global_position
 			var path_health_before := float(enemy.get("current_health"))
@@ -1310,6 +1363,8 @@ func _verify_combat_skill_modules() -> bool:
 				failure_message = "쿨타임 HUD가 10Hz 예산보다 자주 상태를 갱신합니다."
 	root.remove_child(sandbox)
 	sandbox.free()
+	if FileAccess.file_exists(SKILL_BINDING_TEST_STORAGE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SKILL_BINDING_TEST_STORAGE_PATH))
 	await process_frame
 	if not failure_message.is_empty():
 		_fail("전투 스킬 모듈 실패: %s" % failure_message)
@@ -1321,6 +1376,7 @@ func _verify_optional_combat_skill_module(game_scene: PackedScene) -> bool:
 	var skill_free_game := game_scene.instantiate()
 	var skill_free_features = skill_free_game.get("features").duplicate(true)
 	skill_free_features.set("combat_skills_enabled", false)
+	skill_free_features.set("skill_binding_enabled", false)
 	skill_free_game.set("features", skill_free_features)
 	root.add_child(skill_free_game)
 	await process_frame

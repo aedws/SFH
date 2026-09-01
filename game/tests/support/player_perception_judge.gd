@@ -12,7 +12,7 @@ const CHECKPOINT_RULES := {
 	&"key_mapping_comprehension": {
 		&"unit": &"choice",
 		&"surfaces": [&"key_mapping"],
-		&"phrases": ["키 설정", "변경 가능 Action", "ESC", "전체 기본값 복원"],
+		&"phrases": ["입력 설정", "키 배치", "스킬 배치", "ESC", "전체 기본값 복원"],
 	},
 	&"inventory_comprehension": {
 		&"unit": &"choice",

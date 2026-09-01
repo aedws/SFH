@@ -18,6 +18,7 @@ var hud_refresh_accumulator: float = 0.0
 var state_emission_count: int = 0
 var targeting_policy: Resource
 var equipment_provider: Node
+var binding_provider: Node
 
 
 func configure(
@@ -28,7 +29,8 @@ func configure(
 	new_damage_enabled: bool = true,
 	new_resource_provider: Node = null,
 	new_targeting_policy: Resource = null,
-	new_equipment_provider: Node = null
+	new_equipment_provider: Node = null,
+	new_binding_provider: Node = null
 ) -> bool:
 	if (
 		not is_instance_valid(new_player)
@@ -45,6 +47,23 @@ func configure(
 	damage_enabled = new_damage_enabled
 	targeting_policy = new_targeting_policy
 	equipment_provider = new_equipment_provider
+	binding_provider = (
+		new_binding_provider
+		if is_instance_valid(new_binding_provider)
+		and new_binding_provider.has_method(&"action_for_skill")
+		and new_binding_provider.has_method(&"input_label_for_skill")
+		else null
+	)
+	if (
+		is_instance_valid(binding_provider)
+		and binding_provider.has_signal(&"bindings_changed")
+		and not binding_provider.is_connected(
+			&"bindings_changed", Callable(self, &"_on_skill_bindings_changed")
+		)
+	):
+		binding_provider.connect(
+			&"bindings_changed", Callable(self, &"_on_skill_bindings_changed")
+		)
 	if (
 		is_instance_valid(equipment_provider)
 		and equipment_provider.has_signal(&"active_weapon_changed")
@@ -81,7 +100,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not activation_enabled or loadout == null:
 		return
 	for index in loadout.skills.size():
-		if event.is_action_pressed(loadout.skills[index].input_action, false):
+		var action_id := _action_for_skill(loadout.skills[index])
+		if not action_id.is_empty() and event.is_action_pressed(action_id, false):
 			try_activate(index)
 			get_viewport().set_input_as_handled()
 			return
@@ -154,31 +174,22 @@ func set_activation_enabled(is_enabled: bool) -> void:
 	_emit_states()
 
 
-func rebind_slot(slot_index: int, input_event: InputEvent) -> bool:
-	if loadout == null or slot_index < 0 or slot_index >= int(loadout.get("slot_capacity")):
-		return false
-	var action := StringName("combat_skill_%d" % (slot_index + 1))
-	if not InputMap.has_action(action):
-		InputMap.add_action(action)
-	InputMap.action_erase_events(action)
-	InputMap.action_add_event(action, input_event)
-	if slot_index < loadout.skills.size():
-		loadout.skills[slot_index].set("input_action", action)
-		loadout.skills[slot_index].set("input_label", _event_label(input_event))
-	_emit_states()
-	return true
-
-
 func get_slot_bindings() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	var capacity := int(loadout.get("slot_capacity")) if loadout != null else 0
 	for slot_index in capacity:
 		var action := StringName("combat_skill_%d" % (slot_index + 1))
+		var skill_id: StringName = &""
+		if is_instance_valid(binding_provider) and binding_provider.has_method(&"skill_for_action"):
+			skill_id = binding_provider.call(&"skill_for_action", action)
+		elif slot_index < loadout.skills.size():
+			skill_id = loadout.skills[slot_index].get("skill_id")
 		result.append({
 			&"slot_index": slot_index,
 			&"action": action,
 			&"events": InputMap.action_get_events(action),
-			&"occupied": slot_index < loadout.skills.size(),
+			&"skill_id": skill_id,
+			&"occupied": not skill_id.is_empty(),
 		})
 	return result
 
@@ -190,6 +201,8 @@ func get_skill_states() -> Array[Dictionary]:
 	for index in loadout.skills.size():
 		var definition: Resource = loadout.skills[index]
 		var state: Dictionary = definition.call(&"get_snapshot", index)
+		state[&"input_action"] = _action_for_skill(definition)
+		state[&"input_label"] = _input_label_for_skill(definition)
 		var remaining := cooldowns[index] if index < cooldowns.size() else 0.0
 		state[&"cooldown_remaining"] = remaining
 		state[&"cooldown_ratio"] = clampf(
@@ -232,6 +245,7 @@ func get_snapshot() -> Dictionary:
 		) if is_inside_tree() else 0,
 		&"states": get_skill_states(),
 		&"resources_enabled": is_instance_valid(resource_provider),
+		&"skill_binding_enabled": is_instance_valid(binding_provider),
 	}
 
 
@@ -246,6 +260,26 @@ func _on_resources_changed(_snapshot: Dictionary) -> void:
 
 func _on_active_weapon_changed(_slot_id: StringName, _weapon_definition: Resource) -> void:
 	_emit_states()
+
+
+func _on_skill_bindings_changed(_snapshot: Dictionary) -> void:
+	_emit_states()
+
+
+func _action_for_skill(skill: Resource) -> StringName:
+	var skill_id: StringName = skill.get("skill_id")
+	if is_instance_valid(binding_provider):
+		var assigned: StringName = binding_provider.call(&"action_for_skill", skill_id)
+		if not assigned.is_empty():
+			return assigned
+	return StringName(skill.get("input_action"))
+
+
+func _input_label_for_skill(skill: Resource) -> String:
+	var skill_id: StringName = skill.get("skill_id")
+	if is_instance_valid(binding_provider):
+		return String(binding_provider.call(&"input_label_for_skill", skill_id))
+	return String(skill.get("input_label"))
 
 
 func _build_activation_context(skill: Resource) -> Dictionary:
@@ -295,11 +329,3 @@ func _skill_matches_active_weapon(skill: Resource) -> bool:
 		equipment_provider.has_method(&"active_weapon_has_combat_tags")
 		and bool(equipment_provider.call(&"active_weapon_has_combat_tags", required))
 	)
-
-
-func _event_label(input_event: InputEvent) -> String:
-	if input_event is InputEventKey:
-		return OS.get_keycode_string((input_event as InputEventKey).physical_keycode)
-	if input_event is InputEventMouseButton:
-		return "M%d" % int((input_event as InputEventMouseButton).button_index)
-	return "?"

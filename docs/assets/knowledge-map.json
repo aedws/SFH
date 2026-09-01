@@ -169,7 +169,7 @@
             "description": "이동·공격·스킬·피드백",
             "documents": [
               {"label": "플레이어", "source": "features/player.md", "route": "features/player/", "summary": "탑다운 이동·대시·조작감"},
-              {"label": "K 키 설정과 영구 바인딩", "source": "features/key-mapping.md", "route": "features/key-mapping/", "summary": "M 지도를 포함한 22개 Action 재설정과 저장"},
+              {"label": "K 입력 설정과 자유 스킬 배치", "source": "features/key-mapping.md", "route": "features/key-mapping/", "summary": "22개 물리 키와 별도인 1~9 스킬 위치 교환·저장"},
               {"label": "부분 체력 회복", "source": "features/health-recovery.md", "route": "features/health-recovery/", "summary": "회복 규칙과 제한"},
               {"label": "전투 스킬과 쿨타임 HUD", "source": "features/combat-skills.md", "route": "features/combat-skills/", "summary": "점멸·자기장·기동 가속"},
               {"label": "타격감과 피격 피드백", "source": "features/hit-feedback.md", "route": "features/hit-feedback/", "summary": "섬광·넉백·충격·카메라 반응"},

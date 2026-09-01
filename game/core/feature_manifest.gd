@@ -49,6 +49,7 @@ extends Resource
 @export var conditional_ranking_enabled: bool = true
 @export var game_over_enabled: bool = true
 @export var key_mapping_enabled: bool = true
+@export var skill_binding_enabled: bool = true
 @export var cyberpunk_theme_enabled: bool = true
 @export var cyberpunk_motion_enabled: bool = true
 @export var cyberpunk_noise_enabled: bool = true
@@ -102,6 +103,10 @@ extends Resource
 	"res://game/features/key_mapping/configs/default_key_mapping.tres"
 )
 @export var key_mapping_storage_path: String = "user://sfh_key_mapping.json"
+@export_file("*.tres") var skill_binding_profile_path: String = (
+	"res://game/features/skill_binding/configs/default_skill_bindings.tres"
+)
+@export var skill_binding_storage_path: String = "user://sfh_skill_bindings.json"
 
 @export_category("Operation and meta systems")
 @export_file("*.tres") var operation_contract_config_path: String = (
@@ -238,6 +243,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"game_over")
 	if key_mapping_enabled:
 		result.append(&"key_mapping")
+	if skill_binding_enabled:
+		result.append(&"skill_binding")
 	if cyberpunk_theme_enabled:
 		result.append(&"cyberpunk_theme")
 
@@ -410,6 +417,14 @@ func validation_errors() -> PackedStringArray:
 		errors.append("키 설정 카탈로그 Resource 경로가 유효하지 않습니다.")
 	if key_mapping_enabled and key_mapping_storage_path.is_empty():
 		errors.append("키 설정 저장 경로가 필요합니다.")
+	if skill_binding_enabled and not key_mapping_enabled:
+		errors.append("skill_binding 모듈은 key_mapping 모듈이 필요합니다.")
+	if skill_binding_enabled and not combat_skills_enabled:
+		errors.append("skill_binding 모듈은 combat_skills 모듈이 필요합니다.")
+	if skill_binding_enabled and not _resource_exists(skill_binding_profile_path):
+		errors.append("스킬 배치 프로필 Resource 경로가 유효하지 않습니다.")
+	if skill_binding_enabled and skill_binding_storage_path.is_empty():
+		errors.append("스킬 배치 저장 경로가 필요합니다.")
 
 	return errors
 

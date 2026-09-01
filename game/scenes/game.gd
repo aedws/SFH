@@ -79,6 +79,9 @@ const KEY_MAPPING_SERVICE_SCENE_PATH := (
 const KEY_MAPPING_PANEL_SCENE_PATH := (
 	"res://game/features/key_mapping/key_mapping_panel.tscn"
 )
+const SKILL_BINDING_SERVICE_SCENE_PATH := (
+	"res://game/features/skill_binding/skill_binding_service.tscn"
+)
 const CYBERPUNK_OVERLAY_SCENE_PATH := (
 	"res://game/features/presentation_theme/cyberpunk_overlay.tscn"
 )
@@ -264,6 +267,11 @@ const OPERATION_RESULT_METHODS := [&"configure", &"settle_success", &"settle_fai
 const KEY_MAPPING_METHODS := [
 	&"configure", &"rebind_action", &"reset_defaults", &"get_entries", &"get_snapshot",
 ]
+const SKILL_BINDING_METHODS := [
+	&"configure", &"assign_skill", &"reset_defaults", &"action_for_skill",
+	&"skill_for_action", &"input_label_for_skill", &"get_entries",
+	&"get_allowed_actions", &"get_snapshot",
+]
 const CYBERPUNK_OVERLAY_METHODS := [&"configure", &"get_snapshot"]
 const MAP_TIER_IDS := ["small", "medium", "large"]
 
@@ -352,6 +360,7 @@ var penalty_system
 var conditional_ranking_system
 var operation_result_service
 var key_mapping_service
+var skill_binding_service
 var key_mapping_panel
 var cyberpunk_overlay
 var operation_setup_presenter := OPERATION_SETUP_PRESENTER_SCRIPT.new()
@@ -553,18 +562,42 @@ func _install_key_mapping() -> bool:
 	):
 		_report_configuration_error("키 설정 저장 모듈을 구성하지 못했습니다.")
 		return false
+	if features.skill_binding_enabled:
+		skill_binding_service = _instantiate_feature(
+			SKILL_BINDING_SERVICE_SCENE_PATH, self, &"SkillBindingService"
+		)
+		var skill_loadout := load(features.combat_skill_loadout_path)
+		if (
+			not _supports_methods(skill_binding_service, SKILL_BINDING_METHODS)
+			or not skill_binding_service.call(
+				&"configure",
+				skill_loadout,
+				load(features.skill_binding_profile_path),
+				features.skill_binding_storage_path,
+				key_mapping_service,
+				true
+			)
+		):
+			_report_configuration_error("스킬 배치 저장 모듈을 구성하지 못했습니다.")
+			return false
 	key_mapping_panel = _instantiate_feature(
 		KEY_MAPPING_PANEL_SCENE_PATH, ui_layer, &"KeyMappingPanel"
 	)
 	if key_mapping_panel == null or not _supports_panel(key_mapping_panel):
 		_report_configuration_error("키 설정 UI 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
-	if not bool(key_mapping_panel.call(&"configure", key_mapping_service)):
+	if not bool(key_mapping_panel.call(
+		&"configure", key_mapping_service, skill_binding_service
+	)):
 		_report_configuration_error("키 설정 UI를 입력 저장 모듈에 연결하지 못했습니다.")
 		return false
 	_connect_modal_panel(key_mapping_panel)
 	if key_mapping_service.has_signal(&"bindings_changed"):
 		key_mapping_service.connect(
+			&"bindings_changed", Callable(self, &"_on_key_bindings_changed")
+		)
+	if is_instance_valid(skill_binding_service) and skill_binding_service.has_signal(&"bindings_changed"):
+		skill_binding_service.connect(
 			&"bindings_changed", Callable(self, &"_on_key_bindings_changed")
 		)
 	_refresh_control_hints()
@@ -1292,7 +1325,8 @@ func _install_combat_skills() -> bool:
 		features.damage_enabled,
 		combat_resource_system,
 		load(features.smart_targeting_policy_path) if features.smart_targeting_enabled else null,
-		equipment_system
+		equipment_system,
+		skill_binding_service
 	):
 		_report_configuration_error("전투 스킬 실행기를 구성하지 못했습니다.")
 		return false

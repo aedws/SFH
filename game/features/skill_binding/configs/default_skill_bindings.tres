@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SkillBindingProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/skill_binding/skill_binding_profile.gd" id="1_profile"]
+
+[resource]
+script = ExtResource("1_profile")
+allowed_action_ids = PackedStringArray("combat_skill_1", "combat_skill_2", "combat_skill_3", "combat_skill_4", "combat_skill_5", "combat_skill_6", "combat_skill_7", "combat_skill_8", "combat_skill_9")
+default_skill_ids = PackedStringArray("blink", "magnetic_field", "speed_boost")
+default_action_ids = PackedStringArray("combat_skill_1", "combat_skill_2", "combat_skill_3")

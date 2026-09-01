@@ -136,8 +136,12 @@ foreach ($path in $targetFiles) {
     $lines = [System.IO.File]::ReadAllLines($path)
     $blocks = @(Get-DayBlocks -Lines $lines)
     $duplicates = @($blocks | Group-Object Date | Where-Object Count -gt 1)
+	$isHomePage = [System.IO.Path]::GetFileName($path) -eq "index.md"
 
     if ($Check) {
+		if ($isHomePage -and $blocks.Count -ne 1) {
+			throw "The wiki home must contain exactly the latest one-day release block: found $($blocks.Count)."
+		}
         if ($duplicates.Count -gt 0) {
             $duplicateSummary = ($duplicates | ForEach-Object { "$($_.Name)=$($_.Count)" }) -join ', '
             throw "More than one sfh-day card exists for a date ($path): $duplicateSummary. Run compress-wiki-release-days.ps1."
@@ -187,6 +191,22 @@ foreach ($path in $targetFiles) {
         Write-Host "DAILY_RELEASE_NOTES_OK $([System.IO.Path]::GetFileName($path))"
         continue
     }
+
+	if ($isHomePage -and $blocks.Count -gt 1) {
+		$result = [System.Collections.Generic.List[string]]::new()
+		if ($blocks[0].Start -gt 0) {
+			foreach ($line in $lines[0..($blocks[0].Start - 1)]) { $result.Add($line) }
+		}
+		foreach ($line in $blocks[0].Lines) { $result.Add($line) }
+		$afterLastBlock = $blocks[$blocks.Count - 1].End + 1
+		if ($afterLastBlock -lt $lines.Count) {
+			foreach ($line in $lines[$afterLastBlock..($lines.Count - 1)]) { $result.Add($line) }
+		}
+		$output = ($result -join [Environment]::NewLine) + [Environment]::NewLine
+		[System.IO.File]::WriteAllText($path, $output, [System.Text.UTF8Encoding]::new($false))
+		Write-Host "HOME_RELEASE_NOTES_TRIMMED latest_date=$($blocks[0].Date) removed_days=$($blocks.Count - 1)"
+		continue
+	}
 
     if ($duplicates.Count -eq 0) {
         Write-Host "DAILY_RELEASE_NOTES_ALREADY_COMPRESSED $([System.IO.Path]::GetFileName($path))"

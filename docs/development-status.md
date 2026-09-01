@@ -24,9 +24,9 @@ tags:
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>MASTER GDD ALIGNED · 2026-09-01</small><strong>현재 기획 진행도</strong></span>
-    <b>72%</b>
+    <b>75%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="72"><i style="width: 72%"></i></div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75"><i style="width: 75%"></i></div>
   <p>새 Master GDD의 8개 확정 시스템을 저장소와 재대조했습니다. 자유 스킬 배치·현장 전리품 교체·세션 룬 환전·비동기 시즌 범위가 추가되어 기존 96%에서 재산정했습니다.</p>
 </div>
 
@@ -35,7 +35,7 @@ tags:
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
 | 기술 기반 | ×1 | 100% | Godot 4.x·GDScript·CharacterBody2D·Area2D·TileMapLayer·Camera2D와 기능별 Node/Scene 경계 구현 |
-| 입력·자유 스킬 바인딩 | ×2 | 75% | 22개 Action 재설정·저장, 좌클릭 홀드와 1~9 슬롯 구현. 스킬 정의를 임의 Action에 배치하는 기능은 없음 |
+| 입력·자유 스킬 바인딩 | ×2 | 100% | 물리 키와 스킬→Action 배치를 분리하고 충돌 교환·HUD 반영·JSON 저장·초기화를 구현 |
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
 | 로비 인베스트먼트·타겟 파밍 | ×2 | 65% | 맵·지역·난이도·페널티·상점 구현. 캐릭터와 완성형 무기·스킬·유틸리티 투자 UI가 남음 |
 | 전리품 2대 분류·현장 파밍 | ×2 | 25% | 크레딧·도면·상점 등록 구현. 현장 장비/스킬 교체, 세션 룬·코어·유물 소켓과 자동 환전은 없음 |
@@ -43,7 +43,7 @@ tags:
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
 | 비동기 랭킹·시즌 보상 | ×1 | 40% | 동일 조건 3대 로컬 랭킹 구현. 서버 검증과 주간 칭호·오라 보상은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 13`입니다. 현재 결과는 `(100×1 + 75×2 + 95×2 + 65×2 + 25×2 + 80×1 + 95×2 + 40×1) ÷ 13 ≈ 72%`입니다. 하락은 코드 퇴행이 아니라 Master GDD 확정 범위 확장과 완료 판정 강화 때문입니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 13`입니다. 현재 결과는 `(100×1 + 100×2 + 95×2 + 65×2 + 25×2 + 80×1 + 95×2 + 40×1) ÷ 13 ≈ 75%`입니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -51,7 +51,7 @@ tags:
 
 | Phase | 판정 | 저장소 대조 |
 |---|---|---|
-| Phase 1 · 이동·타게팅·자유 바인딩 | 부분 완료 | 이동·타게팅·키 재설정은 구현. 스킬↔Action 자유 배치가 없음 |
+| Phase 1 · 이동·타게팅·자유 바인딩 | 완료 | 키 배치와 스킬 배치를 분리하고 실제 발동·HUD·영구 저장까지 연결 |
 | Phase 2 · Q·태그·AP·쿨타임 | 완료 | 주·보조 교체, 태그 호환성, 에너지·충전·개별 쿨타임 구현 |
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
 | Phase 4 · 현장 교체·룬 소켓·환전 | 미완료 | 장비/스킬 현장 드랍·즉시 교체와 세션 룬 자동 환전이 없음 |
@@ -70,19 +70,19 @@ tags:
 
 | 우선순위 | 작업 | 현재 차이 | 완료 조건 |
 |---:|---|---|---|
-| 1 | Phase 1 자유 스킬 배치 | 22 Action의 물리 키 재설정만 구현 | 스킬 정의를 허용 Action에 배치·교환·저장하고 HUD/발동 동기화 |
-| 2 | Phase 4 전리품 생명주기 | 크레딧·도면 중심 | 영구 자산형과 세션 증폭·환금형의 획득·탈출·사망 정책 분리 |
-| 3 | Phase 4 현장 순환 | I/U 장착·영구 모듈 기반만 존재 | 드랍→비교→교체/소켓→전투 변화→해금/환전 E2E 통과 |
-| 4 | Phase 5 로비 4대 세팅 | 맵·페널티·상점·소모품 일부 구현 | 캐릭터·무기·스킬·유틸리티 투자와 BEP 미리보기 연결 |
-| 5 | Phase 6 비동기 시즌 | 3대 로컬 랭킹 구현 | 서버 검증 제공자와 주간 칭호·오라 보상 모듈 연결 |
+| 완료 | Phase 1 자유 스킬 배치 | 물리 키와 스킬 위치의 두 단계 편집 구현 | 충돌 교환·HUD/발동·JSON 복구와 실제 K/ESC E2E 완료 |
+| 1 | Phase 4 전리품 생명주기 | 크레딧·도면 중심 | 영구 자산형과 세션 증폭·환금형의 획득·탈출·사망 정책 분리 |
+| 2 | Phase 4 현장 순환 | I/U 장착·영구 모듈 기반만 존재 | 드랍→비교→교체/소켓→전투 변화→해금/환전 E2E 통과 |
+| 3 | Phase 5 로비 4대 세팅 | 맵·페널티·상점·소모품 일부 구현 | 캐릭터·무기·스킬·유틸리티 투자와 BEP 미리보기 연결 |
+| 4 | Phase 6 비동기 시즌 | 3대 로컬 랭킹 구현 | 서버 검증 제공자와 주간 칭호·오라 보상 모듈 연결 |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 7 · IMPROVE 18 · CHANGE 17 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 10 · IMPROVE 22 · CHANGE 20 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>18</b><small>IMPROVE</small></span><span><b>17</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>22</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>8</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -162,7 +162,7 @@ tags:
         <p><a href="design/master-gdd-alignment/">Master GDD 상세 대조 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>현행 마일스톤 작업 라인 · Phase 1→4→5→6 실행 게이트</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -181,6 +181,25 @@ tags:
         <div class="sfh-group"><h3>🧭 수정 · 5</h3><p>2개 기준선·20개 Phase 작업, 5개 공통 게이트, 착수 순서, 모듈 경계, 중단 규칙을 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>🛠️ 버그픽스 · 0</h3><p>별도 게임 버그 수정은 없습니다.</p></div>
         <p><a href="design/current-milestone-workline/">현행 마일스톤 작업 라인 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>위키 접근성·클릭 명확화 · Phase 1 자유 스킬 배치 완료</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary">
+          <strong>무엇이 변했나 · 문서 탐색의 오작동을 제거하고 K 입력 설정에서 물리 키와 스킬 위치를 각각 편집할 수 있게 됐습니다.</strong>
+          <ul>
+            <li><b>위키:</b> 연결선 클릭 가로채기·선택 후 포커스 소실을 제거하고 44px 터치 범위와 명명된 ARIA 관계를 추가했습니다.</li>
+            <li><b>입력:</b> 22개 물리 키와 9개 스킬 Action 배치를 분리하고 점유 슬롯 선택 시 두 스킬을 교환합니다.</li>
+            <li><b>저장:</b> 물리 키와 스킬 위치를 별도 JSON에 저장하며 재시작·기본값 복구를 검증합니다.</li>
+            <li><b>진행:</b> BASE-01/02와 P1-01~05를 완료 처리하고 다음 작업을 P4-01 전리품 분류로 이동했습니다.</li>
+          </ul>
+        </div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>SkillBindingProfile, 충돌 교환·영속 Service, 전투/HUD 배치 Provider 연결을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>K 두 단계 편집, 44px 터치 범위, 스크린리더 관계, 작업선 추적성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>물리 키·스킬 위치 저장을 분리하고 홈을 최신 하루로 제한했으며 진행도를 75%로 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>노드 클릭 범위 교차, 재렌더링 포커스 소실, 비활성 버튼처럼 읽히던 루트 노드 의미를 바로잡았습니다.</p></div>
+        <p><a href="features/key-mapping/">자유 스킬 배치 →</a> · <a href="design/current-milestone-workline/">다음 작업 라인 →</a></p>
       </div>
     </details>
   </div>

@@ -7,7 +7,7 @@
     {
       "query": "개발 진행도",
       "label": "개발 진행도",
-      "description": "Master GDD 기준 72% 진행률과 구현·후속 범위 근거",
+      "description": "Master GDD 기준 75% 진행률과 구현·후속 범위 근거",
       "category": "기획",
       "priority": 100
     },
@@ -55,8 +55,8 @@
     },
     {
       "query": "K 키 설정",
-      "label": "K 자유 키 설정·영구 저장",
-      "description": "M 확장 지도를 포함한 22개 Action, 중복 교환, ESC 안전 고정과 브라우저 저장",
+      "label": "K 물리 키·자유 스킬 배치",
+      "description": "22개 물리 Action과 별도인 스킬 1~9 배치, 충돌 교환, HUD·발동 동기화와 영구 저장",
       "category": "입력",
       "priority": 91
     },
