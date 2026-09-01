@@ -26,3 +26,4 @@ rx_vault_vest_bp,research_complex,any,any,vault,tactical_vest_blueprint,3,24,1,1
 rx_vault_magnetic_bp,research_complex,veteran,medium,vault,magnetic_field_blueprint,4,32,1,1,FALSE,TRUE,중형 베테랑 자기장 도면
 rx_boss_magnetic_bp,research_complex,any,any,boss,magnetic_field_blueprint,4,82,1,1,TRUE,TRUE,지역 보스 핵심 도면
 rx_boss_phase,research_complex,nightmare,large,boss,phase_artifact,5,28,1,2,TRUE,TRUE,대형 악몽 위상 유물 묶음
+id_room_pulse_rifle,industrial_district,veteran,medium,room_reward,pulse_rifle,3,14,1,1,FALSE,TRUE,P4-04 현장 즉시 장착 검증용 주무기

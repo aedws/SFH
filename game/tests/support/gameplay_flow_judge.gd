@@ -18,6 +18,8 @@ func judge(flow_id: StringName, evidence: Dictionary) -> Dictionary:
 			_judge_loot_table_targeting(evidence, errors)
 		&"field_loot_acquisition":
 			_judge_field_loot_acquisition(evidence, errors)
+		&"field_loot_immediate_equip":
+			_judge_field_loot_immediate_equip(evidence, errors)
 		_:
 			errors.append("알 수 없는 게임플레이 흐름입니다: %s" % flow_id)
 	return {
@@ -166,6 +168,25 @@ func _judge_field_loot_acquisition(evidence: Dictionary, errors: PackedStringArr
 		errors.append("재접근 뒤 F 획득이 월드 전리품을 런 임시 보관으로 옮기지 못했습니다.")
 	if not bool(acquired.get(&"separate_from_equipment_mutation", false)):
 		errors.append("P4-03 획득 계약이 P4-04 장비 교체를 몰래 수행합니다.")
+
+
+func _judge_field_loot_immediate_equip(evidence: Dictionary, errors: PackedStringArray) -> void:
+	var before: Dictionary = evidence.get(&"before", {})
+	var after: Dictionary = evidence.get(&"after", {})
+	var panel: Dictionary = before.get(&"panel", {})
+	var immediate: Dictionary = after.get(&"immediate_equip", {})
+	if not bool(panel.get(&"shows_immediate_equip", false)):
+		errors.append("현장 무기 후보에 R 즉시 장착 선택지가 보이지 않습니다.")
+	if evidence.get(&"before_weapon", &"") == evidence.get(&"after_weapon", &""):
+		errors.append("R 입력 뒤 실제 활성 무기가 바뀌지 않았습니다: %s → %s / %s" % [
+			evidence.get(&"before_weapon", &""), evidence.get(&"after_weapon", &""), after,
+		])
+	if evidence.get(&"after_weapon", &"") != &"pulse_rifle":
+		errors.append("R 입력 결과가 선택한 전격 펄스 소총이 아닙니다.")
+	if int(immediate.get(&"pending_swap_count", 0)) != 1:
+		errors.append("기존 무기가 런 임시 보관 복구 기록에 남지 않았습니다.")
+	if (immediate.get(&"policy", {}) as Dictionary).get(&"policy_status", &"") != &"provisional":
+		errors.append("미확정 기존 장비 처리 정책이 임시 상태로 표시되지 않습니다.")
 
 
 func _require_increase(

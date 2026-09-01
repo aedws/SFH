@@ -2,12 +2,50 @@ extends SceneTree
 
 class EquipmentStub:
 	extends Node
+	var states := {}
+	var active_slot: StringName = &"main"
+
+	func _init() -> void:
+		var state := EquipmentItemState.new()
+		state.configure(&"test_main", load(
+			"res://game/features/equipment/definitions/weapons/assault_rifle.tres"
+		))
+		states[&"main"] = state
 
 	func get_summary() -> Dictionary:
+		var state: EquipmentItemState = states.get(active_slot)
 		return {
-			&"active_weapon_name": "돌격소총",
-			&"active_weapon_grade": 2,
+			&"active_weapon_name": state.definition.display_name if state != null else "없음",
+			&"active_weapon_grade": state.definition.grade if state != null else 0,
+			&"active_weapon_id": state.definition.weapon_id if state != null else &"",
 		}
+
+	func get_equipment_state(slot_id: StringName):
+		return states.get(slot_id)
+
+	func get_active_weapon_slot() -> StringName:
+		return active_slot
+
+	func take_equipment_state(slot_id: StringName):
+		var result = states.get(slot_id)
+		states.erase(slot_id)
+		return result
+
+	func equip_definition(slot_id: StringName, definition: Resource) -> bool:
+		var state := EquipmentItemState.new()
+		state.configure(StringName("test_%s" % definition.weapon_id), definition)
+		states[slot_id] = state
+		return true
+
+	func equip_state(slot_id: StringName, state: EquipmentItemState) -> bool:
+		states[slot_id] = state
+		return true
+
+	func set_active_weapon_slot(slot_id: StringName) -> bool:
+		if not states.has(slot_id):
+			return false
+		active_slot = slot_id
+		return true
 
 
 class InventoryStub:
@@ -47,6 +85,9 @@ func _run() -> void:
 	var ui := CanvasLayer.new()
 	var equipment := EquipmentStub.new()
 	var inventory := InventoryStub.new()
+	var equip_catalog := load(
+		"res://game/features/field_loot/configs/default_field_loot_equipment.tres"
+	) as FieldLootEquipCatalog
 	for node in [lifecycle, table, service, player, drops, ui, equipment, inventory]:
 		root.add_child(node)
 	await process_frame
@@ -57,7 +98,8 @@ func _run() -> void:
 	if not table.call(
 		&"configure",
 		load("res://game/features/loot_tables/configs/default_loot_table.tres"),
-		lifecycle
+		lifecycle,
+		equip_catalog
 	):
 		return _fail("드랍 테이블 제공자를 구성하지 못했습니다.")
 	var context := {
@@ -68,7 +110,8 @@ func _run() -> void:
 		&"boss_available": false,
 	}
 	if not service.call(
-		&"configure", player, drops, ui, lifecycle, table, equipment, inventory, context, 7411
+		&"configure", player, drops, ui, lifecycle, table, equipment, inventory, context, 7411,
+		equip_catalog
 	):
 		return _fail("현장 전리품 서비스를 구성하지 못했습니다.")
 	var drop: Node2D = service.call(&"spawn_from_source", Vector2.ZERO, &"room_reward", 1)
@@ -115,7 +158,32 @@ func _run() -> void:
 		or not bool(acquired.get(&"table_linked", false))
 	):
 		return _fail("획득·런 임시 보관·모듈 경계 계약이 충족되지 않았습니다: %s" % acquired)
-	print("FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage viewport_safe modular_boundary")
+	var equip_drop: Node2D = service.call(&"spawn_candidate", Vector2.ZERO, {
+		&"entry_id": &"test_pulse", &"item_id": &"pulse_rifle", &"grade": 3,
+		&"quantity": 1, &"source_type": &"room_reward",
+	})
+	if equip_drop == null:
+		return _fail("현장 장착 후보를 생성하지 못했습니다.")
+	player.global_position = equip_drop.global_position
+	equip_drop.call(&"_process", 0.0)
+	var equip_preview: Dictionary = service.call(&"get_snapshot")
+	if not bool((equip_preview.get(&"panel", {}) as Dictionary).get(&"shows_immediate_equip", false)):
+		return _fail("즉시 장착 선택지가 플레이어에게 노출되지 않았습니다.")
+	if not service.call(&"equip_focused"):
+		return _fail("현장 무기 즉시 장착에 실패했습니다.")
+	var equipped: Dictionary = service.call(&"get_snapshot")
+	var immediate: Dictionary = equipped.get(&"immediate_equip", {})
+	if (
+		equipment.get_summary().get(&"active_weapon_id", &"") != &"pulse_rifle"
+		or int(immediate.get(&"pending_swap_count", 0)) != 1
+		or (immediate.get(&"policy", {}) as Dictionary).get(&"policy_status", &"") != &"provisional"
+	):
+		return _fail("즉시 장착·임시 정책·교체 기록 계약이 충족되지 않았습니다: %s" % equipped)
+	if int(service.call(&"restore_equipment_swaps")) != 1:
+		return _fail("거점 복귀용 장비 복구가 동작하지 않았습니다.")
+	if equipment.get_summary().get(&"active_weapon_id", &"") != &"assault_rifle":
+		return _fail("거점 복귀 전에 원래 장비가 복구되지 않았습니다.")
+	print("FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip provisional_policy restore_on_hub viewport_safe modular_boundary")
 	quit(0)
 
 

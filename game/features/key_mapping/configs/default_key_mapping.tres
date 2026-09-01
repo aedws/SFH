@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource("1_catalog")
-action_ids = PackedStringArray("move_up", "move_down", "move_left", "move_right", "dash", "primary_attack", "interact", "switch_weapon", "combat_skill_1", "combat_skill_2", "combat_skill_3", "combat_skill_4", "combat_skill_5", "combat_skill_6", "combat_skill_7", "combat_skill_8", "combat_skill_9", "toggle_inventory", "toggle_equipment", "toggle_modification", "toggle_map", "toggle_key_mapping")
-display_names = PackedStringArray("위로 이동", "아래로 이동", "왼쪽 이동", "오른쪽 이동", "대시", "기본 공격", "상호작용", "무기 교체", "전투 스킬 1", "전투 스킬 2", "전투 스킬 3", "전투 스킬 4", "전투 스킬 5", "전투 스킬 6", "전투 스킬 7", "전투 스킬 8", "전투 스킬 9", "가방", "장비", "모듈·파츠", "확장 전술 지도", "키 설정")
-categories = PackedStringArray("이동", "이동", "이동", "이동", "이동", "전투", "전투", "전투", "스킬", "스킬", "스킬", "스킬", "스킬", "스킬", "스킬", "스킬", "스킬", "메뉴", "메뉴", "메뉴", "메뉴", "메뉴")
+action_ids = PackedStringArray("move_up", "move_down", "move_left", "move_right", "dash", "primary_attack", "interact", "equip_field_loot", "switch_weapon", "combat_skill_1", "combat_skill_2", "combat_skill_3", "combat_skill_4", "combat_skill_5", "combat_skill_6", "combat_skill_7", "combat_skill_8", "combat_skill_9", "toggle_inventory", "toggle_equipment", "toggle_modification", "toggle_map", "toggle_key_mapping")
+display_names = PackedStringArray("위로 이동", "아래로 이동", "왼쪽 이동", "오른쪽 이동", "대시", "기본 공격", "상호작용", "현장 장비 즉시 장착", "무기 교체", "전투 스킬 1", "전투 스킬 2", "전투 스킬 3", "전투 스킬 4", "전투 스킬 5", "전투 스킬 6", "전투 스킬 7", "전투 스킬 8", "전투 스킬 9", "가방", "장비", "모듈·파츠", "확장 전술 지도", "키 설정")
+categories = PackedStringArray("이동", "이동", "이동", "이동", "이동", "전투", "전투", "전투", "전투", "스킬", "스킬", "스킬", "스킬", "스킬", "스킬", "스킬", "스킬", "스킬", "메뉴", "메뉴", "메뉴", "메뉴", "메뉴")

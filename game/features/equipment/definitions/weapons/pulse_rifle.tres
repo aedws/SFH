@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EquipmentWeaponDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/weapon_definition.gd" id="1_weapon"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_tag_profile.gd" id="2_tags"]
+
+[sub_resource type="Resource" id="TagProfile"]
+script = ExtResource("2_tags")
+major_tag = &"ranged"
+middle_tag = &"firearm"
+minor_tag = &"rifle"
+major_label = "원거리"
+middle_label = "화기"
+minor_label = "소총"
+
+[resource]
+script = ExtResource("1_weapon")
+weapon_id = &"pulse_rifle"
+display_name = "전격 펄스 소총"
+tags = SubResource("TagProfile")
+combat_tags = [&"projectile", &"element", &"electric"]
+grade = 3
+skill_mechanic_overrides = {&"magnetic_field": {&"radius_multiplier": 1.1, &"tick_damage_multiplier": 1.25}}
+maximum_level = 3
+module_slot_limit = 3
+module_cost_limit = 8
+part_socket_ids = [&"optic", &"muzzle", &"magazine"]
+description = "낮은 단발 피해를 빠른 연사와 1회 관통으로 보완하는 현장 교체용 전격 소총입니다."

@@ -77,7 +77,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch loot_table_targeting field_loot_compare_cancel_select tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume settlement_return death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -113,7 +113,7 @@ func _verify_hub_input_session() -> bool:
 		or not key_panel.visible
 		or not paused
 		or hub_hud.visible
-		or int(key_panel.call(&"get_snapshot").get(&"physical_binding_row_count", 0)) != 22
+		or int(key_panel.call(&"get_snapshot").get(&"physical_binding_row_count", 0)) != 23
 		or int(key_panel.call(&"get_snapshot").get(&"skill_binding_row_count", 0)) != 3
 		or not bool(key_panel.call(&"get_snapshot").get(&"separate_binding_levels", false))
 	):
@@ -420,6 +420,14 @@ func _verify_operation_session() -> bool:
 	await _tap_key(KEY_ENTER)
 	if game.get("start_hub") == null or bool(game.get("run_started")) or paused:
 		return _fail("정산 화면의 실제 Enter 입력이 시작 거점으로 복귀하지 못했습니다.")
+	var restored_equipment = game.get("equipment_system")
+	var restored_main = restored_equipment.call(&"get_equipment_state", &"main")
+	if (
+		restored_main == null
+		or restored_main.definition.weapon_id != &"assault_rifle"
+		or restored_equipment.call(&"get_summary").get(&"active_weapon_id", &"") != &"service_pistol"
+	):
+		return _fail("현장 즉시 장착 뒤 거점 복귀가 원래 주무기·활성 슬롯을 복구하지 못했습니다.")
 	if not _judge_ui_state(&"hub", "성공 정산 후 거점"):
 		return false
 	if not _judge_player_perception(&"hub_context_restored", "성공 후 거점 복원", {
@@ -779,10 +787,34 @@ func _verify_field_loot_acquisition(player: Node2D) -> bool:
 	await _tap_key(KEY_F)
 	await process_frame
 	var acquired: Dictionary = service.call(&"get_snapshot")
-	return _judge_gameplay_flow(&"field_loot_acquisition", "드랍→접근→비교→보류→선택", {
+	if not _judge_gameplay_flow(&"field_loot_acquisition", "드랍→접근→비교→보류→선택", {
 		&"approached": approached,
 		&"cancelled": cancelled,
 		&"acquired": acquired,
+	}):
+		return false
+	var equipment = game.get("equipment_system")
+	var before_weapon: StringName = equipment.call(&"get_summary").get(&"active_weapon_id", &"")
+	var equip_drop: Node2D = service.call(&"spawn_candidate", player.global_position, {
+		&"entry_id": &"e2e_pulse", &"item_id": &"pulse_rifle", &"grade": 3,
+		&"quantity": 1, &"source_type": &"room_reward",
+	})
+	if equip_drop == null:
+		return _fail("P4-04A 현장 무기 후보를 생성하지 못했습니다.")
+	equip_drop.call(&"_process", 0.0)
+	await process_frame
+	if not _judge_player_perception(&"field_loot_immediate_equip", "현장 무기 즉시 장착·기존 장비 처리 이해"):
+		return false
+	var equip_before: Dictionary = service.call(&"get_snapshot")
+	await _tap_key(KEY_R)
+	await process_frame
+	var equip_after: Dictionary = service.call(&"get_snapshot")
+	var after_weapon: StringName = equipment.call(&"get_summary").get(&"active_weapon_id", &"")
+	return _judge_gameplay_flow(&"field_loot_immediate_equip", "드랍→R 장착→무기 변화→복구 가능", {
+		&"before_weapon": before_weapon,
+		&"after_weapon": after_weapon,
+		&"before": equip_before,
+		&"after": equip_after,
 	})
 
 

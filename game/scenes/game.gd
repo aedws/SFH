@@ -191,7 +191,8 @@ const LOOT_TABLE_METHODS := [
 ]
 const FIELD_LOOT_ACQUISITION_METHODS := [
 	&"configure", &"spawn_from_source", &"spawn_candidate", &"acquire_focused",
-	&"cancel_preview", &"get_active_drops", &"get_panel", &"get_snapshot",
+	&"equip_focused", &"restore_equipment_swaps", &"cancel_preview",
+	&"get_active_drops", &"get_panel", &"get_snapshot",
 ]
 const INVENTORY_METHODS := [
 	&"configure",
@@ -370,6 +371,7 @@ var growth_balance_service
 var loot_lifecycle_service
 var loot_table_provider
 var field_loot_acquisition_service
+var field_loot_equip_catalog: FieldLootEquipCatalog
 var progression_system
 var health_recovery_system
 var run_buff_system
@@ -470,6 +472,8 @@ func _ready() -> void:
 	_configure_tier_button(large_map_button, "large")
 	_configure_balance_mode_selector()
 	if features.loot_lifecycle_enabled and not _install_loot_lifecycle():
+		return
+	if features.loot_tables_enabled and not _load_field_loot_equip_catalog():
 		return
 	if features.loot_tables_enabled and not _install_loot_table_provider():
 		return
@@ -715,6 +719,7 @@ func _binding_label(action_id: StringName) -> String:
 			&"switch_weapon": "Q", &"combat_skill_1": "1", &"combat_skill_2": "2",
 			&"combat_skill_3": "3", &"toggle_inventory": "I", &"toggle_equipment": "U",
 			&"toggle_modification": "E", &"toggle_key_mapping": "K",
+			&"equip_field_loot": "R",
 		}.get(action_id, String(action_id))
 	for entry: Dictionary in key_mapping_service.call(&"get_entries"):
 		if entry[&"action_id"] == action_id:
@@ -1046,6 +1051,8 @@ func _return_to_start_hub() -> void:
 		prepared_equipment_state.clear()
 		lose_equipped_loadout_on_return = false
 	else:
+		if field_loot_acquisition_service != null:
+			field_loot_acquisition_service.call(&"restore_equipment_swaps")
 		_capture_prepared_loadout()
 	get_tree().paused = false
 	game_over_overlay.visible = false
@@ -1620,7 +1627,9 @@ func _install_loot_table_provider() -> bool:
 		return false
 	table_config = table_config.duplicate(true) as LootTableConfig
 	table_config.source_mode = selected_balance_source_mode
-	if not loot_table_provider.call(&"configure", table_config, loot_lifecycle_service):
+	if not loot_table_provider.call(
+		&"configure", table_config, loot_lifecycle_service, field_loot_equip_catalog
+	):
 		_report_configuration_error("지역·난이도 드랍 테이블을 불러오지 못했습니다.")
 		return false
 	return true
@@ -1709,8 +1718,21 @@ func _reconfigure_persistent_loot_data() -> void:
 		if table_config != null:
 			table_config = table_config.duplicate(true) as LootTableConfig
 			table_config.source_mode = selected_balance_source_mode
-			loot_table_provider.call(&"configure", table_config, loot_lifecycle_service)
+			loot_table_provider.call(
+				&"configure", table_config, loot_lifecycle_service, field_loot_equip_catalog
+			)
 	_refresh_contract_setup_ui()
+
+
+func _load_field_loot_equip_catalog() -> bool:
+	field_loot_equip_catalog = load(features.field_loot_equip_catalog_path) as FieldLootEquipCatalog
+	if (
+		field_loot_equip_catalog == null
+		or not field_loot_equip_catalog.validation_errors().is_empty()
+	):
+		_report_configuration_error("현장 즉시 장착 카탈로그가 올바르지 않습니다.")
+		return false
+	return true
 
 
 func _install_equipment() -> bool:
@@ -2082,12 +2104,16 @@ func _install_field_loot_acquisition() -> bool:
 		equipment_system,
 		inventory_system,
 		context,
-		effective_seed
+		effective_seed,
+		field_loot_equip_catalog if features.field_loot_immediate_equip_enabled else null
 	):
 		_report_configuration_error("현장 전리품 비교·획득 모듈을 작전 문맥에 연결하지 못했습니다.")
 		return false
 	field_loot_acquisition_service.connect(
 		&"loot_acquired", Callable(self, &"_on_field_loot_acquired")
+	)
+	field_loot_acquisition_service.connect(
+		&"loot_equipped", Callable(self, &"_on_field_loot_equipped")
 	)
 	field_loot_acquisition_service.connect(
 		&"interaction_availability_changed",
@@ -2735,6 +2761,21 @@ func _on_field_loot_acquired(
 		],
 		4,
 		2.4
+	)
+
+
+func _on_field_loot_equipped(
+	_item_id: StringName,
+	result: Dictionary,
+	_snapshot: Dictionary
+) -> void:
+	combat_hud_presenter.call(
+		&"show_status",
+		"현장 즉시 장착 · %s → %s · 기존 장비는 런 임시 보관" % [
+			result.get(&"previous_name", "없음"), result.get(&"candidate_name", "새 장비"),
+		],
+		5,
+		2.8
 	)
 
 

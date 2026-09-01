@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 54 TOPICS</span><span>62 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 55 TOPICS</span><span>64 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -40,12 +40,12 @@ tags:
 | 입력·자유 스킬 바인딩 | ×2 | 100% | 물리 키와 스킬→Action 배치를 분리하고 충돌 교환·HUD 반영·JSON 저장·초기화를 구현 |
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
 | 로비 인베스트먼트·타겟 파밍 | ×2 | 65% | 맵·지역·난이도·페널티·상점 구현. 캐릭터와 완성형 무기·스킬·유틸리티 투자 UI가 남음 |
-| 전리품 2대 분류·현장 파밍 | ×2 | 25% | 생명 주기·지역 테이블·현장 비교·보류·획득과 런 임시 보관 구현. 즉시 장비/스킬 교체, 세션 소켓과 자동 환전은 없음 |
+| 전리품 2대 분류·현장 파밍 | ×2 | 30% | 생명 주기·지역 테이블·현장 비교·획득과 무기 즉시 장착·안전 복구 구현. 스킬 교체, 세션 소켓과 자동 환전은 없음 |
 | 가변 태그·등급 확장 | ×1 | 80% | 동적 태그·등급·불일치 비활성·메커니즘 변형 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
 | 비동기 랭킹·시즌 보상 | ×1 | 40% | 동일 조건 3대 로컬 랭킹 구현. 서버 검증과 주간 칭호·오라 보상은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 13`입니다. 현재 결과는 `(100×1 + 100×2 + 95×2 + 65×2 + 25×2 + 80×1 + 95×2 + 40×1) ÷ 13 ≈ 75%`입니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 13`입니다. 현재 결과는 `(100×1 + 100×2 + 95×2 + 65×2 + 30×2 + 80×1 + 95×2 + 40×1) ÷ 13 ≈ 76%`지만, P4-04가 무기만 완료된 중간 단계이므로 외부 표시값은 다음 완결 게이트까지 보수적으로 75%를 유지합니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -56,7 +56,7 @@ tags:
 | Phase 1 · 이동·타게팅·자유 바인딩 | 완료 | 키 배치와 스킬 배치를 분리하고 실제 발동·HUD·영구 저장까지 연결 |
 | Phase 2 · Q·태그·AP·쿨타임 | 완료 | 주·보조 교체, 태그 호환성, 에너지·충전·개별 쿨타임 구현 |
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
-| Phase 4 · 현장 교체·룬 소켓·환전 | 기반 완료 | 현장 드랍 비교·ESC 보류·F 획득까지 완료. 즉시 교체와 세션 룬 자동 환전이 남음 |
+| Phase 4 · 현장 교체·룬 소켓·환전 | 기반 완료 | 현장 무기 R 즉시 장착·안전 복구까지 완료. 스킬 교체와 세션 룬 자동 환전이 남음 |
 | Phase 5 · 로비 4대 세팅·계약·상점 | 부분 완료 | 계약·페널티·상점은 구현. 캐릭터·무기·스킬·유틸리티 선택 흐름이 불완전 |
 | Phase 6 · 비동기 랭킹·시즌 보상 | 로컬 기반 | 3대 로컬 보드만 구현. 서버 제공자와 칭호·오라 보상이 없음 |
 
@@ -75,7 +75,8 @@ tags:
 | 완료 | Phase 1 자유 스킬 배치 | 물리 키와 스킬 위치의 두 단계 편집 구현 | 충돌 교환·HUD/발동·JSON 복구와 실제 K/ESC E2E 완료 |
 | 완료 | 배포·보안 작업선 | Pages·Worker·비공개 R2가 섞여 보일 수 있었음 | 문서·플레이·원본 보관 표면 분리, 이중 백업·복구 PR·정적 경계 검사 완료 |
 | 완료 | Phase 4 P4-01~03 기반 | 생명 주기·타겟 파밍·현장 획득 계약 필요 | Item/LootTable→드랍→비교→ESC 보류→F 런 임시 보관 E2E 완료 |
-| 1 | Phase 4 P4-04 현장 즉시 교체 | 비교·런 임시 보관까지 존재 | 무기·스킬 교체와 기존 항목 처리 결과를 기획 요청 근거대로 연결 |
+| 완료 | Phase 4 P4-04A 현장 무기 교체 | 비교·런 임시 보관까지 존재 | R 즉시 장착·활성 무기 변화·거점 복구·임시 정책 표시 완료 |
+| 1 | Phase 4 P4-04B 현장 스킬 교체 | 스킬 슬롯·태그·키 배치 교체 없음 | 호환 검증→즉시 교체→HUD/실제 발동→복구 연결 |
 | 2 | Phase 4 P4-05~06 순환 | 세션 소켓·자동 환전 미구현 | 소켓→전투 변화→해금/환전 E2E 통과 |
 | 3 | Phase 5 로비 4대 세팅 | 맵·페널티·상점·소모품 일부 구현 | 캐릭터·무기·스킬·유틸리티 투자와 BEP 미리보기 연결 |
 | 4 | Phase 6 비동기 시즌 | 3대 로컬 랭킹 구현 | 서버 검증 제공자와 주간 칭호·오라 보상 모듈 연결 |
@@ -84,9 +85,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 44 · IMPROVE 53 · CHANGE 59 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 48 · IMPROVE 58 · CHANGE 64 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>44</b><small>BUILD</small></span><span><b>53</b><small>IMPROVE</small></span><span><b>59</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>58</b><small>IMPROVE</small></span><span><b>64</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>M 확장 지도 워프 · 전투 방 완주 조기 탈출 · 크레딧 보상 박스</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -356,7 +357,7 @@ tags:
         <p><a href="features/loot-tables/">지역·난이도 전리품 →</a> · <a href="features/fog-of-war/">전장의 안개 →</a> · <a href="quality/e2e-play-session/">E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 14</small><b>기획 요청 허브 · P4-03 현장 비교·획득 · Sheet 상시 확장 규칙</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -375,6 +376,21 @@ tags:
         <div class="sfh-group"><h3>수정 · 6</h3><p>Manifest·방 조립·마일스톤·검색·노드맵·문서 검증을 P4-03 완료 상태로 갱신했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>ESC 보류가 월드 전리품까지 제거하지 않도록 상태 전이를 분리했습니다.</p></div>
         <p><a href="features/field-loot-acquisition/">현장 전리품 →</a> · <a href="design/planner-request-workflow/">기획 요청 운영 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 15</small><b>P4-04A 현장 무기 즉시 장착 · 역할형 협업 위키</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 방 보상 무기를 R로 바로 사용하고, 기획자와 AI 개발자의 다음 행동·완료 근거를 첫 화면에서 분리합니다.</strong><ul>
+          <li><b>게임:</b> Weapon·LootTable Sheet 기반 전격 펄스 소총, R 즉시 장착, 기존 무기 런 임시 보관·거점 복구를 연결했습니다.</li>
+          <li><b>위키:</b> 담당 역할·차단·상태·수락 기준·Sheet 위치·검증 근거·Notion 마지막 확인 시각과 역할 필터를 추가했습니다.</li>
+          <li><b>경계:</b> 미확정 영구 해금·소실을 선행하지 않고 P4-04B 스킬 교체와 P4-06 정산을 별도 작업으로 남겼습니다.</li>
+        </ul></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>무기 정의·장착 카탈로그·교체 서비스·R 입력을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>협업 역할, 최신성, 담당자, 수락 기준, 근거 가시성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>Sheet·CSV·Manifest·키 설정·작업 라인을 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>미확정 정책의 영구 반영을 구조적으로 차단했습니다.</p></div>
+        <p><a href="features/field-loot-immediate-equip/">현장 즉시 장착 →</a> · <a href="design/wiki-collaboration-workflow/">협업 개선안 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
   </div>
