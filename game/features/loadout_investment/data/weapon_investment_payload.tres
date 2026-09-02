@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EmbeddedCsvPayload" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/balance_data/embedded_csv_payload.gd" id="1_payload"]
+
+[resource]
+script = ExtResource("1_payload")
+source_path = "res://game/features/loadout_investment/data/weapon_investment.csv"
+csv_text = "item_id,display_name,slot_id,resource_path,run_investment_price,default_owned,required_unlock_id,source_status\nassault_rifle,돌격소총,main,res://game/features/equipment/definitions/weapons/assault_rifle.tres,0,TRUE,,temporary\nservice_pistol,제식 권총,secondary,res://game/features/equipment/definitions/weapons/service_pistol.tres,0,TRUE,,temporary\npulse_rifle,전격 펄스 소총,main,res://game/features/equipment/definitions/weapons/pulse_rifle.tres,80,FALSE,region_industrial_district,temporary\n"

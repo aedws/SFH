@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "updated": "2026-09-02",
   "notion_url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
   "instruction": "기획자는 요청 ID를 Notion 결정 제목에 포함하고, AI 개발자는 수락 기준과 검증 근거를 같은 카드에 연결합니다.",
@@ -73,10 +73,21 @@
       "decision_id": "DEC-P5-LOADOUT-PENDING", "source_anchor": "3ce5b728-0040-810d-8ae1-c4792cb5072a", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
       "summary": "진행 차단을 피하기 위해 Character Sheet에 선봉대·질주자·방벽병 3종 임시 가격·패시브를 구현했습니다. 기획 확정 시 데이터만 교체합니다. 유틸리티 목록은 P5-03에서 별도 요청합니다.",
       "basis": "Master GDD Phase 5 로비 4대 세팅과 손익분기점 경제",
-      "notion_prompt": "DATA-P5-01-01 제목으로 캐릭터와 유틸리티별 ID·표시명·가격·효과·해금·소실 규칙을 작성해 주세요.",
+      "notion_prompt": "DATA-P5-01-01 제목으로 캐릭터별 ID·표시명·가격·기본 능력·패시브·해금 규칙을 작성해 주세요. 유틸리티는 P5-03 요청에서 분리합니다.",
       "sheet_target": "Character!A1:L5 생성 완료 · 1행 변수명·2행 설명·3행 이후 데이터",
       "acceptance": ["캐릭터별 기본 능력·패시브·투입 가격", "무료 기본 캐릭터 포함 여부", "임시값을 확정값으로 바꿀 Notion 근거"],
       "evidence": [{"label": "P5-01 캐릭터 선택", "href": "features/character-selection/"}, {"label": "현행 작업 라인", "href": "design/current-milestone-workline/"}]
+    },
+    {
+      "id": "DATA-P5-02-01", "status": "data", "state": "provisional_implemented", "state_label": "무기·스킬 임시값 구현·교체 대기", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
+      "tag": "밸런스 데이터", "title": "무기·스킬 런 투자 가격·해금 확정",
+      "decision_id": "DEC-P5-LOADOUT-PENDING", "source_anchor": "3ce5b728-0040-810d-8ae1-c4792cb5072a", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "summary": "진행 차단을 피하기 위해 기본 돌격소총·권총·3스킬은 무료 소유, 펄스 소총 80C와 아크 대시 60C는 이번 런 구매로 임시 구현했습니다. 기획 확정 시 Sheet와 CSV만 교체합니다.",
+      "basis": "Master GDD Phase 5 주·보조무기·스킬 투자와 태그 기반 스킬 장착 규칙",
+      "notion_prompt": "DATA-P5-02-01 제목으로 무기·스킬별 런 가격, 기본 소유, 해금 ID, 허용 슬롯, 무기 태그와 스킬 요구 태그를 확정해 주세요.",
+      "sheet_target": "Weapon!AA1:AE7 · Skill!O1:R6 확장 완료 · 1행 변수명·2행 설명·3행 이후 데이터",
+      "acceptance": ["주·보조무기와 스킬별 런 투자 가격", "무료 기본 로드아웃과 영구 해금 조건", "허용 슬롯·무기 태그·스킬 요구 태그", "임시값을 확정값으로 바꿀 Notion 근거"],
+      "evidence": [{"label": "P5-02 무기·스킬 런 투자", "href": "features/loadout-investment/"}, {"label": "현행 작업 라인", "href": "design/current-milestone-workline/"}]
     },
     {
       "id": "PLAN-P6-01-01", "status": "request", "state": "needs_planner", "state_label": "운영 정책 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,

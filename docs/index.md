@@ -36,10 +36,10 @@ search:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>79%</b>
+        <b>80%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="79"><i style="width: 79%"></i></div>
-      <p>Master GDD v1005 · 10개 확정 시스템 · Phase 1~4 완료 · 확대 범위 가중 산식 79%</p>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80"><i style="width: 80%"></i></div>
+      <p>Master GDD v1005 · 10개 확정 시스템 · Phase 1~4 완료 · P5-02 반영 가중 산식 80%</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
       <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
     </div>
@@ -121,14 +121,31 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 2 TOPICS</span><span>73 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 3 TOPICS</span><span>74 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 4 · IMPROVE 6 · CHANGE 7 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 9 · IMPROVE 10 · CHANGE 11 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>7</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>9</b><small>BUILD</small></span><span><b>10</b><small>IMPROVE</small></span><span><b>11</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>P5-02 무기·스킬 런 투자 · 실전 복원</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 작전 전에 주·보조무기와 스킬 3칸의 가격·소유·해금·태그를 비교하고, 이번 런 구매부터 실전 발동과 거점 복원까지 한 흐름으로 연결했습니다.</strong><ul>
+          <li><b>선택 UI:</b> 브리핑에 주무기·보조무기·S1~S3 선택, 개별 상태, 로드아웃 추가 비용과 출격 가능 여부를 압축 표시합니다.</li>
+          <li><b>거래:</b> 캐릭터와 로드아웃 추가 비용을 작전 계약이 한 번만 합산하며, 미해금·태그 불일치는 차감 전에 출격을 차단합니다.</li>
+          <li><b>실전:</b> 런 구매한 펄스 소총과 아크 대시를 장비·스킬 공개 계약으로 교체하고 성공·사망·롤백 뒤 준비 상태를 복원합니다.</li>
+          <li><b>데이터:</b> Weapon·Skill Sheet에 가격·기본 소유·해금·허용 슬롯 열을 추가하고 실시간 시험→확정 CSV→Web payload 계약을 유지했습니다.</li>
+          <li><b>검증:</b> 소유/잠김/런 구매, 1회 차감, 태그, 실전 무기·스킬, 거점 복원과 대형 성능 예산을 자동 판정했습니다.</li>
+        </ul><p class="sfh-intent"><b>임시 기획값</b><span>펄스 소총 80C·아크 대시 60C는 `temporary` 데이터입니다. 확정 시 Sheet와 CSV만 교체하며 Cloudflare 플랜·과금 설정은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>카탈로그·선택 서비스·브리핑·작전 결제·런타임 장비/스킬 교체와 복원을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>투자 비교, 잠김 피드백, 데이터 교체성, 플레이어 인식 E2E를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>작업선·진행률·기획 요청·검색·노드맵을 P5-03 착수 기준으로 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>소형 작전에서 임시 로드아웃 가격이 보상 용량을 넘던 값을 플레이 가능한 140C로 보정했습니다.</p></div>
+        <p><a href="features/loadout-investment/">무기·스킬 투자 계약 →</a> · <a href="architecture/module-audit/#p5-02-2026-09-02">모듈 감사 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>P5-01 캐릭터 투자 · Windows 최신본 보존</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 작전 전에 캐릭터 가격과 패시브를 비교해 선택하고, 배포 저장소에는 검증된 최신 Windows 다운로드만 남깁니다.</strong><ul>
@@ -141,6 +158,7 @@ search:
         <div class="sfh-group"><h3>구현 · 4</h3><p>캐릭터 Definition/Table/Service, 브리핑 선택·패시브 적용, 로컬·R2 최신본 보존을 구현했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 3</h3><p>작전 전 비교 가능성, Sheet 교체성, 다운로드 저장 공간 관리를 개선했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 2</h3><p>P5 작업선과 기획 요청을 P5-02 착수 기준으로 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>신규 결함 수정 없이 기능·배포 보존 범위만 확장했습니다.</p></div>
         <p><a href="features/character-selection/">캐릭터 선택 계약 →</a> · <a href="getting-started/run-project/">Windows 보존 규칙 →</a></p>
       </div>
     </details>

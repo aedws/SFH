@@ -14,6 +14,10 @@ var risk_summary: Label
 var selection_summary: Label
 var character_button: Button
 var character_summary: Label
+var main_weapon_button: Button
+var secondary_weapon_button: Button
+var skill_buttons: Array[Button] = []
+var loadout_investment_summary: Label
 var preview: Control
 var tier_buttons: Dictionary = {}
 var root_panel: PanelContainer
@@ -28,7 +32,7 @@ func install(overlay: Control) -> Dictionary:
 	if content == null:
 		return {}
 	if content.has_node("MainColumns"):
-		return {&"launch_button": launch_button, &"character_button": character_button}
+		return _control_contract()
 
 	var panel := overlay.get_node("Center/Panel") as PanelContainer
 	root_panel = panel
@@ -128,6 +132,25 @@ func install(overlay: Control) -> Dictionary:
 	character_summary = _label("패시브 데이터 계산 중...", 12, Color("8ffffc"))
 	character_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	right.add_child(character_summary)
+	right.add_child(_section_title("런 장비 투자"))
+	var weapon_row := HBoxContainer.new()
+	weapon_row.add_theme_constant_override("separation", 6)
+	right.add_child(weapon_row)
+	main_weapon_button = _compact_selection_button("MainWeaponInvestmentButton")
+	secondary_weapon_button = _compact_selection_button("SecondaryWeaponInvestmentButton")
+	weapon_row.add_child(main_weapon_button)
+	weapon_row.add_child(secondary_weapon_button)
+	var skill_row := HBoxContainer.new()
+	skill_row.add_theme_constant_override("separation", 6)
+	right.add_child(skill_row)
+	for index in 3:
+		var button := _compact_selection_button("SkillInvestmentButton%d" % index)
+		button.set_meta(&"skill_slot_index", index)
+		skill_buttons.append(button)
+		skill_row.add_child(button)
+	loadout_investment_summary = _label("장비 투자 데이터 계산 중...", 11, Color("8ffffc"))
+	loadout_investment_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	right.add_child(loadout_investment_summary)
 	right.add_child(_section_title("작전 조건 선택"))
 	var contract_section := content.get_node("ContractSection") as VBoxContainer
 	_move(contract_section, right)
@@ -186,7 +209,7 @@ func install(overlay: Control) -> Dictionary:
 	footer.text = "ESC  전초기지 복귀   ·   투입 시 비용과 장착 소모품이 실제 차감됩니다"
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	content.move_child(footer, content.get_child_count() - 1)
-	return {&"launch_button": launch_button, &"character_button": character_button}
+	return _control_contract()
 
 
 func update(payload: Dictionary) -> void:
@@ -211,6 +234,7 @@ func update(payload: Dictionary) -> void:
 		String(character.get(&"passive_name", "없음")),
 		String(character.get(&"passive_description", "적용 효과 없음")),
 	]
+	_update_loadout_investment(payload.get(&"loadout_investment", {}))
 	mission_title.text = "%s  ·  %s" % [region_name, tier_name]
 	mission_code.text = "%s / %s / %s" % [String(region_id).to_upper(), String(difficulty_id).to_upper(), String(tier_id).to_upper()]
 	mission_intel.text = "목표 %d분  ·  방 %d~%d개  ·  동시 적 %d~%d명\n핵심 루프  침투 → 탐색·교전 → 자원 회수 → 탈출 방어" % [
@@ -265,9 +289,69 @@ func get_snapshot() -> Dictionary:
 		&"selection_summary": selection_summary.text if selection_summary != null else "",
 		&"target_farming_summary": target_farming_summary.text if target_farming_summary != null else "",
 		&"character_summary": character_summary.text if character_summary != null else "",
+		&"loadout_investment_summary": (
+			loadout_investment_summary.text if loadout_investment_summary != null else ""
+		),
+		&"main_weapon_text": main_weapon_button.text if main_weapon_button != null else "",
+		&"secondary_weapon_text": secondary_weapon_button.text if secondary_weapon_button != null else "",
+		&"skill_button_texts": skill_buttons.map(func(button): return button.text),
 		&"selected_tiers": tier_buttons.keys().filter(
 			func(id): return bool((tier_buttons[id] as Button).get_meta(&"selected", false))
 		),
+	}
+
+
+func _update_loadout_investment(snapshot: Dictionary) -> void:
+	if main_weapon_button == null:
+		return
+	var weapons: Dictionary = snapshot.get(&"weapons", {})
+	_update_investment_button(main_weapon_button, "MAIN", weapons.get(&"main", {}))
+	_update_investment_button(secondary_weapon_button, "SUB", weapons.get(&"secondary", {}))
+	var skills: Array = snapshot.get(&"skills", [])
+	for index in skill_buttons.size():
+		_update_investment_button(
+			skill_buttons[index], "S%d" % (index + 1),
+			skills[index] if index < skills.size() else {}
+		)
+	var errors: PackedStringArray = snapshot.get(&"selection_errors", PackedStringArray())
+	loadout_investment_summary.text = "LOADOUT  추가 %d C · %s" % [
+		int(snapshot.get(&"additional_entry_cost", 0)),
+		"투입 가능" if bool(snapshot.get(&"selection_ready", true)) else " / ".join(errors),
+	]
+	loadout_investment_summary.add_theme_color_override(
+		"font_color", Color("8ffffc") if errors.is_empty() else Color("ff9e80")
+	)
+
+
+func _update_investment_button(button: Button, prefix: String, item: Dictionary) -> void:
+	var name := String(item.get(&"display_name", "비어 있음"))
+	var state := String(item.get(&"state_label", "상태 확인"))
+	var price := int(item.get(&"run_investment_price", 0))
+	button.text = "%s · %s\n%s%s" % [
+		prefix, name, state,
+		" %d C" % price if price > 0 and not bool(item.get(&"default_owned", false)) else "",
+	]
+	button.tooltip_text = "%s · %s" % [state, "임시 기획값" if item.get(&"source_status", &"temporary") == &"temporary" else "기획 확정"]
+	button.add_theme_color_override(
+		"font_color", Color("ff9e80") if item.get(&"state", &"") == &"locked" else Color("d2fffe")
+	)
+
+
+func _compact_selection_button(node_name: String) -> Button:
+	var button := Button.new()
+	button.name = node_name
+	button.custom_minimum_size = Vector2(0.0, 38.0)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.add_theme_font_size_override("font_size", 11)
+	return button
+
+
+func _control_contract() -> Dictionary:
+	return {
+		&"launch_button": launch_button, &"character_button": character_button,
+		&"main_weapon_button": main_weapon_button,
+		&"secondary_weapon_button": secondary_weapon_button,
+		&"skill_buttons": skill_buttons,
 	}
 
 

@@ -49,6 +49,7 @@ extends Resource
 @export var persistent_profile_enabled: bool = true
 @export var operation_contracts_enabled: bool = true
 @export var character_selection_enabled: bool = true
+@export var loadout_investment_enabled: bool = true
 @export var extraction_defense_enabled: bool = true
 @export var hub_economy_enabled: bool = true
 @export var smart_targeting_enabled: bool = true
@@ -143,6 +144,9 @@ extends Resource
 )
 @export_file("*.tres") var character_selection_config_path: String = (
 	"res://game/features/character_selection/configs/default_character_selection.tres"
+)
+@export_file("*.tres") var loadout_investment_config_path: String = (
+	"res://game/features/loadout_investment/configs/default_loadout_investment.tres"
 )
 @export_file("*.tres") var hub_economy_config_path: String = (
 	"res://game/features/hub_economy/configs/default_hub_economy.tres"
@@ -275,6 +279,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"operation_contracts")
 	if character_selection_enabled:
 		result.append(&"character_selection")
+	if loadout_investment_enabled:
+		result.append(&"loadout_investment")
 	if extraction_defense_enabled:
 		result.append(&"extraction_defense")
 	if hub_economy_enabled:
@@ -483,6 +489,12 @@ func validation_errors() -> PackedStringArray:
 		errors.append("character_selection은 operation_contracts 모듈이 필요합니다.")
 	if character_selection_enabled and not _resource_exists(character_selection_config_path):
 		errors.append("캐릭터 선택 설정 Resource 경로가 유효하지 않습니다.")
+	if loadout_investment_enabled and not operation_contracts_enabled:
+		errors.append("loadout_investment는 operation_contracts 모듈이 필요합니다.")
+	if loadout_investment_enabled and (not equipment_enabled or not combat_skills_enabled):
+		errors.append("loadout_investment는 equipment·combat_skills 모듈이 필요합니다.")
+	if loadout_investment_enabled and not _resource_exists(loadout_investment_config_path):
+		errors.append("로드아웃 투자 설정 Resource 경로가 유효하지 않습니다.")
 	if extraction_defense_enabled and not extraction_enabled:
 		errors.append("extraction_defense는 extraction 모듈이 필요합니다.")
 	if extraction_defense_enabled and not _resource_exists(extraction_defense_config_path):

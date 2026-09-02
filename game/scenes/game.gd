@@ -85,6 +85,9 @@ const OPERATION_CONTRACT_SCENE_PATH := (
 const CHARACTER_SELECTION_SCENE_PATH := (
 	"res://game/features/character_selection/character_selection_service.tscn"
 )
+const LOADOUT_INVESTMENT_SCENE_PATH := (
+	"res://game/features/loadout_investment/loadout_investment_service.tscn"
+)
 const HUB_ECONOMY_SCENE_PATH := "res://game/features/hub_economy/hub_economy_system.tscn"
 const CRAFTING_SCENE_PATH := "res://game/features/crafting/crafting_system.tscn"
 const PENALTY_SCENE_PATH := "res://game/features/penalty_modifiers/penalty_system.tscn"
@@ -312,6 +315,12 @@ const CHARACTER_SELECTION_METHODS := [
 	&"configure", &"request_live_catalog", &"load_csv_text", &"select_character",
 	&"cycle_character", &"get_investment_context", &"get_snapshot",
 ]
+const LOADOUT_INVESTMENT_METHODS := [
+	&"configure", &"request_live_catalog", &"load_catalog_text",
+	&"cycle_weapon", &"cycle_skill", &"select_weapon", &"select_skill",
+	&"can_launch", &"get_selection_errors", &"get_investment_context",
+	&"commit_run_purchase", &"finish_run", &"get_snapshot",
+]
 const HUB_ECONOMY_METHODS := [
 	&"configure", &"quote", &"purchase", &"set_consumable_loadout",
 	&"get_consumable_effects", &"get_snapshot",
@@ -430,6 +439,7 @@ var equipment_upgrade_service
 var persistent_profile
 var operation_contract_service
 var character_selection_service
+var loadout_investment_service
 var hub_economy_system
 var crafting_system
 var penalty_system
@@ -446,6 +456,9 @@ var operation_setup_presenter := OPERATION_SETUP_PRESENTER_SCRIPT.new()
 var combat_hud_presenter := COMBAT_HUD_PRESENTER_SCRIPT.new()
 var operation_launch_button: Button
 var character_selection_button: Button
+var main_weapon_investment_button: Button
+var secondary_weapon_investment_button: Button
+var skill_investment_buttons: Array[Button] = []
 var active_contract: Dictionary = {}
 var current_run_id: StringName = &""
 var run_sequence: int = 0
@@ -468,6 +481,8 @@ var run_started: bool = false
 var run_ended: bool = false
 var pending_buff_levels: Array[int] = []
 var modal_ui_visibility_snapshot: Dictionary = {}
+var active_run_skill_loadout: Resource
+var run_skill_binding_replacements: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -480,6 +495,11 @@ func _ready() -> void:
 	var operation_controls: Dictionary = operation_setup_presenter.call(&"install", run_setup_overlay)
 	operation_launch_button = operation_controls.get(&"launch_button") as Button
 	character_selection_button = operation_controls.get(&"character_button") as Button
+	main_weapon_investment_button = operation_controls.get(&"main_weapon_button") as Button
+	secondary_weapon_investment_button = operation_controls.get(&"secondary_weapon_button") as Button
+	for button in operation_controls.get(&"skill_buttons", []):
+		if button is Button:
+			skill_investment_buttons.append(button)
 	combat_hud_presenter.call(&"install", hud_margin)
 	restart_button.pressed.connect(_restart_run)
 	setup_close_button.pressed.connect(_close_run_setup)
@@ -496,6 +516,12 @@ func _ready() -> void:
 		operation_launch_button.pressed.connect(_start_selected_run)
 	if character_selection_button != null:
 		character_selection_button.pressed.connect(_cycle_character)
+	if main_weapon_investment_button != null:
+		main_weapon_investment_button.pressed.connect(_cycle_investment_weapon.bind(&"main"))
+	if secondary_weapon_investment_button != null:
+		secondary_weapon_investment_button.pressed.connect(_cycle_investment_weapon.bind(&"secondary"))
+	for button in skill_investment_buttons:
+		button.pressed.connect(_cycle_investment_skill.bind(int(button.get_meta(&"skill_slot_index", 0))))
 	region_button.pressed.connect(_cycle_region)
 	difficulty_button.pressed.connect(_cycle_difficulty)
 	penalty_button.pressed.connect(_cycle_penalty)
@@ -620,6 +646,25 @@ func _install_persistent_services() -> bool:
 			_report_configuration_error("캐릭터 선택 모듈을 구성하지 못했습니다.")
 			return false
 		character_selection_service.connect(
+			&"selection_changed", Callable(self, &"_on_contract_changed")
+		)
+	if features.loadout_investment_enabled:
+		loadout_investment_service = _instantiate_feature(
+			LOADOUT_INVESTMENT_SCENE_PATH, self, &"LoadoutInvestment"
+		)
+		var loadout_investment_config := load(
+			features.loadout_investment_config_path
+		) as LoadoutInvestmentConfig
+		if (
+			not _supports_methods(loadout_investment_service, LOADOUT_INVESTMENT_METHODS)
+			or loadout_investment_config == null
+			or not loadout_investment_service.call(
+				&"configure", loadout_investment_config, persistent_profile
+			)
+		):
+			_report_configuration_error("런 장비 투자 모듈을 구성하지 못했습니다.")
+			return false
+		loadout_investment_service.connect(
 			&"selection_changed", Callable(self, &"_on_contract_changed")
 		)
 	if features.hub_economy_enabled:
@@ -944,11 +989,34 @@ func _cycle_character() -> void:
 		character_selection_service.call(&"cycle_character", 1)
 
 
+func _cycle_investment_weapon(slot_id: StringName) -> void:
+	if loadout_investment_service != null:
+		loadout_investment_service.call(&"cycle_weapon", slot_id, 1)
+
+
+func _cycle_investment_skill(slot_index: int) -> void:
+	if loadout_investment_service != null:
+		loadout_investment_service.call(&"cycle_skill", slot_index, 1)
+
+
 func _character_investment_context() -> Dictionary:
 	return (
 		character_selection_service.call(&"get_investment_context")
 		if character_selection_service != null else {}
 	)
+
+
+func _operation_investment_context() -> Dictionary:
+	var result := _character_investment_context().duplicate(true)
+	var character_cost := int(result.get(&"additional_entry_cost", 0))
+	if loadout_investment_service == null:
+		return result
+	var loadout_context: Dictionary = loadout_investment_service.call(&"get_investment_context")
+	result[&"additional_entry_cost"] = character_cost + int(
+		loadout_context.get(&"additional_entry_cost", 0)
+	)
+	result[&"loadout_investment"] = loadout_context.duplicate(true)
+	return result
 
 
 func _refresh_contract_setup_ui() -> void:
@@ -998,7 +1066,7 @@ func _refresh_contract_setup_ui() -> void:
 	var quote: Dictionary = {}
 	if operation_contract_service != null and ResourceLoader.exists(tier_path):
 		quote = operation_contract_service.call(
-			&"quote", load(tier_path), penalty_snapshot, _character_investment_context()
+			&"quote", load(tier_path), penalty_snapshot, _operation_investment_context()
 		)
 	var loot_briefing := {}
 	if loot_table_provider != null:
@@ -1042,11 +1110,18 @@ func _refresh_contract_setup_ui() -> void:
 				character_selection_service.call(&"get_snapshot")
 				if character_selection_service != null else {}
 			),
+			&"loadout_investment": (
+				loadout_investment_service.call(&"get_snapshot")
+				if loadout_investment_service != null else {}
+			),
 			&"penalty_names": penalty_names,
 			&"loadout": "응급키트" if not loadout.is_empty() else "비어 있음",
 			&"can_launch": not ({
 				"small": small_map_button, "medium": medium_map_button, "large": large_map_button,
-			}[selected_tier] as Button).disabled,
+			}[selected_tier] as Button).disabled and (
+				loadout_investment_service == null
+				or bool(loadout_investment_service.call(&"can_launch"))
+			),
 			&"map": {
 				&"display_name": tier_config.get("display_name"),
 				&"target_seconds": tier_config.get("target_run_duration_seconds"),
@@ -1066,13 +1141,21 @@ func start_run(map_size: String) -> bool:
 		return false
 	if not _tier_resources_are_available(map_size):
 		return false
+	if (
+		loadout_investment_service != null
+		and not bool(loadout_investment_service.call(&"can_launch"))
+	):
+		var errors: PackedStringArray = loadout_investment_service.call(&"get_selection_errors")
+		status_label.text = "작전 투입 실패 · %s" % " / ".join(errors)
+		_refresh_contract_setup_ui()
+		return false
 	var pending_config: Resource = load(MAP_CONFIG_PATH_PATTERN % map_size)
 	if operation_contract_service != null:
 		var penalty_snapshot: Dictionary = (
 			penalty_system.call(&"get_snapshot") if penalty_system != null else {}
 		)
 		active_contract = operation_contract_service.call(
-			&"invest", pending_config, penalty_snapshot, _character_investment_context()
+			&"invest", pending_config, penalty_snapshot, _operation_investment_context()
 		)
 		if not bool(active_contract.get(&"success", false)):
 			status_label.text = "작전 투입 실패 · %s" % active_contract.get(&"reason", "크레딧 부족")
@@ -1084,6 +1167,15 @@ func start_run(map_size: String) -> bool:
 	selected_map_size = map_size
 	run_sequence += 1
 	current_run_id = StringName("%d-%d" % [Time.get_ticks_usec(), run_sequence])
+	if (
+		loadout_investment_service != null
+		and not bool(loadout_investment_service.call(&"commit_run_purchase", current_run_id))
+	):
+		_rollback_operation_investment()
+		status_label.text = "작전 투입 실패 · 런 장비 구매 확정 오류"
+		_refresh_contract_setup_ui()
+		return false
+	_prepare_run_skill_bindings()
 	last_loot_settlement.clear()
 	get_tree().paused = false
 	_capture_prepared_loadout()
@@ -1108,6 +1200,9 @@ func start_run(map_size: String) -> bool:
 
 
 func _rollback_operation_investment() -> void:
+	_restore_run_skill_bindings()
+	if loadout_investment_service != null:
+		loadout_investment_service.call(&"finish_run")
 	if persistent_profile != null and not active_contract.is_empty():
 		persistent_profile.call(&"add_credits", int(active_contract.get(&"entry_cost", 0)))
 	for item_id in consumed_run_items:
@@ -1210,7 +1305,10 @@ func _return_to_start_hub() -> void:
 		prepared_equipment_state.clear()
 		lose_equipped_loadout_on_return = false
 	else:
-		_capture_prepared_loadout()
+		_capture_prepared_loadout(loadout_investment_service == null)
+	_restore_run_skill_bindings()
+	if loadout_investment_service != null:
+		loadout_investment_service.call(&"finish_run")
 	get_tree().paused = false
 	game_over_overlay.visible = false
 	run_setup_overlay.visible = false
@@ -1298,6 +1396,7 @@ func _reset_run_state() -> void:
 	pending_buff_levels.clear()
 	active_contract.clear()
 	current_run_id = &""
+	active_run_skill_loadout = null
 	last_loot_settlement.clear()
 	consumed_run_items.clear()
 	hud_margin.visible = false
@@ -1522,7 +1621,7 @@ func _install_combat_skills() -> bool:
 	if not ResourceLoader.exists(features.combat_skill_loadout_path):
 		_report_configuration_error("전투 스킬 로드아웃을 찾을 수 없습니다.")
 		return false
-	var skill_loadout: Resource = load(features.combat_skill_loadout_path)
+	var skill_loadout: Resource = _get_active_run_skill_loadout()
 	if skill_loadout == null or not skill_loadout.call(&"validation_errors").is_empty():
 		_report_configuration_error("전투 스킬 로드아웃이 유효하지 않습니다.")
 		return false
@@ -1656,7 +1755,7 @@ func _install_combat_resources() -> bool:
 		return false
 	if not combat_resource_system.call(
 		&"configure", player, pickups_container,
-		load(features.combat_skill_loadout_path),
+		_get_active_run_skill_loadout(),
 		load(features.combat_resource_config_path),
 		features.map_seed
 	):
@@ -1883,6 +1982,7 @@ func _configure_balance_mode_selector() -> void:
 		or features.loot_tables_enabled
 		or features.session_sockets_enabled
 		or features.character_selection_enabled
+		or features.loadout_investment_enabled
 	)
 	if not balance_mode_section.visible:
 		return
@@ -1898,6 +1998,10 @@ func _configure_balance_mode_selector() -> void:
 		load(features.character_selection_config_path) as CharacterSelectionConfig
 		if features.character_selection_enabled else null
 	)
+	var loadout_investment_config := (
+		load(features.loadout_investment_config_path) as LoadoutInvestmentConfig
+		if features.loadout_investment_enabled else null
+	)
 	if (
 		balance_config == null
 		or (features.growth_balance_enabled and growth_config == null)
@@ -1905,6 +2009,7 @@ func _configure_balance_mode_selector() -> void:
 		or (features.loot_tables_enabled and loot_table_config == null)
 		or (features.session_sockets_enabled and session_socket_config == null)
 		or (features.character_selection_enabled and character_config == null)
+		or (features.loadout_investment_enabled and loadout_investment_config == null)
 	):
 		live_balance_button.disabled = true
 		_select_balance_source_mode(WeaponBalanceConfig.SourceMode.LOCKED_CSV)
@@ -1933,6 +2038,12 @@ func _configure_balance_mode_selector() -> void:
 		live_balance_button.disabled = (
 			live_balance_button.disabled or character_config.live_csv_url.is_empty()
 		)
+	if features.loadout_investment_enabled:
+		live_balance_button.disabled = (
+			live_balance_button.disabled
+			or loadout_investment_config.live_weapon_csv_url.is_empty()
+			or loadout_investment_config.live_skill_csv_url.is_empty()
+		)
 	var initial_mode := int(balance_config.source_mode)
 	if (
 		initial_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET
@@ -1957,16 +2068,26 @@ func _select_balance_source_mode(source_mode: int) -> void:
 	)
 	if source_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET:
 		balance_mode_description.text = (
-			"Weapon·Item·LootTable·RunAsset·RunBuff·Upgrade·Character Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
+			"Weapon·Skill·Item·LootTable·RunAsset·RunBuff·Upgrade·Character Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
 		)
 	else:
 		balance_mode_description.text = (
-			"무기·아이템 생명 주기·지역 드랍·런 소켓·내부 성장·장비 강화·캐릭터의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
+			"무기·스킬 투자·아이템 생명 주기·지역 드랍·런 소켓·내부 성장·장비 강화·캐릭터의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
 		)
 	_reconfigure_persistent_loot_data()
 
 
 func _reconfigure_persistent_loot_data() -> void:
+	if loadout_investment_service != null:
+		var investment_config := load(
+			features.loadout_investment_config_path
+		) as LoadoutInvestmentConfig
+		if investment_config != null:
+			investment_config = investment_config.duplicate(true) as LoadoutInvestmentConfig
+			investment_config.source_mode = selected_balance_source_mode
+			loadout_investment_service.call(
+				&"configure", investment_config, persistent_profile
+			)
 	if character_selection_service != null:
 		var character_config := load(features.character_selection_config_path) as CharacterSelectionConfig
 		if character_config != null:
@@ -2032,6 +2153,9 @@ func _install_equipment() -> bool:
 	):
 		_report_configuration_error("준비한 장비 로드아웃을 복구하지 못했습니다.")
 		return false
+	if not _apply_run_weapon_selection():
+		_report_configuration_error("선택한 런 무기 로드아웃을 적용하지 못했습니다.")
+		return false
 	equipment_system.connect(
 		&"active_weapon_changed", Callable(self, &"_on_active_weapon_changed")
 	)
@@ -2068,11 +2192,87 @@ func _install_inventory() -> bool:
 	return true
 
 
-func _capture_prepared_loadout() -> void:
-	if is_instance_valid(equipment_system) and equipment_system.has_method(&"export_runtime_state"):
+func _capture_prepared_loadout(include_equipment: bool = true) -> void:
+	if include_equipment and is_instance_valid(equipment_system) and equipment_system.has_method(&"export_runtime_state"):
 		prepared_equipment_state = equipment_system.call(&"export_runtime_state")
 	if is_instance_valid(inventory_system) and inventory_system.has_method(&"export_runtime_state"):
 		prepared_inventory_state = inventory_system.call(&"export_runtime_state")
+
+
+func _apply_run_weapon_selection() -> bool:
+	if equipment_system == null or active_contract.is_empty():
+		return true
+	var context: Dictionary = active_contract.get(&"investment_context", {})
+	var investment: Dictionary = context.get(&"loadout_investment", {})
+	var weapon_paths: Dictionary = investment.get(&"weapon_paths", {})
+	for slot_id in weapon_paths:
+		var path := String(weapon_paths[slot_id])
+		if not ResourceLoader.exists(path):
+			return false
+		var definition: Resource = load(path)
+		var current: Resource = equipment_system.call(&"get_weapon", StringName(slot_id))
+		if current != null and current.get("weapon_id") == definition.get("weapon_id"):
+			continue
+		if not bool(equipment_system.call(&"equip_definition", StringName(slot_id), definition)):
+			return false
+	return true
+
+
+func _get_active_run_skill_loadout() -> Resource:
+	if active_run_skill_loadout != null:
+		return active_run_skill_loadout
+	if not ResourceLoader.exists(features.combat_skill_loadout_path):
+		return null
+	active_run_skill_loadout = load(features.combat_skill_loadout_path).duplicate(true)
+	var context: Dictionary = active_contract.get(&"investment_context", {})
+	var investment: Dictionary = context.get(&"loadout_investment", {})
+	var skill_paths: Dictionary = investment.get(&"skill_paths", {})
+	for slot_key in skill_paths:
+		var slot_index := int(slot_key)
+		var path := String(skill_paths[slot_key])
+		if (
+			slot_index >= 0
+			and slot_index < active_run_skill_loadout.get("skills").size()
+			and ResourceLoader.exists(path)
+		):
+			active_run_skill_loadout.get("skills")[slot_index] = load(path)
+	return active_run_skill_loadout
+
+
+func _prepare_run_skill_bindings() -> void:
+	_restore_run_skill_bindings()
+	if skill_binding_service == null:
+		return
+	var default_loadout: Resource = load(features.combat_skill_loadout_path)
+	var selected_loadout := _get_active_run_skill_loadout()
+	if default_loadout == null or selected_loadout == null:
+		return
+	for index in mini(default_loadout.skills.size(), selected_loadout.skills.size()):
+		var previous: Resource = default_loadout.skills[index]
+		var selected: Resource = selected_loadout.skills[index]
+		var previous_id: StringName = previous.get("skill_id")
+		var selected_id: StringName = selected.get("skill_id")
+		if previous_id == selected_id:
+			continue
+		var action_id: StringName = previous.get("input_action")
+		if bool(skill_binding_service.call(
+			&"replace_runtime_skill", previous_id, selected_id, action_id
+		)):
+			run_skill_binding_replacements.append({
+				&"previous_skill_id": previous_id, &"current_skill_id": selected_id,
+				&"action_id": action_id,
+			})
+
+
+func _restore_run_skill_bindings() -> void:
+	if skill_binding_service != null:
+		for index in range(run_skill_binding_replacements.size() - 1, -1, -1):
+			var replacement: Dictionary = run_skill_binding_replacements[index]
+			skill_binding_service.call(
+				&"restore_runtime_skill", replacement[&"current_skill_id"],
+				replacement[&"previous_skill_id"], replacement[&"action_id"]
+			)
+	run_skill_binding_replacements.clear()
 
 
 func _install_equipment_workbench(read_only: bool = false) -> bool:
@@ -2503,7 +2703,7 @@ func _configure_tier_button(button: Button, tier_id: String) -> void:
 		var quote: Dictionary = operation_contract_service.call(
 			&"quote", config,
 			penalty_system.call(&"get_snapshot") if penalty_system != null else {},
-			_character_investment_context()
+			_operation_investment_context()
 		)
 		quoted_entry_cost = int(quote.get(&"entry_cost", quoted_entry_cost))
 		reward_multiplier = float(quote.get(&"reward_multiplier", 1.0))

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EmbeddedCsvPayload" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/balance_data/embedded_csv_payload.gd" id="1_payload"]
+
+[resource]
+script = ExtResource("1_payload")
+source_path = "res://game/features/loadout_investment/data/skill_investment.csv"
+csv_text = "item_id,display_name,slot_id,resource_path,run_investment_price,default_owned,required_unlock_id,source_status\nblink,점멸,skill_0,res://game/features/combat_skills/definitions/blink.tres,0,TRUE,,temporary\nmagnetic_field,원형 자기장,skill_1,res://game/features/combat_skills/definitions/magnetic_field.tres,0,TRUE,,temporary\nspeed_boost,기동 가속,skill_2,res://game/features/combat_skills/definitions/speed_boost.tres,0,TRUE,,temporary\narc_dash,아크 질주,skill_2,res://game/features/combat_skills/definitions/arc_dash.tres,60,FALSE,region_research_complex,temporary\n"

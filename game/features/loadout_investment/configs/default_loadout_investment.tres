@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="LoadoutInvestmentConfig" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/loadout_investment/loadout_investment_config.gd" id="1_config"]
+[ext_resource type="Resource" path="res://game/features/loadout_investment/data/weapon_investment_payload.tres" id="2_weapon"]
+[ext_resource type="Resource" path="res://game/features/loadout_investment/data/skill_investment_payload.tres" id="3_skill"]
+
+[resource]
+script = ExtResource("1_config")
+source_mode = 0
+weapon_csv_path = "res://game/features/loadout_investment/data/weapon_investment.csv"
+skill_csv_path = "res://game/features/loadout_investment/data/skill_investment.csv"
+weapon_csv_payload = ExtResource("2_weapon")
+skill_csv_payload = ExtResource("3_skill")
+live_weapon_csv_url = "https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/gviz/tq?tqx=out:csv&headers=1&sheet=Weapon"
+live_skill_csv_url = "https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/gviz/tq?tqx=out:csv&headers=1&sheet=Skill"
+live_refresh_seconds = 3.0
