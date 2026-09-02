@@ -1,9 +1,16 @@
 {
-  "version": 16,
+  "version": 17,
   "updated": "2026-09-02",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "캐릭터 선택 패시브",
+      "label": "P5-01 캐릭터 투자",
+      "description": "Character Sheet 3종 임시값, 추가 투입 비용, 브리핑 패시브와 작전 내 능력 적용",
+      "category": "로비",
+      "priority": 100
+    },
     {
       "query": "P7 이후 작업",
       "label": "P7~P10 사전 구현 설계",

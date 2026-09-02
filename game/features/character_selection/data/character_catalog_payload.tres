@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EmbeddedCsvPayload" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/balance_data/embedded_csv_payload.gd" id="1_payload"]
+
+[resource]
+script = ExtResource("1_payload")
+source_path = "res://game/features/character_selection/data/character_catalog.csv"
+csv_text = "character_id,display_name,entry_cost,passive_id,passive_name,passive_description,max_health_add,defense_add,movement_speed_multiplier,runtime_enabled,source_status,planner_note\nvanguard,선봉대,0,standard_frame,표준 프레임,추가 능력 보정 없음 · 무료 기본 캐릭터,0,0,1,TRUE,temporary,임시값 · 기존 기준 스탯 보존\nrunner,질주자,120,overclock_stride,과충전 보폭,이동 속도 +10%,0,0,1.1,TRUE,temporary,임시값 · 기동형 비교 기준\nbulwark,방벽병,160,reinforced_frame,강화 프레임,최대 체력 +35 · 방어력 +2 · 이동 속도 -8%,35,2,0.92,TRUE,temporary,임시값 · 생존형 비교 기준\n"

@@ -121,14 +121,30 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 1 TOPIC</span><span>72 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 2 TOPICS</span><span>73 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 3 · CHANGE 5 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 4 · IMPROVE 6 · CHANGE 7 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>3</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>7</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>P5-01 캐릭터 투자 · Windows 최신본 보존</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 작전 전에 캐릭터 가격과 패시브를 비교해 선택하고, 배포 저장소에는 검증된 최신 Windows 다운로드만 남깁니다.</strong><ul>
+          <li><b>캐릭터:</b> 선봉대·질주자·방벽병 3종을 브리핑에서 순환하고 추가 투입 비용과 패시브를 즉시 확인합니다.</li>
+          <li><b>실전 인과:</b> 캐릭터 비용은 총 견적에 한 번만 합산되고 선택 효과는 최대 체력·방어력·이동 속도 런타임 소스로 적용됩니다.</li>
+          <li><b>데이터:</b> Google Sheet `Character` 12열과 확정 CSV·Web payload를 같은 공급자 계약으로 연결했으며 현재 값은 기획 교체 가능한 임시값입니다.</li>
+          <li><b>보존:</b> 새 ZIP·SHA-256의 Cloudflare E2E가 성공한 뒤에만 R2 `downloads/`의 이전 Windows 파일을 삭제합니다. 로컬 패키징도 현재 버전만 유지합니다.</li>
+          <li><b>검증:</b> 캐릭터 변경→견적→실전 패시브, 9개 작전 조합, Windows 정리 범위와 dry-run을 자동 판정합니다.</li>
+        </ul><p class="sfh-intent"><b>안전 경계</b><span>게임 Web 릴리스·위키·백업·다른 R2 객체·Cloudflare 플랜과 결제 설정은 정리 대상이 아닙니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>캐릭터 Definition/Table/Service, 브리핑 선택·패시브 적용, 로컬·R2 최신본 보존을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>작전 전 비교 가능성, Sheet 교체성, 다운로드 저장 공간 관리를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>P5 작업선과 기획 요청을 P5-02 착수 기준으로 현행화했습니다.</p></div>
+        <p><a href="features/character-selection/">캐릭터 선택 계약 →</a> · <a href="getting-started/run-project/">Windows 보존 규칙 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획자가 확정한 로비 허브·상점·제작소·훈련장 범위를 새 기준선으로 삼고, 공식 Phase 1~6 뒤 내부 P7~P10을 바로 착수 가능한 계약으로 준비했습니다.</strong><ul>

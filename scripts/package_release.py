@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
+from prune_windows_releases import prune_local
+
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -72,6 +74,9 @@ def main() -> None:
     )
 
     output_dir.mkdir(parents=True, exist_ok=True)
+    removed = prune_local(output_dir, version)
+    if removed:
+        print(f"LOCAL_WINDOWS_RETENTION removed={len(removed)} keep={version}")
     archive = output_dir / f"SFH-Windows-x64-{version}.zip"
     with ZipFile(archive, "w", ZIP_DEFLATED, compresslevel=9) as bundle:
         for path in sorted(item for item in input_dir.rglob("*") if item.is_file()):

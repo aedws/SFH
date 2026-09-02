@@ -15,10 +15,13 @@ on:
       - "mkdocs.yml"
       - "requirements-docs.txt"
       - "scripts/package_release.py"
+      - "scripts/prune_windows_releases.py"
+      - "scripts/test_windows_release_retention.py"
       - "scripts/sync_item_lifecycle.py"
       - "scripts/sync_loot_table.py"
       - "scripts/sync_skill_catalog.py"
       - "scripts/sync_session_socket_rules.py"
+      - "scripts/sync_character_catalog.py"
       - "scripts/snapshot_notion_source.py"
       - "scripts/loot-table.ps1"
       - "scripts/wiki.ps1"
@@ -45,10 +48,13 @@ on:
       - "mkdocs.yml"
       - "requirements-docs.txt"
       - "scripts/package_release.py"
+      - "scripts/prune_windows_releases.py"
+      - "scripts/test_windows_release_retention.py"
       - "scripts/sync_item_lifecycle.py"
       - "scripts/sync_loot_table.py"
       - "scripts/sync_skill_catalog.py"
       - "scripts/sync_session_socket_rules.py"
+      - "scripts/sync_character_catalog.py"
       - "scripts/snapshot_notion_source.py"
       - "scripts/loot-table.ps1"
       - "scripts/wiki.ps1"
@@ -118,12 +124,15 @@ jobs:
           python3 scripts/sync_loot_table.py --check
           python3 scripts/sync_skill_catalog.py --check
           python3 scripts/sync_session_socket_rules.py --check
+          python3 scripts/sync_character_catalog.py --check
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loot_table_contract_test.gd" | tee /tmp/sfh-loot-table.log
           grep -q "LOOT_TABLE_TEST_OK rows_29 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link" /tmp/sfh-loot-table.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/field_loot_acquisition_contract_test.gd" | tee /tmp/sfh-field-loot.log
           grep -q "FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip skill_swap_slot_binding_restore provisional_policy restore_on_hub viewport_safe modular_boundary" /tmp/sfh-field-loot.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/operation_combination_contract_test.gd" | tee /tmp/sfh-operation-combinations.log
           grep -q "OPERATION_COMBINATION_OK combinations_9 tiers_3 difficulties_3 launch_assemble_return" /tmp/sfh-operation-combinations.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/character_selection_contract_test.gd" | tee /tmp/sfh-character-selection.log
+          grep -q "CHARACTER_SELECTION_OK characters_3 optional_module locked_live_csv briefing_quote passive_runtime entry_cost_once" /tmp/sfh-character-selection.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/mobile_hud_elite_contract_test.gd" | tee /tmp/sfh-mobile-hud-elite.log
           grep -q "MOBILE_HUD_ELITE_OK optional_modules dependencies hud_bottom_left movable_anchor key_format mobile_semantic_pad threshold_entry_cost random_elite faster_stronger infinite_room_independent" /tmp/sfh-mobile-hud-elite.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/run_settlement_contract_test.gd" | tee /tmp/sfh-run-settlement.log
@@ -272,6 +281,7 @@ jobs:
             --csv game/features/loot_tables/data/loot_table.csv \
             --csv game/features/combat_skills/data/skill_catalog.csv \
             --csv game/features/session_sockets/data/session_socket_rules.csv \
+            --csv game/features/character_selection/data/character_catalog.csv \
             --commit "$GITHUB_SHA"
 
       - name: Upload Windows release
@@ -311,6 +321,8 @@ jobs:
         run: |
           node scripts/test_cloudflare_worker.mjs
           python -m py_compile scripts/deploy_cloudflare_assets.py
+          python -m py_compile scripts/prune_windows_releases.py
+          python scripts/test_windows_release_retention.py
 
       - name: Build wiki
         shell: pwsh
@@ -482,6 +494,15 @@ jobs:
           curl --silent --show-error --fail "$download_base/$archive.sha256" --output "/tmp/$archive.sha256"
           (cd /tmp && sha256sum --check "$archive.sha256")
           echo "CLOUDFLARE_E2E_OK wiki game range download commit=$GITHUB_SHA"
+
+      - name: Remove superseded Windows downloads from R2
+        if: steps.cloudflare_config.outputs.ready == 'true'
+        run: |
+          python3 scripts/prune_windows_releases.py \
+            --r2 \
+            --bucket "$CLOUDFLARE_R2_BUCKET" \
+            --prefix "$R2_DOWNLOAD_PREFIX/" \
+            --keep-version "$RELEASE_VERSION"
 
   backup-verified-main:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.cloudflare-deploy.outputs.deployed == 'true'

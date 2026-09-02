@@ -12,6 +12,8 @@ var reward_summary: Label
 var target_farming_summary: Label
 var risk_summary: Label
 var selection_summary: Label
+var character_button: Button
+var character_summary: Label
 var preview: Control
 var tier_buttons: Dictionary = {}
 var root_panel: PanelContainer
@@ -26,7 +28,7 @@ func install(overlay: Control) -> Dictionary:
 	if content == null:
 		return {}
 	if content.has_node("MainColumns"):
-		return {&"launch_button": launch_button}
+		return {&"launch_button": launch_button, &"character_button": character_button}
 
 	var panel := overlay.get_node("Center/Panel") as PanelContainer
 	root_panel = panel
@@ -117,6 +119,15 @@ func install(overlay: Control) -> Dictionary:
 	target_farming_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	left.add_child(target_farming_summary)
 
+	right.add_child(_section_title("요원 선택"))
+	character_button = Button.new()
+	character_button.name = "CharacterSelectionButton"
+	character_button.custom_minimum_size = Vector2(0.0, 38.0)
+	character_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.add_child(character_button)
+	character_summary = _label("패시브 데이터 계산 중...", 12, Color("8ffffc"))
+	character_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	right.add_child(character_summary)
 	right.add_child(_section_title("작전 조건 선택"))
 	var contract_section := content.get_node("ContractSection") as VBoxContainer
 	_move(contract_section, right)
@@ -175,7 +186,7 @@ func install(overlay: Control) -> Dictionary:
 	footer.text = "ESC  전초기지 복귀   ·   투입 시 비용과 장착 소모품이 실제 차감됩니다"
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	content.move_child(footer, content.get_child_count() - 1)
-	return {&"launch_button": launch_button}
+	return {&"launch_button": launch_button, &"character_button": character_button}
 
 
 func update(payload: Dictionary) -> void:
@@ -191,6 +202,15 @@ func update(payload: Dictionary) -> void:
 	var region_name := String(payload.get(&"region_name", "기본 지역"))
 	var difficulty_name := String(payload.get(&"difficulty_name", "표준"))
 	var tier_name := String(map_data.get(&"display_name", tier_id))
+	var character: Dictionary = payload.get(&"character", {})
+	character_button.text = "요원 · %s · 추가 %d C" % [
+		String(character.get(&"display_name", "기본 요원")),
+		int(character.get(&"entry_cost", 0)),
+	]
+	character_summary.text = "PASSIVE  %s  ·  %s" % [
+		String(character.get(&"passive_name", "없음")),
+		String(character.get(&"passive_description", "적용 효과 없음")),
+	]
 	mission_title.text = "%s  ·  %s" % [region_name, tier_name]
 	mission_code.text = "%s / %s / %s" % [String(region_id).to_upper(), String(difficulty_id).to_upper(), String(tier_id).to_upper()]
 	mission_intel.text = "목표 %d분  ·  방 %d~%d개  ·  동시 적 %d~%d명\n핵심 루프  침투 → 탐색·교전 → 자원 회수 → 탈출 방어" % [
@@ -244,6 +264,7 @@ func get_snapshot() -> Dictionary:
 		&"mission_title": mission_title.text if mission_title != null else "",
 		&"selection_summary": selection_summary.text if selection_summary != null else "",
 		&"target_farming_summary": target_farming_summary.text if target_farming_summary != null else "",
+		&"character_summary": character_summary.text if character_summary != null else "",
 		&"selected_tiers": tier_buttons.keys().filter(
 			func(id): return bool((tier_buttons[id] as Button).get_meta(&"selected", false))
 		),

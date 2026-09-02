@@ -64,22 +64,29 @@ func cycle_difficulty(direction: int = 1) -> Dictionary:
 	return get_snapshot()
 
 
-func quote(tier_config: Resource, penalty_snapshot: Dictionary = {}) -> Dictionary:
+func quote(
+	tier_config: Resource,
+	penalty_snapshot: Dictionary = {},
+	investment_context: Dictionary = {}
+) -> Dictionary:
 	if tier_config == null:
 		return {}
 	var region: Dictionary = config.call(&"get_region", selected_region_id)
 	var difficulty: Dictionary = config.call(&"get_difficulty", selected_difficulty_id)
 	var base_cost := int(tier_config.get("entry_cost"))
-	var entry_cost := ceili(
+	var base_entry_cost := ceili(
 		float(base_cost)
 		* float(region.get(&"entry_cost_multiplier", 1.0))
 		* float(difficulty.get(&"entry_cost_multiplier", 1.0))
 	)
+	var additional_entry_cost := maxi(0, int(investment_context.get(&"additional_entry_cost", 0)))
+	var entry_cost := base_entry_cost + additional_entry_cost
 	var bankruptcy_protection := (
 		bool(config.get("bankruptcy_protection_enabled"))
 		and StringName(tier_config.get("tier_id")) == StringName(config.get("free_tier_id"))
 		and selected_region_id == StringName(config.get("free_region_id"))
 		and selected_difficulty_id == StringName(config.get("free_difficulty_id"))
+		and additional_entry_cost == 0
 		and not bool(profile.call(&"can_spend", entry_cost))
 	)
 	if bankruptcy_protection:
@@ -97,6 +104,9 @@ func quote(tier_config: Resource, penalty_snapshot: Dictionary = {}) -> Dictiona
 		&"difficulty_name": difficulty.get(&"display_name", selected_difficulty_id),
 		&"tier_id": tier_config.get("tier_id"),
 		&"entry_cost": entry_cost,
+		&"base_entry_cost": base_entry_cost,
+		&"additional_entry_cost": additional_entry_cost,
+		&"investment_context": investment_context.duplicate(true),
 		&"bankruptcy_protection": bankruptcy_protection,
 		&"boss_spawn_guaranteed": boss_guaranteed,
 		&"high_grade_drop_multiplier": (
@@ -127,8 +137,12 @@ func quote(tier_config: Resource, penalty_snapshot: Dictionary = {}) -> Dictiona
 	}
 
 
-func invest(tier_config: Resource, penalty_snapshot: Dictionary = {}) -> Dictionary:
-	var contract := quote(tier_config, penalty_snapshot)
+func invest(
+	tier_config: Resource,
+	penalty_snapshot: Dictionary = {},
+	investment_context: Dictionary = {}
+) -> Dictionary:
+	var contract := quote(tier_config, penalty_snapshot, investment_context)
 	if contract.is_empty() or not profile.call(&"spend", int(contract[&"entry_cost"])):
 		return {&"success": false, &"reason": "투입 크레딧 부족", &"quote": contract}
 	active_contract = contract.duplicate(true)
