@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "updated": "2026-09-02",
+  "source": {
+    "url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
+    "root_version": 1005,
+    "content_sha256": "67f9bef85449685580c6c7f95f0316300d37775867d38d7bec96bc3fcf1198e4",
+    "notion_phase_max": 6,
+    "numbering_note": "P7 이후 번호는 Notion의 공식 Phase가 아니라 Phase 1~6 완료 뒤 사용하는 저장소 내부 후속 작업선이다."
+  },
+  "prerequisites": ["P5_COMPLETE", "P6_COMPLETE"],
+  "module_layers": ["definition", "policy", "service", "provider", "presenter"],
+  "lanes": [
+    {
+      "id": "P7",
+      "title": "로비 경제 심화",
+      "goal": "런마다 바뀌는 상점과 설계도 기반 제작소를 서로 다른 획득 경로로 완결한다.",
+      "source_anchors": [
+        "3ce5b728-0040-8130-9884-dc31d2eddbfa",
+        "3ce5b728-0040-817a-9f6e-f0bac2007561",
+        "3ce5b728-0040-8131-9a1b-f4c6bc08b083",
+        "3ce5b728-0040-8163-b593-f42f58908688"
+      ],
+      "packets": [
+        {
+          "id": "P7-01",
+          "title": "상점 매물 정의와 3대 품질군",
+          "state": "planned",
+          "dependencies": ["P5_COMPLETE", "P6_COMPLETE"],
+          "data_gate": "sheet_if_catalog",
+          "modules": ["ShopOfferDefinition", "ShopQualityPolicy", "ShopCatalogProvider"],
+          "player_outcome": "손상·표준·고성능 매물의 가격, 성능, 위험을 구매 전에 구분한다.",
+          "e2e": "세 품질군 표시→견적 비교→구매 결과→다음 로드아웃 반영"
+        },
+        {
+          "id": "P7-02",
+          "title": "런 종료 회전과 유료 리롤",
+          "state": "planned",
+          "dependencies": ["P7-01"],
+          "data_gate": "planner_decision",
+          "modules": ["ShopRotationPolicy", "ShopRotationService", "ShopStateProvider"],
+          "player_outcome": "런 복귀 때 매물이 바뀌고 리롤 가격·결과·잔액을 즉시 이해한다.",
+          "e2e": "런 종료→결정적 회전→리롤 견적→1회 차감→중복 입력 방지"
+        },
+        {
+          "id": "P7-03",
+          "title": "설계도 영구 제작 등록",
+          "state": "planned",
+          "dependencies": ["P7-01"],
+          "data_gate": "sheet_if_catalog",
+          "modules": ["BlueprintRegistry", "WorkshopRecipeProvider", "WorkshopUnlockService"],
+          "player_outcome": "반출한 설계도의 영구 등록 여부와 재제작 가능 장비를 확인한다.",
+          "e2e": "설계도 반출→영구 등록→재접속→제작 후보 유지"
+        },
+        {
+          "id": "P7-04",
+          "title": "맞춤 제작과 옵션·소켓 고점",
+          "state": "planned",
+          "dependencies": ["P7-03"],
+          "data_gate": "planner_decision",
+          "modules": ["CraftingRollPolicy", "WorkshopCraftService", "CraftResultPresenter"],
+          "player_outcome": "비용, 보장 결과, 무작위 옵션·소켓 범위를 확인하고 제작한다.",
+          "e2e": "레시피 선택→원자적 차감→결정 로그→장비 생성→실패 시 전액 보존"
+        }
+      ]
+    },
+    {
+      "id": "P8",
+      "title": "훈련 연습장",
+      "goal": "실제 자산을 소모하지 않고 단일·광역 빌드와 자원 순환을 재현한다.",
+      "source_anchors": [
+        "3ce5b728-0040-81b7-90dd-e5d94f4153dd",
+        "3ce5b728-0040-81c1-ae4b-e969f7401e85",
+        "3ce5b728-0040-817c-902f-de5a501d708b",
+        "3ce5b728-0040-818b-acd5-db9981f0211d"
+      ],
+      "packets": [
+        {
+          "id": "P8-01",
+          "title": "보스·밀집 더미 시나리오",
+          "state": "planned",
+          "dependencies": ["P7"],
+          "data_gate": "sheet_if_catalog",
+          "modules": ["TrainingScenarioDefinition", "TrainingDummySpawner", "TrainingResetService"],
+          "player_outcome": "단일 고체력과 밀집 잡몹 시험을 한 번의 선택으로 전환한다.",
+          "e2e": "시나리오 선택→생성→타겟팅 결과→초기화→스폰 예산 비간섭"
+        },
+        {
+          "id": "P8-02",
+          "title": "DPS·타격·AP·쿨타임 계측",
+          "state": "planned",
+          "dependencies": ["P8-01"],
+          "data_gate": "none",
+          "modules": ["CombatTelemetryCollector", "TrainingTelemetryService", "TrainingTelemetryPresenter"],
+          "player_outcome": "초당 피해, 단일 타격, AP 소모율, 쿨타임 주기를 같은 HUD에서 읽는다.",
+          "e2e": "공격→계측 누적→시간창 갱신→전투 중지→최종 스냅샷 고정"
+        },
+        {
+          "id": "P8-03",
+          "title": "무비용 자유 세팅 콘솔",
+          "state": "planned",
+          "dependencies": ["P8-01"],
+          "data_gate": "none",
+          "modules": ["TrainingLoadoutSnapshot", "TrainingLoadoutService", "TrainingLoadoutPresenter"],
+          "player_outcome": "보유 장비·스킬·룬을 비용 없이 바꾸고 나갈 때 원래 세팅으로 돌아온다.",
+          "e2e": "스냅샷→자유 교체→전투 변화→퇴장 복구→영구 자산 무변경"
+        }
+      ]
+    },
+    {
+      "id": "P9",
+      "title": "도감·빌드 프리셋",
+      "goal": "해금 진행률과 미해금 획득 힌트를 보여 주고 무기별 스킬 구성을 안전하게 저장한다.",
+      "source_anchors": [
+        "3ce5b728-0040-8153-8f60-cda88eb5c03d",
+        "3ce5b728-0040-81ea-8d86-ff0a4eee4969",
+        "3ce5b728-0040-815e-921e-cbedf205f945"
+      ],
+      "packets": [
+        {
+          "id": "P9-01",
+          "title": "도감 해금률과 드랍 지역 힌트",
+          "state": "planned",
+          "dependencies": ["P8"],
+          "data_gate": "sheet_if_catalog",
+          "modules": ["CodexEntryDefinition", "CodexProgressService", "CodexHintProvider", "CodexPresenter"],
+          "player_outcome": "획득한 항목과 미획득 항목의 지역 힌트를 혼동 없이 확인한다.",
+          "e2e": "미해금 힌트→전리품 반출→해금률 증가→재접속 유지"
+        },
+        {
+          "id": "P9-02",
+          "title": "무기별 독립 스킬 프리셋",
+          "state": "planned",
+          "dependencies": ["P9-01"],
+          "data_gate": "none",
+          "modules": ["WeaponSkillPreset", "WeaponSkillPresetService", "WeaponSkillPresetPresenter"],
+          "player_outcome": "Q 교체 때 호환되는 스킬 프리셋이 함께 바뀌고 비호환 슬롯은 이유를 표시한다.",
+          "e2e": "프리셋 저장→Q 교체→태그 검증→HUD·발동 동기→재접속 유지"
+        }
+      ]
+    },
+    {
+      "id": "P10",
+      "title": "출시 후보 운영 검증",
+      "goal": "공식 GDD Phase 1~6과 P7~9의 전체 인과를 동일 산출물에서 재검증한다.",
+      "source_anchors": ["3ce5b728-0040-816e-8744-f4d00783ae48"],
+      "packets": [
+        {
+          "id": "P10-01",
+          "title": "전체 경제·훈련·도감 회귀",
+          "state": "planned",
+          "dependencies": ["P9"],
+          "data_gate": "none",
+          "modules": ["ReleaseAcceptancePolicy", "ReleaseEvidenceProvider"],
+          "player_outcome": "준비, 작전, 정산, 상점, 제작, 훈련, 도감의 다음 행동이 끊기지 않는다.",
+          "e2e": "신규 프로필→무료 복구→유료 런→정산→상점·제작→훈련→도감"
+        },
+        {
+          "id": "P10-02",
+          "title": "Web·Windows·모바일 산출물 동등성",
+          "state": "planned",
+          "dependencies": ["P10-01"],
+          "data_gate": "none",
+          "modules": ["ArtifactParityPolicy", "ReleaseMetadataProvider"],
+          "player_outcome": "같은 빌드 버전과 데이터로 브라우저·Windows·모바일 입력을 사용할 수 있다.",
+          "e2e": "동일 커밋·PCK·CSV 해시→Web/Windows 부팅→모바일 키패드→결과 비교"
+        }
+      ]
+    }
+  ]
+}

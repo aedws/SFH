@@ -17,35 +17,37 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-01</span><span>SEARCH COMMAND</span><span>4 DAYS · 60 TOPICS</span><span>71 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 61 TOPICS</span><span>72 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
-    <span><small>MASTER GDD ALIGNED · 2026-09-01</small><strong>현재 기획 진행도</strong></span>
-    <b>87%</b>
+    <span><small>MASTER GDD ALIGNED · 2026-09-02</small><strong>현재 기획 진행도</strong></span>
+    <b>79%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="87"><i style="width: 87%"></i></div>
-  <p>공개 Master GDD의 8개 확정 시스템을 현재 main과 재대조했습니다. P4-06 자동 환전·영구 해금·창고 보관·사망 소실을 실제 결과 화면에 반영해 게임 기능 가중 진행도는 87%이며, 배포·보안 작업은 이 수치에 가산하지 않았습니다.</p>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="79"><i style="width: 79%"></i></div>
+  <p>공개 Master GDD v1005의 10개 확정 시스템을 현재 main과 재대조했습니다. 상점·제작소 상세와 훈련장이 새 분모에 포함되어 게임 기능 가중 진행도는 79%이며, 수치 하락은 코드 퇴행이 아니라 확정 범위 확대입니다.</p>
 </div>
 
-권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-01 공개 본문 57블록·root v797을 읽고 `b22dce53d706`으로 검증했습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 확정 요구로 처리합니다. 핵심 플레이 흐름은 ×2, 기반·확장 서비스는 ×1을 적용하며 실제 코드·데이터·자동 검증만 완료 근거로 사용합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
+권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-02 공개 본문 77블록·root v1005를 읽고 `67f9bef85449`로 검증했습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 확정 요구로 처리합니다. 핵심 플레이 흐름은 ×2, 기반·확장 서비스는 ×1을 적용하며 실제 코드·데이터·자동 검증만 완료 근거로 사용합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
-재확인 시 공개 원문의 요구와 해시는 이전 대조 이후 달라지지 않았습니다. Phase 1~6 체크박스는 6개 모두 활성 상태라 확정 범위로 가중하되, 수동 기획 표시를 코드 완료 근거로 승격하지 않고 저장소 구현과 플레이어 인식 E2E를 기준으로 판정합니다.
+공개 원문은 v797·57블록에서 v1005·77블록으로 변경됐습니다. Phase 1~6 체크박스는 6개 모두 활성 상태라 확정 범위로 가중하되, 수동 기획 표시를 코드 완료 근거로 승격하지 않고 저장소 구현과 플레이어 인식 E2E를 기준으로 판정합니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
 | 기술 기반 | ×1 | 100% | Godot 4.x·GDScript·CharacterBody2D·Area2D·TileMapLayer·Camera2D와 기능별 Node/Scene 경계 구현 |
 | 입력·자유 스킬 바인딩 | ×2 | 100% | 물리 키와 스킬→Action 배치를 분리하고 충돌 교환·HUD 반영·JSON 저장·초기화를 구현 |
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
-| 로비 인베스트먼트·타겟 파밍 | ×2 | 65% | 맵·지역·난이도·페널티·상점 구현. 캐릭터와 완성형 무기·스킬·유틸리티 투자 UI가 남음 |
+| 로비→준비→인게임 3단계 루프 | ×2 | 70% | 허브→작전→허브, 계약·페널티·정산 구현. 캐릭터·4대 투자와 허브 서비스 통합이 남음 |
+| 상점 vs 제작소 경제 | ×1 | 40% | 영구 등록·기본 구매·도면 제작 기반 존재. 3대 회전 매물·리롤·전용 제작소 UI가 남음 |
+| 훈련 연습장 | ×1 | 0% | 전용 더미·DPS/AP/쿨타임 계측·무비용 자유 세팅이 없음 |
 | 전리품 2대 분류·현장 파밍 | ×2 | 100% | 생명 주기·지역 테이블·현장 비교·획득·교체·소켓과 탈출 환전·영구 해금·창고/사망 소실·중복 방지 구현 |
 | 가변 태그·등급 확장 | ×1 | 80% | 동적 태그·등급·불일치 비활성·메커니즘 변형 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
 | 비동기 랭킹·시즌 보상 | ×1 | 40% | 동일 조건 3대 로컬 랭킹 구현. 서버 검증과 주간 칭호·오라 보상은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 13`입니다. `(100×1 + 100×2 + 95×2 + 65×2 + 100×2 + 80×1 + 95×2 + 40×1) ÷ 13 ≈ 87%`이며, Phase 4는 P4-01~06 인과와 실제 E2E가 연결되어 완료로 판정합니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 70×2 + 40×1 + 0×1 + 100×2 + 80×1 + 95×2 + 40×1) ÷ 15 ≈ 79%`이며, Phase 4는 P4-01~06 인과와 실제 E2E가 연결되어 완료로 판정합니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -57,16 +59,16 @@ tags:
 | Phase 2 · Q·태그·AP·쿨타임 | 완료 | 주·보조 교체, 태그 호환성, 에너지·충전·개별 쿨타임 구현 |
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
 | Phase 4 · 현장 교체·룬 소켓·환전 | 완료 | 현장 교체·룬/코어/유물 소켓→탈출 환전·영구 해금·창고/사망 소실과 중복 방지 E2E 완료 |
-| Phase 5 · 로비 4대 세팅·계약·상점 | 부분 완료 | 계약·페널티·상점은 구현. 캐릭터·무기·스킬·유틸리티 선택 흐름이 불완전 |
+| Phase 5 · 로비 허브·준비 세션 | 부분 완료 | 계약·페널티·기본 상점은 구현. 캐릭터·4대 투자·회전 상점·제작소·훈련장·도감 통합이 불완전 |
 | Phase 6 · 비동기 랭킹·시즌 보상 | 로컬 기반 | 3대 로컬 보드만 구현. 서버 제공자와 칭호·오라 보상이 없음 |
 
-### 2026-09-01 Master GDD 재대조·재확인
+### 2026-09-02 Master GDD v1005 재대조
 
-- **새 확정:** 단순 키 변경이 아닌 스킬과 Action의 자유로운 1:1 배치가 필요합니다.
-- **새 확정:** 무기·스킬·도면은 현장 교체와 영구 해금, 룬·코어·유물은 세션 증폭과 탈출 자동 환전으로 분리됩니다.
-- **새 확정:** 로비 준비는 캐릭터·무기·스킬·유틸리티 네 범주를 모두 투자 대상으로 다룹니다.
-- **새 확정:** 랭킹은 비동기 공식 기록과 주간 시즌 칭호·오라 보상까지 포함합니다.
-- **유지:** 스마트 타게팅, Q 교체, AP·쿨타임, 탈출 일시정지·재개, 파산 방지 기본 무장은 기존 구현 방향과 일치합니다.
+- **새 확정:** 로비 허브는 창고·회전 상점·제작소·훈련장·도감/랭킹으로 구성됩니다.
+- **새 확정:** 상점은 손상·표준·고성능 3대 매물과 런 종료 갱신·골드 리롤을 사용합니다.
+- **새 확정:** 제작소는 반출 설계도를 영구 등록하고 옵션·소켓 고점 장비를 맞춤 제작합니다.
+- **새 확정:** 훈련장은 단일·밀집 더미, DPS·타격·AP·쿨타임 계측, 무비용 자유 세팅을 제공합니다.
+- **번호 구분:** Notion 공식 마일스톤은 Phase 1~6이며 P7~P10은 저장소 내부 후속 작업 ID입니다.
 
 ### 앞으로 해야 할 작업
 
@@ -84,16 +86,44 @@ tags:
 | 3 | Phase 5 P5-03 유틸리티 투자 | 가방·회복/공격템·긴급 탈출 목록 부족 | 구매→실전 사용→잔량·소실 정산 E2E |
 | 4 | Phase 5 P5-04 작전 초안·BEP | 선택별 견적과 확정 거래 원자성 미연결 | 변경 견적→한 번 결제→취소 무과금 E2E |
 | 5 | Phase 5 P5-05 파산 방지 프리셋 | 무료 기본 진입 기반은 있으나 최종 초안과 미통합 | 0 재화→무료 출격→복귀→재출격 E2E |
-| 6 | Phase 6 P6-01 랭킹 제공자 | 3대 로컬 랭킹만 존재 | 온라인/로컬 교체·오프라인 폴백 E2E |
-| 7 | Phase 6 P6-02 제출·검증 | 신원·서명·멱등·재시도·변조 거부 없음 | 중복/단절/변조 기록 서버 판정 E2E |
-| 8 | Phase 6 P6-03 시즌 규칙 | 기간·조건·종료 스냅샷 없음 | 시즌 경계·조건 불일치·종료 읽기 전용 E2E |
-| 9 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
+| 6 | Phase 5 P5-06~07 회전 상점 | 기본 단일 구매만 존재 | 3품질군→복귀 회전→리롤→원자적 차감 E2E |
+| 7 | Phase 5 P5-08 제작소 | 도면 제작 기반만 존재 | 반출 등록→재접속→맞춤 제작→보관함 E2E |
+| 8 | Phase 5 P5-09 훈련장 | 전용 기능 없음 | 단일/밀집→계측→자유 세팅→퇴장 복구 E2E |
+| 9 | Phase 5 P5-10 도감 | 해금 데이터는 있으나 도감 UI·힌트 없음 | 반출→해금률 증가→지역 힌트→재접속 E2E |
+| 10 | Phase 6 P6-01 랭킹 제공자 | 3대 로컬 랭킹만 존재 | 온라인/로컬 교체·오프라인 폴백 E2E |
+| 11 | Phase 6 P6-02 제출·검증 | 신원·서명·멱등·재시도·변조 거부 없음 | 중복/단절/변조 기록 서버 판정 E2E |
+| 12 | Phase 6 P6-03 시즌 규칙 | 기간·조건·종료 스냅샷 없음 | 시즌 경계·조건 불일치·종료 읽기 전용 E2E |
+| 13 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
+| 14 | 내부 P7~P10 | 공식 Phase 1~6 이후 상세 작업선 | 경제→훈련→도감→출시 후보 순서와 기계 계약 유지 |
 
-세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md)에서 추적합니다.
+세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-01</b><i class="sfh-latest">최신</i><small>20 UPDATE BUNDLES · BUILD 69 · IMPROVE 80 · CHANGE 99 · FIX 31</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 3 · CHANGE 5 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>3</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자가 확정한 로비 허브·상점·제작소·훈련장 범위를 새 기준선으로 삼고, 공식 Phase 1~6 뒤 내부 P7~P10을 바로 착수 가능한 계약으로 준비했습니다.</strong><ul>
+          <li><b>원문:</b> 공개 Notion을 root v1005·77블록·해시 <code>67f9bef85449</code>로 갱신하고 0~10장을 다시 대조했습니다.</li>
+          <li><b>신규 범위:</b> 손상·표준·고성능 상점 매물, 런 종료 회전·리롤, 설계도 맞춤 제작, 단일·밀집 훈련 더미, DPS·AP·쿨타임 계측, 도감 힌트를 확정 요구로 반영했습니다.</li>
+          <li><b>진행률:</b> 10개 기획 묶음·가중치 15 기준 79%입니다. 기존 87% 대비 하락은 구현 퇴행이 아니라 20개 신규 블록과 훈련장 0%가 분모에 추가된 결과입니다.</li>
+          <li><b>P7+:</b> Notion 공식 Phase는 1~6으로 유지하고, 저장소 내부 후속 ID로 P7 경제→P8 훈련→P9 도감·프리셋→P10 출시 후보 회귀를 세팅했습니다.</li>
+          <li><b>자동 게이트:</b> P7 로드맵의 원문 버전·블록 근거·모듈·데이터 게이트·플레이어 결과·E2E 인과를 위키 빌드에서 검사합니다.</li>
+        </ul><p class="sfh-intent"><b>데이터·과금 경계</b><span>실제 목록이 필요해질 때만 ShopOffer·Recipe·TrainingScenario·Codex Sheet를 확장합니다. 결제·유료 재화·Cloudflare 유료 플랜은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>이번 묶음은 기능 구현이 아닌 후속 작업 계약 세팅이며 완료율로 올리지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>기획 출처 추적, P7 이후 착수성, 기획자 데이터 요청 가시성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>Notion 스냅샷, 79% 산식, 확장 P5·P6, 검색 우선순위, 전체 문서 노드맵을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>구형 v797 스냅샷이 최신 기획을 대표하던 문서 기준선 오류를 제거했습니다.</p></div>
+        <p><a href="design/master-gdd-alignment/">최신 GDD 대조 →</a> · <a href="design/p7-plus-preimplementation/">P7 이후 사전 설계 →</a> · <a href="design/current-milestone-workline/">작업 순서 →</a></p>
+      </div>
+    </details>
+  </div>
+</details>
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-09-01</b><small>20 UPDATE BUNDLES · BUILD 69 · IMPROVE 80 · CHANGE 99 · FIX 31</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview"><span><b>20</b><small>UPDATE BUNDLES</small></span><span><b>69</b><small>BUILD</small></span><span><b>80</b><small>IMPROVE</small></span><span><b>99</b><small>CHANGE</small></span><span><b>31</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
