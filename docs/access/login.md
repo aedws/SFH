@@ -13,7 +13,7 @@ hide:
   <header>
     <span class="sfh-kicker">ROLE ACCESS GATE</span>
     <h2>작업 역할을 선택하세요</h2>
-    <p>공개 위키는 로그인 없이 읽을 수 있습니다. 아래 인증은 역할별 작업 탭과 계정 설정에만 사용됩니다.</p>
+    <p>공개 홈은 플레이 테스트 안내만 제공합니다. 상세 기획·개발 문서와 검색은 역할 로그인 뒤 열립니다.</p>
   </header>
   <div class="sfh-auth-tabs" role="tablist" aria-label="로그인 역할">
     <button type="button" role="tab" aria-selected="true" data-sfh-login-role="planner">기획자</button>

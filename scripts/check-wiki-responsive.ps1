@@ -45,15 +45,14 @@ foreach ($entry in $requiredStylePatterns.GetEnumerator()) {
     }
 }
 
-$roleRoutes = @(
-    'href="development-status/"',
-    'href="architecture/module-rules/"',
-    'href="quality/wiki-responsive-e2e/"',
-    'href="#sfh-knowledge-map"'
+$publicRoutes = @(
+    'data-sfh-surface="gameplay"',
+    'data-sfh-surface="windows-download"',
+    'href="access/login/"'
 )
-foreach ($route in $roleRoutes) {
+foreach ($route in $publicRoutes) {
     if ($index -notmatch [regex]::Escape($route)) {
-        $errors.Add("Home role navigation route is missing: $route")
+        $errors.Add("Public home route is missing: $route")
     }
 }
 
@@ -71,6 +70,9 @@ if ($searchScript -notmatch 'new URL\("\.\./assets/search-priorities\.json", sea
 if ($searchScript -notmatch 'input\.dispatchEvent\(new KeyboardEvent\("keyup"') {
     $errors.Add("Search recommendations do not dispatch the Material search keyup event.")
 }
+if ($searchScript -notmatch 'window\.location\.pathname === "/"' -or $searchScript -notmatch 'startsWith\("/access/login"\)') {
+    $errors.Add("Public surfaces must not request protected search data.")
+}
 if ($playScript -notmatch 'GAMEPLAY_ORIGIN = "https://sfh-game\.vstock-market\.workers\.dev"') {
     $errors.Add("Browser play does not use the distinct gameplay Worker origin.")
 }
@@ -80,24 +82,20 @@ if ($mkdocs -notmatch 'quality/wiki-responsive-e2e\.md') {
 if ($index -notmatch 'search:\s*\r?\n\s+exclude:\s*true') {
     $errors.Add("The dashboard home must be excluded from the wiki search index.")
 }
-foreach ($drawerContract in @(
-    '<details class="sfh-home-drawer sfh-planner-requests" data-sfh-planner-requests>',
-    '<details class="sfh-home-drawer sfh-proposal-composer" data-sfh-proposal-composer>',
-    '<details class="sfh-home-drawer sfh-core-loop-drawer">'
-)) {
-    if ($index -notmatch [regex]::Escape($drawerContract)) {
-        $errors.Add("Home on-demand density drawer is missing: $drawerContract")
+foreach ($forbiddenPublicContent in @('data-sfh-planner-requests', 'data-sfh-proposal-composer', 'sfh-knowledge-map', 'sfh-progress-panel')) {
+    if ($index -match [regex]::Escape($forbiddenPublicContent)) {
+        $errors.Add("Public home leaks internal collaboration content: $forbiddenPublicContent")
     }
 }
 if ($index -match '<details class="sfh-day"\s+open>') {
     $errors.Add("Wiki home must keep the daily release detail collapsed by default.")
 }
-if ($style -notmatch '\.sfh-home-drawer\s*>\s*summary[\s\S]*min-height:\s*(?:52|56)px') {
-    $errors.Add("Home density drawers do not expose a responsive touch-sized summary.")
+if ($style -notmatch '\.sfh-public-test-guide' -or $style -notmatch '\.sfh-plain-loop') {
+    $errors.Add("Public and planner responsive layouts are missing.")
 }
 
 if ($errors.Count -gt 0) {
     throw ($errors -join [Environment]::NewLine)
 }
 
-Write-Host "WIKI_RESPONSIVE_OK viewports=4 role_routes=$($roleRoutes.Count) search=100dvh touch=44px home_density=on_demand"
+Write-Host "WIKI_RESPONSIVE_OK viewports=4 public_routes=$($publicRoutes.Count) search=100dvh touch=44px home=playtest_only"

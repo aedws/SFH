@@ -2,6 +2,9 @@
   "use strict";
 
   var requestPromise = null;
+  var plannerRequestScriptUrl = document.currentScript && document.currentScript.src
+    ? new URL(document.currentScript.src, window.location.href)
+    : null;
 
   function siteRoot() {
     var base = document.querySelector("base");
@@ -9,6 +12,7 @@
   }
 
   function dataUrl() {
+    if (plannerRequestScriptUrl) return new URL("../assets/planner-requests.json", plannerRequestScriptUrl).href;
     return new URL("assets/planner-requests.json", siteRoot()).href;
   }
 

@@ -1,15 +1,7 @@
 ---
-title: SFH 개발 현황
-description: 최신 구현·개선·수정·버그픽스와 기능별 진행 상태를 한눈에 보는 개발 대시보드
-tags:
-  - 홈
-  - 개발 현황
-  - 업데이트
-  - 진행률
-  - 구현
-  - 개선
-  - 수정
-  - 버그픽스
+title: SFH 플레이 테스트
+description: 살아서 싸우고 회수하는 탑다운 익스트랙션 액션 SFH의 공개 플레이 테스트 페이지
+tags: [SFH, 플레이 테스트, 탑다운 액션]
 hide:
   - navigation
   - toc
@@ -17,336 +9,54 @@ search:
   exclude: true
 ---
 
-<section class="sfh-hero">
+<section class="sfh-hero sfh-public-hero">
   <div class="sfh-hero-copy">
     <div class="sfh-brand">
       <span class="sfh-mark">SFH</span>
-      <span class="sfh-brand-copy"><strong>SURVIVE · FIGHT · HAUL</strong><small>MODULAR EXTRACTION SURVIVORS</small></span>
+      <span class="sfh-brand-copy"><strong>SURVIVE · FIGHT · HAUL</strong><small>MODULAR EXTRACTION ACTION</small></span>
     </div>
-    <span class="sfh-kicker">DEVELOPMENT COMMAND CENTER</span>
+    <span class="sfh-kicker">PUBLIC PLAYTEST</span>
     <h1>살아서 싸우고,<br>가져와 성장하세요.</h1>
-    <p>거점에서 준비하고, 살아서 회수해 성장하는 모듈형 탑다운 익스트랙션 액션입니다.</p>
+    <p>거점에서 출격을 준비하고, 자동 전투와 스킬로 위험한 방을 돌파해 전리품을 회수하는 탑다운 익스트랙션 액션입니다.</p>
     <div class="sfh-actions">
-      <a class="sfh-button primary" href="getting-started/run-project/">프로젝트 실행 <b>→</b></a>
-      <a class="sfh-button" href="development-status/">전체 업데이트 <b>⌄</b></a>
-      <a class="sfh-button" href="architecture/module-rules/">모듈 규칙 <b>↗</b></a>
+      <a class="sfh-button primary sfh-operation-play" data-sfh-surface="gameplay" href="https://sfh-game.vstock-market.workers.dev/" target="_blank" rel="noopener noreferrer">브라우저 플레이 <b>▶</b></a>
+      <a class="sfh-button" data-sfh-surface="windows-download" href="https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip">Windows 다운로드 <b>↓</b></a>
     </div>
+    <p class="sfh-public-note">개발 중인 테스트 빌드입니다. 진행 상황과 내부 설계 문서는 역할 로그인 뒤 제공됩니다.</p>
   </div>
-  <aside class="sfh-operation-card">
-    <div class="sfh-progress-summary">
-      <div class="sfh-progress-heading">
-        <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>95%</b>
-      </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="95"><i style="width: 95%"></i></div>
-      <p>Master GDD v1005 · 10개 확정 시스템 · Phase 1~5 + P6-01 완료 · 가중 산식 95%</p>
-      <a href="development-status/#_1">산정 근거 확인 →</a>
-      <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
+  <aside class="sfh-operation-card sfh-public-card">
+    <span class="sfh-kicker">TEST BUILD</span>
+    <header><strong>현재 테스트 상태</strong><b class="sfh-live">PLAYABLE</b></header>
+    <div class="sfh-public-features">
+      <span><i>01</i><b>준비</b><small>요원·장비·작전 선택</small></span>
+      <span><i>02</i><b>전투</b><small>자동 공격·3개 스킬</small></span>
+      <span><i>03</i><b>회수</b><small>파밍·탈출·영구 성장</small></span>
     </div>
-    <header><strong>현재 빌드 상태</strong><b class="sfh-live">PLAYABLE</b></header>
-    <p>거점에서 지역·난이도·페널티·소모품을 준비하고, 투입 비용을 지불해 전투·파밍·탈출 방어·영구 정산 뒤 복귀합니다.</p>
-    <div class="sfh-operation-launch">
-      <a class="sfh-operation-play" data-sfh-surface="gameplay" href="https://sfh-game.vstock-market.workers.dev/" target="_blank" rel="noopener noreferrer">
-        <span><small>PLAY CURRENT MAIN</small><strong>브라우저로 플레이</strong><em>설치 없이 바로 작전 준비</em></span>
-        <b aria-hidden="true">▶</b>
-      </a>
-      <a class="sfh-operation-download" data-sfh-surface="windows-download" href="https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip">
-        <span><small>WINDOWS X86_64 · v0.1.0</small><strong>Windows 빌드 다운로드</strong><em>검증 완료 실행의 ZIP · SHA-256 제공</em></span>
-        <b aria-hidden="true">↓</b>
-      </a>
-      <details class="sfh-home-drawer sfh-build-details">
-        <summary><span><b>배포·입력 상세</b><small>게임·위키·다운로드 분리 상태</small></span><em>＋</em></summary>
-        <div class="sfh-home-drawer__body">
-          <div class="sfh-surface-map" aria-label="배포 영역 분리 상태">
-            <span data-sfh-surface="wiki"><small>DOCS · PAGES</small><strong>SFH DEV WIKI</strong><em>문서·검색만 제공</em></span>
-            <span data-sfh-surface="gameplay"><small>PLAY · WORKER</small><strong>SFH GAME</strong><em>브라우저 실행 전용</em></span>
-            <span data-sfh-surface="r2"><small>ASSETS · PRIVATE R2</small><strong>NO PUBLIC LINK</strong><em>Worker 바인딩만 허용</em></span>
-          </div>
-          <p class="sfh-cutover-note"><b>NEXT ORIGIN</b><span>sfh-game.play-preview.dev · DNS·E2E 완료 후 전환</span></p>
-          <div class="sfh-operation-meta" aria-label="현재 플레이 빌드 요약"><span><b>3</b><small>MAP TIERS</small></span><span><b>K · 23 + 9</b><small>INPUT</small></span><span><b>PASS</b><small>WEB BUILD</small></span></div>
-        </div>
-      </details>
-    </div>
+    <a class="sfh-public-login" href="access/login/"><span><b>팀 작업 공간 로그인</b><small>기획자 · 개발자</small></span><em>→</em></a>
   </aside>
 </section>
 
-<nav class="sfh-access-launcher" aria-label="역할별 보호 작업 공간">
-  <a href="access/planner/"><i>P</i><span><b>기획자 작업 탭</b><span>결정·데이터 요청·플레이 수락</span></span><em>→</em></a>
-  <a href="access/developer/"><i>D</i><span><b>개발자 작업 탭</b><span>작업선·모듈·E2E·배포</span></span><em>→</em></a>
-</nav>
+<section class="sfh-public-test-guide" aria-label="테스트 안내">
+  <article><span>MOVE</span><b>WASD / 방향키</b><p>거점의 작전 게이트까지 이동해 F로 상호작용하세요.</p></article>
+  <article><span>SKILL</span><b>1 · 2 · 3</b><p>점멸, 지속형 자기장, 이동 가속을 상황에 맞게 사용하세요.</p></article>
+  <article><span>ESCAPE</span><b>F / M</b><p>보상을 회수하고 지도와 탈출 지점을 확인해 살아서 돌아오세요.</p></article>
+</section>
 
-<details class="sfh-home-drawer sfh-planner-requests" data-sfh-planner-requests>
-  <summary><span><span class="sfh-kicker">PLANNER REQUEST LINK</span><b id="sfh-planner-requests-title">기획 요청 · 데이터 결정</b><small>차단 요청과 완료 근거를 필요할 때 펼칩니다.</small></span><em>＋</em></summary>
-  <div class="sfh-home-drawer__body">
-  <div class="sfh-planner-requests__heading"><span class="sfh-planner-requests__status" data-sfh-planner-request-status>요청 목록 연결 중</span></div>
-  <p class="sfh-planner-requests__intro">개발 진행에 필요한 결정만 상단에 압축합니다. 담당 역할·차단 상태·수락 기준·검증 근거까지 같은 ID로 추적합니다.</p>
-  <div class="sfh-planner-source" data-sfh-planner-source aria-live="polite">공개 Notion 확인 시각을 불러오는 중</div>
-  <p class="sfh-planner-requests__instruction" data-sfh-planner-request-instruction>요청 ID를 Notion 결정 제목에 함께 적어 주세요.</p>
-  <div class="sfh-planner-filters" data-sfh-planner-filters aria-label="협업 요청 역할 필터">
-    <button type="button" data-filter="all" aria-pressed="true">전체</button>
-    <button type="button" data-filter="planner" aria-pressed="false">기획자 할 일</button>
-    <button type="button" data-filter="ai_developer" aria-pressed="false">AI 개발자 할 일</button>
-    <button type="button" data-filter="complete" aria-pressed="false">검증 완료</button>
-  </div>
-  <div class="sfh-planner-requests__grid" data-sfh-planner-request-grid aria-live="polite"></div>
-  <footer><a href="design/wiki-collaboration-workflow/">협업 문제·수정 대안 →</a> · <a href="design/planner-request-workflow/">요청 작성·Sheet 확정 규칙 →</a></footer>
-</div></details>
-
-<details class="sfh-home-drawer sfh-proposal-composer" data-sfh-proposal-composer>
-  <summary><span><span class="sfh-kicker">SAFE COLLABORATION INTAKE</span><b id="sfh-proposal-title">기획 제안 초안 생성</b><small>Notion 전달용 초안 도구 · 외부 자동 전송 없음</small></span><em>＋</em></summary>
-  <div class="sfh-home-drawer__body">
-  <p class="sfh-proposal-local-state">LOCAL ONLY · NO PUBLIC WRITE</p>
-  <p>위키는 익명 편집을 받지 않습니다. 아래에서 제안을 정규화해 복사한 뒤, 인증된 Notion에 붙여넣으면 AI 개발자가 다음 스냅샷·PR에서 동일 ID로 추적합니다.</p>
-  <div class="sfh-proposal-grid">
-    <label>종류<select name="kind"><option>PLAN</option><option>DATA</option><option>DEV</option><option>BUG</option></select></label>
-    <label>요청 ID<input name="request_id" placeholder="PLAN-P4-04-01"></label>
-    <label class="is-wide">제목<input name="title" placeholder="현장 교체 최종 처리 확정"></label>
-    <label class="is-wide">작성 근거<input name="basis" placeholder="Notion Phase 4 블록 또는 DEC ID"></label>
-    <label class="is-wide">수락 기준<input name="acceptance" placeholder="플레이어가 실제로 확인할 수 있는 결과"></label>
-    <label class="is-wide">Sheet 대상<input name="sheet_target" placeholder="필요 시 Skill/Item 탭 확장"></label>
-  </div>
-  <textarea data-sfh-proposal-output readonly aria-label="Notion에 붙여넣을 제안 초안"></textarea>
-  <div class="sfh-proposal-actions"><button type="button" data-sfh-proposal-copy>초안 복사</button><span data-sfh-proposal-state>이 화면은 외부로 전송하지 않습니다.</span></div>
-</div></details>
-
-<nav class="sfh-role-nav" aria-label="기획자와 개발자 빠른 이동">
-  <a href="development-status/"><small>PLAN</small><strong>기획·진행 현황</strong><span>확정 근거와 다음 작업</span></a>
-  <a href="architecture/module-rules/"><small>DEV</small><strong>개발·모듈 규칙</strong><span>계약과 확장 경계</span></a>
-  <a href="quality/wiki-responsive-e2e/"><small>QA</small><strong>위키 E2E</strong><span>모바일·검색·링크 검증</span></a>
-  <a href="#sfh-knowledge-map"><small>DOCS</small><strong>전체 문서 맵</strong><span>대·중·소·세부 탐색</span></a>
-</nav>
-
-<details class="sfh-home-drawer sfh-core-loop-drawer">
-  <summary><span><span class="sfh-kicker">CURRENT PLAY LOOP</span><b>현재 플레이 핵심 4축</b><small>거점·전장·전투·성장 요약</small></span><em>＋</em></summary>
-  <div class="sfh-home-drawer__body sfh-stats">
-  <div class="sfh-stat"><small>Core loop</small><strong>HUB → RAID → HUB</strong><span>게이트 진입 · 전투 세션 · 결과 후 복귀</span></div>
-  <div class="sfh-stat"><small>World</small><strong>ROOM + CONE VISION</strong><span>방 전체 공개 · 통로 정면 시야 · 전체 미니맵</span></div>
-  <div class="sfh-stat"><small>Combat</small><strong>3 ACTIVE SKILLS</strong><span>점멸 · 원형 자기장 · 기동 가속</span></div>
-  <div class="sfh-stat"><small>Growth</small><strong>Run + Meta</strong><span>임시 버프·세 계열 영구 레벨</span></div>
-</div></details>
-
-<div class="sfh-section-head">
-  <div><span class="sfh-kicker">RELEASE NOTES</span><h2>📢 최신 업데이트</h2></div>
-  <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
-</div>
-
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 12 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
-
-<div class="sfh-notes">
+<div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 48 · IMPROVE 54 · CHANGE 51 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 3 · CHANGE 4 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>54</b><small>IMPROVE</small></span><span><b>51</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>3</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 12</small><b>역할 로그인 복구 · 고정 ID와 비밀번호 변경</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 1</small><b>공개 플레이 페이지 · 역할별 내부 작업실 분리</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 로그인할 수 없던 기존 역할 계정을 고정 ID와 공통 초기 비밀번호로 복구하고, 로그인 뒤에는 비밀번호만 안전하게 바꾸도록 단순화했습니다.</strong><ul>
-          <li><b>계정:</b> 기획자는 <code>planner</code>, 개발자는 <code>developer</code>, 초기 비밀번호는 모두 <code>0000</code>입니다.</li>
-          <li><b>변경:</b> 아이디는 역할명으로 고정되고 보호된 계정 설정에서 비밀번호만 변경할 수 있습니다.</li>
-          <li><b>근본 수정:</b> Cloudflare workerd 상한을 넘던 PBKDF2 210,000회를 지원 범위인 100,000회로 교정했습니다.</li>
-          <li><b>복구:</b> 기존 R2 레코드는 bootstrap revision 3 배포에서 한 번만 교정하고 이후 변경 비밀번호를 보존합니다.</li>
-          <li><b>E2E:</b> Seed 해시·기본 로그인·역할 격리·ID 변조·비밀번호 변경뿐 아니라 배포된 Pages의 실제 로그인까지 자동 검증합니다.</li>
-        </ul><p class="sfh-intent"><b>보안·비용</b><span><code>0000</code>은 공개 초기값이라 첫 로그인 뒤 변경을 권장합니다. 전용 Private R2와 기존 pepper만 사용하며 게임 과금·Cloudflare 플랜은 변경하지 않았습니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 3</h3><p>고정 역할 계정, 비밀번호 전용 변경, revision 기반 복구·실로그인 배포 게이트를 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 5</h3><p>로그인 명확성·복구 가능성·재배포 보존·역할 격리·자동 검증을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 4</h3><p>로그인·계정·인증 계약·검색·노드맵 문서를 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>기존 아이디 불일치, PBKDF2 런타임 상한 초과, 배포 검사가 실제 로그인을 놓치던 문제를 수정했습니다.</p></div>
-        <p><a href="access/login/">역할 로그인 →</a> · <a href="architecture/wiki-role-auth/">인증·복구 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 11</small><b>작전 사전검증 · 모든 세팅의 확장 안전 계약</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 총기·파츠·모듈 등 세팅을 바꾼 뒤 조립 실패로 거점에 되돌아오던 구조를 결제 전 검증과 불변 작전 계획으로 교체했습니다.</strong><ul>
-          <li><b>근본 수정:</b> 요원·로드아웃·유틸리티를 일반 설정 기여자로 집계하고 장비·가방·전리품을 결제 전에 검증합니다.</li>
-          <li><b>확장성:</b> 새 설정은 중앙 비용 분기를 수정하지 않고 기여자/검증기 등록만으로 작전 계획에 참여합니다.</li>
-          <li><b>장비:</b> 같은 무기는 장착 파츠·모듈을 유지하고, 다른 작전 무기는 해당 슬롯만 임시 교체한 뒤 거점 상태를 복원합니다.</li>
-          <li><b>원자성:</b> 서명된 계획과 실제 결제 계약이 다르면 조립하지 않으며 실패 시 크레딧·소모품·장비가 변하지 않습니다.</li>
-          <li><b>E2E:</b> 기존 81개 조합에 12개 세팅 변경 프로필과 중복 파츠·가방 겹침·계획 변조 실패 경로를 추가했습니다.</li>
-        </ul><p class="sfh-intent"><b>경계</b><span>새 목록이 없어 Google Sheet를 확장하지 않았고 게임 과금·Cloudflare 플랜·결제 설정은 변경하지 않았습니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 4</h3><p>사전검증 서비스, 설정 기여자, 런타임 검증기, 불변 계획 계약을 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 6</h3><p>세팅 확장성·실패 인지·장비 복원·결제 원자성·검증 재사용·회귀 범위를 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 5</h3><p>모듈 원칙·작전 문서·E2E·검색·문서 노드맵을 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>결제 후 늦은 실패, 세팅 변경 진입 회귀, 0원 작전 전리품 범위 불일치를 수정했습니다.</p></div>
-        <p><a href="features/operation-launch-preflight/">작전 사전검증 →</a> · <a href="quality/e2e-play-session/">93조합·실패 E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 10</small><b>웹 로비 복구 · 27개 작전 조합 실전 회귀</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 웹에서도 거점에서 시작해 게이트 F로 작전에 들어가며, 규모·난이도·요원을 바꿔도 빈 화면 없이 전투 또는 거점 복구로 끝납니다.</strong><ul>
-          <li><b>웹 초기화:</b> P5 CSV 6종을 동기화된 내장 payload로 패키징해 Web export의 로비 초기화 중단을 제거했습니다.</li>
-          <li><b>전 조합:</b> 소·중·대형 × 지역 3종 × 난이도 3종 × 요원 3종의 81개 조합을 실제 투입 버튼→맵 생성→계약 일치로 실행합니다.</li>
-          <li><b>요원 비용:</b> 투입비 증가 시 박스 수를 무제한 늘리지 않고 상자당 가치를 확장해 총 회수 2.5~5배 계약을 지킵니다.</li>
-          <li><b>ESC:</b> 설정 취소와 진행 중 작전 중단은 모두 거점으로 돌아가며, 초기화 실패도 빈 화면 대신 재시도 가능한 복구 화면을 표시합니다.</li>
-        </ul><p class="sfh-intent"><b>경계</b><span>새 목록이 없어 Google Sheet를 확장하지 않았고, 게임 결제·Cloudflare 플랜·과금 설정은 변경하지 않았습니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 3</h3><p>P5 Web payload, 회수 가치 정책, 초기화 복구 경로를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>거점 동선 연속성, 81개 조합 회귀 범위, 오류 인지성을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 4</h3><p>작전 진입·P5·E2E·모듈 감사 문서를 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>웹 P5 초기화 중단, 요원 비용 조립 실패, ESC 빈 화면, 초기화 조기 종료를 수정했습니다.</p></div>
-        <p><a href="features/operation-entry-wizard/">작전 진입 계약 →</a> · <a href="quality/e2e-play-session/">81조합 E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 9</small><b>기획자·개발자 역할 로그인 · 최초 계정 변경</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 공개 위키는 그대로 두고, 기획자와 개발자는 로그인 뒤 자기 업무에 필요한 보호 탭만 열도록 분리했습니다.</strong><ul>
-          <li><b>기획자:</b> 결정 대기·데이터 요청·Notion 대조·플레이 인식 검수를 먼저 봅니다.</li>
-          <li><b>개발자:</b> 다음 작업선·코드 노드맵·모듈 감사·E2E를 먼저 봅니다.</li>
-          <li><b>계정:</b> 임시 계정은 첫 로그인 직후 아이디·비밀번호 변경을 강제하고 기존 세션을 폐기합니다.</li>
-          <li><b>보안:</b> 비밀번호 해시·8시간 세션·CSRF·실패 잠금을 Pages Function과 전용 Private R2에 격리했습니다.</li>
-          <li><b>검색:</b> 보호 페이지는 공개 검색 색인에서 제외하며 서버가 역할을 검사하기 전에는 HTML을 내려주지 않습니다.</li>
-        </ul><p class="sfh-intent"><b>경계</b><span>기획 원본은 Notion·Sheet, 개발 원본은 PR입니다. 게임 계정·결제·Cloudflare 플랜은 변경하지 않았습니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 5</h3><p>역할 로그인, 보호 경로, 계정 변경, 서버 세션, 전용 저장소 배포를 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 6</h3><p>역할별 첫 화면·검색 노출·모바일 입력·협업 책임·세션 안전·배포 검증을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 5</h3><p>홈·내비게이션·수정 안내·E2E·모듈 감사를 역할 인증 기준으로 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>클라이언트 숨김만으로 보호되는 문제, 초기 계정 재배포 덮어쓰기, 역할 교차 접근 가능성을 차단했습니다.</p></div>
-        <p><a href="architecture/wiki-role-auth/">역할 인증 계약 →</a> · <a href="access/login/">역할 로그인 →</a> · <a href="quality/wiki-responsive-e2e/">위키 E2E →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 8</small><b>작전 진입 3단계화 · 전 경로 복구 · 첫 투입 가이드</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 작전 설정을 지역·장비·최종 확인으로 나누고, 어떤 실행 방식에서도 전장 또는 복구 가능한 설정 화면에 도착하게 했습니다.</strong><ul>
-          <li><b>동선 보존:</b> 기본 플레이는 기존과 같이 거점 작전 게이트에서 F로 시작합니다.</li>
-          <li><b>밀도:</b> 우측 설정을 3개 화면으로 분리하고 좌·우 화살표와 44px 버튼으로 한 번에 한 결정만 보여줍니다.</li>
-          <li><b>튜토리얼:</b> 첫 투입에 이동·전투·방 확보·탈출 4단계를 비차단형 패널로 안내합니다.</li>
-          <li><b>복구:</b> 맵 조립 또는 투자 확정 실패 시 부분 전장을 제거하고 거점/설정 화면으로 안전하게 돌아갑니다.</li>
-          <li><b>E2E:</b> 9개 규모·난이도 조합, 초기 진입 4종, 실제 화살표·최종 투입·튜토리얼을 검증합니다.</li>
-        </ul></div>
-        <div class="sfh-group"><h3>구현 · 5</h3><p>단계 흐름, 3페이지 설정, 경로 라우터, 실패 복구, 첫 투입 가이드를 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 6</h3><p>결정 밀도, 탐색성, 터치 범위, 첫 플레이 이해, 반복 투입, 홈 정보 밀도를 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 5</h3><p>작전 진입 계약·E2E·모듈 감사·검색·홈 요약을 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>비표준 진입의 빈 화면, 조립 실패 잔존 상태, 정산 비활성 반복 투입 차단을 수정했습니다.</p></div>
-        <p><a href="features/operation-entry-wizard/">작전 진입 마법사 →</a> · <a href="quality/e2e-play-session/">플레이 E2E →</a> · <a href="architecture/module-audit/#2026-09-02">모듈 감사 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 7</small><b>P6-01 랭킹 공급자 · 방사형 코드 관계 웹</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 랭킹 기록을 로컬에 먼저 보존하면서 온라인 공급자를 교체할 수 있게 했고, 코드 노드맵은 선택 모듈 중심 거미줄로 바뀌었습니다.</strong><ul>
-          <li><b>랭킹:</b> 공통 제공자·로컬 구현·온라인 어댑터·설정을 분리하고 장애 시 로컬 기록과 동기화 대기 상태를 유지합니다.</li>
-          <li><b>노드맵:</b> 선택 모듈을 중앙에 두고 실제 사용처·의존처·상속·검증 관계를 방향 화살표로 연결합니다.</li>
-          <li><b>반응형:</b> 화면 폭에 따라 관계 12/8/6개를 배치하고 연결이 많으면 좌우 버튼으로 넘깁니다.</li>
-          <li><b>다음:</b> P6-02 신원·검증 제출·멱등·재시도 계약입니다.</li>
-        </ul><p class="sfh-intent"><b>경계</b><span>Sheet 목록·결제·과금·Cloudflare 유료 설정은 변경하지 않았습니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 5</h3><p>공급자 경계와 방사형 관계 웹을 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 5</h3><p>기록 보존·장애 인지·관계 탐색을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 5</h3><p>95% 진행률·P6-02 작업선·검색·노드맵을 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>온라인 실패 시 기록이 유실될 수 있는 확장 경계 공백을 차단했습니다.</p></div>
-        <p><a href="features/ranking-provider/">P6 랭킹 제공자 →</a> · <a href="architecture/code-module-map/">방사형 노드맵 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 6</small><b>실시간 코드 모듈 노드맵 · 상속·의존 양방향 추적</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 위키에서 실제 코드 상태를 모듈 노드로 보고, 사용처·의존처와 클래스 상속을 화면 크기에 맞춰 바로 추적합니다.</strong><ul>
-          <li><b>자동 산출:</b> GDScript 178개에서 53개 모듈·159개 공개 클래스·157개 관계와 소스 해시를 생성합니다.</li>
-          <li><b>관계:</b> 계약·조립·기능·검증 레이어, Manifest 필수 의존, 코드 로드, 테스트 참조를 선택 노드 기준 양방향으로 보여줍니다.</li>
-          <li><b>상속:</b> Godot 엔진 기반과 저장소 내부 기반을 클래스별로 분리해 합성 우선 구조를 직관적으로 확인합니다.</li>
-          <li><b>반응형:</b> 데스크톱 2단 비교, 태블릿·휴대폰 세로 흐름, 44px 터치·키보드·고대비·모션 감소를 지원합니다.</li>
-          <li><b>회귀 차단:</b> 코드 변경 뒤 JSON 미갱신, 사라진 관계 대상, 페이지·JS·CSS 누락은 위키 빌드에서 실패합니다.</li>
-        </ul><p class="sfh-intent"><b>운영 경계</b><span>읽기 전용 구조 가시화이며 게임 로직·밸런스·배포 도메인·Cloudflare 플랜·과금 모델은 변경하지 않았습니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>코드 스캐너와 반응형 노드 탐색기를 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 4</h3><p>모듈 관계, 상속 인지, 모바일 탐색, 접근성을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 3</h3><p>아키텍처 내비게이션·문서 노드맵·검색 우선순위를 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>수동 구조 문서가 코드와 달라질 수 있던 현행성 공백을 자동 게이트로 차단했습니다.</p></div>
-        <p><a href="architecture/code-module-map/">코드 모듈 노드맵 →</a> · <a href="architecture/module-rules/">모듈 규칙 →</a> · <a href="quality/wiki-responsive-e2e/">반응형 E2E →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 5</small><b>P5 엄밀 모듈성 보강 · 실제 타격 계측·원자적 거래</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · P5를 “켜고 끌 수 있음”에서 실제 파일 제거·잘못된 데이터·저장 실패까지 견디는 계약으로 강화했습니다.</strong><ul>
-          <li><b>실제 제거:</b> 7개 하위 서비스를 정적 <code>preload</code>하지 않고 활성 플래그일 때만 문자열 경로로 로드합니다. 꺼진 모듈의 CSV·스크립트가 없어도 P5 코어가 구성됩니다.</li>
-          <li><b>데이터 정합:</b> Recipe·Codex·OperationPreset의 도면·지역·무기·스킬 ID를 Item·작전·무기·스킬 표준 ID와 맞추고 Google Sheet도 같은 값으로 동기화했습니다.</li>
-          <li><b>실전 훈련:</b> 적의 실제 피해 신호를 공개 <code>record_training_hit</code> 계약에 연결해 DPS·최대 타격이 테스트 내부 호출이 아닌 플레이 타격으로 누적됩니다.</li>
-          <li><b>거래 안전:</b> 제작 결과 지급·거래 기록, 상점 지급·리롤 기록 중 하나라도 실패하면 아이템·재료·크레딧을 모두 원복합니다.</li>
-          <li><b>UI 책임:</b> 상점·제작·유틸·훈련·도감 선택과 문구를 전용 Presenter로 이동해 <code>Game</code>은 버튼 전달과 출력만 담당합니다.</li>
-        </ul><p class="sfh-intent"><b>검증</b><span>필수 열·중복 ID·외래 ID, 내부 우회 접근, 비활성 파일 누락, 실제 타격 브리지, 강제 거래 실패 롤백을 자동 판정합니다. 과금·Cloudflare 플랜은 변경하지 않았습니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 4</h3><p>지연 설치, 공개 façade, 액션 Presenter, 실전 피해 텔레메트리 브리지를 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 4</h3><p>CSV 스키마·중복·외래 ID 검사, 초안 수명, 테스트 독립성, 거래 원자성을 강화했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 4</h3><p>Sheet·CSV 표준 ID, P5 문서, E2E 계약, 검색 우선 설명을 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 5</h3><p>정적 하위 로드, 비활성 CSV 강제 검사, 가짜 훈련 계측, 거래 부분 반영, P5 UI 도메인 누수를 제거했습니다.</p></div>
-        <p><a href="features/p5-hub-progression/">P5 거점 진행 →</a> · <a href="architecture/module-audit/#p5-2026-09-02">엄밀 모듈 감사 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 4</small><b>P5 완전 종료 · 거점 진행 통합·모듈 감사</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 유틸리티 투자부터 작전 확정, 파산 보호, 회전 상점, 제작소, 훈련장, 도감까지 P5-03~10을 한 거점 흐름으로 연결했습니다.</strong><ul>
-          <li><b>준비:</b> 가방·구급키트·공격 전지·비상 신호기와 불변 작전 초안을 연결해 편집 중 무과금, 확정 시 1회 차감을 보장합니다.</li>
-          <li><b>경제:</b> 재화 0 무료 프리셋, 손상·표준·고성능 회전 매물, 복귀 갱신·유료 재굴림, 거래 중복 차단을 구현했습니다.</li>
-          <li><b>성장:</b> 반출 도면 영구 등록·옵션/소켓 제작, 단일·밀집 훈련 계측, 도감 진행·지역 힌트·재접속 유지를 구현했습니다.</li>
-          <li><b>데이터:</b> Google Sheet에 6개 전용 탭과 Item 4행을 추가하고 모든 임시값을 <code>provisional</code>로 격리했습니다.</li>
-          <li><b>모듈:</b> 7개 하위 서비스와 조립 서비스로 나누고 전체/개별 제거, Scene 내부 접근 금지, 60 FPS 성능 예산을 자동 판정했습니다.</li>
-        </ul><p class="sfh-intent"><b>다음</b><span>P5는 종료했습니다. 다음 작업은 P6-01 랭킹 제공자 경계이며 결제 상품·Cloudflare 플랜·유료 설정은 변경하지 않았습니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 8</h3><p>유틸·초안·파산 정책·상점·제작·훈련·도감·거점 UI를 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 5</h3><p>플레이 전 비교, 중복 차감 방지, 재접속, 데이터 교체성, 모듈 제거성을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 5</h3><p>진행률 94%, 작업선 P6-01, 검색, E2E, 전체 문서 맵을 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>실제 전리품 Dictionary 수량을 도감에서 읽을 때 발생하던 런타임 오류를 수정했습니다.</p></div>
-        <p><a href="features/p5-hub-progression/">P5 거점 진행 →</a> · <a href="architecture/module-audit/#p5-0310-2026-09-02">모듈 감사 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>P5-02 무기·스킬 런 투자 · 실전 복원</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 작전 전에 주·보조무기와 스킬 3칸의 가격·소유·해금·태그를 비교하고, 이번 런 구매부터 실전 발동과 거점 복원까지 한 흐름으로 연결했습니다.</strong><ul>
-          <li><b>선택 UI:</b> 브리핑에 주무기·보조무기·S1~S3 선택, 개별 상태, 로드아웃 추가 비용과 출격 가능 여부를 압축 표시합니다.</li>
-          <li><b>거래:</b> 캐릭터와 로드아웃 추가 비용을 작전 계약이 한 번만 합산하며, 미해금·태그 불일치는 차감 전에 출격을 차단합니다.</li>
-          <li><b>실전:</b> 런 구매한 펄스 소총과 아크 대시를 장비·스킬 공개 계약으로 교체하고 성공·사망·롤백 뒤 준비 상태를 복원합니다.</li>
-          <li><b>데이터:</b> Weapon·Skill Sheet에 가격·기본 소유·해금·허용 슬롯 열을 추가하고 실시간 시험→확정 CSV→Web payload 계약을 유지했습니다.</li>
-          <li><b>검증:</b> 소유/잠김/런 구매, 1회 차감, 태그, 실전 무기·스킬, 거점 복원과 대형 성능 예산을 자동 판정했습니다.</li>
-        </ul><p class="sfh-intent"><b>임시 기획값</b><span>펄스 소총 80C·아크 대시 60C는 `temporary` 데이터입니다. 확정 시 Sheet와 CSV만 교체하며 Cloudflare 플랜·과금 설정은 변경하지 않았습니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 5</h3><p>카탈로그·선택 서비스·브리핑·작전 결제·런타임 장비/스킬 교체와 복원을 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 4</h3><p>투자 비교, 잠김 피드백, 데이터 교체성, 플레이어 인식 E2E를 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 4</h3><p>작업선·진행률·기획 요청·검색·노드맵을 P5-03 착수 기준으로 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>소형 작전에서 임시 로드아웃 가격이 보상 용량을 넘던 값을 플레이 가능한 140C로 보정했습니다.</p></div>
-        <p><a href="features/loadout-investment/">무기·스킬 투자 계약 →</a> · <a href="architecture/module-audit/#p5-02-2026-09-02">모듈 감사 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>P5-01 캐릭터 투자 · Windows 최신본 보존</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 작전 전에 캐릭터 가격과 패시브를 비교해 선택하고, 배포 저장소에는 검증된 최신 Windows 다운로드만 남깁니다.</strong><ul>
-          <li><b>캐릭터:</b> 선봉대·질주자·방벽병 3종을 브리핑에서 순환하고 추가 투입 비용과 패시브를 즉시 확인합니다.</li>
-          <li><b>실전 인과:</b> 캐릭터 비용은 총 견적에 한 번만 합산되고 선택 효과는 최대 체력·방어력·이동 속도 런타임 소스로 적용됩니다.</li>
-          <li><b>데이터:</b> Google Sheet `Character` 12열과 확정 CSV·Web payload를 같은 공급자 계약으로 연결했으며 현재 값은 기획 교체 가능한 임시값입니다.</li>
-          <li><b>보존:</b> 새 ZIP·SHA-256의 Cloudflare E2E가 성공한 뒤에만 R2 `downloads/`의 이전 Windows 파일을 삭제합니다. 로컬 패키징도 현재 버전만 유지합니다.</li>
-          <li><b>검증:</b> 캐릭터 변경→견적→실전 패시브, 9개 작전 조합, Windows 정리 범위와 dry-run을 자동 판정합니다.</li>
-        </ul><p class="sfh-intent"><b>안전 경계</b><span>게임 Web 릴리스·위키·백업·다른 R2 객체·Cloudflare 플랜과 결제 설정은 정리 대상이 아닙니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 4</h3><p>캐릭터 Definition/Table/Service, 브리핑 선택·패시브 적용, 로컬·R2 최신본 보존을 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>작전 전 비교 가능성, Sheet 교체성, 다운로드 저장 공간 관리를 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>P5 작업선과 기획 요청을 P5-02 착수 기준으로 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>신규 결함 수정 없이 기능·배포 보존 범위만 확장했습니다.</p></div>
-        <p><a href="features/character-selection/">캐릭터 선택 계약 →</a> · <a href="getting-started/run-project/">Windows 보존 규칙 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자가 확정한 로비 허브·상점·제작소·훈련장 범위를 새 기준선으로 삼고, 공식 Phase 1~6 뒤 내부 P7~P10을 바로 착수 가능한 계약으로 준비했습니다.</strong><ul>
-          <li><b>원문:</b> 공개 Notion을 root v1005·77블록·해시 <code>67f9bef85449</code>로 갱신하고 0~10장을 다시 대조했습니다.</li>
-          <li><b>신규 범위:</b> 손상·표준·고성능 상점 매물, 런 종료 회전·리롤, 설계도 맞춤 제작, 단일·밀집 훈련 더미, DPS·AP·쿨타임 계측, 도감 힌트를 확정 요구로 반영했습니다.</li>
-          <li><b>진행률:</b> 10개 기획 묶음·가중치 15 기준 79%입니다. 기존 87% 대비 하락은 구현 퇴행이 아니라 20개 신규 블록과 훈련장 0%가 분모에 추가된 결과입니다.</li>
-          <li><b>P7+:</b> Notion 공식 Phase는 1~6으로 유지하고, 저장소 내부 후속 ID로 P7 경제→P8 훈련→P9 도감·프리셋→P10 출시 후보 회귀를 세팅했습니다.</li>
-          <li><b>자동 게이트:</b> P7 로드맵의 원문 버전·블록 근거·모듈·데이터 게이트·플레이어 결과·E2E 인과를 위키 빌드에서 검사합니다.</li>
-        </ul><p class="sfh-intent"><b>데이터·과금 경계</b><span>실제 목록이 필요해질 때만 ShopOffer·Recipe·TrainingScenario·Codex Sheet를 확장합니다. 결제·유료 재화·Cloudflare 유료 플랜은 변경하지 않았습니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 0</h3><p>이번 묶음은 기능 구현이 아닌 후속 작업 계약 세팅이며 완료율로 올리지 않았습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>기획 출처 추적, P7 이후 착수성, 기획자 데이터 요청 가시성을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 5</h3><p>Notion 스냅샷, 79% 산식, 확장 P5·P6, 검색 우선순위, 전체 문서 노드맵을 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>구형 v797 스냅샷이 최신 기획을 대표하던 문서 기준선 오류를 제거했습니다.</p></div>
-        <p><a href="design/master-gdd-alignment/">최신 GDD 대조 →</a> · <a href="design/p7-plus-preimplementation/">P7 이후 사전 설계 →</a> · <a href="design/current-milestone-workline/">작업 순서 →</a></p>
+        <div class="sfh-summary"><strong>공개 화면은 게임 소개와 테스트 실행에 집중하고, 상세 기획·개발 자료는 로그인한 팀원에게만 제공합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>게임 기능 변경은 없습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>공개 정보 밀도, 테스트 진입, 역할별 첫 화면을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>홈, 기획자 탭, 개발자 탭, 인증 문서를 새 정보 구조에 맞췄습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>로그인하지 않은 사용자가 내부 문서와 검색 데이터를 열 수 있던 공개 범위를 차단했습니다.</p></div>
       </div>
     </details>
   </div>
 </details>
 </div>
-
-<div data-sfh-knowledge-map-host></div>
-
-## 검색 요령
-
-상단 검색창 또는 `/` 키를 사용합니다. `Q키`, `구글 시트`, `가방`, `모듈 코스트`, `소분류`, `미니맵`, `탈출`, `버그픽스`처럼 기능·입력·증상 단어로 검색할 수 있습니다.
-
-검색 전 TOP 10, 기획 영역 바로가기와 개인 탐색 순위의 동작은 [위키 실시간 검색 사용법](getting-started/search-wiki.md)에서 확인합니다.

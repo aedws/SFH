@@ -5,7 +5,7 @@ param(
 $ErrorActionPreference = "Stop"
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $dataPath = Join-Path $repositoryRoot "docs\assets\planner-requests.json"
-$homePath = Join-Path $repositoryRoot "docs\index.md"
+$plannerPath = Join-Path $repositoryRoot "docs\access\planner.md"
 $scriptPath = Join-Path $repositoryRoot "docs\javascripts\planner-requests.js"
 $stylePath = Join-Path $repositoryRoot "docs\stylesheets\extra.css"
 $workflowPath = Join-Path $repositoryRoot "docs\design\planner-request-workflow.md"
@@ -13,7 +13,7 @@ $snapshotPath = Join-Path $repositoryRoot "docs\assets\notion-source-snapshot.js
 $proposalScriptPath = Join-Path $repositoryRoot "docs\javascripts\planner-proposal.js"
 
 $data = Get-Content -LiteralPath $dataPath -Raw -Encoding UTF8 | ConvertFrom-Json
-$wikiHomeContent = Get-Content -LiteralPath $homePath -Raw -Encoding UTF8
+$plannerContent = Get-Content -LiteralPath $plannerPath -Raw -Encoding UTF8
 $javascript = Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8
 $stylesheet = Get-Content -LiteralPath $stylePath -Raw -Encoding UTF8
 $workflow = Get-Content -LiteralPath $workflowPath -Raw -Encoding UTF8
@@ -75,15 +75,17 @@ foreach ($requiredStatus in @("request", "data", "complete")) {
     }
 }
 if (
-    $wikiHomeContent -notmatch 'data-sfh-planner-requests' -or
-    $wikiHomeContent -notmatch 'data-sfh-planner-request-grid' -or
-    $wikiHomeContent -notmatch 'data-sfh-planner-filters' -or
-    $wikiHomeContent -notmatch 'data-sfh-planner-source'
+    $plannerContent -notmatch 'data-sfh-planner-requests' -or
+    $plannerContent -notmatch 'data-sfh-planner-request-grid' -or
+    $plannerContent -notmatch 'data-sfh-planner-filters' -or
+    $plannerContent -notmatch 'data-sfh-planner-source'
 ) {
-    throw "Wiki home planner request hub is missing."
+    throw "Protected planner workspace request hub is missing."
 }
 if (
     $javascript -notmatch 'planner-requests\.json' -or
+    $javascript -notmatch 'document\.currentScript' -or
+    $javascript -notmatch 'new URL\("\.\./assets/planner-requests\.json", plannerRequestScriptUrl\)' -or
     $javascript -notmatch 'sfh-planner-request__notion' -or
     $javascript -notmatch 'ownerRole' -or
 	$javascript -notmatch 'installFilters' -or
@@ -104,20 +106,20 @@ if (
 if ($workflow -notmatch 'sfh-standing-sheet-extension: authorized-without-separate-approval') {
     throw "Standing Google Sheet extension authorization is not documented."
 }
-if ($wikiHomeContent -notmatch 'data-sfh-proposal-composer' -or $proposalScript -notmatch 'navigator\.clipboard' -or $proposalScript -notmatch 'data-sfh-proposal-output') {
+if ($plannerContent -notmatch 'data-sfh-proposal-composer' -or $proposalScript -notmatch 'navigator\.clipboard' -or $proposalScript -notmatch 'data-sfh-proposal-output') {
 	throw "Safe local proposal composer contract is missing."
 }
 if (-not [string]::IsNullOrWhiteSpace($SiteRoot)) {
     $resolvedSite = Join-Path $repositoryRoot $SiteRoot
-    $siteHome = Get-Content -LiteralPath (Join-Path $resolvedSite "index.html") -Raw -Encoding UTF8
+    $sitePlanner = Get-Content -LiteralPath (Join-Path $resolvedSite "access\planner\index.html") -Raw -Encoding UTF8
     $siteDataPath = Join-Path $resolvedSite "assets\planner-requests.json"
     $siteScriptPath = Join-Path $resolvedSite "javascripts\planner-requests.js"
     if (
-        $siteHome -notmatch 'data-sfh-planner-requests' -or
+        $sitePlanner -notmatch 'data-sfh-planner-requests' -or
         -not (Test-Path -LiteralPath $siteDataPath) -or
         -not (Test-Path -LiteralPath $siteScriptPath)
     ) {
-        throw "Generated wiki planner request hub or data is missing."
+        throw "Generated protected planner request hub or data is missing."
     }
 }
 

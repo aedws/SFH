@@ -98,6 +98,31 @@ response = await worker.fetch(request("/access/planner/"), env);
 assert.equal(response.status, 302);
 assert.match(response.headers.get("location"), /^\/access\/login\//u);
 
+for (const protectedPath of [
+  "/development-status/",
+  "/features/game-loop/",
+  "/search/search_index.json",
+  "/assets/knowledge-map.json",
+  "/assets/search-priorities.json",
+  "/sitemap.xml",
+  "/404.html",
+  "/assets/internal-notes.txt",
+]) {
+  response = await worker.fetch(request(protectedPath), env);
+  assert.equal(response.status, 302, `${protectedPath} must be private before login`);
+  assert.equal(await response.text(), "", `${protectedPath} must not leak a response body`);
+}
+
+for (const publicPath of [
+  "/access/login/",
+  "/stylesheets/extra.css",
+  "/javascripts/role-auth.js",
+  "/assets/images/favicon.png",
+]) {
+  response = await worker.fetch(request(publicPath), env);
+  assert.equal(response.status, 200, `${publicPath} must remain public`);
+}
+
 response = await worker.fetch(request("/%61ccess//planner/index.html"), env);
 assert.equal(response.status, 302, "encoded and repeated slashes must not bypass protected routing");
 
@@ -119,6 +144,10 @@ assert.equal(await response.text(), "asset:/access/planner/");
 
 response = await worker.fetch(request("/access/account/", { headers: { cookie: plannerCookie } }), env);
 assert.equal(response.status, 200);
+assert.equal(response.headers.get("cache-control"), "private, no-store, max-age=0");
+
+response = await worker.fetch(request("/development-status/", { headers: { cookie: plannerCookie } }), env);
+assert.equal(response.status, 200, "an authenticated planner may read shared internal documents");
 assert.equal(response.headers.get("cache-control"), "private, no-store, max-age=0");
 
 response = await worker.fetch(request("/api/auth/credentials", {

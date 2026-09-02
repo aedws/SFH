@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 69 TOPICS</span><span>84 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 70 TOPICS</span><span>84 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 48 · IMPROVE 54 · CHANGE 51 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 48 · IMPROVE 57 · CHANGE 55 · FIX 27</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>54</b><small>IMPROVE</small></span><span><b>51</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>57</b><small>IMPROVE</small></span><span><b>55</b><small>CHANGE</small></span><span><b>27</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -283,7 +283,7 @@ tags:
         <p><a href="features/operation-launch-preflight/">작전 사전검증 →</a> · <a href="quality/e2e-play-session/">93조합·실패 E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 12</small><b>역할 로그인 복구 · 고정 ID와 비밀번호 변경</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획자·개발자 계정을 역할명으로 고정하고 공통 초기 비밀번호로 복구해, 기존 저장 상태와 무관하게 다시 로그인할 수 있게 했습니다.</strong><ul>
@@ -298,6 +298,23 @@ tags:
         <div class="sfh-group"><h3>수정 · 4</h3><p>역할 UI·Worker 계약·운영 문서·검색 그래프를 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>가변 아이디 잔존, PBKDF2 런타임 상한 초과, 로그인 없는 배포 검증 공백을 제거했습니다.</p></div>
         <p><a href="access/login/">로그인 →</a> · <a href="architecture/wiki-role-auth/">인증 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 13</small><b>역할별 작업실 · 공개 플레이 홈 최소화</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 공개 위키를 홍보용 플레이 테스트 홈으로 줄이고, 상세 기획·개발 정보는 로그인한 역할별 작업실에서 목적에 맞게 읽도록 재구성했습니다.</strong><ul>
+          <li><b>공개:</b> 게임 한 문장 소개, 브라우저 플레이, Windows 다운로드, 최소 조작 안내와 팀 로그인만 먼저 제공합니다.</li>
+          <li><b>기획자:</b> 전문 용어 없이 게임 흐름→완료된 플레이→남은 기획 결정→Notion·Sheet 작성 방법 순으로 설명합니다.</li>
+          <li><b>개발자:</b> 완료 기준선→오류·위험→P6-02 이후 작업→모듈 구조·프로그래밍 원칙→E2E 순으로 배치합니다.</li>
+          <li><b>실제 보호:</b> 내부 HTML뿐 아니라 검색 색인·문서/코드 노드 JSON·검색 우선순위·사이트맵도 서버 인증 전에 제공하지 않습니다.</li>
+          <li><b>접근:</b> 두 역할은 공유 내부 문서를 읽을 수 있지만 서로의 전용 첫 탭은 403으로 격리됩니다.</li>
+        </ul><p class="sfh-intent"><b>경계</b><span>게임 기능·밸런스·Google Sheet·결제·Cloudflare 플랜은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>게임 기능 추가 없이 위키 접근과 정보 구조만 변경했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>공개 첫인상, 기획자 이해 경로, 개발자 실행 경로를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>홈·역할 탭·인증 계약·반응형 E2E 문서를 새 공개 범위에 맞췄습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>비로그인 사용자가 내부 문서와 검색·노드 데이터를 직접 열 수 있던 노출 범위를 차단했습니다.</p></div>
+        <p><a href="access/planner/">기획자 작업실 →</a> · <a href="access/developer/">개발자 작업실 →</a> · <a href="architecture/wiki-role-auth/">인증 계약 →</a></p>
       </div>
     </details>
   </div>

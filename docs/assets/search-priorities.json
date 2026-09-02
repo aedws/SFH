@@ -91,7 +91,7 @@
     {
       "query": "위키 수정 방법",
       "label": "제안 초안·Notion·PR 반영 흐름",
-      "description": "읽기 전용 공개 위키에서 수정 요청을 만들고 근거와 검증을 거쳐 Cloudflare에 반영하는 현행 안내",
+      "description": "로그인한 역할 작업실에서 Notion·Sheet·PR 근거를 거쳐 Cloudflare에 반영하는 현행 안내",
       "category": "위키",
       "priority": 100
     },

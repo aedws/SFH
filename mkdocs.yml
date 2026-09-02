@@ -1,5 +1,5 @@
 site_name: SFH 개발 위키
-site_description: Godot 4 기반 모듈형 탑다운 뱀서라이크 개발 문서
+site_description: SFH 공개 플레이 테스트와 인증된 기획·개발 작업 공간
 site_url: https://sfh-dev-wiki.pages.dev/
 site_dir: .wiki-site
 
@@ -67,8 +67,8 @@ nav:
   - 역할 작업 공간:
       - 로그인: access/login.md
       - 계정 설정: access/account.md
-      - 기획자 전용 탭: access/planner.md
-      - 개발자 전용 탭: access/developer.md
+      - 기획자 작업실: access/planner.md
+      - 개발자 작업실: access/developer.md
   - 시작하기:
       - getting-started/index.md
       - 설치: getting-started/install.md

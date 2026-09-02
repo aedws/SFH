@@ -16,7 +16,7 @@ $script = Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8
 $style = Get-Content -LiteralPath $stylePath -Raw -Encoding UTF8
 $mkdocs = Get-Content -LiteralPath $mkdocsPath -Raw -Encoding UTF8
 
-if ($index -notmatch 'class="sfh-operation-play" data-sfh-surface="gameplay" href="https://sfh-game\.vstock-market\.workers\.dev/"') {
+if ($index -notmatch 'class="[^"]*sfh-operation-play[^"]*" data-sfh-surface="gameplay" href="https://sfh-game\.vstock-market\.workers\.dev/"') {
     throw "The home build card does not expose the distinct gameplay Worker entry."
 }
 if ($script -notmatch 'data-sfh-global-play' -or $script -notmatch 'document\$\.subscribe') {
