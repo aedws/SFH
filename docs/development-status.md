@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 61 TOPICS</span><span>72 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 62 TOPICS</span><span>73 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -100,9 +100,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 3 · CHANGE 5 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 4 · IMPROVE 6 · CHANGE 7 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>3</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>7</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -118,6 +118,22 @@ tags:
         <div class="sfh-group"><h3>수정 · 5</h3><p>Notion 스냅샷, 79% 산식, 확장 P5·P6, 검색 우선순위, 전체 문서 노드맵을 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>구형 v797 스냅샷이 최신 기획을 대표하던 문서 기준선 오류를 제거했습니다.</p></div>
         <p><a href="design/master-gdd-alignment/">최신 GDD 대조 →</a> · <a href="design/p7-plus-preimplementation/">P7 이후 사전 설계 →</a> · <a href="design/current-milestone-workline/">작업 순서 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>P5-01 캐릭터 투자 · Windows 최신본 보존</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 작전 전에 캐릭터 가격과 패시브를 비교해 선택하고, 배포 저장소에는 검증된 최신 Windows 다운로드만 남깁니다.</strong><ul>
+          <li><b>캐릭터:</b> 선봉대·질주자·방벽병 3종, 추가 비용과 패시브를 작전 브리핑에 연결했습니다.</li>
+          <li><b>데이터:</b> Character Sheet·확정 CSV·Web payload의 12열 계약과 임시/확정 상태를 분리했습니다.</li>
+          <li><b>모듈:</b> Definition/Table/Service/Presenter/OperationContract/Player modifier source를 단방향으로 조립했습니다.</li>
+          <li><b>보존:</b> Cloudflare 다운로드 E2E 뒤 이전 Windows R2 객체만 제거하고 패키징 출력은 현재 버전만 유지합니다.</li>
+          <li><b>다음:</b> P5-02 주·보조무기와 스킬 투자로 이동합니다.</li>
+        </ul><p class="sfh-intent"><b>검증</b><span>3종 파싱·선택, 비용 1회 합산, 브리핑, 실전 속도 300→330, 9개 작전 조합과 파일 정리 범위를 통과했습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>캐릭터 투자 전 구간과 Windows 최신본 보존을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>플레이어 선택 인과, 데이터 교체성, 저장 공간 관리를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>작업선·기획 요청·노드맵·검색을 P5-02 기준으로 갱신했습니다.</p></div>
+        <p><a href="features/character-selection/">캐릭터 선택 계약 →</a> · <a href="architecture/module-audit/#p5-01windows-2026-09-02">모듈 감사 →</a></p>
       </div>
     </details>
   </div>

@@ -8,6 +8,7 @@
 - [작전 선택과 탈출](raid-setup-extraction.md)
 - [탈출 방어전과 작전 결과 정산](extraction-defense-results.md)
 - [투입 비용·지역·난이도 계약](operation-contracts.md)
+- [P5-01 캐릭터 선택·패시브·투입 가격](character-selection.md)
 - [시작 거점과 전투 세션 전환](start-hub.md)
 - [영구 해금·상점·창고·소모품 로드아웃](hub-economy.md)
 - [크레딧 파밍과 회수](credit-loot.md)
@@ -45,7 +46,6 @@
 
 다음 구현 예정 기능은 [P5·P6 사전 구현 설계](../design/p5-p6-preimplementation.md)의 순서를 따릅니다.
 
-1. P5-01 캐릭터 선택·패시브·투입 가격
-2. P5-02~05 무기·스킬·유틸리티·단일 작전 초안·파산 방지
+1. P5-02~05 무기·스킬·유틸리티·단일 작전 초안·파산 방지
 3. P6-01~04 온라인 랭킹 제공자·검증 제출·시즌·칭호/오라 보상
 4. 병행 실기: 저사양 GPU·브라우저 장시간 주행과 다중 해상도

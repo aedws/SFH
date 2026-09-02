@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CharacterSelectionConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/character_selection/character_selection_config.gd" id="1_config"]
+[ext_resource type="Resource" path="res://game/features/character_selection/data/character_catalog_payload.tres" id="2_payload"]
+
+[resource]
+script = ExtResource("1_config")
+source_mode = 0
+locked_csv_path = "res://game/features/character_selection/data/character_catalog.csv"
+locked_csv_payload = ExtResource("2_payload")
+live_csv_url = "https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/gviz/tq?tqx=out:csv&headers=1&sheet=Character"
+live_refresh_seconds = 3.0
+fallback_to_locked_csv = true

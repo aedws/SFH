@@ -82,6 +82,9 @@ const PERSISTENT_PROFILE_SCENE_PATH := (
 const OPERATION_CONTRACT_SCENE_PATH := (
 	"res://game/features/operation_contract/operation_contract_service.tscn"
 )
+const CHARACTER_SELECTION_SCENE_PATH := (
+	"res://game/features/character_selection/character_selection_service.tscn"
+)
 const HUB_ECONOMY_SCENE_PATH := "res://game/features/hub_economy/hub_economy_system.tscn"
 const CRAFTING_SCENE_PATH := "res://game/features/crafting/crafting_system.tscn"
 const PENALTY_SCENE_PATH := "res://game/features/penalty_modifiers/penalty_system.tscn"
@@ -138,6 +141,8 @@ const PLAYER_METHODS := [
 	&"get_runtime_stats",
 	&"get_facing_direction",
 	&"heal",
+	&"set_runtime_modifier_source",
+	&"remove_runtime_modifier_source",
 ]
 const START_HUB_METHODS := [
 	&"get_spawn_position",
@@ -303,6 +308,10 @@ const OPERATION_CONTRACT_METHODS := [
 	&"configure", &"select_region", &"select_difficulty", &"cycle_region",
 	&"cycle_difficulty", &"quote", &"invest", &"get_snapshot", &"clear_active_contract",
 ]
+const CHARACTER_SELECTION_METHODS := [
+	&"configure", &"request_live_catalog", &"load_csv_text", &"select_character",
+	&"cycle_character", &"get_investment_context", &"get_snapshot",
+]
 const HUB_ECONOMY_METHODS := [
 	&"configure", &"quote", &"purchase", &"set_consumable_loadout",
 	&"get_consumable_effects", &"get_snapshot",
@@ -420,6 +429,7 @@ var meta_progression_system
 var equipment_upgrade_service
 var persistent_profile
 var operation_contract_service
+var character_selection_service
 var hub_economy_system
 var crafting_system
 var penalty_system
@@ -435,6 +445,7 @@ var cyberpunk_overlay
 var operation_setup_presenter := OPERATION_SETUP_PRESENTER_SCRIPT.new()
 var combat_hud_presenter := COMBAT_HUD_PRESENTER_SCRIPT.new()
 var operation_launch_button: Button
+var character_selection_button: Button
 var active_contract: Dictionary = {}
 var current_run_id: StringName = &""
 var run_sequence: int = 0
@@ -468,6 +479,7 @@ func _ready() -> void:
 			return
 	var operation_controls: Dictionary = operation_setup_presenter.call(&"install", run_setup_overlay)
 	operation_launch_button = operation_controls.get(&"launch_button") as Button
+	character_selection_button = operation_controls.get(&"character_button") as Button
 	combat_hud_presenter.call(&"install", hud_margin)
 	restart_button.pressed.connect(_restart_run)
 	setup_close_button.pressed.connect(_close_run_setup)
@@ -482,6 +494,8 @@ func _ready() -> void:
 	large_map_button.pressed.connect(_select_map_tier.bind("large"))
 	if operation_launch_button != null:
 		operation_launch_button.pressed.connect(_start_selected_run)
+	if character_selection_button != null:
+		character_selection_button.pressed.connect(_cycle_character)
 	region_button.pressed.connect(_cycle_region)
 	difficulty_button.pressed.connect(_cycle_difficulty)
 	penalty_button.pressed.connect(_cycle_penalty)
@@ -592,6 +606,21 @@ func _install_persistent_services() -> bool:
 			return false
 		operation_contract_service.connect(
 			&"contract_changed", Callable(self, &"_on_contract_changed")
+		)
+	if features.character_selection_enabled:
+		character_selection_service = _instantiate_feature(
+			CHARACTER_SELECTION_SCENE_PATH, self, &"CharacterSelection"
+		)
+		var character_config := load(features.character_selection_config_path) as CharacterSelectionConfig
+		if (
+			not _supports_methods(character_selection_service, CHARACTER_SELECTION_METHODS)
+			or character_config == null
+			or not character_selection_service.call(&"configure", character_config)
+		):
+			_report_configuration_error("캐릭터 선택 모듈을 구성하지 못했습니다.")
+			return false
+		character_selection_service.connect(
+			&"selection_changed", Callable(self, &"_on_contract_changed")
 		)
 	if features.hub_economy_enabled:
 		hub_economy_system = _instantiate_feature(
@@ -910,6 +939,18 @@ func _on_contract_changed(_snapshot: Dictionary) -> void:
 	_refresh_contract_setup_ui()
 
 
+func _cycle_character() -> void:
+	if character_selection_service != null:
+		character_selection_service.call(&"cycle_character", 1)
+
+
+func _character_investment_context() -> Dictionary:
+	return (
+		character_selection_service.call(&"get_investment_context")
+		if character_selection_service != null else {}
+	)
+
+
 func _refresh_contract_setup_ui() -> void:
 	if not is_instance_valid(profile_summary):
 		return
@@ -957,7 +998,7 @@ func _refresh_contract_setup_ui() -> void:
 	var quote: Dictionary = {}
 	if operation_contract_service != null and ResourceLoader.exists(tier_path):
 		quote = operation_contract_service.call(
-			&"quote", load(tier_path), penalty_snapshot
+			&"quote", load(tier_path), penalty_snapshot, _character_investment_context()
 		)
 	var loot_briefing := {}
 	if loot_table_provider != null:
@@ -997,6 +1038,10 @@ func _refresh_contract_setup_ui() -> void:
 			&"difficulty_id": contract_snapshot.get(&"selected_difficulty_id", &"standard"),
 			&"difficulty_name": contract_snapshot.get(&"selected_difficulty_name", "표준"),
 			&"quote": quote,
+			&"character": (
+				character_selection_service.call(&"get_snapshot")
+				if character_selection_service != null else {}
+			),
 			&"penalty_names": penalty_names,
 			&"loadout": "응급키트" if not loadout.is_empty() else "비어 있음",
 			&"can_launch": not ({
@@ -1027,7 +1072,7 @@ func start_run(map_size: String) -> bool:
 			penalty_system.call(&"get_snapshot") if penalty_system != null else {}
 		)
 		active_contract = operation_contract_service.call(
-			&"invest", pending_config, penalty_snapshot
+			&"invest", pending_config, penalty_snapshot, _character_investment_context()
 		)
 		if not bool(active_contract.get(&"success", false)):
 			status_label.text = "작전 투입 실패 · %s" % active_contract.get(&"reason", "크레딧 부족")
@@ -1312,6 +1357,10 @@ func _assemble_game() -> bool:
 
 	player.global_position = player_spawn_position
 	player.call(&"configure_damage", features.damage_enabled)
+	var character_context: Dictionary = active_contract.get(&"investment_context", {})
+	var character_modifiers: Dictionary = character_context.get(&"player_runtime_modifiers", {})
+	if not character_modifiers.is_empty():
+		player.call(&"set_runtime_modifier_source", &"selected_character", character_modifiers)
 	var player_hit_reaction: Node = player.get_node_or_null("HitReaction")
 	if player_hit_reaction != null:
 		player_hit_reaction.set("enabled", features.hit_feedback_enabled)
@@ -1833,6 +1882,7 @@ func _configure_balance_mode_selector() -> void:
 		or features.loot_lifecycle_enabled
 		or features.loot_tables_enabled
 		or features.session_sockets_enabled
+		or features.character_selection_enabled
 	)
 	if not balance_mode_section.visible:
 		return
@@ -1844,12 +1894,17 @@ func _configure_balance_mode_selector() -> void:
 		load(features.session_socket_config_path) as SessionSocketConfig
 		if features.session_sockets_enabled else null
 	)
+	var character_config := (
+		load(features.character_selection_config_path) as CharacterSelectionConfig
+		if features.character_selection_enabled else null
+	)
 	if (
 		balance_config == null
 		or (features.growth_balance_enabled and growth_config == null)
 		or (features.loot_lifecycle_enabled and lifecycle_config == null)
 		or (features.loot_tables_enabled and loot_table_config == null)
 		or (features.session_sockets_enabled and session_socket_config == null)
+		or (features.character_selection_enabled and character_config == null)
 	):
 		live_balance_button.disabled = true
 		_select_balance_source_mode(WeaponBalanceConfig.SourceMode.LOCKED_CSV)
@@ -1873,6 +1928,10 @@ func _configure_balance_mode_selector() -> void:
 	if features.session_sockets_enabled:
 		live_balance_button.disabled = (
 			live_balance_button.disabled or session_socket_config.live_csv_url.is_empty()
+		)
+	if features.character_selection_enabled:
+		live_balance_button.disabled = (
+			live_balance_button.disabled or character_config.live_csv_url.is_empty()
 		)
 	var initial_mode := int(balance_config.source_mode)
 	if (
@@ -1898,16 +1957,22 @@ func _select_balance_source_mode(source_mode: int) -> void:
 	)
 	if source_mode == WeaponBalanceConfig.SourceMode.LIVE_GOOGLE_SHEET:
 		balance_mode_description.text = (
-			"Weapon·Item·LootTable·RunAsset·RunBuff·Upgrade Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
+			"Weapon·Item·LootTable·RunAsset·RunBuff·Upgrade·Character Sheet를 기본 3초마다 다시 읽습니다. 실패 시 확정 CSV로 복구합니다."
 		)
 	else:
 		balance_mode_description.text = (
-			"무기·아이템 생명 주기·지역 드랍·런 소켓·내부 성장·장비 강화의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
+			"무기·아이템 생명 주기·지역 드랍·런 소켓·내부 성장·장비 강화·캐릭터의 저장소 확정 CSV를 사용합니다. 배포에 권장됩니다."
 		)
 	_reconfigure_persistent_loot_data()
 
 
 func _reconfigure_persistent_loot_data() -> void:
+	if character_selection_service != null:
+		var character_config := load(features.character_selection_config_path) as CharacterSelectionConfig
+		if character_config != null:
+			character_config = character_config.duplicate(true) as CharacterSelectionConfig
+			character_config.source_mode = selected_balance_source_mode
+			character_selection_service.call(&"configure", character_config)
 	if loot_lifecycle_service != null:
 		var lifecycle_config := load(features.loot_lifecycle_config_path) as LootLifecycleConfig
 		if lifecycle_config != null:
@@ -2436,7 +2501,9 @@ func _configure_tier_button(button: Button, tier_id: String) -> void:
 	var reward_multiplier := 1.0
 	if operation_contract_service != null:
 		var quote: Dictionary = operation_contract_service.call(
-			&"quote", config, penalty_system.call(&"get_snapshot") if penalty_system != null else {}
+			&"quote", config,
+			penalty_system.call(&"get_snapshot") if penalty_system != null else {},
+			_character_investment_context()
 		)
 		quoted_entry_cost = int(quote.get(&"entry_cost", quoted_entry_cost))
 		reward_multiplier = float(quote.get(&"reward_multiplier", 1.0))

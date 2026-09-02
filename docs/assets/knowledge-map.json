@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "updated": "2026-09-02",
   "root": {
     "id": "sfh",
@@ -163,6 +163,7 @@
               {"label": "작전 선택과 탈출", "source": "features/raid-setup-extraction.md", "route": "features/raid-setup-extraction/", "summary": "규모 선택·진입 비용·탈출"},
               {"label": "탈출 방어전과 결과 정산", "source": "features/extraction-defense-results.md", "route": "features/extraction-defense-results/", "summary": "카운트다운·성공·실패 정산"},
               {"label": "투입 비용·지역·난이도 계약", "source": "features/operation-contracts.md", "route": "features/operation-contracts/", "summary": "투자와 위험·보상 데이터 연결"},
+              {"label": "P5-01 캐릭터 선택", "source": "features/character-selection.md", "route": "features/character-selection/", "summary": "캐릭터 가격·패시브·작전 견적과 실전 적용"},
               {"label": "시작 거점과 전투 세션 전환", "source": "features/start-hub.md", "route": "features/start-hub/", "summary": "거점→작전→거점 루프"},
               {"label": "게임 루프와 HUD", "source": "features/game-loop.md", "route": "features/game-loop/", "summary": "플레이 단계와 화면 정보 흐름"}
             ]
