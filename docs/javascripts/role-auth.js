@@ -74,13 +74,19 @@
 
   function bindRoleTabs(root) {
     const roleInput = root.querySelector('[name="role"]');
+    const usernameInput = root.querySelector('[name="username"]');
+    const selectRole = (role) => {
+      roleInput.value = role;
+      usernameInput.value = role;
+    };
+    selectRole(roleInput.value || "planner");
     root.querySelectorAll("[data-sfh-login-role]").forEach((button) => {
       button.addEventListener("click", () => {
         root.querySelectorAll("[data-sfh-login-role]").forEach((candidate) => {
           candidate.setAttribute("aria-selected", String(candidate === button));
         });
-        roleInput.value = button.dataset.sfhLoginRole;
-        root.querySelector('[name="username"]').focus();
+        selectRole(button.dataset.sfhLoginRole);
+        root.querySelector('[name="password"]').focus();
       });
     });
   }
@@ -133,7 +139,6 @@
       return;
     }
     identity.textContent = `${ROLE_LABELS[currentSession.role]} · ${currentSession.username}`;
-    form.elements.new_username.value = currentSession.username;
     notice.hidden = !currentSession.must_change;
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -150,13 +155,11 @@
           method: "POST",
           body: JSON.stringify({
             current_password: data.get("current_password"),
-            new_username: data.get("new_username"),
             new_password: data.get("new_password"),
           }),
         });
         setStatus(status, "변경되었습니다. 기존 세션은 무효화했습니다.", "success");
         form.reset();
-        form.elements.new_username.value = currentSession.username;
         notice.hidden = true;
         mountHeader();
       } catch (error) {

@@ -28,35 +28,34 @@ if (allowMutation) {
   if (!(url.hostname === "127.0.0.1" || url.hostname === "localhost")) {
     throw new Error("Credential mutation E2E is restricted to a local Pages runtime.");
   }
-  const currentPassword = process.env.SFH_WIKI_AUTH_E2E_PASSWORD;
-  if (!currentPassword) throw new Error("SFH_WIKI_AUTH_E2E_PASSWORD is required for local mutation E2E.");
+  const currentPassword = process.env.SFH_WIKI_AUTH_E2E_PASSWORD || "0000";
 
   response = await request("/api/auth/login", {
     method: "POST",
     headers: { "content-type": "application/json", origin },
-    body: JSON.stringify({ role: "planner", username: "sfh-planner", password: currentPassword }),
+    body: JSON.stringify({ role: "planner", username: "planner", password: currentPassword }),
   });
   assert.equal(response.status, 200);
   const session = await response.json();
   const cookie = (response.headers.get("set-cookie") || "").split(";", 1)[0];
-  assert.equal(session.must_change, true);
+  assert.equal(session.username, "planner");
 
   response = await request("/access/planner/", { headers: { cookie } });
-  assert.equal(response.status, 302);
-  assert.equal(response.headers.get("location"), "/access/account/?required=1");
+  assert.equal(response.status, 200);
 
   response = await request("/api/auth/credentials", {
     method: "POST",
     headers: { "content-type": "application/json", origin, cookie, "x-csrf-token": session.csrf },
     body: JSON.stringify({
       current_password: currentPassword,
-      new_username: "local-planner",
-      new_password: "Changed-Local-Planner-95!",
+      new_username: "tampered-planner-id",
+      new_password: "9573",
     }),
   });
   assert.equal(response.status, 200);
   const changed = await response.json();
   const changedCookie = (response.headers.get("set-cookie") || "").split(";", 1)[0];
+  assert.equal(changed.username, "planner");
   assert.equal(changed.must_change, false);
 
   response = await request("/access/planner/", { headers: { cookie: changedCookie } });

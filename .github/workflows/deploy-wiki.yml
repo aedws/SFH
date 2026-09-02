@@ -335,6 +335,7 @@ jobs:
       - name: Test Cloudflare release gateway
         run: |
           node scripts/test_cloudflare_worker.mjs
+          node scripts/test_wiki_auth_seed.mjs
           node scripts/test_wiki_auth_worker.mjs
           python -m py_compile scripts/deploy_cloudflare_assets.py
           python -m py_compile scripts/prune_windows_releases.py
@@ -415,8 +416,7 @@ jobs:
       CLOUDFLARE_R2_BUCKET: sfh-game-artifacts
       CLOUDFLARE_WIKI_AUTH_BUCKET: sfh-wiki-auth
       SFH_WIKI_AUTH_PEPPER: ${{ secrets.SFH_WIKI_AUTH_PEPPER }}
-      SFH_WIKI_PLANNER_INITIAL_PASSWORD: ${{ secrets.SFH_WIKI_PLANNER_INITIAL_PASSWORD }}
-      SFH_WIKI_DEVELOPER_INITIAL_PASSWORD: ${{ secrets.SFH_WIKI_DEVELOPER_INITIAL_PASSWORD }}
+      WIKI_AUTH_BOOTSTRAP_REVISION: "2"
       R2_RUNTIME_PREFIX: game/releases
       R2_DOWNLOAD_PREFIX: downloads
       RELEASE_VERSION: ${{ needs.package-windows.outputs.release-version }}
@@ -428,9 +428,7 @@ jobs:
         run: |
           if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] \
             && [ -n "$CLOUDFLARE_API_TOKEN" ] \
-            && [ -n "$SFH_WIKI_AUTH_PEPPER" ] \
-            && [ -n "$SFH_WIKI_PLANNER_INITIAL_PASSWORD" ] \
-            && [ -n "$SFH_WIKI_DEVELOPER_INITIAL_PASSWORD" ]; then
+            && [ -n "$SFH_WIKI_AUTH_PEPPER" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
@@ -488,7 +486,7 @@ jobs:
             wrangler r2 bucket create "$CLOUDFLARE_WIKI_AUTH_BUCKET" --location apac
           fi
 
-      - name: Seed first-login role accounts without overwriting changes
+      - name: Migrate fixed role accounts once and preserve later password changes
         if: steps.cloudflare_config.outputs.ready == 'true'
         shell: bash
         run: |
@@ -511,7 +509,21 @@ jobs:
           for role in planner developer; do
             remote_file="$seed_dir/remote-$role.json"
             if wrangler r2 object get "$CLOUDFLARE_WIKI_AUTH_BUCKET/users/$role.json" --remote --file "$remote_file" >/dev/null 2>&1; then
-              echo "Wiki $role account already exists; preserving the user-managed credentials."
+              remote_revision=$(node -e '
+                const fs = require("node:fs");
+                const record = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+                const revision = Number(record.bootstrap_revision || 0);
+                process.stdout.write(String(Number.isSafeInteger(revision) && revision >= 0 ? revision : 0));
+              ' "$remote_file")
+              if [ "$remote_revision" -lt "$WIKI_AUTH_BOOTSTRAP_REVISION" ]; then
+                wrangler r2 object put "$CLOUDFLARE_WIKI_AUTH_BUCKET/users/$role.json" \
+                  --remote \
+                  --content-type application/json \
+                  --file "$seed_dir/$role.json"
+                echo "Wiki $role account migrated to fixed ID and bootstrap revision $WIKI_AUTH_BOOTSTRAP_REVISION."
+              else
+                echo "Wiki $role account already uses bootstrap revision $remote_revision; preserving its password."
+              fi
             else
               wrangler r2 object put "$CLOUDFLARE_WIKI_AUTH_BUCKET/users/$role.json" \
                 --remote \

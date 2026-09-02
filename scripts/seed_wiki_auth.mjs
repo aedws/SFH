@@ -6,6 +6,8 @@ globalThis.crypto ??= webcrypto;
 
 const encoder = new TextEncoder();
 const ITERATIONS = 210000;
+const BOOTSTRAP_REVISION = 2;
+const INITIAL_PASSWORD = "0000";
 
 function base64Url(bytes) {
   return Buffer.from(bytes).toString("base64url");
@@ -43,20 +45,21 @@ async function pepperFingerprint(pepper) {
   return base64Url(new Uint8Array(digest));
 }
 
-async function createRecord(role, username, password, pepper) {
+async function createRecord(role, pepper) {
   const salt = randomToken();
   return {
-    schema: 1,
+    schema: 2,
+    bootstrap_revision: BOOTSTRAP_REVISION,
     role,
-    username,
+    username: role,
     password: {
       algorithm: "PBKDF2-SHA256",
       iterations: ITERATIONS,
       salt,
-      digest: await passwordDigest(password, salt, pepper),
+      digest: await passwordDigest(INITIAL_PASSWORD, salt, pepper),
     },
-    credential_version: 1,
-    must_change: true,
+    credential_version: BOOTSTRAP_REVISION,
+    must_change: false,
     updated_at: new Date().toISOString(),
   };
 }
@@ -67,17 +70,15 @@ if (outputIndex < 0 || !process.argv[outputIndex + 1]) {
 }
 
 const pepper = process.env.SFH_WIKI_AUTH_PEPPER;
-const plannerPassword = process.env.SFH_WIKI_PLANNER_INITIAL_PASSWORD;
-const developerPassword = process.env.SFH_WIKI_DEVELOPER_INITIAL_PASSWORD;
-if (!pepper || pepper.length < 32 || !plannerPassword || !developerPassword) {
-  throw new Error("Wiki auth seed secrets are missing or too short.");
+if (!pepper || pepper.length < 32) {
+  throw new Error("Wiki auth pepper is missing or too short.");
 }
 
 const outputDirectory = resolve(process.argv[outputIndex + 1]);
 await mkdir(outputDirectory, { recursive: true });
 const records = {
-  planner: await createRecord("planner", "sfh-planner", plannerPassword, pepper),
-  developer: await createRecord("developer", "sfh-developer", developerPassword, pepper),
+  planner: await createRecord("planner", pepper),
+  developer: await createRecord("developer", pepper),
 };
 
 for (const [role, record] of Object.entries(records)) {
@@ -88,4 +89,4 @@ await writeFile(resolve(outputDirectory, "pepper.json"), JSON.stringify({
   fingerprint: await pepperFingerprint(pepper),
 }), { mode: 0o600 });
 
-process.stdout.write("WIKI_AUTH_SEED_RECORDS_READY\n");
+process.stdout.write(`WIKI_AUTH_SEED_RECORDS_READY revision=${BOOTSTRAP_REVISION}\n`);
