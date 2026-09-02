@@ -125,8 +125,8 @@ if ($javascript -notmatch 'document\.currentScript' -or
     $javascript -notmatch 'getRouteUrl\(documentNode\.route, siteRoot\)') {
     $errors.Add("Knowledge map routes are not anchored to the stable script-derived site root.")
 }
-if ($javascript -notmatch 'data-sfh-knowledge-map-host') {
-    $errors.Add("The home page cannot mount the full document map in place of quick links.")
+if ($javascript -notmatch 'window\.location\.pathname === "/"' -or $javascript -notmatch 'startsWith\("/access/login"\)') {
+    $errors.Add("The public home and login page must not request the protected knowledge map.")
 }
 if ($stylesheet -notmatch '\.sfh-knowledge-map__graph' -or $stylesheet -notmatch '\.sfh-map-node--document') {
     $errors.Add("Knowledge map HUD styles are incomplete.")

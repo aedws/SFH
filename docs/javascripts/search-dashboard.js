@@ -209,6 +209,7 @@
   }
 
   function initializeSearch() {
+    if (window.location.pathname === "/" || window.location.pathname === "/index.html" || window.location.pathname.startsWith("/access/login")) return;
     var searchRoot = document.querySelector('[data-md-component="search"]');
     if (!searchRoot || initializedSearchRoots.has(searchRoot)) {
       return;

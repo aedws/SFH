@@ -70,6 +70,8 @@
     }
     host.append(bar);
     document.documentElement.dataset.sfhRole = currentSession.authenticated ? currentSession.role : "public";
+    const publicPath = location.pathname === "/" || location.pathname === "/index.html" || location.pathname.startsWith("/access/login");
+    document.documentElement.dataset.sfhPublicSurface = String(publicPath && !currentSession.authenticated);
   }
 
   function bindRoleTabs(root) {

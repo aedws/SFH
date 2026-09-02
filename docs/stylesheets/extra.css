@@ -3435,6 +3435,67 @@ body,
 .sfh-role-console__grid span { color: var(--sfh-muted); font-size: 0.55rem; }
 .md-typeset .sfh-role-console__grid a:hover, .md-typeset .sfh-role-console__grid a:focus-visible { background: rgba(2, 229, 225, 0.1); outline: 2px solid var(--sfh-cyan); outline-offset: -2px; }
 
+/* Public playtest surface and role workspaces */
+html[data-sfh-public-surface="true"] .md-header__button[for="__search"],
+html[data-sfh-public-surface="true"] .md-search,
+html[data-sfh-public-surface="true"] .md-tabs,
+html[data-sfh-public-surface="true"] .md-sidebar { display: none !important; }
+
+.sfh-public-hero { min-height: min(650px, calc(100dvh - 6rem)); align-items: center; }
+.sfh-public-hero .sfh-hero-copy { align-self: center; }
+.sfh-public-note { max-width: 42rem; padding-left: 0.7rem; border-left: 2px solid rgba(2, 229, 225, 0.55); color: var(--sfh-muted) !important; font-size: 0.58rem !important; }
+.sfh-public-card { display: grid; gap: 0.8rem; align-content: center; }
+.sfh-public-features { display: grid; gap: 1px; background: rgba(2, 229, 225, 0.2); }
+.sfh-public-features > span { display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.14rem 0.6rem; padding: 0.72rem; background: rgba(1, 10, 14, 0.96); }
+.sfh-public-features i { grid-row: 1 / 3; align-self: center; color: var(--sfh-cyan); font-style: normal; font-size: 0.58rem; }
+.sfh-public-features b { color: var(--sfh-text); font-size: 0.66rem; }
+.sfh-public-features small { color: var(--sfh-muted); font-size: 0.52rem; }
+.md-typeset .sfh-public-login { display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0.7rem 0.82rem; border: 1px solid rgba(2, 229, 225, 0.42); color: var(--sfh-text-soft); background: rgba(2, 229, 225, 0.06); }
+.sfh-public-login span, .sfh-public-login b, .sfh-public-login small { display: block; }
+.sfh-public-login b { color: var(--sfh-cyan); font-size: 0.64rem; }
+.sfh-public-login small { margin-top: 0.14rem; color: var(--sfh-muted); font-size: 0.5rem; }
+.sfh-public-login em { color: var(--sfh-cyan); font-style: normal; font-size: 0.9rem; }
+.sfh-public-test-guide { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.65rem; margin: 1rem 0; }
+.sfh-public-test-guide article { padding: 0.85rem; border: 1px solid rgba(2, 229, 225, 0.22); background: rgba(1, 10, 14, 0.86); }
+.sfh-public-test-guide span, .sfh-public-test-guide b { display: block; }
+.sfh-public-test-guide span { color: var(--sfh-cyan); font-size: 0.48rem; letter-spacing: 0.12em; }
+.sfh-public-test-guide b { margin-top: 0.25rem; color: var(--sfh-text); font-size: 0.7rem; }
+.sfh-public-test-guide p { margin: 0.35rem 0 0; color: var(--sfh-muted); font-size: 0.55rem; }
+.sfh-public-release { max-width: 860px; margin: 1.2rem auto 0; opacity: 0.86; }
+
+.sfh-role-workspace > header { padding: 1.15rem; }
+.sfh-plain-loop { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; background: rgba(2, 229, 225, 0.2); }
+.sfh-plain-loop > span { display: grid; gap: 0.18rem; min-height: 104px; padding: 0.7rem; align-content: center; background: rgba(1, 10, 14, 0.96); }
+.sfh-plain-loop i { color: var(--sfh-cyan); font-style: normal; font-size: 0.52rem; }
+.sfh-plain-loop b { color: var(--sfh-text); font-size: 0.66rem; }
+.sfh-plain-loop small { color: var(--sfh-muted); font-size: 0.5rem; line-height: 1.5; }
+.sfh-role-status-grid, .sfh-decision-lanes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
+.sfh-role-status-grid article, .md-typeset .sfh-decision-lanes > a { display: grid; gap: 0.32rem; padding: 0.82rem; border: 1px solid rgba(2, 229, 225, 0.22); background: rgba(1, 10, 14, 0.82); }
+.sfh-role-status-grid article > span, .sfh-decision-lanes small { color: var(--sfh-cyan); font-size: 0.48rem; letter-spacing: 0.08em; }
+.sfh-role-status-grid article > b, .sfh-decision-lanes b { color: var(--sfh-text); font-size: 0.68rem; }
+.sfh-role-status-grid p, .sfh-decision-lanes span { margin: 0; color: var(--sfh-muted); font-size: 0.55rem; line-height: 1.65; }
+.sfh-decision-lanes em { justify-self: start; padding: 0.1rem 0.3rem; color: #061417; background: var(--sfh-cyan); font-style: normal; font-size: 0.46rem; }
+.sfh-role-explain { display: grid; grid-template-columns: auto 1fr; gap: 0.65rem; padding: 0.75rem; border-left: 2px solid var(--sfh-cyan); background: rgba(2, 229, 225, 0.06); }
+.sfh-role-explain b { color: var(--sfh-cyan); font-size: 0.58rem; }
+.sfh-role-explain span { color: var(--sfh-text-soft); font-size: 0.56rem; }
+.sfh-dev-focus { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: rgba(2, 229, 225, 0.18); }
+.sfh-dev-focus > span { display: grid; gap: 0.2rem; padding: 0.8rem; background: rgba(1, 10, 14, 0.96); }
+.sfh-dev-focus small { color: var(--sfh-muted); font-size: 0.46rem; }
+.sfh-dev-focus b { color: var(--sfh-cyan); font-size: 0.82rem; }
+.sfh-dev-focus em { color: var(--sfh-text-soft); font-style: normal; font-size: 0.5rem; }
+
+@media screen and (max-width: 48em) {
+  .sfh-public-test-guide, .sfh-dev-focus { grid-template-columns: 1fr; }
+  .sfh-plain-loop { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sfh-role-status-grid, .sfh-decision-lanes { grid-template-columns: 1fr; }
+}
+
+@media screen and (max-width: 24em) {
+  .sfh-plain-loop { grid-template-columns: 1fr; }
+  .sfh-plain-loop > span { min-height: 76px; }
+  .sfh-role-explain { grid-template-columns: 1fr; }
+}
+
 @media screen and (max-width: 48em) {
   .sfh-role-auth-bar .sfh-auth-chip:nth-of-type(2) { display: none; }
   .sfh-role-auth-bar .sfh-auth-chip { min-width: 44px; min-height: 44px; padding-inline: 0.42rem; }

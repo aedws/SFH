@@ -9,6 +9,16 @@ async function request(path, options = {}) {
 
 let response = await request("/");
 assert.equal(response.status, 200, "public wiki must remain available");
+const publicHome = await response.text();
+assert.match(publicHome, /PUBLIC PLAYTEST/u, "public home must be the promotional playtest surface");
+assert.doesNotMatch(publicHome, /개발 현황과 업데이트/u, "public home HTML must not expose internal navigation");
+assert.doesNotMatch(publicHome, /data-md-component="search"/u, "public home HTML must not expose protected search UI");
+
+response = await request("/access/login/");
+assert.equal(response.status, 200, "login page must remain public");
+const publicLogin = await response.text();
+assert.match(publicLogin, /ROLE ACCESS GATE/u);
+assert.doesNotMatch(publicLogin, /개발 현황과 업데이트/u, "login HTML must not expose internal navigation");
 
 response = await request("/api/auth/session");
 assert.equal(response.status, 200, "auth binding and server secret must be ready");
@@ -21,6 +31,25 @@ assert.equal(await response.text(), "", "protected HTML must not leak in the red
 
 response = await request("/access/developer/");
 assert.equal(response.status, 302, "protected developer HTML must redirect before login");
+
+for (const protectedPath of [
+  "/development-status/",
+  "/features/game-loop/",
+  "/search/search_index.json",
+  "/assets/knowledge-map.json",
+  "/assets/search-priorities.json",
+  "/sitemap.xml",
+  "/404.html",
+]) {
+  response = await request(protectedPath);
+  assert.equal(response.status, 302, `${protectedPath} must not be public`);
+  assert.equal(await response.text(), "", `${protectedPath} must not leak content`);
+}
+
+for (const publicPath of ["/access/login/", "/stylesheets/extra.css", "/javascripts/role-auth.js"]) {
+  response = await request(publicPath);
+  assert.equal(response.status, 200, `${publicPath} must support the public landing page`);
+}
 
 const bootstrapRoles = (process.env.SFH_WIKI_AUTH_E2E_BOOTSTRAP_ROLES || "")
   .split(",")
@@ -41,6 +70,8 @@ for (const role of bootstrapRoles) {
 
   response = await request(`/access/${role}/`, { headers: { cookie } });
   assert.equal(response.status, 200, `${role} must open its protected page`);
+  response = await request("/development-status/", { headers: { cookie } });
+  assert.equal(response.status, 200, `${role} must read shared internal documents`);
   const otherRole = role === "planner" ? "developer" : "planner";
   response = await request(`/access/${otherRole}/`, { headers: { cookie } });
   assert.equal(response.status, 403, `${role} must not open the other role page`);
@@ -93,7 +124,7 @@ if (allowMutation) {
 
   response = await request("/access/planner/", { headers: { cookie: changedCookie } });
   assert.equal(response.status, 200);
-  assert.match(await response.text(), /기획자 전용 작업 탭/u);
+  assert.match(await response.text(), /기획자 작업실/u);
 
   response = await request("/access/developer/", { headers: { cookie: changedCookie } });
   assert.equal(response.status, 403);

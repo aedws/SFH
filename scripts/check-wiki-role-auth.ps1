@@ -29,7 +29,11 @@ foreach ($required in @(
     'cf-connecting-ip',
     'private, no-store',
     'users/planner.json',
-    'users/developer.json'
+    'users/developer.json',
+    'isPublicPath',
+    'return "authenticated"',
+    'HTMLRewriter',
+    'data-md-component="sidebar"'
 )) {
     if ($worker -notmatch [regex]::Escape($required)) {
         throw "Wiki auth worker contract is missing: $required"
@@ -106,6 +110,11 @@ if ($SiteRoot) {
     foreach ($protectedRoute in @("access/planner/", "access/developer/", "access/account/")) {
         if ($searchIndex.Contains($protectedRoute)) {
             throw "Protected page leaked into the public search index: $protectedRoute"
+        }
+    }
+    foreach ($sensitiveArtifact in @("assets/knowledge-map.json", "assets/search-priorities.json", "sitemap.xml")) {
+        if (-not (Test-Path -LiteralPath (Join-Path $resolvedSite $sensitiveArtifact))) {
+            throw "Protected wiki artifact is missing from the build: $sensitiveArtifact"
         }
     }
 }

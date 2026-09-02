@@ -301,6 +301,7 @@
   }
 
   function initializeKnowledgeMap() {
+    if (window.location.pathname === "/" || window.location.pathname === "/index.html" || window.location.pathname.startsWith("/access/login")) return;
     var article = document.querySelector(".md-content__inner");
     if (!article || initializedHosts.has(article)) return;
     initializedHosts.add(article);

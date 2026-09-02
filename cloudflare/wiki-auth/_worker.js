@@ -322,7 +322,17 @@ function requiredRole(pathname) {
   if (pathname === "/access/planner" || pathname.startsWith("/access/planner/")) return "planner";
   if (pathname === "/access/developer" || pathname.startsWith("/access/developer/")) return "developer";
   if (pathname === "/access/account" || pathname.startsWith("/access/account/")) return "authenticated";
-  return null;
+  if (isPublicPath(pathname)) return null;
+  return "authenticated";
+}
+
+function isPublicPath(pathname) {
+  if (pathname === "/" || pathname === "/index.html") return true;
+  if (pathname === "/access/login" || pathname.startsWith("/access/login/")) return true;
+  if (pathname.startsWith("/assets/") && /\.(?:css|js|woff2?|ttf|png|jpe?g|webp|svg|gif|ico|map)$/iu.test(pathname)) return true;
+  if (pathname.startsWith("/stylesheets/") || pathname.startsWith("/javascripts/")) return true;
+  if (pathname === "/favicon.ico" || pathname === "/manifest.webmanifest") return true;
+  return false;
 }
 
 function decodedPathname(url) {
@@ -338,6 +348,18 @@ function loginRedirect(request) {
   const destination = `${url.pathname}${url.search}`;
   const location = `/access/login/?return=${encodeURIComponent(destination)}`;
   return new Response(null, { status: 302, headers: { location, "cache-control": "no-store" } });
+}
+
+async function publicSurfaceResponse(request, env) {
+  const response = await env.ASSETS.fetch(request);
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("text/html") || typeof HTMLRewriter === "undefined") return response;
+  const remove = { element(element) { element.remove(); } };
+  return new HTMLRewriter()
+    .on('[data-md-component="search"]', remove)
+    .on('[data-md-component="sidebar"]', remove)
+    .on('label.md-header__button[for="__drawer"]', remove)
+    .transform(response);
 }
 
 async function handleApi(request, env) {
@@ -381,6 +403,9 @@ async function handleRequest(request, env) {
     return withSecurityHeaders(await env.ASSETS.fetch(request), true);
   }
 
+  if (pathname === "/" || pathname === "/index.html" || pathname === "/access/login" || pathname.startsWith("/access/login/")) {
+    return withSecurityHeaders(await publicSurfaceResponse(request, env));
+  }
   return withSecurityHeaders(await env.ASSETS.fetch(request));
 }
 
@@ -392,6 +417,9 @@ export default {
       if (pathname.startsWith("/api/auth/") || requiredRole(pathname)) {
         return withSecurityHeaders(json({ error: "인증 저장소가 아직 연결되지 않았습니다." }, 503), true);
       }
+      if (pathname === "/" || pathname === "/index.html" || pathname === "/access/login" || pathname.startsWith("/access/login/")) {
+        return withSecurityHeaders(await publicSurfaceResponse(request, env));
+      }
       return withSecurityHeaders(await env.ASSETS.fetch(request));
     }
     return handleRequest(request, env);
@@ -401,6 +429,9 @@ export default {
 export const __test = {
   passwordDigest,
   randomToken,
+  requiredRole,
+  isPublicPath,
+  publicSurfaceResponse,
   PBKDF2_ITERATIONS,
   MAX_PBKDF2_ITERATIONS,
 };
