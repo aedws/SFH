@@ -22,6 +22,7 @@ on:
       - "scripts/sync_skill_catalog.py"
       - "scripts/sync_session_socket_rules.py"
       - "scripts/sync_character_catalog.py"
+      - "scripts/sync_loadout_investment.py"
       - "scripts/snapshot_notion_source.py"
       - "scripts/loot-table.ps1"
       - "scripts/wiki.ps1"
@@ -55,6 +56,7 @@ on:
       - "scripts/sync_skill_catalog.py"
       - "scripts/sync_session_socket_rules.py"
       - "scripts/sync_character_catalog.py"
+      - "scripts/sync_loadout_investment.py"
       - "scripts/snapshot_notion_source.py"
       - "scripts/loot-table.ps1"
       - "scripts/wiki.ps1"
@@ -125,6 +127,7 @@ jobs:
           python3 scripts/sync_skill_catalog.py --check
           python3 scripts/sync_session_socket_rules.py --check
           python3 scripts/sync_character_catalog.py --check
+          python3 scripts/sync_loadout_investment.py --check
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loot_table_contract_test.gd" | tee /tmp/sfh-loot-table.log
           grep -q "LOOT_TABLE_TEST_OK rows_29 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link" /tmp/sfh-loot-table.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/field_loot_acquisition_contract_test.gd" | tee /tmp/sfh-field-loot.log
@@ -133,6 +136,8 @@ jobs:
           grep -q "OPERATION_COMBINATION_OK combinations_9 tiers_3 difficulties_3 launch_assemble_return" /tmp/sfh-operation-combinations.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/character_selection_contract_test.gd" | tee /tmp/sfh-character-selection.log
           grep -q "CHARACTER_SELECTION_OK characters_3 optional_module locked_live_csv briefing_quote passive_runtime entry_cost_once" /tmp/sfh-character-selection.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loadout_investment_contract_test.gd" | tee /tmp/sfh-loadout-investment.log
+          grep -q "LOADOUT_INVESTMENT_E2E_OK owned_locked_run_purchase price_once weapon_skill_runtime tag_gate restore modular_boundary" /tmp/sfh-loadout-investment.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/mobile_hud_elite_contract_test.gd" | tee /tmp/sfh-mobile-hud-elite.log
           grep -q "MOBILE_HUD_ELITE_OK optional_modules dependencies hud_bottom_left movable_anchor key_format mobile_semantic_pad threshold_entry_cost random_elite faster_stronger infinite_room_independent" /tmp/sfh-mobile-hud-elite.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/run_settlement_contract_test.gd" | tee /tmp/sfh-run-settlement.log

@@ -1,0 +1,5 @@
+item_id,display_name,slot_id,resource_path,run_investment_price,default_owned,required_unlock_id,source_status
+blink,점멸,skill_0,res://game/features/combat_skills/definitions/blink.tres,0,TRUE,,temporary
+magnetic_field,원형 자기장,skill_1,res://game/features/combat_skills/definitions/magnetic_field.tres,0,TRUE,,temporary
+speed_boost,기동 가속,skill_2,res://game/features/combat_skills/definitions/speed_boost.tres,0,TRUE,,temporary
+arc_dash,아크 질주,skill_2,res://game/features/combat_skills/definitions/arc_dash.tres,60,FALSE,region_research_complex,temporary

@@ -1,0 +1,4 @@
+item_id,display_name,slot_id,resource_path,run_investment_price,default_owned,required_unlock_id,source_status
+assault_rifle,돌격소총,main,res://game/features/equipment/definitions/weapons/assault_rifle.tres,0,TRUE,,temporary
+service_pistol,제식 권총,secondary,res://game/features/equipment/definitions/weapons/service_pistol.tres,0,TRUE,,temporary
+pulse_rifle,전격 펄스 소총,main,res://game/features/equipment/definitions/weapons/pulse_rifle.tres,80,FALSE,region_industrial_district,temporary

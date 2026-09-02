@@ -62,6 +62,7 @@ tags:
 - `equipment_customization`은 `equipment`, `inventory` 필요
 - `equipment_upgrade_economy`는 `equipment_customization`, `credits` 필요
 - `operation_contracts`는 `persistent_profile` 필요
+- `loadout_investment`는 `operation_contracts`, `equipment`, `combat_skills` 필요
 - `extraction_defense`는 `extraction` 필요
 - `hub_economy`, `crafting`은 `persistent_profile` 필요
 - `smart_targeting`은 `weapons` 필요
@@ -86,6 +87,8 @@ tags:
 방 전투는 맵 내부 배열을 직접 읽지 않습니다. 맵이 방 경계·중심·출입구·4방향 연결 스냅샷과 방 내부 생성 위치를 제공하고, 적 생성기는 위치 지정 생성·남은 예산·증원 일시 정지 계약만 제공합니다. `RoomEncounterSystem`은 이 공개 계약을 조합해 진입→봉쇄→전멸→보상·완주 상태만 소유합니다. `RoomWarpSystem`은 미니맵의 방 번호 요청을 받아 전투·클리어·방 종류를 검증하고, 미니맵은 플레이어 위치를 직접 수정하지 않습니다.
 
 영구 상태는 런타임 Node에 보관하지 않습니다. `PersistentProfile`은 값과 저장만 담당하고 상점 가격, 제작식, 작전 배율, 점수식은 각 정책 모듈이 소유합니다. 출격 조립 실패에는 공개 보상 계약으로 트랜잭션을 되돌립니다.
+
+런 로드아웃 투자도 같은 경계를 지킵니다. `LoadoutInvestmentTable`은 Weapon·Skill Sheet/확정 CSV를 파싱하고, `LoadoutInvestmentService`는 소유·해금·이번 런 구매와 태그 적합성 스냅샷만 계산합니다. 실제 크레딧 차감은 `OperationContractService`가 캐릭터·로드아웃 추가 비용을 한 번 합산해 수행하고, 장비·스킬 런타임 교체와 거점 복원은 조립부가 공개 메서드로만 연결합니다.
 
 지역·난이도·페널티·스마트 타게팅·제작 옵션처럼 자주 조정할 규칙은 Resource로 둡니다. 소비자는 최종 스냅샷 사본만 받고 다른 모듈의 설정 배열을 직접 수정하지 않습니다.
 

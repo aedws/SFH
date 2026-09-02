@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/loadout_investment/loadout_investment_service.gd" id="1_service"]
+
+[node name="LoadoutInvestmentService" type="Node"]
+script = ExtResource("1_service")
+
+[node name="WeaponHTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="SkillHTTPRequest" type="HTTPRequest" parent="."]

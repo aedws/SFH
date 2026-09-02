@@ -1407,6 +1407,7 @@ func _verify_optional_combat_skill_module(game_scene: PackedScene) -> bool:
 	var skill_free_game := game_scene.instantiate()
 	var skill_free_features = skill_free_game.get("features").duplicate(true)
 	skill_free_features.set("combat_skills_enabled", false)
+	skill_free_features.set("loadout_investment_enabled", false)
 	skill_free_features.set("skill_binding_enabled", false)
 	skill_free_features.set("field_loot_skill_equip_enabled", false)
 	skill_free_features.set("session_sockets_enabled", false)
@@ -2539,6 +2540,7 @@ func _verify_optional_equipment_module(game_scene: PackedScene) -> bool:
 	var equipment_free_game := game_scene.instantiate()
 	var equipment_free_features = equipment_free_game.get("features").duplicate(true)
 	equipment_free_features.set("equipment_enabled", false)
+	equipment_free_features.set("loadout_investment_enabled", false)
 	equipment_free_features.set("equipment_weapons_enabled", false)
 	equipment_free_features.set("equipment_skills_enabled", false)
 	equipment_free_features.set("equipment_armor_enabled", false)
@@ -2842,7 +2844,7 @@ func _verify_optional_meta_operation_modules(game_scene: PackedScene) -> bool:
 	var fallback_features = fallback_game.get("features").duplicate(true)
 	for property_name in [
 		"persistent_profile_enabled", "operation_contracts_enabled",
-		"character_selection_enabled",
+		"character_selection_enabled", "loadout_investment_enabled",
 		"extraction_defense_enabled", "hub_economy_enabled", "smart_targeting_enabled",
 		"crafting_enabled", "penalty_modifiers_enabled", "conditional_ranking_enabled",
 		"run_settlement_enabled",
@@ -2859,6 +2861,7 @@ func _verify_optional_meta_operation_modules(game_scene: PackedScene) -> bool:
 		fallback_game.get("persistent_profile") != null
 		or fallback_game.get("operation_contract_service") != null
 		or fallback_game.get("character_selection_service") != null
+		or fallback_game.get("loadout_investment_service") != null
 		or fallback_game.get("hub_economy_system") != null
 		or fallback_game.get("crafting_system") != null
 		or fallback_game.get("penalty_system") != null
