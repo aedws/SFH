@@ -44,17 +44,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 2 · IMPROVE 4 · CHANGE 3 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 3 · IMPROVE 5 · CHANGE 4 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>4</b><small>IMPROVE</small></span><span><b>3</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
-      <summary><span><small>LATEST</small><b>작전 브리핑 · 화면 폭 자동 대응</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>LATEST</small><b>전투 HUD · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>브라우저에서 작전 설정의 좌우 정보가 잘리지 않도록 화면 폭에 맞춰 패널과 전술 프리뷰를 자동 조정합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>반응형 폭 계약과 크기 비례 전술 프리뷰를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 4</h3><p>안전 여백, 정보 우선순위, 텍스트 밀도, 좁은 화면 사용성을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 3</h3><p>작전 UI, 폭별 E2E, 내부 개발 문서를 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>브리핑 좌우 잘림과 잘못된 줄바꿈으로 인한 세로 폭주를 제거했습니다.</p></div>
+        <div class="sfh-summary"><strong>전투 필수 정보는 화면 가장자리로 압축하고, 비어 있는 런 소켓 패널은 숨겨 중앙 전장을 가리지 않게 했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>가로형 스킬 클러스터, 중앙 안전 영역, 상황형 소켓 표시 계약을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>스킬·에너지·소켓·행동 안내의 배치와 화면 점유율을 낮췄습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>런타임 HUD 배치 책임, 플레이어 인식 E2E, 기능·감사 문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>빈 소켓 패널 잔류와 중앙 우측 세로 스킬 패널의 시야 침범을 제거했습니다.</p></div>
       </div>
     </details>
   </div>

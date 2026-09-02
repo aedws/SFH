@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 70 TOPICS</span><span>84 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 71 TOPICS</span><span>84 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -94,7 +94,30 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 55 · IMPROVE 65 · CHANGE 62 · FIX 33</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 3 · IMPROVE 5 · CHANGE 4 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 전투 화면 중앙을 비우고 스킬·에너지·소켓·조작 정보를 하단 가장자리의 짧은 시선 이동으로 읽도록 재배치했습니다.</strong><ul>
+          <li><b>스킬:</b> 중앙 우측의 세로 3단 패널을 우하단 440×82px 가로 클러스터로 전환했습니다.</li>
+          <li><b>소켓:</b> 빈 슬롯은 숨기고 실제 룬·코어·유물을 장착한 뒤에만 하단 중앙에 표시합니다.</li>
+          <li><b>배치 책임:</b> 세션 소켓의 독립 상단 앵커를 제거하고 <code>CombatHudPresenter</code>가 스킬·대시·소켓·행동 도크를 함께 배치합니다.</li>
+          <li><b>인지 계약:</b> 장착 전 결정은 전리품 패널, 장착 후 상태는 RUN ONLY 소켓 패널이 설명하도록 분리했습니다.</li>
+          <li><b>검증:</b> 지속 HUD 16% 상한, 중앙 56%×54% 안전 영역 무침범, 비겹침과 빈 상태 즉시 숨김을 스모크·31개 인식 E2E로 고정했습니다.</li>
+        </ul><p class="sfh-intent"><b>모듈 경계</b><span>전투 계산·소켓 규칙·스킬 상태는 변경하지 않고 각 HUD의 읽기 전용 스냅샷과 배치 Presenter만 수정했습니다. Sheet·CSV·과금 모델은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>가로형 스킬 클러스터, 중앙 안전 영역, 상황형 소켓 표시 계약을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>시야 점유, 시선 이동, 에너지 판독, 가장자리 정렬, 좁은 화면 축약을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>HUD Presenter, 스킬·소켓 표현, 플레이어 인식 기준, 관련 위키를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p><code>queue_free()</code> 지연으로 빈 패널이 남는 현상과 중앙 세로 HUD의 전장 침범을 제거했습니다.</p></div>
+        <p><a href="features/game-loop/">전투 HUD →</a> · <a href="features/combat-skills/">스킬 UI →</a> · <a href="features/session-sockets/">런 소켓 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
+      </div>
+    </details>
+  </div>
+</details>
+<details class="sfh-day" open>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><small>15 UPDATE BUNDLES · BUILD 55 · IMPROVE 65 · CHANGE 62 · FIX 33</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>55</b><small>BUILD</small></span><span><b>65</b><small>IMPROVE</small></span><span><b>62</b><small>CHANGE</small></span><span><b>33</b><small>FIX</small></span></div>
     <details class="sfh-bundle">

@@ -9,6 +9,8 @@ const TYPE_LABELS := {&"rune": "RUNE", &"core": "CORE", &"artifact": "ARTIFACT"}
 @onready var source_label: Label = %SourceLabel
 
 var service: Node
+var managed_layout := false
+var latest_occupied_count := 0
 
 
 func _ready() -> void:
@@ -34,10 +36,13 @@ func refresh(snapshot: Dictionary) -> void:
 	for child in slots_row.get_children():
 		child.queue_free()
 	var slots_by_type: Dictionary = snapshot.get(&"slots", {})
+	latest_occupied_count = 0
 	for socket_type in [&"rune", &"core", &"artifact"]:
 		for slot: Dictionary in slots_by_type.get(socket_type, []):
 			var button := Button.new()
 			var occupied := bool(slot.get(&"occupied", false))
+			if occupied:
+				latest_occupied_count += 1
 			button.custom_minimum_size = Vector2(64.0, 30.0)
 			button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -54,16 +59,25 @@ func refresh(snapshot: Dictionary) -> void:
 				button.pressed.connect(_request_unsocket.bind(socket_type, int(slot[&"slot_index"])))
 			slots_row.add_child(button)
 	source_label.text = "RUN ONLY · %s" % snapshot.get(&"source_label", "확정 CSV")
-	visible = int(snapshot.get(&"rule_item_count", 0)) > 0
+	# 빈 슬롯 안내는 전리품 상호작용 문구가 담당합니다. 전투 중에는 실제로
+	# 장착된 런 자산이 있을 때만 가장자리 HUD를 노출해 시야를 보존합니다.
+	visible = latest_occupied_count > 0
+
+
+func set_managed_layout(enabled: bool) -> void:
+	managed_layout = enabled
+	_update_responsive_layout()
 
 
 func get_snapshot() -> Dictionary:
 	return {
 		&"visible": visible,
 		&"button_count": slots_row.get_child_count(),
-		&"occupied_count": _occupied_button_count(),
+		&"occupied_count": latest_occupied_count,
 		&"source_text": source_label.text,
 		&"runtime_only_visible": "RUN ONLY" in source_label.text,
+		&"managed_layout": managed_layout,
+		&"hidden_when_empty": latest_occupied_count == 0 and not visible,
 	}
 
 
@@ -85,6 +99,8 @@ func _occupied_button_count() -> int:
 
 
 func _update_responsive_layout() -> void:
+	if managed_layout:
+		return
 	var viewport_width := get_viewport_rect().size.x
 	var panel_width := clampf(viewport_width - 24.0, 340.0, 680.0)
 	anchor_left = 0.5
