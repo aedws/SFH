@@ -74,6 +74,7 @@ nav:
       - Master GDD 구현 대조: design/master-gdd-alignment.md
       - 현행 마일스톤 작업 라인: design/current-milestone-workline.md
       - P5·P6 사전 구현 설계: design/p5-p6-preimplementation.md
+      - P7 이후 사전 구현 설계: design/p7-plus-preimplementation.md
       - 기획 요청·밸런스 데이터 운영: design/planner-request-workflow.md
       - AI 개발자·기획자 위키 협업 개선안: design/wiki-collaboration-workflow.md
       - 게임 개요: design/game-overview.md

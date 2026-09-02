@@ -1,9 +1,30 @@
 {
-  "version": 15,
-  "updated": "2026-09-01",
+  "version": 16,
+  "updated": "2026-09-02",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "P7 이후 작업",
+      "label": "P7~P10 사전 구현 설계",
+      "description": "공식 Phase 1~6 뒤 로비 경제·훈련장·도감·출시 후보 검증으로 이어지는 내부 후속 작업선",
+      "category": "기획",
+      "priority": 100
+    },
+    {
+      "query": "로테이션 상점 제작소",
+      "label": "3대 매물·리롤·설계도 제작",
+      "description": "손상·표준·고성능 매물, 런 종료 회전, 골드 리롤, 설계도 영구 등록과 맞춤 제작 계약",
+      "category": "경제",
+      "priority": 100
+    },
+    {
+      "query": "훈련 연습장",
+      "label": "더미·DPS·AP·쿨타임 훈련장",
+      "description": "단일 보스·밀집 더미, 전투 텔레메트리, 무비용 자유 세팅과 퇴장 복구",
+      "category": "전투",
+      "priority": 100
+    },
     {
       "query": "모바일 플레이 HUD 설정",
       "label": "모바일 키패드·HUD 위치·키 포맷",
@@ -27,8 +48,8 @@
     },
     {
       "query": "남은 작업",
-      "label": "남은 9개 마일스톤 패킷",
-      "description": "P5-01~05, P6-01~04의 선행 조건·기획 데이터·플레이어 완료 기준",
+      "label": "확장된 P5·P6와 P7+ 작업선",
+      "description": "최신 GDD 로비 허브 세부 범위와 P7~P10 내부 후속 패킷의 선행 조건·플레이어 완료 기준",
       "category": "기획",
       "priority": 100
     },
@@ -77,28 +98,28 @@
     {
       "query": "개발 진행도",
       "label": "개발 진행도",
-      "description": "Master GDD 기준 87% 진행률과 남은 9개 구현 패킷 근거",
+      "description": "Master GDD v1005 기준 79% 진행률과 상점·제작소·훈련장 확장 근거",
       "category": "기획",
       "priority": 100
     },
     {
       "query": "Master GDD",
       "label": "Master GDD 구현 대조",
-      "description": "최신 확정 기획, 8개 시스템 산식, 6개 Phase 차이와 작업 순서",
+      "description": "최신 확정 기획, 10개 시스템 산식, 공식 6개 Phase와 내부 P7+ 작업 순서",
       "category": "기획",
       "priority": 99
     },
     {
       "query": "마일스톤 작업 라인",
       "label": "현행 마일스톤 작업 라인",
-      "description": "완료된 Phase 4 뒤 P5-01부터 이어지는 작업 ID, 선행 조건, 모듈 경계, 플레이어 완료 조건과 E2E 게이트",
+      "description": "완료된 Phase 4 뒤 확장된 P5·P6와 내부 P7+로 이어지는 작업 ID·모듈·E2E 게이트",
       "category": "기획",
       "priority": 98
     },
     {
       "query": "앞으로 해야 할 작업",
       "label": "앞으로 해야 할 작업",
-      "description": "P5 로비 4대 세팅과 P6 온라인 랭킹·시즌 보상으로 이어지는 9개 순서",
+      "description": "P5 로비 허브·준비 세션, P6 온라인 시즌, P7+ 경제·훈련·도감으로 이어지는 순서",
       "category": "기획",
       "priority": 96
     },
@@ -337,7 +358,7 @@
   "planner_groups": [
     {
       "label": "기획·현황",
-      "queries": ["문서 노드맵", "개발 진행도", "마일스톤 작업 라인", "앞으로 해야 할 작업", "확정 사항"]
+      "queries": ["문서 노드맵", "개발 진행도", "마일스톤 작업 라인", "P7 이후 작업", "앞으로 해야 할 작업", "확정 사항"]
     },
     {
       "label": "전투 설계",
@@ -349,7 +370,7 @@
     },
     {
       "label": "장비·성장",
-      "queries": ["전리품 정산", "내부 증강", "장비 모듈", "영구 해금 상점", "무료 기본 무장", "Google Sheets 밸런스"]
+      "queries": ["로테이션 상점 제작소", "전리품 정산", "내부 증강", "장비 모듈", "영구 해금 상점", "무료 기본 무장", "Google Sheets 밸런스"]
     },
     {
       "label": "검증·구조",

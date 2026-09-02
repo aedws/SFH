@@ -1,6 +1,6 @@
 {
-  "version": 11,
-  "updated": "2026-09-01",
+  "version": 12,
+  "updated": "2026-09-02",
   "root": {
     "id": "sfh",
     "label": "SFH 개발 위키",
@@ -60,9 +60,10 @@
             "description": "무엇을 만들고 어디까지 구현하는가",
             "documents": [
               {"label": "게임 설계", "source": "design/index.md", "route": "design/", "summary": "설계 문서 진입점"},
-              {"label": "Master GDD 구현 대조", "source": "design/master-gdd-alignment.md", "route": "design/master-gdd-alignment/", "summary": "확정 기획·87% 산식·마일스톤 차이"},
-              {"label": "현행 마일스톤 작업 라인", "source": "design/current-milestone-workline.md", "route": "design/current-milestone-workline/", "summary": "Phase 1·4·5·6 구현 순서·모듈 경계·E2E 게이트"},
-              {"label": "P5·P6 사전 구현 설계", "source": "design/p5-p6-preimplementation.md", "route": "design/p5-p6-preimplementation/", "summary": "P4-06 이후 9개 패킷의 데이터·모듈·플레이어 E2E 계약"},
+              {"label": "Master GDD 구현 대조", "source": "design/master-gdd-alignment.md", "route": "design/master-gdd-alignment/", "summary": "v1005 확정 기획·79% 산식·마일스톤 차이"},
+              {"label": "현행 마일스톤 작업 라인", "source": "design/current-milestone-workline.md", "route": "design/current-milestone-workline/", "summary": "Phase 1·4·5·6와 내부 P7+ 순서·모듈·E2E 게이트"},
+              {"label": "P5·P6 사전 구현 설계", "source": "design/p5-p6-preimplementation.md", "route": "design/p5-p6-preimplementation/", "summary": "확장된 로비 허브와 비동기 시즌의 데이터·모듈·E2E 계약"},
+              {"label": "P7 이후 사전 구현 설계", "source": "design/p7-plus-preimplementation.md", "route": "design/p7-plus-preimplementation/", "summary": "상점·제작소·훈련장·도감의 내부 P7~P10 후속 계약"},
               {"label": "기획 요청·밸런스 데이터 운영", "source": "design/planner-request-workflow.md", "route": "design/planner-request-workflow/", "summary": "요청 ID·Notion 근거·Sheet 상시 확장·완료 안내"},
               {"label": "AI 개발자·기획자 위키 협업 개선안", "source": "design/wiki-collaboration-workflow.md", "route": "design/wiki-collaboration-workflow/", "summary": "역할·상태·차단·수락 기준·근거와 단계별 수정 대안"},
               {"label": "게임 개요", "source": "design/game-overview.md", "route": "design/game-overview/", "summary": "장르·캐치프레이즈·핵심 노선"},

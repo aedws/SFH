@@ -30,6 +30,7 @@ on:
       - "scripts/check-deployment-boundaries.ps1"
       - "scripts/check-game-domain-cutover.ps1"
       - "scripts/check-wiki-planner-requests.ps1"
+      - "scripts/check-p7-roadmap.ps1"
   push:
     branches:
       - main
@@ -59,6 +60,7 @@ on:
       - "scripts/check-deployment-boundaries.ps1"
       - "scripts/check-game-domain-cutover.ps1"
       - "scripts/check-wiki-planner-requests.ps1"
+      - "scripts/check-p7-roadmap.ps1"
   workflow_dispatch:
 
 permissions:
@@ -321,6 +323,7 @@ jobs:
           ./scripts/check-wiki-responsive.ps1
           ./scripts/check-wiki-no-github-backlinks.ps1
           ./scripts/check-wiki-planner-requests.ps1
+          ./scripts/check-p7-roadmap.ps1
           python scripts/snapshot_notion_source.py --check
           python -m mkdocs build --strict
           python scripts/check_wiki_search_index.py .wiki-site/search/search_index.json

@@ -1,6 +1,6 @@
 ---
 title: P5·P6 사전 구현 설계
-description: P4-06 이후 로비 투자와 비동기 시즌을 구현하기 전에 고정하는 모듈·데이터·플레이어 E2E 작업 계약
+description: P4-06 이후 최신 GDD의 로비 허브·준비 세션과 비동기 시즌을 구현하기 전에 고정하는 모듈·데이터·플레이어 E2E 작업 계약
 tags:
   - Phase 5
   - Phase 6
@@ -17,7 +17,7 @@ tags:
 
 ## 다음 실행 순서
 
-`P5-01 캐릭터 → P5-02 무기·스킬 → P5-03 유틸리티 → P5-04 단일 초안·BEP → P5-05 파산 방지 → P6-01 제공자 → P6-02 제출 검증 → P6-03 시즌 → P6-04 보상`
+`P5-01 캐릭터 → 02 무기·스킬 → 03 유틸리티 → 04 초안·BEP → 05 파산 방지 → 06~08 상점·제작 → 09 훈련장 → 10 도감 → P6 비동기 시즌`
 
 각 패킷은 `데이터 계약 → 순수 정책 → 서비스 → 반응형 Presenter → 플레이어 인식 E2E → 모듈 제거 검사` 순으로 끝냅니다. 새 목록이 필요할 때만 Google Sheet 탭/열을 확장하고, 실시간 시험과 확정 CSV 공급 구조는 유지합니다.
 
@@ -30,11 +30,17 @@ tags:
 | P5-03 | 가방·회복/공격 소모품·비상 탈출 항목 | `UtilityCatalog`, `RunConsumableService` | 수량·사용 조건·사망 소실을 진입 전 확인 | 구매→작전 사용→잔량→성공/사망 |
 | P5-04 | 선택 전체와 BEP 계산 항목 | 불변 `OperationDraft`, `OperationQuoteService` | 모든 선택·총비용·기대 보상이 한 브리핑에 표시 | 편집 중 무과금→한 번 확정→원자적 차감 |
 | P5-05 | 무료 캐릭터·무기·맵 프리셋 | `BankruptcyProtectionPolicy` | 재화 0에서도 무료 프리셋으로 반복 출격 | 0 C→출격→결말→재출격 |
+| P5-06 | ShopOffer 품질·가격·표현 키 | `ShopOfferDefinition`, `ShopQualityPolicy`, Provider | 손상·표준·고성능의 가격·성능 차이를 구매 전 확인 | 세 품질군→견적→구매→보관함 |
+| P5-07 | 회전 시드·리롤 가격·초기화 | `ShopRotationPolicy`, `ShopRotationService` | 런 복귀 갱신과 골드 리롤 결과·잔액 확인 | 복귀→회전→리롤→중복 차감 방지 |
+| P5-08 | 설계도·레시피·옵션/소켓 범위 | `BlueprintRegistry`, `WorkshopRecipeProvider`, `WorkshopCraftService` | 반출 설계도를 영구 등록하고 맞춤 제작 | 반출→등록→재접속→제작→보관함 |
+| P5-09 | 더미 시나리오·계측 시간창 | `TrainingScenario`, `CombatTelemetry`, `TrainingLoadoutService` | 단일·밀집 시험과 DPS·타격·AP·쿨타임 확인 | 생성→공격→계측→자유 세팅→퇴장 복구 |
+| P5-10 | 도감 항목·진행·지역 힌트 | `CodexEntry`, `CodexProgressService`, `CodexHintProvider` | 해금률과 미해금 지역 힌트를 로비에서 확인 | 반출→도감 증가→재접속→힌트 유지 |
 
 ### P5 데이터 요청 게이트
 
 - Character 목록이 필요해지는 P5-01에서 `Character` 시트를 새로 만들 수 있습니다.
 - 기존 Weapon·Skill·Item 목록으로 표현할 수 없는 P5-02·03 항목만 새 행/탭을 요청합니다.
+- 상점 매물·제작 레시피·훈련 시나리오·도감 목록이 실제 구현에 필요해질 때만 `ShopOffer`, `Recipe`, `TrainingScenario`, `Codex` 탭을 추가합니다.
 - 기획 수치가 없으면 임시값은 `provisional` 태그와 근거를 함께 기록하고 확정값처럼 표시하지 않습니다.
 - 과금·결제·유료 재화 모델은 이 작업선 범위가 아니며 변경하지 않습니다.
 
@@ -68,4 +74,3 @@ tags:
 - [Master GDD 구현 대조](master-gdd-alignment.md)
 - [기획 요청·밸런스 데이터 운영](planner-request-workflow.md)
 - [런 전리품 정산](../features/run-settlement.md)
-
