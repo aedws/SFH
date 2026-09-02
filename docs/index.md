@@ -130,14 +130,31 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 11 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 12 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 45 · IMPROVE 49 · CHANGE 47 · FIX 23</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 48 · IMPROVE 54 · CHANGE 51 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>45</b><small>BUILD</small></span><span><b>49</b><small>IMPROVE</small></span><span><b>47</b><small>CHANGE</small></span><span><b>23</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>54</b><small>IMPROVE</small></span><span><b>51</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>역할 로그인 복구 · 고정 ID와 비밀번호 변경</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 로그인할 수 없던 기존 역할 계정을 고정 ID와 공통 초기 비밀번호로 복구하고, 로그인 뒤에는 비밀번호만 안전하게 바꾸도록 단순화했습니다.</strong><ul>
+          <li><b>계정:</b> 기획자는 <code>planner</code>, 개발자는 <code>developer</code>, 초기 비밀번호는 모두 <code>0000</code>입니다.</li>
+          <li><b>변경:</b> 아이디는 역할명으로 고정되고 보호된 계정 설정에서 비밀번호만 변경할 수 있습니다.</li>
+          <li><b>복구:</b> 기존 R2 레코드는 bootstrap revision 2 배포에서 한 번만 교정합니다.</li>
+          <li><b>보존:</b> 교정 뒤 사용자가 바꾼 비밀번호는 다음 배포가 덮어쓰지 않습니다.</li>
+          <li><b>E2E:</b> Seed 해시·기본 로그인·역할 격리·ID 변조 거부·비밀번호 변경 전후를 자동 검증합니다.</li>
+        </ul><p class="sfh-intent"><b>보안·비용</b><span><code>0000</code>은 공개 초기값이라 첫 로그인 뒤 변경을 권장합니다. 전용 Private R2와 기존 pepper만 사용하며 게임 과금·Cloudflare 플랜은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>고정 역할 계정, 비밀번호 전용 변경, revision 기반 1회 복구 배포를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>로그인 명확성·복구 가능성·재배포 보존·역할 격리·자동 검증을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>로그인·계정·인증 계약·검색·노드맵 문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>기존 아이디 불일치, 최초 변경 강제 진입, 배포 후 계정 상태 불확실성을 수정했습니다.</p></div>
+        <p><a href="access/login/">역할 로그인 →</a> · <a href="architecture/wiki-role-auth/">인증·복구 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 11</small><b>작전 사전검증 · 모든 세팅의 확장 안전 계약</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 총기·파츠·모듈 등 세팅을 바꾼 뒤 조립 실패로 거점에 되돌아오던 구조를 결제 전 검증과 불변 작전 계획으로 교체했습니다.</strong><ul>

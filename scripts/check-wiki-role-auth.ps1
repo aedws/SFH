@@ -19,6 +19,7 @@ $script = Read-RequiredFile "docs/javascripts/role-auth.js"
 $mkdocs = Read-RequiredFile "mkdocs.yml"
 $architecture = Read-RequiredFile "docs/architecture/wiki-role-auth.md"
 $seedScript = Read-RequiredFile "scripts/seed_wiki_auth.mjs"
+$workflow = Read-RequiredFile ".github/workflows/deploy-wiki.yml"
 
 foreach ($required in @(
     'HttpOnly; Secure; SameSite=Strict',
@@ -56,10 +57,31 @@ if ($architecture -notmatch 'Notion' -or $architecture -notmatch 'Google Sheet' 
 if ($seedScript -notmatch 'pepperFingerprint' -or $seedScript -notmatch 'pepper\.json') {
     throw "Wiki auth deployment must guard against accidental pepper rotation."
 }
+if (
+    $worker -notmatch 'planner:\s*"planner"' -or
+    $worker -notmatch 'developer:\s*"developer"' -or
+    $seedScript -notmatch 'BOOTSTRAP_REVISION\s*=\s*2' -or
+    $seedScript -notmatch 'INITIAL_PASSWORD\s*=\s*"0000"'
+) {
+    throw "Wiki auth fixed role IDs or revision-2 bootstrap password contract is missing."
+}
+if (
+    $workflow -notmatch 'WIKI_AUTH_BOOTSTRAP_REVISION:\s*"2"' -or
+    $workflow -notmatch 'remote_revision' -or
+    $workflow -match 'SFH_WIKI_(PLANNER|DEVELOPER)_INITIAL_PASSWORD'
+) {
+    throw "Wiki auth deployment must perform revision-2 migration without obsolete password secrets."
+}
+$loginPage = Read-RequiredFile "docs/access/login.md"
+$accountPage = Read-RequiredFile "docs/access/account.md"
+if ($loginPage -notmatch 'value="planner"' -or $loginPage -notmatch '<code>0000</code>') {
+    throw "Login page must expose the fixed planner/developer ID flow and bootstrap password."
+}
+if ($accountPage -match 'new_username' -or $script -match 'new_username:\s*data\.get') {
+    throw "Account settings must not expose a mutable role username."
+}
 
 $forbiddenPatterns = @(
-    '(?i)planner[_ -]?password\s*[:=]\s*["''][^"'']+',
-    '(?i)developer[_ -]?password\s*[:=]\s*["''][^"'']+',
     '(?i)AUTH_PEPPER\s*[:=]\s*["''][^"'']+'
 )
 $trackedAuthText = $worker + "`n" + $script + "`n" + $architecture

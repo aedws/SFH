@@ -31,13 +31,15 @@ class MemoryR2 {
 }
 
 const pepper = "test-only-pepper-that-is-at-least-thirty-two-characters";
-const plannerPassword = "Planner-Initial-47Qx";
-const developerPassword = "Developer-Initial-82Vz";
+const initialPassword = "0000";
+const changedPassword = "9573";
+const tamperedPlannerId = "planner-owner";
 
 async function userRecord(role, username, password) {
   const salt = __test.randomToken(18);
   return {
-    schema: 1,
+    schema: 2,
+    bootstrap_revision: 2,
     role,
     username,
     password: {
@@ -46,14 +48,14 @@ async function userRecord(role, username, password) {
       salt,
       digest: await __test.passwordDigest(password, salt, pepper),
     },
-    credential_version: 1,
-    must_change: true,
+    credential_version: 2,
+    must_change: false,
   };
 }
 
 const store = new MemoryR2();
-await store.put("users/planner.json", JSON.stringify(await userRecord("planner", "sfh-planner", plannerPassword)));
-await store.put("users/developer.json", JSON.stringify(await userRecord("developer", "sfh-developer", developerPassword)));
+await store.put("users/planner.json", JSON.stringify(await userRecord("planner", "planner", initialPassword)));
+await store.put("users/developer.json", JSON.stringify(await userRecord("developer", "developer", initialPassword)));
 
 const env = {
   WIKI_AUTH: store,
@@ -88,17 +90,18 @@ assert.equal(response.status, 302, "encoded and repeated slashes must not bypass
 response = await worker.fetch(request("/api/auth/login", {
   method: "POST",
   headers: { "content-type": "application/json", origin: "https://sfh-dev-wiki.pages.dev" },
-  body: JSON.stringify({ role: "planner", username: "sfh-planner", password: plannerPassword }),
+  body: JSON.stringify({ role: "planner", username: "planner", password: initialPassword }),
 }), env);
 assert.equal(response.status, 200);
 let session = await response.json();
 assert.equal(session.role, "planner");
-assert.equal(session.must_change, true);
+assert.equal(session.username, "planner");
+assert.equal(session.must_change, false);
 let plannerCookie = cookieFrom(response);
 
 response = await worker.fetch(request("/access/planner/", { headers: { cookie: plannerCookie } }), env);
-assert.equal(response.status, 302);
-assert.equal(response.headers.get("location"), "/access/account/?required=1");
+assert.equal(response.status, 200);
+assert.equal(await response.text(), "asset:/access/planner/");
 
 response = await worker.fetch(request("/access/account/", { headers: { cookie: plannerCookie } }), env);
 assert.equal(response.status, 200);
@@ -113,14 +116,14 @@ response = await worker.fetch(request("/api/auth/credentials", {
     "x-csrf-token": session.csrf,
   },
   body: JSON.stringify({
-    current_password: plannerPassword,
-    new_username: "planner-owner",
-    new_password: "Changed-Planner-Password-95!",
+    current_password: initialPassword,
+    new_username: tamperedPlannerId,
+    new_password: changedPassword,
   }),
 }), env);
 assert.equal(response.status, 200);
 session = await response.json();
-assert.equal(session.username, "planner-owner");
+assert.equal(session.username, "planner", "role username must remain fixed even if a client tampers with new_username");
 assert.equal(session.must_change, false);
 plannerCookie = cookieFrom(response);
 
@@ -134,19 +137,34 @@ assert.equal(response.status, 403);
 response = await worker.fetch(request("/api/auth/login", {
   method: "POST",
   headers: { "content-type": "application/json", origin: "https://sfh-dev-wiki.pages.dev" },
-  body: JSON.stringify({ role: "planner", username: "sfh-planner", password: plannerPassword }),
+  body: JSON.stringify({ role: "planner", username: "planner", password: initialPassword }),
 }), env);
 assert.equal(response.status, 401);
 
 response = await worker.fetch(request("/api/auth/login", {
   method: "POST",
   headers: { "content-type": "application/json", origin: "https://sfh-dev-wiki.pages.dev" },
-  body: JSON.stringify({ role: "developer", username: "sfh-developer", password: developerPassword }),
+  body: JSON.stringify({ role: "planner", username: tamperedPlannerId, password: changedPassword }),
+}), env);
+assert.equal(response.status, 401, "planner ID must remain fixed");
+
+response = await worker.fetch(request("/api/auth/login", {
+  method: "POST",
+  headers: { "content-type": "application/json", origin: "https://sfh-dev-wiki.pages.dev" },
+  body: JSON.stringify({ role: "planner", username: "planner", password: changedPassword }),
+}), env);
+assert.equal(response.status, 200, "changed password must work with the fixed planner ID");
+
+response = await worker.fetch(request("/api/auth/login", {
+  method: "POST",
+  headers: { "content-type": "application/json", origin: "https://sfh-dev-wiki.pages.dev" },
+  body: JSON.stringify({ role: "developer", username: "developer", password: initialPassword }),
 }), env);
 assert.equal(response.status, 200);
 const developerSession = await response.json();
 const developerCookie = cookieFrom(response);
 assert.equal(developerSession.role, "developer");
+assert.equal(developerSession.username, "developer");
 
 response = await worker.fetch(request("/access/planner/", { headers: { cookie: developerCookie } }), env);
 assert.equal(response.status, 403);

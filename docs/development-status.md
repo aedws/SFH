@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 68 TOPICS</span><span>84 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 69 TOPICS</span><span>84 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 45 · IMPROVE 49 · CHANGE 47 · FIX 23</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 48 · IMPROVE 54 · CHANGE 51 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>45</b><small>BUILD</small></span><span><b>49</b><small>IMPROVE</small></span><span><b>47</b><small>CHANGE</small></span><span><b>23</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>54</b><small>IMPROVE</small></span><span><b>51</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -266,7 +266,7 @@ tags:
         <p><a href="features/operation-entry-wizard/">작전 진입 계약 →</a> · <a href="quality/e2e-play-session/">실제 플레이 E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 11</small><b>작전 사전검증 · 모든 세팅의 확장 안전 계약</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 총기·파츠·모듈 등 세팅을 바꾼 뒤 조립 실패로 거점에 되돌아오던 구조를 결제 전 검증과 불변 작전 계획으로 교체했습니다.</strong><ul>
@@ -281,6 +281,23 @@ tags:
         <div class="sfh-group"><h3>수정 · 5</h3><p>모듈 원칙·작전 문서·E2E·검색·문서 노드맵을 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>결제 후 늦은 실패, 세팅 변경 진입 회귀, 0원 작전 전리품 범위 불일치를 수정했습니다.</p></div>
         <p><a href="features/operation-launch-preflight/">작전 사전검증 →</a> · <a href="quality/e2e-play-session/">93조합·실패 E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>역할 로그인 복구 · 고정 ID와 비밀번호 변경</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자·개발자 계정을 역할명으로 고정하고 공통 초기 비밀번호로 복구해, 기존 저장 상태와 무관하게 다시 로그인할 수 있게 했습니다.</strong><ul>
+          <li><b>고정 계정:</b> <code>planner/0000</code>, <code>developer/0000</code>으로 각각 자기 보호 탭에 접근합니다.</li>
+          <li><b>설정:</b> 계정 화면은 아이디를 바꾸지 않고 비밀번호만 4~128자로 변경합니다.</li>
+          <li><b>1회 교정:</b> revision 2보다 오래된 Private R2 계정만 교정하고 기존 세션을 무효화합니다.</li>
+          <li><b>재배포 안전:</b> revision 2 이후 변경 비밀번호는 CI가 보존합니다.</li>
+          <li><b>검증:</b> Seed digest·salt, 두 기본 로그인, 역할 교차 차단, ID 변조 무시, 변경 전후 세션을 판정합니다.</li>
+        </ul><p class="sfh-intent"><b>경계</b><span>인증 모듈과 전용 R2 외 게임·다운로드·결제·Cloudflare 플랜은 불변입니다. 공개 초기 비밀번호는 로그인 후 변경을 권장합니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>고정 ID·공통 초기 비밀번호·revision 2 복구 경로를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>로그인 UX·복구·비밀번호 보존·역할 격리·배포 검증을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>역할 UI·Worker 계약·운영 문서·검색 그래프를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>가변 아이디 잔존, 강제 변경 루프, 재배포 덮어쓰기 가능성을 제거했습니다.</p></div>
+        <p><a href="access/login/">로그인 →</a> · <a href="architecture/wiki-role-auth/">인증 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
   </div>
