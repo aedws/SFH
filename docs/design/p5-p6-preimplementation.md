@@ -27,20 +27,20 @@ tags:
 |---|---|---|---|---|
 | P5-01 · 완료 | Character ID·패시브·투입 가격·표현 키 | `CharacterDefinition`, `CharacterSelectionService`, Presenter | 캐릭터를 바꾸면 패시브와 총비용이 즉시 바뀜 | 선택→견적→출격→실전 패시브 |
 | P5-02 · 완료 | Weapon·Skill 가격과 해금·태그 요구 | 기존 자산 정의 + `LoadoutInvestmentService` | 소유·미해금·이번 런 구매를 혼동하지 않음 | 구매→태그 검증→장착→발동→거점 복원 |
-| P5-03 | 가방·회복/공격 소모품·비상 탈출 항목 | `UtilityCatalog`, `RunConsumableService` | 수량·사용 조건·사망 소실을 진입 전 확인 | 구매→작전 사용→잔량→성공/사망 |
-| P5-04 | 선택 전체와 BEP 계산 항목 | 불변 `OperationDraft`, `OperationQuoteService` | 모든 선택·총비용·기대 보상이 한 브리핑에 표시 | 편집 중 무과금→한 번 확정→원자적 차감 |
-| P5-05 | 무료 캐릭터·무기·맵 프리셋 | `BankruptcyProtectionPolicy` | 재화 0에서도 무료 프리셋으로 반복 출격 | 0 C→출격→결말→재출격 |
-| P5-06 | ShopOffer 품질·가격·표현 키 | `ShopOfferDefinition`, `ShopQualityPolicy`, Provider | 손상·표준·고성능의 가격·성능 차이를 구매 전 확인 | 세 품질군→견적→구매→보관함 |
-| P5-07 | 회전 시드·리롤 가격·초기화 | `ShopRotationPolicy`, `ShopRotationService` | 런 복귀 갱신과 골드 리롤 결과·잔액 확인 | 복귀→회전→리롤→중복 차감 방지 |
-| P5-08 | 설계도·레시피·옵션/소켓 범위 | `BlueprintRegistry`, `WorkshopRecipeProvider`, `WorkshopCraftService` | 반출 설계도를 영구 등록하고 맞춤 제작 | 반출→등록→재접속→제작→보관함 |
-| P5-09 | 더미 시나리오·계측 시간창 | `TrainingScenario`, `CombatTelemetry`, `TrainingLoadoutService` | 단일·밀집 시험과 DPS·타격·AP·쿨타임 확인 | 생성→공격→계측→자유 세팅→퇴장 복구 |
-| P5-10 | 도감 항목·진행·지역 힌트 | `CodexEntry`, `CodexProgressService`, `CodexHintProvider` | 해금률과 미해금 지역 힌트를 로비에서 확인 | 반출→도감 증가→재접속→힌트 유지 |
+| P5-03 · 완료 | 가방·회복/공격 소모품·비상 탈출 항목 | `UtilityInvestmentService` | 수량·사용 조건·사망 소실을 진입 전 확인 | 선택→작전 사용→잔량→성공/사망 |
+| P5-04 · 완료 | 선택 전체와 BEP 계산 항목 | 불변 `OperationDraftService` | 모든 선택·총비용·기대 보상이 한 브리핑에 표시 | 편집 중 무과금→한 번 확정→원자적 차감 |
+| P5-05 · 완료 | 무료 캐릭터·무기·맵 프리셋 | `BankruptcyProtectionPolicy` | 재화 0에서도 무료 프리셋으로 반복 출격 | 0 C→출격→결말→재출격 |
+| P5-06 · 완료 | ShopOffer 품질·가격·표현 키 | `RotatingShopService` | 손상·표준·고성능의 가격·성능 차이를 구매 전 확인 | 세 품질군→견적→구매→보관함 |
+| P5-07 · 완료 | 회전 시드·리롤 가격·초기화 | `RotatingShopService` | 런 복귀 갱신과 골드 리롤 결과·잔액 확인 | 복귀→회전→리롤→중복 차감 방지 |
+| P5-08 · 완료 | 설계도·레시피·옵션/소켓 범위 | `WorkshopService` | 반출 설계도를 영구 등록하고 맞춤 제작 | 반출→등록→재접속→제작→보관함 |
+| P5-09 · 완료 | 더미 시나리오·계측 시간창 | `TrainingService` | 단일·밀집 시험과 DPS·타격·AP·쿨타임 확인 | 생성→공격→계측→자유 세팅→퇴장 복구 |
+| P5-10 · 완료 | 도감 항목·진행·지역 힌트 | `CodexService` | 해금률과 미해금 지역 힌트를 로비에서 확인 | 반출→도감 증가→재접속→힌트 유지 |
 
 ### P5 데이터 요청 게이트
 
 - P5-01에서 `Character` 시트 12열·3개 임시 행을 만들었으며 기획 확정 시 데이터만 교체합니다.
 - P5-02에서 기존 Weapon·Skill 탭에 가격·기본 소유·요구 해금·근거 상태 열을 추가했습니다. 현재 80 C·60 C는 임시값입니다.
-- 기존 Item 목록으로 표현할 수 없는 P5-03 유틸리티만 새 행/탭을 요청합니다.
+- P5-03~10 구현에서 `Utility`, `OperationPreset`, `ShopOffer`, `Recipe`, `TrainingScenario`, `Codex` 탭과 Item 유틸리티 4행을 추가했습니다. 모두 `provisional`이며 기획 확정 때 데이터만 교체합니다.
 - 상점 매물·제작 레시피·훈련 시나리오·도감 목록이 실제 구현에 필요해질 때만 `ShopOffer`, `Recipe`, `TrainingScenario`, `Codex` 탭을 추가합니다.
 - 기획 수치가 없으면 임시값은 `provisional` 태그와 근거를 함께 기록하고 확정값처럼 표시하지 않습니다.
 - 과금·결제·유료 재화 모델은 이 작업선 범위가 아니며 변경하지 않습니다.

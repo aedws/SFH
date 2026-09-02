@@ -50,6 +50,7 @@ extends Resource
 @export var operation_contracts_enabled: bool = true
 @export var character_selection_enabled: bool = true
 @export var loadout_investment_enabled: bool = true
+@export var p5_hub_progression_enabled: bool = true
 @export var extraction_defense_enabled: bool = true
 @export var hub_economy_enabled: bool = true
 @export var smart_targeting_enabled: bool = true
@@ -147,6 +148,9 @@ extends Resource
 )
 @export_file("*.tres") var loadout_investment_config_path: String = (
 	"res://game/features/loadout_investment/configs/default_loadout_investment.tres"
+)
+@export_file("*.tres") var p5_hub_progression_config_path: String = (
+	"res://game/features/p5_hub_progression/configs/default_p5_hub_progression.tres"
 )
 @export_file("*.tres") var hub_economy_config_path: String = (
 	"res://game/features/hub_economy/configs/default_hub_economy.tres"
@@ -281,6 +285,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"character_selection")
 	if loadout_investment_enabled:
 		result.append(&"loadout_investment")
+	if p5_hub_progression_enabled:
+		result.append(&"p5_hub_progression")
 	if extraction_defense_enabled:
 		result.append(&"extraction_defense")
 	if hub_economy_enabled:
@@ -495,6 +501,12 @@ func validation_errors() -> PackedStringArray:
 		errors.append("loadout_investment는 equipment·combat_skills 모듈이 필요합니다.")
 	if loadout_investment_enabled and not _resource_exists(loadout_investment_config_path):
 		errors.append("로드아웃 투자 설정 Resource 경로가 유효하지 않습니다.")
+	if p5_hub_progression_enabled and (
+		not persistent_profile_enabled or not operation_contracts_enabled
+	):
+		errors.append("p5_hub_progression은 persistent_profile·operation_contracts 모듈이 필요합니다.")
+	if p5_hub_progression_enabled and not _resource_exists(p5_hub_progression_config_path):
+		errors.append("P5 거점 진행 설정 Resource 경로가 유효하지 않습니다.")
 	if extraction_defense_enabled and not extraction_enabled:
 		errors.append("extraction_defense는 extraction 모듈이 필요합니다.")
 	if extraction_defense_enabled and not _resource_exists(extraction_defense_config_path):

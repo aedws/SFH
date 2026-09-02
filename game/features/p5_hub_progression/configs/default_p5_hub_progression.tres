@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="P5HubProgressionConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/p5_hub_progression/p5_hub_progression_config.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+utility_enabled = true
+operation_draft_enabled = true
+bankruptcy_preset_enabled = true
+rotating_shop_enabled = true
+workshop_enabled = true
+training_enabled = true
+codex_enabled = true
+shop_reroll_price = 25
+shop_rotation_slots = 3

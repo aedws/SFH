@@ -88,6 +88,9 @@ const CHARACTER_SELECTION_SCENE_PATH := (
 const LOADOUT_INVESTMENT_SCENE_PATH := (
 	"res://game/features/loadout_investment/loadout_investment_service.tscn"
 )
+const P5_HUB_PROGRESSION_SCENE_PATH := (
+	"res://game/features/p5_hub_progression/p5_hub_progression_service.tscn"
+)
 const HUB_ECONOMY_SCENE_PATH := "res://game/features/hub_economy/hub_economy_system.tscn"
 const CRAFTING_SCENE_PATH := "res://game/features/crafting/crafting_system.tscn"
 const PENALTY_SCENE_PATH := "res://game/features/penalty_modifiers/penalty_system.tscn"
@@ -305,7 +308,9 @@ const PERSISTENT_PROFILE_METHODS := [
 	&"take_warehouse_item", &"add_blueprint", &"consume_blueprint",
 	&"add_crafted_item", &"set_consumable_loadout", &"consume_loadout_for_run",
 	&"register_shop_offer", &"is_shop_offer_registered",
-	&"unlock_skill",
+	&"unlock_skill", &"register_blueprint", &"is_blueprint_registered",
+	&"add_codex_progress", &"get_codex_progress", &"has_processed_transaction",
+	&"mark_transaction_processed",
 ]
 const OPERATION_CONTRACT_METHODS := [
 	&"configure", &"select_region", &"select_difficulty", &"cycle_region",
@@ -320,6 +325,12 @@ const LOADOUT_INVESTMENT_METHODS := [
 	&"cycle_weapon", &"cycle_skill", &"select_weapon", &"select_skill",
 	&"can_launch", &"get_selection_errors", &"get_investment_context",
 	&"commit_run_purchase", &"finish_run", &"get_snapshot",
+]
+const P5_HUB_PROGRESSION_METHODS := [
+	&"configure", &"get_investment_context", &"create_operation_draft",
+	&"confirm_operation_draft", &"begin_run", &"settle_run", &"refresh_hub",
+	&"toggle_utility", &"purchase_shop_offer", &"reroll_shop", &"craft_recipe",
+	&"start_training", &"finish_training", &"get_snapshot",
 ]
 const HUB_ECONOMY_METHODS := [
 	&"configure", &"quote", &"purchase", &"set_consumable_loadout",
@@ -394,6 +405,9 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var profile_summary: Label = %ProfileSummary
 @onready var shop_button: Button = %ShopButton
 @onready var craft_button: Button = %CraftButton
+@onready var utility_button: Button = %UtilityButton
+@onready var training_button: Button = %TrainingButton
+@onready var codex_button: Button = %CodexButton
 @onready var loadout_button: Button = %LoadoutButton
 @onready var game_over_overlay: Control = %GameOverOverlay
 @onready var end_title: Label = %EndTitle
@@ -440,6 +454,7 @@ var persistent_profile
 var operation_contract_service
 var character_selection_service
 var loadout_investment_service
+var p5_hub_progression_service
 var hub_economy_system
 var crafting_system
 var penalty_system
@@ -528,6 +543,9 @@ func _ready() -> void:
 	shop_button.pressed.connect(_purchase_medkit)
 	craft_button.pressed.connect(_craft_default_item)
 	loadout_button.pressed.connect(_toggle_medkit_loadout)
+	utility_button.pressed.connect(_toggle_run_utility)
+	training_button.pressed.connect(_toggle_training_session)
+	codex_button.pressed.connect(_show_codex_summary)
 	hud_margin.visible = false
 	map_label.visible = false
 	interaction_label.visible = false
@@ -666,6 +684,22 @@ func _install_persistent_services() -> bool:
 			return false
 		loadout_investment_service.connect(
 			&"selection_changed", Callable(self, &"_on_contract_changed")
+		)
+	if features.p5_hub_progression_enabled:
+		p5_hub_progression_service = _instantiate_feature(
+			P5_HUB_PROGRESSION_SCENE_PATH, self, &"P5HubProgression"
+		)
+		if (
+			not _supports_methods(p5_hub_progression_service, P5_HUB_PROGRESSION_METHODS)
+			or not p5_hub_progression_service.call(
+				&"configure", persistent_profile, operation_contract_service,
+				load(features.p5_hub_progression_config_path), features.map_seed
+			)
+		):
+			_report_configuration_error("P5 거점 진행 모듈을 구성하지 못했습니다.")
+			return false
+		p5_hub_progression_service.connect(
+			&"snapshot_changed", Callable(self, &"_on_contract_changed")
 		)
 	if features.hub_economy_enabled:
 		hub_economy_system = _instantiate_feature(
@@ -933,6 +967,21 @@ func _cycle_penalty() -> void:
 
 
 func _purchase_medkit() -> void:
+	if p5_hub_progression_service != null:
+		var shop_snapshot: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"shop", {})
+		var offers: Array = shop_snapshot.get(&"offers", [])
+		if not offers.is_empty():
+			var offer: Dictionary = offers[0]
+			var result: Dictionary = p5_hub_progression_service.call(
+				&"purchase_shop_offer", offer.get(&"offer_id", &""),
+				StringName("ui_shop_%d" % Time.get_ticks_usec())
+			)
+			status_label.text = "회전 상점 %s · %s" % [
+				"구매 완료" if bool(result.get(&"success", false)) else "구매 실패",
+				offer.get(&"display_name", offer.get(&"offer_id", &"")),
+			]
+			_refresh_contract_setup_ui()
+			return
 	if hub_economy_system == null:
 		return
 	var profile_snapshot: Dictionary = persistent_profile.call(&"get_snapshot")
@@ -952,6 +1001,21 @@ func _purchase_medkit() -> void:
 
 
 func _craft_default_item() -> void:
+	if p5_hub_progression_service != null:
+		var p5_result: Dictionary = p5_hub_progression_service.call(
+			&"craft_recipe", &"assault_blueprint_recipe",
+			StringName("ui_craft_%d" % Time.get_ticks_usec())
+		)
+		status_label.text = (
+			"워크숍 제작 완료 · 옵션 %d · 소켓 %d" % [
+				int(p5_result.get(&"item", {}).get(&"affix_count", 0)),
+				int(p5_result.get(&"item", {}).get(&"socket_count", 0)),
+			]
+			if bool(p5_result.get(&"success", false))
+			else "워크숍 제작 대기 · %s" % p5_result.get(&"reason", "도면 확인")
+		)
+		_refresh_contract_setup_ui()
+		return
 	if crafting_system == null:
 		return
 	var result: Dictionary = crafting_system.call(&"craft", &"assault_rifle_blueprint")
@@ -974,6 +1038,42 @@ func _toggle_medkit_loadout() -> void:
 		("응급키트 장착" if current.is_empty() else "해제") if applied else "실패"
 	)
 	_refresh_contract_setup_ui()
+
+
+func _toggle_run_utility() -> void:
+	if p5_hub_progression_service == null:
+		return
+	var result: Dictionary = p5_hub_progression_service.call(&"toggle_utility", &"field_medkit")
+	status_label.text = "런 유틸리티 · 응급키트 %s" % (
+		"선택" if int(result.get(&"quantity", 0)) > 0 else "해제"
+	)
+	_refresh_contract_setup_ui()
+
+
+func _toggle_training_session() -> void:
+	if p5_hub_progression_service == null:
+		return
+	var training: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"training", {})
+	var result: Dictionary
+	if (training.get(&"active", {}) as Dictionary).is_empty():
+		result = p5_hub_progression_service.call(&"start_training", &"single_target")
+		status_label.text = "훈련장 시작 · 단일 중장 더미 · 무료 로드아웃"
+	else:
+		result = p5_hub_progression_service.call(&"finish_training")
+		status_label.text = "훈련장 종료 · DPS %.1f · 최대 타격 %.1f · 로드아웃 원복" % [
+			float(result.get(&"dps", 0.0)), float(result.get(&"hit_damage", 0.0)),
+		]
+	_refresh_contract_setup_ui()
+
+
+func _show_codex_summary() -> void:
+	if p5_hub_progression_service == null:
+		return
+	var codex: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"codex", {})
+	var hints: Dictionary = codex.get(&"region_hints", {})
+	status_label.text = "작전 도감 · %d/%d 완료 · 지역 힌트 %d곳" % [
+		int(codex.get(&"completed_count", 0)), int(codex.get(&"entry_count", 0)), hints.size(),
+	]
 
 
 func _on_profile_changed(_snapshot: Dictionary) -> void:
@@ -1009,13 +1109,19 @@ func _character_investment_context() -> Dictionary:
 func _operation_investment_context() -> Dictionary:
 	var result := _character_investment_context().duplicate(true)
 	var character_cost := int(result.get(&"additional_entry_cost", 0))
-	if loadout_investment_service == null:
-		return result
-	var loadout_context: Dictionary = loadout_investment_service.call(&"get_investment_context")
+	var loadout_context: Dictionary = (
+		loadout_investment_service.call(&"get_investment_context")
+		if loadout_investment_service != null else {}
+	)
+	var utility_context: Dictionary = (
+		p5_hub_progression_service.call(&"get_investment_context")
+		if p5_hub_progression_service != null else {}
+	)
 	result[&"additional_entry_cost"] = character_cost + int(
 		loadout_context.get(&"additional_entry_cost", 0)
-	)
+	) + int(utility_context.get(&"additional_entry_cost", 0))
 	result[&"loadout_investment"] = loadout_context.duplicate(true)
+	result[&"utility_investment"] = utility_context.duplicate(true)
 	return result
 
 
@@ -1053,14 +1159,33 @@ func _refresh_contract_setup_ui() -> void:
 	]
 	var loadout: Array = profile_snapshot.get(&"consumable_loadout", [])
 	loadout_button.text = "소모품 · %s" % ("응급키트" if not loadout.is_empty() else "비어 있음")
+	if p5_hub_progression_service != null:
+		var p5_snapshot: Dictionary = p5_hub_progression_service.call(&"get_snapshot")
+		var p5_utility: Dictionary = p5_snapshot.get(&"utility", {}).get(&"selected", {})
+		utility_button.text = "런 유틸 · 구급키트 %s" % (
+			"ON" if int(p5_utility.get(&"field_medkit", 0)) > 0 else "OFF"
+		)
+		var p5_shop: Dictionary = p5_snapshot.get(&"shop", {})
+		shop_button.text = "회전 상점 · 품질 %d · 재굴림 %d C" % [
+			int(p5_shop.get(&"quality_count", 0)), int(p5_shop.get(&"reroll_price", 0)),
+		]
+		var p5_training: Dictionary = p5_snapshot.get(&"training", {})
+		training_button.text = "훈련장 · %s" % (
+			"측정 종료" if not (p5_training.get(&"active", {}) as Dictionary).is_empty() else "단일/밀집"
+		)
+		var p5_codex: Dictionary = p5_snapshot.get(&"codex", {})
+		codex_button.text = "작전 도감 · %d/%d" % [
+			int(p5_codex.get(&"completed_count", 0)), int(p5_codex.get(&"entry_count", 0)),
+		]
 	var unlocks: Array = profile_snapshot.get(&"unlock_ids", [])
-	shop_button.text = (
+	if p5_hub_progression_service == null:
+		shop_button.text = (
 		"상점 · 산업 지구 해금"
 		if &"region_industrial_district" not in unlocks
 		else "상점 · 연구 단지 해금"
 		if &"region_research_complex" not in unlocks
 		else "상점 · 응급키트"
-	)
+		)
 	var selected_tier := selected_map_size if selected_map_size in MAP_TIER_IDS else features.map_size
 	var tier_path := MAP_CONFIG_PATH_PATTERN % selected_tier
 	var quote: Dictionary = {}
@@ -1114,6 +1239,10 @@ func _refresh_contract_setup_ui() -> void:
 				loadout_investment_service.call(&"get_snapshot")
 				if loadout_investment_service != null else {}
 			),
+			&"p5_progression": (
+				p5_hub_progression_service.call(&"get_snapshot")
+				if p5_hub_progression_service != null else {}
+			),
 			&"penalty_names": penalty_names,
 			&"loadout": "응급키트" if not loadout.is_empty() else "비어 있음",
 			&"can_launch": not ({
@@ -1154,9 +1283,19 @@ func start_run(map_size: String) -> bool:
 		var penalty_snapshot: Dictionary = (
 			penalty_system.call(&"get_snapshot") if penalty_system != null else {}
 		)
-		active_contract = operation_contract_service.call(
-			&"invest", pending_config, penalty_snapshot, _operation_investment_context()
-		)
+		var investment_context := _operation_investment_context()
+		if p5_hub_progression_service != null:
+			var draft: Dictionary = p5_hub_progression_service.call(
+				&"create_operation_draft", pending_config, penalty_snapshot, investment_context
+			)
+			active_contract = p5_hub_progression_service.call(
+				&"confirm_operation_draft", StringName(draft.get(&"draft_id", &"")),
+				pending_config, penalty_snapshot, investment_context
+			)
+		else:
+			active_contract = operation_contract_service.call(
+				&"invest", pending_config, penalty_snapshot, investment_context
+			)
 		if not bool(active_contract.get(&"success", false)):
 			status_label.text = "작전 투입 실패 · %s" % active_contract.get(&"reason", "크레딧 부족")
 			_refresh_contract_setup_ui()
@@ -1167,6 +1306,12 @@ func start_run(map_size: String) -> bool:
 	selected_map_size = map_size
 	run_sequence += 1
 	current_run_id = StringName("%d-%d" % [Time.get_ticks_usec(), run_sequence])
+	if p5_hub_progression_service != null and not bool(
+		p5_hub_progression_service.call(&"begin_run", current_run_id)
+	):
+		_rollback_operation_investment()
+		status_label.text = "작전 투입 실패 · 유틸리티 런 상태 오류"
+		return false
 	if (
 		loadout_investment_service != null
 		and not bool(loadout_investment_service.call(&"commit_run_purchase", current_run_id))
@@ -1334,6 +1479,8 @@ func _return_to_start_hub() -> void:
 			_free_feature_node(child)
 	_reset_run_references()
 	_reset_run_state()
+	if p5_hub_progression_service != null:
+		p5_hub_progression_service.call(&"refresh_hub")
 	if features.start_hub_enabled and features.run_setup_enabled:
 		_install_start_hub()
 	elif features.run_setup_enabled:
@@ -3481,6 +3628,10 @@ func _settle_run_loot(extracted: bool) -> Dictionary:
 	last_loot_settlement = run_settlement_service.call(
 		&"settle", current_run_id, acquired_items, extracted
 	)
+	if p5_hub_progression_service != null:
+		last_loot_settlement[&"p5_progression"] = p5_hub_progression_service.call(
+			&"settle_run", extracted, acquired_items
+		)
 	return last_loot_settlement.duplicate(true)
 
 

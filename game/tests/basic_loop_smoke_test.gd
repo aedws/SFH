@@ -2845,6 +2845,7 @@ func _verify_optional_meta_operation_modules(game_scene: PackedScene) -> bool:
 	for property_name in [
 		"persistent_profile_enabled", "operation_contracts_enabled",
 		"character_selection_enabled", "loadout_investment_enabled",
+		"p5_hub_progression_enabled",
 		"extraction_defense_enabled", "hub_economy_enabled", "smart_targeting_enabled",
 		"crafting_enabled", "penalty_modifiers_enabled", "conditional_ranking_enabled",
 		"run_settlement_enabled",
@@ -2862,6 +2863,7 @@ func _verify_optional_meta_operation_modules(game_scene: PackedScene) -> bool:
 		or fallback_game.get("operation_contract_service") != null
 		or fallback_game.get("character_selection_service") != null
 		or fallback_game.get("loadout_investment_service") != null
+		or fallback_game.get("p5_hub_progression_service") != null
 		or fallback_game.get("hub_economy_system") != null
 		or fallback_game.get("crafting_system") != null
 		or fallback_game.get("penalty_system") != null

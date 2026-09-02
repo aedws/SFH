@@ -13,6 +13,9 @@ var blueprints: Dictionary = {&"assault_rifle_blueprint": 1}
 var crafted_items: Array[Dictionary] = []
 var unlocked_shop_offer_ids: Array[StringName] = []
 var unlocked_skill_ids: Array[StringName] = [&"blink"]
+var registered_blueprint_ids: Array[StringName] = []
+var codex_progress: Dictionary = {}
+var processed_transaction_ids: Array[StringName] = []
 
 
 func configure(new_storage_path: String, enable_persistence: bool = true) -> bool:
@@ -126,6 +129,44 @@ func add_crafted_item(item: Dictionary) -> int:
 	return crafted_items.size() - 1
 
 
+func register_blueprint(blueprint_id: StringName) -> bool:
+	if blueprint_id == &"" or blueprint_id in registered_blueprint_ids:
+		return false
+	registered_blueprint_ids.append(blueprint_id)
+	_commit()
+	return true
+
+
+func is_blueprint_registered(blueprint_id: StringName) -> bool:
+	return blueprint_id != &"" and blueprint_id in registered_blueprint_ids
+
+
+func add_codex_progress(entry_id: StringName, quantity: int = 1) -> int:
+	if entry_id == &"" or quantity <= 0:
+		return int(codex_progress.get(entry_id, 0))
+	codex_progress[entry_id] = int(codex_progress.get(entry_id, 0)) + quantity
+	_commit()
+	return int(codex_progress[entry_id])
+
+
+func get_codex_progress(entry_id: StringName) -> int:
+	return int(codex_progress.get(entry_id, 0))
+
+
+func has_processed_transaction(transaction_id: StringName) -> bool:
+	return transaction_id != &"" and transaction_id in processed_transaction_ids
+
+
+func mark_transaction_processed(transaction_id: StringName) -> bool:
+	if transaction_id == &"" or has_processed_transaction(transaction_id):
+		return false
+	processed_transaction_ids.append(transaction_id)
+	if processed_transaction_ids.size() > 128:
+		processed_transaction_ids.pop_front()
+	_commit()
+	return true
+
+
 func set_consumable_loadout(item_ids: Array[StringName], maximum_slots: int = 3) -> bool:
 	if item_ids.size() > maximum_slots:
 		return false
@@ -160,6 +201,9 @@ func get_snapshot() -> Dictionary:
 		&"crafted_items": crafted_items.duplicate(true),
 		&"unlocked_shop_offer_ids": unlocked_shop_offer_ids.duplicate(),
 		&"unlocked_skill_ids": unlocked_skill_ids.duplicate(),
+		&"registered_blueprint_ids": registered_blueprint_ids.duplicate(),
+		&"codex_progress": codex_progress.duplicate(true),
+		&"processed_transaction_ids": processed_transaction_ids.duplicate(),
 	}
 
 
@@ -179,6 +223,9 @@ func _reset_defaults() -> void:
 	crafted_items = []
 	unlocked_shop_offer_ids = []
 	unlocked_skill_ids = [&"blink"]
+	registered_blueprint_ids = []
+	codex_progress = {}
+	processed_transaction_ids = []
 
 
 func _commit() -> void:
@@ -201,6 +248,9 @@ func _save() -> void:
 		"crafted_items": crafted_items,
 		"unlocked_shop_offer_ids": Array(unlocked_shop_offer_ids).map(func(value): return String(value)),
 		"unlocked_skill_ids": Array(unlocked_skill_ids).map(func(value): return String(value)),
+		"registered_blueprint_ids": Array(registered_blueprint_ids).map(func(value): return String(value)),
+		"codex_progress": _string_key_dictionary(codex_progress),
+		"processed_transaction_ids": Array(processed_transaction_ids).map(func(value): return String(value)),
 	}))
 
 
@@ -219,6 +269,9 @@ func _load() -> void:
 	crafted_items = Array(parsed.get("crafted_items", []), TYPE_DICTIONARY, "", null)
 	unlocked_shop_offer_ids = _string_name_array(parsed.get("unlocked_shop_offer_ids", []))
 	unlocked_skill_ids = _string_name_array(parsed.get("unlocked_skill_ids", [&"blink"]))
+	registered_blueprint_ids = _string_name_array(parsed.get("registered_blueprint_ids", []))
+	codex_progress = _string_name_key_dictionary(parsed.get("codex_progress", {}))
+	processed_transaction_ids = _string_name_array(parsed.get("processed_transaction_ids", []))
 
 
 func _string_key_dictionary(source: Dictionary) -> Dictionary:
