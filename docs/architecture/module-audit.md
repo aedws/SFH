@@ -1124,6 +1124,22 @@ P5-02 임시 수치는 `investment_source_status=temporary`로 격리했습니�
 
 Google Sheet의 `Recipe`, `Codex`, `OperationPreset`도 같은 표준 ID로 교정했으며 확정 CSV와 재조회 결과가 일치합니다. 이 변경은 게임 내 임시 크레딧과 데이터 계약만 다루며 결제 상품·Cloudflare 플랜·유료 설정을 변경하지 않습니다.
 
+## 위키 역할 인증 모듈 감사 (2026-09-02)
+
+| 검사 항목 | 결과 | 근거 |
+|---|---|---|
+| 정적 UI·인증 분리 | 통과 | Markdown/`role-auth.js`는 표현과 API 호출만 담당하고 `_worker.js`가 비밀번호·세션·역할 판정을 소유 |
+| 저장소 격리 | 통과 | `sfh-wiki-auth` Private R2가 사용자·세션·실패 제한만 저장하며 게임 `sfh-game-artifacts`를 읽거나 변경하지 않음 |
+| 비밀값 비추적 | 통과 | 초기 비밀번호와 pepper는 GitHub Secret에서만 공급하고 정적 위키·검색 색인·Git 기록에 포함하지 않음 |
+| 최초 변경 | 통과 | `must_change` 사용자는 계정 설정만 열 수 있고 변경 시 credential version 증가·기존 세션 폐기 |
+| 역할 경계 | 통과 | 기획자·개발자 보호 HTML을 Pages Function이 서버에서 검사하며 교차 역할은 403 |
+| 요청 위조 방지 | 통과 | HttpOnly/Secure/SameSite 쿠키, 동일 출처, 세션별 CSRF, JSON·16KiB 제한 적용 |
+| 무차별 대입 제한 | 통과 | 주소·아이디 조합 5회 실패 시 15분 잠금, 성공 또는 제한 창 만료 시 카운터 초기화 |
+| 원본 책임 유지 | 통과 | 기획 쓰기는 Notion·Sheet, 개발 쓰기는 작업 브랜치·PR이며 역할 로그인은 직접 공개 쓰기를 부여하지 않음 |
+| 배포·과금 경계 | 통과 | 현행 Pages 주소와 게임 배포를 유지하고 플랜·결제 설정을 자동 변경하지 않음 |
+
+인증 모듈을 제거하면 공개 위키 산출물은 그대로 빌드할 수 있으며 역할 보호 탭과 `_worker.js`만 사라집니다. 반대로 게임 Worker·R2·GDScript를 제거해도 위키 인증 계약 테스트는 독립 실행됩니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.

@@ -3377,3 +3377,76 @@ body,
   .sfh-code-map__detail,
   .sfh-code-map__relation { border-color: currentColor; }
 }
+
+/* Role authentication and protected workspaces */
+.sfh-role-auth-bar { display: flex; align-items: center; gap: 0.3rem; margin-left: auto; }
+.sfh-role-auth-bar .sfh-auth-chip {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; min-height: 36px; padding: 0.28rem 0.5rem;
+  border: 1px solid rgba(2, 229, 225, 0.34); border-radius: 2px; color: var(--sfh-text-soft); background: rgba(0, 12, 17, 0.78);
+  font: 0.54rem/1.2 var(--sfh-font-display); letter-spacing: 0.03em; cursor: pointer;
+}
+.sfh-role-auth-bar button.sfh-auth-chip { appearance: none; }
+.sfh-role-auth-bar .sfh-auth-chip:hover, .sfh-role-auth-bar .sfh-auth-chip:focus-visible,
+.sfh-role-auth-bar .sfh-auth-chip.is-active { border-color: var(--sfh-cyan); color: var(--sfh-cyan-bright); outline: 2px solid rgba(2, 229, 225, 0.14); }
+.sfh-auth-signal { width: 0.42rem; height: 0.42rem; border-radius: 50%; background: var(--sfh-cyan); box-shadow: 0 0 0.5rem rgba(2, 229, 225, 0.8); }
+.sfh-auth-alert { margin-left: 0.2rem; padding: 0.1rem 0.25rem; color: #071012; background: var(--sfh-amber); font-size: 0.42rem; }
+
+.sfh-access-launcher { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; margin: 1rem 0; }
+.md-typeset .sfh-access-launcher > a {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.6rem; min-height: 72px; padding: 0.7rem;
+  border: 1px solid rgba(2, 229, 225, 0.32); color: var(--sfh-text-soft); background: linear-gradient(120deg, rgba(2, 229, 225, 0.07), rgba(2, 11, 16, 0.88));
+}
+.sfh-access-launcher i { display: grid; place-items: center; width: 2rem; height: 2rem; border: 1px solid var(--sfh-cyan); color: var(--sfh-cyan); font-style: normal; }
+.sfh-access-launcher b, .sfh-access-launcher span { display: block; }
+.sfh-access-launcher b { color: var(--sfh-text); font-size: 0.68rem; }
+.sfh-access-launcher span { margin-top: 0.16rem; color: var(--sfh-muted); font-size: 0.54rem; }
+.sfh-access-launcher em { color: var(--sfh-cyan); font-size: 0.8rem; font-style: normal; }
+.md-typeset .sfh-access-launcher > a:hover, .md-typeset .sfh-access-launcher > a:focus-visible { border-color: var(--sfh-cyan); outline: 2px solid rgba(2, 229, 225, 0.16); }
+
+.sfh-auth-panel { max-width: 38rem; margin: 1rem auto; overflow: hidden; border: 1px solid rgba(2, 229, 225, 0.5); background: rgba(2, 12, 17, 0.94); box-shadow: 0 1.2rem 4rem rgba(0, 0, 0, 0.28); }
+.sfh-auth-panel > header { padding: 1rem; border-bottom: 1px solid rgba(2, 229, 225, 0.2); background: linear-gradient(120deg, rgba(2, 229, 225, 0.09), transparent); }
+.sfh-auth-panel > header h2 { margin: 0.18rem 0; font-size: 1rem; }
+.sfh-auth-panel > header p, .sfh-auth-panel > footer { margin: 0; color: var(--sfh-muted); font-size: 0.6rem; }
+.sfh-auth-panel > footer { padding: 0.7rem 1rem; border-top: 1px solid rgba(79, 137, 143, 0.26); }
+.sfh-auth-tabs { display: grid; grid-template-columns: repeat(2, 1fr); padding: 0.7rem 1rem 0; }
+.sfh-auth-tabs button { min-height: 46px; border: 1px solid var(--sfh-line); color: var(--sfh-muted); background: rgba(0, 8, 12, 0.82); font: 0.65rem/1 var(--sfh-font-display); cursor: pointer; }
+.sfh-auth-tabs button[aria-selected="true"] { border-color: var(--sfh-cyan); color: #001719; background: var(--sfh-cyan); }
+.sfh-auth-form { display: grid; gap: 0.7rem; padding: 1rem; }
+.sfh-auth-form label { display: grid; gap: 0.28rem; }
+.sfh-auth-form label span { color: var(--sfh-text-soft); font-size: 0.58rem; }
+.sfh-auth-form input { width: 100%; min-height: 46px; padding: 0.55rem 0.65rem; border: 1px solid rgba(79, 137, 143, 0.52); border-radius: 0; color: var(--sfh-text); background: #020b0f; font: 0.68rem/1.3 var(--sfh-font-body); }
+.sfh-auth-form input:focus { border-color: var(--sfh-cyan); outline: 2px solid rgba(2, 229, 225, 0.16); }
+.sfh-auth-form > button { min-height: 48px; border: 1px solid var(--sfh-cyan); color: #001719; background: var(--sfh-cyan); font: 0.66rem/1 var(--sfh-font-display); cursor: pointer; }
+.sfh-auth-form > button:disabled { opacity: 0.5; cursor: progress; }
+.sfh-auth-form > small { color: var(--sfh-muted); font-size: 0.52rem; }
+.sfh-auth-status { min-height: 1rem; margin: 0; color: var(--sfh-muted); font-size: 0.58rem; }
+.sfh-auth-status[data-state="error"] { color: #ff7a89; }
+.sfh-auth-status[data-state="success"] { color: var(--sfh-green); }
+.sfh-auth-status[data-state="loading"] { color: var(--sfh-cyan); }
+.sfh-auth-required { margin: 0.8rem 1rem 0; padding: 0.65rem; border-left: 3px solid var(--sfh-amber); color: var(--sfh-amber); background: rgba(255, 184, 72, 0.08); font-size: 0.6rem; }
+
+.sfh-role-console { border: 1px solid rgba(2, 229, 225, 0.42); background: rgba(2, 12, 17, 0.9); }
+.sfh-role-console > header { padding: 1rem; background: linear-gradient(120deg, rgba(2, 229, 225, 0.1), transparent); }
+.sfh-role-console > header h2 { margin: 0.18rem 0; }
+.sfh-role-console > header p { margin: 0; color: var(--sfh-muted); font-size: 0.62rem; }
+.sfh-role-console__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: rgba(2, 229, 225, 0.18); }
+.md-typeset .sfh-role-console__grid a { display: grid; gap: 0.24rem; min-height: 96px; padding: 0.8rem; color: var(--sfh-text-soft); background: rgba(1, 10, 14, 0.96); }
+.sfh-role-console__grid b { color: var(--sfh-cyan); font-size: 0.7rem; }
+.sfh-role-console__grid span { color: var(--sfh-muted); font-size: 0.55rem; }
+.md-typeset .sfh-role-console__grid a:hover, .md-typeset .sfh-role-console__grid a:focus-visible { background: rgba(2, 229, 225, 0.1); outline: 2px solid var(--sfh-cyan); outline-offset: -2px; }
+
+@media screen and (max-width: 48em) {
+  .sfh-role-auth-bar .sfh-auth-chip:nth-of-type(2) { display: none; }
+  .sfh-role-auth-bar .sfh-auth-chip { min-width: 44px; min-height: 44px; padding-inline: 0.42rem; }
+  .sfh-access-launcher, .sfh-role-console__grid { grid-template-columns: 1fr; }
+  .sfh-auth-panel { margin-inline: 0; }
+}
+
+@media screen and (max-width: 24em) {
+  .sfh-role-auth-bar .sfh-auth-chip:not(.is-active):not(:first-child) { display: none; }
+  .sfh-auth-panel > header, .sfh-auth-form { padding: 0.75rem; }
+}
+
+@media (prefers-contrast: more) {
+  .sfh-auth-panel, .sfh-auth-form input, .sfh-role-console, .md-typeset .sfh-access-launcher > a { border-color: currentColor; }
+}

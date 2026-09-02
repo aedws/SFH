@@ -332,6 +332,7 @@ jobs:
       - name: Test Cloudflare release gateway
         run: |
           node scripts/test_cloudflare_worker.mjs
+          node scripts/test_wiki_auth_worker.mjs
           python -m py_compile scripts/deploy_cloudflare_assets.py
           python -m py_compile scripts/prune_windows_releases.py
           python scripts/test_windows_release_retention.py
@@ -347,12 +348,15 @@ jobs:
           ./scripts/check-wiki-responsive.ps1
           ./scripts/check-wiki-no-github-backlinks.ps1
           ./scripts/check-wiki-planner-requests.ps1
+          ./scripts/check-wiki-role-auth.ps1
           ./scripts/check-p7-roadmap.ps1
           python scripts/snapshot_notion_source.py --check
           python -m mkdocs build --strict
+          Copy-Item cloudflare/wiki-auth/_worker.js .wiki-site/_worker.js
           python scripts/check_wiki_search_index.py .wiki-site/search/search_index.json
           ./scripts/check-wiki-no-github-backlinks.ps1 -SiteRoot .wiki-site
           ./scripts/check-wiki-planner-requests.ps1 -SiteRoot .wiki-site
+          ./scripts/check-wiki-role-auth.ps1 -SiteRoot .wiki-site
 
       - name: Upload Cloudflare wiki artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -377,6 +381,11 @@ jobs:
           grep -q 'data-sfh-global-play' .wiki-site/javascripts/play-entry.js
           grep -q 'data-sfh-knowledge-map' .wiki-site/javascripts/knowledge-map.js
           test -s .wiki-site/assets/deployment-surfaces.json
+          test -s .wiki-site/_worker.js
+          test -s .wiki-site/access/login/index.html
+          test -s .wiki-site/access/account/index.html
+          test -s .wiki-site/access/planner/index.html
+          test -s .wiki-site/access/developer/index.html
           test ! -e .wiki-site/play/index.wasm
           test ! -e .wiki-site/play/index.pck
 
@@ -401,6 +410,10 @@ jobs:
       CLOUDFLARE_GAME_URL: https://sfh-game.vstock-market.workers.dev
       CLOUDFLARE_GAME_DESIRED_URL: https://sfh-game.play-preview.dev
       CLOUDFLARE_R2_BUCKET: sfh-game-artifacts
+      CLOUDFLARE_WIKI_AUTH_BUCKET: sfh-wiki-auth
+      SFH_WIKI_AUTH_PEPPER: ${{ secrets.SFH_WIKI_AUTH_PEPPER }}
+      SFH_WIKI_PLANNER_INITIAL_PASSWORD: ${{ secrets.SFH_WIKI_PLANNER_INITIAL_PASSWORD }}
+      SFH_WIKI_DEVELOPER_INITIAL_PASSWORD: ${{ secrets.SFH_WIKI_DEVELOPER_INITIAL_PASSWORD }}
       R2_RUNTIME_PREFIX: game/releases
       R2_DOWNLOAD_PREFIX: downloads
       RELEASE_VERSION: ${{ needs.package-windows.outputs.release-version }}
@@ -410,7 +423,11 @@ jobs:
         id: cloudflare_config
         shell: bash
         run: |
-          if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$CLOUDFLARE_API_TOKEN" ]; then
+          if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] \
+            && [ -n "$CLOUDFLARE_API_TOKEN" ] \
+            && [ -n "$SFH_WIKI_AUTH_PEPPER" ] \
+            && [ -n "$SFH_WIKI_PLANNER_INITIAL_PASSWORD" ] \
+            && [ -n "$SFH_WIKI_DEVELOPER_INITIAL_PASSWORD" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
@@ -459,6 +476,55 @@ jobs:
             --commit "$GITHUB_SHA" \
             --manifest .cloudflare-release/asset-manifest.json
 
+      - name: Ensure isolated wiki auth storage
+        if: steps.cloudflare_config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! wrangler r2 bucket list | grep -Fq "$CLOUDFLARE_WIKI_AUTH_BUCKET"; then
+            wrangler r2 bucket create "$CLOUDFLARE_WIKI_AUTH_BUCKET" --location apac
+          fi
+
+      - name: Seed first-login role accounts without overwriting changes
+        if: steps.cloudflare_config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          seed_dir=$(mktemp -d)
+          trap 'rm -rf -- "$seed_dir"' EXIT
+          node scripts/seed_wiki_auth.mjs --output "$seed_dir"
+          pepper_remote="$seed_dir/remote-pepper.json"
+          if wrangler r2 object get "$CLOUDFLARE_WIKI_AUTH_BUCKET/metadata/pepper.json" --remote --file "$pepper_remote" >/dev/null 2>&1; then
+            if ! cmp --silent "$seed_dir/pepper.json" "$pepper_remote"; then
+              echo "Wiki auth pepper differs from the initialized store; refusing a credential-breaking rotation." >&2
+              exit 1
+            fi
+          else
+            wrangler r2 object put "$CLOUDFLARE_WIKI_AUTH_BUCKET/metadata/pepper.json" \
+              --remote \
+              --content-type application/json \
+              --file "$seed_dir/pepper.json"
+          fi
+          for role in planner developer; do
+            remote_file="$seed_dir/remote-$role.json"
+            if wrangler r2 object get "$CLOUDFLARE_WIKI_AUTH_BUCKET/users/$role.json" --remote --file "$remote_file" >/dev/null 2>&1; then
+              echo "Wiki $role account already exists; preserving the user-managed credentials."
+            else
+              wrangler r2 object put "$CLOUDFLARE_WIKI_AUTH_BUCKET/users/$role.json" \
+                --remote \
+                --content-type application/json \
+                --file "$seed_dir/$role.json"
+            fi
+          done
+
+      - name: Configure wiki auth server secret
+        if: steps.cloudflare_config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s' "$SFH_WIKI_AUTH_PEPPER" \
+            | wrangler pages secret put AUTH_PEPPER --project-name=sfh-dev-wiki
+
       - name: Switch game Worker to verified commit
         if: steps.cloudflare_config.outputs.ready == 'true'
         run: |
@@ -471,11 +537,14 @@ jobs:
       - name: Direct Upload verified wiki
         if: steps.cloudflare_config.outputs.ready == 'true'
         run: |
-          wrangler pages deploy .cloudflare-wiki \
-            --project-name=sfh-dev-wiki \
-            --branch=main \
-            --commit-hash="$GITHUB_SHA" \
-            --commit-dirty=false
+          cp cloudflare/wiki-auth/wrangler.jsonc .cloudflare-wiki/wrangler.jsonc
+          (
+            cd .cloudflare-wiki
+            wrangler pages deploy \
+              --branch=main \
+              --commit-hash="$GITHUB_SHA" \
+              --commit-dirty=false
+          )
 
       - name: Verify Cloudflare wiki, game, range, and download
         if: steps.cloudflare_config.outputs.ready == 'true'
@@ -494,6 +563,7 @@ jobs:
             sleep 5
           done
           curl --silent --show-error --fail --dump-header /tmp/game.headers "$CLOUDFLARE_GAME_URL/" --output /tmp/game.html
+          node scripts/test_wiki_auth_deployment.mjs "$CLOUDFLARE_WIKI_URL"
           grep -qi '^cross-origin-opener-policy: same-origin' /tmp/game.headers
           grep -qi '^cross-origin-embedder-policy: require-corp' /tmp/game.headers
           range_status=$(curl --silent --show-error --output /tmp/wasm.range --write-out '%{http_code}' \
