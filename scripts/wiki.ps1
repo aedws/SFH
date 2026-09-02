@@ -43,6 +43,7 @@ try {
 	& (Join-Path $PSScriptRoot "check-game-domain-cutover.ps1")
     & (Join-Path $PSScriptRoot "check-deployment-boundaries.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-knowledge-map.ps1")
+    & (Join-Path $PSScriptRoot "check-code-module-map.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-color-contrast.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-responsive.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1")

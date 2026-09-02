@@ -121,14 +121,31 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 5 TOPICS</span><span>75 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 6 TOPICS</span><span>76 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 21 · IMPROVE 19 · CHANGE 20 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 23 · IMPROVE 23 · CHANGE 23 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>21</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>8</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>23</b><small>BUILD</small></span><span><b>23</b><small>IMPROVE</small></span><span><b>23</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>실시간 코드 모듈 노드맵 · 상속·의존 양방향 추적</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 위키에서 실제 코드 상태를 모듈 노드로 보고, 사용처·의존처와 클래스 상속을 화면 크기에 맞춰 바로 추적합니다.</strong><ul>
+          <li><b>자동 산출:</b> GDScript 178개에서 53개 모듈·159개 공개 클래스·157개 관계와 소스 해시를 생성합니다.</li>
+          <li><b>관계:</b> 계약·조립·기능·검증 레이어, Manifest 필수 의존, 코드 로드, 테스트 참조를 선택 노드 기준 양방향으로 보여줍니다.</li>
+          <li><b>상속:</b> Godot 엔진 기반과 저장소 내부 기반을 클래스별로 분리해 합성 우선 구조를 직관적으로 확인합니다.</li>
+          <li><b>반응형:</b> 데스크톱 2단 비교, 태블릿·휴대폰 세로 흐름, 44px 터치·키보드·고대비·모션 감소를 지원합니다.</li>
+          <li><b>회귀 차단:</b> 코드 변경 뒤 JSON 미갱신, 사라진 관계 대상, 페이지·JS·CSS 누락은 위키 빌드에서 실패합니다.</li>
+        </ul><p class="sfh-intent"><b>운영 경계</b><span>읽기 전용 구조 가시화이며 게임 로직·밸런스·배포 도메인·Cloudflare 플랜·과금 모델은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>코드 스캐너와 반응형 노드 탐색기를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>모듈 관계, 상속 인지, 모바일 탐색, 접근성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>아키텍처 내비게이션·문서 노드맵·검색 우선순위를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>수동 구조 문서가 코드와 달라질 수 있던 현행성 공백을 자동 게이트로 차단했습니다.</p></div>
+        <p><a href="architecture/code-module-map/">코드 모듈 노드맵 →</a> · <a href="architecture/module-rules/">모듈 규칙 →</a> · <a href="quality/wiki-responsive-e2e/">반응형 E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>P5 엄밀 모듈성 보강 · 실제 타격 계측·원자적 거래</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · P5를 “켜고 끌 수 있음”에서 실제 파일 제거·잘못된 데이터·저장 실패까지 견디는 계약으로 강화했습니다.</strong><ul>
