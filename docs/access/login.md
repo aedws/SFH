@@ -21,10 +21,10 @@ hide:
   </div>
   <form class="sfh-auth-form">
     <input type="hidden" name="role" value="planner">
-    <label><span>아이디</span><input name="username" autocomplete="username" minlength="4" maxlength="40" required></label>
+    <label><span>아이디</span><input name="username" value="planner" autocomplete="username" readonly required></label>
     <label><span>비밀번호</span><input name="password" type="password" autocomplete="current-password" maxlength="128" required></label>
     <button type="submit">로그인</button>
     <p class="sfh-auth-status" data-sfh-auth-status aria-live="polite"></p>
   </form>
-  <footer>5회 연속 실패 시 15분 동안 잠깁니다. 초기 계정은 첫 로그인 직후 변경 화면으로 이동합니다.</footer>
+  <footer>초기 비밀번호는 두 역할 모두 <code>0000</code>입니다. 로그인 뒤 계정 설정에서 비밀번호를 바꿀 수 있으며, 아이디는 역할명으로 고정됩니다. 5회 연속 실패 시 15분 동안 잠깁니다.</footer>
 </section>

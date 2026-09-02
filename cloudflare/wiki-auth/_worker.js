@@ -3,11 +3,15 @@ const USER_KEYS = Object.freeze({
   planner: "users/planner.json",
   developer: "users/developer.json",
 });
+const ROLE_USERNAMES = Object.freeze({
+  planner: "planner",
+  developer: "developer",
+});
 const SESSION_PREFIX = "sessions/";
 const LOGIN_PREFIX = "login-attempts/";
 const SESSION_COOKIE = "sfh_wiki_session";
 const DEFAULT_SESSION_TTL = 8 * 60 * 60;
-const MIN_PASSWORD_LENGTH = 16;
+const MIN_PASSWORD_LENGTH = 4;
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_LOGIN_FAILURES = 5;
 const LOGIN_LOCK_SECONDS = 15 * 60;
@@ -107,19 +111,11 @@ function safeEqual(left, right) {
   return difference === 0;
 }
 
-function validateUsername(username) {
-  return typeof username === "string" && /^[A-Za-z0-9._-]{4,40}$/u.test(username);
-}
-
 function validatePassword(password) {
   return (
     typeof password === "string"
     && password.length >= MIN_PASSWORD_LENGTH
     && password.length <= 128
-    && /[a-z]/u.test(password)
-    && /[A-Z]/u.test(password)
-    && /[0-9]/u.test(password)
-    && /[^A-Za-z0-9]/u.test(password)
   );
 }
 
@@ -161,17 +157,6 @@ function sessionCookie(token, maxAge) {
 
 function expiredSessionCookie() {
   return `${SESSION_COOKIE}=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict`;
-}
-
-async function findUserByUsername(env, username) {
-  const normalized = username.toLowerCase();
-  for (const role of USER_ROLES) {
-    const user = await readJsonObject(env.WIKI_AUTH, USER_KEYS[role]);
-    if (user && typeof user.username === "string" && user.username.toLowerCase() === normalized) {
-      return { role, user };
-    }
-  }
-  return null;
 }
 
 async function verifyPassword(env, user, password) {
@@ -239,7 +224,7 @@ async function handleLogin(request, env) {
   const username = typeof body.username === "string" ? body.username.trim() : "";
   const role = typeof body.role === "string" ? body.role : "";
   const password = typeof body.password === "string" ? body.password : "";
-  if (!validateUsername(username) || !USER_ROLES.includes(role) || password.length > 128) {
+  if (!USER_ROLES.includes(role) || username !== ROLE_USERNAMES[role] || password.length > 128) {
     return json({ error: "아이디 또는 비밀번호를 확인해 주세요." }, 401);
   }
 
@@ -252,8 +237,13 @@ async function handleLogin(request, env) {
     attempts = { count: 0, locked_until: 0, window_started: Date.now() };
   }
 
-  const match = await findUserByUsername(env, username);
-  const valid = match && match.role === role && await verifyPassword(env, match.user, password);
+  const user = await readJsonObject(env.WIKI_AUTH, USER_KEYS[role]);
+  const valid = (
+    user
+    && user.role === role
+    && user.username === ROLE_USERNAMES[role]
+    && await verifyPassword(env, user, password)
+  );
   if (!valid) {
     const count = Number(attempts.count || 0) + 1;
     await writeJsonObject(env.WIKI_AUTH, attemptKey, {
@@ -265,8 +255,8 @@ async function handleLogin(request, env) {
   }
 
   await env.WIKI_AUTH.delete(attemptKey);
-  const created = await createSession(env, match.role, match.user);
-  return json(publicSession({ session: created.session, user: match.user }), 200, {
+  const created = await createSession(env, role, user);
+  return json(publicSession({ session: created.session, user }), 200, {
     "set-cookie": sessionCookie(created.token, created.ttl),
   });
 }
@@ -292,29 +282,20 @@ async function handleCredentialChange(request, env) {
   }
   const body = await parseJsonBody(request);
   const currentPassword = typeof body.current_password === "string" ? body.current_password : "";
-  const newUsername = typeof body.new_username === "string" ? body.new_username.trim() : current.user.username;
   const newPassword = typeof body.new_password === "string" ? body.new_password : "";
   if (!await verifyPassword(env, current.user, currentPassword)) {
     return json({ error: "현재 비밀번호가 일치하지 않습니다." }, 403);
   }
-  if (!validateUsername(newUsername)) {
-    return json({ error: "아이디는 영문·숫자·점·밑줄·하이픈 4~40자로 입력해 주세요." }, 400);
-  }
   if (!validatePassword(newPassword)) {
-    return json({ error: "새 비밀번호는 16자 이상이며 영문 대·소문자, 숫자, 특수문자를 포함해야 합니다." }, 400);
+    return json({ error: "새 비밀번호는 4~128자로 입력해 주세요." }, 400);
   }
   if (safeEqual(currentPassword, newPassword)) {
     return json({ error: "현재 비밀번호와 다른 비밀번호를 사용해 주세요." }, 400);
   }
-  const duplicate = await findUserByUsername(env, newUsername);
-  if (duplicate && duplicate.role !== current.session.role) {
-    return json({ error: "이미 사용 중인 아이디입니다." }, 409);
-  }
-
   const salt = randomToken(18);
   const updatedUser = {
     ...current.user,
-    username: newUsername,
+    username: ROLE_USERNAMES[current.session.role],
     password: {
       algorithm: "PBKDF2-SHA256",
       iterations: PBKDF2_ITERATIONS,
