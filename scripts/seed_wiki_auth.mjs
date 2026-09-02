@@ -5,8 +5,8 @@ import { webcrypto } from "node:crypto";
 globalThis.crypto ??= webcrypto;
 
 const encoder = new TextEncoder();
-const ITERATIONS = 210000;
-const BOOTSTRAP_REVISION = 2;
+const ITERATIONS = 100000;
+const BOOTSTRAP_REVISION = 3;
 const INITIAL_PASSWORD = "0000";
 
 function base64Url(bytes) {

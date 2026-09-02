@@ -29,9 +29,10 @@ try {
     records[role] = JSON.parse(await readFile(resolve(outputDirectory, `${role}.json`), "utf8"));
     const record = records[role];
     assert(record.schema === 2, `${role} schema must be 2`);
-    assert(record.bootstrap_revision === 2, `${role} bootstrap revision must be 2`);
+    assert(record.bootstrap_revision === 3, `${role} bootstrap revision must be 3`);
     assert(record.role === role && record.username === role, `${role} ID must be fixed to its role name`);
-    assert(record.credential_version === 2 && record.must_change === false, `${role} bootstrap state is invalid`);
+    assert(record.credential_version === 3 && record.must_change === false, `${role} bootstrap state is invalid`);
+    assert(record.password.iterations === 100000, `${role} PBKDF2 iterations must fit the workerd limit`);
     assert(!Object.hasOwn(record, "plaintext_password"), `${role} record must not store plaintext`);
 
     const digest = pbkdf2Sync(

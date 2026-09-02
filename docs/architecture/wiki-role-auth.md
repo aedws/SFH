@@ -31,7 +31,7 @@ tags: [위키, 인증, 기획자, 개발자, Cloudflare]
 
 `cloudflare/wiki-auth/_worker.js`는 인증·세션·접근 판정만 담당합니다. 문서 표현은 `role-auth.js`와 각 Markdown 페이지가 담당하며, 기획 상태·게임 데이터·배포 Worker에는 접근하지 않습니다. 저장소는 `sfh-wiki-auth` Private R2만 사용하고 Cloudflare 플랜이나 기존 게임 R2를 변경하지 않습니다.
 
-배포는 `bootstrap_revision`을 비교합니다. 기존 레코드가 revision 2보다 낮을 때만 두 계정을 고정 아이디와 초기 비밀번호로 한 번 교정하며, revision 2에 도달한 뒤에는 사용자가 바꾼 비밀번호를 덮어쓰지 않습니다. 초기 비밀번호의 해시와 사용자별 salt만 Private R2에 저장하고 pepper는 GitHub Actions Secret에서만 읽습니다. 인증 R2에는 pepper 지문만 남겨 Secret이 실수로 바뀌면 기존 계정을 잠그는 배포를 거부합니다.
+배포는 `bootstrap_revision`을 비교합니다. 기존 레코드가 revision 3보다 낮을 때만 두 계정을 고정 아이디와 초기 비밀번호로 한 번 교정하며, revision 3에 도달한 뒤에는 사용자가 바꾼 비밀번호를 덮어쓰지 않습니다. PBKDF2-SHA256은 Cloudflare workerd가 허용하는 최대 100,000회로 고정하고 그보다 큰 저장 레코드는 로그인 전에 거부합니다. 초기 비밀번호의 해시와 사용자별 salt만 Private R2에 저장하고 pepper는 GitHub Actions Secret에서만 읽습니다. 인증 R2에는 pepper 지문만 남겨 Secret이 실수로 바뀌면 기존 계정을 잠그는 배포를 거부합니다.
 
 ## E2E 수락 기준
 
@@ -43,7 +43,7 @@ tags: [위키, 인증, 기획자, 개발자, Cloudflare]
 6. 로그아웃·만료·credential version 변경 후 이전 쿠키는 실패
 7. 로그인 실패 제한, CSRF, 동일 출처, 본문 크기 제한이 작동
 8. 320·390·1440px에서 로그인·계정·역할 탭이 겹치지 않음
-9. revision 2 최초 배포는 기존 계정을 한 번 복구하고 다음 배포부터 변경 비밀번호를 보존
+9. revision 3 최초 배포는 기존 계정을 한 번 복구하고 실제 기본 로그인·역할 격리·로그아웃까지 확인한 뒤 다음 배포부터 변경 비밀번호를 보존
 
 ## 운영 경계
 

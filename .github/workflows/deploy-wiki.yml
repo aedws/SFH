@@ -416,7 +416,7 @@ jobs:
       CLOUDFLARE_R2_BUCKET: sfh-game-artifacts
       CLOUDFLARE_WIKI_AUTH_BUCKET: sfh-wiki-auth
       SFH_WIKI_AUTH_PEPPER: ${{ secrets.SFH_WIKI_AUTH_PEPPER }}
-      WIKI_AUTH_BOOTSTRAP_REVISION: "2"
+      WIKI_AUTH_BOOTSTRAP_REVISION: "3"
       R2_RUNTIME_PREFIX: game/releases
       R2_DOWNLOAD_PREFIX: downloads
       RELEASE_VERSION: ${{ needs.package-windows.outputs.release-version }}
@@ -487,6 +487,7 @@ jobs:
           fi
 
       - name: Migrate fixed role accounts once and preserve later password changes
+        id: wiki_auth_migration
         if: steps.cloudflare_config.outputs.ready == 'true'
         shell: bash
         run: |
@@ -494,6 +495,7 @@ jobs:
           seed_dir=$(mktemp -d)
           trap 'rm -rf -- "$seed_dir"' EXIT
           node scripts/seed_wiki_auth.mjs --output "$seed_dir"
+          migrated_roles=""
           pepper_remote="$seed_dir/remote-pepper.json"
           if wrangler r2 object get "$CLOUDFLARE_WIKI_AUTH_BUCKET/metadata/pepper.json" --remote --file "$pepper_remote" >/dev/null 2>&1; then
             if ! cmp --silent "$seed_dir/pepper.json" "$pepper_remote"; then
@@ -521,6 +523,7 @@ jobs:
                   --content-type application/json \
                   --file "$seed_dir/$role.json"
                 echo "Wiki $role account migrated to fixed ID and bootstrap revision $WIKI_AUTH_BOOTSTRAP_REVISION."
+                migrated_roles="${migrated_roles:+$migrated_roles,}$role"
               else
                 echo "Wiki $role account already uses bootstrap revision $remote_revision; preserving its password."
               fi
@@ -529,8 +532,10 @@ jobs:
                 --remote \
                 --content-type application/json \
                 --file "$seed_dir/$role.json"
+              migrated_roles="${migrated_roles:+$migrated_roles,}$role"
             fi
           done
+          echo "migrated_roles=$migrated_roles" >> "$GITHUB_OUTPUT"
 
       - name: Configure wiki auth server secret
         if: steps.cloudflare_config.outputs.ready == 'true'
@@ -578,7 +583,8 @@ jobs:
             sleep 5
           done
           curl --silent --show-error --fail --dump-header /tmp/game.headers "$CLOUDFLARE_GAME_URL/" --output /tmp/game.html
-          node scripts/test_wiki_auth_deployment.mjs "$CLOUDFLARE_WIKI_URL"
+          SFH_WIKI_AUTH_E2E_BOOTSTRAP_ROLES="${{ steps.wiki_auth_migration.outputs.migrated_roles }}" \
+            node scripts/test_wiki_auth_deployment.mjs "$CLOUDFLARE_WIKI_URL"
           grep -qi '^cross-origin-opener-policy: same-origin' /tmp/game.headers
           grep -qi '^cross-origin-embedder-policy: require-corp' /tmp/game.headers
           range_status=$(curl --silent --show-error --output /tmp/wasm.range --write-out '%{http_code}' \
