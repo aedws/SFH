@@ -12,7 +12,7 @@ var skill_icons: Array[Control] = []
 var latest_states: Array[Dictionary] = []
 var energy_state_band: StringName = &""
 
-@onready var skill_slots: VBoxContainer = %SkillSlots
+@onready var skill_slots: HBoxContainer = %SkillSlots
 @onready var energy_bar: ProgressBar = %EnergyBar
 @onready var energy_label: Label = %EnergyLabel
 @onready var energy_state_label: Label = %EnergyStateLabel
@@ -37,7 +37,8 @@ func get_snapshot() -> Dictionary:
 		&"slot_count": latest_states.size(),
 		&"states": latest_states.duplicate(true),
 		&"icon_mode": skill_icons.size() == latest_states.size(),
-		&"orientation": &"vertical",
+		&"orientation": &"horizontal",
+		&"edge_compact": size.x >= 280.0 and size.y <= 96.0,
 	}
 
 
@@ -131,7 +132,8 @@ func _rebuild_slots(states: Array[Dictionary]) -> void:
 	for index in states.size():
 		var state := states[index]
 		var panel := PanelContainer.new()
-		panel.custom_minimum_size = Vector2(58.0, 58.0)
+		panel.custom_minimum_size = Vector2(104.0, 52.0)
+		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var accent: Color = state[&"accent_color"]
 		var slot_style := StyleBoxFlat.new()
 		slot_style.bg_color = Color(0.04, 0.075, 0.095, 0.97)
@@ -154,7 +156,7 @@ func _rebuild_slots(states: Array[Dictionary]) -> void:
 			accent,
 			index
 		)
-		icon.custom_minimum_size = Vector2(26.0, 26.0)
+		icon.custom_minimum_size = Vector2(24.0, 24.0)
 		content.add_child(icon)
 		var data := VBoxContainer.new()
 		data.size_flags_horizontal = Control.SIZE_EXPAND_FILL

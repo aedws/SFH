@@ -3630,6 +3630,11 @@ func _process(_delta: float) -> bool:
 		var equipment_rect: Rect2 = combat_hud_snapshot.get(&"equipment_rect", Rect2())
 		var weapon_rect: Rect2 = combat_hud_snapshot.get(&"weapon_rect", Rect2())
 		var action_rect: Rect2 = combat_hud_snapshot.get(&"action_rect", Rect2())
+		var socket_rect: Rect2 = combat_hud_snapshot.get(&"socket_rect", Rect2())
+		var skill_hud_snapshot: Dictionary = skill_hud.call(&"get_snapshot")
+		var socket_hud_snapshot: Dictionary = game_instance.get(
+			"session_socket_hud"
+		).call(&"get_snapshot")
 		if (
 			not bool(combat_hud_snapshot.get(&"mission_tracker", false))
 			or not bool(combat_hud_snapshot.get(&"bottom_cluster", false))
@@ -3642,6 +3647,8 @@ func _process(_delta: float) -> bool:
 			or bool(combat_hud_snapshot.get(&"details_persistent", true))
 			or not bool(combat_hud_snapshot.get(&"context_reveal", false))
 			or float(combat_hud_snapshot.get(&"persistent_area_ratio", 1.0)) > 0.16
+			or not bool(combat_hud_snapshot.get(&"central_safe_clear", false))
+			or not bool(combat_hud_snapshot.get(&"session_socket_inside_viewport", false))
 			or core_rect.size.x > 402.0
 			or core_rect.size.y > 92.0
 			or mission_rect.position.x > 20.0
@@ -3652,8 +3659,15 @@ func _process(_delta: float) -> bool:
 			or tactical_minimap.size.x > 220.0
 			or tactical_minimap.size.y > 180.0
 			or skill_hud == null
-			or skill_hud.size.x > 110.0
-			or skill_hud.size.y > 282.0
+			or skill_hud.size.x > 480.0
+			or skill_hud.size.y > 96.0
+			or StringName(skill_hud_snapshot.get(&"orientation", &"")) != &"horizontal"
+			or not bool(skill_hud_snapshot.get(&"edge_compact", false))
+			or not bool(socket_hud_snapshot.get(&"managed_layout", false))
+			or (
+				int(socket_hud_snapshot.get(&"occupied_count", 0)) == 0
+				and not bool(socket_hud_snapshot.get(&"hidden_when_empty", false))
+			)
 			or dash_hud == null
 			or dash_hud.size.x > 200.0
 			or dash_hud.size.y > 76.0
@@ -3666,11 +3680,15 @@ func _process(_delta: float) -> bool:
 			or core_rect.intersects(telemetry_rect)
 			or equipment_rect.intersects(weapon_rect)
 			or action_rect.intersects(dash_hud.get_global_rect())
+			or socket_rect.intersects(core_rect)
+			or socket_rect.intersects(action_rect)
+			or socket_rect.intersects(skill_hud.get_global_rect())
 		):
 			return _fail(
-				"전투 HUD 시선권·비겹침 계약 실패: mission=%s core=%s map=%s skill=%s prompt=%s" % [
+				"전투 HUD 시선권·비겹침 계약 실패: mission=%s core=%s map=%s skill=%s prompt=%s snapshot=%s skill_state=%s socket=%s" % [
 					mission_rect, core_rect, tactical_minimap.get_global_rect(),
-					skill_hud.get_global_rect(), interaction_prompt.get_global_rect()
+					skill_hud.get_global_rect(), interaction_prompt.get_global_rect(),
+					combat_hud_snapshot, skill_hud_snapshot, socket_hud_snapshot
 				]
 			)
 		var minimap_layout: Dictionary = tactical_minimap.call(&"get_layout_snapshot")

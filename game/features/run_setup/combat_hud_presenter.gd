@@ -5,6 +5,7 @@ extends RefCounted
 
 const TacticalHudIcon := preload("res://game/features/run_setup/tactical_hud_icon.gd")
 const WIDE_LAYOUT_MINIMUM := 1100.0
+const NARROW_LAYOUT_MAXIMUM := 720.0
 const MISSION_WIDTH := 338.0
 const MISSION_HEIGHT := 108.0
 const DETAIL_REVEAL_SECONDS := 1.8
@@ -19,6 +20,7 @@ var weapon_panel: PanelContainer
 var action_dock: PanelContainer
 var combat_skill_hud: Control
 var dash_cooldown_hud: Control
+var session_socket_hud: Control
 var interaction_prompt: Control
 var detail_reveal_timer: Timer
 var status_label: Label
@@ -163,11 +165,15 @@ func apply_responsive_width(viewport_width: float) -> void:
 func attach_runtime_layers(
 	new_combat_skill_hud: Control,
 	new_dash_cooldown_hud: Control,
-	new_interaction_prompt: Control
+	new_interaction_prompt: Control,
+	new_session_socket_hud: Control = null
 ) -> void:
 	combat_skill_hud = new_combat_skill_hud
 	dash_cooldown_hud = new_dash_cooldown_hud
 	interaction_prompt = new_interaction_prompt
+	session_socket_hud = new_session_socket_hud
+	if session_socket_hud != null and session_socket_hud.has_method(&"set_managed_layout"):
+		session_socket_hud.call(&"set_managed_layout", true)
 	_apply_responsive_layout()
 
 
@@ -180,7 +186,9 @@ func get_snapshot(hud: Control) -> Dictionary:
 	var action_rect := _global_rect(action_dock)
 	var skill_rect := _global_rect(combat_skill_hud)
 	var dash_rect := _global_rect(dash_cooldown_hud)
+	var socket_rect := _global_rect(session_socket_hud)
 	var viewport_area := maxf(1.0, hud.size.x * hud.size.y) if hud != null else 1.0
+	var central_safe_rect := _central_safe_rect(hud.size) if hud != null else Rect2()
 	var persistent_area := (
 		mission_rect.get_area()
 		+ core_rect.get_area()
@@ -188,7 +196,9 @@ func get_snapshot(hud: Control) -> Dictionary:
 		+ action_rect.get_area()
 		+ skill_rect.get_area()
 		+ dash_rect.get_area()
+		+ socket_rect.get_area()
 	)
+	var persistent_rects := [mission_rect, core_rect, telemetry_rect, action_rect, skill_rect, dash_rect, socket_rect]
 	return {
 		&"installed": layout_root != null,
 		&"size": hud.size if hud != null else Vector2.ZERO,
@@ -201,14 +211,19 @@ func get_snapshot(hud: Control) -> Dictionary:
 		&"action_rect": action_rect,
 		&"skill_rect": skill_rect,
 		&"dash_rect": dash_rect,
+		&"socket_rect": socket_rect,
+		&"session_socket_inside_viewport": session_socket_hud == null or not session_socket_hud.is_visible_in_tree() or _rect_inside_viewport(socket_rect, hud.size),
+		&"central_safe_rect": central_safe_rect,
+		&"central_safe_clear": _rects_clear_zone(persistent_rects, central_safe_rect),
 		&"mission_tracker": mission_tracker != null,
 		&"bottom_cluster": core_rect.size.x <= 402.0 and core_rect.size.y <= 92.0,
 		&"runtime_clustered": combat_skill_hud != null and dash_cooldown_hud != null,
+		&"session_socket_managed": session_socket_hud == null or session_socket_hud.has_method(&"set_managed_layout"),
 		&"details_side_by_side": equipment_panel != null and weapon_panel != null,
 		&"loadout_split": equipment_panel != null and weapon_panel != null and telemetry_panel != null,
 		&"icon_count": icon_count,
 		&"action_count": action_labels.size(),
-		&"responsive": layout_mode in [&"player_orbit", &"compact_edge"],
+		&"responsive": layout_mode in [&"player_orbit", &"compact_edge", &"minimal_edge"],
 		&"context_reveal": detail_reveal_timer != null,
 		&"revealed_detail": revealed_detail,
 		&"details_persistent": false,
@@ -370,32 +385,48 @@ func _apply_responsive_layout() -> void:
 func _apply_layout_for_width(viewport_width: float) -> void:
 	if layout_root == null:
 		return
-	layout_mode = &"player_orbit" if viewport_width >= WIDE_LAYOUT_MINIMUM else &"compact_edge"
+	if viewport_width >= WIDE_LAYOUT_MINIMUM:
+		layout_mode = &"player_orbit"
+	elif viewport_width <= NARROW_LAYOUT_MAXIMUM:
+		layout_mode = &"minimal_edge"
+	else:
+		layout_mode = &"compact_edge"
 	if layout_mode == &"player_orbit":
 		_set_top_left_rect(mission_tracker, 18, 18, MISSION_WIDTH, MISSION_HEIGHT)
 		_set_center_rect(equipment_panel, -252, -104, 132, 100)
 		_set_center_rect(weapon_panel, -112, -104, 224, 100)
-		_set_center_rect(combat_skill_hud, 140, -244, 104, 240)
+		_set_bottom_right_rect(combat_skill_hud, -458, -148, 440, 82)
 		_set_bottom_right_rect(action_dock, -410, -58, 392, 46)
+		_set_bottom_center_rect(session_socket_hud, -226, -70, 440, 62)
 		_set_center_rect(interaction_prompt, -170, 38, 340, 32)
-	else:
+	elif layout_mode == &"compact_edge":
 		_set_top_left_rect(mission_tracker, 12, 12, 292, 104)
-		_set_center_right_rect(combat_skill_hud, -76, -140, 64, 280)
+		_set_bottom_right_rect(combat_skill_hud, -312, -230, 300, 82)
 		_set_bottom_right_rect(action_dock, -334, -142, 322, 46)
+		_set_bottom_center_rect(session_socket_hud, -190, -70, 380, 62)
 		_set_center_rect(interaction_prompt, -160, 42, 320, 30)
+	else:
+		_set_top_left_rect(mission_tracker, 10, 10, 260, 92)
+		_set_bottom_right_rect(combat_skill_hud, -280, -192, 270, 80)
+		_set_visible(action_dock, false)
+		_set_bottom_center_rect(session_socket_hud, -150, -70, 300, 62)
+		_set_center_rect(interaction_prompt, -140, 36, 280, 30)
+	if layout_mode != &"minimal_edge":
+		_set_visible(action_dock, true)
 	_place_player_status_cluster(viewport_width)
 	_apply_detail_visibility()
 
 
 func _place_player_status_cluster(viewport_width: float) -> void:
 	var compact := viewport_width < WIDE_LAYOUT_MINIMUM
-	var core_width := 286.0 if compact else 360.0
-	var core_height := 80.0 if compact else 86.0
+	var narrow := viewport_width <= NARROW_LAYOUT_MAXIMUM
+	var core_width := 244.0 if narrow else (286.0 if compact else 360.0)
+	var core_height := 72.0 if narrow else (80.0 if compact else 86.0)
 	var telemetry_width := core_width
-	var telemetry_height := 36.0
-	var core_y := -270.0 if compact else -148.0
+	var telemetry_height := 32.0 if narrow else 36.0
+	var core_y := -154.0 if narrow else (-270.0 if compact else -148.0)
 	if avoid_mobile_controls and hud_anchor in [&"bottom_left", &"bottom_right"]:
-		core_y = -290.0
+		core_y = -244.0 if narrow else -290.0
 	var telemetry_y := core_y - telemetry_height - 6.0
 	var dash_y := minf(core_y + core_height + 6.0, -68.0)
 	match hud_anchor:
@@ -426,6 +457,27 @@ func _apply_detail_visibility() -> void:
 	var wide_layout := layout_mode == &"player_orbit"
 	_set_visible(equipment_panel, wide_layout and revealed_detail == &"equipment")
 	_set_visible(weapon_panel, wide_layout and revealed_detail == &"weapon")
+
+
+func _central_safe_rect(viewport_size: Vector2) -> Rect2:
+	var safe_height_ratio := 0.42 if viewport_size.x <= NARROW_LAYOUT_MAXIMUM else 0.54
+	return Rect2(
+		Vector2(viewport_size.x * 0.22, viewport_size.y * 0.18),
+		Vector2(viewport_size.x * 0.56, viewport_size.y * safe_height_ratio)
+	)
+
+
+func _rects_clear_zone(rects: Array, zone: Rect2) -> bool:
+	for rect in rects:
+		if rect is Rect2 and (rect as Rect2).get_area() > 0.0 and (rect as Rect2).intersects(zone):
+			return false
+	return true
+
+
+func _rect_inside_viewport(rect: Rect2, viewport_size: Vector2) -> bool:
+	if rect.get_area() <= 0.0:
+		return true
+	return Rect2(Vector2.ZERO, viewport_size).encloses(rect)
 
 
 func _on_detail_reveal_timeout() -> void:

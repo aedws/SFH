@@ -1883,7 +1883,8 @@ func _assemble_game() -> bool:
 		&"attach_runtime_layers",
 		combat_skill_hud as Control,
 		dash_cooldown_hud as Control,
-		interaction_label
+		interaction_label,
+		session_socket_hud as Control
 	)
 
 	status_label.text = (

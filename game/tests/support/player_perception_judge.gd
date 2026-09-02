@@ -61,8 +61,13 @@ const CHECKPOINT_RULES := {
 	},
 	&"session_socket_decision": {
 		&"unit": &"decision",
-		&"surfaces": [&"field_loot", &"session_sockets"],
-		&"phrases": ["F 런 소켓 장착", "ESC 보류", "SESSION SOCKETS", "RUN ONLY", "RUNE"],
+		&"surfaces": [&"field_loot"],
+		&"phrases": ["F 런 소켓 장착", "ESC 보류", "RUNE"],
+	},
+	&"session_socket_active": {
+		&"unit": &"state_feedback",
+		&"surfaces": [&"session_sockets"],
+		&"phrases": ["SESSION SOCKETS", "RUN ONLY", "RUNE"],
 	},
 	&"combat_glance": {
 		&"unit": &"glance",

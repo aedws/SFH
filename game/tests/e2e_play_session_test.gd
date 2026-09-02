@@ -81,7 +81,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -380,6 +380,8 @@ func _verify_operation_session() -> bool:
 	var hud_snapshot: Dictionary = game.get("combat_hud_presenter").call(
 		&"get_snapshot", game.get_node("UI/HUDMargin")
 	)
+	var skill_snapshot: Dictionary = skills.call(&"get_snapshot")
+	var initial_socket_snapshot: Dictionary = game.get("session_socket_hud").call(&"get_snapshot")
 	if (
 		not bool(hud_snapshot.get(&"installed", false))
 		or not bool(hud_snapshot.get(&"mission_tracker", false))
@@ -393,6 +395,12 @@ func _verify_operation_session() -> bool:
 		or not bool(hud_snapshot.get(&"low_obstruction", false))
 		or bool(hud_snapshot.get(&"details_persistent", true))
 		or float(hud_snapshot.get(&"persistent_area_ratio", 1.0)) > 0.16
+		or not bool(hud_snapshot.get(&"central_safe_clear", false))
+		or not bool(hud_snapshot.get(&"session_socket_inside_viewport", false))
+		or StringName(skill_snapshot.get(&"orientation", &"")) != &"horizontal"
+		or not bool(skill_snapshot.get(&"edge_compact", false))
+		or not bool(initial_socket_snapshot.get(&"managed_layout", false))
+		or not bool(initial_socket_snapshot.get(&"hidden_when_empty", false))
 	):
 		return _fail("전투 HUD가 아이콘 기반 반응형 시선권으로 구성되지 않았습니다: %s" % hud_snapshot)
 	var mission_rect: Rect2 = hud_snapshot.get(&"mission_rect", Rect2())
@@ -1078,6 +1086,8 @@ func _verify_field_loot_acquisition(player: Node2D) -> bool:
 	var socket_after: Dictionary = service.call(&"get_snapshot")
 	var damage_after := float(weapon.call(&"get_runtime_snapshot").get(&"damage", 0.0))
 	var socket_hud_snapshot: Dictionary = socket_hud.call(&"get_snapshot")
+	if not _judge_player_perception(&"session_socket_active", "장착된 런 소켓 가장자리 표시"):
+		return false
 	var slots_row := socket_hud.get_node("%SlotsRow") as HBoxContainer
 	var unsocket_success := false
 	for child in slots_row.get_children():
