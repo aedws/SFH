@@ -16,11 +16,27 @@ extends Resource
 @export var codex_csv_path := "res://game/features/p5_hub_progression/data/codex.csv"
 @export_range(0, 10000, 1) var shop_reroll_price := 25
 @export_range(1, 8, 1) var shop_rotation_slots := 3
+@export var default_recipe_id: StringName = &"assault_blueprint_recipe"
+@export var default_utility_id: StringName = &"field_medkit"
+@export var default_training_scenario_id: StringName = &"single_target"
 
 
 func is_valid() -> bool:
-	for path in [utility_csv_path, operation_preset_csv_path, shop_offer_csv_path,
-		recipe_csv_path, training_scenario_csv_path, codex_csv_path]:
-		if path.is_empty() or not FileAccess.file_exists(path):
+	var conditional_paths := [
+		[utility_enabled, utility_csv_path],
+		[bankruptcy_preset_enabled, operation_preset_csv_path],
+		[rotating_shop_enabled, shop_offer_csv_path],
+		[workshop_enabled, recipe_csv_path],
+		[training_enabled, training_scenario_csv_path],
+		[codex_enabled, codex_csv_path],
+	]
+	for pair in conditional_paths:
+		if bool(pair[0]) and (String(pair[1]).is_empty() or not FileAccess.file_exists(String(pair[1]))):
 			return false
-	return shop_reroll_price >= 0 and shop_rotation_slots > 0
+	return (
+		shop_reroll_price >= 0
+		and shop_rotation_slots > 0
+		and (not workshop_enabled or default_recipe_id != &"")
+		and (not utility_enabled or default_utility_id != &"")
+		and (not training_enabled or default_training_scenario_id != &"")
+	)

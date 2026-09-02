@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 17 · IMPROVE 15 · CHANGE 16 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 21 · IMPROVE 19 · CHANGE 20 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>17</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>16</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>21</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>8</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -148,7 +148,7 @@ tags:
         <p><a href="features/loadout-investment/">무기·스킬 투자 계약 →</a> · <a href="architecture/module-audit/#p5-02-2026-09-02">모듈 감사 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>P5 완전 종료 · 거점 진행 통합·모듈 감사</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 유틸리티·불변 작전 초안·파산 보호·회전 상점·제작·훈련·도감을 P5-03~10 완료 계약으로 연결했습니다.</strong><ul>
@@ -163,6 +163,23 @@ tags:
         <div class="sfh-group"><h3>수정 · 5</h3><p>94% 산식·P6-01 작업선·검색·E2E·노드맵을 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>전리품 Dictionary 수량을 도감이 숫자로 가정하던 오류를 수정했습니다.</p></div>
         <p><a href="features/p5-hub-progression/">P5 거점 진행 →</a> · <a href="architecture/module-audit/#p5-0310-2026-09-02">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 5</small><b>P5 엄밀 모듈성 보강 · 실제 타격 계측·원자적 거래</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · P5 완료 판정을 정적 파일 존재가 아니라 제거·오류·실패 경로를 견디는 실행 계약으로 다시 고정했습니다.</strong><ul>
+          <li><b>제거:</b> 활성 하위 모듈만 지연 로드하고 비활성 CSV 경로는 검증 대상에서 제외합니다.</li>
+          <li><b>정합:</b> Google Sheet와 확정 CSV의 Recipe·Codex·OperationPreset ID를 기존 표준 카탈로그와 통일했습니다.</li>
+          <li><b>실전:</b> 적 피해 신호→훈련 façade→DPS/AP/쿨타임 계측 경로를 연결했습니다.</li>
+          <li><b>원자성:</b> 상점·리롤·제작 저장 실패를 강제로 발생시켜 크레딧·재료·창고·제작 결과가 모두 원복됨을 검증합니다.</li>
+          <li><b>조립:</b> P5 행동·문구는 Presenter가 소유하고 Game은 공개 액션 전달만 수행합니다.</li>
+        </ul><p class="sfh-intent"><b>검증</b><span><code>P5_MODULARITY_OK</code>, <code>P5_HUB_PROGRESSION_OK … schema_rejection transaction_rollback</code>, 게임 스모크를 통과했습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>지연 설치·공개 façade·Presenter·피해 텔레메트리를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>데이터·제거·원자성·수명 제한 검사를 강화했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>Sheet·CSV·위키·E2E 기준을 동일 ID 계약으로 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 5</h3><p>정적 로드·비활성 경로·내부 테스트 우회·부분 거래·UI 도메인 누수를 수정했습니다.</p></div>
+        <p><a href="features/p5-hub-progression/">P5 계약 →</a> · <a href="architecture/module-audit/#p5-2026-09-02">엄밀 감사 →</a></p>
       </div>
     </details>
   </div>

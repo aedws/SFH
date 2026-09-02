@@ -73,9 +73,20 @@ func craft(recipe_id: StringName, transaction_id: StringName) -> Dictionary:
 		&"affix_count": random.randi_range(minimum_affixes, maximum_affixes),
 		&"socket_count": random.randi_range(minimum_sockets, maximum_sockets),
 		&"recipe_id": recipe_id}
-	profile.call(&"add_crafted_item", item)
-	profile.call(&"mark_transaction_processed", transaction_id)
+	if int(profile.call(&"add_crafted_item", item)) < 0:
+		_rollback_consumption(consumed, cost)
+		return {&"success": false, &"reason": "제작 결과 지급 실패"}
+	if not bool(profile.call(&"mark_transaction_processed", transaction_id)):
+		profile.call(&"remove_crafted_item", StringName(item[&"instance_id"]))
+		_rollback_consumption(consumed, cost)
+		return {&"success": false, &"reason": "제작 거래 기록 실패"}
 	return {&"success": true, &"item": item, &"consumed": consumed, &"credit_cost": cost}
+
+
+func _rollback_consumption(consumed: Dictionary, cost: int) -> void:
+	for item_id in consumed:
+		profile.call(&"add_warehouse_item", item_id, consumed[item_id])
+	profile.call(&"add_credits", cost)
 
 
 func get_snapshot() -> Dictionary:

@@ -1,3 +1,3 @@
 preset_id,display_name,character_id,main_weapon_id,secondary_weapon_id,skill_ids,utility_ids,tier_id,region_id,difficulty_id,entry_cost,required_max_credits,runtime_enabled,source_status
 프리셋 ID,표시 이름,캐릭터,주무기,보조무기,스킬 ID | 구분,유틸리티 ID:수량 | 구분,맵 등급,지역,난이도,표시 투입 비용,이 크레딧 이하 자동 제안,런타임 사용,기획 상태
-bankruptcy_basic,무료 생존 프리셋,vanguard,service_rifle,sidearm,blink|magnetic_field|overdrive,standard_field_pack:1,small,ruined_district,standard,0,0,true,provisional
+bankruptcy_basic,무료 생존 프리셋,vanguard,assault_rifle,service_pistol,blink|magnetic_field|speed_boost,standard_field_pack:1,small,ruined_city,standard,0,0,true,provisional

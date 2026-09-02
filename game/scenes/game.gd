@@ -306,7 +306,7 @@ const PERSISTENT_PROFILE_METHODS := [
 	&"configure", &"can_spend", &"spend", &"add_credits", &"get_snapshot",
 	&"is_unlocked", &"unlock", &"add_warehouse_item", &"has_warehouse_item",
 	&"take_warehouse_item", &"add_blueprint", &"consume_blueprint",
-	&"add_crafted_item", &"set_consumable_loadout", &"consume_loadout_for_run",
+	&"add_crafted_item", &"remove_crafted_item", &"set_consumable_loadout", &"consume_loadout_for_run",
 	&"register_shop_offer", &"is_shop_offer_registered",
 	&"unlock_skill", &"register_blueprint", &"is_blueprint_registered",
 	&"add_codex_progress", &"get_codex_progress", &"has_processed_transaction",
@@ -330,7 +330,8 @@ const P5_HUB_PROGRESSION_METHODS := [
 	&"configure", &"get_investment_context", &"create_operation_draft",
 	&"confirm_operation_draft", &"begin_run", &"settle_run", &"refresh_hub",
 	&"toggle_utility", &"purchase_shop_offer", &"reroll_shop", &"craft_recipe",
-	&"start_training", &"finish_training", &"get_snapshot",
+	&"start_training", &"record_training_hit", &"finish_training", &"get_snapshot",
+	&"perform_hub_action",
 ]
 const HUB_ECONOMY_METHODS := [
 	&"configure", &"quote", &"purchase", &"set_consumable_loadout",
@@ -967,21 +968,7 @@ func _cycle_penalty() -> void:
 
 
 func _purchase_medkit() -> void:
-	if p5_hub_progression_service != null:
-		var shop_snapshot: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"shop", {})
-		var offers: Array = shop_snapshot.get(&"offers", [])
-		if not offers.is_empty():
-			var offer: Dictionary = offers[0]
-			var result: Dictionary = p5_hub_progression_service.call(
-				&"purchase_shop_offer", offer.get(&"offer_id", &""),
-				StringName("ui_shop_%d" % Time.get_ticks_usec())
-			)
-			status_label.text = "회전 상점 %s · %s" % [
-				"구매 완료" if bool(result.get(&"success", false)) else "구매 실패",
-				offer.get(&"display_name", offer.get(&"offer_id", &"")),
-			]
-			_refresh_contract_setup_ui()
-			return
+	if _perform_p5_hub_action(&"shop_purchase"): return
 	if hub_economy_system == null:
 		return
 	var profile_snapshot: Dictionary = persistent_profile.call(&"get_snapshot")
@@ -1001,21 +988,7 @@ func _purchase_medkit() -> void:
 
 
 func _craft_default_item() -> void:
-	if p5_hub_progression_service != null:
-		var p5_result: Dictionary = p5_hub_progression_service.call(
-			&"craft_recipe", &"assault_blueprint_recipe",
-			StringName("ui_craft_%d" % Time.get_ticks_usec())
-		)
-		status_label.text = (
-			"워크숍 제작 완료 · 옵션 %d · 소켓 %d" % [
-				int(p5_result.get(&"item", {}).get(&"affix_count", 0)),
-				int(p5_result.get(&"item", {}).get(&"socket_count", 0)),
-			]
-			if bool(p5_result.get(&"success", false))
-			else "워크숍 제작 대기 · %s" % p5_result.get(&"reason", "도면 확인")
-		)
-		_refresh_contract_setup_ui()
-		return
+	if _perform_p5_hub_action(&"craft_default"): return
 	if crafting_system == null:
 		return
 	var result: Dictionary = crafting_system.call(&"craft", &"assault_rifle_blueprint")
@@ -1041,39 +1014,24 @@ func _toggle_medkit_loadout() -> void:
 
 
 func _toggle_run_utility() -> void:
-	if p5_hub_progression_service == null:
-		return
-	var result: Dictionary = p5_hub_progression_service.call(&"toggle_utility", &"field_medkit")
-	status_label.text = "런 유틸리티 · 응급키트 %s" % (
-		"선택" if int(result.get(&"quantity", 0)) > 0 else "해제"
-	)
-	_refresh_contract_setup_ui()
+	_perform_p5_hub_action(&"utility_toggle")
 
 
 func _toggle_training_session() -> void:
-	if p5_hub_progression_service == null:
-		return
-	var training: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"training", {})
-	var result: Dictionary
-	if (training.get(&"active", {}) as Dictionary).is_empty():
-		result = p5_hub_progression_service.call(&"start_training", &"single_target")
-		status_label.text = "훈련장 시작 · 단일 중장 더미 · 무료 로드아웃"
-	else:
-		result = p5_hub_progression_service.call(&"finish_training")
-		status_label.text = "훈련장 종료 · DPS %.1f · 최대 타격 %.1f · 로드아웃 원복" % [
-			float(result.get(&"dps", 0.0)), float(result.get(&"hit_damage", 0.0)),
-		]
-	_refresh_contract_setup_ui()
+	_perform_p5_hub_action(&"training_toggle")
 
 
 func _show_codex_summary() -> void:
-	if p5_hub_progression_service == null:
-		return
-	var codex: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"codex", {})
-	var hints: Dictionary = codex.get(&"region_hints", {})
-	status_label.text = "작전 도감 · %d/%d 완료 · 지역 힌트 %d곳" % [
-		int(codex.get(&"completed_count", 0)), int(codex.get(&"entry_count", 0)), hints.size(),
-	]
+	_perform_p5_hub_action(&"codex_summary")
+
+
+func _perform_p5_hub_action(action_id: StringName) -> bool:
+	if p5_hub_progression_service == null: return false
+	var presentation: Dictionary = p5_hub_progression_service.call(&"perform_hub_action", action_id)
+	if not bool(presentation.get(&"handled", false)): return false
+	status_label.text = String(presentation.get(&"status_text", ""))
+	_refresh_contract_setup_ui()
+	return true
 
 
 func _on_profile_changed(_snapshot: Dictionary) -> void:
@@ -3178,6 +3136,23 @@ func _on_enemy_spawned(enemy: Node) -> void:
 		enemy_hit_reaction.set("enabled", features.hit_feedback_enabled)
 	if is_instance_valid(hit_feedback_director):
 		hit_feedback_director.call(&"register_actor", enemy)
+	if p5_hub_progression_service != null and enemy.has_signal(&"damaged"):
+		enemy.connect(&"damaged", Callable(self, &"_on_enemy_training_damage"))
+
+
+func _on_enemy_training_damage(
+	health_damage: float,
+	armor_damage: float,
+	_world_position: Vector2,
+	context: Dictionary
+) -> void:
+	if p5_hub_progression_service != null:
+		p5_hub_progression_service.call(
+			&"record_training_hit",
+			maxf(0.0, health_damage + armor_damage),
+			float(context.get(&"armor_penetration", 0.0)),
+			float(context.get(&"cooldown_seconds", 0.0))
+		)
 
 
 func _on_combat_skill_activated(

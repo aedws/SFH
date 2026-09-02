@@ -121,14 +121,31 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 4 TOPICS</span><span>75 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 5 TOPICS</span><span>75 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 17 · IMPROVE 15 · CHANGE 16 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 21 · IMPROVE 19 · CHANGE 20 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>17</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>16</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>21</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>8</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 5</small><b>P5 엄밀 모듈성 보강 · 실제 타격 계측·원자적 거래</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · P5를 “켜고 끌 수 있음”에서 실제 파일 제거·잘못된 데이터·저장 실패까지 견디는 계약으로 강화했습니다.</strong><ul>
+          <li><b>실제 제거:</b> 7개 하위 서비스를 정적 <code>preload</code>하지 않고 활성 플래그일 때만 문자열 경로로 로드합니다. 꺼진 모듈의 CSV·스크립트가 없어도 P5 코어가 구성됩니다.</li>
+          <li><b>데이터 정합:</b> Recipe·Codex·OperationPreset의 도면·지역·무기·스킬 ID를 Item·작전·무기·스킬 표준 ID와 맞추고 Google Sheet도 같은 값으로 동기화했습니다.</li>
+          <li><b>실전 훈련:</b> 적의 실제 피해 신호를 공개 <code>record_training_hit</code> 계약에 연결해 DPS·최대 타격이 테스트 내부 호출이 아닌 플레이 타격으로 누적됩니다.</li>
+          <li><b>거래 안전:</b> 제작 결과 지급·거래 기록, 상점 지급·리롤 기록 중 하나라도 실패하면 아이템·재료·크레딧을 모두 원복합니다.</li>
+          <li><b>UI 책임:</b> 상점·제작·유틸·훈련·도감 선택과 문구를 전용 Presenter로 이동해 <code>Game</code>은 버튼 전달과 출력만 담당합니다.</li>
+        </ul><p class="sfh-intent"><b>검증</b><span>필수 열·중복 ID·외래 ID, 내부 우회 접근, 비활성 파일 누락, 실제 타격 브리지, 강제 거래 실패 롤백을 자동 판정합니다. 과금·Cloudflare 플랜은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>지연 설치, 공개 façade, 액션 Presenter, 실전 피해 텔레메트리 브리지를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>CSV 스키마·중복·외래 ID 검사, 초안 수명, 테스트 독립성, 거래 원자성을 강화했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>Sheet·CSV 표준 ID, P5 문서, E2E 계약, 검색 우선 설명을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 5</h3><p>정적 하위 로드, 비활성 CSV 강제 검사, 가짜 훈련 계측, 거래 부분 반영, P5 UI 도메인 누수를 제거했습니다.</p></div>
+        <p><a href="features/p5-hub-progression/">P5 거점 진행 →</a> · <a href="architecture/module-audit/#p5-2026-09-02">엄밀 모듈 감사 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>P5 완전 종료 · 거점 진행 통합·모듈 감사</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 유틸리티 투자부터 작전 확정, 파산 보호, 회전 상점, 제작소, 훈련장, 도감까지 P5-03~10을 한 거점 흐름으로 연결했습니다.</strong><ul>

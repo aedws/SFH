@@ -1,5 +1,5 @@
 recipe_id,blueprint_id,display_name,result_id,credit_cost,materials,minimum_affixes,maximum_affixes,minimum_sockets,maximum_sockets,required_registration,runtime_enabled,source_status
 제작법 ID,영구 등록 도면 ID,표시 이름,결과 ID,크레딧 비용,재료 ID:수량 | 구분,최소 옵션,최대 옵션,최소 소켓,최대 소켓,도면 영구 등록 필요,런타임 사용,기획 상태
-assault_blueprint_recipe,assault_blueprint,돌격 장비 제작,crafted_assault,80,scrap:2,1,2,0,1,true,true,provisional
-vest_blueprint_recipe,vest_blueprint,방탄 조끼 제작,crafted_vest,70,scrap:2,1,2,0,1,true,true,provisional
-magnetic_blueprint_recipe,magnetic_skill_blueprint,자기장 장치 제작,crafted_magnetic,95,scrap:3,1,3,1,2,true,true,provisional
+assault_blueprint_recipe,assault_rifle_blueprint,돌격소총 제작,crafted_assault_rifle,80,scrap:2,1,2,0,1,true,true,provisional
+vest_blueprint_recipe,tactical_vest_blueprint,전술 조끼 제작,crafted_tactical_vest,70,scrap:2,1,2,0,1,true,true,provisional
+magnetic_blueprint_recipe,magnetic_field_blueprint,원형 자기장 제작,crafted_magnetic_field,95,scrap:3,1,3,1,2,true,true,provisional

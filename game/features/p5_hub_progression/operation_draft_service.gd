@@ -5,6 +5,8 @@ var contracts: Node
 var drafts: Dictionary = {}
 var confirmed_ids: Dictionary = {}
 var sequence := 0
+const MAXIMUM_OPEN_DRAFTS := 8
+const MAXIMUM_CONFIRMED_IDS := 128
 
 
 func configure(contract_service: Node) -> bool:
@@ -23,6 +25,8 @@ func create_draft(tier_config: Resource, penalty: Dictionary, context: Dictionar
 	var draft := {&"draft_id": draft_id, &"fingerprint": fingerprint,
 		&"quote": quote.duplicate(true), &"confirmed": false}
 	drafts[draft_id] = draft
+	while drafts.size() > MAXIMUM_OPEN_DRAFTS:
+		drafts.erase(drafts.keys()[0])
 	return draft.duplicate(true)
 
 
@@ -35,10 +39,13 @@ func confirm_draft(draft_id: StringName, tier_config: Resource,
 		return {&"success": false, &"reason": "작전 초안 없음"}
 	var current_quote: Dictionary = contracts.call(&"quote", tier_config, penalty, context)
 	if _fingerprint(current_quote) != String(draft.get(&"fingerprint", "")):
+		drafts.erase(draft_id)
 		return {&"success": false, &"reason": "선택 변경으로 견적 만료", &"stale": true}
 	var result: Dictionary = contracts.call(&"invest", tier_config, penalty, context)
 	if bool(result.get(&"success", false)):
 		confirmed_ids[draft_id] = true
+		while confirmed_ids.size() > MAXIMUM_CONFIRMED_IDS:
+			confirmed_ids.erase(confirmed_ids.keys()[0])
 		drafts.erase(draft_id)
 	return result
 
