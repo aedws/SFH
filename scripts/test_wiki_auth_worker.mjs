@@ -34,12 +34,14 @@ const pepper = "test-only-pepper-that-is-at-least-thirty-two-characters";
 const initialPassword = "0000";
 const changedPassword = "9573";
 const tamperedPlannerId = "planner-owner";
+assert.equal(__test.PBKDF2_ITERATIONS, 100000, "PBKDF2 must stay within the Cloudflare workerd limit");
+assert.equal(__test.MAX_PBKDF2_ITERATIONS, 100000);
 
 async function userRecord(role, username, password) {
   const salt = __test.randomToken(18);
   return {
     schema: 2,
-    bootstrap_revision: 2,
+    bootstrap_revision: 3,
     role,
     username,
     password: {
@@ -48,7 +50,7 @@ async function userRecord(role, username, password) {
       salt,
       digest: await __test.passwordDigest(password, salt, pepper),
     },
-    credential_version: 2,
+    credential_version: 3,
     must_change: false,
   };
 }
@@ -67,6 +69,18 @@ const env = {
     },
   },
 };
+
+const incompatibleStore = new MemoryR2();
+const incompatibleRecord = await userRecord("planner", "planner", initialPassword);
+incompatibleRecord.password.iterations = __test.MAX_PBKDF2_ITERATIONS + 1;
+await incompatibleStore.put("users/planner.json", JSON.stringify(incompatibleRecord));
+const incompatibleEnv = { ...env, WIKI_AUTH: incompatibleStore };
+let incompatibleResponse = await worker.fetch(request("/api/auth/login", {
+  method: "POST",
+  headers: { "content-type": "application/json", origin: "https://sfh-dev-wiki.pages.dev" },
+  body: JSON.stringify({ role: "planner", username: "planner", password: initialPassword }),
+}), incompatibleEnv);
+assert.equal(incompatibleResponse.status, 401, "out-of-range PBKDF2 records must fail without a runtime exception");
 
 function request(path, options = {}) {
   return new Request(`https://sfh-dev-wiki.pages.dev${path}`, options);

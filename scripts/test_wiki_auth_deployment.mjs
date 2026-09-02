@@ -22,6 +22,37 @@ assert.equal(await response.text(), "", "protected HTML must not leak in the red
 response = await request("/access/developer/");
 assert.equal(response.status, 302, "protected developer HTML must redirect before login");
 
+const bootstrapRoles = (process.env.SFH_WIKI_AUTH_E2E_BOOTSTRAP_ROLES || "")
+  .split(",")
+  .map((role) => role.trim())
+  .filter(Boolean);
+const bootstrapPassword = ["00", "00"].join("");
+for (const role of bootstrapRoles) {
+  assert.ok(["planner", "developer"].includes(role), `unsupported bootstrap role: ${role}`);
+  response = await request("/api/auth/login", {
+    method: "POST",
+    headers: { "content-type": "application/json", origin },
+    body: JSON.stringify({ role, username: role, password: bootstrapPassword }),
+  });
+  assert.equal(response.status, 200, `${role} bootstrap login must work after migration`);
+  const session = await response.json();
+  const cookie = (response.headers.get("set-cookie") || "").split(";", 1)[0];
+  assert.equal(session.username, role);
+
+  response = await request(`/access/${role}/`, { headers: { cookie } });
+  assert.equal(response.status, 200, `${role} must open its protected page`);
+  const otherRole = role === "planner" ? "developer" : "planner";
+  response = await request(`/access/${otherRole}/`, { headers: { cookie } });
+  assert.equal(response.status, 403, `${role} must not open the other role page`);
+
+  response = await request("/api/auth/logout", {
+    method: "POST",
+    headers: { origin, cookie, "x-csrf-token": session.csrf },
+  });
+  assert.equal(response.status, 200, `${role} bootstrap verification must clean up its session`);
+  console.log(`WIKI_AUTH_BOOTSTRAP_LOGIN_OK role=${role}`);
+}
+
 const allowMutation = process.env.SFH_WIKI_AUTH_E2E_ALLOW_MUTATION === "1";
 if (allowMutation) {
   const url = new URL(origin);

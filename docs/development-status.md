@@ -289,14 +289,14 @@ tags:
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획자·개발자 계정을 역할명으로 고정하고 공통 초기 비밀번호로 복구해, 기존 저장 상태와 무관하게 다시 로그인할 수 있게 했습니다.</strong><ul>
           <li><b>고정 계정:</b> <code>planner/0000</code>, <code>developer/0000</code>으로 각각 자기 보호 탭에 접근합니다.</li>
           <li><b>설정:</b> 계정 화면은 아이디를 바꾸지 않고 비밀번호만 4~128자로 변경합니다.</li>
-          <li><b>1회 교정:</b> revision 2보다 오래된 Private R2 계정만 교정하고 기존 세션을 무효화합니다.</li>
-          <li><b>재배포 안전:</b> revision 2 이후 변경 비밀번호는 CI가 보존합니다.</li>
-          <li><b>검증:</b> Seed digest·salt, 두 기본 로그인, 역할 교차 차단, ID 변조 무시, 변경 전후 세션을 판정합니다.</li>
+          <li><b>런타임 수정:</b> Cloudflare workerd가 거부하던 PBKDF2 210,000회를 지원 상한 100,000회로 맞췄습니다.</li>
+          <li><b>1회 교정:</b> revision 3보다 오래된 Private R2 계정만 교정하고 이후 변경 비밀번호는 CI가 보존합니다.</li>
+          <li><b>검증:</b> Seed digest·salt·반복 상한, 두 기본 로그인, 역할 교차 차단, ID 변조, 변경 전후 세션과 배포 Pages 실로그인을 판정합니다.</li>
         </ul><p class="sfh-intent"><b>경계</b><span>인증 모듈과 전용 R2 외 게임·다운로드·결제·Cloudflare 플랜은 불변입니다. 공개 초기 비밀번호는 로그인 후 변경을 권장합니다.</span></p></div>
-        <div class="sfh-group"><h3>구현 · 3</h3><p>고정 ID·공통 초기 비밀번호·revision 2 복구 경로를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>고정 ID·공통 초기 비밀번호·revision 3 복구와 실로그인 배포 게이트를 구현했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 5</h3><p>로그인 UX·복구·비밀번호 보존·역할 격리·배포 검증을 개선했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 4</h3><p>역할 UI·Worker 계약·운영 문서·검색 그래프를 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>가변 아이디 잔존, 강제 변경 루프, 재배포 덮어쓰기 가능성을 제거했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>가변 아이디 잔존, PBKDF2 런타임 상한 초과, 로그인 없는 배포 검증 공백을 제거했습니다.</p></div>
         <p><a href="access/login/">로그인 →</a> · <a href="architecture/wiki-role-auth/">인증 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>

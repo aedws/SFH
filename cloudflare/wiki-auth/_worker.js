@@ -15,7 +15,9 @@ const MIN_PASSWORD_LENGTH = 4;
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_LOGIN_FAILURES = 5;
 const LOGIN_LOCK_SECONDS = 15 * 60;
-const PBKDF2_ITERATIONS = 210000;
+// Cloudflare workerd rejects Web Crypto PBKDF2 requests above 100,000 iterations.
+const PBKDF2_ITERATIONS = 100000;
+const MAX_PBKDF2_ITERATIONS = 100000;
 const encoder = new TextEncoder();
 
 function json(payload, status = 200, extraHeaders = {}) {
@@ -161,11 +163,13 @@ function expiredSessionCookie() {
 
 async function verifyPassword(env, user, password) {
   if (!user || !user.password || !env.AUTH_PEPPER) return false;
+  const iterations = Number(user.password.iterations || PBKDF2_ITERATIONS);
+  if (!Number.isSafeInteger(iterations) || iterations < 1 || iterations > MAX_PBKDF2_ITERATIONS) return false;
   const digest = await passwordDigest(
     password,
     user.password.salt,
     env.AUTH_PEPPER,
-    user.password.iterations || PBKDF2_ITERATIONS,
+    iterations,
   );
   return safeEqual(digest, user.password.digest);
 }
@@ -398,4 +402,5 @@ export const __test = {
   passwordDigest,
   randomToken,
   PBKDF2_ITERATIONS,
+  MAX_PBKDF2_ITERATIONS,
 };

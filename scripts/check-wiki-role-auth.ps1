@@ -60,17 +60,20 @@ if ($seedScript -notmatch 'pepperFingerprint' -or $seedScript -notmatch 'pepper\
 if (
     $worker -notmatch 'planner:\s*"planner"' -or
     $worker -notmatch 'developer:\s*"developer"' -or
-    $seedScript -notmatch 'BOOTSTRAP_REVISION\s*=\s*2' -or
+    $worker -notmatch 'MAX_PBKDF2_ITERATIONS\s*=\s*100000' -or
+    $seedScript -notmatch 'ITERATIONS\s*=\s*100000' -or
+    $seedScript -notmatch 'BOOTSTRAP_REVISION\s*=\s*3' -or
     $seedScript -notmatch 'INITIAL_PASSWORD\s*=\s*"0000"'
 ) {
-    throw "Wiki auth fixed role IDs or revision-2 bootstrap password contract is missing."
+    throw "Wiki auth fixed role IDs, workerd-safe PBKDF2, or revision-3 bootstrap contract is missing."
 }
 if (
-    $workflow -notmatch 'WIKI_AUTH_BOOTSTRAP_REVISION:\s*"2"' -or
+    $workflow -notmatch 'WIKI_AUTH_BOOTSTRAP_REVISION:\s*"3"' -or
     $workflow -notmatch 'remote_revision' -or
+    $workflow -notmatch 'SFH_WIKI_AUTH_E2E_BOOTSTRAP_ROLES' -or
     $workflow -match 'SFH_WIKI_(PLANNER|DEVELOPER)_INITIAL_PASSWORD'
 ) {
-    throw "Wiki auth deployment must perform revision-2 migration without obsolete password secrets."
+    throw "Wiki auth deployment must perform and verify revision-3 migration without obsolete password secrets."
 }
 $loginPage = Read-RequiredFile "docs/access/login.md"
 $accountPage = Read-RequiredFile "docs/access/account.md"
