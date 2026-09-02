@@ -44,11 +44,21 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 3 · IMPROVE 5 · CHANGE 4 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 4 · IMPROVE 8 · CHANGE 6 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>8</b><small>IMPROVE</small></span><span><b>6</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
-      <summary><span><small>LATEST</small><b>전투 HUD · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 2</small><b>첫 작전 튜토리얼 · 화면 가림과 조작 안내 수정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 화면을 가로지르던 검은 안내판을 좌상단 338px 카드로 축소하고, 튜토리얼이 열린 상태까지 전투 시야 검사에 포함했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>열린 안내판의 4화면×4단계 경계·실제 버튼 클릭·이동·임무 복원 회귀를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>임무 영역을 안내와 공유하고, 44px 조작 버튼과 짧은 문장으로 중앙 전장을 비웠습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>대시는 회피, 점멸은 별도 스킬로 설명하며 스킬·지도·상호작용 키 재설정도 안내에 반영합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>좌우 앵커로 인한 화면 밖 확장, 줄바꿈 전 최소 높이 잔류, 튜토리얼을 닫은 뒤에만 시야를 검사하던 누락을 해결했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 1</small><b>전투 HUD · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>전투 필수 정보는 화면 가장자리로 압축하고, 비어 있는 런 소켓 패널은 숨겨 중앙 전장을 가리지 않게 했습니다.</strong></div>
         <div class="sfh-group"><h3>구현 · 3</h3><p>가로형 스킬 클러스터, 중앙 안전 영역, 상황형 소켓 표시 계약을 추가했습니다.</p></div>

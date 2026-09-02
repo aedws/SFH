@@ -31,6 +31,12 @@ func _init() -> void:
 
 
 func _run() -> void:
+	var tutorial_contract := preload("res://game/tests/support/tutorial_layout_contract.gd").new()
+	var tutorial_error: String = await tutorial_contract.verify(self)
+	if not tutorial_error.is_empty():
+		_fail(tutorial_error)
+		return
+	print("E2E_TUTORIAL_LAYOUT_OK viewports_4 steps_16 visible_panel_bounds remapped_hints")
 	var game_scene := load(GAME_SCENE_PATH) as PackedScene
 	if game_scene == null:
 		_fail("게임 장면을 불러오지 못했습니다.")
@@ -371,10 +377,8 @@ func _verify_operation_session() -> bool:
 		or float(tutorial_snapshot.get(&"touch_target_height", 0.0)) < 44.0
 	):
 		return _fail("첫 투입 튜토리얼이 이동·전투·방 확보·탈출을 방해 없이 안내하지 않습니다: %s" % tutorial_snapshot)
-	tutorial.call(&"next_step")
-	if int(tutorial.call(&"get_snapshot").get(&"step_index", -1)) != 1:
-		return _fail("작전 튜토리얼 단계 이동이 동작하지 않습니다.")
-	tutorial.call(&"dismiss")
+	if not await _verify_visible_tutorial(tutorial, player, minimap):
+		return false
 	if not minimap.visible or not skills.visible or not dash.visible:
 		return _fail("전투 HUD의 필수 자원·쿨타임 정보가 보이지 않습니다.")
 	var hud_snapshot: Dictionary = game.get("combat_hud_presenter").call(
@@ -698,6 +702,66 @@ func _verify_failure_and_return_session() -> bool:
 	}):
 		return false
 	return true
+
+
+func _verify_visible_tutorial(tutorial: Control, player: Node2D, minimap: Control) -> bool:
+	for step in 4:
+		for _frame in 4:
+			await process_frame
+		var snapshot: Dictionary = tutorial.call(&"get_snapshot")
+		var hud: Dictionary = game.get("combat_hud_presenter").call(&"get_snapshot", game.get_node("UI/HUDMargin"))
+		var panel_rect: Rect2 = snapshot[&"panel_rect"]
+		if (
+			not tutorial.visible or int(snapshot[&"step_index"]) != step
+			or not snapshot[&"panel_inside_viewport"] or not snapshot[&"buttons_accessible"]
+			or not snapshot[&"body_inside_panel"] or not hud[&"central_safe_clear"]
+			or float(hud[&"persistent_area_ratio"]) > 0.16
+			or (hud[&"mission_rect"] as Rect2).has_area()
+			or panel_rect.intersects(minimap.get_global_rect())
+		):
+			return _fail("열린 튜토리얼이 시야·미니맵·화면 경계를 침범합니다: %s / %s" % [snapshot, hud])
+		for key in [&"core_rect", &"skill_rect", &"dash_rect", &"action_rect", &"socket_rect"]:
+			if panel_rect.intersects(hud[key]):
+				return _fail("튜토리얼과 전투 HUD가 겹칩니다: %s" % key)
+		if step == 1:
+			await _click_tutorial_button(tutorial.get_node("%PreviousButton") as Button)
+			if int(tutorial.call(&"get_snapshot")[&"step_index"]) != 0:
+				return _fail("이전 안내 버튼 실제 클릭 실패")
+			await _click_tutorial_button(tutorial.get_node("%NextButton") as Button)
+		if step == 0:
+			if "--capture-tutorial" in OS.get_cmdline_user_args() and DisplayServer.get_name() != "headless":
+				await RenderingServer.frame_post_draw
+				root.get_texture().get_image().save_png("res://.godot/tutorial-open.png")
+			var before := player.global_position
+			await _press_key_for_physics(KEY_D, 8)
+			if player.global_position.distance_to(before) < 1.0 or paused:
+				return _fail("튜토리얼 표시 중 이동이 차단됐습니다.")
+		await _click_tutorial_button(tutorial.get_node("%NextButton") as Button)
+	if tutorial.visible:
+		return _fail("완료 버튼 클릭 뒤 튜토리얼이 남았습니다.")
+	var presenter = game.get("combat_hud_presenter")
+	if not presenter.get("mission_tracker").is_visible_in_tree():
+		return _fail("튜토리얼 종료 후 임무 안내가 복원되지 않았습니다.")
+	# Exercise skip using the same live Canvas/GUI path, without resetting run state.
+	tutorial.visible = true
+	await process_frame
+	await _click_tutorial_button(tutorial.get_node("%DismissButton") as Button)
+	if tutorial.visible or not presenter.get("mission_tracker").is_visible_in_tree():
+		return _fail("닫기 클릭 뒤 임무 안내 복원 실패")
+	print("E2E_TUTORIAL_VISIBLE_OK live_clicks movement_passthrough mission_restore central_safe")
+	return true
+
+
+func _click_tutorial_button(button: Button) -> void:
+	for pressed in [true, false]:
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
+		event.pressed = pressed
+		event.position = button.get_global_rect().get_center()
+		event.global_position = event.position
+		root.push_input(event, true)
+		await process_frame
 
 
 func _verify_combat_action_feedback(player: Node2D, skills: Control, dash: Control) -> bool:

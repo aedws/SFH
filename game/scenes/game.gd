@@ -1008,6 +1008,8 @@ func _on_presentation_settings_changed(snapshot: Dictionary) -> void:
 func _refresh_control_hints() -> void:
 	if key_mapping_service == null:
 		return
+	if is_instance_valid(operation_tutorial_overlay):
+		operation_tutorial_overlay.call(&"configure", _tutorial_binding_labels())
 	combat_hud_presenter.call(&"update_action_bindings", {
 		&"primary": _binding_label(&"primary_attack"),
 		&"skill_1": _binding_label(&"combat_skill_1"),
@@ -1069,7 +1071,7 @@ func _binding_label(action_id: StringName) -> String:
 			&"switch_weapon": "Q", &"combat_skill_1": "1", &"combat_skill_2": "2",
 			&"combat_skill_3": "3", &"toggle_inventory": "I", &"toggle_equipment": "U",
 			&"toggle_modification": "E", &"toggle_key_mapping": "K",
-			&"equip_field_loot": "R",
+			&"equip_field_loot": "R", &"toggle_map": "M",
 		}.get(action_id, String(action_id))
 	for entry: Dictionary in key_mapping_service.call(&"get_entries"):
 		if entry[&"action_id"] == action_id:
@@ -1604,7 +1606,12 @@ func _install_operation_tutorial() -> bool:
 	if not _supports_methods(operation_tutorial_overlay, OPERATION_TUTORIAL_METHODS):
 		_report_configuration_error("작전 튜토리얼 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
-	return bool(operation_tutorial_overlay.call(&"configure", {
+	combat_hud_presenter.call(&"attach_tutorial", operation_tutorial_overlay)
+	return bool(operation_tutorial_overlay.call(&"configure", _tutorial_binding_labels()))
+
+
+func _tutorial_binding_labels() -> Dictionary:
+	return {
 		&"move": "%s%s%s%s" % [
 			_binding_label(&"move_up"), _binding_label(&"move_left"),
 			_binding_label(&"move_down"), _binding_label(&"move_right"),
@@ -1612,8 +1619,12 @@ func _install_operation_tutorial() -> bool:
 		&"dash": _binding_label(&"dash"),
 		&"attack": _binding_label(&"primary_attack"),
 		&"interact": _binding_label(&"interact"),
-		&"map": "M",
-	}))
+		&"map": _binding_label(&"toggle_map"),
+		&"skills": "%s/%s/%s" % [
+			_binding_label(&"combat_skill_1"), _binding_label(&"combat_skill_2"),
+			_binding_label(&"combat_skill_3"),
+		],
+	}
 
 
 func _return_to_start_hub(route_initial_entry: bool = true) -> void:

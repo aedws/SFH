@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "caa9d849d8277f49652eb6f6770a86df035265dce33ab2c3f68876b832725ce1",
+  "source_sha256": "77ae4b7a17dd709e14e7b58da8ff25d2aa18d11f74c16a6f0d5445b8db9c2ee9",
   "layers": [
     {
       "id": "contract",
@@ -25,9 +25,9 @@
   ],
   "summary": {
     "modules": 55,
-    "scripts": 192,
+    "scripts": 193,
     "named_classes": 171,
-    "relationships": 162,
+    "relationships": 163,
     "project_inheritance": 6,
     "enabled_toggles": 64
   },
@@ -654,7 +654,7 @@
       "classes": [
         "OperationTutorialOverlay"
       ],
-      "incoming_count": 1,
+      "incoming_count": 2,
       "outgoing_count": 0
     },
     {
@@ -965,11 +965,11 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 17,
+      "file_count": 18,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
-      "outgoing_count": 46
+      "outgoing_count": 47
     }
   ],
   "classes": [
@@ -3377,6 +3377,12 @@
       "to": "operation_results",
       "type": "verifies",
       "evidence_count": 2
+    },
+    {
+      "from": "verification",
+      "to": "operation_tutorial",
+      "type": "verifies",
+      "evidence_count": 1
     },
     {
       "from": "verification",
