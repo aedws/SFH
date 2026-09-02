@@ -36,6 +36,18 @@ var hud_anchor: StringName = &"bottom_left"
 var key_label_format: StringName = &"compact"
 var raw_action_bindings: Dictionary = {}
 var avoid_mobile_controls := false
+var tutorial_overlay: Control
+
+
+func attach_tutorial(overlay: Control) -> void:
+	tutorial_overlay = overlay
+	if tutorial_overlay != null:
+		tutorial_overlay.visibility_changed.connect(_sync_tutorial_visibility)
+	_sync_tutorial_visibility()
+
+
+func _sync_tutorial_visibility() -> void:
+	_set_visible(mission_tracker, tutorial_overlay == null or not tutorial_overlay.is_visible_in_tree())
 
 
 func install(hud: Control) -> bool:
@@ -187,6 +199,9 @@ func get_snapshot(hud: Control) -> Dictionary:
 	var skill_rect := _global_rect(combat_skill_hud)
 	var dash_rect := _global_rect(dash_cooldown_hud)
 	var socket_rect := _global_rect(session_socket_hud)
+	var tutorial_rect := Rect2()
+	if is_instance_valid(tutorial_overlay) and tutorial_overlay.is_visible_in_tree():
+		tutorial_rect = tutorial_overlay.call(&"get_snapshot").get(&"panel_rect", Rect2())
 	var viewport_area := maxf(1.0, hud.size.x * hud.size.y) if hud != null else 1.0
 	var central_safe_rect := _central_safe_rect(hud.size) if hud != null else Rect2()
 	var persistent_area := (
@@ -197,8 +212,9 @@ func get_snapshot(hud: Control) -> Dictionary:
 		+ skill_rect.get_area()
 		+ dash_rect.get_area()
 		+ socket_rect.get_area()
+		+ tutorial_rect.get_area()
 	)
-	var persistent_rects := [mission_rect, core_rect, telemetry_rect, action_rect, skill_rect, dash_rect, socket_rect]
+	var persistent_rects := [mission_rect, core_rect, telemetry_rect, action_rect, skill_rect, dash_rect, socket_rect, tutorial_rect]
 	return {
 		&"installed": layout_root != null,
 		&"size": hud.size if hud != null else Vector2.ZERO,
@@ -212,6 +228,7 @@ func get_snapshot(hud: Control) -> Dictionary:
 		&"skill_rect": skill_rect,
 		&"dash_rect": dash_rect,
 		&"socket_rect": socket_rect,
+		&"tutorial_rect": tutorial_rect,
 		&"session_socket_inside_viewport": session_socket_hud == null or not session_socket_hud.is_visible_in_tree() or _rect_inside_viewport(socket_rect, hud.size),
 		&"central_safe_rect": central_safe_rect,
 		&"central_safe_clear": _rects_clear_zone(persistent_rects, central_safe_rect),

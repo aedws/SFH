@@ -6,6 +6,11 @@ signal tutorial_dismissed
 
 const STEP_TITLES := ["이동과 회피", "전투와 자원", "방 확보", "탈출"]
 
+@export var maximum_panel_width := 338.0
+@export var edge_margin := 10.0
+
+@onready var panel: PanelContainer = $Panel
+
 @onready var step_label: Label = %StepLabel
 @onready var title_label: Label = %TitleLabel
 @onready var body_label: Label = %BodyLabel
@@ -23,7 +28,10 @@ func _ready() -> void:
 	previous_button.pressed.connect(previous_step)
 	next_button.pressed.connect(next_step)
 	dismiss_button.pressed.connect(dismiss)
+	resized.connect(_layout_panel)
+	panel.minimum_size_changed.connect(_queue_height_fit)
 	visible = false
+	_layout_panel()
 
 
 func configure(binding_labels: Dictionary = {}) -> bool:
@@ -64,18 +72,53 @@ func dismiss() -> void:
 
 
 func get_snapshot() -> Dictionary:
+	var panel_rect := panel.get_global_rect()
+	var viewport_rect := Rect2(global_position, size)
+	var controls_fit := true
+	var button_rects: Array[Rect2] = []
+	for button in [previous_button, next_button, dismiss_button]:
+		var rect: Rect2 = button.get_global_rect()
+		controls_fit = controls_fit and panel_rect.encloses(rect) and viewport_rect.encloses(rect)
+		for other in button_rects:
+			controls_fit = controls_fit and not rect.intersects(other)
+		button_rects.append(rect)
 	return {
 		&"visible": visible,
 		&"shown_this_session": shown_this_session,
 		&"step_index": current_step,
 		&"step_count": STEP_TITLES.size(),
 		&"title": title_label.text if is_instance_valid(title_label) else "",
-		&"non_blocking": true,
+		&"body": body_label.text,
+		&"panel_rect": panel_rect,
+		&"panel_inside_viewport": viewport_rect.encloses(panel_rect),
+		&"buttons_accessible": controls_fit,
+		&"body_inside_panel": panel_rect.encloses(body_label.get_global_rect()),
+		&"panel_area_ratio": panel_rect.get_area() / maxf(1.0, size.x * size.y),
+		&"non_blocking": mouse_filter == Control.MOUSE_FILTER_IGNORE and not get_tree().paused,
 		&"touch_target_height": (
 			minf(previous_button.custom_minimum_size.y, next_button.custom_minimum_size.y)
 			if is_instance_valid(previous_button) and is_instance_valid(next_button) else 0.0
 		),
 	}
+
+
+func _layout_panel() -> void:
+	if not is_instance_valid(panel):
+		return
+	# A single corner anchor prevents adding the viewport width to the panel.
+	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	panel.position = Vector2(edge_margin, edge_margin)
+	panel.size = Vector2(minf(maximum_panel_width, maxf(1.0, size.x - edge_margin * 2.0)), 0.0)
+	_queue_height_fit()
+
+
+func _queue_height_fit() -> void:
+	_fit_panel_height.call_deferred()
+
+
+func _fit_panel_height() -> void:
+	if is_instance_valid(panel):
+		panel.size.y = panel.get_combined_minimum_size().y
 
 
 func _refresh() -> void:
@@ -86,14 +129,17 @@ func _refresh() -> void:
 	var attack_key := String(bindings.get(&"attack", "마우스 1"))
 	var interact_key := String(bindings.get(&"interact", "F"))
 	var map_key := String(bindings.get(&"map", "M"))
+	var skill_keys := String(bindings.get(&"skills", "1/2/3"))
 	var bodies := [
-		"%s로 이동하고 %s로 점멸합니다. 점멸 경로는 적에게 피해를 줍니다." % [move_keys, dash_key],
-		"%s 기본기와 1·2·3 스킬을 사용합니다. 하단 에너지와 쿨타임을 먼저 확인하세요." % attack_key,
-		"방에 진입하면 문이 봉쇄되고 적 무리가 생성됩니다. 모두 처치한 뒤 %s로 보상 상자를 회수하세요." % interact_key,
-		"모든 전투 방을 확보하면 조기 탈출할 수 있습니다. %s 전술 지도에서 출구를 확인하고 탈출 지점에서 %s를 누르세요." % [map_key, interact_key],
+		"%s 이동 · %s 대시\n점멸은 별도 스킬이며 경로의 적에게 피해를 줍니다." % [move_keys, dash_key],
+		"%s 기본기 · %s 스킬\n하단 에너지와 재사용 시간을 확인하세요." % [attack_key, skill_keys],
+		"방 진입 시 문이 잠기고 적이 나타납니다.\n전멸 후 %s로 보상 상자를 회수하세요." % interact_key,
+		"모든 전투 방 확보 시 조기 탈출 가능.\n%s 지도로 출구 확인 → 탈출 지점에서 %s." % [map_key, interact_key],
 	]
-	step_label.text = "FIELD GUIDE  %d / %d" % [current_step + 1, STEP_TITLES.size()]
+	step_label.text = "%d/%d" % [current_step + 1, STEP_TITLES.size()]
 	title_label.text = STEP_TITLES[current_step]
 	body_label.text = bodies[current_step]
 	previous_button.disabled = current_step == 0
-	next_button.text = "완료" if current_step == STEP_TITLES.size() - 1 else "다음 →"
+	next_button.text = "완료" if current_step == STEP_TITLES.size() - 1 else "→"
+	next_button.tooltip_text = "안내 완료" if current_step == STEP_TITLES.size() - 1 else "다음 안내"
+	_layout_panel()
