@@ -130,14 +130,31 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 10 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 11 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 41 · IMPROVE 43 · CHANGE 42 · FIX 20</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 45 · IMPROVE 49 · CHANGE 47 · FIX 23</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>41</b><small>BUILD</small></span><span><b>43</b><small>IMPROVE</small></span><span><b>42</b><small>CHANGE</small></span><span><b>20</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>45</b><small>BUILD</small></span><span><b>49</b><small>IMPROVE</small></span><span><b>47</b><small>CHANGE</small></span><span><b>23</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>작전 사전검증 · 모든 세팅의 확장 안전 계약</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 총기·파츠·모듈 등 세팅을 바꾼 뒤 조립 실패로 거점에 되돌아오던 구조를 결제 전 검증과 불변 작전 계획으로 교체했습니다.</strong><ul>
+          <li><b>근본 수정:</b> 요원·로드아웃·유틸리티를 일반 설정 기여자로 집계하고 장비·가방·전리품을 결제 전에 검증합니다.</li>
+          <li><b>확장성:</b> 새 설정은 중앙 비용 분기를 수정하지 않고 기여자/검증기 등록만으로 작전 계획에 참여합니다.</li>
+          <li><b>장비:</b> 같은 무기는 장착 파츠·모듈을 유지하고, 다른 작전 무기는 해당 슬롯만 임시 교체한 뒤 거점 상태를 복원합니다.</li>
+          <li><b>원자성:</b> 서명된 계획과 실제 결제 계약이 다르면 조립하지 않으며 실패 시 크레딧·소모품·장비가 변하지 않습니다.</li>
+          <li><b>E2E:</b> 기존 81개 조합에 12개 세팅 변경 프로필과 중복 파츠·가방 겹침·계획 변조 실패 경로를 추가했습니다.</li>
+        </ul><p class="sfh-intent"><b>경계</b><span>새 목록이 없어 Google Sheet를 확장하지 않았고 게임 과금·Cloudflare 플랜·결제 설정은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>사전검증 서비스, 설정 기여자, 런타임 검증기, 불변 계획 계약을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 6</h3><p>세팅 확장성·실패 인지·장비 복원·결제 원자성·검증 재사용·회귀 범위를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>모듈 원칙·작전 문서·E2E·검색·문서 노드맵을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>결제 후 늦은 실패, 세팅 변경 진입 회귀, 0원 작전 전리품 범위 불일치를 수정했습니다.</p></div>
+        <p><a href="features/operation-launch-preflight/">작전 사전검증 →</a> · <a href="quality/e2e-play-session/">93조합·실패 E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 10</small><b>웹 로비 복구 · 27개 작전 조합 실전 회귀</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 웹에서도 거점에서 시작해 게이트 F로 작전에 들어가며, 규모·난이도·요원을 바꿔도 빈 화면 없이 전투 또는 거점 복구로 끝납니다.</strong><ul>

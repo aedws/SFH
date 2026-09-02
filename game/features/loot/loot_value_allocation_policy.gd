@@ -5,6 +5,10 @@ extends RefCounted
 func allocate(config: Resource, deployment_cost: int, random: RandomNumberGenerator) -> Dictionary:
 	if config == null or deployment_cost < 0 or random == null:
 		return {&"success": false, &"reason": "회수 가치 정책 입력 오류"}
+	var minimum_count := int(config.get("minimum_cache_count"))
+	var maximum_count := int(config.get("maximum_cache_count"))
+	var base_minimum_value := int(config.get("minimum_cache_credits"))
+	var base_maximum_value := int(config.get("maximum_cache_credits"))
 	var minimum_total := ceili(
 		float(deployment_cost) * float(config.get("minimum_deployment_value_multiplier"))
 	)
@@ -28,12 +32,11 @@ func allocate(config: Resource, deployment_cost: int, random: RandomNumberGenera
 			maximum_total
 		)
 		if deployment_cost > 0
-		else int(config.get("minimum_cache_count")) * int(config.get("minimum_cache_credits"))
+		else minimum_count * base_minimum_value
 	)
-	var minimum_count := int(config.get("minimum_cache_count"))
-	var maximum_count := int(config.get("maximum_cache_count"))
-	var base_minimum_value := int(config.get("minimum_cache_credits"))
-	var base_maximum_value := int(config.get("maximum_cache_credits"))
+	if deployment_cost == 0:
+		minimum_total = target_total
+		maximum_total = target_total
 	var effective_minimum_value := mini(base_minimum_value, maxi(0, target_total / maxi(1, minimum_count)))
 	var effective_maximum_value := maxi(
 		base_maximum_value,

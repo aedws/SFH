@@ -12,6 +12,8 @@ tags:
 
 기능 폴더 하나를 비활성화하거나 교체했을 때 관계없는 기능이 함께 깨지지 않게 합니다.
 
+SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입니다. 현재 요구가 동작해도 다음 설정을 추가할 때 중앙 조립부의 분기문을 계속 수정해야 한다면 완료로 보지 않습니다. 변경 지점은 독립 제공자·정책·검증기로 열고, 조립부는 등록과 순서만 담당합니다.
+
 ## 기본 규칙
 
 1. 기능은 `game/features/<기능 이름>/` 아래에 둡니다.
@@ -20,6 +22,10 @@ tags:
 4. 조정 가능한 수치는 코드가 아닌 Resource 또는 export 속성으로 노출합니다.
 5. 기능의 의존성, 활성화 방법, 제거 방법을 위키에 기록합니다.
 6. 최상위 `Game`은 기능을 구현하지 않고 조립만 담당합니다.
+7. 새 설정은 기존 설정의 조건문에 끼워 넣지 않고 공개 기여자 또는 정책 계약으로 등록합니다.
+8. 결제·저장·Scene 교체 전에 모든 전제 조건을 검증하며, 실패를 사후 롤백에만 의존하지 않습니다.
+9. 검증된 입력은 불변 스냅샷으로 고정하고 실행 단계에서 다시 계산하지 않습니다.
+10. 기능별 E2E는 정상 경로뿐 아니라 조합 변경·실패·복원·미래 제공자 추가를 함께 검증합니다.
 
 ## 기능 활성화
 
@@ -63,6 +69,7 @@ tags:
 - `equipment_customization`은 `equipment`, `inventory` 필요
 - `equipment_upgrade_economy`는 `equipment_customization`, `credits` 필요
 - `operation_contracts`는 `persistent_profile` 필요
+- `operation_launch_preflight`는 `operation_contracts` 필요
 - `loadout_investment`는 `operation_contracts`, `equipment`, `combat_skills` 필요
 - `extraction_defense`는 `extraction` 필요
 - `hub_economy`, `crafting`은 `persistent_profile` 필요
@@ -90,6 +97,8 @@ tags:
 영구 상태는 런타임 Node에 보관하지 않습니다. `PersistentProfile`은 값과 저장만 담당하고 상점 가격, 제작식, 작전 배율, 점수식은 각 정책 모듈이 소유합니다. 출격 조립 실패에는 공개 보상 계약으로 트랜잭션을 되돌립니다.
 
 런 로드아웃 투자도 같은 경계를 지킵니다. `LoadoutInvestmentTable`은 Weapon·Skill Sheet/확정 CSV를 파싱하고, `LoadoutInvestmentService`는 소유·해금·이번 런 구매와 태그 적합성 스냅샷만 계산합니다. 실제 크레딧 차감은 `OperationContractService`가 캐릭터·로드아웃 추가 비용을 한 번 합산해 수행하고, 장비·스킬 런타임 교체와 거점 복원은 조립부가 공개 메서드로만 연결합니다.
+
+작전 투입은 [작전 투입 사전검증과 불변 계획](../features/operation-launch-preflight.md)을 공통 관문으로 사용합니다. 요원·로드아웃·유틸리티와 이후 추가될 설정은 `get_operation_setting_contribution()`으로 비용과 스냅샷을 제공하고, 장비·인벤토리·전리품은 `validate_operation_launch()`로 결제 전 전제를 검사합니다. `Game`은 설정 종류를 해석하지 않고 등록된 결과만 작전 계약과 조립부에 전달합니다.
 
 지역·난이도·페널티·스마트 타게팅·제작 옵션처럼 자주 조정할 규칙은 Resource로 둡니다. 소비자는 최종 스냅샷 사본만 받고 다른 모듈의 설정 배열을 직접 수정하지 않습니다.
 

@@ -106,6 +106,21 @@ func get_investment_context() -> Dictionary:
 	}
 
 
+func get_operation_setting_contribution() -> Dictionary:
+	var context := get_investment_context()
+	var errors := PackedStringArray()
+	if definitions.is_empty():
+		errors.append("선택 가능한 요원이 없습니다.")
+	return {
+		&"contributor_id": &"character",
+		&"context_key": &"",
+		&"additional_entry_cost": int(context.get(&"additional_entry_cost", 0)),
+		&"context": context,
+		&"validation_errors": errors,
+		&"revision": source_label,
+	}
+
+
 func get_snapshot() -> Dictionary:
 	if definitions.is_empty():
 		return {&"count": 0, &"source_label": source_label}

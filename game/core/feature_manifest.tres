@@ -48,6 +48,7 @@ meta_progression_enabled = true
 equipment_upgrade_economy_enabled = true
 persistent_profile_enabled = true
 operation_contracts_enabled = true
+operation_launch_preflight_enabled = true
 character_selection_enabled = true
 loadout_investment_enabled = true
 extraction_defense_enabled = true

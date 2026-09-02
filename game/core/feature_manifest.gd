@@ -48,6 +48,7 @@ extends Resource
 @export var equipment_upgrade_economy_enabled: bool = true
 @export var persistent_profile_enabled: bool = true
 @export var operation_contracts_enabled: bool = true
+@export var operation_launch_preflight_enabled: bool = true
 @export var character_selection_enabled: bool = true
 @export var loadout_investment_enabled: bool = true
 @export var p5_hub_progression_enabled: bool = true
@@ -287,6 +288,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"persistent_profile")
 	if operation_contracts_enabled:
 		result.append(&"operation_contracts")
+	if operation_launch_preflight_enabled:
+		result.append(&"operation_launch_preflight")
 	if character_selection_enabled:
 		result.append(&"character_selection")
 	if loadout_investment_enabled:
@@ -497,6 +500,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append("operation_contracts는 persistent_profile 모듈이 필요합니다.")
 	if operation_contracts_enabled and not _resource_exists(operation_contract_config_path):
 		errors.append("작전 계약 설정 Resource 경로가 유효하지 않습니다.")
+	if operation_launch_preflight_enabled and not operation_contracts_enabled:
+		errors.append("operation_launch_preflight는 operation_contracts 모듈이 필요합니다.")
 	if character_selection_enabled and not operation_contracts_enabled:
 		errors.append("character_selection은 operation_contracts 모듈이 필요합니다.")
 	if character_selection_enabled and not _resource_exists(character_selection_config_path):

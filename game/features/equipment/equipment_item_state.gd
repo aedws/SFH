@@ -263,6 +263,68 @@ func grant_module_tag(module_tag: StringName) -> bool:
 	return true
 
 
+func validation_errors() -> PackedStringArray:
+	var errors := PackedStringArray()
+	if definition == null or not (is_weapon() or is_armor()) or not bool(definition.call(&"is_valid")):
+		errors.append("장비 정의가 유효하지 않습니다.")
+		return errors
+	if level < 1 or level > maximum_level():
+		errors.append("장비 레벨이 현재 강화 규칙 범위를 벗어났습니다.")
+	var part_ids := PackedStringArray()
+	var sockets := PackedStringArray()
+	if not is_weapon() and not installed_parts.is_empty():
+		errors.append("방어구에는 무기 파츠를 장착할 수 없습니다.")
+	for part in installed_parts:
+		if part == null or not part.is_valid() or not part.supports_weapon(definition):
+			errors.append("현재 무기와 호환되지 않는 파츠가 있습니다.")
+			continue
+		if String(part.part_id) in part_ids or String(part.socket_id) in sockets:
+			errors.append("파츠 ID 또는 소켓이 중복됩니다: %s" % part.display_name)
+		part_ids.append(String(part.part_id))
+		sockets.append(String(part.socket_id))
+		var part_level := int(part_upgrade_levels.get(part.part_id, 0))
+		if part_level < 1 or part_level > part.maximum_upgrade_level:
+			errors.append("파츠 강화 단계가 범위를 벗어났습니다: %s" % part.display_name)
+	for part_id in part_upgrade_levels:
+		var installed := false
+		for equipped_part in installed_parts:
+			if equipped_part != null and String(equipped_part.part_id) == String(part_id):
+				installed = true
+				break
+		if not installed:
+			errors.append("장착되지 않은 파츠의 강화 상태가 남아 있습니다: %s" % part_id)
+	var instance_ids := PackedStringArray()
+	var module_ids := PackedStringArray()
+	if installed_modules.size() > module_slot_limit():
+		errors.append("모듈 슬롯 제한을 초과했습니다.")
+	for module_instance in installed_modules:
+		if module_instance == null or module_instance.definition == null or not module_instance.definition.is_valid():
+			errors.append("유효하지 않은 모듈 인스턴스가 있습니다.")
+			continue
+		if module_instance.instance_id == &"" or String(module_instance.instance_id) in instance_ids:
+			errors.append("모듈 인스턴스 ID가 비어 있거나 중복됩니다.")
+		if String(module_instance.definition.module_id) in module_ids:
+			errors.append("동일한 모듈이 중복 장착됐습니다: %s" % module_instance.definition.display_name)
+		instance_ids.append(String(module_instance.instance_id))
+		module_ids.append(String(module_instance.definition.module_id))
+		var maximum_module_level := module_instance.definition.maximum_upgrade_level()
+		if upgrade_balance_provider != null and upgrade_balance_provider.has_method(&"get_maximum_level"):
+			maximum_module_level = int(upgrade_balance_provider.call(
+				&"get_maximum_level", &"module", module_instance.definition.module_id,
+				maximum_module_level
+			))
+		if module_instance.upgrade_level < 1 or module_instance.upgrade_level > maximum_module_level:
+			errors.append("모듈 강화 단계가 현재 규칙 범위를 벗어났습니다: %s" % module_instance.definition.display_name)
+	if used_module_cost() > module_cost_limit():
+		errors.append("모듈 장착 코스트 제한을 초과했습니다.")
+	var granted_tags := PackedStringArray()
+	for module_tag in granted_module_tags:
+		if module_tag == &"" or String(module_tag) in granted_tags:
+			errors.append("개조 모듈 태그가 비어 있거나 중복됩니다.")
+		granted_tags.append(String(module_tag))
+	return errors
+
+
 func display_name() -> String:
 	if definition == null:
 		return "없음"

@@ -294,7 +294,51 @@ func export_runtime_state() -> Dictionary:
 	}
 
 
+func validate_runtime_state(saved: Dictionary, weapon_paths: Dictionary = {}) -> PackedStringArray:
+	var errors := PackedStringArray()
+	if saved.is_empty():
+		return errors
+	var saved_loadout := saved.get(&"loadout") as EquipmentLoadout
+	var saved_states: Dictionary = saved.get(&"equipment_states", {})
+	if saved_loadout == null:
+		errors.append("저장된 장비 로드아웃이 없습니다.")
+		return errors
+	for message in saved_loadout.validation_errors():
+		errors.append(message)
+	for slot_id in saved_states:
+		var state := saved_states[slot_id] as EquipmentItemState
+		var rule := saved_loadout.get_slot_rule(StringName(slot_id))
+		if state == null or rule == null or not rule.accepts(state.definition):
+			errors.append("장비 슬롯 상태를 복원할 수 없습니다: %s" % slot_id)
+			continue
+		var checked_state := state.duplicate(true) as EquipmentItemState
+		checked_state.set_upgrade_balance_provider(upgrade_balance_provider)
+		for message in checked_state.validation_errors():
+			errors.append("%s · %s" % [slot_id, message])
+	for slot_id in weapon_paths:
+		var path := String(weapon_paths[slot_id])
+		if not ResourceLoader.exists(path):
+			errors.append("작전 선택 무기를 찾을 수 없습니다: %s" % path)
+			continue
+		var definition: Resource = load(path)
+		var rule := saved_loadout.get_slot_rule(StringName(slot_id))
+		if rule == null or not rule.accepts(definition):
+			errors.append("작전 선택 무기가 슬롯 규칙과 맞지 않습니다: %s" % slot_id)
+	return errors
+
+
+func validate_operation_launch(request: Dictionary) -> PackedStringArray:
+	var runtime_context: Dictionary = request.get(&"runtime_context", {})
+	var investment: Dictionary = request.get(&"investment_context", {}).get(&"loadout_investment", {})
+	return validate_runtime_state(
+		runtime_context.get(&"equipment_state", {}),
+		investment.get(&"weapon_paths", {})
+	)
+
+
 func restore_runtime_state(saved: Dictionary) -> bool:
+	if not validate_runtime_state(saved).is_empty():
+		return false
 	var saved_loadout := saved.get(&"loadout") as EquipmentLoadout
 	var saved_states: Dictionary = saved.get(&"equipment_states", {})
 	if saved_loadout == null:

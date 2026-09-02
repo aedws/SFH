@@ -181,6 +181,19 @@ func get_investment_context() -> Dictionary:
 	}
 
 
+func get_operation_setting_contribution() -> Dictionary:
+	var context := get_investment_context()
+	context[&"equipment_override_policy"] = &"replace_selected_slot_restore_hub_state"
+	return {
+		&"contributor_id": &"loadout_investment",
+		&"context_key": &"loadout_investment",
+		&"additional_entry_cost": int(context.get(&"additional_entry_cost", 0)),
+		&"context": context,
+		&"validation_errors": get_selection_errors(),
+		&"revision": source_label,
+	}
+
+
 func commit_run_purchase(run_id: StringName) -> bool:
 	if run_id == &"" or not can_launch() or not active_run_id.is_empty():
 		return false
