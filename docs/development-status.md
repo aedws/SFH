@@ -17,17 +17,17 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 65 TOPICS</span><span>76 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 66 TOPICS</span><span>77 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>MASTER GDD ALIGNED · 2026-09-02</small><strong>현재 기획 진행도</strong></span>
-    <b>94%</b>
+    <b>95%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="94"><i style="width: 94%"></i></div>
-  <p>공개 Master GDD v1005의 10개 확정 시스템을 현재 구현과 재대조했습니다. P5-03~10 거점 진행 통합 완료를 반영한 게임 기능 가중 진행도는 94%입니다.</p>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="95"><i style="width: 95%"></i></div>
+  <p>공개 Master GDD v1005의 10개 확정 시스템을 현재 구현과 재대조했습니다. P6-01 랭킹 제공자·장애 폴백 완료를 반영한 게임 기능 가중 진행도는 95%입니다.</p>
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-02 공개 본문 77블록·root v1005를 읽고 `67f9bef85449`로 검증했습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 확정 요구로 처리합니다. 핵심 플레이 흐름은 ×2, 기반·확장 서비스는 ×1을 적용하며 실제 코드·데이터·자동 검증만 완료 근거로 사용합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
@@ -45,9 +45,9 @@ tags:
 | 전리품 2대 분류·현장 파밍 | ×2 | 100% | 생명 주기·지역 테이블·현장 비교·획득·교체·소켓과 탈출 환전·영구 해금·창고/사망 소실·중복 방지 구현 |
 | 가변 태그·등급 확장 | ×1 | 85% | 동적 태그·등급·불일치 비활성·메커니즘 변형과 제작 옵션 풀 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
-| 비동기 랭킹·시즌 보상 | ×1 | 40% | 동일 조건 3대 로컬 랭킹 구현. 서버 검증과 주간 칭호·오라 보상은 없음 |
+| 비동기 랭킹·시즌 보상 | ×1 | 55% | 3대 로컬 랭킹·공통 제공자·온라인 어댑터·장애 폴백 구현. 신원·검증 제출·시즌 보상은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 100×1 + 100×1 + 100×2 + 85×1 + 95×2 + 40×1) ÷ 15 ≈ 94%`이며, Phase 4와 Phase 5 P5-01~10의 플레이어 인과·영구 저장·제거 계약을 완료로 판정합니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 100×1 + 100×1 + 100×2 + 85×1 + 95×2 + 55×1) ÷ 15 = 95%`이며, Phase 4·5와 P6-01의 플레이어 상태·로컬 보존·교체 계약을 완료로 판정합니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -60,7 +60,7 @@ tags:
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
 | Phase 4 · 현장 교체·룬 소켓·환전 | 완료 | 현장 교체·룬/코어/유물 소켓→탈출 환전·영구 해금·창고/사망 소실과 중복 방지 E2E 완료 |
 | Phase 5 · 로비 허브·준비 세션 | 완료 | 유틸리티·단일 초안·파산 보호·회전 상점·제작소·훈련장·도감까지 P5-01~10 E2E 완료 |
-| Phase 6 · 비동기 랭킹·시즌 보상 | 로컬 기반 | 3대 로컬 보드만 구현. 서버 제공자와 칭호·오라 보상이 없음 |
+| Phase 6 · 비동기 랭킹·시즌 보상 | P6-01 완료 | 로컬·온라인 제공자 경계와 장애 폴백 완료. 신원·검증 제출·시즌·칭호·오라는 없음 |
 
 ### 2026-09-02 Master GDD v1005 재대조
 
@@ -84,19 +84,19 @@ tags:
 | 완료 | Phase 5 P5-01 캐릭터 선택 | Character 임시 목록·가격·패시브 | 선택→견적→작전 내 패시브 확인 E2E 완료 |
 | 완료 | Phase 5 P5-02 무기·스킬 투자 | 소유·미해금·이번 런 구매·태그 구분 | 선택→잠김 차단→1회 결제→실전 발동→복원 E2E 완료 |
 | 완료 | Phase 5 P5-03~10 | 유틸·초안·파산 보호·상점·제작·훈련·도감 | Sheet→UI→거래→런/영구 정산→재접속→모듈 제거 E2E 완료 |
-| 1 | Phase 6 P6-01 랭킹 제공자 | 3대 로컬 랭킹만 존재 | 온라인/로컬 교체·오프라인 폴백 E2E |
-| 9 | Phase 6 P6-02 제출·검증 | 신원·서명·멱등·재시도·변조 거부 없음 | 중복/단절/변조 기록 서버 판정 E2E |
-| 10 | Phase 6 P6-03 시즌 규칙 | 기간·조건·종료 스냅샷 없음 | 시즌 경계·조건 불일치·종료 읽기 전용 E2E |
-| 11 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
-| 12 | 내부 P7~P10 | 공식 Phase 1~6 이후 상세 작업선 | 경제→훈련→도감→출시 후보 순서와 기계 계약 유지 |
+| 완료 | Phase 6 P6-01 랭킹 제공자 | 3대 로컬 랭킹만 존재 | 온라인/로컬 교체·오프라인 폴백·상태 표시 E2E 완료 |
+| 1 | Phase 6 P6-02 제출·검증 | 신원·서명·멱등·재시도·변조 거부 없음 | 중복/단절/변조 기록 서버 판정 E2E |
+| 2 | Phase 6 P6-03 시즌 규칙 | 기간·조건·종료 스냅샷 없음 | 시즌 경계·조건 불일치·종료 읽기 전용 E2E |
+| 3 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
+| 4 | 내부 P7~P10 | 공식 Phase 1~6 이후 상세 작업선 | 경제→훈련→도감→출시 후보 순서와 기계 계약 유지 |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 23 · IMPROVE 23 · CHANGE 23 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 28 · IMPROVE 28 · CHANGE 28 · FIX 10</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>23</b><small>BUILD</small></span><span><b>23</b><small>IMPROVE</small></span><span><b>23</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>28</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>28</b><small>CHANGE</small></span><span><b>10</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -182,7 +182,7 @@ tags:
         <p><a href="features/p5-hub-progression/">P5 계약 →</a> · <a href="architecture/module-audit/#p5-2026-09-02">엄밀 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>실시간 코드 모듈 노드맵 · 상속·의존 양방향 추적</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 실제 GDScript 상태를 위키 노드로 자동 생성하고 모듈 사용처·의존처와 클래스 상속을 반응형으로 탐색합니다.</strong><ul>
@@ -197,6 +197,23 @@ tags:
         <div class="sfh-group"><h3>수정 · 3</h3><p>아키텍처 문서·검색·문서 노드맵·E2E 계약을 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>수동 구조 기록과 현재 코드가 어긋날 수 있던 현행성 공백을 차단했습니다.</p></div>
         <p><a href="architecture/code-module-map/">코드 모듈 노드맵 →</a> · <a href="architecture/module-rules/">모듈 규칙 →</a> · <a href="quality/wiki-responsive-e2e/">반응형 E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>P6-01 랭킹 공급자 · 방사형 코드 관계 웹</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 랭킹 기록을 로컬에 우선 보존하면서 온라인 공급자를 교체할 수 있게 했고, 코드 노드맵은 선택 모듈 중심 거미줄로 관계를 직접 보여줍니다.</strong><ul>
+          <li><b>랭킹 경계:</b> 공통 <code>RankingProvider</code>, 로컬 구현, 온라인 어댑터, 설정 Resource, 조립 façade를 분리했습니다.</li>
+          <li><b>장애 안전:</b> 공급자가 없거나 실패해도 작전 기록은 로컬에 확정되고 결과 화면에 오프라인·동기화 대기 상태가 표시됩니다.</li>
+          <li><b>관계 웹:</b> 선택 모듈을 중앙 원형에 두고 최대 12/8/6개 관계를 데스크톱·태블릿·모바일별 방사형 화살표로 연결합니다.</li>
+          <li><b>현행성:</b> 코드 맵을 53모듈·163클래스·157관계로 다시 생성하고 검색·전체 문서맵·P6 작업선을 갱신했습니다.</li>
+          <li><b>다음:</b> P6-02 신원·서명·멱등 키·검증 큐는 서버/계정/보안 제공자 결정 뒤 별도 계약으로 연결합니다.</li>
+        </ul><p class="sfh-intent"><b>검증·비용</b><span><code>P6_RANKING_PROVIDER_OK</code>와 위키 320·390·1440px E2E를 적용합니다. Sheet 목록·과금·Cloudflare 유료 설정은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>공급자 계약·로컬 구현·온라인 어댑터·상태 표시·방사형 관계 웹을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>기록 보존·공급자 교체·장애 인지·관계 가시성·반응형 탐색을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>진행률 95%, P6-02 작업선, 코드맵 데이터, 검색, 문서 노드맵을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>온라인 연결 실패가 랭킹 기록 자체를 잃게 만들 수 있는 확장 경계 공백을 차단했습니다.</p></div>
+        <p><a href="features/ranking-provider/">P6 랭킹 제공자 →</a> · <a href="architecture/code-module-map/">방사형 코드 노드맵 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
       </div>
     </details>
   </div>

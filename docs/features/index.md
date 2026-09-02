@@ -45,8 +45,9 @@
 - [내부 성장·장비 강화 Google Sheets 연동](growth-balance.md)
 - [내부·외부 로그라이크 성장](progression.md)
 - [게임 루프와 HUD](game-loop.md)
+- [P6 랭킹 제공자와 오프라인 보존](ranking-provider.md)
 
-다음 구현 예정 기능은 [P5·P6 사전 구현 설계](../design/p5-p6-preimplementation.md)의 순서를 따릅니다.
+다음 구현 예정 기능은 [P5·P6 사전 구현 설계](../design/p5-p6-preimplementation.md)의 P6-02 이후 순서를 따릅니다.
 
-1. P6-01~04 온라인 랭킹 제공자·검증 제출·시즌·칭호/오라 보상
+1. P6-02~04 검증 제출·시즌·칭호/오라 보상
 2. 병행 실기: 저사양 GPU·브라우저 장시간 주행과 다중 해상도

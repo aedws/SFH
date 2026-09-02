@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "18149c164f9802698e2acea89d48b350c8074f687b33a5185d81943d2563bff7",
+  "source_sha256": "4205e4f058cd25bd5b9264e91e9c3243bdb15d326876e93d8247077cbfa87fca",
   "layers": [
     {
       "id": "contract",
@@ -25,10 +25,10 @@
   ],
   "summary": {
     "modules": 53,
-    "scripts": 178,
-    "named_classes": 159,
+    "scripts": 183,
+    "named_classes": 163,
     "relationships": 157,
-    "project_inheritance": 3,
+    "project_inheritance": 6,
     "enabled_toggles": 62
   },
   "modules": [
@@ -145,11 +145,15 @@
       "path": "game/features/conditional_ranking",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 2,
-      "class_count": 2,
+      "file_count": 6,
+      "class_count": 6,
       "classes": [
         "ConditionalRankingPolicy",
-        "ConditionalRankingSystem"
+        "ConditionalRankingSystem",
+        "LocalRankingProvider",
+        "OnlineRankingProviderAdapter",
+        "RankingProvider",
+        "RankingProviderConfig"
       ],
       "incoming_count": 3,
       "outgoing_count": 0
@@ -925,7 +929,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 15,
+      "file_count": 16,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1136,7 +1140,43 @@
       "name": "ConditionalRankingSystem",
       "module": "conditional_ranking",
       "path": "game/features/conditional_ranking/conditional_ranking_system.gd",
+      "extends": "RankingProvider",
+      "base_id": "class:RankingProvider",
+      "inheritance": "project"
+    },
+    {
+      "id": "class:LocalRankingProvider",
+      "name": "LocalRankingProvider",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/local_ranking_provider.gd",
+      "extends": "RankingProvider",
+      "base_id": "class:RankingProvider",
+      "inheritance": "project"
+    },
+    {
+      "id": "class:OnlineRankingProviderAdapter",
+      "name": "OnlineRankingProviderAdapter",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/online_ranking_provider_adapter.gd",
+      "extends": "RankingProvider",
+      "base_id": "class:RankingProvider",
+      "inheritance": "project"
+    },
+    {
+      "id": "class:RankingProvider",
+      "name": "RankingProvider",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/ranking_provider.gd",
       "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:RankingProviderConfig",
+      "name": "RankingProviderConfig",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/ranking_provider_config.gd",
+      "extends": "Resource",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -3054,7 +3094,7 @@
       "from": "verification",
       "to": "conditional_ranking",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",

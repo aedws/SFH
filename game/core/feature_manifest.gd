@@ -122,6 +122,9 @@ extends Resource
 @export var meta_progression_storage_path: String = "user://sfh_meta_progression.json"
 @export var persistent_profile_storage_path: String = "user://sfh_profile.json"
 @export var conditional_ranking_storage_path: String = "user://sfh_rankings.json"
+@export_file("*.tres") var ranking_provider_config_path: String = (
+	"res://game/features/conditional_ranking/configs/default_ranking_provider.tres"
+)
 
 @export_category("Key mapping")
 @export_file("*.tres") var key_mapping_catalog_path: String = (
@@ -533,6 +536,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append("조건부 랭킹 저장 경로가 필요합니다.")
 	if conditional_ranking_enabled and not _resource_exists(conditional_ranking_policy_path):
 		errors.append("조건부 랭킹 정책 Resource 경로가 유효하지 않습니다.")
+	if conditional_ranking_enabled and not _resource_exists(ranking_provider_config_path):
+		errors.append("랭킹 공급자 설정 Resource 경로가 유효하지 않습니다.")
 	if persistent_profile_enabled and not _resource_exists(operation_result_config_path):
 		errors.append("작전 결과 설정 Resource 경로가 유효하지 않습니다.")
 	if game_over_enabled and not damage_enabled:

@@ -36,10 +36,10 @@ search:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>94%</b>
+        <b>95%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="94"><i style="width: 94%"></i></div>
-      <p>Master GDD v1005 · 10개 확정 시스템 · Phase 1~5 완료 · P5-10 반영 가중 산식 94%</p>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="95"><i style="width: 95%"></i></div>
+      <p>Master GDD v1005 · 10개 확정 시스템 · Phase 1~5 + P6-01 완료 · 가중 산식 95%</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
       <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
     </div>
@@ -121,14 +121,30 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 6 TOPICS</span><span>76 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 7 TOPICS</span><span>77 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 23 · IMPROVE 23 · CHANGE 23 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 28 · IMPROVE 28 · CHANGE 28 · FIX 10</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>23</b><small>BUILD</small></span><span><b>23</b><small>IMPROVE</small></span><span><b>23</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>28</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>28</b><small>CHANGE</small></span><span><b>10</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>P6-01 랭킹 공급자 · 방사형 코드 관계 웹</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 랭킹 기록을 로컬에 먼저 보존하면서 온라인 공급자를 교체할 수 있게 했고, 코드 노드맵은 선택 모듈 중심 거미줄로 바뀌었습니다.</strong><ul>
+          <li><b>랭킹:</b> 공통 제공자·로컬 구현·온라인 어댑터·설정을 분리하고 장애 시 로컬 기록과 동기화 대기 상태를 유지합니다.</li>
+          <li><b>노드맵:</b> 선택 모듈을 중앙에 두고 실제 사용처·의존처·상속·검증 관계를 방향 화살표로 연결합니다.</li>
+          <li><b>반응형:</b> 화면 폭에 따라 관계 12/8/6개를 배치하고 연결이 많으면 좌우 버튼으로 넘깁니다.</li>
+          <li><b>다음:</b> P6-02 신원·검증 제출·멱등·재시도 계약입니다.</li>
+        </ul><p class="sfh-intent"><b>경계</b><span>Sheet 목록·결제·과금·Cloudflare 유료 설정은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>공급자 경계와 방사형 관계 웹을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>기록 보존·장애 인지·관계 탐색을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>95% 진행률·P6-02 작업선·검색·노드맵을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>온라인 실패 시 기록이 유실될 수 있는 확장 경계 공백을 차단했습니다.</p></div>
+        <p><a href="features/ranking-provider/">P6 랭킹 제공자 →</a> · <a href="architecture/code-module-map/">방사형 노드맵 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>실시간 코드 모듈 노드맵 · 상속·의존 양방향 추적</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 위키에서 실제 코드 상태를 모듈 노드로 보고, 사용처·의존처와 클래스 상속을 화면 크기에 맞춰 바로 추적합니다.</strong><ul>

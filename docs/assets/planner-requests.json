@@ -101,14 +101,14 @@
       "evidence": [{"label": "P5-02 무기·스킬 런 투자", "href": "features/loadout-investment/"}, {"label": "현행 작업 라인", "href": "design/current-milestone-workline/"}]
     },
     {
-      "id": "PLAN-P6-01-01", "status": "request", "state": "needs_planner", "state_label": "운영 정책 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
-      "tag": "후속 정책", "title": "비동기 랭킹·시즌 운영 경계",
+      "id": "PLAN-P6-02-01", "status": "request", "state": "needs_planner", "state_label": "운영 정책 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
+      "tag": "후속 정책", "title": "P6-02~04 검증 제출·시즌 운영 경계",
       "decision_id": "DEC-P6-ONLINE-PENDING", "source_anchor": "3ce5b728-0040-81c9-978c-d33f6138f3aa", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
       "summary": "Phase 6 서버 구현 전에 플레이어 신원, 공식 기록 조건, 시즌 기간, 부정 기록 처리와 칭호·오라 보상 범위를 확정해야 합니다.",
       "basis": "Master GDD Phase 6 비동기 3대 보드와 주간 명예 보상",
-      "notion_prompt": "PLAN-P6-01-01 제목으로 로그인 방식·제출 검증·시즌 주기·동점·제재·보상 지급 규칙을 작성해 주세요.",
+      "notion_prompt": "PLAN-P6-02-01 제목으로 로그인 방식·제출 검증·시즌 주기·동점·제재·보상 지급 규칙을 작성해 주세요.",
       "acceptance": ["신원과 기록 소유권 정의", "검증·재시도·중복·변조 처리 정의", "시즌 기간·동점·칭호·오라 지급 규칙"],
-      "evidence": [{"label": "조건부 랭킹", "href": "features/penalty-ranking/"}, {"label": "현행 작업 라인", "href": "design/current-milestone-workline/"}]
+      "evidence": [{"label": "P6-01 랭킹 제공자", "href": "features/ranking-provider/"}, {"label": "현행 작업 라인", "href": "design/current-milestone-workline/"}]
     },
     {
       "id": "DONE-P4-06-01", "status": "complete", "state": "implemented_verified", "state_label": "구현·검증 완료", "owner_role": "ai_developer", "owner_label": "AI 개발자", "blocking": false,
