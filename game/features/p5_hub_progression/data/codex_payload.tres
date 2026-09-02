@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EmbeddedCsvPayload" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/balance_data/embedded_csv_payload.gd" id="1_payload"]
+
+[resource]
+script = ExtResource("1_payload")
+source_path = "res://game/features/p5_hub_progression/data/codex.csv"
+csv_text = "entry_id,display_name,entry_type,source_id,region_hint,unlock_rule,required_count,runtime_enabled,source_status,planner_note\n도감 ID,표시 이름,도면/장비/스킬/자원,원본 데이터 ID,지역 힌트,해금 규칙,필요 누적,런타임 사용,기획 상태,기획 메모\ncodex_assault,돌격 장비 도면,blueprint,assault_rifle_blueprint,ruined_city,extract_source,1,true,provisional,지역별 드랍 확률 확정 필요\ncodex_vest,방탄 조끼 도면,blueprint,tactical_vest_blueprint,industrial_district,extract_source,1,true,provisional,지역별 드랍 확률 확정 필요\ncodex_magnetic,자기장 장치 도면,skill,magnetic_field_blueprint,research_complex,extract_source,1,true,provisional,지역별 드랍 확률 확정 필요\ncodex_arc,아크 룬,resource,arc_rune,ruined_city,extract_source,3,true,provisional,확정 수량 필요\ncodex_capacitor,축전 코어,resource,capacitor_core,industrial_district,extract_source,3,true,provisional,확정 수량 필요\ncodex_phase,위상 유물,resource,phase_artifact,research_complex,extract_source,3,true,provisional,확정 수량 필요\n"

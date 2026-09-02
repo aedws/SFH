@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 66 TOPICS</span><span>77 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 67 TOPICS</span><span>77 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 38 · IMPROVE 40 · CHANGE 38 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 41 · IMPROVE 43 · CHANGE 42 · FIX 20</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>38</b><small>BUILD</small></span><span><b>40</b><small>IMPROVE</small></span><span><b>38</b><small>CHANGE</small></span><span><b>16</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>41</b><small>BUILD</small></span><span><b>43</b><small>IMPROVE</small></span><span><b>42</b><small>CHANGE</small></span><span><b>20</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -233,7 +233,7 @@ tags:
         <p><a href="features/operation-entry-wizard/">작전 진입 마법사 →</a> · <a href="quality/e2e-play-session/">실제 플레이 E2E →</a> · <a href="architecture/module-audit/#2026-09-02">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>기획자·개발자 역할 로그인 · 최초 계정 변경</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 공개 위키는 그대로 두고, 기획자와 개발자는 로그인 뒤 자기 업무에 필요한 보호 탭만 열도록 분리했습니다.</strong><ul>
@@ -248,6 +248,22 @@ tags:
         <div class="sfh-group"><h3>수정 · 5</h3><p>홈·내비게이션·수정 안내·E2E·모듈 감사를 역할 인증 기준으로 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>클라이언트 숨김만으로 보호되는 문제, 초기 계정 재배포 덮어쓰기, 역할 교차 접근 가능성을 차단했습니다.</p></div>
         <p><a href="architecture/wiki-role-auth/">역할 인증 계약 →</a> · <a href="access/login/">역할 로그인 →</a> · <a href="quality/wiki-responsive-e2e/">위키 E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 10</small><b>웹 로비 복구 · 27개 작전 조합 실전 회귀</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · Web export에서 누락된 P5 데이터 때문에 거점 조립이 중단되던 원인을 제거하고, 모든 규모·난이도·요원 조합과 ESC 복귀를 실제 세션으로 고정했습니다.</strong><ul>
+          <li><b>동선:</b> 기본 실행은 거점→게이트 F→3단계 브리핑→작전이며 설정 취소·작전 중단은 거점으로 돌아갑니다.</li>
+          <li><b>데이터:</b> Utility·OperationPreset·ShopOffer·Recipe·TrainingScenario·Codex CSV를 동기화된 Web payload로 공급합니다.</li>
+          <li><b>경제:</b> 요원·장비 추가 비용으로 투입비가 커져도 `LootValueAllocationPolicy`가 박스 수와 단가를 분리해 총 회수 2.5~5배를 구성합니다.</li>
+          <li><b>회귀:</b> 3규모×3지역×3난이도×3요원 81개 모두 실제 맵 생성·계약 일치·ESC 거점 복귀를 통과해야 배포됩니다.</li>
+        </ul><p class="sfh-intent"><b>검증</b><span><code>P5_HUB_PROGRESSION_OK web_payload_fallback_6</code>, <code>OPERATION_COMBINATION_OK combinations_81 … esc_return</code>, 게임 스모크와 플레이 E2E를 통과했습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>Web payload 6종, 가치 배분 정책, 명시적 복구 상태를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>거점 연속성·경제 확장성·오류 피드백을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>CI 문자열·동기화 검사·작전 계약·E2E/감사를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>웹 로비 누락, 요원 변경 투입 실패, 기본 투입 중단, ESC 무응답을 제거했습니다.</p></div>
+        <p><a href="features/operation-entry-wizard/">작전 진입 계약 →</a> · <a href="quality/e2e-play-session/">실제 플레이 E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
   </div>

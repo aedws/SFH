@@ -3,6 +3,8 @@ extends SceneTree
 const GAME_SCENE_PATH := "res://game/scenes/game.tscn"
 const TIERS := [&"small", &"medium", &"large"]
 const DIFFICULTIES := [&"standard", &"veteran", &"nightmare"]
+const CHARACTERS := [&"vanguard", &"runner", &"bulwark"]
+const REGIONS := [&"ruined_city", &"industrial_district", &"research_complex"]
 
 
 func _init() -> void:
@@ -17,59 +19,72 @@ func _run() -> void:
 	var verified := 0
 	for tier_id in TIERS:
 		for difficulty_id in DIFFICULTIES:
-			var game := game_scene.instantiate()
-			var features: Resource = game.get("features").duplicate(true)
-			var suffix := "%s_%s" % [tier_id, difficulty_id]
-			features.set("map_seed", 4040600 + verified)
-			features.set("persistent_profile_storage_path", "user://sfh_combo_%s_profile.json" % suffix)
-			features.set("conditional_ranking_storage_path", "user://sfh_combo_%s_rankings.json" % suffix)
-			features.set("meta_progression_storage_path", "user://sfh_combo_%s_meta.json" % suffix)
-			features.set("key_mapping_storage_path", "user://sfh_combo_%s_keys.json" % suffix)
-			features.set("skill_binding_storage_path", "user://sfh_combo_%s_skills.json" % suffix)
-			features.set("presentation_settings_storage_path", "user://sfh_combo_%s_presentation.json" % suffix)
-			game.set("features", features)
-			root.add_child(game)
-			await process_frame
-			await process_frame
-			var profile = game.get("persistent_profile")
-			var contracts = game.get("operation_contract_service")
-			var failure := ""
-			if profile == null or contracts == null:
-				failure = "프로필 또는 작전 계약 서비스가 없습니다."
-			else:
-				profile.call(&"reset_profile", true)
-				if not contracts.call(&"select_difficulty", difficulty_id):
-					failure = "난이도 선택이 거부됐습니다."
+			for region_character in _region_character_combinations():
+				var region_id: StringName = region_character[&"region_id"]
+				var character_id: StringName = region_character[&"character_id"]
+				var game := game_scene.instantiate()
+				var features: Resource = game.get("features").duplicate(true)
+				var suffix := "%s_%s_%s_%s" % [
+					tier_id, difficulty_id, region_id, character_id,
+				]
+				features.set("map_seed", 4040600 + verified)
+				features.set("persistent_profile_storage_path", "user://sfh_combo_%s_profile.json" % suffix)
+				features.set("conditional_ranking_storage_path", "user://sfh_combo_%s_rankings.json" % suffix)
+				features.set("meta_progression_storage_path", "user://sfh_combo_%s_meta.json" % suffix)
+				features.set("key_mapping_storage_path", "user://sfh_combo_%s_keys.json" % suffix)
+				features.set("skill_binding_storage_path", "user://sfh_combo_%s_skills.json" % suffix)
+				features.set("presentation_settings_storage_path", "user://sfh_combo_%s_presentation.json" % suffix)
+				game.set("features", features)
+				root.add_child(game)
+				await process_frame
+				await process_frame
+				var profile = game.get("persistent_profile")
+				var contracts = game.get("operation_contract_service")
+				var characters = game.get("character_selection_service")
+				var failure := ""
+				if profile == null or contracts == null or characters == null:
+					failure = "프로필·작전 계약·요원 선택 서비스가 모두 준비되지 않았습니다."
 				else:
-					var hub = game.get("start_hub")
-					var player = game.get("player") as Node2D
-					if hub == null or player == null:
-						failure = "기본 거점 진입 경로가 준비되지 않았습니다."
+					profile.call(&"reset_profile", true)
+					profile.call(&"unlock", &"region_industrial_district")
+					profile.call(&"unlock", &"region_research_complex")
+					if not contracts.call(&"select_region", region_id):
+						failure = "지역 선택이 거부됐습니다."
+					elif not contracts.call(&"select_difficulty", difficulty_id):
+						failure = "난이도 선택이 거부됐습니다."
+					elif not characters.call(&"select_character", character_id):
+						failure = "요원 선택이 거부됐습니다."
 					else:
-						player.global_position = hub.call(&"get_operation_position")
-						if not hub.call(&"request_operation", player):
-							failure = "거점 게이트가 작전 설정을 열지 못했습니다."
+						var hub = game.get("start_hub")
+						var player = game.get("player") as Node2D
+						if hub == null or player == null:
+							failure = "기본 거점 진입 경로가 준비되지 않았습니다."
 						else:
-							var tier_button: Button = {
+							player.global_position = hub.call(&"get_operation_position")
+							if not hub.call(&"request_operation", player):
+								failure = "거점 게이트가 작전 설정을 열지 못했습니다."
+							else:
+								var tier_button: Button = {
 								&"small": game.get("small_map_button"),
 								&"medium": game.get("medium_map_button"),
 								&"large": game.get("large_map_button"),
 							}.get(tier_id)
-							var presenter = game.get("operation_setup_presenter")
-							if tier_button == null or presenter == null:
-								failure = "작전 규모 카드 또는 단계 설정기가 없습니다."
-							else:
-								tier_button.pressed.emit()
-								presenter.call(&"step_relative", 1)
-								presenter.call(&"step_relative", 1)
-								var wizard: Dictionary = presenter.call(&"get_snapshot")
-								if not bool(wizard.get(&"launch_on_confirmation", false)):
-									failure = "3단계 작전 설정이 최종 투입 상태에 도달하지 못했습니다."
+								var presenter = game.get("operation_setup_presenter")
+								if tier_button == null or presenter == null:
+									failure = "작전 규모 카드 또는 단계 설정기가 없습니다."
 								else:
-									(game.get("operation_launch_button") as Button).pressed.emit()
-									await process_frame
+									tier_button.pressed.emit()
+									presenter.call(&"step_relative", 1)
+									presenter.call(&"step_relative", 1)
+									var wizard: Dictionary = presenter.call(&"get_snapshot")
+									if not bool(wizard.get(&"launch_on_confirmation", false)):
+										failure = "3단계 작전 설정이 최종 투입 상태에 도달하지 못했습니다."
+									else:
+										(game.get("operation_launch_button") as Button).pressed.emit()
+										await process_frame
 				if failure.is_empty():
 					var active: Dictionary = game.get("active_contract")
+					var investment: Dictionary = active.get(&"investment_context", {})
 					if (
 						not bool(game.get("run_started"))
 						or game.get("start_hub") != null
@@ -81,21 +96,27 @@ func _run() -> void:
 						failure = "선택 맵 등급이 active_contract에 유지되지 않았습니다."
 					elif StringName(active.get(&"difficulty_id", &"")) != difficulty_id:
 						failure = "선택 난이도가 active_contract에 유지되지 않았습니다."
+					elif StringName(active.get(&"region_id", &"")) != region_id:
+						failure = "선택 지역이 active_contract에 유지되지 않았습니다."
+					elif StringName(investment.get(&"character_id", &"")) != character_id:
+						failure = "선택 요원이 active_contract에 유지되지 않았습니다."
 					elif game.get("operation_tutorial_overlay") == null:
 						failure = "첫 투입 현장 튜토리얼이 설치되지 않았습니다."
 					else:
 						verified += 1
-						game.call(&"_return_to_start_hub")
+						game.call(&"_abandon_run_to_start_hub")
 						await process_frame
 						if game.get("start_hub") == null or bool(game.get("run_started")):
-							failure = "작전 종료 뒤 거점 복귀 상태가 잘못됐습니다."
-			root.remove_child(game)
-			game.free()
-			await process_frame
-			_cleanup_paths(features)
-			if not failure.is_empty():
-				_fail("%s/%s 조합 실패: %s" % [tier_id, difficulty_id, failure])
-				return
+							failure = "ESC 중단 경로 뒤 거점 복귀 상태가 잘못됐습니다."
+				root.remove_child(game)
+				game.free()
+				await process_frame
+				_cleanup_paths(features)
+				if not failure.is_empty():
+					_fail("%s/%s/%s/%s 조합 실패: %s" % [
+						tier_id, difficulty_id, region_id, character_id, failure,
+					])
+					return
 	var routes_verified := await _verify_initial_routes(game_scene)
 	if routes_verified != 4:
 		return
@@ -103,8 +124,19 @@ func _run() -> void:
 		return
 	if not await _verify_tutorial_optional(game_scene):
 		return
-	print("OPERATION_COMBINATION_OK combinations_%d tiers_3 difficulties_3 launch_assemble_return entry_routes_4 wizard_steps_3 tutorial_steps_4 tutorial_optional settlement_optional_repeat" % verified)
+	print("OPERATION_COMBINATION_OK combinations_%d tiers_3 difficulties_3 regions_3 characters_3 launch_assemble_esc_return entry_routes_4 wizard_steps_3 tutorial_steps_4 tutorial_optional settlement_optional_repeat" % verified)
 	quit(0)
+
+
+func _region_character_combinations() -> Array[Dictionary]:
+	var combinations: Array[Dictionary] = []
+	for region_id in REGIONS:
+		for character_id in CHARACTERS:
+			combinations.append({
+				&"region_id": region_id,
+				&"character_id": character_id,
+			})
+	return combinations
 
 
 func _verify_initial_routes(game_scene: PackedScene) -> int:

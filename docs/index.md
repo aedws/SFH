@@ -130,14 +130,30 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 9 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 10 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 38 · IMPROVE 40 · CHANGE 38 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 41 · IMPROVE 43 · CHANGE 42 · FIX 20</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>38</b><small>BUILD</small></span><span><b>40</b><small>IMPROVE</small></span><span><b>38</b><small>CHANGE</small></span><span><b>16</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>41</b><small>BUILD</small></span><span><b>43</b><small>IMPROVE</small></span><span><b>42</b><small>CHANGE</small></span><span><b>20</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 10</small><b>웹 로비 복구 · 27개 작전 조합 실전 회귀</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 웹에서도 거점에서 시작해 게이트 F로 작전에 들어가며, 규모·난이도·요원을 바꿔도 빈 화면 없이 전투 또는 거점 복구로 끝납니다.</strong><ul>
+          <li><b>웹 초기화:</b> P5 CSV 6종을 동기화된 내장 payload로 패키징해 Web export의 로비 초기화 중단을 제거했습니다.</li>
+          <li><b>전 조합:</b> 소·중·대형 × 지역 3종 × 난이도 3종 × 요원 3종의 81개 조합을 실제 투입 버튼→맵 생성→계약 일치로 실행합니다.</li>
+          <li><b>요원 비용:</b> 투입비 증가 시 박스 수를 무제한 늘리지 않고 상자당 가치를 확장해 총 회수 2.5~5배 계약을 지킵니다.</li>
+          <li><b>ESC:</b> 설정 취소와 진행 중 작전 중단은 모두 거점으로 돌아가며, 초기화 실패도 빈 화면 대신 재시도 가능한 복구 화면을 표시합니다.</li>
+        </ul><p class="sfh-intent"><b>경계</b><span>새 목록이 없어 Google Sheet를 확장하지 않았고, 게임 결제·Cloudflare 플랜·과금 설정은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>P5 Web payload, 회수 가치 정책, 초기화 복구 경로를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>거점 동선 연속성, 81개 조합 회귀 범위, 오류 인지성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>작전 진입·P5·E2E·모듈 감사 문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>웹 P5 초기화 중단, 요원 비용 조립 실패, ESC 빈 화면, 초기화 조기 종료를 수정했습니다.</p></div>
+        <p><a href="features/operation-entry-wizard/">작전 진입 계약 →</a> · <a href="quality/e2e-play-session/">81조합 E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>기획자·개발자 역할 로그인 · 최초 계정 변경</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 공개 위키는 그대로 두고, 기획자와 개발자는 로그인 뒤 자기 업무에 필요한 보호 탭만 열도록 분리했습니다.</strong><ul>

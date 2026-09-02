@@ -14,6 +14,12 @@ extends Resource
 @export var recipe_csv_path := "res://game/features/p5_hub_progression/data/recipe.csv"
 @export var training_scenario_csv_path := "res://game/features/p5_hub_progression/data/training_scenario.csv"
 @export var codex_csv_path := "res://game/features/p5_hub_progression/data/codex.csv"
+@export var utility_csv_payload: Resource
+@export var operation_preset_csv_payload: Resource
+@export var shop_offer_csv_payload: Resource
+@export var recipe_csv_payload: Resource
+@export var training_scenario_csv_payload: Resource
+@export var codex_csv_payload: Resource
 @export_range(0, 10000, 1) var shop_reroll_price := 25
 @export_range(1, 8, 1) var shop_rotation_slots := 3
 @export var default_recipe_id: StringName = &"assault_blueprint_recipe"
@@ -22,16 +28,28 @@ extends Resource
 
 
 func is_valid() -> bool:
-	var conditional_paths := [
-		[utility_enabled, utility_csv_path],
-		[bankruptcy_preset_enabled, operation_preset_csv_path],
-		[rotating_shop_enabled, shop_offer_csv_path],
-		[workshop_enabled, recipe_csv_path],
-		[training_enabled, training_scenario_csv_path],
-		[codex_enabled, codex_csv_path],
+	var csv_contracts := [
+		[utility_enabled, utility_csv_path, utility_csv_payload],
+		[bankruptcy_preset_enabled, operation_preset_csv_path, operation_preset_csv_payload],
+		[rotating_shop_enabled, shop_offer_csv_path, shop_offer_csv_payload],
+		[workshop_enabled, recipe_csv_path, recipe_csv_payload],
+		[training_enabled, training_scenario_csv_path, training_scenario_csv_payload],
+		[codex_enabled, codex_csv_path, codex_csv_payload],
 	]
-	for pair in conditional_paths:
-		if bool(pair[0]) and (String(pair[1]).is_empty() or not FileAccess.file_exists(String(pair[1]))):
+	for contract in csv_contracts:
+		if not bool(contract[0]):
+			continue
+		var path := String(contract[1])
+		var payload: Resource = contract[2]
+		if path.is_empty():
+			return false
+		var has_source_file := FileAccess.file_exists(path)
+		var has_matching_payload := (
+			payload != null
+			and payload.has_method(&"is_valid_for")
+			and bool(payload.call(&"is_valid_for", path))
+		)
+		if not has_source_file and not has_matching_payload:
 			return false
 	return (
 		shop_reroll_price >= 0

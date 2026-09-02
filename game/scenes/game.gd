@@ -505,6 +505,7 @@ var extraction_unlocked: bool = false
 var defeated_enemies: int = 0
 var run_started: bool = false
 var run_ended: bool = false
+var initialization_recovery_active: bool = false
 var pending_buff_levels: Array[int] = []
 var modal_ui_visibility_snapshot: Dictionary = {}
 var active_run_skill_loadout: Resource
@@ -566,6 +567,7 @@ func _ready() -> void:
 
 	if features == null:
 		_report_configuration_error("FeatureManifest가 지정되지 않았습니다.")
+		_show_initialization_recovery("FeatureManifest를 불러오지 못했습니다.")
 		return
 	credit_label.visible = features.credits_enabled
 	equipment_label.visible = features.equipment_enabled
@@ -575,17 +577,22 @@ func _ready() -> void:
 	if not configuration_errors.is_empty():
 		for message in configuration_errors:
 			push_error(message)
-		status_label.text = "설정 오류: %s" % " / ".join(configuration_errors)
+		_show_initialization_recovery(" / ".join(configuration_errors))
 		return
 	if not _install_persistent_services():
+		_show_initialization_recovery("영구 서비스 초기화 실패")
 		return
 	if features.presentation_settings_enabled and not _install_presentation_settings():
+		_show_initialization_recovery("표시 설정 초기화 실패")
 		return
 	if features.key_mapping_enabled and not _install_key_mapping():
+		_show_initialization_recovery("키 설정 초기화 실패")
 		return
 	if features.mobile_controls_enabled and not _install_mobile_controls():
+		_show_initialization_recovery("모바일 조작 초기화 실패")
 		return
 	if features.operation_tutorial_enabled and not _install_operation_tutorial():
+		_show_initialization_recovery("작전 튜토리얼 초기화 실패")
 		return
 
 	_configure_tier_button(small_map_button, "small")
@@ -593,12 +600,16 @@ func _ready() -> void:
 	_configure_tier_button(large_map_button, "large")
 	_configure_balance_mode_selector()
 	if features.loot_lifecycle_enabled and not _install_loot_lifecycle():
+		_show_initialization_recovery("전리품 생명주기 초기화 실패")
 		return
 	if features.run_settlement_enabled and not _install_run_settlement():
+		_show_initialization_recovery("런 정산 초기화 실패")
 		return
 	if features.loot_tables_enabled and not _load_field_loot_equip_catalog():
+		_show_initialization_recovery("현장 전리품 카탈로그 초기화 실패")
 		return
 	if features.loot_tables_enabled and not _install_loot_table_provider():
+		_show_initialization_recovery("드랍 테이블 초기화 실패")
 		return
 	_refresh_contract_setup_ui()
 
@@ -606,11 +617,16 @@ func _ready() -> void:
 
 
 func _route_initial_entry() -> void:
+	initialization_recovery_active = false
+	game_over_overlay.visible = false
 	if features.run_setup_enabled and features.start_hub_enabled:
 		run_setup_overlay.visible = false
 		get_tree().paused = false
 		if not _install_start_hub():
 			_report_configuration_error("기본 거점 진입 경로를 구성하지 못했습니다.")
+			_show_initialization_recovery("기본 거점 진입 경로를 구성하지 못했습니다.")
+			return
+		status_label.text = "거점 준비 완료 · 작전 게이트로 이동해 F를 누르세요."
 		return
 	if features.run_setup_enabled:
 		run_setup_overlay.visible = true
@@ -630,6 +646,29 @@ func _route_initial_entry() -> void:
 	get_tree().paused = true
 	operation_setup_presenter.call(&"reset_steps")
 	status_label.text = "직접 작전 생성 실패 · 설정을 확인한 뒤 다시 투입하세요."
+
+
+func _show_initialization_recovery(reason: String) -> void:
+	initialization_recovery_active = true
+	run_setup_overlay.visible = false
+	hud_margin.visible = false
+	interaction_label.visible = false
+	get_tree().paused = false
+	if (
+		features != null
+		and features.start_hub_enabled
+		and not is_instance_valid(start_hub)
+		and not is_instance_valid(player)
+		and _install_start_hub()
+	):
+		initialization_recovery_active = false
+		status_label.text = "제한 거점 모드 · %s" % reason
+		return
+	end_title.text = "초기화 복구 필요"
+	game_over_summary.text = "%s\n새로고침하거나 ESC로 초기화를 다시 시도하세요." % reason
+	restart_button.text = "거점 초기화 다시 시도 (Enter)"
+	game_over_overlay.visible = true
+	get_tree().paused = true
 
 
 func _install_persistent_services() -> bool:
@@ -720,18 +759,29 @@ func _install_persistent_services() -> bool:
 		p5_hub_progression_service = _instantiate_feature(
 			P5_HUB_PROGRESSION_SCENE_PATH, self, &"P5HubProgression"
 		)
-		if (
+		var p5_ready := not (
 			not _supports_methods(p5_hub_progression_service, P5_HUB_PROGRESSION_METHODS)
-			or not p5_hub_progression_service.call(
+			or not bool(p5_hub_progression_service.call(
 				&"configure", persistent_profile, operation_contract_service,
 				load(features.p5_hub_progression_config_path), features.map_seed
-			)
-		):
-			_report_configuration_error("P5 거점 진행 모듈을 구성하지 못했습니다.")
-			return false
-		p5_hub_progression_service.connect(
-			&"snapshot_changed", Callable(self, &"_on_contract_changed")
+			))
 		)
+		if not p5_ready:
+			var p5_errors := PackedStringArray()
+			if (
+				is_instance_valid(p5_hub_progression_service)
+				and p5_hub_progression_service.has_method(&"get_configuration_errors")
+			):
+				p5_errors = p5_hub_progression_service.call(&"get_configuration_errors")
+			push_warning("P5 거점 진행 모듈 비활성 · %s" % (
+				" / ".join(p5_errors) if not p5_errors.is_empty() else "구성 계약 불일치"
+			))
+			_free_feature_node(p5_hub_progression_service)
+			p5_hub_progression_service = null
+		else:
+			p5_hub_progression_service.connect(
+				&"snapshot_changed", Callable(self, &"_on_contract_changed")
+			)
 	if features.hub_economy_enabled:
 		hub_economy_system = _instantiate_feature(
 			HUB_ECONOMY_SCENE_PATH, self, &"HubEconomy"
@@ -1410,6 +1460,10 @@ func _open_run_setup() -> void:
 
 func _close_run_setup() -> void:
 	if run_started:
+		return
+	if not is_instance_valid(start_hub) or not is_instance_valid(player):
+		run_setup_overlay.visible = false
+		_show_initialization_recovery("작전 설정을 닫았지만 거점 상태가 없어 복구했습니다.")
 		return
 	run_setup_overlay.visible = false
 	get_tree().paused = false
@@ -3012,12 +3066,30 @@ func _unhandled_input(event: InputEvent) -> void:
 	if key_event.pressed and not key_event.echo:
 		if run_ended and (key_event.keycode == KEY_ENTER or key_event.keycode == KEY_SPACE):
 			_restart_run()
+		elif run_started and not run_ended and key_event.keycode == KEY_ESCAPE:
+			_abandon_run_to_start_hub()
 		elif run_setup_overlay.visible and key_event.keycode == KEY_ESCAPE:
 			_close_run_setup()
 		elif run_setup_overlay.visible and key_event.keycode == KEY_LEFT:
 			operation_setup_presenter.call(&"step_relative", -1)
 		elif run_setup_overlay.visible and key_event.keycode == KEY_RIGHT:
 			operation_setup_presenter.call(&"step_relative", 1)
+		elif initialization_recovery_active and game_over_overlay.visible and (
+			key_event.keycode == KEY_ESCAPE or key_event.keycode == KEY_ENTER
+		):
+			game_over_overlay.visible = false
+			get_tree().paused = false
+			_route_initial_entry()
+
+
+func _abandon_run_to_start_hub() -> void:
+	if not run_started or run_ended:
+		return
+	_settle_run_loot(false)
+	if operation_contract_service != null:
+		operation_contract_service.call(&"clear_active_contract")
+	_return_to_start_hub()
+	status_label.text = "작전 중단 · 획득 전리품 없이 거점으로 복귀했습니다."
 
 
 func _instantiate_feature(path: String, parent: Node, display_name: StringName) -> Node:

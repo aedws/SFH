@@ -60,7 +60,14 @@ func _install_csv_module(module_id: StringName, enabled: bool, path_property: St
 	var table_script = _load_script(&"table")
 	if table_script == null: return false
 	var schema: Array = TABLE_SCHEMAS[module_id]
-	var table: Dictionary = table_script.call(&"load_table", String(config.get(path_property)), schema[0], schema[1])
+	var payload_property := "%s_payload" % path_property.trim_suffix("_path")
+	var table: Dictionary = table_script.call(
+		&"load_table",
+		String(config.get(path_property)),
+		schema[0],
+		schema[1],
+		config.get(payload_property)
+	)
 	if not bool(table.get(&"success", false)):
 		for error in table.get(&"errors", []): _configuration_errors.append("%s: %s" % [module_id, error])
 		return false
@@ -222,3 +229,7 @@ func get_snapshot() -> Dictionary:
 	var bankruptcy = _module(&"bankruptcy")
 	result[&"bankruptcy"] = bankruptcy.call(&"get_snapshot", credits) if bankruptcy != null else {}
 	return result
+
+
+func get_configuration_errors() -> PackedStringArray:
+	return _configuration_errors.duplicate()

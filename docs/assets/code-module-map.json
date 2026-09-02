@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "4fd79ad961fff1bc45c8e4a2f6c0f1aac5c6bad7951d3e6f575f9b66fa60ba5b",
+  "source_sha256": "f85b3ed8201dff1ccd742f34fa3e7c4476a6aeaee593962692c1c38eb6a71667",
   "layers": [
     {
       "id": "contract",
@@ -25,8 +25,8 @@
   ],
   "summary": {
     "modules": 54,
-    "scripts": 185,
-    "named_classes": 165,
+    "scripts": 186,
+    "named_classes": 166,
     "relationships": 158,
     "project_inheritance": 6,
     "enabled_toggles": 63
@@ -466,12 +466,13 @@
       "path": "game/features/loot",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 3,
-      "class_count": 3,
+      "file_count": 4,
+      "class_count": 4,
       "classes": [
         "CreditLootCache",
         "LootSpawner",
-        "LootTierConfig"
+        "LootTierConfig",
+        "LootValueAllocationPolicy"
       ],
       "incoming_count": 1,
       "outgoing_count": 2
@@ -1805,6 +1806,15 @@
       "module": "loot",
       "path": "game/features/loot/loot_tier_config.gd",
       "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:LootValueAllocationPolicy",
+      "name": "LootValueAllocationPolicy",
+      "module": "loot",
+      "path": "game/features/loot/loot_value_allocation_policy.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
