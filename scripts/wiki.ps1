@@ -48,12 +48,15 @@ try {
     & (Join-Path $PSScriptRoot "check-wiki-responsive.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1")
     & (Join-Path $PSScriptRoot "check-wiki-planner-requests.ps1")
+	& (Join-Path $PSScriptRoot "check-wiki-role-auth.ps1")
 	& (Join-Path $PSScriptRoot "check-p7-roadmap.ps1")
 	& $virtualPython (Join-Path $PSScriptRoot "snapshot_notion_source.py") --check
     & $virtualPython -m mkdocs $Action --strict
     if ($Action -eq "build") {
+        Copy-Item -LiteralPath (Join-Path $repositoryRoot "cloudflare/wiki-auth/_worker.js") -Destination (Join-Path $repositoryRoot ".wiki-site/_worker.js") -Force
         & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1") -SiteRoot ".wiki-site"
         & (Join-Path $PSScriptRoot "check-wiki-planner-requests.ps1") -SiteRoot ".wiki-site"
+        & (Join-Path $PSScriptRoot "check-wiki-role-auth.ps1") -SiteRoot ".wiki-site"
     }
 }
 finally {

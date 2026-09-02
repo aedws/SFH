@@ -41,6 +41,7 @@ extra_javascript:
   - javascripts/code-module-map.js
   - javascripts/planner-requests.js
   - javascripts/planner-proposal.js
+  - javascripts/role-auth.js
 
 plugins:
   - search:
@@ -63,6 +64,11 @@ markdown_extensions:
 nav:
   - 홈: index.md
   - 개발 현황과 업데이트: development-status.md
+  - 역할 작업 공간:
+      - 로그인: access/login.md
+      - 계정 설정: access/account.md
+      - 기획자 전용 탭: access/planner.md
+      - 개발자 전용 탭: access/developer.md
   - 시작하기:
       - getting-started/index.md
       - 설치: getting-started/install.md
@@ -86,6 +92,7 @@ nav:
       - 모듈 규칙: architecture/module-rules.md
       - 현재 코드 모듈 노드맵: architecture/code-module-map.md
       - 모듈화 점검 기록: architecture/module-audit.md
+      - 위키 역할 인증과 권한 경계: architecture/wiki-role-auth.md
       - 외부 에셋 라이선스 원장: architecture/third-party-assets.md
       - 장면 트리: architecture/scene-tree.md
       - Signal 규칙: architecture/signals.md

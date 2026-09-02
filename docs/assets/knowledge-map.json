@@ -1,5 +1,5 @@
 {
-  "version": 17,
+  "version": 18,
   "updated": "2026-09-02",
   "root": {
     "id": "sfh",
@@ -18,6 +18,17 @@
             "documents": [
               {"label": "위키 홈", "source": "index.md", "route": "", "summary": "게임 정체성·즉시 플레이·최신 업데이트"},
               {"label": "개발 현황과 업데이트", "source": "development-status.md", "route": "development-status/", "summary": "진행률·구현 단계·남은 작업"}
+            ]
+          },
+          {
+            "id": "role-workspaces",
+            "label": "역할 작업 공간",
+            "description": "로그인·계정 변경과 역할별 압축 화면",
+            "documents": [
+              {"label": "역할 로그인", "source": "access/login.md", "route": "access/login/", "summary": "기획자·개발자 인증과 최초 변경 진입"},
+              {"label": "계정 설정", "source": "access/account.md", "route": "access/account/", "summary": "로그인 뒤 아이디·비밀번호 변경"},
+              {"label": "기획자 전용 작업 탭", "source": "access/planner.md", "route": "access/planner/", "summary": "결정·데이터 요청·플레이 수락 우선"},
+              {"label": "개발자 전용 작업 탭", "source": "access/developer.md", "route": "access/developer/", "summary": "작업선·모듈·E2E·배포 우선"}
             ]
           }
         ]
@@ -93,7 +104,8 @@
               {"label": "아키텍처", "source": "architecture/index.md", "route": "architecture/", "summary": "구조 문서 진입점"},
               {"label": "모듈 규칙", "source": "architecture/module-rules.md", "route": "architecture/module-rules/", "summary": "의존성과 공개 계약 원칙"},
               {"label": "현재 코드 모듈 노드맵", "source": "architecture/code-module-map.md", "route": "architecture/code-module-map/", "summary": "실제 코드에서 산출한 모듈·클래스·상속·참조 관계"},
-              {"label": "모듈화 점검 기록", "source": "architecture/module-audit.md", "route": "architecture/module-audit/", "summary": "기능별 교체성 검증 근거"}
+              {"label": "모듈화 점검 기록", "source": "architecture/module-audit.md", "route": "architecture/module-audit/", "summary": "기능별 교체성 검증 근거"},
+              {"label": "위키 역할 인증과 권한 경계", "source": "architecture/wiki-role-auth.md", "route": "architecture/wiki-role-auth/", "summary": "서버 세션·보호 경로·최초 계정 변경·배포 계약"}
             ]
           },
           {

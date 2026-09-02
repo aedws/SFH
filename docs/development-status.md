@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 33 · IMPROVE 34 · CHANGE 33 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 38 · IMPROVE 40 · CHANGE 38 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>33</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>33</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>38</b><small>BUILD</small></span><span><b>40</b><small>IMPROVE</small></span><span><b>38</b><small>CHANGE</small></span><span><b>16</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -216,7 +216,7 @@ tags:
         <p><a href="features/ranking-provider/">P6 랭킹 제공자 →</a> · <a href="architecture/code-module-map/">방사형 코드 노드맵 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 8</small><b>작전 진입 3단계화 · 전 경로 복구 · 첫 투입 가이드</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 작전 설정을 지역·장비·최종 확인으로 나누고, 모든 초기 실행 방식을 작전 또는 안전한 복구 화면으로 연결했습니다.</strong><ul>
@@ -231,6 +231,23 @@ tags:
         <div class="sfh-group"><h3>수정 · 5</h3><p>작전 계약 문서·E2E·모듈 감사·검색·홈 표시를 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>비표준 진입의 빈 화면, 조립 실패 잔존, 정산 비활성 반복 투입 차단을 수정했습니다.</p></div>
         <p><a href="features/operation-entry-wizard/">작전 진입 마법사 →</a> · <a href="quality/e2e-play-session/">실제 플레이 E2E →</a> · <a href="architecture/module-audit/#2026-09-02">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 9</small><b>기획자·개발자 역할 로그인 · 최초 계정 변경</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 공개 위키는 그대로 두고, 기획자와 개발자는 로그인 뒤 자기 업무에 필요한 보호 탭만 열도록 분리했습니다.</strong><ul>
+          <li><b>기획자:</b> 결정 대기·데이터 요청·Notion 대조·플레이 인식 검수를 먼저 봅니다.</li>
+          <li><b>개발자:</b> 다음 작업선·코드 노드맵·모듈 감사·E2E를 먼저 봅니다.</li>
+          <li><b>계정:</b> 임시 계정은 첫 로그인 직후 아이디·비밀번호 변경을 강제하고 기존 세션을 폐기합니다.</li>
+          <li><b>보안:</b> 비밀번호 해시·8시간 세션·CSRF·실패 잠금을 Pages Function과 전용 Private R2에 격리했습니다.</li>
+          <li><b>검색:</b> 보호 페이지는 공개 검색 색인에서 제외하며 서버가 역할을 검사하기 전에는 HTML을 내려주지 않습니다.</li>
+        </ul><p class="sfh-intent"><b>경계</b><span>기획 원본은 Notion·Sheet, 개발 원본은 PR입니다. 게임 계정·결제·Cloudflare 플랜은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>역할 로그인, 보호 경로, 계정 변경, 서버 세션, 전용 저장소 배포를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 6</h3><p>역할별 첫 화면·검색 노출·모바일 입력·협업 책임·세션 안전·배포 검증을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>홈·내비게이션·수정 안내·E2E·모듈 감사를 역할 인증 기준으로 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>클라이언트 숨김만으로 보호되는 문제, 초기 계정 재배포 덮어쓰기, 역할 교차 접근 가능성을 차단했습니다.</p></div>
+        <p><a href="architecture/wiki-role-auth/">역할 인증 계약 →</a> · <a href="access/login/">역할 로그인 →</a> · <a href="quality/wiki-responsive-e2e/">위키 E2E →</a></p>
       </div>
     </details>
   </div>
