@@ -151,7 +151,7 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/p5_hub_progression_contract_test.gd" | tee /tmp/sfh-p5.log
           grep -q "P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback" /tmp/sfh-p5.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_provider_contract_test.gd" | tee /tmp/sfh-p6-ranking.log
-          grep -q "P6_RANKING_PROVIDER_OK local_online_swap offline_fallback local_preserved visible_sync_state" /tmp/sfh-p6-ranking.log
+          grep -q "P6_RANKING_SUBMISSION_OK identity envelope_digest idempotency local_preserved persistent_retry timeout_retry server_rejection visible_sync_state" /tmp/sfh-p6-ranking.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
           grep -q "SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing" /tmp/sfh-smoke.log
           grep -q "WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction" /tmp/sfh-smoke.log

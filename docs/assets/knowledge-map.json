@@ -71,7 +71,7 @@
             "description": "무엇을 만들고 어디까지 구현하는가",
             "documents": [
               {"label": "게임 설계", "source": "design/index.md", "route": "design/", "summary": "설계 문서 진입점"},
-              {"label": "Master GDD 구현 대조", "source": "design/master-gdd-alignment.md", "route": "design/master-gdd-alignment/", "summary": "v1005 확정 기획·94% 산식·마일스톤 차이"},
+              {"label": "Master GDD 구현 대조", "source": "design/master-gdd-alignment.md", "route": "design/master-gdd-alignment/", "summary": "v1005 확정 기획·96% 산식·마일스톤 차이"},
               {"label": "현행 마일스톤 작업 라인", "source": "design/current-milestone-workline.md", "route": "design/current-milestone-workline/", "summary": "Phase 1·4·5·6와 내부 P7+ 순서·모듈·E2E 게이트"},
               {"label": "P5·P6 사전 구현 설계", "source": "design/p5-p6-preimplementation.md", "route": "design/p5-p6-preimplementation/", "summary": "확장된 로비 허브와 비동기 시즌의 데이터·모듈·E2E 계약"},
               {"label": "P7 이후 사전 구현 설계", "source": "design/p7-plus-preimplementation.md", "route": "design/p7-plus-preimplementation/", "summary": "상점·제작소·훈련장·도감의 내부 P7~P10 후속 계약"},
@@ -218,7 +218,7 @@
               {"label": "런 전리품 정산", "source": "features/run-settlement.md", "route": "features/run-settlement/", "summary": "자동 환전·영구 해금·창고 보관·사망 소실과 중복 방지"},
               {"label": "도면 제작과 랜덤 옵션", "source": "features/blueprint-crafting.md", "route": "features/blueprint-crafting/", "summary": "도면 해금·제작·옵션 정책"},
               {"label": "페널티 변형과 조건부 랭킹", "source": "features/penalty-ranking.md", "route": "features/penalty-ranking/", "summary": "리스크 보상과 3종 기록"},
-              {"label": "P6 랭킹 제공자와 오프라인 보존", "source": "features/ranking-provider.md", "route": "features/ranking-provider/", "summary": "로컬·온라인 교체, 장애 폴백과 동기화 상태"},
+              {"label": "P6 검증형 랭킹 제출과 오프라인 보존", "source": "features/ranking-provider.md", "route": "features/ranking-provider/", "summary": "익명 신원·멱등 키·변조 검증·영구 재시도와 공급자 교체"},
               {"label": "캐릭터 장비와 로드아웃", "source": "features/character-equipment.md", "route": "features/character-equipment/", "summary": "무기·방어구·스킬 슬롯"},
               {"label": "격자 가방 인벤토리", "source": "features/grid-inventory.md", "route": "features/grid-inventory/", "summary": "크기가 다른 아이템 배치"},
               {"label": "장비 파츠·모듈 개조", "source": "features/equipment-customization.md", "route": "features/equipment-customization/", "summary": "호환 파츠·모듈 코스트·태그"},

@@ -81,7 +81,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -307,6 +307,9 @@ func _verify_operation_session() -> bool:
 	var setup := game.get_node("UI/RunSetupOverlay") as Control
 	var small_button := game.get("small_map_button") as Button
 	var launch_button := game.get("operation_launch_button") as Button
+	var penalty = game.get("penalty_system")
+	if penalty == null or not bool(penalty.call(&"toggle", &"reinforced_armor")):
+		return _fail("공식 랭킹 최소 조건을 만족할 페널티를 선택하지 못했습니다.")
 	if small_button == null or small_button.disabled:
 		return _fail("소형 작전 카드가 실제 선택 가능한 상태가 아닙니다.")
 	small_button.pressed.emit()
@@ -497,6 +500,19 @@ func _verify_operation_session() -> bool:
 	var summary := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/GameOverSummary") as Label
 	if not result.visible or title.text != "탈출 성공" or not paused:
 		return _fail("탈출 완료 후 성공 정산 화면이 표시되지 않았습니다.")
+	var ranking_snapshot: Dictionary = game.get("conditional_ranking_system").call(&"get_snapshot")
+	var submission_snapshot: Dictionary = ranking_snapshot.get(&"submission_queue", {})
+	if (
+		int(submission_snapshot.get(&"pending_count", 0)) != 1
+		or String(ranking_snapshot.get(&"identity", {}).get(&"player_id", "")).is_empty()
+		or "랭킹" not in summary.text
+		or "재시도" not in summary.text
+	):
+		return _fail("탈출 결과에서 랭킹 로컬 보존·재시도 대기 상태를 인식할 수 없습니다. queue=%s identity=%s summary=%s" % [
+			JSON.stringify(submission_snapshot),
+			JSON.stringify(ranking_snapshot.get(&"identity", {})),
+			summary.text,
+		])
 	var settlement: Dictionary = game.get("last_loot_settlement")
 	var acquired_items: Dictionary = game.get("field_loot_acquisition_service").call(
 		&"get_snapshot"
@@ -1297,6 +1313,8 @@ func _cleanup_tier_profile(suffix: String) -> void:
 	for path in [
 		"user://sfh_e2e_%s_profile.json" % suffix,
 		"user://sfh_e2e_%s_rankings.json" % suffix,
+		"user://sfh_e2e_%s_rankings_identity.json" % suffix,
+		"user://sfh_e2e_%s_rankings_submissions.json" % suffix,
 		"user://sfh_e2e_%s_meta.json" % suffix,
 		"user://sfh_e2e_%s_keys.json" % suffix,
 		"user://sfh_e2e_%s_skills.json" % suffix,
@@ -1380,7 +1398,13 @@ func _reset_test_profile() -> void:
 
 
 func _cleanup_test_profile() -> void:
-	for path in [E2E_PROFILE_PATH, E2E_RANKINGS_PATH, E2E_META_PATH, E2E_KEY_MAPPING_PATH, E2E_SKILL_BINDING_PATH, E2E_PRESENTATION_SETTINGS_PATH]:
+	for path in [
+		E2E_PROFILE_PATH, E2E_RANKINGS_PATH,
+		E2E_RANKINGS_PATH.replace(".json", "_identity.json"),
+		E2E_RANKINGS_PATH.replace(".json", "_submissions.json"),
+		E2E_META_PATH, E2E_KEY_MAPPING_PATH, E2E_SKILL_BINDING_PATH,
+		E2E_PRESENTATION_SETTINGS_PATH,
+	]:
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 

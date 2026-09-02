@@ -18,7 +18,7 @@ func is_available() -> bool:
 	return (
 		is_instance_valid(gateway)
 		and gateway.has_method(&"is_available")
-		and gateway.has_method(&"submit_run")
+		and (gateway.has_method(&"submit_envelope") or gateway.has_method(&"submit_run"))
 		and gateway.has_method(&"get_entries")
 		and bool(gateway.call(&"is_available"))
 	)
@@ -34,6 +34,30 @@ func submit_run(result: Dictionary) -> Dictionary:
 		last_error = "온라인 공급자 응답 형식 오류"
 		provider_status_changed.emit(get_provider_status())
 		return {&"accepted": false, &"reason": last_error, &"provider_status": get_provider_status()}
+	var parsed := (response as Dictionary).duplicate(true)
+	last_error = "" if bool(parsed.get(&"accepted", false)) else String(parsed.get(&"reason", "온라인 제출 거부"))
+	provider_status_changed.emit(get_provider_status())
+	return parsed
+
+
+func submit_envelope(envelope: Dictionary) -> Dictionary:
+	if not is_available():
+		last_error = "온라인 공급자 연결 대기"
+		provider_status_changed.emit(get_provider_status())
+		return {
+			&"accepted": false, &"retryable": true, &"reason": last_error,
+			&"provider_status": get_provider_status(),
+		}
+	var response: Variant
+	if gateway.has_method(&"submit_envelope"):
+		response = gateway.call(&"submit_envelope", envelope.duplicate(true))
+	else:
+		# P6-01 게이트웨이는 payload만 받았으므로 교체 기간 동안 호환합니다.
+		response = gateway.call(&"submit_run", envelope.get(&"payload", {}).duplicate(true))
+	if not response is Dictionary:
+		last_error = "온라인 공급자 응답 형식 오류"
+		provider_status_changed.emit(get_provider_status())
+		return {&"accepted": false, &"retryable": true, &"reason": last_error}
 	var parsed := (response as Dictionary).duplicate(true)
 	last_error = "" if bool(parsed.get(&"accepted", false)) else String(parsed.get(&"reason", "온라인 제출 거부"))
 	provider_status_changed.emit(get_provider_status())

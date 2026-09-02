@@ -44,17 +44,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 3 · CHANGE 4 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 5 · IMPROVE 4 · CHANGE 4 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>3</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>4</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 1</small><b>공개 플레이 페이지 · 역할별 내부 작업실 분리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>LATEST</small><b>랭킹 기록 보호 · 오프라인 재시도</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>공개 화면은 게임 소개와 테스트 실행에 집중하고, 상세 기획·개발 자료는 로그인한 팀원에게만 제공합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 0</h3><p>게임 기능 변경은 없습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>공개 정보 밀도, 테스트 진입, 역할별 첫 화면을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 4</h3><p>홈, 기획자 탭, 개발자 탭, 인증 문서를 새 정보 구조에 맞췄습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>내부 문서·검색 데이터 노출, 숨은 보호 문서 링크, Pages 파일/Worker 전파 시점 차이로 생기던 배포 오판을 수정했습니다.</p></div>
+        <div class="sfh-summary"><strong>탈출 성공 기록을 기기에 먼저 보존하고, 인터넷 연결이 끊기면 다음 연결 때 다시 제출하도록 개선했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>익명 신원, 검증 봉투, 중복 방지, 영구 재시도, 결과 상태를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>오프라인 보존, 제출 상태 이해, 저장 복구, 온라인 공급자 교체성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>정산 런 ID, 랭킹 설정, 테스트와 내부 작업 문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>같은 런의 중복 집계와 연결 실패 기록 유실 가능성을 차단했습니다.</p></div>
       </div>
     </details>
   </div>

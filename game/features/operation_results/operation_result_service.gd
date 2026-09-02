@@ -55,6 +55,7 @@ func settle_success(run_data: Dictionary, contract: Dictionary) -> Dictionary:
 	if is_instance_valid(ranking):
 		ranking_result = ranking.call(&"submit_run", {
 			&"success": true,
+			&"run_id": String(run_data.get(&"run_id", "")),
 			&"condition_key": contract.get(&"ranking_condition_key", ""),
 			&"elapsed_seconds": run_data.get(&"elapsed_seconds", 0.0),
 			&"kills": run_data.get(&"kills", 0),

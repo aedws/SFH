@@ -135,7 +135,7 @@ nav:
       - 스마트 자동 타게팅: features/smart-targeting.md
       - 도면 제작과 랜덤 옵션: features/blueprint-crafting.md
       - 페널티 변형과 조건부 랭킹: features/penalty-ranking.md
-      - P6 랭킹 제공자와 오프라인 보존: features/ranking-provider.md
+      - P6 검증형 랭킹 제출과 오프라인 보존: features/ranking-provider.md
       - 캐릭터 장비와 로드아웃: features/character-equipment.md
       - 격자 가방 인벤토리: features/grid-inventory.md
       - 장비 파츠·모듈 개조: features/equipment-customization.md

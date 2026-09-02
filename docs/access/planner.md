@@ -27,6 +27,7 @@ hide:
   <article><span>완료</span><b>전투와 방 확보</b><p>자동 공격과 세 가지 스킬로 싸우고, 방의 적을 모두 쓰러뜨리면 문과 보상이 열립니다.</p></article>
   <article><span>완료</span><b>파밍과 탈출</b><p>아이템을 비교·획득·교체하고 탈출 성공 여부에 따라 보관·환전·소실 결과가 나뉩니다.</p></article>
   <article><span>완료</span><b>장비와 거점 성장</b><p>무기·방어구·파츠·모듈·상점·제작·훈련·도감을 한 준비 흐름에서 사용합니다.</p></article>
+  <article><span>완료</span><b>안전한 랭킹 제출</b><p>성공 기록은 기기에 먼저 남고, 인터넷이 끊기면 재시도하며 중복·변조·서버 거부 이유를 결과에서 확인합니다.</p></article>
 </div>
 
 <p class="sfh-role-explain"><b>“완료”의 뜻</b><span>코드 파일이 있다는 뜻이 아니라, 플레이어가 입력하고 화면 변화를 확인하며 다음 행동까지 이어갈 수 있고 자동 테스트가 그 흐름을 통과했다는 뜻입니다.</span></p>
@@ -34,8 +35,8 @@ hide:
 ## 이제 기획자가 정해야 할 것
 
 <div class="sfh-decision-lanes">
-  <a href="../../design/planner-request-workflow/"><small>먼저 결정</small><b>온라인 랭킹 규칙</b><span>누가 기록을 제출하는지, 조작 기록을 어떻게 거부할지, 실패한 제출을 언제 다시 보낼지 정해야 합니다.</span><em>P6-02</em></a>
-  <a href="../../design/current-milestone-workline/"><small>그다음 결정</small><b>시즌과 명예 보상</b><span>시즌 기간·참가 조건·주간 칭호·오라의 지급 기준과 중복 지급 정책이 필요합니다.</span><em>P6-03~04</em></a>
+  <a href="../../design/planner-request-workflow/"><small>먼저 결정</small><b>실서비스 랭킹 신원</b><span>현재 익명 기기 ID를 어떤 로그인 계정으로 교체하고, 어떤 서버가 최종 기록을 승인할지 정해야 합니다.</span><em>P6 LIVE</em></a>
+  <a href="../../design/current-milestone-workline/"><small>그다음 결정</small><b>시즌과 명예 보상</b><span>시즌 기간·참가 조건·동점·주간 칭호·오라의 지급 기준과 중복 지급 정책이 필요합니다.</span><em>P6-03~04</em></a>
   <a href="../../design/planner-request-workflow/"><small>수치 확정</small><b>상점·제작·훈련 데이터</b><span>현재 교체 가능한 임시값을 실제 가격·효과·회전 주기·레시피·계측 기준으로 확정해야 합니다.</span><em>SHEET</em></a>
   <a href="../../quality/player-perception-audit/"><small>플레이 판단</small><b>재미와 이해 가능성</b><span>처음 플레이한 사람이 준비→전투→회수→성장을 설명 없이 이해하는지 수락 여부를 남겨야 합니다.</span><em>PLAYTEST</em></a>
 </div>
@@ -62,7 +63,7 @@ hide:
     <p class="sfh-proposal-local-state">LOCAL ONLY · NO PUBLIC WRITE</p>
     <div class="sfh-proposal-grid">
       <label>종류<select name="kind"><option>PLAN</option><option>DATA</option><option>DEV</option><option>BUG</option></select></label>
-      <label>요청 ID<input name="request_id" placeholder="DATA-P6-02-01"></label>
+      <label>요청 ID<input name="request_id" placeholder="PLAN-P6-03-01"></label>
       <label class="is-wide">제목<input name="title" placeholder="무엇을 결정하는지"></label>
       <label class="is-wide">작성 근거<input name="basis" placeholder="Notion Phase 또는 DEC ID"></label>
       <label class="is-wide">수락 기준<input name="acceptance" placeholder="플레이어가 확인할 결과"></label>
