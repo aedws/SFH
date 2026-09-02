@@ -80,9 +80,24 @@ if ($mkdocs -notmatch 'quality/wiki-responsive-e2e\.md') {
 if ($index -notmatch 'search:\s*\r?\n\s+exclude:\s*true') {
     $errors.Add("The dashboard home must be excluded from the wiki search index.")
 }
+foreach ($drawerContract in @(
+    '<details class="sfh-home-drawer sfh-planner-requests" data-sfh-planner-requests>',
+    '<details class="sfh-home-drawer sfh-proposal-composer" data-sfh-proposal-composer>',
+    '<details class="sfh-home-drawer sfh-core-loop-drawer">'
+)) {
+    if ($index -notmatch [regex]::Escape($drawerContract)) {
+        $errors.Add("Home on-demand density drawer is missing: $drawerContract")
+    }
+}
+if ($index -match '<details class="sfh-day"\s+open>') {
+    $errors.Add("Wiki home must keep the daily release detail collapsed by default.")
+}
+if ($style -notmatch '\.sfh-home-drawer\s*>\s*summary[\s\S]*min-height:\s*(?:52|56)px') {
+    $errors.Add("Home density drawers do not expose a responsive touch-sized summary.")
+}
 
 if ($errors.Count -gt 0) {
     throw ($errors -join [Environment]::NewLine)
 }
 
-Write-Host "WIKI_RESPONSIVE_OK viewports=4 role_routes=$($roleRoutes.Count) search=100dvh touch=44px"
+Write-Host "WIKI_RESPONSIVE_OK viewports=4 role_routes=$($roleRoutes.Count) search=100dvh touch=44px home_density=on_demand"

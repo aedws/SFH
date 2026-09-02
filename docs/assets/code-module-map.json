@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "4205e4f058cd25bd5b9264e91e9c3243bdb15d326876e93d8247077cbfa87fca",
+  "source_sha256": "4fd79ad961fff1bc45c8e4a2f6c0f1aac5c6bad7951d3e6f575f9b66fa60ba5b",
   "layers": [
     {
       "id": "contract",
@@ -24,12 +24,12 @@
     }
   ],
   "summary": {
-    "modules": 53,
-    "scripts": 183,
-    "named_classes": 163,
-    "relationships": 157,
+    "modules": 54,
+    "scripts": 185,
+    "named_classes": 165,
+    "relationships": 158,
     "project_inheritance": 6,
-    "enabled_toggles": 62
+    "enabled_toggles": 63
   },
   "modules": [
     {
@@ -43,7 +43,7 @@
       "class_count": 0,
       "classes": [],
       "incoming_count": 1,
-      "outgoing_count": 47
+      "outgoing_count": 48
     },
     {
       "id": "core",
@@ -623,6 +623,21 @@
       "outgoing_count": 0
     },
     {
+      "id": "operation_tutorial",
+      "label": "operation tutorial",
+      "layer": "feature",
+      "path": "game/features/operation_tutorial",
+      "wiki_route": "architecture/module-rules/",
+      "enabled": true,
+      "file_count": 1,
+      "class_count": 1,
+      "classes": [
+        "OperationTutorialOverlay"
+      ],
+      "incoming_count": 1,
+      "outgoing_count": 0
+    },
+    {
       "id": "p5_hub_progression",
       "label": "p5 hub progression",
       "layer": "feature",
@@ -800,9 +815,10 @@
       "path": "game/features/run_setup",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 4,
-      "class_count": 1,
+      "file_count": 5,
+      "class_count": 2,
       "classes": [
+        "OperationSetupStepFlow",
         "TacticalHudIcon"
       ],
       "incoming_count": 3,
@@ -1973,6 +1989,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:OperationTutorialOverlay",
+      "name": "OperationTutorialOverlay",
+      "module": "operation_tutorial",
+      "path": "game/features/operation_tutorial/operation_tutorial_overlay.gd",
+      "extends": "Control",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:BankruptcyProtectionPolicy",
       "name": "BankruptcyProtectionPolicy",
       "module": "p5_hub_progression",
@@ -2248,6 +2273,15 @@
       "module": "run_settlement",
       "path": "game/features/run_settlement/run_settlement_service.gd",
       "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:OperationSetupStepFlow",
+      "name": "OperationSetupStepFlow",
+      "module": "run_setup",
+      "path": "game/features/run_setup/operation_setup_step_flow.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -2919,6 +2953,12 @@
     {
       "from": "scene_assembly",
       "to": "operation_results",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "scene_assembly",
+      "to": "operation_tutorial",
       "type": "references",
       "evidence_count": 1
     },

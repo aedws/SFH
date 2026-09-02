@@ -3,6 +3,7 @@ extends RefCounted
 ## 작전 계약 데이터를 계산하지 않고, 기존 설정 Control을 브리핑 중심 화면으로 재배치합니다.
 
 const OPERATION_PREVIEW_SCRIPT := preload("res://game/features/run_setup/operation_preview.gd")
+const STEP_FLOW_SCRIPT := preload("res://game/features/run_setup/operation_setup_step_flow.gd")
 
 var launch_button: Button
 var mission_title: Label
@@ -24,6 +25,13 @@ var tier_buttons: Dictionary = {}
 var root_panel: PanelContainer
 var left_column: Control
 var right_column: Control
+var step_flow := STEP_FLOW_SCRIPT.new()
+var step_pages: Array[Control] = []
+var step_heading: Label
+var step_progress: HBoxContainer
+var previous_button: Button
+var next_button: Button
+var step_dots: Array[Label] = []
 
 
 func install(overlay: Control) -> Dictionary:
@@ -37,7 +45,7 @@ func install(overlay: Control) -> Dictionary:
 
 	var panel := overlay.get_node("Center/Panel") as PanelContainer
 	root_panel = panel
-	panel.custom_minimum_size = Vector2(1180.0, 660.0)
+	panel.custom_minimum_size = Vector2(1080.0, 620.0)
 	panel.add_theme_stylebox_override("panel", _style_box(Color("030d12f7"), Color("02e5e1"), 2, 2))
 	var margin := overlay.get_node("Center/Panel/Margin") as MarginContainer
 	for side in [&"margin_left", &"margin_top", &"margin_right", &"margin_bottom"]:
@@ -55,7 +63,7 @@ func install(overlay: Control) -> Dictionary:
 	var left_panel := PanelContainer.new()
 	left_column = left_panel
 	left_panel.name = "MissionBriefingPanel"
-	left_panel.custom_minimum_size = Vector2(548.0, 0.0)
+	left_panel.custom_minimum_size = Vector2(500.0, 0.0)
 	left_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	left_panel.add_theme_stylebox_override("panel", _style_box(Color("06151be6"), Color("087b7a"), 2, 1))
 	columns.add_child(left_panel)
@@ -79,6 +87,29 @@ func install(overlay: Control) -> Dictionary:
 	right.name = "ConfigurationContent"
 	right.add_theme_constant_override("separation", 7)
 	right_margin.add_child(right)
+	step_heading = _label("STEP 1 / 3 · 지역·작전", 17, Color("d2fffe"))
+	step_heading.custom_minimum_size.y = 30.0
+	right.add_child(step_heading)
+	step_progress = HBoxContainer.new()
+	step_progress.name = "StepProgress"
+	step_progress.add_theme_constant_override("separation", 8)
+	right.add_child(step_progress)
+	for index in STEP_FLOW_SCRIPT.STEP_LABELS.size():
+		var dot := _label("%d  %s" % [index + 1, STEP_FLOW_SCRIPT.STEP_LABELS[index]], 11, Color("6d8990"))
+		dot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		dot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		step_dots.append(dot)
+		step_progress.add_child(dot)
+	for page_name in ["MissionStep", "LoadoutStep", "ConfirmStep"]:
+		var page := VBoxContainer.new()
+		page.name = page_name
+		page.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		page.add_theme_constant_override("separation", 7)
+		step_pages.append(page)
+		right.add_child(page)
+	var mission_step := step_pages[0] as VBoxContainer
+	var loadout_step := step_pages[1] as VBoxContainer
+	var confirm_step := step_pages[2] as VBoxContainer
 
 	var context := content.get_node("Context") as Label
 	var title := content.get_node("Title") as Label
@@ -124,26 +155,26 @@ func install(overlay: Control) -> Dictionary:
 	target_farming_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	left.add_child(target_farming_summary)
 
-	right.add_child(_section_title("요원 선택"))
+	loadout_step.add_child(_section_title("요원 선택"))
 	character_button = Button.new()
 	character_button.name = "CharacterSelectionButton"
 	character_button.custom_minimum_size = Vector2(0.0, 38.0)
 	character_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right.add_child(character_button)
+	loadout_step.add_child(character_button)
 	character_summary = _label("패시브 데이터 계산 중...", 12, Color("8ffffc"))
 	character_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	right.add_child(character_summary)
-	right.add_child(_section_title("런 장비 투자"))
+	loadout_step.add_child(character_summary)
+	loadout_step.add_child(_section_title("런 장비 투자"))
 	var weapon_row := HBoxContainer.new()
 	weapon_row.add_theme_constant_override("separation", 6)
-	right.add_child(weapon_row)
+	loadout_step.add_child(weapon_row)
 	main_weapon_button = _compact_selection_button("MainWeaponInvestmentButton")
 	secondary_weapon_button = _compact_selection_button("SecondaryWeaponInvestmentButton")
 	weapon_row.add_child(main_weapon_button)
 	weapon_row.add_child(secondary_weapon_button)
 	var skill_row := HBoxContainer.new()
 	skill_row.add_theme_constant_override("separation", 6)
-	right.add_child(skill_row)
+	loadout_step.add_child(skill_row)
 	for index in 3:
 		var button := _compact_selection_button("SkillInvestmentButton%d" % index)
 		button.set_meta(&"skill_slot_index", index)
@@ -151,30 +182,38 @@ func install(overlay: Control) -> Dictionary:
 		skill_row.add_child(button)
 	loadout_investment_summary = _label("장비 투자 데이터 계산 중...", 11, Color("8ffffc"))
 	loadout_investment_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	right.add_child(loadout_investment_summary)
+	loadout_step.add_child(loadout_investment_summary)
 	p5_progression_summary = _label("P5 거점 데이터 계산 중...", 11, Color("9fc7cf"))
 	p5_progression_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	right.add_child(p5_progression_summary)
-	right.add_child(_section_title("작전 조건 선택"))
+	loadout_step.add_child(p5_progression_summary)
+	mission_step.add_child(_section_title("작전 조건 선택"))
 	var contract_section := content.get_node("ContractSection") as VBoxContainer
-	_move(contract_section, right)
-	contract_section.add_theme_constant_override("separation", 6)
 	var selectors := contract_section.get_node("Selectors") as HBoxContainer
+	_move(selectors, mission_step)
 	selectors.alignment = BoxContainer.ALIGNMENT_BEGIN
 	for button in selectors.get_children():
 		if button is Button:
 			(button as Button).custom_minimum_size = Vector2(0.0, 36.0)
 			(button as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var meta_actions := contract_section.get_node("MetaActions") as GridContainer
+	loadout_step.add_child(_section_title("거점 준비 도구"))
+	_move(meta_actions, loadout_step)
 	meta_actions.columns = 3
 	for button in meta_actions.get_children():
 		if button is Button:
 			(button as Button).custom_minimum_size = Vector2(0.0, 30.0)
 			(button as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-	right.add_child(_section_title("작전 규모"))
+	var profile := contract_section.get_node("ProfileSummary") as Label
+	_move(profile, loadout_step)
+	loadout_step.move_child(profile, 0)
+	var contract_result := contract_section.get_node("ContractSummary") as Label
+	_move(contract_result, confirm_step)
+	contract_section.queue_free()
+
+	mission_step.add_child(_section_title("작전 규모"))
 	var tiers := content.get_node("TierButtons") as HBoxContainer
-	_move(tiers, right)
+	_move(tiers, mission_step)
 	tiers.alignment = BoxContainer.ALIGNMENT_BEGIN
 	for button in tiers.get_children():
 		if button is Button:
@@ -182,8 +221,9 @@ func install(overlay: Control) -> Dictionary:
 			(button as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			tier_buttons[_tier_id_from_button(button)] = button
 
+	confirm_step.add_child(_section_title("밸런스 데이터"))
 	var balance := content.get_node("BalanceModeSection") as VBoxContainer
-	_move(balance, right)
+	_move(balance, confirm_step)
 	(balance.get_node("Title") as Label).horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	(balance.get_node("Buttons") as HBoxContainer).alignment = BoxContainer.ALIGNMENT_BEGIN
 	for button in balance.get_node("Buttons").get_children():
@@ -193,13 +233,14 @@ func install(overlay: Control) -> Dictionary:
 
 	risk_summary = _label("위험도 계산 중...", 12, Color("ffbf84"))
 	risk_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	right.add_child(risk_summary)
+	confirm_step.add_child(_section_title("최종 위험·보상"))
+	confirm_step.add_child(risk_summary)
 	selection_summary = _label("계약 선택 대기", 12, Color("02e5e1"))
 	selection_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	right.add_child(selection_summary)
+	confirm_step.add_child(selection_summary)
 	var launch_spacer := Control.new()
 	launch_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	right.add_child(launch_spacer)
+	confirm_step.add_child(launch_spacer)
 	launch_button = Button.new()
 	launch_button.name = "OperationLaunchButton"
 	launch_button.custom_minimum_size = Vector2(0.0, 52.0)
@@ -207,7 +248,28 @@ func install(overlay: Control) -> Dictionary:
 	launch_button.add_theme_stylebox_override("normal", _style_box(Color("063332"), Color("02e5e1"), 1, 2))
 	launch_button.add_theme_stylebox_override("hover", _style_box(Color("07504f"), Color("8ffffc"), 1, 2))
 	launch_button.add_theme_stylebox_override("pressed", _style_box(Color("02e5e1"), Color("c8fffe"), 1, 2))
-	right.add_child(launch_button)
+	confirm_step.add_child(launch_button)
+
+	var navigation := HBoxContainer.new()
+	navigation.name = "StepNavigation"
+	navigation.add_theme_constant_override("separation", 10)
+	right.add_child(navigation)
+	previous_button = Button.new()
+	previous_button.name = "PreviousStepButton"
+	previous_button.text = "← 이전"
+	previous_button.custom_minimum_size = Vector2(140.0, 44.0)
+	previous_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	previous_button.pressed.connect(step_relative.bind(-1))
+	navigation.add_child(previous_button)
+	next_button = Button.new()
+	next_button.name = "NextStepButton"
+	next_button.text = "다음 →"
+	next_button.custom_minimum_size = Vector2(140.0, 44.0)
+	next_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	next_button.pressed.connect(step_relative.bind(1))
+	navigation.add_child(next_button)
+	step_flow.step_changed.connect(_on_step_changed)
+	step_flow.reset()
 
 	var footer := content.get_node("Footer") as Label
 	footer.text = "ESC  전초기지 복귀   ·   투입 시 비용과 장착 소모품이 실제 차감됩니다"
@@ -276,6 +338,19 @@ func update(payload: Dictionary) -> void:
 		_style_tier_button(tier_buttons[id], id == tier_id)
 	if preview != null:
 		preview.call(&"update_context", region_id, tier_id, difficulty_id)
+	_on_step_changed(step_flow.get_snapshot())
+
+
+func reset_steps() -> Dictionary:
+	return step_flow.reset()
+
+
+func step_relative(direction: int) -> Dictionary:
+	return step_flow.move(direction)
+
+
+func show_step(index: int) -> Dictionary:
+	return step_flow.go_to(index)
 
 
 func get_snapshot() -> Dictionary:
@@ -305,6 +380,21 @@ func get_snapshot() -> Dictionary:
 		&"skill_button_texts": skill_buttons.map(func(button): return button.text),
 		&"selected_tiers": tier_buttons.keys().filter(
 			func(id): return bool((tier_buttons[id] as Button).get_meta(&"selected", false))
+		),
+		&"step_index": int(step_flow.get_snapshot().get(&"step_index", 0)),
+		&"step_count": step_pages.size(),
+		&"step_id": step_flow.get_snapshot().get(&"step_id", &""),
+		&"visible_page_count": step_pages.filter(func(page): return page.visible).size(),
+		&"previous_enabled": previous_button != null and not previous_button.disabled,
+		&"next_visible": next_button != null and next_button.visible,
+		&"launch_on_confirmation": (
+			launch_button != null
+			and launch_button.is_visible_in_tree()
+			and bool(step_flow.get_snapshot().get(&"is_confirmation", false))
+		),
+		&"navigation_touch_height": (
+			minf(previous_button.custom_minimum_size.y, next_button.custom_minimum_size.y)
+			if previous_button != null and next_button != null else 0.0
 		),
 	}
 
@@ -374,7 +464,27 @@ func _control_contract() -> Dictionary:
 		&"main_weapon_button": main_weapon_button,
 		&"secondary_weapon_button": secondary_weapon_button,
 		&"skill_buttons": skill_buttons,
+		&"previous_step_button": previous_button,
+		&"next_step_button": next_button,
 	}
+
+
+func _on_step_changed(snapshot: Dictionary) -> void:
+	if step_pages.is_empty():
+		return
+	var index := int(snapshot.get(&"step_index", 0))
+	for page_index in step_pages.size():
+		step_pages[page_index].visible = page_index == index
+	step_heading.text = "STEP %d / %d · %s" % [
+		index + 1, int(snapshot.get(&"step_count", step_pages.size())),
+		String(snapshot.get(&"step_label", "작전 설정")),
+	]
+	previous_button.disabled = not bool(snapshot.get(&"can_go_previous", false))
+	next_button.visible = bool(snapshot.get(&"can_go_next", false))
+	for dot_index in step_dots.size():
+		step_dots[dot_index].add_theme_color_override(
+			"font_color", Color("02e5e1") if dot_index == index else Color("6d8990")
+		)
 
 
 func _style_tier_button(button: Button, selected: bool) -> void:

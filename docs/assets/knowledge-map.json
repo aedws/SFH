@@ -1,5 +1,5 @@
 {
-  "version": 16,
+  "version": 17,
   "updated": "2026-09-02",
   "root": {
     "id": "sfh",
@@ -162,6 +162,7 @@
               {"label": "전장의 안개", "source": "features/fog-of-war.md", "route": "features/fog-of-war/", "summary": "방·통로·정면 시야 규칙"},
               {"label": "전술 미니맵", "source": "features/minimap.md", "route": "features/minimap/", "summary": "M 확장 지도와 조건부 방 워프"},
               {"label": "작전 선택과 탈출", "source": "features/raid-setup-extraction.md", "route": "features/raid-setup-extraction/", "summary": "규모 선택·진입 비용·탈출"},
+              {"label": "작전 진입 마법사와 첫 투입 안내", "source": "features/operation-entry-wizard.md", "route": "features/operation-entry-wizard/", "summary": "3단계 설정·초기 4경로·실패 복구·현장 가이드"},
               {"label": "탈출 방어전과 결과 정산", "source": "features/extraction-defense-results.md", "route": "features/extraction-defense-results/", "summary": "카운트다운·성공·실패 정산"},
               {"label": "투입 비용·지역·난이도 계약", "source": "features/operation-contracts.md", "route": "features/operation-contracts/", "summary": "투자와 위험·보상 데이터 연결"},
               {"label": "P5-01 캐릭터 선택", "source": "features/character-selection.md", "route": "features/character-selection/", "summary": "캐릭터 가격·패시브·작전 견적과 실전 적용"},

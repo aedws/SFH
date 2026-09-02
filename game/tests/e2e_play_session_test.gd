@@ -267,15 +267,18 @@ func _verify_hub_input_session() -> bool:
 	var setup_snapshot: Dictionary = game.get("operation_setup_presenter").call(&"get_snapshot")
 	if (
 		not bool(setup_snapshot.get(&"installed", false))
-		or not bool(setup_snapshot.get(&"launch_visible", false))
+		or bool(setup_snapshot.get(&"launch_visible", true))
 		or not bool(setup_snapshot.get(&"layout_fits", false))
+		or int(setup_snapshot.get(&"step_count", 0)) != 3
+		or int(setup_snapshot.get(&"visible_page_count", 0)) != 1
+		or StringName(setup_snapshot.get(&"step_id", &"")) != &"mission"
+		or not bool(setup_snapshot.get(&"next_visible", false))
+		or float(setup_snapshot.get(&"navigation_touch_height", 0.0)) < 44.0
 		or "폐허 도시" not in String(setup_snapshot.get(&"mission_title", ""))
 		or "소모품" not in String(setup_snapshot.get(&"selection_summary", ""))
 		or "TARGET LOOT" not in String(setup_snapshot.get(&"target_farming_summary", ""))
 	):
-		return _fail("작전 진입 화면이 브리핑·계약·명시적 투입 구조를 제공하지 않습니다.")
-	if not _judge_player_perception(&"operation_decision", "작전 위험·비용 결정 이해"):
-		return false
+		return _fail("작전 진입 화면이 단계별 브리핑·계약·최종 투입 구조를 제공하지 않습니다.")
 	if not _judge_player_perception(&"target_farming_decision", "지역·난이도 타겟 파밍 이해"):
 		return false
 	var loot_provider = game.get("loot_table_provider")
@@ -310,8 +313,21 @@ func _verify_operation_session() -> bool:
 	await process_frame
 	if not setup.visible or not paused or bool(game.get("run_started")):
 		return _fail("작전 규모 선택이 확인 없이 즉시 전투를 시작했습니다.")
-	if launch_button == null or not launch_button.visible or launch_button.disabled:
-		return _fail("선택 계약을 확정하는 작전 투입 버튼이 준비되지 않았습니다.")
+	await _tap_key(KEY_RIGHT)
+	var loadout_step: Dictionary = game.get("operation_setup_presenter").call(&"get_snapshot")
+	if StringName(loadout_step.get(&"step_id", &"")) != &"loadout" or int(loadout_step.get(&"visible_page_count", 0)) != 1:
+		return _fail("우측 화살표 입력이 요원·장비 단계로 이동하지 못했습니다.")
+	await _tap_key(KEY_RIGHT)
+	var confirmation_step: Dictionary = game.get("operation_setup_presenter").call(&"get_snapshot")
+	if (
+		StringName(confirmation_step.get(&"step_id", &"")) != &"confirm"
+		or not bool(confirmation_step.get(&"launch_on_confirmation", false))
+		or launch_button == null
+		or launch_button.disabled
+	):
+		return _fail("최종 검토 단계에서만 작전 투입 결정을 제공하지 않습니다.")
+	if not _judge_player_perception(&"operation_decision", "최종 작전 위험·비용 결정 이해"):
+		return false
 	launch_button.pressed.emit()
 	await process_frame
 	if setup.visible or paused or not bool(game.get("run_started")):
@@ -323,6 +339,21 @@ func _verify_operation_session() -> bool:
 	var dash = game.get("dash_cooldown_hud") as Control
 	if player == null or minimap == null or skills == null or dash == null:
 		return _fail("전투 HUD·미니맵·대시 UI가 함께 설치되지 않았습니다.")
+	var tutorial = game.get("operation_tutorial_overlay")
+	if tutorial == null:
+		return _fail("첫 작전 투입 튜토리얼이 설치되지 않았습니다.")
+	var tutorial_snapshot: Dictionary = tutorial.call(&"get_snapshot")
+	if (
+		not bool(tutorial_snapshot.get(&"visible", false))
+		or int(tutorial_snapshot.get(&"step_count", 0)) != 4
+		or not bool(tutorial_snapshot.get(&"non_blocking", false))
+		or float(tutorial_snapshot.get(&"touch_target_height", 0.0)) < 44.0
+	):
+		return _fail("첫 투입 튜토리얼이 이동·전투·방 확보·탈출을 방해 없이 안내하지 않습니다: %s" % tutorial_snapshot)
+	tutorial.call(&"next_step")
+	if int(tutorial.call(&"get_snapshot").get(&"step_index", -1)) != 1:
+		return _fail("작전 튜토리얼 단계 이동이 동작하지 않습니다.")
+	tutorial.call(&"dismiss")
 	if not minimap.visible or not skills.visible or not dash.visible:
 		return _fail("전투 HUD의 필수 자원·쿨타임 정보가 보이지 않습니다.")
 	var hud_snapshot: Dictionary = game.get("combat_hud_presenter").call(

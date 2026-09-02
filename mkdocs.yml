@@ -105,6 +105,7 @@ nav:
       - 전장의 안개: features/fog-of-war.md
       - 전술 미니맵: features/minimap.md
       - 작전 선택과 탈출: features/raid-setup-extraction.md
+      - 작전 진입 마법사와 첫 투입 안내: features/operation-entry-wizard.md
       - 탈출 방어전과 결과 정산: features/extraction-defense-results.md
       - 투입 비용·지역·난이도 계약: features/operation-contracts.md
       - P5-01 캐릭터 선택·패시브·가격: features/character-selection.md

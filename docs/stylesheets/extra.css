@@ -407,12 +407,48 @@ body {
 }
 
 .md-typeset .admonition,
-.md-typeset details:not(.sfh-day):not(.sfh-entry):not(.sfh-bundle) {
+.md-typeset details:not(.sfh-day):not(.sfh-entry):not(.sfh-bundle):not(.sfh-home-drawer) {
   border: 1px solid var(--sfh-line);
   border-radius: 0.8rem;
   background: color-mix(in srgb, var(--sfh-panel) 94%, transparent);
   box-shadow: none;
 }
+
+/* Home density: primary actions remain visible; operational detail opens on demand. */
+.md-typeset details.sfh-home-drawer {
+  margin: 0.7rem 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--sfh-cyan) 28%, var(--sfh-line));
+  border-radius: 0.62rem;
+  background: color-mix(in srgb, var(--sfh-panel) 95%, transparent);
+  box-shadow: none;
+}
+
+.md-typeset .sfh-home-drawer > summary {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.68rem 0.85rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.md-typeset .sfh-home-drawer > summary::-webkit-details-marker { display: none; }
+.md-typeset .sfh-home-drawer > summary::before { display: none; }
+.sfh-home-drawer > summary > span,
+.sfh-home-drawer > summary b,
+.sfh-home-drawer > summary small { display: block; }
+.sfh-home-drawer > summary b { color: var(--sfh-text); font-size: 0.78rem; }
+.sfh-home-drawer > summary small { margin-top: 0.1rem; color: var(--sfh-muted); font-size: 0.62rem; }
+.sfh-home-drawer > summary > em { color: var(--sfh-cyan); font: 800 1rem var(--sfh-mono); font-style: normal; }
+.sfh-home-drawer[open] > summary > em { transform: rotate(45deg); }
+.sfh-home-drawer__body { padding: 0.25rem 0.85rem 0.9rem; border-top: 1px solid color-mix(in srgb, var(--sfh-cyan) 18%, transparent); }
+.sfh-build-details { margin-top: 0 !important; }
+.sfh-build-details .sfh-home-drawer__body { padding: 0.65rem; }
+.sfh-core-loop-drawer .sfh-stats { margin: 0; padding-top: 0.7rem; }
 
 .sfh-hero {
   position: relative;
@@ -3051,6 +3087,31 @@ body,
   }
 
   .md-typeset .sfh-planner-request__notion { width: 100%; }
+}
+
+/* Drawer-specific final overrides follow legacy planner/proposal blocks. */
+.md-typeset details.sfh-home-drawer.sfh-planner-requests,
+.md-typeset details.sfh-home-drawer.sfh-proposal-composer {
+  padding: 0;
+  clip-path: none;
+}
+
+.sfh-proposal-composer .sfh-home-drawer__body > header,
+.sfh-proposal-composer .sfh-proposal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.sfh-proposal-composer .sfh-home-drawer__body > header h2 { margin: 0.15rem 0; }
+.sfh-proposal-composer .sfh-home-drawer__body > header > span,
+.sfh-proposal-composer .sfh-home-drawer__body > p { color: var(--sfh-muted); font-size: 0.76rem; }
+
+@media screen and (max-width: 44.99em) {
+  .md-typeset .sfh-home-drawer > summary { min-height: 52px; padding: 0.58rem 0.68rem; }
+  .sfh-home-drawer__body { padding: 0.2rem 0.68rem 0.72rem; }
+  .sfh-home-drawer > summary small { max-width: 17rem; }
 }
 
 /* Live code/module graph -------------------------------------------------- */

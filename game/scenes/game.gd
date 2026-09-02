@@ -118,6 +118,9 @@ const MOBILE_CONTROL_PAD_SCENE_PATH := (
 const ELITE_PURSUIT_SCENE_PATH := (
 	"res://game/features/elite_pursuit/elite_pursuit_service.tscn"
 )
+const OPERATION_TUTORIAL_SCENE_PATH := (
+	"res://game/features/operation_tutorial/operation_tutorial_overlay.tscn"
+)
 const CYBERPUNK_OVERLAY_SCENE_PATH := (
 	"res://game/features/presentation_theme/cyberpunk_overlay.tscn"
 )
@@ -156,6 +159,9 @@ const START_HUB_METHODS := [
 	&"get_room_rect",
 	&"get_snapshot",
 	&"request_operation",
+]
+const OPERATION_TUTORIAL_METHODS := [
+	&"configure", &"show_first_operation", &"dismiss", &"get_snapshot",
 ]
 const FOG_OF_WAR_METHODS := [&"configure", &"get_snapshot", &"set_visibility_multiplier"]
 const MINIMAP_PROVIDER_METHODS := [&"get_minimap_snapshot"]
@@ -471,6 +477,7 @@ var presentation_settings_service
 var mobile_control_pad
 var elite_pursuit_service
 var cyberpunk_overlay
+var operation_tutorial_overlay
 var operation_setup_presenter := OPERATION_SETUP_PRESENTER_SCRIPT.new()
 var combat_hud_presenter := COMBAT_HUD_PRESENTER_SCRIPT.new()
 var operation_launch_button: Button
@@ -578,6 +585,8 @@ func _ready() -> void:
 		return
 	if features.mobile_controls_enabled and not _install_mobile_controls():
 		return
+	if features.operation_tutorial_enabled and not _install_operation_tutorial():
+		return
 
 	_configure_tier_button(small_map_button, "small")
 	_configure_tier_button(medium_map_button, "medium")
@@ -593,17 +602,34 @@ func _ready() -> void:
 		return
 	_refresh_contract_setup_ui()
 
-	if features.run_setup_enabled:
-		if features.start_hub_enabled:
-			run_setup_overlay.visible = false
-			if not _install_start_hub():
-				return
-		else:
-			run_setup_overlay.visible = true
-			status_label.text = "작전 규모를 선택하세요."
-	else:
+	_route_initial_entry()
+
+
+func _route_initial_entry() -> void:
+	if features.run_setup_enabled and features.start_hub_enabled:
 		run_setup_overlay.visible = false
-		start_run(features.map_size)
+		get_tree().paused = false
+		if not _install_start_hub():
+			_report_configuration_error("기본 거점 진입 경로를 구성하지 못했습니다.")
+		return
+	if features.run_setup_enabled:
+		run_setup_overlay.visible = true
+		get_tree().paused = true
+		operation_setup_presenter.call(&"reset_steps")
+		status_label.text = "작전 설정 1단계 · 지역과 규모를 선택하세요."
+		return
+	run_setup_overlay.visible = false
+	get_tree().paused = false
+	if start_run(features.map_size):
+		return
+	# 개발용 직접 실행도 빈 화면으로 남지 않도록 실패 시 복구 가능한 경로를 엽니다.
+	if features.start_hub_enabled and _install_start_hub():
+		status_label.text = "직접 작전 생성 실패 · 거점 게이트에서 설정을 다시 확인하세요."
+		return
+	run_setup_overlay.visible = true
+	get_tree().paused = true
+	operation_setup_presenter.call(&"reset_steps")
+	status_label.text = "직접 작전 생성 실패 · 설정을 확인한 뒤 다시 투입하세요."
 
 
 func _install_persistent_services() -> bool:
@@ -1297,17 +1323,24 @@ func start_run(map_size: String) -> bool:
 		_rollback_operation_investment()
 		run_started = false
 		hud_margin.visible = false
-		if features.start_hub_enabled and features.run_setup_enabled:
-			_return_to_start_hub()
-			status_label.text = "작전 생성 실패 · %s" % assembly_failure_message
+		_return_to_start_hub(false)
+		if features.start_hub_enabled:
+			_install_start_hub()
 		else:
-			run_setup_overlay.visible = features.run_setup_enabled
+			run_setup_overlay.visible = true
+			get_tree().paused = true
+			operation_setup_presenter.call(&"reset_steps")
+		status_label.text = "작전 생성 실패 · %s" % assembly_failure_message
 		return false
+	if is_instance_valid(operation_tutorial_overlay):
+		operation_tutorial_overlay.call(&"show_first_operation")
 	return true
 
 
 func _rollback_operation_investment() -> void:
 	_restore_run_skill_bindings()
+	if p5_hub_progression_service != null:
+		p5_hub_progression_service.call(&"settle_run", false, {})
 	if loadout_investment_service != null:
 		loadout_investment_service.call(&"finish_run")
 	if persistent_profile != null and not active_contract.is_empty():
@@ -1371,6 +1404,7 @@ func _open_run_setup() -> void:
 	get_tree().paused = true
 	if is_instance_valid(mobile_control_pad):
 		mobile_control_pad.call(&"set_context_enabled", false)
+	operation_setup_presenter.call(&"reset_steps")
 	_refresh_contract_setup_ui()
 
 
@@ -1405,7 +1439,28 @@ func _clear_start_hub() -> void:
 	player = null
 
 
-func _return_to_start_hub() -> void:
+func _install_operation_tutorial() -> bool:
+	operation_tutorial_overlay = _instantiate_feature(
+		OPERATION_TUTORIAL_SCENE_PATH, ui_layer, &"OperationTutorial"
+	)
+	if not _supports_methods(operation_tutorial_overlay, OPERATION_TUTORIAL_METHODS):
+		_report_configuration_error("작전 튜토리얼 모듈의 공개 계약이 올바르지 않습니다.")
+		return false
+	return bool(operation_tutorial_overlay.call(&"configure", {
+		&"move": "%s%s%s%s" % [
+			_binding_label(&"move_up"), _binding_label(&"move_left"),
+			_binding_label(&"move_down"), _binding_label(&"move_right"),
+		],
+		&"dash": _binding_label(&"dash"),
+		&"attack": _binding_label(&"primary_attack"),
+		&"interact": _binding_label(&"interact"),
+		&"map": "M",
+	}))
+
+
+func _return_to_start_hub(route_initial_entry: bool = true) -> void:
+	if is_instance_valid(operation_tutorial_overlay):
+		operation_tutorial_overlay.call(&"dismiss")
 	if field_loot_acquisition_service != null:
 		field_loot_acquisition_service.call(&"restore_equipment_swaps")
 	if lose_equipped_loadout_on_return:
@@ -1443,12 +1498,8 @@ func _return_to_start_hub() -> void:
 	_reset_run_state()
 	if p5_hub_progression_service != null:
 		p5_hub_progression_service.call(&"refresh_hub")
-	if features.start_hub_enabled and features.run_setup_enabled:
-		_install_start_hub()
-	elif features.run_setup_enabled:
-		run_setup_overlay.visible = true
-	else:
-		start_run(features.map_size)
+	if route_initial_entry:
+		_route_initial_entry()
 
 
 func _free_feature_node(node: Node) -> void:
@@ -2422,6 +2473,10 @@ func _on_modal_panel_visibility_changed(is_open: bool) -> void:
 				&"skills": is_instance_valid(combat_skill_hud) and combat_skill_hud.visible,
 				&"dash": is_instance_valid(dash_cooldown_hud) and dash_cooldown_hud.visible,
 				&"minimap": is_instance_valid(minimap) and minimap.visible,
+				&"tutorial": (
+					is_instance_valid(operation_tutorial_overlay)
+					and operation_tutorial_overlay.visible
+				),
 			}
 		hud_margin.visible = false
 		start_hub_hud.visible = false
@@ -2433,6 +2488,8 @@ func _on_modal_panel_visibility_changed(is_open: bool) -> void:
 			dash_cooldown_hud.visible = false
 		if is_instance_valid(minimap):
 			minimap.visible = false
+		if is_instance_valid(operation_tutorial_overlay):
+			operation_tutorial_overlay.visible = false
 		if is_instance_valid(mobile_control_pad):
 			mobile_control_pad.call(&"set_context_enabled", false)
 		return
@@ -2451,6 +2508,10 @@ func _on_modal_panel_visibility_changed(is_open: bool) -> void:
 		dash_cooldown_hud.visible = bool(modal_ui_visibility_snapshot.get(&"dash", false))
 	if is_instance_valid(minimap):
 		minimap.visible = bool(modal_ui_visibility_snapshot.get(&"minimap", false))
+	if is_instance_valid(operation_tutorial_overlay):
+		operation_tutorial_overlay.visible = bool(
+			modal_ui_visibility_snapshot.get(&"tutorial", false)
+		)
 	if is_instance_valid(mobile_control_pad):
 		mobile_control_pad.call(&"set_context_enabled", true)
 	modal_ui_visibility_snapshot.clear()
@@ -2953,6 +3014,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			_restart_run()
 		elif run_setup_overlay.visible and key_event.keycode == KEY_ESCAPE:
 			_close_run_setup()
+		elif run_setup_overlay.visible and key_event.keycode == KEY_LEFT:
+			operation_setup_presenter.call(&"step_relative", -1)
+		elif run_setup_overlay.visible and key_event.keycode == KEY_RIGHT:
+			operation_setup_presenter.call(&"step_relative", 1)
 
 
 func _instantiate_feature(path: String, parent: Node, display_name: StringName) -> Node:
@@ -3607,20 +3672,21 @@ func _on_player_died() -> void:
 
 
 func _settle_run_loot(extracted: bool) -> Dictionary:
-	if run_settlement_service == null or current_run_id == &"":
-		return {}
+	var settlement: Dictionary = {}
 	var acquired_items: Dictionary = {}
 	if is_instance_valid(field_loot_acquisition_service):
 		acquired_items = field_loot_acquisition_service.call(&"get_snapshot").get(
 			&"acquired_items", {}
 		)
-	last_loot_settlement = run_settlement_service.call(
-		&"settle", current_run_id, acquired_items, extracted
-	)
+	if run_settlement_service != null and current_run_id != &"":
+		settlement = run_settlement_service.call(
+			&"settle", current_run_id, acquired_items, extracted
+		)
 	if p5_hub_progression_service != null:
-		last_loot_settlement[&"p5_progression"] = p5_hub_progression_service.call(
+		settlement[&"p5_progression"] = p5_hub_progression_service.call(
 			&"settle_run", extracted, acquired_items
 		)
+	last_loot_settlement = settlement
 	return last_loot_settlement.duplicate(true)
 
 
@@ -3675,6 +3741,8 @@ func _hide_active_run_ui() -> void:
 	for layer in [minimap, combat_skill_hud, dash_cooldown_hud]:
 		if is_instance_valid(layer):
 			layer.visible = false
+	if is_instance_valid(operation_tutorial_overlay):
+		operation_tutorial_overlay.call(&"dismiss")
 
 
 func _selected_map_display_name() -> String:

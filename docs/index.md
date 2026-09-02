@@ -25,7 +25,7 @@ search:
     </div>
     <span class="sfh-kicker">DEVELOPMENT COMMAND CENTER</span>
     <h1>살아서 싸우고,<br>가져와 성장하세요.</h1>
-    <p>Godot 4 기반 탑다운 뱀서라이크에 익스트랙션 슈터의 작전 선택, 파밍, 장비, 탈출을 결합합니다. 이 화면에서 현재 플레이 가능한 범위와 최신 변경을 바로 확인할 수 있습니다.</p>
+    <p>거점에서 준비하고, 살아서 회수해 성장하는 모듈형 탑다운 익스트랙션 액션입니다.</p>
     <div class="sfh-actions">
       <a class="sfh-button primary" href="getting-started/run-project/">프로젝트 실행 <b>→</b></a>
       <a class="sfh-button" href="development-status/">전체 업데이트 <b>⌄</b></a>
@@ -54,26 +54,26 @@ search:
         <span><small>WINDOWS X86_64 · v0.1.0</small><strong>Windows 빌드 다운로드</strong><em>검증 완료 실행의 ZIP · SHA-256 제공</em></span>
         <b aria-hidden="true">↓</b>
       </a>
-      <div class="sfh-surface-map" aria-label="배포 영역 분리 상태">
-        <span data-sfh-surface="wiki"><small>DOCS · PAGES</small><strong>SFH DEV WIKI</strong><em>문서·검색만 제공</em></span>
-        <span data-sfh-surface="gameplay"><small>PLAY · WORKER</small><strong>SFH GAME</strong><em>브라우저 실행 전용</em></span>
-        <span data-sfh-surface="r2"><small>ASSETS · PRIVATE R2</small><strong>NO PUBLIC LINK</strong><em>Worker 바인딩만 허용</em></span>
-      </div>
-      <p class="sfh-cutover-note"><b>NEXT ORIGIN</b><span>sfh-game.play-preview.dev · 도메인 등록·DNS·E2E 완료 후 무중단 전환</span></p>
-      <div class="sfh-operation-meta" aria-label="현재 플레이 빌드 요약">
-        <span><b>3</b><small>MAP TIERS</small></span>
-        <span><b>K · 23 + 9</b><small>KEY + SKILL BINDING</small></span>
-        <span><b>PASS</b><small>WEB BUILD</small></span>
-      </div>
+      <details class="sfh-home-drawer sfh-build-details">
+        <summary><span><b>배포·입력 상세</b><small>게임·위키·다운로드 분리 상태</small></span><em>＋</em></summary>
+        <div class="sfh-home-drawer__body">
+          <div class="sfh-surface-map" aria-label="배포 영역 분리 상태">
+            <span data-sfh-surface="wiki"><small>DOCS · PAGES</small><strong>SFH DEV WIKI</strong><em>문서·검색만 제공</em></span>
+            <span data-sfh-surface="gameplay"><small>PLAY · WORKER</small><strong>SFH GAME</strong><em>브라우저 실행 전용</em></span>
+            <span data-sfh-surface="r2"><small>ASSETS · PRIVATE R2</small><strong>NO PUBLIC LINK</strong><em>Worker 바인딩만 허용</em></span>
+          </div>
+          <p class="sfh-cutover-note"><b>NEXT ORIGIN</b><span>sfh-game.play-preview.dev · DNS·E2E 완료 후 전환</span></p>
+          <div class="sfh-operation-meta" aria-label="현재 플레이 빌드 요약"><span><b>3</b><small>MAP TIERS</small></span><span><b>K · 23 + 9</b><small>INPUT</small></span><span><b>PASS</b><small>WEB BUILD</small></span></div>
+        </div>
+      </details>
     </div>
   </aside>
 </section>
 
-<section class="sfh-planner-requests" data-sfh-planner-requests aria-labelledby="sfh-planner-requests-title">
-  <header class="sfh-planner-requests__heading">
-    <div><span class="sfh-kicker">PLANNER REQUEST LINK</span><h2 id="sfh-planner-requests-title">기획 요청 · 데이터 결정</h2></div>
-    <span class="sfh-planner-requests__status" data-sfh-planner-request-status>요청 목록 연결 중</span>
-  </header>
+<details class="sfh-home-drawer sfh-planner-requests" data-sfh-planner-requests>
+  <summary><span><span class="sfh-kicker">PLANNER REQUEST LINK</span><b id="sfh-planner-requests-title">기획 요청 · 데이터 결정</b><small>차단 요청과 완료 근거를 필요할 때 펼칩니다.</small></span><em>＋</em></summary>
+  <div class="sfh-home-drawer__body">
+  <div class="sfh-planner-requests__heading"><span class="sfh-planner-requests__status" data-sfh-planner-request-status>요청 목록 연결 중</span></div>
   <p class="sfh-planner-requests__intro">개발 진행에 필요한 결정만 상단에 압축합니다. 담당 역할·차단 상태·수락 기준·검증 근거까지 같은 ID로 추적합니다.</p>
   <div class="sfh-planner-source" data-sfh-planner-source aria-live="polite">공개 Notion 확인 시각을 불러오는 중</div>
   <p class="sfh-planner-requests__instruction" data-sfh-planner-request-instruction>요청 ID를 Notion 결정 제목에 함께 적어 주세요.</p>
@@ -85,10 +85,12 @@ search:
   </div>
   <div class="sfh-planner-requests__grid" data-sfh-planner-request-grid aria-live="polite"></div>
   <footer><a href="design/wiki-collaboration-workflow/">협업 문제·수정 대안 →</a> · <a href="design/planner-request-workflow/">요청 작성·Sheet 확정 규칙 →</a></footer>
-</section>
+</div></details>
 
-<section class="sfh-proposal-composer" data-sfh-proposal-composer aria-labelledby="sfh-proposal-title">
-  <header><div><span class="sfh-kicker">SAFE COLLABORATION INTAKE</span><h2 id="sfh-proposal-title">기획 제안 초안 생성</h2></div><span>LOCAL ONLY · NO PUBLIC WRITE</span></header>
+<details class="sfh-home-drawer sfh-proposal-composer" data-sfh-proposal-composer>
+  <summary><span><span class="sfh-kicker">SAFE COLLABORATION INTAKE</span><b id="sfh-proposal-title">기획 제안 초안 생성</b><small>Notion 전달용 초안 도구 · 외부 자동 전송 없음</small></span><em>＋</em></summary>
+  <div class="sfh-home-drawer__body">
+  <p class="sfh-proposal-local-state">LOCAL ONLY · NO PUBLIC WRITE</p>
   <p>위키는 익명 편집을 받지 않습니다. 아래에서 제안을 정규화해 복사한 뒤, 인증된 Notion에 붙여넣으면 AI 개발자가 다음 스냅샷·PR에서 동일 ID로 추적합니다.</p>
   <div class="sfh-proposal-grid">
     <label>종류<select name="kind"><option>PLAN</option><option>DATA</option><option>DEV</option><option>BUG</option></select></label>
@@ -100,7 +102,7 @@ search:
   </div>
   <textarea data-sfh-proposal-output readonly aria-label="Notion에 붙여넣을 제안 초안"></textarea>
   <div class="sfh-proposal-actions"><button type="button" data-sfh-proposal-copy>초안 복사</button><span data-sfh-proposal-state>이 화면은 외부로 전송하지 않습니다.</span></div>
-</section>
+</div></details>
 
 <nav class="sfh-role-nav" aria-label="기획자와 개발자 빠른 이동">
   <a href="development-status/"><small>PLAN</small><strong>기획·진행 현황</strong><span>확정 근거와 다음 작업</span></a>
@@ -109,26 +111,45 @@ search:
   <a href="#sfh-knowledge-map"><small>DOCS</small><strong>전체 문서 맵</strong><span>대·중·소·세부 탐색</span></a>
 </nav>
 
-<div class="sfh-stats">
+<details class="sfh-home-drawer sfh-core-loop-drawer">
+  <summary><span><span class="sfh-kicker">CURRENT PLAY LOOP</span><b>현재 플레이 핵심 4축</b><small>거점·전장·전투·성장 요약</small></span><em>＋</em></summary>
+  <div class="sfh-home-drawer__body sfh-stats">
   <div class="sfh-stat"><small>Core loop</small><strong>HUB → RAID → HUB</strong><span>게이트 진입 · 전투 세션 · 결과 후 복귀</span></div>
   <div class="sfh-stat"><small>World</small><strong>ROOM + CONE VISION</strong><span>방 전체 공개 · 통로 정면 시야 · 전체 미니맵</span></div>
   <div class="sfh-stat"><small>Combat</small><strong>3 ACTIVE SKILLS</strong><span>점멸 · 원형 자기장 · 기동 가속</span></div>
   <div class="sfh-stat"><small>Growth</small><strong>Run + Meta</strong><span>임시 버프·세 계열 영구 레벨</span></div>
-</div>
+</div></details>
 
 <div class="sfh-section-head">
   <div><span class="sfh-kicker">RELEASE NOTES</span><h2>📢 최신 업데이트</h2></div>
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 7 TOPICS</span><span>77 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 8 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
-<details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 28 · IMPROVE 28 · CHANGE 28 · FIX 10</small></span><em class="sfh-chevron">⌃</em></summary>
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 33 · IMPROVE 34 · CHANGE 33 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>28</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>28</b><small>CHANGE</small></span><span><b>10</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>33</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>33</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>작전 진입 3단계화 · 전 경로 복구 · 첫 투입 가이드</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 작전 설정을 지역·장비·최종 확인으로 나누고, 어떤 실행 방식에서도 전장 또는 복구 가능한 설정 화면에 도착하게 했습니다.</strong><ul>
+          <li><b>동선 보존:</b> 기본 플레이는 기존과 같이 거점 작전 게이트에서 F로 시작합니다.</li>
+          <li><b>밀도:</b> 우측 설정을 3개 화면으로 분리하고 좌·우 화살표와 44px 버튼으로 한 번에 한 결정만 보여줍니다.</li>
+          <li><b>튜토리얼:</b> 첫 투입에 이동·전투·방 확보·탈출 4단계를 비차단형 패널로 안내합니다.</li>
+          <li><b>복구:</b> 맵 조립 또는 투자 확정 실패 시 부분 전장을 제거하고 거점/설정 화면으로 안전하게 돌아갑니다.</li>
+          <li><b>E2E:</b> 9개 규모·난이도 조합, 초기 진입 4종, 실제 화살표·최종 투입·튜토리얼을 검증합니다.</li>
+        </ul></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>단계 흐름, 3페이지 설정, 경로 라우터, 실패 복구, 첫 투입 가이드를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 6</h3><p>결정 밀도, 탐색성, 터치 범위, 첫 플레이 이해, 반복 투입, 홈 정보 밀도를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>작전 진입 계약·E2E·모듈 감사·검색·홈 요약을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>비표준 진입의 빈 화면, 조립 실패 잔존 상태, 정산 비활성 반복 투입 차단을 수정했습니다.</p></div>
+        <p><a href="features/operation-entry-wizard/">작전 진입 마법사 →</a> · <a href="quality/e2e-play-session/">플레이 E2E →</a> · <a href="architecture/module-audit/#2026-09-02">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 7</small><b>P6-01 랭킹 공급자 · 방사형 코드 관계 웹</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 랭킹 기록을 로컬에 먼저 보존하면서 온라인 공급자를 교체할 수 있게 했고, 코드 노드맵은 선택 모듈 중심 거미줄로 바뀌었습니다.</strong><ul>
