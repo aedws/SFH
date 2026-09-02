@@ -9,7 +9,7 @@ var risk_level: int = 0
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	custom_minimum_size = Vector2(500.0, 238.0)
+	custom_minimum_size = Vector2(280.0, 210.0)
 
 
 func update_context(region_id: StringName, tier_id: StringName, difficulty_id: StringName) -> void:
@@ -28,7 +28,13 @@ func update_context(region_id: StringName, tier_id: StringName, difficulty_id: S
 
 
 func _draw() -> void:
-	var bounds := Rect2(Vector2.ZERO, size)
+	const DESIGN_SIZE := Vector2(500.0, 238.0)
+	var draw_scale := Vector2(
+		maxf(0.01, size.x / DESIGN_SIZE.x),
+		maxf(0.01, size.y / DESIGN_SIZE.y)
+	)
+	draw_set_transform(Vector2.ZERO, 0.0, draw_scale)
+	var bounds := Rect2(Vector2.ZERO, DESIGN_SIZE)
 	draw_rect(bounds, Color("07121a"), true)
 	draw_rect(bounds.grow(-1.0), Color(accent_color, 0.72), false, 2.0)
 	for x in range(24, int(size.x), 32):
@@ -66,3 +72,4 @@ func _draw() -> void:
 		var point := Vector2(118.0 + index * 61.0, 118.0 + (index % 2) * 36.0)
 		draw_circle(point, 5.0, Color(danger_color, 0.92))
 		draw_circle(point, 11.0, Color(danger_color, 0.12), false, 1.0)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

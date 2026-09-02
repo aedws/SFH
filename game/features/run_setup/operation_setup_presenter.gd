@@ -32,6 +32,10 @@ var step_progress: HBoxContainer
 var previous_button: Button
 var next_button: Button
 var step_dots: Array[Label] = []
+var overlay_root: Control
+var main_columns: HBoxContainer
+var outer_margin: MarginContainer
+var responsive_mode := &"wide"
 
 
 func install(overlay: Control) -> Dictionary:
@@ -44,16 +48,20 @@ func install(overlay: Control) -> Dictionary:
 		return _control_contract()
 
 	var panel := overlay.get_node("Center/Panel") as PanelContainer
+	overlay_root = overlay
 	root_panel = panel
-	panel.custom_minimum_size = Vector2(1080.0, 620.0)
+	panel.custom_minimum_size = Vector2(0.0, 620.0)
+	panel.clip_contents = true
 	panel.add_theme_stylebox_override("panel", _style_box(Color("030d12f7"), Color("02e5e1"), 2, 2))
 	var margin := overlay.get_node("Center/Panel/Margin") as MarginContainer
+	outer_margin = margin
 	for side in [&"margin_left", &"margin_top", &"margin_right", &"margin_bottom"]:
 		margin.add_theme_constant_override(side, 20)
 	content.alignment = BoxContainer.ALIGNMENT_BEGIN
 	content.add_theme_constant_override("separation", 10)
 
 	var columns := HBoxContainer.new()
+	main_columns = columns
 	columns.name = "MainColumns"
 	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	columns.add_theme_constant_override("separation", 14)
@@ -63,7 +71,8 @@ func install(overlay: Control) -> Dictionary:
 	var left_panel := PanelContainer.new()
 	left_column = left_panel
 	left_panel.name = "MissionBriefingPanel"
-	left_panel.custom_minimum_size = Vector2(500.0, 0.0)
+	left_panel.custom_minimum_size = Vector2(420.0, 0.0)
+	left_panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	left_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	left_panel.add_theme_stylebox_override("panel", _style_box(Color("06151be6"), Color("087b7a"), 2, 1))
 	columns.add_child(left_panel)
@@ -126,10 +135,14 @@ func install(overlay: Control) -> Dictionary:
 	subtitle.text = "투입 조건과 회수 기대값을 확인하고 작전 계약을 확정하세요."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	subtitle.add_theme_font_size_override("font_size", 13)
+	for label in [context, title, subtitle]:
+		_fit_label(label)
 
 	mission_title = _label("폐허 도시 · 소형 작전", 22, Color("f1f7f8"))
 	left.add_child(mission_title)
 	mission_code = _label("RAID / STANDARD / RECOVERY", 11, Color("75aeb7"))
+	_fit_label(mission_title)
+	_fit_label(mission_code)
 	left.add_child(mission_code)
 	preview = OPERATION_PREVIEW_SCRIPT.new()
 	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -145,14 +158,14 @@ func install(overlay: Control) -> Dictionary:
 
 	left.add_child(_section_title("작전 정보"))
 	mission_intel = _label("탐색 데이터 계산 중...", 13, Color("bed1d5"))
-	mission_intel.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_wrap_label(mission_intel)
 	left.add_child(mission_intel)
 	left.add_child(_section_title("예상 회수"))
 	reward_summary = _label("회수 계약 계산 중...", 13, Color("ffd579"))
-	reward_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_wrap_label(reward_summary)
 	left.add_child(reward_summary)
 	target_farming_summary = _label("타겟 파밍 표 계산 중...", 12, Color("8ffffc"))
-	target_farming_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_wrap_label(target_farming_summary)
 	left.add_child(target_farming_summary)
 
 	loadout_step.add_child(_section_title("요원 선택"))
@@ -162,7 +175,7 @@ func install(overlay: Control) -> Dictionary:
 	character_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	loadout_step.add_child(character_button)
 	character_summary = _label("패시브 데이터 계산 중...", 12, Color("8ffffc"))
-	character_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_wrap_label(character_summary)
 	loadout_step.add_child(character_summary)
 	loadout_step.add_child(_section_title("런 장비 투자"))
 	var weapon_row := HBoxContainer.new()
@@ -181,10 +194,10 @@ func install(overlay: Control) -> Dictionary:
 		skill_buttons.append(button)
 		skill_row.add_child(button)
 	loadout_investment_summary = _label("장비 투자 데이터 계산 중...", 11, Color("8ffffc"))
-	loadout_investment_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_wrap_label(loadout_investment_summary)
 	loadout_step.add_child(loadout_investment_summary)
 	p5_progression_summary = _label("P5 거점 데이터 계산 중...", 11, Color("9fc7cf"))
-	p5_progression_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_wrap_label(p5_progression_summary)
 	loadout_step.add_child(p5_progression_summary)
 	mission_step.add_child(_section_title("작전 조건 선택"))
 	var contract_section := content.get_node("ContractSection") as VBoxContainer
@@ -195,6 +208,7 @@ func install(overlay: Control) -> Dictionary:
 		if button is Button:
 			(button as Button).custom_minimum_size = Vector2(0.0, 36.0)
 			(button as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			_fit_button(button as Button)
 	var meta_actions := contract_section.get_node("MetaActions") as GridContainer
 	loadout_step.add_child(_section_title("거점 준비 도구"))
 	_move(meta_actions, loadout_step)
@@ -203,11 +217,14 @@ func install(overlay: Control) -> Dictionary:
 		if button is Button:
 			(button as Button).custom_minimum_size = Vector2(0.0, 30.0)
 			(button as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			_fit_button(button as Button)
 
 	var profile := contract_section.get_node("ProfileSummary") as Label
 	_move(profile, loadout_step)
 	loadout_step.move_child(profile, 0)
 	var contract_result := contract_section.get_node("ContractSummary") as Label
+	_fit_label(profile)
+	_fit_label(contract_result)
 	_move(contract_result, confirm_step)
 	contract_section.queue_free()
 
@@ -219,6 +236,7 @@ func install(overlay: Control) -> Dictionary:
 		if button is Button:
 			(button as Button).custom_minimum_size = Vector2(0.0, 82.0)
 			(button as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			_fit_button(button as Button)
 			tier_buttons[_tier_id_from_button(button)] = button
 
 	confirm_step.add_child(_section_title("밸런스 데이터"))
@@ -230,13 +248,15 @@ func install(overlay: Control) -> Dictionary:
 		if button is Button:
 			(button as Button).custom_minimum_size = Vector2(0.0, 34.0)
 			(button as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			_fit_button(button as Button)
+	_fit_label(balance.get_node("BalanceModeDescription") as Label)
 
 	risk_summary = _label("위험도 계산 중...", 12, Color("ffbf84"))
-	risk_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_wrap_label(risk_summary)
 	confirm_step.add_child(_section_title("최종 위험·보상"))
 	confirm_step.add_child(risk_summary)
 	selection_summary = _label("계약 선택 대기", 12, Color("02e5e1"))
-	selection_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_wrap_label(selection_summary)
 	confirm_step.add_child(selection_summary)
 	var launch_spacer := Control.new()
 	launch_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -274,7 +294,12 @@ func install(overlay: Control) -> Dictionary:
 	var footer := content.get_node("Footer") as Label
 	footer.text = "ESC  전초기지 복귀   ·   투입 시 비용과 장착 소모품이 실제 차감됩니다"
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_fit_label(footer)
 	content.move_child(footer, content.get_child_count() - 1)
+	if not overlay.resized.is_connected(_apply_responsive_layout):
+		overlay.resized.connect(_apply_responsive_layout)
+	_apply_responsive_layout()
+	overlay.call_deferred(&"queue_redraw")
 	return _control_contract()
 
 
@@ -356,6 +381,8 @@ func show_step(index: int) -> Dictionary:
 func get_snapshot() -> Dictionary:
 	var panel_rect := root_panel.get_global_rect() if root_panel != null else Rect2()
 	var launch_rect := launch_button.get_global_rect() if launch_button != null else Rect2()
+	var overlay_rect := overlay_root.get_global_rect() if overlay_root != null else Rect2()
+	var overflow_nodes := _visible_overflow_nodes()
 	return {
 		&"installed": launch_button != null,
 		&"launch_visible": launch_button != null and launch_button.is_visible_in_tree(),
@@ -363,10 +390,17 @@ func get_snapshot() -> Dictionary:
 			root_panel != null
 			and launch_button != null
 			and panel_rect.encloses(launch_rect)
-			and left_column.size.x >= 500.0
-			and right_column.size.x >= 500.0
+			and overlay_rect.encloses(panel_rect)
+			and overflow_nodes.is_empty()
+			and (not left_column.visible or left_column.size.x >= 320.0)
+			and right_column.size.x >= 280.0
 		),
 		&"panel_size": root_panel.size if root_panel != null else Vector2.ZERO,
+		&"panel_inside_viewport": overlay_rect.encloses(panel_rect),
+		&"responsive_mode": responsive_mode,
+		&"left_column_visible": left_column.visible if left_column != null else false,
+		&"overflow_nodes": overflow_nodes,
+		&"largest_minimums": _largest_minimum_sizes(),
 		&"mission_title": mission_title.text if mission_title != null else "",
 		&"selection_summary": selection_summary.text if selection_summary != null else "",
 		&"target_farming_summary": target_farming_summary.text if target_farming_summary != null else "",
@@ -455,7 +489,105 @@ func _compact_selection_button(node_name: String) -> Button:
 	button.custom_minimum_size = Vector2(0.0, 38.0)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.add_theme_font_size_override("font_size", 11)
+	_fit_button(button)
 	return button
+
+
+func _apply_responsive_layout() -> void:
+	if overlay_root == null or root_panel == null or left_column == null:
+		return
+	var viewport_size := overlay_root.size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		return
+	var is_single_column := viewport_size.x < 840.0
+	var is_compact := viewport_size.x < 1120.0
+	responsive_mode = &"single" if is_single_column else (&"compact" if is_compact else &"wide")
+	var edge_gap := 12.0 if is_single_column else (20.0 if is_compact else 32.0)
+	root_panel.custom_minimum_size = Vector2(
+		maxf(280.0, minf(1160.0, viewport_size.x - edge_gap * 2.0)),
+		maxf(520.0, minf(620.0, viewport_size.y - 20.0))
+	)
+	var content_margin := 10 if is_single_column else (14 if is_compact else 20)
+	for side in [&"margin_left", &"margin_top", &"margin_right", &"margin_bottom"]:
+		outer_margin.add_theme_constant_override(side, content_margin)
+	left_column.visible = not is_single_column
+	left_column.custom_minimum_size.x = 340.0 if is_compact else 420.0
+	main_columns.add_theme_constant_override("separation", 10 if is_compact else 14)
+	root_panel.queue_sort()
+	main_columns.queue_sort()
+
+
+func get_width_contract(viewport_width: float) -> Dictionary:
+	var mode := &"single" if viewport_width < 840.0 else (&"compact" if viewport_width < 1120.0 else &"wide")
+	var edge_gap := 12.0 if mode == &"single" else (20.0 if mode == &"compact" else 32.0)
+	var panel_width := maxf(280.0, minf(1160.0, viewport_width - edge_gap * 2.0))
+	return {
+		&"mode": mode,
+		&"viewport_width": viewport_width,
+		&"panel_width": panel_width,
+		&"inside_viewport": panel_width <= viewport_width,
+		&"left_column_visible": mode != &"single",
+		&"minimum_touch_width": 280.0,
+	}
+
+
+func _visible_overflow_nodes() -> PackedStringArray:
+	var result := PackedStringArray()
+	if root_panel == null:
+		return result
+	var panel_rect := root_panel.get_global_rect().grow(1.0)
+	for node in root_panel.find_children("*", "Control", true, false):
+		var control := node as Control
+		if control == null or not control.is_visible_in_tree() or control.size.x <= 0.0:
+			continue
+		if not panel_rect.encloses(control.get_global_rect()):
+			result.append(String(root_panel.get_path_to(control)))
+	return result
+
+
+func _largest_minimum_sizes() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if root_panel == null:
+		return result
+	for node in root_panel.find_children("*", "Control", true, false):
+		var control := node as Control
+		if control == null or not control.is_visible_in_tree():
+			continue
+		var minimum := control.get_combined_minimum_size()
+		if minimum.y > 100.0 or minimum.x > 500.0:
+			result.append({
+				&"path": String(root_panel.get_path_to(control)),
+				&"minimum": minimum,
+				&"size": control.size,
+			})
+	result.sort_custom(func(a, b): return (a as Dictionary).get(&"minimum", Vector2.ZERO).y > (b as Dictionary).get(&"minimum", Vector2.ZERO).y)
+	if result.size() > 12:
+		result.resize(12)
+	return result
+
+
+func _fit_label(label: Label) -> void:
+	if label == null:
+		return
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	label.clip_text = true
+	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+
+
+func _fit_button(button: Button) -> void:
+	if button == null:
+		return
+	button.clip_text = true
+	button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+
+
+func _wrap_label(label: Label, minimum_width: float = 280.0) -> void:
+	if label == null:
+		return
+	label.custom_minimum_size.x = minimum_width
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 
 func _control_contract() -> Dictionary:

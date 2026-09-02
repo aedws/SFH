@@ -220,6 +220,7 @@ jobs:
           grep -q "field_loot_immediate_equip_r_restore" /tmp/sfh-e2e.log
           grep -q "field_loot_skill_swap_r_restore" /tmp/sfh-e2e.log
           grep -q "operation_combinations_9" /tmp/sfh-e2e.log
+          grep -q "responsive_operation_briefing_widths_4" /tmp/sfh-e2e.log
           grep -q "run_loot_success_duplicate_guard" /tmp/sfh-e2e.log
           grep -q "run_loot_death_loss" /tmp/sfh-e2e.log
           grep -q "E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe" /tmp/sfh-e2e.log

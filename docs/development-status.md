@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 53 · IMPROVE 61 · CHANGE 59 · FIX 31</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 55 · IMPROVE 65 · CHANGE 62 · FIX 33</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>53</b><small>BUILD</small></span><span><b>61</b><small>IMPROVE</small></span><span><b>59</b><small>CHANGE</small></span><span><b>31</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>55</b><small>BUILD</small></span><span><b>65</b><small>IMPROVE</small></span><span><b>62</b><small>CHANGE</small></span><span><b>33</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -317,7 +317,7 @@ tags:
         <p><a href="access/planner/">기획자 작업실 →</a> · <a href="access/developer/">개발자 작업실 →</a> · <a href="architecture/wiki-role-auth/">인증 계약 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 14</small><b>P6-02 검증형 랭킹 제출 · 영구 재시도</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 성공 런을 익명 신원과 검증 봉투로 묶고, 중복·변조·네트워크 단절이 있어도 로컬 기록과 제출 상태를 잃지 않게 했습니다.</strong><ul>
@@ -332,6 +332,23 @@ tags:
         <div class="sfh-group"><h3>수정 · 4</h3><p>런 ID 정산, 공급자 설정, P6 작업선, E2E·코드 노드맵을 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>같은 런의 중복 집계와 연결 실패 기록의 조용한 유실 가능성을 차단했습니다.</p></div>
         <p><a href="features/ranking-provider/">P6 검증 제출 →</a> · <a href="architecture/module-audit/#p6-02-2026-09-02">모듈 감사 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 15</small><b>작전 브리핑 화면 폭 · 브라우저 잘림 수정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 작전 검토 화면의 좌우 내용이 브라우저 캔버스 밖으로 밀리던 고정 폭을 제거하고, 화면 너비에 따라 정보 우선순위를 바꾸도록 개선했습니다.</strong><ul>
+          <li><b>근본 원인:</b> 고정 500px 프리뷰·좌측 열과 줄바꿈되지 않는 우측 설명이 합쳐져 실제 패널 최소 폭이 화면을 초과했습니다.</li>
+          <li><b>데스크톱:</b> 패널을 최대 1160px로 제한하고 프리뷰를 현재 열 크기에 비례해 그립니다.</li>
+          <li><b>좁은 화면:</b> 1120px 아래는 축소 2열, 840px 아래는 장식 프리뷰를 접은 단일 계약 열로 전환합니다.</li>
+          <li><b>텍스트:</b> 단일행 말줄임과 설명 문단 줄바꿈을 분리해 폭·높이 폭주를 함께 차단했습니다.</li>
+          <li><b>E2E:</b> 1280·1024·768·480px 폭 예산과 실제 세 단계 Control 경계·투입·ESC·44px 탐색을 검사합니다.</li>
+        </ul><p class="sfh-intent"><b>경계</b><span>표시 Presenter와 코드 프리뷰만 변경했습니다. 작전 비용·세팅·게임 데이터·Google Sheet·과금 설정은 불변입니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>반응형 폭 계약과 프리뷰 비율 드로잉을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>화면 여백, 정보 우선순위, 텍스트 밀도, 모바일 계약 열을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>작전 브리핑 문서, 플레이 E2E, 모듈 감사를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>좌우 화면 잘림과 일괄 줄바꿈으로 생길 수 있는 세로 폭주를 제거했습니다.</p></div>
+        <p><a href="features/operation-entry-wizard/">작전 진입 UI →</a> · <a href="quality/e2e-play-session/">화면 폭 E2E →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
   </div>
