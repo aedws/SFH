@@ -81,7 +81,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket tactical_hud mission_tracker bottom_combat_cluster glance_hud hub_real_input key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -277,8 +277,23 @@ func _verify_hub_input_session() -> bool:
 		or "폐허 도시" not in String(setup_snapshot.get(&"mission_title", ""))
 		or "소모품" not in String(setup_snapshot.get(&"selection_summary", ""))
 		or "TARGET LOOT" not in String(setup_snapshot.get(&"target_farming_summary", ""))
+		or not bool(setup_snapshot.get(&"panel_inside_viewport", false))
+		or not (setup_snapshot.get(&"overflow_nodes", PackedStringArray()) as PackedStringArray).is_empty()
 	):
-		return _fail("작전 진입 화면이 단계별 브리핑·계약·최종 투입 구조를 제공하지 않습니다.")
+		return _fail("작전 진입 화면이 단계별 브리핑·계약·최종 투입 구조를 제공하지 않습니다: %s" % JSON.stringify(setup_snapshot))
+	for test_width in [1280.0, 1024.0, 768.0, 480.0]:
+		var width_contract: Dictionary = game.get("operation_setup_presenter").call(
+			&"get_width_contract", test_width
+		)
+		if (
+			not bool(width_contract.get(&"inside_viewport", false))
+			or float(width_contract.get(&"panel_width", 0.0)) > test_width
+			or (
+				test_width < 840.0
+				and bool(width_contract.get(&"left_column_visible", true))
+			)
+		):
+			return _fail("작전 브리핑 반응형 폭 계약 실패: %s" % JSON.stringify(width_contract))
 	if not _judge_player_perception(&"target_farming_decision", "지역·난이도 타겟 파밍 이해"):
 		return false
 	var loot_provider = game.get("loot_table_provider")
@@ -327,6 +342,9 @@ func _verify_operation_session() -> bool:
 		or not bool(confirmation_step.get(&"launch_on_confirmation", false))
 		or launch_button == null
 		or launch_button.disabled
+		or not bool(confirmation_step.get(&"layout_fits", false))
+		or not bool(confirmation_step.get(&"panel_inside_viewport", false))
+		or not (confirmation_step.get(&"overflow_nodes", PackedStringArray()) as PackedStringArray).is_empty()
 	):
 		return _fail("최종 검토 단계에서만 작전 투입 결정을 제공하지 않습니다.")
 	if not _judge_player_perception(&"operation_decision", "최종 작전 위험·비용 결정 이해"):

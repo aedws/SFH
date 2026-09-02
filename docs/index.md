@@ -44,17 +44,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 5 · IMPROVE 4 · CHANGE 4 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 2 · IMPROVE 4 · CHANGE 3 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>4</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>4</b><small>IMPROVE</small></span><span><b>3</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
-      <summary><span><small>LATEST</small><b>랭킹 기록 보호 · 오프라인 재시도</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>LATEST</small><b>작전 브리핑 · 화면 폭 자동 대응</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>탈출 성공 기록을 기기에 먼저 보존하고, 인터넷 연결이 끊기면 다음 연결 때 다시 제출하도록 개선했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 5</h3><p>익명 신원, 검증 봉투, 중복 방지, 영구 재시도, 결과 상태를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 4</h3><p>오프라인 보존, 제출 상태 이해, 저장 복구, 온라인 공급자 교체성을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 4</h3><p>정산 런 ID, 랭킹 설정, 테스트와 내부 작업 문서를 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>같은 런의 중복 집계와 연결 실패 기록 유실 가능성을 차단했습니다.</p></div>
+        <div class="sfh-summary"><strong>브라우저에서 작전 설정의 좌우 정보가 잘리지 않도록 화면 폭에 맞춰 패널과 전술 프리뷰를 자동 조정합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>반응형 폭 계약과 크기 비례 전술 프리뷰를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>안전 여백, 정보 우선순위, 텍스트 밀도, 좁은 화면 사용성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>작전 UI, 폭별 E2E, 내부 개발 문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>브리핑 좌우 잘림과 잘못된 줄바꿈으로 인한 세로 폭주를 제거했습니다.</p></div>
       </div>
     </details>
   </div>

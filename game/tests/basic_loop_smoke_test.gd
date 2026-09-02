@@ -719,7 +719,10 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 	var setup_close := hub_game.get_node("UI/RunSetupOverlay/SetupCloseButton") as Button
 	var small_card := hub_game.get("small_map_button") as Button
 	var operation_launch := hub_game.get("operation_launch_button") as Button
-	var setup_snapshot: Dictionary = hub_game.get("operation_setup_presenter").call(&"get_snapshot")
+	var setup_presenter = hub_game.get("operation_setup_presenter")
+	var setup_snapshot: Dictionary = setup_presenter.call(&"get_snapshot")
+	var viewport_width := hub_game.get_viewport().get_visible_rect().size.x
+	var setup_width_contract: Dictionary = setup_presenter.call(&"get_width_contract", viewport_width)
 	var failure_message := ""
 	var density_failure := _hub_loadout_ui_density_failure(hub_inventory, hub_workbench)
 	if hub == null or hub_player == null:
@@ -750,13 +753,18 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 		elif setup_overlay.visible or not hub_hud.visible:
 			failure_message = "시작 시 작전 UI가 닫히거나 거점 안내 HUD가 표시되지 않았습니다."
 		elif (
-			setup_panel.custom_minimum_size.x < 1060.0
-			or setup_panel.custom_minimum_size.x > 1100.0
+			not bool(setup_width_contract.get(&"inside_viewport", false))
+			or absf(
+				setup_panel.custom_minimum_size.x
+				- float(setup_width_contract.get(&"panel_width", 0.0))
+			) > 1.0
 			or setup_panel.custom_minimum_size.y < 600.0
 			or setup_panel.custom_minimum_size.y > 640.0
 			or small_card.custom_minimum_size.y < 80.0
 			or operation_launch == null
 			or not bool(setup_snapshot.get(&"layout_fits", false))
+			or not bool(setup_snapshot.get(&"panel_inside_viewport", false))
+			or not (setup_snapshot.get(&"overflow_nodes", PackedStringArray()) as PackedStringArray).is_empty()
 			or int(setup_snapshot.get(&"step_count", 0)) != 3
 			or int(setup_snapshot.get(&"visible_page_count", 0)) != 1
 			or StringName(setup_snapshot.get(&"step_id", &"")) != &"mission"
