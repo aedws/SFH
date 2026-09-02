@@ -1,0 +1,4 @@
+scenario_id,display_name,dummy_mode,dummy_count,dummy_health,dummy_armor,measurement_seconds,allow_free_loadout,metrics,restore_on_exit,runtime_enabled,source_status
+시나리오 ID,표시 이름,single/dense,더미 수,더미 체력,더미 방어력,측정 시간,무료 로드아웃,표시 지표 | 구분,종료 시 원복,런타임 사용,기획 상태
+single_target,단일 중장 더미,single,1,1000,25,15,true,dps|hit_damage|armor_penetration|cooldown,true,true,provisional
+dense_pack,밀집 경량 더미,dense,8,240,8,15,true,dps|hit_damage|armor_penetration|cooldown,true,true,provisional

@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "updated": "2026-09-02",
   "notion_url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
   "instruction": "기획자는 요청 ID를 Notion 결정 제목에 포함하고, AI 개발자는 수락 기준과 검증 근거를 같은 카드에 연결합니다.",
@@ -14,13 +14,24 @@
   },
   "items": [
     {
+      "id": "DATA-P5-03-10-01", "status": "data", "state": "provisional_implemented", "state_label": "P5 임시값 구현·확정 대기", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
+      "tag": "밸런스 데이터", "title": "P5 유틸리티·상점·제작·훈련·도감 확정",
+      "decision_id": "DEC-P5-HUB-PENDING", "source_anchor": "3ce5b728-0040-810d-8ae1-c4792cb5072a", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "summary": "진행 차단을 피하기 위해 Utility·OperationPreset·ShopOffer·Recipe·TrainingScenario·Codex 6개 탭과 확정 CSV에 임시값을 넣어 P5-03~10을 모듈형으로 완료했습니다. 기획 확정 시 데이터만 교체합니다.",
+      "basis": "Master GDD Phase 5 로비 허브·준비 세션과 3대 상점·제작소·훈련장·도감 요구",
+      "notion_prompt": "DATA-P5-03-10-01 제목으로 유틸리티 가격·효과, 작전 프리셋, 세 품질 상점 가격/성능, 제작 레시피/옵션/소켓, 훈련 계측, 도감 해금량/지역 힌트를 확정해 주세요.",
+      "sheet_target": "Utility·OperationPreset·ShopOffer·Recipe·TrainingScenario·Codex 탭 생성 완료 · 1행 변수명·2행 설명·3행 이후 데이터",
+      "acceptance": ["유틸리티별 가격·수량·효과·소멸 규칙", "작전 프리셋과 손익분기점 표시 규칙", "상점 품질·회전·리롤과 제작 레시피·옵션·소켓", "훈련 계측 시간창과 도감 해금량·지역 힌트"],
+      "evidence": [{"label": "P5-03~10 로비 진행 시스템", "href": "features/p5-hub-progression/"}, {"label": "모듈 감사", "href": "architecture/module-audit/"}]
+    },
+    {
       "id": "DATA-P7-01-01", "status": "data", "state": "needs_planner", "state_label": "상점 데이터 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "후속 데이터", "title": "3대 상점 매물·리롤 수치",
       "decision_id": "DEC-P7-SHOP-PENDING", "source_anchor": "3ce5b728-0040-817a-9f6e-f0bac2007561", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
       "summary": "P7 착수 전 손상·표준·고성능 매물의 성능·가격 범위와 런 종료 회전·골드 리롤 비용 규칙이 필요합니다.",
       "basis": "Master GDD 4장 상점 3대 매물과 상점 리롤",
       "notion_prompt": "DATA-P7-01-01 제목으로 품질군별 가격·성능·할인·옵션/소켓 범위와 리롤 시작 가격·증가·상한을 작성해 주세요.",
-      "sheet_target": "P7 착수 시 ShopOffer 신규 탭 · 1행 변수명·2행 설명·3행 이후 데이터",
+      "sheet_target": "ShopOffer 탭 임시값 생성 완료 · P7 심화 착수 시 품질·회전·리롤 열 확장",
       "acceptance": ["세 품질군의 가격·성능 범위", "옵션·소켓·할인 생성 규칙", "리롤 가격·증가·초기화·중복 입력 규칙"],
       "evidence": [{"label": "P7+ 사전 설계", "href": "design/p7-plus-preimplementation/"}, {"label": "로비 경제", "href": "features/hub-economy/"}]
     },
@@ -31,7 +42,7 @@
       "summary": "설계도 영구 등록은 확정됐지만 제작 재료·비용, 옵션 풀, 소켓 수와 재제작 결과 정책은 추가 결정이 필요합니다.",
       "basis": "Master GDD 4장 장비 제작소와 맞춤형 고점 제작",
       "notion_prompt": "PLAN-P7-03-01 제목으로 설계도별 레시피·비용·옵션 풀·소켓 최소/최대·중복·재제작 규칙을 작성해 주세요.",
-      "sheet_target": "P7 착수 시 Recipe 신규 탭, 필요 시 Weapon/Armor 옵션 열 확장",
+      "sheet_target": "Recipe 탭 임시값 생성 완료 · P7 심화 착수 시 Weapon/Armor 옵션 열 확장",
       "acceptance": ["설계도별 레시피와 비용", "옵션·소켓 Roll 범위", "실패·취소·재제작·재료 환불 규칙"],
       "evidence": [{"label": "P7+ 사전 설계", "href": "design/p7-plus-preimplementation/"}, {"label": "도면 제작", "href": "features/blueprint-crafting/"}]
     },
@@ -42,7 +53,7 @@
       "summary": "단일 보스·밀집 잡몹 더미의 방어·수량·배치와 DPS/AP/쿨타임 측정 시간창 규칙이 필요합니다.",
       "basis": "Master GDD 5장 훈련 연습장",
       "notion_prompt": "DATA-P8-01-01 제목으로 더미 유형·체력·방어·수량·초기화와 DPS/AP/쿨타임 측정 시작·종료·시간창을 작성해 주세요.",
-      "sheet_target": "실제 시나리오 목록이 2종을 넘으면 TrainingScenario 신규 탭",
+      "sheet_target": "TrainingScenario 탭 2종 임시값 생성 완료 · P8 심화 시 시나리오·계측 열 확장",
       "acceptance": ["단일·밀집 더미 전투 규격", "계측 시작·정지·초기화 규칙", "자유 세팅의 허용 자산과 퇴장 복구 규칙"],
       "evidence": [{"label": "P7+ 사전 설계", "href": "design/p7-plus-preimplementation/"}, {"label": "스마트 타게팅", "href": "features/smart-targeting/"}]
     },

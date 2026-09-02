@@ -60,7 +60,7 @@
             "description": "무엇을 만들고 어디까지 구현하는가",
             "documents": [
               {"label": "게임 설계", "source": "design/index.md", "route": "design/", "summary": "설계 문서 진입점"},
-              {"label": "Master GDD 구현 대조", "source": "design/master-gdd-alignment.md", "route": "design/master-gdd-alignment/", "summary": "v1005 확정 기획·80% 산식·마일스톤 차이"},
+              {"label": "Master GDD 구현 대조", "source": "design/master-gdd-alignment.md", "route": "design/master-gdd-alignment/", "summary": "v1005 확정 기획·94% 산식·마일스톤 차이"},
               {"label": "현행 마일스톤 작업 라인", "source": "design/current-milestone-workline.md", "route": "design/current-milestone-workline/", "summary": "Phase 1·4·5·6와 내부 P7+ 순서·모듈·E2E 게이트"},
               {"label": "P5·P6 사전 구현 설계", "source": "design/p5-p6-preimplementation.md", "route": "design/p5-p6-preimplementation/", "summary": "확장된 로비 허브와 비동기 시즌의 데이터·모듈·E2E 계약"},
               {"label": "P7 이후 사전 구현 설계", "source": "design/p7-plus-preimplementation.md", "route": "design/p7-plus-preimplementation/", "summary": "상점·제작소·훈련장·도감의 내부 P7~P10 후속 계약"},
@@ -165,6 +165,7 @@
               {"label": "투입 비용·지역·난이도 계약", "source": "features/operation-contracts.md", "route": "features/operation-contracts/", "summary": "투자와 위험·보상 데이터 연결"},
               {"label": "P5-01 캐릭터 선택", "source": "features/character-selection.md", "route": "features/character-selection/", "summary": "캐릭터 가격·패시브·작전 견적과 실전 적용"},
               {"label": "P5-02 무기·스킬 런 투자", "source": "features/loadout-investment.md", "route": "features/loadout-investment/", "summary": "주·보조무기·스킬 가격·해금·태그·런 구매와 복원"},
+              {"label": "P5-03~10 로비 허브 진행", "source": "features/p5-hub-progression.md", "route": "features/p5-hub-progression/", "summary": "유틸리티·작전 초안·파산 보호·상점·제작·훈련·도감"},
               {"label": "시작 거점과 전투 세션 전환", "source": "features/start-hub.md", "route": "features/start-hub/", "summary": "거점→작전→거점 루프"},
               {"label": "게임 루프와 HUD", "source": "features/game-loop.md", "route": "features/game-loop/", "summary": "플레이 단계와 화면 정보 흐름"}
             ]

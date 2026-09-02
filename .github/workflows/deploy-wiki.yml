@@ -128,6 +128,7 @@ jobs:
           python3 scripts/sync_session_socket_rules.py --check
           python3 scripts/sync_character_catalog.py --check
           python3 scripts/sync_loadout_investment.py --check
+          pwsh -NoProfile -File scripts/check-p5-modularity.ps1
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loot_table_contract_test.gd" | tee /tmp/sfh-loot-table.log
           grep -q "LOOT_TABLE_TEST_OK rows_29 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link" /tmp/sfh-loot-table.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/field_loot_acquisition_contract_test.gd" | tee /tmp/sfh-field-loot.log
@@ -142,6 +143,8 @@ jobs:
           grep -q "MOBILE_HUD_ELITE_OK optional_modules dependencies hud_bottom_left movable_anchor key_format mobile_semantic_pad threshold_entry_cost random_elite faster_stronger infinite_room_independent" /tmp/sfh-mobile-hud-elite.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/run_settlement_contract_test.gd" | tee /tmp/sfh-run-settlement.log
           grep -q "RUN_SETTLEMENT_OK auto_convert_450 permanent_unlock warehouse run_only_expiry death_loss idempotent_run_id" /tmp/sfh-run-settlement.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/p5_hub_progression_contract_test.gd" | tee /tmp/sfh-p5.log
+          grep -q "P5_HUB_PROGRESSION_OK utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules" /tmp/sfh-p5.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
           grep -q "SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing" /tmp/sfh-smoke.log
           grep -q "WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction" /tmp/sfh-smoke.log

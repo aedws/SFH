@@ -391,10 +391,10 @@ custom_minimum_size = Vector2(200, 34)
 layout_mode = 2
 text = "페널티 · 없음"
 
-[node name="MetaActions" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection"]
+[node name="MetaActions" type="GridContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection"]
 layout_mode = 2
 theme_override_constants/separation = 10
-alignment = 1
+columns = 3
 
 [node name="ShopButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/MetaActions"]
 unique_name_in_owner = true
@@ -413,6 +413,24 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 text = "소모품 · 비어 있음"
+
+[node name="UtilityButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/MetaActions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 32)
+layout_mode = 2
+text = "런 유틸리티"
+
+[node name="TrainingButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/MetaActions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 32)
+layout_mode = 2
+text = "훈련장"
+
+[node name="CodexButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/MetaActions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 32)
+layout_mode = 2
+text = "작전 도감"
 
 [node name="ContractSummary" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection"]
 unique_name_in_owner = true

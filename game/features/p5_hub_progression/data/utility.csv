@@ -1,0 +1,7 @@
+utility_id,display_name,utility_type,run_price,default_owned,required_unlock_id,max_quantity,effect_id,effect_value,use_condition,death_result,runtime_enabled,source_status
+고유 ID,표시 이름,가방/회복/공격/비상탈출,런 투입 가격,기본 사용 가능,필요 해금 ID,최대 수량,효과 ID,효과 수치,사용 조건,사망 정산,런타임 사용,기획 상태
+standard_field_pack,표준 야전 가방,bag,0,true,,1,inventory_capacity,8,passive,lost,true,provisional
+expanded_field_pack,확장 야전 가방,bag,60,false,utility_expanded_pack,1,inventory_capacity,16,passive,lost,true,provisional
+field_medkit,야전 구급 키트,heal,30,true,,2,heal,35,health_below_max,lost,true,provisional
+shock_cell,충격 전지,attack,45,true,,2,area_damage,24,enemies_nearby,lost,true,provisional
+emergency_extraction_beacon,비상 탈출 신호기,emergency_extract,90,false,utility_emergency_beacon,1,extraction_time_reduction,4,extraction_active,lost,true,provisional

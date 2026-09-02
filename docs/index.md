@@ -36,10 +36,10 @@ search:
     <div class="sfh-progress-summary">
       <div class="sfh-progress-heading">
         <span><small>NOTION-ALIGNED</small><strong>기획 진행도</strong></span>
-        <b>80%</b>
+        <b>94%</b>
       </div>
-      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80"><i style="width: 80%"></i></div>
-      <p>Master GDD v1005 · 10개 확정 시스템 · Phase 1~4 완료 · P5-02 반영 가중 산식 80%</p>
+      <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="94"><i style="width: 94%"></i></div>
+      <p>Master GDD v1005 · 10개 확정 시스템 · Phase 1~5 완료 · P5-10 반영 가중 산식 94%</p>
       <a href="development-status/#_1">산정 근거 확인 →</a>
       <a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a>
     </div>
@@ -121,14 +121,31 @@ search:
   <p>날짜별 핵심 변경을 먼저 읽고, 필요한 항목만 펼쳐 상세 내용과 관련 문서로 이동합니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 3 TOPICS</span><span>74 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>1 DAY · 4 TOPICS</span><span>75 DOCS · CLOUDFLARE LIVE</span></div>
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 9 · IMPROVE 10 · CHANGE 11 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 17 · IMPROVE 15 · CHANGE 16 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>9</b><small>BUILD</small></span><span><b>10</b><small>IMPROVE</small></span><span><b>11</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>17</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>16</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>P5 완전 종료 · 거점 진행 통합·모듈 감사</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 유틸리티 투자부터 작전 확정, 파산 보호, 회전 상점, 제작소, 훈련장, 도감까지 P5-03~10을 한 거점 흐름으로 연결했습니다.</strong><ul>
+          <li><b>준비:</b> 가방·구급키트·공격 전지·비상 신호기와 불변 작전 초안을 연결해 편집 중 무과금, 확정 시 1회 차감을 보장합니다.</li>
+          <li><b>경제:</b> 재화 0 무료 프리셋, 손상·표준·고성능 회전 매물, 복귀 갱신·유료 재굴림, 거래 중복 차단을 구현했습니다.</li>
+          <li><b>성장:</b> 반출 도면 영구 등록·옵션/소켓 제작, 단일·밀집 훈련 계측, 도감 진행·지역 힌트·재접속 유지를 구현했습니다.</li>
+          <li><b>데이터:</b> Google Sheet에 6개 전용 탭과 Item 4행을 추가하고 모든 임시값을 <code>provisional</code>로 격리했습니다.</li>
+          <li><b>모듈:</b> 7개 하위 서비스와 조립 서비스로 나누고 전체/개별 제거, Scene 내부 접근 금지, 60 FPS 성능 예산을 자동 판정했습니다.</li>
+        </ul><p class="sfh-intent"><b>다음</b><span>P5는 종료했습니다. 다음 작업은 P6-01 랭킹 제공자 경계이며 결제 상품·Cloudflare 플랜·유료 설정은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 8</h3><p>유틸·초안·파산 정책·상점·제작·훈련·도감·거점 UI를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>플레이 전 비교, 중복 차감 방지, 재접속, 데이터 교체성, 모듈 제거성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>진행률 94%, 작업선 P6-01, 검색, E2E, 전체 문서 맵을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>실제 전리품 Dictionary 수량을 도감에서 읽을 때 발생하던 런타임 오류를 수정했습니다.</p></div>
+        <p><a href="features/p5-hub-progression/">P5 거점 진행 →</a> · <a href="architecture/module-audit/#p5-0310-2026-09-02">모듈 감사 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>P5-02 무기·스킬 런 투자 · 실전 복원</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 작전 전에 주·보조무기와 스킬 3칸의 가격·소유·해금·태그를 비교하고, 이번 런 구매부터 실전 발동과 거점 복원까지 한 흐름으로 연결했습니다.</strong><ul>

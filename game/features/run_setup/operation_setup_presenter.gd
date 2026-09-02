@@ -18,6 +18,7 @@ var main_weapon_button: Button
 var secondary_weapon_button: Button
 var skill_buttons: Array[Button] = []
 var loadout_investment_summary: Label
+var p5_progression_summary: Label
 var preview: Control
 var tier_buttons: Dictionary = {}
 var root_panel: PanelContainer
@@ -151,6 +152,9 @@ func install(overlay: Control) -> Dictionary:
 	loadout_investment_summary = _label("장비 투자 데이터 계산 중...", 11, Color("8ffffc"))
 	loadout_investment_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	right.add_child(loadout_investment_summary)
+	p5_progression_summary = _label("P5 거점 데이터 계산 중...", 11, Color("9fc7cf"))
+	p5_progression_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	right.add_child(p5_progression_summary)
 	right.add_child(_section_title("작전 조건 선택"))
 	var contract_section := content.get_node("ContractSection") as VBoxContainer
 	_move(contract_section, right)
@@ -161,8 +165,8 @@ func install(overlay: Control) -> Dictionary:
 		if button is Button:
 			(button as Button).custom_minimum_size = Vector2(0.0, 36.0)
 			(button as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var meta_actions := contract_section.get_node("MetaActions") as HBoxContainer
-	meta_actions.alignment = BoxContainer.ALIGNMENT_BEGIN
+	var meta_actions := contract_section.get_node("MetaActions") as GridContainer
+	meta_actions.columns = 3
 	for button in meta_actions.get_children():
 		if button is Button:
 			(button as Button).custom_minimum_size = Vector2(0.0, 30.0)
@@ -235,6 +239,7 @@ func update(payload: Dictionary) -> void:
 		String(character.get(&"passive_description", "적용 효과 없음")),
 	]
 	_update_loadout_investment(payload.get(&"loadout_investment", {}))
+	_update_p5_progression(payload.get(&"p5_progression", {}))
 	mission_title.text = "%s  ·  %s" % [region_name, tier_name]
 	mission_code.text = "%s / %s / %s" % [String(region_id).to_upper(), String(difficulty_id).to_upper(), String(tier_id).to_upper()]
 	mission_intel.text = "목표 %d분  ·  방 %d~%d개  ·  동시 적 %d~%d명\n핵심 루프  침투 → 탐색·교전 → 자원 회수 → 탈출 방어" % [
@@ -242,8 +247,10 @@ func update(payload: Dictionary) -> void:
 		int(map_data.get(&"minimum_rooms", 0)), int(map_data.get(&"maximum_rooms", 0)),
 		int(spawn_data.get(&"minimum_enemies", 0)), int(spawn_data.get(&"maximum_enemies", 0)),
 	]
-	reward_summary.text = "투입 %d C  ·  회수 ×%.2f  ·  고등급 ×%.2f  ·  %s" % [
-		int(quote.get(&"entry_cost", 0)), float(quote.get(&"reward_multiplier", 1.0)),
+	var reward_multiplier := maxf(0.01, float(quote.get(&"reward_multiplier", 1.0)))
+	var break_even := ceili(float(quote.get(&"entry_cost", 0)) / reward_multiplier)
+	reward_summary.text = "투입 %d C  ·  BEP %d C  ·  회수 ×%.2f  ·  고등급 ×%.2f  ·  %s" % [
+		int(quote.get(&"entry_cost", 0)), break_even, reward_multiplier,
 		float(quote.get(&"high_grade_drop_multiplier", 1.0)),
 		"보스 출현 확정" if bool(quote.get(&"boss_spawn_guaranteed", false)) else "일반 보스 확률",
 	]
@@ -292,6 +299,7 @@ func get_snapshot() -> Dictionary:
 		&"loadout_investment_summary": (
 			loadout_investment_summary.text if loadout_investment_summary != null else ""
 		),
+		&"p5_progression_summary": p5_progression_summary.text if p5_progression_summary != null else "",
 		&"main_weapon_text": main_weapon_button.text if main_weapon_button != null else "",
 		&"secondary_weapon_text": secondary_weapon_button.text if secondary_weapon_button != null else "",
 		&"skill_button_texts": skill_buttons.map(func(button): return button.text),
@@ -321,6 +329,20 @@ func _update_loadout_investment(snapshot: Dictionary) -> void:
 	loadout_investment_summary.add_theme_color_override(
 		"font_color", Color("8ffffc") if errors.is_empty() else Color("ff9e80")
 	)
+
+
+func _update_p5_progression(snapshot: Dictionary) -> void:
+	if p5_progression_summary == null:
+		return
+	var utility: Dictionary = snapshot.get(&"utility", {})
+	var investment: Dictionary = utility.get(&"investment", {})
+	var shop: Dictionary = snapshot.get(&"shop", {})
+	var codex: Dictionary = snapshot.get(&"codex", {})
+	p5_progression_summary.text = "UTILITY +%d C · SHOP Q%d · CODEX %d/%d" % [
+		int(investment.get(&"additional_entry_cost", 0)),
+		int(shop.get(&"quality_count", 0)),
+		int(codex.get(&"completed_count", 0)), int(codex.get(&"entry_count", 0)),
+	]
 
 
 func _update_investment_button(button: Button, prefix: String, item: Dictionary) -> void:

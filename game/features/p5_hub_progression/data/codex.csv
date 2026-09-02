@@ -1,0 +1,8 @@
+entry_id,display_name,entry_type,source_id,region_hint,unlock_rule,required_count,runtime_enabled,source_status,planner_note
+도감 ID,표시 이름,도면/장비/스킬/자원,원본 데이터 ID,지역 힌트,해금 규칙,필요 누적,런타임 사용,기획 상태,기획 메모
+codex_assault,돌격 장비 도면,blueprint,assault_blueprint,ruined_district,extract_source,1,true,provisional,지역별 드랍 확률 확정 필요
+codex_vest,방탄 조끼 도면,blueprint,vest_blueprint,industrial_ring,extract_source,1,true,provisional,지역별 드랍 확률 확정 필요
+codex_magnetic,자기장 장치 도면,skill,magnetic_skill_blueprint,reactor_depths,extract_source,1,true,provisional,지역별 드랍 확률 확정 필요
+codex_arc,아크 룬,resource,arc_rune,ruined_district,extract_source,3,true,provisional,확정 수량 필요
+codex_capacitor,축전 코어,resource,capacitor_core,industrial_ring,extract_source,3,true,provisional,확정 수량 필요
+codex_phase,위상 유물,resource,phase_artifact,reactor_depths,extract_source,3,true,provisional,확정 수량 필요

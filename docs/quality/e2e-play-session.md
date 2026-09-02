@@ -26,6 +26,7 @@ PowerShell 실행 정책에 영향받지 않는 명령은 다음과 같습니다
 ```powershell
 .\scripts\test-e2e.cmd
 .\scripts\test-game.cmd
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-p5.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-performance.ps1
 .\scripts\wiki.cmd build
 ```
@@ -83,6 +84,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-performance.p
 | 작전 설정 | 브리핑·계약·투입 확정 | 거점·전투·결과·모달 | 예 | 1180×660 패널과 양쪽 열·투입 버튼이 화면 안에 위치 |
 | P5 캐릭터 선택 | 이름·가격·패시브·총 견적 | 전투·결과 | 예 | 선택 버튼과 패시브가 보이고 추가 비용 1회·실전 능력 변화가 일치 |
 | P5 무기·스킬 런 투자 | 주·보조·S1~S3 선택, 소유/잠김/런 구매, 태그·총액 | 전투·복귀 | 예 | 잠김은 무차감 차단, 구매는 1회 차감, 선택 무기·스킬이 실전 발동하고 거점에서 원복 |
+| P5 거점 진행 | 유틸·상점 3품질·제작·훈련·도감, 총비용·진행률 | 전투·결과 | 예 | 초안 1회 차감, 리롤/구매 중복 차단, 도면·도감 재접속, 훈련 원복, 3×2 액션 비겹침 |
 | 전투 | 임무·플레이어 주변 생존·행동 도크·미니맵·스킬·대시 | 거점·설정·결과·모달 | 아니요 | 16개 벡터 아이콘, HUD 비겹침, 지속 점유율 20% 이하, M 지도는 요청 시만 확장 |
 | 내부 증강 선택 | 세로 카드 3장 | 모든 전투 HUD·다른 모달 | 예 | 3장 모두 화면 안, 첫 카드 포커스, 계열·효과·키 안내 표시 |
 | 전투 중 I/U/E | 선택 모달 1개 | 모든 전투 HUD·다른 모달 | 예 | 닫으면 전투 HUD와 진행 상태 복원 |
