@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 48 · IMPROVE 57 · CHANGE 55 · FIX 27</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 48 · IMPROVE 57 · CHANGE 55 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>57</b><small>IMPROVE</small></span><span><b>55</b><small>CHANGE</small></span><span><b>27</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>57</b><small>IMPROVE</small></span><span><b>55</b><small>CHANGE</small></span><span><b>29</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -313,7 +313,7 @@ tags:
         <div class="sfh-group"><h3>구현 · 0</h3><p>게임 기능 추가 없이 위키 접근과 정보 구조만 변경했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 3</h3><p>공개 첫인상, 기획자 이해 경로, 개발자 실행 경로를 개선했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 4</h3><p>홈·역할 탭·인증 계약·반응형 E2E 문서를 새 공개 범위에 맞췄습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>비로그인 사용자가 내부 문서와 검색·노드 데이터를 직접 열 수 있던 노출 범위를 차단했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>내부 문서·검색 데이터 노출, 숨은 보호 문서 링크, Pages 파일/Worker 전파 시점 차이로 생기던 배포 오판을 수정했습니다.</p></div>
         <p><a href="access/planner/">기획자 작업실 →</a> · <a href="access/developer/">개발자 작업실 →</a> · <a href="architecture/wiki-role-auth/">인증 계약 →</a></p>
       </div>
     </details>

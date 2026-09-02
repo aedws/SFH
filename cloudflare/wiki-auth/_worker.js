@@ -358,6 +358,11 @@ async function publicSurfaceResponse(request, env) {
   return new HTMLRewriter()
     .on('[data-md-component="search"]', remove)
     .on('[data-md-component="sidebar"]', remove)
+    .on('link[rel="next"]', remove)
+    .on('input[data-md-toggle="drawer"]', remove)
+    .on('input[data-md-toggle="search"]', remove)
+    .on('label[for="__search"]', remove)
+    .on('label[for="__drawer"]', remove)
     .on('label.md-header__button[for="__drawer"]', remove)
     .transform(response);
 }
