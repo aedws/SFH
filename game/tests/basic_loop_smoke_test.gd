@@ -2861,6 +2861,7 @@ func _verify_optional_meta_operation_modules(game_scene: PackedScene) -> bool:
 	var fallback_features = fallback_game.get("features").duplicate(true)
 	for property_name in [
 		"persistent_profile_enabled", "operation_contracts_enabled",
+		"operation_launch_preflight_enabled",
 		"character_selection_enabled", "loadout_investment_enabled",
 		"p5_hub_progression_enabled",
 		"extraction_defense_enabled", "hub_economy_enabled", "smart_targeting_enabled",
@@ -2878,6 +2879,8 @@ func _verify_optional_meta_operation_modules(game_scene: PackedScene) -> bool:
 	elif (
 		fallback_game.get("persistent_profile") != null
 		or fallback_game.get("operation_contract_service") != null
+		or fallback_game.get("operation_launch_preflight_service") != null
+		or fallback_game.get("loot_launch_validator") != null
 		or fallback_game.get("character_selection_service") != null
 		or fallback_game.get("loadout_investment_service") != null
 		or fallback_game.get("p5_hub_progression_service") != null

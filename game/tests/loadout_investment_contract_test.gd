@@ -23,7 +23,7 @@ func _run() -> void:
 		return
 	if not await _verify_player_visible_flow():
 		return
-	print("LOADOUT_INVESTMENT_E2E_OK owned_locked_run_purchase price_once weapon_skill_runtime tag_gate restore modular_boundary")
+	print("LOADOUT_INVESTMENT_E2E_OK owned_locked_run_purchase price_once weapon_skill_runtime tag_gate restore hub_module_part_preserved same_weapon_customization transient_weapon_override preflight modular_boundary")
 	quit(0)
 
 
@@ -104,6 +104,19 @@ func _verify_player_visible_flow() -> bool:
 	if profile == null or service == null:
 		return _fail("게임 조립에서 프로필 또는 런 투자 서비스를 찾지 못했습니다.")
 	profile.call(&"reset_profile", true)
+	var prepared_equipment = game.get("equipment_system")
+	if (
+		prepared_equipment == null
+		or not bool(prepared_equipment.call(
+			&"install_module", &"main", &"launch_ballistic",
+			load("res://game/features/equipment/definitions/modules/ballistic_core.tres")
+		))
+		or not bool(prepared_equipment.call(
+			&"install_part", &"main",
+			load("res://game/features/equipment/definitions/parts/rifle_scope.tres")
+		))
+	):
+		return _fail("출격 전 모듈·파츠 장착 상태를 만들지 못했습니다.")
 	service.call(&"select_weapon", &"main", &"pulse_rifle")
 	service.call(&"select_skill", 2, &"arc_dash")
 	await process_frame
@@ -136,21 +149,39 @@ func _verify_player_visible_flow() -> bool:
 	var main_weapon: Resource = equipment.call(&"get_weapon", &"main") if equipment != null else null
 	if main_weapon == null or main_weapon.get("weapon_id") != &"pulse_rifle":
 		return _fail("선택한 메인 무기가 런타임에 적용되지 않았습니다.")
+	var transient_state: EquipmentItemState = equipment.call(&"get_equipment_state", &"main")
+	if not transient_state.installed_modules.is_empty() or not transient_state.installed_parts.is_empty():
+		return _fail("임시 런 구매 총기에 거점 총기의 개조 상태가 잘못 복제됐습니다.")
 	var skill_system = game.get("combat_skill_system")
 	var states: Array[Dictionary] = skill_system.call(&"get_skill_states") if skill_system != null else []
 	if states.size() < 3 or states[2].get(&"skill_id") != &"arc_dash" or not bool(states[2].get(&"weapon_tags_ready", false)):
 		return _fail("선택 스킬 또는 무기 태그 계약이 런타임에 적용되지 않았습니다: %s" % states)
 	if not bool(skill_system.call(&"try_activate", 2)):
 		return _fail("태그가 일치하는 아크 질주가 발동하지 않았습니다.")
-	game.call(&"_return_to_start_hub")
+	game.call(&"_abandon_run_to_start_hub")
 	await process_frame
 	var hub_equipment = game.get("equipment_system")
 	var restored: Resource = hub_equipment.call(&"get_weapon", &"main") if hub_equipment != null else null
 	if restored == null or restored.get("weapon_id") != &"assault_rifle":
 		return _fail("런 구매 무기가 거점 장비를 영구 덮어썼습니다.")
+	var restored_state: EquipmentItemState = hub_equipment.call(&"get_equipment_state", &"main")
+	if restored_state.installed_modules.size() != 1 or restored_state.installed_parts.size() != 1:
+		return _fail("런 구매 총기 사용 후 거점 모듈·파츠 상태가 복원되지 않았습니다.")
 	var after: Dictionary = service.call(&"get_snapshot")
 	if after.get(&"active_run_id", &"") != &"" or after.get(&"weapons", {}).get(&"main", {}).get(&"state") != &"run_purchase":
 		return _fail("복귀 후 런 구매 상태가 초기화되지 않았습니다: %s" % after)
+	service.call(&"select_weapon", &"main", &"assault_rifle")
+	service.call(&"select_skill", 2, &"speed_boost")
+	if not game.call(&"start_run", "small"):
+		return _fail("거점 총기와 동일한 작전 총기로 재투입하지 못했습니다: %s" % game.get("status_label").text)
+	await process_frame
+	var same_weapon_state: EquipmentItemState = game.get("equipment_system").call(
+		&"get_equipment_state", &"main"
+	)
+	if same_weapon_state.installed_modules.size() != 1 or same_weapon_state.installed_parts.size() != 1:
+		return _fail("동일 총기 출격에서 모듈·파츠가 유지되지 않았습니다.")
+	game.call(&"_abandon_run_to_start_hub")
+	await process_frame
 	root.remove_child(game)
 	game.free()
 	for path in paths.values():

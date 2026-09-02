@@ -120,11 +120,14 @@ func _run() -> void:
 	var routes_verified := await _verify_initial_routes(game_scene)
 	if routes_verified != 4:
 		return
+	var settings_verified := await _verify_setting_change_matrix(game_scene)
+	if settings_verified != 12:
+		return
 	if not await _verify_repeat_without_loot_settlement(game_scene):
 		return
 	if not await _verify_tutorial_optional(game_scene):
 		return
-	print("OPERATION_COMBINATION_OK combinations_%d tiers_3 difficulties_3 regions_3 characters_3 launch_assemble_esc_return entry_routes_4 wizard_steps_3 tutorial_steps_4 tutorial_optional settlement_optional_repeat" % verified)
+	print("OPERATION_COMBINATION_OK combinations_%d tiers_3 difficulties_3 regions_3 characters_3 setting_changes_12 weapon_module_part_utility_penalty preflight_plan launch_assemble_esc_return entry_routes_4 wizard_steps_3 tutorial_steps_4 tutorial_optional settlement_optional_repeat" % verified)
 	quit(0)
 
 
@@ -137,6 +140,96 @@ func _region_character_combinations() -> Array[Dictionary]:
 				&"character_id": character_id,
 			})
 	return combinations
+
+
+func _verify_setting_change_matrix(game_scene: PackedScene) -> int:
+	var verified := 0
+	var profiles := [&"default", &"same_weapon_customized", &"paid_weapon_override", &"utility_penalty"]
+	for tier_index in TIERS.size():
+		for profile_index in profiles.size():
+			var game := game_scene.instantiate()
+			var features: Resource = game.get("features").duplicate(true)
+			var suffix := "settings_%d_%d" % [tier_index, profile_index]
+			features.set("map_seed", 7070800 + verified)
+			features.set("persistent_profile_storage_path", "user://sfh_%s_profile.json" % suffix)
+			features.set("conditional_ranking_storage_path", "user://sfh_%s_rankings.json" % suffix)
+			features.set("meta_progression_storage_path", "user://sfh_%s_meta.json" % suffix)
+			features.set("key_mapping_storage_path", "user://sfh_%s_keys.json" % suffix)
+			features.set("skill_binding_storage_path", "user://sfh_%s_skills.json" % suffix)
+			features.set("presentation_settings_storage_path", "user://sfh_%s_presentation.json" % suffix)
+			game.set("features", features)
+			root.add_child(game)
+			await process_frame
+			await process_frame
+			var failure := ""
+			var profile = game.get("persistent_profile")
+			profile.call(&"reset_profile", true)
+			profile.call(&"unlock", &"region_industrial_district")
+			profile.call(&"unlock", &"region_research_complex")
+			var region_id: StringName = REGIONS[(tier_index + profile_index) % REGIONS.size()]
+			var difficulty_id: StringName = DIFFICULTIES[(tier_index * 2 + profile_index) % DIFFICULTIES.size()]
+			var character_id: StringName = CHARACTERS[(tier_index + profile_index * 2) % CHARACTERS.size()]
+			game.get("operation_contract_service").call(&"select_region", region_id)
+			game.get("operation_contract_service").call(&"select_difficulty", difficulty_id)
+			game.get("character_selection_service").call(&"select_character", character_id)
+			var profile_id: StringName = profiles[profile_index]
+			if profile_id in [&"same_weapon_customized", &"paid_weapon_override"]:
+				var equipment = game.get("equipment_system")
+				if (
+					not bool(equipment.call(
+						&"install_module", &"main", StringName("matrix_module_%d" % verified),
+						load("res://game/features/equipment/definitions/modules/ballistic_core.tres")
+					))
+					or not bool(equipment.call(
+						&"install_part", &"main",
+						load("res://game/features/equipment/definitions/parts/rifle_scope.tres")
+					))
+				):
+					failure = "출격 전 모듈·파츠 상태 구성 실패"
+			if failure.is_empty() and profile_id == &"paid_weapon_override":
+				game.get("loadout_investment_service").call(&"select_weapon", &"main", &"pulse_rifle")
+				game.get("loadout_investment_service").call(&"select_skill", 2, &"arc_dash")
+			if failure.is_empty() and profile_id == &"utility_penalty":
+				game.get("p5_hub_progression_service").call(&"set_utility_quantity", &"field_medkit", 1)
+				game.get("penalty_system").call(&"cycle_single")
+			if failure.is_empty() and not bool(game.call(&"start_run", String(TIERS[tier_index]))):
+				failure = "세팅 변경 후 작전 진입 실패: %s" % game.get("status_label").text
+			if failure.is_empty():
+				await process_frame
+				var plan: Dictionary = game.get("active_launch_plan")
+				var preflight = game.get("operation_launch_preflight_service")
+				if not bool(preflight.call(&"validate_plan", plan)):
+					failure = "활성 작전의 사전검증 계획이 유효하지 않음"
+				elif not bool(game.get("run_started")) or game.get("map_generator") == null:
+					failure = "사전검증 뒤 전투 조립 상태가 없음"
+				elif profile_id == &"same_weapon_customized":
+					var state: EquipmentItemState = game.get("equipment_system").call(&"get_equipment_state", &"main")
+					if state.installed_modules.size() != 1 or state.installed_parts.size() != 1:
+						failure = "동일 총기 모듈·파츠가 작전에 유지되지 않음"
+				elif profile_id == &"paid_weapon_override":
+					var state: EquipmentItemState = game.get("equipment_system").call(&"get_equipment_state", &"main")
+					if state.definition_id() != &"pulse_rifle" or not state.installed_modules.is_empty() or not state.installed_parts.is_empty():
+						failure = "임시 유료 총기 교체 정책이 일관되지 않음"
+				elif profile_id == &"utility_penalty":
+					var context: Dictionary = game.get("active_contract").get(&"investment_context", {})
+					if int(context.get(&"utility_investment", {}).get(&"additional_entry_cost", 0)) != 30:
+						failure = "유틸리티 설정 기여 비용이 계약에서 누락됨"
+			if failure.is_empty():
+				verified += 1
+				game.call(&"_abandon_run_to_start_hub")
+				await process_frame
+				if profile_id in [&"same_weapon_customized", &"paid_weapon_override"]:
+					var restored: EquipmentItemState = game.get("equipment_system").call(&"get_equipment_state", &"main")
+					if restored.installed_modules.size() != 1 or restored.installed_parts.size() != 1:
+						failure = "거점 복귀 후 모듈·파츠 상태 유실"
+			root.remove_child(game)
+			game.free()
+			await process_frame
+			_cleanup_paths(features)
+			if not failure.is_empty():
+				_fail("%s/%s 설정 변경 조합 실패: %s" % [TIERS[tier_index], profile_id, failure])
+				return verified
+	return verified
 
 
 func _verify_initial_routes(game_scene: PackedScene) -> int:

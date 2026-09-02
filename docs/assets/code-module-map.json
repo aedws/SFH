@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "f85b3ed8201dff1ccd742f34fa3e7c4476a6aeaee593962692c1c38eb6a71667",
+  "source_sha256": "c34cd021b557caf9519b326fc76d837dcbd41be88ce8dc94508448d1fe22038b",
   "layers": [
     {
       "id": "contract",
@@ -24,12 +24,12 @@
     }
   ],
   "summary": {
-    "modules": 54,
-    "scripts": 186,
-    "named_classes": 166,
-    "relationships": 158,
+    "modules": 55,
+    "scripts": 189,
+    "named_classes": 168,
+    "relationships": 162,
     "project_inheritance": 6,
-    "enabled_toggles": 63
+    "enabled_toggles": 64
   },
   "modules": [
     {
@@ -43,7 +43,7 @@
       "class_count": 0,
       "classes": [],
       "incoming_count": 1,
-      "outgoing_count": 48
+      "outgoing_count": 49
     },
     {
       "id": "core",
@@ -474,7 +474,7 @@
         "LootTierConfig",
         "LootValueAllocationPolicy"
       ],
-      "incoming_count": 1,
+      "incoming_count": 3,
       "outgoing_count": 2
     },
     {
@@ -606,6 +606,22 @@
       ],
       "incoming_count": 3,
       "outgoing_count": 0
+    },
+    {
+      "id": "operation_launch",
+      "label": "operation launch",
+      "layer": "feature",
+      "path": "game/features/operation_launch",
+      "wiki_route": "architecture/module-rules/",
+      "enabled": null,
+      "file_count": 2,
+      "class_count": 2,
+      "classes": [
+        "LootLaunchValidator",
+        "OperationLaunchPreflightService"
+      ],
+      "incoming_count": 2,
+      "outgoing_count": 1
     },
     {
       "id": "operation_results",
@@ -946,11 +962,11 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 16,
+      "file_count": 17,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
-      "outgoing_count": 44
+      "outgoing_count": 46
     }
   ],
   "classes": [
@@ -1981,6 +1997,24 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:LootLaunchValidator",
+      "name": "LootLaunchValidator",
+      "module": "operation_launch",
+      "path": "game/features/operation_launch/loot_launch_validator.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:OperationLaunchPreflightService",
+      "name": "OperationLaunchPreflightService",
+      "module": "operation_launch",
+      "path": "game/features/operation_launch/operation_launch_preflight_service.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:OperationResultConfig",
       "name": "OperationResultConfig",
       "module": "operation_results",
@@ -2751,6 +2785,12 @@
       "evidence_count": 1
     },
     {
+      "from": "operation_launch",
+      "to": "loot",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
       "from": "room_encounters",
       "to": "credits",
       "type": "requires",
@@ -2962,6 +3002,12 @@
     },
     {
       "from": "scene_assembly",
+      "to": "operation_launch",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "scene_assembly",
       "to": "operation_results",
       "type": "references",
       "evidence_count": 1
@@ -3150,7 +3196,7 @@
       "from": "verification",
       "to": "core",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",
@@ -3180,7 +3226,7 @@
       "from": "verification",
       "to": "equipment",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 5
     },
     {
       "from": "verification",
@@ -3228,7 +3274,7 @@
       "from": "verification",
       "to": "inventory",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
@@ -3239,6 +3285,12 @@
     {
       "from": "verification",
       "to": "loadout_investment",
+      "type": "verifies",
+      "evidence_count": 1
+    },
+    {
+      "from": "verification",
+      "to": "loot",
       "type": "verifies",
       "evidence_count": 1
     },
@@ -3258,7 +3310,7 @@
       "from": "verification",
       "to": "map_generation",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "verification",
@@ -3282,7 +3334,13 @@
       "from": "verification",
       "to": "operation_contract",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
+    },
+    {
+      "from": "verification",
+      "to": "operation_launch",
+      "type": "verifies",
+      "evidence_count": 1
     },
     {
       "from": "verification",
@@ -3306,13 +3364,13 @@
       "from": "verification",
       "to": "persistent_profile",
       "type": "verifies",
-      "evidence_count": 5
+      "evidence_count": 6
     },
     {
       "from": "verification",
       "to": "player",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",

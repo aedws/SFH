@@ -125,6 +125,18 @@ func get_investment_context() -> Dictionary:
 	return utility.call(&"get_investment_context") if utility != null else {&"additional_entry_cost": 0, &"utilities": []}
 
 
+func get_operation_setting_contribution() -> Dictionary:
+	var context := get_investment_context()
+	return {
+		&"contributor_id": &"utility_investment",
+		&"context_key": &"utility_investment",
+		&"additional_entry_cost": int(context.get(&"additional_entry_cost", 0)),
+		&"context": context,
+		&"validation_errors": PackedStringArray(),
+		&"revision": &"p5_catalog",
+	}
+
+
 func toggle_utility(utility_id: StringName) -> Dictionary:
 	var utility = _module(&"utility")
 	if utility == null: return {&"success": false, &"reason": "유틸리티 모듈 꺼짐"}

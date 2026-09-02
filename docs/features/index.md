@@ -7,6 +7,7 @@
 - [전술 미니맵](minimap.md)
 - [작전 선택과 탈출](raid-setup-extraction.md)
 - [작전 진입 마법사와 첫 투입 안내](operation-entry-wizard.md)
+- [작전 투입 사전검증과 불변 계획](operation-launch-preflight.md)
 - [탈출 방어전과 작전 결과 정산](extraction-defense-results.md)
 - [투입 비용·지역·난이도 계약](operation-contracts.md)
 - [P5-01 캐릭터 선택·패시브·투입 가격](character-selection.md)

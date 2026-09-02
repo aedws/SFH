@@ -82,6 +82,12 @@ const PERSISTENT_PROFILE_SCENE_PATH := (
 const OPERATION_CONTRACT_SCENE_PATH := (
 	"res://game/features/operation_contract/operation_contract_service.tscn"
 )
+const OPERATION_LAUNCH_PREFLIGHT_SCENE_PATH := (
+	"res://game/features/operation_launch/operation_launch_preflight_service.tscn"
+)
+const LOOT_LAUNCH_VALIDATOR_SCENE_PATH := (
+	"res://game/features/operation_launch/loot_launch_validator.tscn"
+)
 const CHARACTER_SELECTION_SCENE_PATH := (
 	"res://game/features/character_selection/character_selection_service.tscn"
 )
@@ -198,6 +204,8 @@ const EQUIPMENT_METHODS := [
 	&"get_active_skill_mechanic_override",
 	&"export_runtime_state",
 	&"restore_runtime_state",
+	&"validate_runtime_state",
+	&"validate_operation_launch",
 ]
 const WEAPON_BALANCE_METHODS := [
 	&"configure",
@@ -250,6 +258,8 @@ const INVENTORY_METHODS := [
 	&"get_snapshot",
 	&"export_runtime_state",
 	&"restore_runtime_state",
+	&"validate_runtime_state",
+	&"validate_operation_launch",
 ]
 const PANEL_METHODS := [&"configure", &"open_panel", &"close_panel"]
 const EXTRACTION_METHODS := [
@@ -322,18 +332,26 @@ const OPERATION_CONTRACT_METHODS := [
 	&"configure", &"select_region", &"select_difficulty", &"cycle_region",
 	&"cycle_difficulty", &"quote", &"invest", &"get_snapshot", &"clear_active_contract",
 ]
+const OPERATION_LAUNCH_PREFLIGHT_METHODS := [
+	&"configure", &"register_contributor", &"unregister_contributor",
+	&"register_validator", &"unregister_validator",
+	&"get_investment_context", &"create_plan", &"validate_plan", &"contract_matches_plan",
+	&"clear_plan", &"get_snapshot",
+]
 const CHARACTER_SELECTION_METHODS := [
 	&"configure", &"request_live_catalog", &"load_csv_text", &"select_character",
-	&"cycle_character", &"get_investment_context", &"get_snapshot",
+	&"cycle_character", &"get_investment_context", &"get_operation_setting_contribution",
+	&"get_snapshot",
 ]
 const LOADOUT_INVESTMENT_METHODS := [
 	&"configure", &"request_live_catalog", &"load_catalog_text",
 	&"cycle_weapon", &"cycle_skill", &"select_weapon", &"select_skill",
 	&"can_launch", &"get_selection_errors", &"get_investment_context",
-	&"commit_run_purchase", &"finish_run", &"get_snapshot",
+	&"get_operation_setting_contribution", &"commit_run_purchase", &"finish_run", &"get_snapshot",
 ]
 const P5_HUB_PROGRESSION_METHODS := [
-	&"configure", &"get_investment_context", &"create_operation_draft",
+	&"configure", &"get_investment_context", &"get_operation_setting_contribution",
+	&"create_operation_draft",
 	&"confirm_operation_draft", &"begin_run", &"settle_run", &"refresh_hub",
 	&"toggle_utility", &"purchase_shop_offer", &"reroll_shop", &"craft_recipe",
 	&"start_training", &"record_training_hit", &"finish_training", &"get_snapshot",
@@ -462,6 +480,8 @@ var meta_progression_system
 var equipment_upgrade_service
 var persistent_profile
 var operation_contract_service
+var operation_launch_preflight_service
+var loot_launch_validator
 var character_selection_service
 var loadout_investment_service
 var p5_hub_progression_service
@@ -486,6 +506,7 @@ var main_weapon_investment_button: Button
 var secondary_weapon_investment_button: Button
 var skill_investment_buttons: Array[Button] = []
 var active_contract: Dictionary = {}
+var active_launch_plan: Dictionary = {}
 var current_run_id: StringName = &""
 var run_sequence: int = 0
 var last_loot_settlement: Dictionary = {}
@@ -782,6 +803,9 @@ func _install_persistent_services() -> bool:
 			p5_hub_progression_service.connect(
 				&"snapshot_changed", Callable(self, &"_on_contract_changed")
 			)
+	if features.operation_launch_preflight_enabled and not _install_operation_launch_preflight():
+		_report_configuration_error("작전 사전검증 모듈을 구성하지 못했습니다.")
+		return false
 	if features.hub_economy_enabled:
 		hub_economy_system = _instantiate_feature(
 			HUB_ECONOMY_SCENE_PATH, self, &"HubEconomy"
@@ -816,6 +840,42 @@ func _install_persistent_services() -> bool:
 			)
 		):
 			_report_configuration_error("작전 결과 정산 모듈을 구성하지 못했습니다.")
+			return false
+	return true
+
+
+func _install_operation_launch_preflight() -> bool:
+	operation_launch_preflight_service = _instantiate_feature(
+		OPERATION_LAUNCH_PREFLIGHT_SCENE_PATH, self, &"OperationLaunchPreflight"
+	)
+	if (
+		not _supports_methods(operation_launch_preflight_service, OPERATION_LAUNCH_PREFLIGHT_METHODS)
+		or not bool(operation_launch_preflight_service.call(
+			&"configure", operation_contract_service, persistent_profile
+		))
+	):
+		return false
+	for registration in [
+		[&"character", character_selection_service],
+		[&"loadout_investment", loadout_investment_service],
+		[&"utility_investment", p5_hub_progression_service],
+	]:
+		var provider: Node = registration[1]
+		if provider != null and not bool(operation_launch_preflight_service.call(
+			&"register_contributor", registration[0], provider
+		)):
+			return false
+	if features.loot_enabled:
+		loot_launch_validator = _instantiate_feature(
+			LOOT_LAUNCH_VALIDATOR_SCENE_PATH, self, &"LootLaunchValidator"
+		)
+		if (
+			loot_launch_validator == null
+			or not bool(loot_launch_validator.call(&"configure", LOOT_CONFIG_PATH_PATTERN))
+			or not bool(operation_launch_preflight_service.call(
+				&"register_validator", &"loot", loot_launch_validator
+			))
+		):
 			return false
 	return true
 
@@ -1145,6 +1205,8 @@ func _character_investment_context() -> Dictionary:
 
 
 func _operation_investment_context() -> Dictionary:
+	if operation_launch_preflight_service != null:
+		return operation_launch_preflight_service.call(&"get_investment_context")
 	var result := _character_investment_context().duplicate(true)
 	var character_cost := int(result.get(&"additional_entry_cost", 0))
 	var loadout_context: Dictionary = (
@@ -1317,11 +1379,26 @@ func start_run(map_size: String) -> bool:
 		_refresh_contract_setup_ui()
 		return false
 	var pending_config: Resource = load(MAP_CONFIG_PATH_PATTERN % map_size)
+	_capture_prepared_loadout()
+	var launch_plan: Dictionary = {}
 	if operation_contract_service != null:
 		var penalty_snapshot: Dictionary = (
 			penalty_system.call(&"get_snapshot") if penalty_system != null else {}
 		)
 		var investment_context := _operation_investment_context()
+		if operation_launch_preflight_service != null:
+			launch_plan = operation_launch_preflight_service.call(
+				&"create_plan", pending_config, penalty_snapshot, {
+					&"equipment_state": prepared_equipment_state,
+					&"inventory_state": prepared_inventory_state,
+					&"map_seed": features.map_seed,
+				}
+			)
+			if not bool(launch_plan.get(&"success", false)):
+				status_label.text = "작전 사전검증 실패 · %s" % launch_plan.get(&"reason", "설정 오류")
+				_refresh_contract_setup_ui()
+				return false
+			investment_context = launch_plan.get(&"investment_context", {})
 		if p5_hub_progression_service != null:
 			var draft: Dictionary = p5_hub_progression_service.call(
 				&"create_operation_draft", pending_config, penalty_snapshot, investment_context
@@ -1336,6 +1413,16 @@ func start_run(map_size: String) -> bool:
 			)
 		if not bool(active_contract.get(&"success", false)):
 			status_label.text = "작전 투입 실패 · %s" % active_contract.get(&"reason", "크레딧 부족")
+			_refresh_contract_setup_ui()
+			return false
+		if (
+			operation_launch_preflight_service != null
+			and not bool(operation_launch_preflight_service.call(
+				&"contract_matches_plan", launch_plan, active_contract
+			))
+		):
+			_rollback_operation_investment()
+			status_label.text = "작전 투입 실패 · 사전검증 계획과 결제 계약이 달라졌습니다."
 			_refresh_contract_setup_ui()
 			return false
 	if persistent_profile != null:
@@ -1361,8 +1448,8 @@ func start_run(map_size: String) -> bool:
 	_prepare_run_skill_bindings()
 	last_loot_settlement.clear()
 	get_tree().paused = false
-	_capture_prepared_loadout()
 	_clear_start_hub()
+	active_launch_plan = launch_plan.duplicate(true)
 	run_started = true
 	run_setup_overlay.visible = false
 	hud_margin.visible = true
@@ -1401,6 +1488,9 @@ func _rollback_operation_investment() -> void:
 	if operation_contract_service != null:
 		operation_contract_service.call(&"clear_active_contract")
 	active_contract.clear()
+	active_launch_plan.clear()
+	if operation_launch_preflight_service != null:
+		operation_launch_preflight_service.call(&"clear_plan")
 	current_run_id = &""
 
 
@@ -1442,6 +1532,16 @@ func _install_hub_loadout_views() -> bool:
 		return false
 	if features.equipment_customization_enabled and not _install_equipment_workbench(false):
 		return false
+	if operation_launch_preflight_service != null:
+		for registration in [
+			[&"equipment", equipment_system],
+			[&"inventory", inventory_system],
+		]:
+			var provider: Node = registration[1]
+			if provider != null and not bool(operation_launch_preflight_service.call(
+				&"register_validator", registration[0], provider
+			)):
+				return false
 	return true
 
 
@@ -1479,6 +1579,9 @@ func _close_run_setup() -> void:
 
 
 func _clear_start_hub() -> void:
+	if operation_launch_preflight_service != null:
+		operation_launch_preflight_service.call(&"unregister_validator", &"equipment")
+		operation_launch_preflight_service.call(&"unregister_validator", &"inventory")
 	start_hub_hud.visible = false
 	interaction_label.visible = false
 	for node in [inventory_window, equipment_workbench, equipment_system, inventory_system]:
@@ -1523,6 +1626,9 @@ func _return_to_start_hub(route_initial_entry: bool = true) -> void:
 	else:
 		_capture_prepared_loadout(loadout_investment_service == null)
 	_restore_run_skill_bindings()
+	active_launch_plan.clear()
+	if operation_launch_preflight_service != null:
+		operation_launch_preflight_service.call(&"clear_plan")
 	if loadout_investment_service != null:
 		loadout_investment_service.call(&"finish_run")
 	get_tree().paused = false

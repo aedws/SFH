@@ -199,7 +199,44 @@ func export_runtime_state() -> Dictionary:
 	}
 
 
+func validate_runtime_state(saved: Dictionary) -> PackedStringArray:
+	var errors := PackedStringArray()
+	if saved.is_empty():
+		return errors
+	var saved_size: Vector2i = saved.get(&"grid_size", Vector2i.ZERO)
+	var saved_items: Dictionary = saved.get(&"items", {})
+	var saved_placements: Dictionary = saved.get(&"placements", {})
+	if saved_size.x <= 0 or saved_size.y <= 0:
+		errors.append("가방 격자 크기가 유효하지 않습니다.")
+		return errors
+	if saved_items.size() != saved_placements.size():
+		errors.append("가방 아이템과 배치 정보 수가 다릅니다.")
+		return errors
+	var occupied: Array[Rect2i] = []
+	var bounds := Rect2i(Vector2i.ZERO, saved_size)
+	for instance_id in saved_items:
+		var definition := saved_items[instance_id] as InventoryItemDefinition
+		if definition == null or not definition.is_valid() or not saved_placements.has(instance_id):
+			errors.append("가방 아이템 정의 또는 위치가 유효하지 않습니다: %s" % instance_id)
+			continue
+		var rect := Rect2i(saved_placements[instance_id], definition.grid_size)
+		if not bounds.encloses(rect):
+			errors.append("가방 아이템이 격자 밖에 배치됐습니다: %s" % instance_id)
+		for other in occupied:
+			if rect.intersects(other):
+				errors.append("가방 아이템 배치가 서로 겹칩니다: %s" % instance_id)
+				break
+		occupied.append(rect)
+	return errors
+
+
+func validate_operation_launch(request: Dictionary) -> PackedStringArray:
+	return validate_runtime_state(request.get(&"runtime_context", {}).get(&"inventory_state", {}))
+
+
 func restore_runtime_state(saved: Dictionary) -> bool:
+	if not validate_runtime_state(saved).is_empty():
+		return false
 	var saved_size: Vector2i = saved.get(&"grid_size", Vector2i.ZERO)
 	var saved_items: Dictionary = saved.get(&"items", {})
 	var saved_placements: Dictionary = saved.get(&"placements", {})
