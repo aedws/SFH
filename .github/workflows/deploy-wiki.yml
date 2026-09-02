@@ -136,7 +136,7 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/field_loot_acquisition_contract_test.gd" | tee /tmp/sfh-field-loot.log
           grep -q "FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip skill_swap_slot_binding_restore provisional_policy restore_on_hub viewport_safe modular_boundary" /tmp/sfh-field-loot.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/operation_combination_contract_test.gd" | tee /tmp/sfh-operation-combinations.log
-          grep -q "OPERATION_COMBINATION_OK combinations_9 tiers_3 difficulties_3 launch_assemble_return" /tmp/sfh-operation-combinations.log
+          grep -q "OPERATION_COMBINATION_OK combinations_9 tiers_3 difficulties_3 launch_assemble_return entry_routes_4 wizard_steps_3 tutorial_steps_4 tutorial_optional settlement_optional_repeat" /tmp/sfh-operation-combinations.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/character_selection_contract_test.gd" | tee /tmp/sfh-character-selection.log
           grep -q "CHARACTER_SELECTION_OK characters_3 optional_module locked_live_csv briefing_quote passive_runtime entry_cost_once" /tmp/sfh-character-selection.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loadout_investment_contract_test.gd" | tee /tmp/sfh-loadout-investment.log

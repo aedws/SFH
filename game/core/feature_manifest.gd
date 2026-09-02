@@ -69,6 +69,7 @@ extends Resource
 
 @export_category("Run setup")
 @export var run_setup_enabled: bool = true
+@export var operation_tutorial_enabled: bool = true
 @export_enum("small", "medium", "large") var map_size: String = "small"
 @export_range(0, 2147483647, 1) var map_seed: int = 0
 
@@ -216,6 +217,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"loot")
 	if run_setup_enabled:
 		result.append(&"run_setup")
+	if operation_tutorial_enabled:
+		result.append(&"operation_tutorial")
 	if enemies_enabled:
 		result.append(&"enemies")
 	if enemy_armor_enabled:

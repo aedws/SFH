@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 28 · IMPROVE 28 · CHANGE 28 · FIX 10</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 33 · IMPROVE 34 · CHANGE 33 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>28</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>28</b><small>CHANGE</small></span><span><b>10</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>33</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>33</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -199,7 +199,7 @@ tags:
         <p><a href="architecture/code-module-map/">코드 모듈 노드맵 →</a> · <a href="architecture/module-rules/">모듈 규칙 →</a> · <a href="quality/wiki-responsive-e2e/">반응형 E2E →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 7</small><b>P6-01 랭킹 공급자 · 방사형 코드 관계 웹</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 랭킹 기록을 로컬에 우선 보존하면서 온라인 공급자를 교체할 수 있게 했고, 코드 노드맵은 선택 모듈 중심 거미줄로 관계를 직접 보여줍니다.</strong><ul>
@@ -214,6 +214,23 @@ tags:
         <div class="sfh-group"><h3>수정 · 5</h3><p>진행률 95%, P6-02 작업선, 코드맵 데이터, 검색, 문서 노드맵을 현행화했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>온라인 연결 실패가 랭킹 기록 자체를 잃게 만들 수 있는 확장 경계 공백을 차단했습니다.</p></div>
         <p><a href="features/ranking-provider/">P6 랭킹 제공자 →</a> · <a href="architecture/code-module-map/">방사형 코드 노드맵 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>작전 진입 3단계화 · 전 경로 복구 · 첫 투입 가이드</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 작전 설정을 지역·장비·최종 확인으로 나누고, 모든 초기 실행 방식을 작전 또는 안전한 복구 화면으로 연결했습니다.</strong><ul>
+          <li><b>동선:</b> 기본 플레이는 거점 작전 게이트의 F 진입을 그대로 유지합니다.</li>
+          <li><b>UI:</b> 지역·작전→요원·장비→검토·투입 세 단계와 좌·우 키·44px 버튼을 적용했습니다.</li>
+          <li><b>튜토리얼:</b> 첫 투입에 이동·전투·방 확보·탈출을 안내하는 4단계 비차단형 현장 가이드를 표시합니다.</li>
+          <li><b>복구:</b> 투자 승인 뒤 맵 조립 실패도 완전 롤백하고 부분 전장을 제거한 뒤 거점 또는 설정으로 이동합니다.</li>
+          <li><b>검증:</b> 실제 게이트를 거친 9개 규모·난이도와 거점/설정 플래그 4경로를 모두 자동 실행합니다.</li>
+        </ul><p class="sfh-intent"><b>경계</b><span>목록형 데이터가 없어 Sheet는 확장하지 않았고, 과금·Cloudflare 유료 설정은 변경하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>단계 상태·3페이지 UI·초기 라우터·실패 복구·첫 투입 가이드를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 6</h3><p>작전 결정 밀도·탐색·터치·첫 플레이 이해·반복 투입·위키 홈 밀도를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>작전 계약 문서·E2E·모듈 감사·검색·홈 표시를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>비표준 진입의 빈 화면, 조립 실패 잔존, 정산 비활성 반복 투입 차단을 수정했습니다.</p></div>
+        <p><a href="features/operation-entry-wizard/">작전 진입 마법사 →</a> · <a href="quality/e2e-play-session/">실제 플레이 E2E →</a> · <a href="architecture/module-audit/#2026-09-02">모듈 감사 →</a></p>
       </div>
     </details>
   </div>

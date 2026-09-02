@@ -746,16 +746,21 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 		elif setup_overlay.visible or not hub_hud.visible:
 			failure_message = "시작 시 작전 UI가 닫히거나 거점 안내 HUD가 표시되지 않았습니다."
 		elif (
-			setup_panel.custom_minimum_size.x < 1160.0
-			or setup_panel.custom_minimum_size.x > 1200.0
-			or setup_panel.custom_minimum_size.y < 640.0
-			or setup_panel.custom_minimum_size.y > 680.0
+			setup_panel.custom_minimum_size.x < 1060.0
+			or setup_panel.custom_minimum_size.x > 1100.0
+			or setup_panel.custom_minimum_size.y < 600.0
+			or setup_panel.custom_minimum_size.y > 640.0
 			or small_card.custom_minimum_size.y < 80.0
 			or operation_launch == null
 			or not bool(setup_snapshot.get(&"layout_fits", false))
+			or int(setup_snapshot.get(&"step_count", 0)) != 3
+			or int(setup_snapshot.get(&"visible_page_count", 0)) != 1
+			or StringName(setup_snapshot.get(&"step_id", &"")) != &"mission"
+			or bool(setup_snapshot.get(&"launch_visible", true))
+			or float(setup_snapshot.get(&"navigation_touch_height", 0.0)) < 44.0
 			or not setup_close.visible
 		):
-			failure_message = "전술 브리핑 패널·전장 규모 선택·명시적 투입·ESC 동선이 적용되지 않았습니다: %s" % setup_snapshot
+			failure_message = "3단계 전술 브리핑·화살표 탐색·최종 투입·ESC 동선이 적용되지 않았습니다: %s" % setup_snapshot
 		elif not density_failure.is_empty():
 			failure_message = density_failure
 		else:
@@ -839,9 +844,21 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 					failure_message = "ESC 복귀가 작전 UI를 닫지 못했습니다."
 				elif not hub_hud.visible:
 					failure_message = "세션 구성 UI 종료 후 거점 HUD가 복원되지 않았습니다."
-				elif not hub_game.call(&"start_run", "small"):
-					failure_message = "시작 거점에서 전투 세션으로 전환하지 못했습니다."
-				elif hub_game.get("start_hub") != null or hub_game.get("map_generator") == null:
+				elif not hub.call(&"request_operation", hub_player):
+					failure_message = "거점 복귀 뒤 작전 게이트를 다시 열지 못했습니다."
+				else:
+					var presenter = hub_game.get("operation_setup_presenter")
+					presenter.call(&"step_relative", 1)
+					presenter.call(&"step_relative", 1)
+					var confirmation: Dictionary = presenter.call(&"get_snapshot")
+					if not bool(confirmation.get(&"launch_on_confirmation", false)):
+						failure_message = "마지막 설정 단계에서만 작전 투입 버튼이 표시되지 않았습니다."
+					else:
+						operation_launch.pressed.emit()
+						await process_frame
+				if failure_message.is_empty() and not bool(hub_game.get("run_started")):
+					failure_message = "시작 거점의 설정 마법사에서 전투 세션으로 전환하지 못했습니다."
+				elif failure_message.is_empty() and (hub_game.get("start_hub") != null or hub_game.get("map_generator") == null):
 					failure_message = "전투 세션 전환 후 거점과 작전 맵 상태가 분리되지 않았습니다."
 				elif hub_game.get("equipment_system").call(&"get_active_weapon_slot") != &"secondary":
 					failure_message = "거점 Q 선택 무기가 전투 세션에 유지되지 않았습니다."
