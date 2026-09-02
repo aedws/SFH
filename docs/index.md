@@ -44,9 +44,9 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 3 · CHANGE 4 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 3 · CHANGE 4 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>3</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>3</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 1</small><b>공개 플레이 페이지 · 역할별 내부 작업실 분리</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -54,7 +54,7 @@ search:
         <div class="sfh-group"><h3>구현 · 0</h3><p>게임 기능 변경은 없습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 3</h3><p>공개 정보 밀도, 테스트 진입, 역할별 첫 화면을 개선했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 4</h3><p>홈, 기획자 탭, 개발자 탭, 인증 문서를 새 정보 구조에 맞췄습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>로그인하지 않은 사용자가 내부 문서와 검색 데이터를 열 수 있던 공개 범위를 차단했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>내부 문서·검색 데이터 노출, 숨은 보호 문서 링크, Pages 파일/Worker 전파 시점 차이로 생기던 배포 오판을 수정했습니다.</p></div>
       </div>
     </details>
   </div>

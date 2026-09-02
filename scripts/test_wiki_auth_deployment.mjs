@@ -13,6 +13,8 @@ const publicHome = await response.text();
 assert.match(publicHome, /PUBLIC PLAYTEST/u, "public home must be the promotional playtest surface");
 assert.doesNotMatch(publicHome, /개발 현황과 업데이트/u, "public home HTML must not expose internal navigation");
 assert.doesNotMatch(publicHome, /data-md-component="search"/u, "public home HTML must not expose protected search UI");
+assert.doesNotMatch(publicHome, /rel="next" href="development-status\//u, "public home must not advertise a protected next page");
+assert.doesNotMatch(publicHome, /data-md-toggle="search"/u, "public home must not retain a hidden search control");
 
 response = await request("/access/login/");
 assert.equal(response.status, 200, "login page must remain public");

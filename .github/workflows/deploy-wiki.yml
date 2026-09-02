@@ -583,8 +583,18 @@ jobs:
             sleep 5
           done
           curl --silent --show-error --fail --dump-header /tmp/game.headers "$CLOUDFLARE_GAME_URL/" --output /tmp/game.html
-          SFH_WIKI_AUTH_E2E_BOOTSTRAP_ROLES="${{ steps.wiki_auth_migration.outputs.migrated_roles }}" \
-            node scripts/test_wiki_auth_deployment.mjs "$CLOUDFLARE_WIKI_URL"
+          for attempt in $(seq 1 24); do
+            if SFH_WIKI_AUTH_E2E_BOOTSTRAP_ROLES="${{ steps.wiki_auth_migration.outputs.migrated_roles }}" \
+              node scripts/test_wiki_auth_deployment.mjs "$CLOUDFLARE_WIKI_URL"; then
+              break
+            fi
+            if [ "$attempt" -eq 24 ]; then
+              echo "Cloudflare wiki auth routing did not converge in time" >&2
+              exit 1
+            fi
+            echo "Waiting for Cloudflare Pages Worker routing propagation ($attempt/24)"
+            sleep 5
+          done
           grep -qi '^cross-origin-opener-policy: same-origin' /tmp/game.headers
           grep -qi '^cross-origin-embedder-policy: require-corp' /tmp/game.headers
           range_status=$(curl --silent --show-error --output /tmp/wasm.range --write-out '%{http_code}' \
