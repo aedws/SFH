@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 64 TOPICS</span><span>75 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-02</span><span>SEARCH COMMAND</span><span>5 DAYS · 65 TOPICS</span><span>76 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 21 · IMPROVE 19 · CHANGE 20 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 23 · IMPROVE 23 · CHANGE 23 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>21</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>8</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>23</b><small>BUILD</small></span><span><b>23</b><small>IMPROVE</small></span><span><b>23</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -165,7 +165,7 @@ tags:
         <p><a href="features/p5-hub-progression/">P5 거점 진행 →</a> · <a href="architecture/module-audit/#p5-0310-2026-09-02">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>P5 엄밀 모듈성 보강 · 실제 타격 계측·원자적 거래</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · P5 완료 판정을 정적 파일 존재가 아니라 제거·오류·실패 경로를 견디는 실행 계약으로 다시 고정했습니다.</strong><ul>
@@ -180,6 +180,23 @@ tags:
         <div class="sfh-group"><h3>수정 · 4</h3><p>Sheet·CSV·위키·E2E 기준을 동일 ID 계약으로 갱신했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 5</h3><p>정적 로드·비활성 경로·내부 테스트 우회·부분 거래·UI 도메인 누수를 수정했습니다.</p></div>
         <p><a href="features/p5-hub-progression/">P5 계약 →</a> · <a href="architecture/module-audit/#p5-2026-09-02">엄밀 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>실시간 코드 모듈 노드맵 · 상속·의존 양방향 추적</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 실제 GDScript 상태를 위키 노드로 자동 생성하고 모듈 사용처·의존처와 클래스 상속을 반응형으로 탐색합니다.</strong><ul>
+          <li><b>산출:</b> 178개 스크립트→53개 모듈·159개 클래스·157개 관계와 전체 소스 해시를 생성합니다.</li>
+          <li><b>탐색:</b> 계약·조립·기능·검증 필터와 검색, 선택 노드의 들어오는/나가는 관계 버튼을 제공합니다.</li>
+          <li><b>상속:</b> 엔진 기반과 프로젝트 내부 기반을 클래스별로 표시해 상속과 합성의 경계를 분리합니다.</li>
+          <li><b>반응형:</b> 2단 비교에서 1열 흐름까지 자동 전환하고 44px 터치·포커스·고대비를 보장합니다.</li>
+          <li><b>게이트:</b> 생성 데이터 현행성·관계 무결성·내비게이션·JS·CSS를 strict 빌드 전에 검사합니다.</li>
+        </ul><p class="sfh-intent"><b>영향</b><span>위키 가시화와 검증만 추가했습니다. 게임 로직·데이터·과금·Cloudflare 플랜은 불변입니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>코드 스캐너와 반응형 노드 탐색기를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>모듈 관계·상속·모바일·접근성 인지를 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>아키텍처 문서·검색·문서 노드맵·E2E 계약을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>수동 구조 기록과 현재 코드가 어긋날 수 있던 현행성 공백을 차단했습니다.</p></div>
+        <p><a href="architecture/code-module-map/">코드 모듈 노드맵 →</a> · <a href="architecture/module-rules/">모듈 규칙 →</a> · <a href="quality/wiki-responsive-e2e/">반응형 E2E →</a></p>
       </div>
     </details>
   </div>
