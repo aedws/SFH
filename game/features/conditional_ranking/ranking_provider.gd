@@ -9,6 +9,18 @@ func submit_run(_result: Dictionary) -> Dictionary:
 	return {&"accepted": false, &"reason": "랭킹 제공자가 제출을 구현하지 않음"}
 
 
+func submit_envelope(_envelope: Dictionary) -> Dictionary:
+	return {
+		&"accepted": false,
+		&"retryable": true,
+		&"reason": "랭킹 제공자가 검증 봉투 제출을 구현하지 않음",
+	}
+
+
+func retry_pending_submissions() -> Dictionary:
+	return get_snapshot()
+
+
 func get_entries(_condition_key: String, _ranking_id: StringName = &"recovered_value") -> Array[Dictionary]:
 	return []
 

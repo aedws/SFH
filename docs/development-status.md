@@ -24,10 +24,10 @@ tags:
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>MASTER GDD ALIGNED · 2026-09-02</small><strong>현재 기획 진행도</strong></span>
-    <b>95%</b>
+    <b>96%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="95"><i style="width: 95%"></i></div>
-  <p>공개 Master GDD v1005의 10개 확정 시스템을 현재 구현과 재대조했습니다. P6-01 랭킹 제공자·장애 폴백 완료를 반영한 게임 기능 가중 진행도는 95%입니다.</p>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
+  <p>공개 Master GDD v1005의 10개 확정 시스템을 현재 구현과 재대조했습니다. P6-02 검증형 랭킹 제출 완료를 반영한 게임 기능 가중 진행도는 96%입니다.</p>
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-02 공개 본문 77블록·root v1005를 읽고 `67f9bef85449`로 검증했습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 확정 요구로 처리합니다. 핵심 플레이 흐름은 ×2, 기반·확장 서비스는 ×1을 적용하며 실제 코드·데이터·자동 검증만 완료 근거로 사용합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
@@ -45,9 +45,9 @@ tags:
 | 전리품 2대 분류·현장 파밍 | ×2 | 100% | 생명 주기·지역 테이블·현장 비교·획득·교체·소켓과 탈출 환전·영구 해금·창고/사망 소실·중복 방지 구현 |
 | 가변 태그·등급 확장 | ×1 | 85% | 동적 태그·등급·불일치 비활성·메커니즘 변형과 제작 옵션 풀 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
-| 비동기 랭킹·시즌 보상 | ×1 | 55% | 3대 로컬 랭킹·공통 제공자·온라인 어댑터·장애 폴백 구현. 신원·검증 제출·시즌 보상은 없음 |
+| 비동기 랭킹·시즌 보상 | ×1 | 75% | 3대 로컬 랭킹·공급자·익명 신원·검증 봉투·멱등·영구 재시도·거부 상태 구현. 실서비스 계정·시즌 보상은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 100×1 + 100×1 + 100×2 + 85×1 + 95×2 + 55×1) ÷ 15 = 95%`이며, Phase 4·5와 P6-01의 플레이어 상태·로컬 보존·교체 계약을 완료로 판정합니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 100×1 + 100×1 + 100×2 + 85×1 + 95×2 + 75×1) ÷ 15 = 96.3% → 96%`이며, Phase 4·5와 P6-01~02의 로컬 보존·검증 제출·재시도 계약을 완료로 판정합니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -60,7 +60,7 @@ tags:
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
 | Phase 4 · 현장 교체·룬 소켓·환전 | 완료 | 현장 교체·룬/코어/유물 소켓→탈출 환전·영구 해금·창고/사망 소실과 중복 방지 E2E 완료 |
 | Phase 5 · 로비 허브·준비 세션 | 완료 | 유틸리티·단일 초안·파산 보호·회전 상점·제작소·훈련장·도감까지 P5-01~10 E2E 완료 |
-| Phase 6 · 비동기 랭킹·시즌 보상 | P6-01 완료 | 로컬·온라인 제공자 경계와 장애 폴백 완료. 신원·검증 제출·시즌·칭호·오라는 없음 |
+| Phase 6 · 비동기 랭킹·시즌 보상 | P6-01~02 완료 | 제공자 경계·익명 신원·검증 제출·영구 재시도 완료. 실서비스 계정·시즌·칭호·오라는 없음 |
 
 ### 2026-09-02 Master GDD v1005 재대조
 
@@ -85,18 +85,18 @@ tags:
 | 완료 | Phase 5 P5-02 무기·스킬 투자 | 소유·미해금·이번 런 구매·태그 구분 | 선택→잠김 차단→1회 결제→실전 발동→복원 E2E 완료 |
 | 완료 | Phase 5 P5-03~10 | 유틸·초안·파산 보호·상점·제작·훈련·도감 | Sheet→UI→거래→런/영구 정산→재접속→모듈 제거 E2E 완료 |
 | 완료 | Phase 6 P6-01 랭킹 제공자 | 3대 로컬 랭킹만 존재 | 온라인/로컬 교체·오프라인 폴백·상태 표시 E2E 완료 |
-| 1 | Phase 6 P6-02 제출·검증 | 신원·서명·멱등·재시도·변조 거부 없음 | 중복/단절/변조 기록 서버 판정 E2E |
-| 2 | Phase 6 P6-03 시즌 규칙 | 기간·조건·종료 스냅샷 없음 | 시즌 경계·조건 불일치·종료 읽기 전용 E2E |
-| 3 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
+| 완료 | Phase 6 P6-02 제출·검증 | 익명 신원·무결성·멱등·영구 재시도·거부 이유 | 중복/단절/변조/시간초과/저장 복원 E2E 완료 |
+| 1 | Phase 6 P6-03 시즌 규칙 | 기간·조건·종료 스냅샷 없음 | 시즌 경계·조건 불일치·종료 읽기 전용 E2E |
+| 2 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
 | 4 | 내부 P7~P10 | 공식 Phase 1~6 이후 상세 작업선 | 경제→훈련→도감→출시 후보 순서와 기계 계약 유지 |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 48 · IMPROVE 57 · CHANGE 55 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-02</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 53 · IMPROVE 61 · CHANGE 59 · FIX 31</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>48</b><small>BUILD</small></span><span><b>57</b><small>IMPROVE</small></span><span><b>55</b><small>CHANGE</small></span><span><b>29</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>53</b><small>BUILD</small></span><span><b>61</b><small>IMPROVE</small></span><span><b>59</b><small>CHANGE</small></span><span><b>31</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -300,7 +300,7 @@ tags:
         <p><a href="access/login/">로그인 →</a> · <a href="architecture/wiki-role-auth/">인증 계약 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 13</small><b>역할별 작업실 · 공개 플레이 홈 최소화</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 공개 위키를 홍보용 플레이 테스트 홈으로 줄이고, 상세 기획·개발 정보는 로그인한 역할별 작업실에서 목적에 맞게 읽도록 재구성했습니다.</strong><ul>
@@ -315,6 +315,23 @@ tags:
         <div class="sfh-group"><h3>수정 · 4</h3><p>홈·역할 탭·인증 계약·반응형 E2E 문서를 새 공개 범위에 맞췄습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>내부 문서·검색 데이터 노출, 숨은 보호 문서 링크, Pages 파일/Worker 전파 시점 차이로 생기던 배포 오판을 수정했습니다.</p></div>
         <p><a href="access/planner/">기획자 작업실 →</a> · <a href="access/developer/">개발자 작업실 →</a> · <a href="architecture/wiki-role-auth/">인증 계약 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 14</small><b>P6-02 검증형 랭킹 제출 · 영구 재시도</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 성공 런을 익명 신원과 검증 봉투로 묶고, 중복·변조·네트워크 단절이 있어도 로컬 기록과 제출 상태를 잃지 않게 했습니다.</strong><ul>
+          <li><b>신원:</b> 교체 가능한 익명 기기 ID를 별도 저장해 외부 로그인 제공자와 게임 프로필을 결합하지 않습니다.</li>
+          <li><b>검증:</b> run ID·조건·시간·처치·회수 가치를 SHA-256 무결성 다이제스트와 멱등 키로 묶습니다.</li>
+          <li><b>재시도:</b> 공급자 단절·시간초과 제출을 JSON 큐에 보존하고 연결 복구나 명시적 재시도 때 다시 보냅니다.</li>
+          <li><b>거부:</b> 변조·형식 오류·서버 영구 거부는 이유를 표시하고 무한 재전송하지 않습니다.</li>
+          <li><b>플레이어 결과:</b> 탈출 결과에서 서버 검증 완료, 로컬 보존, 재시도 건수 또는 거부 이유를 읽습니다.</li>
+        </ul><p class="sfh-intent"><b>검증·경계</b><span>중복·변조·단절·시간초과·저장 복원·영구 거부와 실제 결과 화면 E2E를 통과했습니다. 외부 서버·계정·Sheet·결제·Cloudflare 유료 설정은 추가하지 않았습니다.</span></p></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>익명 신원, 제출 봉투, 멱등 처리, 영구 큐, 결과 상태 표시를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>오프라인 안전성, 상태 이해, 저장 마이그레이션, 공급자 교체성을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>런 ID 정산, 공급자 설정, P6 작업선, E2E·코드 노드맵을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>같은 런의 중복 집계와 연결 실패 기록의 조용한 유실 가능성을 차단했습니다.</p></div>
+        <p><a href="features/ranking-provider/">P6 검증 제출 →</a> · <a href="architecture/module-audit/#p6-02-2026-09-02">모듈 감사 →</a> · <a href="quality/e2e-play-session/">E2E →</a></p>
       </div>
     </details>
   </div>

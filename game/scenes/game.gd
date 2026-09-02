@@ -368,6 +368,7 @@ const PENALTY_METHODS := [
 const RANKING_METHODS := [
 	&"configure", &"submit_run", &"get_entries", &"get_snapshot",
 	&"get_provider_status", &"set_online_gateway", &"set_provider_mode",
+	&"retry_pending_submissions",
 ]
 const OPERATION_RESULT_METHODS := [&"configure", &"settle_success", &"settle_failure"]
 const KEY_MAPPING_METHODS := [
@@ -3537,6 +3538,7 @@ func _on_extraction_completed(_actor: Node2D) -> void:
 	var settlement := {&"recovered_credits": carried_credits, &"salvage": 0, &"ranking": {}}
 	if operation_result_service != null:
 		settlement = operation_result_service.call(&"settle_success", {
+			&"run_id": String(current_run_id),
 			&"carried_credits": carried_credits,
 			&"elapsed_seconds": elapsed_time,
 			&"kills": defeated_enemies,

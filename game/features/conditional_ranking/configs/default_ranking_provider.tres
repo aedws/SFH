@@ -7,3 +7,7 @@ script = ExtResource("1_config")
 provider_mode = "auto"
 offline_fallback_enabled = true
 online_provider_label = "SFH 온라인 랭킹"
+submission_build_id = "0.1.0-prototype"
+maximum_pending_submissions = 64
+maximum_submission_attempts = 5
+submissions_per_retry = 8

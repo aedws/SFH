@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "c34cd021b557caf9519b326fc76d837dcbd41be88ce8dc94508448d1fe22038b",
+  "source_sha256": "c3a1bd8394098ebf11f2ecfd5ec06ef675749a164777f51330342f6c69d23b8a",
   "layers": [
     {
       "id": "contract",
@@ -25,8 +25,8 @@
   ],
   "summary": {
     "modules": 55,
-    "scripts": 189,
-    "named_classes": 168,
+    "scripts": 192,
+    "named_classes": 171,
     "relationships": 162,
     "project_inheritance": 6,
     "enabled_toggles": 64
@@ -145,15 +145,18 @@
       "path": "game/features/conditional_ranking",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 6,
-      "class_count": 6,
+      "file_count": 9,
+      "class_count": 9,
       "classes": [
         "ConditionalRankingPolicy",
         "ConditionalRankingSystem",
         "LocalRankingProvider",
         "OnlineRankingProviderAdapter",
+        "RankingIdentity",
         "RankingProvider",
-        "RankingProviderConfig"
+        "RankingProviderConfig",
+        "RankingSubmissionQueue",
+        "RunSubmissionEnvelope"
       ],
       "incoming_count": 3,
       "outgoing_count": 0
@@ -1196,6 +1199,15 @@
       "inheritance": "project"
     },
     {
+      "id": "class:RankingIdentity",
+      "name": "RankingIdentity",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/ranking_identity.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:RankingProvider",
       "name": "RankingProvider",
       "module": "conditional_ranking",
@@ -1210,6 +1222,24 @@
       "module": "conditional_ranking",
       "path": "game/features/conditional_ranking/ranking_provider_config.gd",
       "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:RankingSubmissionQueue",
+      "name": "RankingSubmissionQueue",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/ranking_submission_queue.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:RunSubmissionEnvelope",
+      "name": "RunSubmissionEnvelope",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/run_submission_envelope.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },

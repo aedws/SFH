@@ -5,6 +5,7 @@ var storage_path := "user://sfh_rankings.json"
 var persistence_enabled := true
 var policy: Resource
 var entries_by_condition: Dictionary = {}
+var processed_submission_ids: Array[String] = []
 
 
 func configure(
@@ -23,6 +24,7 @@ func configure(
 	policy = ranking_policy
 	persistence_enabled = enable_persistence and not storage_path.is_empty()
 	entries_by_condition.clear()
+	processed_submission_ids.clear()
 	if persistence_enabled:
 		_load()
 	return true
@@ -36,6 +38,12 @@ func submit_run(result: Dictionary) -> Dictionary:
 		return {&"accepted": false, &"reason": "조건 키 없음"}
 	if int(result.get(&"penalty_score", 0)) < int(policy.get("minimum_penalty_score")):
 		return {&"accepted": false, &"reason": "최소 페널티 점수 미달"}
+	var idempotency_key := String(result.get(&"idempotency_key", ""))
+	if not idempotency_key.is_empty() and idempotency_key in processed_submission_ids:
+		return {
+			&"accepted": true, &"duplicate": true, &"condition_key": condition_key,
+			&"idempotency_key": idempotency_key, &"rank": 0, &"ranks": {},
+		}
 	var score := calculate_score(result)
 	var entry := {
 		&"score": score,
@@ -44,6 +52,10 @@ func submit_run(result: Dictionary) -> Dictionary:
 		&"recovered_value": int(result.get(&"recovered_value", 0)),
 		&"penalty_score": int(result.get(&"penalty_score", 0)),
 		&"timestamp": int(Time.get_unix_time_from_system()),
+		&"run_id": String(result.get(&"run_id", "")),
+		&"player_id": String(result.get(&"player_id", "")),
+		&"submission_id": String(result.get(&"submission_id", "")),
+		&"idempotency_key": idempotency_key,
 	}
 	var ladders: Dictionary = entries_by_condition.get(condition_key, {})
 	var maximum_entries := int(policy.get("maximum_entries_per_condition"))
@@ -60,6 +72,10 @@ func submit_run(result: Dictionary) -> Dictionary:
 		ladders[ranking_id] = entries
 		ranks[ranking_id] = entries.find(ranking_entry) + 1
 	entries_by_condition[condition_key] = ladders
+	if not idempotency_key.is_empty():
+		processed_submission_ids.append(idempotency_key)
+		while processed_submission_ids.size() > 512:
+			processed_submission_ids.pop_front()
 	if persistence_enabled:
 		_save()
 	ranking_updated.emit(condition_key, get_entries(condition_key, &"recovered_value"))
@@ -69,6 +85,7 @@ func submit_run(result: Dictionary) -> Dictionary:
 		&"score": score,
 		&"rank": int(ranks.get(&"recovered_value", 0)),
 		&"ranks": ranks,
+		&"idempotency_key": idempotency_key,
 	}
 
 
@@ -94,6 +111,7 @@ func get_snapshot() -> Dictionary:
 		),
 		&"ranking_ids": policy.get("ranking_ids") if policy != null else PackedStringArray(),
 		&"minimum_penalty_score": int(policy.get("minimum_penalty_score")) if policy != null else 0,
+		&"processed_submission_count": processed_submission_ids.size(),
 	}
 
 
@@ -111,7 +129,11 @@ func get_provider_status() -> Dictionary:
 func _save() -> void:
 	var file := FileAccess.open(storage_path, FileAccess.WRITE)
 	if file != null:
-		file.store_string(JSON.stringify(entries_by_condition))
+		file.store_string(JSON.stringify({
+			"schema_version": 2,
+			"entries_by_condition": entries_by_condition,
+			"processed_submission_ids": processed_submission_ids,
+		}))
 
 
 func _load() -> void:
@@ -120,7 +142,12 @@ func _load() -> void:
 	var file := FileAccess.open(storage_path, FileAccess.READ)
 	var parsed = JSON.parse_string(file.get_as_text()) if file != null else null
 	if parsed is Dictionary:
-		entries_by_condition = parsed
+		if parsed.has("entries_by_condition"):
+			entries_by_condition = parsed.get("entries_by_condition", {})
+			for value in parsed.get("processed_submission_ids", []):
+				processed_submission_ids.append(String(value))
+		else:
+			entries_by_condition = parsed
 		_migrate_legacy_entries()
 
 
