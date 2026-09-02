@@ -129,6 +129,17 @@ func add_crafted_item(item: Dictionary) -> int:
 	return crafted_items.size() - 1
 
 
+func remove_crafted_item(instance_id: StringName) -> bool:
+	if instance_id == &"":
+		return false
+	for index in crafted_items.size():
+		if StringName(crafted_items[index].get(&"instance_id", &"")) == instance_id:
+			crafted_items.remove_at(index)
+			_commit()
+			return true
+	return false
+
+
 func register_blueprint(blueprint_id: StringName) -> bool:
 	if blueprint_id == &"" or blueprint_id in registered_blueprint_ids:
 		return false

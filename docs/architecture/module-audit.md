@@ -1063,6 +1063,24 @@ P5-02 임시 수치는 `investment_source_status=temporary`로 격리했습니�
 
 `scripts/check-p5-modularity.ps1`가 파일 경계, 설정 토글, Manifest 의존성, Scene 내부 접근 금지, 선택 제거 테스트를 CI에서 검사합니다. `p5_hub_progression_enabled=false`로 전체 기능을 빼거나 설정에서 상점·훈련장 같은 하위 기능만 뺄 수 있습니다.
 
+## P5 엄밀 모듈성 후속 감사 (2026-09-02)
+
+초기 감사가 파일 존재와 플래그 문자열을 중심으로 판정한 한계를 보완했습니다.
+
+| 엄밀 검사 | 결과 | 실행 근거 |
+|---|---|---|
+| 물리 제거 가능성 | 통과 | 집계기의 하위 `preload` 0건, 비활성 7개 CSV를 모두 존재하지 않는 경로로 바꿔도 구성 성공 |
+| 조건부 설정 유효성 | 통과 | 활성 모듈의 CSV만 검사하며 꺼진 모듈은 파일·경로를 요구하지 않음 |
+| 공개 façade | 통과 | 계약 테스트가 `p5.get("shop")` 같은 내부 접근 없이 유틸·상점·제작·훈련·도감을 호출 |
+| CSV 스키마·키 | 통과 | 테이블별 필수 열, 빈 ID, 중복 ID를 런타임에서 거부 |
+| 외래 ID 정합 | 통과 | Recipe·Codex·OperationPreset을 Item·Region·Weapon·Skill·Character 카탈로그와 CI 대조 |
+| 훈련 실전 경로 | 통과 | `Enemy.damaged → Game 조립 전달 → P5.record_training_hit` 단방향이며 타격 표현 모듈 제거와 독립 |
+| 거래 실패 롤백 | 통과 | 거래 기록 실패 Profile을 주입해 상점·제작의 재화·재료·창고·제작 결과 완전 원복 확인 |
+| UI 책임 분리 | 통과 | P5 기본 선택·상태 문구는 `P5HubActionPresenter`, Game은 액션 ID 전달과 Label 출력만 담당 |
+| 임시 상태 상한 | 통과 | 작전 초안 8개, 확정 거래 ID 128개로 제한하고 만료 초안 즉시 폐기 |
+
+Google Sheet의 `Recipe`, `Codex`, `OperationPreset`도 같은 표준 ID로 교정했으며 확정 CSV와 재조회 결과가 일치합니다. 이 변경은 게임 내 임시 크레딧과 데이터 계약만 다루며 결제 상품·Cloudflare 플랜·유료 설정을 변경하지 않습니다.
+
 ## 의도된 결합
 
 - `Game`은 모듈 Scene의 문자열 경로와 조립 순서를 압니다.

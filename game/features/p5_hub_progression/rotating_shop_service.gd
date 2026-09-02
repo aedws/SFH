@@ -28,8 +28,10 @@ func refresh(paid: bool = false, transaction_id: StringName = &"") -> Dictionary
 			return {&"success": false, &"reason": "중복 새로고침"}
 		if not bool(profile.call(&"spend", reroll_price)):
 			return {&"success": false, &"reason": "크레딧 부족"}
+		if not bool(profile.call(&"mark_transaction_processed", transaction_id)):
+			profile.call(&"add_credits", reroll_price)
+			return {&"success": false, &"reason": "새로고침 거래 기록 실패"}
 		processed_transactions[transaction_id] = true
-		profile.call(&"mark_transaction_processed", transaction_id)
 	rotation_index += 1
 	rotation.clear()
 	var qualities := [&"damaged", &"standard", &"high_performance"]
@@ -60,8 +62,11 @@ func purchase(offer_id: StringName, transaction_id: StringName) -> Dictionary:
 	if granted <= 0:
 		profile.call(&"add_credits", int(offer.get(&"price", 0)))
 		return {&"success": false, &"reason": "지급 실패"}
+	if not bool(profile.call(&"mark_transaction_processed", transaction_id)):
+		profile.call(&"take_warehouse_item", StringName(offer.get(&"target_id", &"")), granted)
+		profile.call(&"add_credits", int(offer.get(&"price", 0)))
+		return {&"success": false, &"reason": "구매 거래 기록 실패"}
 	processed_transactions[transaction_id] = true
-	profile.call(&"mark_transaction_processed", transaction_id)
 	return {&"success": true, &"offer": offer, &"granted": granted}
 
 
