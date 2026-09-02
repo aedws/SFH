@@ -45,8 +45,18 @@ for flag in (
 ):
     if flag not in config:
         ERRORS.append(f"Missing removable submodule flag: {flag}")
-if "conditional_paths" not in config:
+if "if not bool(contract[0])" not in config or "continue" not in config:
     ERRORS.append("Disabled submodules do not conditionally skip missing CSV validation.")
+for stem in ("utility", "operation_preset", "shop_offer", "recipe", "training_scenario", "codex"):
+    if f"{stem}_csv_payload" not in config:
+        ERRORS.append(f"Missing Web-safe P5 payload boundary: {stem}_csv_payload")
+
+sync_script = ROOT / "scripts" / "sync_p5_catalogs.py"
+if not sync_script.is_file():
+    ERRORS.append("Missing P5 CSV payload synchronization gate.")
+for stem in ("utility", "operation_preset", "shop_offer", "recipe", "training_scenario", "codex"):
+    if not (DATA_ROOT / f"{stem}_payload.tres").is_file():
+        ERRORS.append(f"Missing Web-safe P5 payload resource: {stem}_payload.tres")
 
 aggregator = (FEATURE_ROOT / "p5_hub_progression_service.gd").read_text(encoding="utf-8")
 if "preload(" in aggregator:
@@ -114,4 +124,4 @@ for preset in presets:
 if ERRORS:
     raise SystemExit("\n".join(ERRORS))
 
-print("P5_MODULARITY_OK lazy_submodules conditional_paths facade_only schema_unique_fk canonical_ids presenter_boundary real_training_bridge transaction_guards")
+print("P5_MODULARITY_OK lazy_submodules conditional_paths web_payloads facade_only schema_unique_fk canonical_ids presenter_boundary real_training_bridge transaction_guards")

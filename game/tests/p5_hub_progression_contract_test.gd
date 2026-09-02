@@ -32,6 +32,7 @@ func _run() -> void:
 	_check(int(initial.get(&"shop", {}).get(&"quality_count", 0)) == 3, "상점 3품질")
 	_check(int(initial.get(&"training", {}).get(&"scenario_count", 0)) == 2, "훈련 2종")
 	_check(int(initial.get(&"codex", {}).get(&"entry_count", 0)) == 6, "도감 6종")
+	_check(_verify_web_payload_fallback(profile, contract, sandbox), "Web 내장 P5 CSV 6종 폴백")
 
 	_check(p5.call(&"set_utility_quantity", &"field_medkit", 1), "회복 유틸 선택")
 	var utility_context: Dictionary = p5.call(&"get_investment_context")
@@ -115,6 +116,9 @@ func _run() -> void:
 	for property_name in ["operation_draft_enabled", "bankruptcy_preset_enabled", "rotating_shop_enabled", "workshop_enabled", "training_enabled", "codex_enabled"]:
 		malformed_config.set(property_name, false)
 	malformed_config.set("utility_csv_path", malformed_path)
+	var malformed_payload: Resource = malformed_config.get("utility_csv_payload").duplicate(true)
+	malformed_payload.set("source_path", malformed_path)
+	malformed_config.set("utility_csv_payload", malformed_payload)
 	var malformed_p5 := P5_SCENE.instantiate()
 	sandbox.add_child(malformed_p5)
 	_check(not bool(malformed_p5.call(&"configure", profile, contract, malformed_config, 1)), "CSV 필수 열·중복 ID 차단")
@@ -146,7 +150,7 @@ func _run() -> void:
 	if FileAccess.file_exists(PROFILE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE_PATH))
 	if failures.is_empty():
-		print("P5_HUB_PROGRESSION_OK utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback")
+		print("P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback")
 		quit(0)
 	else:
 		print("P5_HUB_PROGRESSION_FAILED: %s" % " / ".join(failures))
@@ -156,3 +160,30 @@ func _run() -> void:
 func _check(condition: bool, label: String) -> void:
 	if not condition:
 		failures.append(label)
+
+
+func _verify_web_payload_fallback(profile: Node, contract: Node, sandbox: Node) -> bool:
+	var fallback_config = load(
+		"res://game/features/p5_hub_progression/configs/default_p5_hub_progression.tres"
+	).duplicate(true)
+	for stem in [
+		"utility", "operation_preset", "shop_offer", "recipe", "training_scenario", "codex",
+	]:
+		var path_property := "%s_csv_path" % stem
+		var payload_property := "%s_csv_payload" % stem
+		var missing_path := "res://web-export/%s.csv" % stem
+		var payload: Resource = fallback_config.get(payload_property).duplicate(true)
+		payload.set("source_path", missing_path)
+		fallback_config.set(path_property, missing_path)
+		fallback_config.set(payload_property, payload)
+	var fallback_p5 := P5_SCENE.instantiate()
+	sandbox.add_child(fallback_p5)
+	if not bool(fallback_p5.call(&"configure", profile, contract, fallback_config, 50511)):
+		return false
+	var snapshot: Dictionary = fallback_p5.call(&"get_snapshot")
+	return (
+		int(snapshot.get(&"utility", {}).get(&"catalog_count", 0)) == 5
+		and int(snapshot.get(&"shop", {}).get(&"quality_count", 0)) == 3
+		and int(snapshot.get(&"training", {}).get(&"scenario_count", 0)) == 2
+		and int(snapshot.get(&"codex", {}).get(&"entry_count", 0)) == 6
+	)

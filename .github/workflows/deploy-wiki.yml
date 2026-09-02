@@ -130,13 +130,14 @@ jobs:
           python3 scripts/sync_session_socket_rules.py --check
           python3 scripts/sync_character_catalog.py --check
           python3 scripts/sync_loadout_investment.py --check
+          python3 scripts/sync_p5_catalogs.py --check
           python3 scripts/check_p5_modularity.py
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loot_table_contract_test.gd" | tee /tmp/sfh-loot-table.log
           grep -q "LOOT_TABLE_TEST_OK rows_29 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link" /tmp/sfh-loot-table.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/field_loot_acquisition_contract_test.gd" | tee /tmp/sfh-field-loot.log
           grep -q "FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip skill_swap_slot_binding_restore provisional_policy restore_on_hub viewport_safe modular_boundary" /tmp/sfh-field-loot.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/operation_combination_contract_test.gd" | tee /tmp/sfh-operation-combinations.log
-          grep -q "OPERATION_COMBINATION_OK combinations_9 tiers_3 difficulties_3 launch_assemble_return entry_routes_4 wizard_steps_3 tutorial_steps_4 tutorial_optional settlement_optional_repeat" /tmp/sfh-operation-combinations.log
+          grep -q "OPERATION_COMBINATION_OK combinations_81 tiers_3 difficulties_3 regions_3 characters_3 launch_assemble_esc_return entry_routes_4 wizard_steps_3 tutorial_steps_4 tutorial_optional settlement_optional_repeat" /tmp/sfh-operation-combinations.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/character_selection_contract_test.gd" | tee /tmp/sfh-character-selection.log
           grep -q "CHARACTER_SELECTION_OK characters_3 optional_module locked_live_csv briefing_quote passive_runtime entry_cost_once" /tmp/sfh-character-selection.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loadout_investment_contract_test.gd" | tee /tmp/sfh-loadout-investment.log
@@ -146,7 +147,7 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/run_settlement_contract_test.gd" | tee /tmp/sfh-run-settlement.log
           grep -q "RUN_SETTLEMENT_OK auto_convert_450 permanent_unlock warehouse run_only_expiry death_loss idempotent_run_id" /tmp/sfh-run-settlement.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/p5_hub_progression_contract_test.gd" | tee /tmp/sfh-p5.log
-          grep -q "P5_HUB_PROGRESSION_OK utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules" /tmp/sfh-p5.log
+          grep -q "P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback" /tmp/sfh-p5.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_provider_contract_test.gd" | tee /tmp/sfh-p6-ranking.log
           grep -q "P6_RANKING_PROVIDER_OK local_online_swap offline_fallback local_preserved visible_sync_state" /tmp/sfh-p6-ranking.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
