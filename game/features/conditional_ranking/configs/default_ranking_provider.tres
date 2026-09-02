@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="RankingProviderConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/conditional_ranking/ranking_provider_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+provider_mode = "auto"
+offline_fallback_enabled = true
+online_provider_label = "SFH 온라인 랭킹"

@@ -341,7 +341,10 @@ const CRAFTING_METHODS := [&"configure", &"quote", &"craft"]
 const PENALTY_METHODS := [
 	&"configure", &"toggle", &"cycle_single", &"get_snapshot",
 ]
-const RANKING_METHODS := [&"configure", &"submit_run", &"get_entries", &"get_snapshot"]
+const RANKING_METHODS := [
+	&"configure", &"submit_run", &"get_entries", &"get_snapshot",
+	&"get_provider_status", &"set_online_gateway", &"set_provider_mode",
+]
 const OPERATION_RESULT_METHODS := [&"configure", &"settle_success", &"settle_failure"]
 const KEY_MAPPING_METHODS := [
 	&"configure", &"rebind_action", &"reset_defaults", &"get_entries", &"get_snapshot",
@@ -623,7 +626,8 @@ func _install_persistent_services() -> bool:
 			not _supports_methods(conditional_ranking_system, RANKING_METHODS)
 			or not conditional_ranking_system.call(
 				&"configure", features.conditional_ranking_storage_path,
-				load(features.conditional_ranking_policy_path), true
+				load(features.conditional_ranking_policy_path), true,
+				load(features.ranking_provider_config_path)
 			)
 		):
 			_report_configuration_error("조건부 랭킹 모듈을 구성하지 못했습니다.")
@@ -3296,12 +3300,15 @@ func _on_extraction_completed(_actor: Node2D) -> void:
 		}, active_contract)
 	var ranking: Dictionary = settlement.get(&"ranking", {})
 	var ranks: Dictionary = ranking.get(&"ranks", {})
+	var ranking_provider_label := _format_ranking_provider_status(
+		ranking.get(&"provider_status", {})
+	)
 	var blueprint_label := ""
 	if StringName(settlement.get(&"blueprint_id", &"")) != &"":
 		blueprint_label = " · 도면 획득"
 	_finish_run(
 		"탈출 성공",
-		"%s 작전 · 생존 %s · 처치 %d · 정산 %d C · 고철 %d%s · 가치 #%d / 시간 #%d / 처치 #%d%s" % [
+		"%s 작전 · 생존 %s · 처치 %d · 정산 %d C · 고철 %d%s · 가치 #%d / 시간 #%d / 처치 #%d%s%s" % [
 			_selected_map_display_name(),
 			_format_time(elapsed_time),
 			defeated_enemies,
@@ -3312,8 +3319,15 @@ func _on_extraction_completed(_actor: Node2D) -> void:
 			int(ranks.get(&"elapsed_seconds", 0)),
 			int(ranks.get(&"kills", 0)),
 			_format_run_loot_settlement(loot_settlement),
+			ranking_provider_label,
 		]
 	)
+
+
+func _format_ranking_provider_status(status: Dictionary) -> String:
+	if status.is_empty():
+		return ""
+	return "\n랭킹 · %s" % String(status.get(&"label", "로컬 기록"))
 
 
 func _on_extraction_defense_started(_actor: Node2D, duration_seconds: float) -> void:

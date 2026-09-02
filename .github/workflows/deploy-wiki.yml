@@ -35,6 +35,7 @@ on:
       - "scripts/check-game-domain-cutover.ps1"
       - "scripts/check-wiki-planner-requests.ps1"
       - "scripts/check-p7-roadmap.ps1"
+      - "scripts/test-p6.ps1"
   push:
     branches:
       - main
@@ -69,6 +70,7 @@ on:
       - "scripts/check-game-domain-cutover.ps1"
       - "scripts/check-wiki-planner-requests.ps1"
       - "scripts/check-p7-roadmap.ps1"
+      - "scripts/test-p6.ps1"
   workflow_dispatch:
 
 permissions:
@@ -145,6 +147,8 @@ jobs:
           grep -q "RUN_SETTLEMENT_OK auto_convert_450 permanent_unlock warehouse run_only_expiry death_loss idempotent_run_id" /tmp/sfh-run-settlement.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/p5_hub_progression_contract_test.gd" | tee /tmp/sfh-p5.log
           grep -q "P5_HUB_PROGRESSION_OK utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules" /tmp/sfh-p5.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_provider_contract_test.gd" | tee /tmp/sfh-p6-ranking.log
+          grep -q "P6_RANKING_PROVIDER_OK local_online_swap offline_fallback local_preserved visible_sync_state" /tmp/sfh-p6-ranking.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
           grep -q "SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing" /tmp/sfh-smoke.log
           grep -q "WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction" /tmp/sfh-smoke.log

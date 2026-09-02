@@ -48,8 +48,18 @@ if ($page -notmatch 'data-sfh-code-module-map-host') {
 if ($javascript -notmatch 'assets/code-module-map\.json' -or $javascript -notmatch 'aria-pressed') {
     $errors.Add("The code map JavaScript does not load data or expose selection state.")
 }
+if (
+    $javascript -notmatch 'sfh-code-web__center' -or
+    $javascript -notmatch 'marker-end' -or
+    $javascript -notmatch 'compact \? 6 : medium \? 8 : 12'
+) {
+    $errors.Add("The radial relationship web or its 12/8/6 responsive contract is missing.")
+}
 if ($stylesheet -notmatch '\.sfh-code-map__workspace' -or $stylesheet -notmatch 'max-width:\s*24em') {
     $errors.Add("The code map responsive CSS contract is missing.")
+}
+if ($stylesheet -notmatch '\.sfh-code-web__stage' -or $stylesheet -notmatch '\.sfh-code-web__satellite') {
+    $errors.Add("The radial relationship web CSS contract is missing.")
 }
 if ($mkdocs -notmatch 'architecture/code-module-map\.md' -or $mkdocs -notmatch 'javascripts/code-module-map\.js') {
     $errors.Add("MkDocs does not expose the code map page and runtime.")

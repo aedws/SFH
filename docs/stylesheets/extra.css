@@ -3143,6 +3143,70 @@ body,
 }
 .sfh-code-map__filter[aria-pressed="true"] { border-color: var(--sfh-cyan); color: #00191a; background: var(--sfh-cyan); }
 
+.sfh-code-web {
+  position: relative;
+  margin: 0 0 0.8rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--sfh-cyan) 42%, transparent);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(2, 229, 225, 0.09), transparent 29%),
+    radial-gradient(circle, rgba(2, 229, 225, 0.13) 1px, transparent 1px),
+    rgba(0, 7, 11, 0.88);
+  background-size: auto, 18px 18px, auto;
+}
+.sfh-code-web__header {
+  position: absolute; z-index: 4; inset: 0.65rem 0.75rem auto;
+  display: flex; justify-content: space-between; gap: 0.6rem; pointer-events: none;
+}
+.sfh-code-web__header b { color: var(--sfh-cyan); font-size: 0.6rem; letter-spacing: 0.07em; }
+.sfh-code-web__header small { color: var(--sfh-muted); font-size: 0.52rem; text-align: right; }
+.sfh-code-web__stage { position: relative; height: clamp(28rem, 52vw, 40rem); min-height: 28rem; }
+.sfh-code-web__lines { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.sfh-code-web__lines line { vector-effect: non-scaling-stroke; stroke: rgba(2, 229, 225, 0.58); stroke-width: 1.5; }
+.sfh-code-web__lines marker path { fill: var(--sfh-cyan); }
+.sfh-code-web__lines .is-requires { stroke: var(--sfh-cyan); }
+.sfh-code-web__lines .is-verifies { stroke: var(--sfh-green); }
+.sfh-code-web__lines .is-inherits { stroke: var(--sfh-magenta); }
+.sfh-code-web__lines .is-references { stroke: color-mix(in srgb, var(--sfh-cyan) 54%, var(--sfh-muted)); }
+.sfh-code-web__lines .is-bridge { stroke: rgba(117, 150, 157, 0.22); stroke-dasharray: 4 5; stroke-width: 1; }
+.sfh-code-web__center,
+.sfh-code-web__satellite {
+  position: absolute; z-index: 3; transform: translate(-50%, -50%);
+  display: grid; place-content: center; gap: 0.14rem;
+  border: 1px solid color-mix(in srgb, var(--sfh-cyan) 68%, transparent);
+  color: var(--sfh-text); background: rgba(3, 17, 22, 0.96);
+  font: inherit; text-align: center; cursor: pointer;
+}
+.sfh-code-web__center {
+  inset: 50% auto auto 50%; width: 9.2rem; aspect-ratio: 1; padding: 0.65rem;
+  border-radius: 50%; border-width: 2px; box-shadow: 0 0 0 0.45rem rgba(2, 229, 225, 0.05), 0 0 2rem rgba(2, 229, 225, 0.13);
+}
+.sfh-code-web__center::after { position: absolute; inset: 0.55rem; border: 1px dashed rgba(2, 229, 225, 0.28); border-radius: 50%; content: ""; }
+.sfh-code-web__center strong { position: relative; z-index: 1; font-size: 0.8rem; }
+.sfh-code-web__center small, .sfh-code-web__center span { position: relative; z-index: 1; color: var(--sfh-cyan); font-size: 0.48rem; }
+.sfh-code-web__satellite {
+  width: 8.4rem; min-height: 4.2rem; padding: 0.46rem 0.55rem;
+  clip-path: polygon(7% 0, 100% 0, 100% 76%, 93% 100%, 0 100%, 0 24%);
+}
+.sfh-code-web__satellite strong { overflow: hidden; font-size: 0.59rem; text-overflow: ellipsis; white-space: nowrap; }
+.sfh-code-web__satellite small { color: var(--sfh-muted); font-size: 0.44rem; line-height: 1.35; }
+.sfh-code-web__center:hover, .sfh-code-web__center:focus-visible,
+.sfh-code-web__satellite:hover, .sfh-code-web__satellite:focus-visible {
+  z-index: 5; border-color: var(--sfh-cyan-bright); color: #00191a; background: var(--sfh-cyan);
+  outline: 3px solid rgba(2, 229, 225, 0.22);
+}
+.sfh-code-web__center:hover small, .sfh-code-web__center:hover span,
+.sfh-code-web__center:focus-visible small, .sfh-code-web__center:focus-visible span,
+.sfh-code-web__satellite:hover small, .sfh-code-web__satellite:focus-visible small { color: #003a3d; }
+.sfh-code-web__pager {
+  display: grid; grid-template-columns: 44px 1fr 44px; align-items: center;
+  border-top: 1px solid rgba(2, 229, 225, 0.22); background: rgba(0, 10, 14, 0.84);
+}
+.sfh-code-web__pager button { min-height: 44px; border: 0; color: var(--sfh-cyan); background: transparent; font: 1.1rem/1 inherit; cursor: pointer; }
+.sfh-code-web__pager button:disabled { opacity: 0.28; cursor: default; }
+.sfh-code-web__pager span { color: var(--sfh-muted); font-size: 0.52rem; text-align: center; }
+.sfh-code-web__empty { position: absolute; z-index: 2; inset: 67% 0 auto; color: var(--sfh-muted); font-size: 0.56rem; text-align: center; }
+
 .sfh-code-map__workspace { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr); gap: 0.75rem; align-items: start; }
 .sfh-code-map__graph { display: grid; gap: 0.65rem; min-width: 0; }
 .sfh-code-map__lane { padding: 0.65rem; border: 1px solid rgba(79, 137, 143, 0.34); background: rgba(4, 15, 20, 0.72); }
@@ -3211,18 +3275,31 @@ body,
   .sfh-code-map__metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sfh-code-map__nodes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sfh-code-map__flow { grid-template-columns: 1fr; }
+  .sfh-code-web__header { align-items: flex-start; flex-direction: column; }
+  .sfh-code-web__header small { text-align: left; }
+  .sfh-code-web__stage { height: 34rem; }
+  .sfh-code-web__center { width: 7.2rem; }
+  .sfh-code-web__satellite { width: 6.5rem; min-height: 3.8rem; padding: 0.36rem; }
+  .sfh-code-web__satellite strong { font-size: 0.53rem; }
+  .sfh-code-web__satellite small { font-size: 0.4rem; }
 }
 
 @media screen and (max-width: 24em) {
   .sfh-code-map-guide { grid-template-columns: 1fr; }
   .sfh-code-map__nodes { grid-template-columns: 1fr; }
   .sfh-code-node { min-height: 52px; }
+  .sfh-code-web__stage { height: 31rem; min-height: 31rem; }
+  .sfh-code-web__center { width: 6.4rem; }
+  .sfh-code-web__satellite { width: 5.7rem; min-height: 3.4rem; }
+  .sfh-code-web__satellite small { display: none; }
 }
 
 @media (pointer: coarse) {
   .sfh-code-node,
   .sfh-code-map__filter,
   .sfh-code-map__relation,
+  .sfh-code-web__satellite,
+  .sfh-code-web__center,
   .md-typeset .sfh-code-map__wiki { min-height: 2.75rem; }
 }
 
@@ -3233,6 +3310,9 @@ body,
 @media (prefers-contrast: more) {
   .sfh-code-map,
   .sfh-code-node,
+  .sfh-code-web,
+  .sfh-code-web__satellite,
+  .sfh-code-web__center,
   .sfh-code-map__detail,
   .sfh-code-map__relation { border-color: currentColor; }
 }
