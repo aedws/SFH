@@ -39,6 +39,7 @@ var original_mouse_emulation := true
 var focus_available := true
 var original_scale_size := Vector2i.ZERO
 var managed_mobile_scale := false
+var gui_bridge := preload("res://game/features/mobile_controls/touch_gui_bridge.gd").new()
 
 
 func _ready() -> void:
@@ -81,6 +82,8 @@ func simulate_action(action_id: StringName, pressed: bool) -> bool:
 
 
 func release_all() -> void:
+	if is_inside_tree():
+		gui_bridge.release(get_viewport(), true)
 	if joystick != null:
 		joystick.release()
 	touch_actions.clear()
@@ -168,6 +171,8 @@ func _input(event: InputEvent) -> void:
 					get_viewport().set_input_as_handled()
 					_set_action_pressed(action_id, true)
 					return
+			gui_bridge.handle(event, get_viewport())
+			get_viewport().set_input_as_handled()
 		else:
 			if event.index == joystick.finger:
 				joystick.release(event.index)
@@ -178,11 +183,15 @@ func _input(event: InputEvent) -> void:
 				if not touch_actions.values().has(action):
 					_set_action_pressed(action, false)
 				get_viewport().set_input_as_handled()
+			gui_bridge.handle(event, get_viewport())
 	elif event is InputEventScreenDrag:
 		if event.index == joystick.finger:
 			joystick.drag(event.index, event.position)
 			get_viewport().set_input_as_handled()
 		elif touch_actions.has(event.index):
+			get_viewport().set_input_as_handled()
+		else:
+			gui_bridge.handle(event, get_viewport())
 			get_viewport().set_input_as_handled()
 
 

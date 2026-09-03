@@ -44,6 +44,7 @@ PC에서는 저장한 HUD 위치를 사용합니다. 모바일에서는 양손 �
 | `PresentationSettingsService` | JSON 저장, HUD 위치·키 형식·모바일 모드 | 전투 규칙, 실제 UI 노드 |
 | `MobileControlPad` | 터치를 semantic Action으로 변환 | 키보드 물리 키, 피해·이동 계산 |
 | `VirtualJoystick` | 손가락 소유권·데드존·방향 벡터 | Action·플레이어 속도 |
+| `TouchGuiBridge` | 패드 밖의 지도·소켓 등 GUI 터치/드래그 전달 | 마우스 공격 Action 상태 |
 | `MobileViewportPolicy` | 가로/세로 논리 해상도 | 게임 세계·장비·경제 |
 | `ControlModeEntry` | PC/모바일 선택·설정 저장·로비로 전달 | 작전 진입 조건·투입비 |
 | `CombatHudPresenter` | 설정 스냅샷을 배치·표기에 반영 | 설정 저장, 터치 입력 |

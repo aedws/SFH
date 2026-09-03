@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "a5ff486ef024e04dc74db8f7605ee64b97038fc3c27c3370dba2171abbc4f747",
+  "source_sha256": "0b1427f8e596b96f25ed3fbfaa8e65fc15f1ac4fc2123a0af29af8778685faf0",
   "layers": [
     {
       "id": "contract",
@@ -25,7 +25,7 @@
   ],
   "summary": {
     "modules": 59,
-    "scripts": 237,
+    "scripts": 238,
     "named_classes": 197,
     "relationships": 181,
     "project_inheritance": 7,
@@ -636,7 +636,7 @@
       "path": "game/features/mobile_controls",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 4,
+      "file_count": 5,
       "class_count": 1,
       "classes": [
         "MobileControlPad"
