@@ -13,20 +13,12 @@ func configure(service_provider: Node, progression_config: Resource) -> bool:
 
 func perform(action_id: StringName) -> Dictionary:
 	match action_id:
-		&"shop_purchase": return _purchase_selected_offer()
+		&"shop_purchase": return _presentation(false, "상점 비교 화면에서 상품 선택 후 구매하세요.")
 		&"craft_default": return _craft_default()
 		&"utility_toggle": return _toggle_utility()
 		&"training_toggle": return _toggle_training()
 		&"codex_summary": return _codex_summary()
 	return {&"handled": false, &"status_text": ""}
-
-
-func _purchase_selected_offer() -> Dictionary:
-	var offers: Array = service.call(&"get_snapshot").get(&"shop", {}).get(&"offers", [])
-	if offers.is_empty(): return _presentation(false, "회전 상점 상품 없음")
-	var offer: Dictionary = offers[0]
-	var result: Dictionary = service.call(&"purchase_shop_offer", offer.get(&"offer_id", &""), _transaction_id(&"shop"))
-	return _presentation(bool(result.get(&"success", false)), "회전 상점 %s · %s" % ["구매 완료" if bool(result.get(&"success", false)) else "구매 실패", offer.get(&"display_name", offer.get(&"offer_id", &""))], result)
 
 
 func _craft_default() -> Dictionary:

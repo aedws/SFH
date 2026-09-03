@@ -11,6 +11,15 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-03 · P7-01A 상점 비교와 보안 구현 예정 분리
+
+- `ShopQuotePolicy`는 입력 사본으로 견적만 계산하고 `RotatingShopService`가 구매를 수행합니다. `ShopOfferPresenter`는 설정 품질과 현재 창고 수량 지급을 구분해 표현합니다.
+- `ShopBrowserPanel`은 P5 공개 façade만 사용하며 프로필/가방 내부 Node 경로를 읽지 않습니다. Game 변경은 선택 UI의 지연 설치·모달 연결·열기뿐입니다.
+- `shop_browser_enabled=false`일 때 UI를 로드하지 않고 P5 상점·거점은 남습니다. 자동 첫 매물 구매로 폴백하지 않습니다. P5/회전 상점 제거도 기존 계약으로 유지합니다.
+- 가격·수량·미지원 유형 검증, 읽기 전용 사본, 동일 품목 개당 비교, 오래된 견적 차단, 실제 F/마우스/ESC, 4화면 크기, 중복 클릭을 전용 계약 테스트에 추가했습니다.
+- 위변조 감지·거래 원장·다세대 백업은 [사전 설계](../design/p7-plus-preimplementation.md#economy-integrity-plan)만 등록합니다. 현재 로컬 환불 처리나 SHA-256을 서버 검증 또는 DB 트랜잭션으로 표기하지 않습니다.
+- 새 목록 없이 기존 ShopOffer 6행·확정 CSV·Web payload를 유지합니다. 실제 품질 적용·장비 가방 지급·가격 밸런스는 P7-01B로 남습니다.
+
 ## 2026-09-03 · 보스 경고와 외곽 방향 HUD
 
 - `boss_warning`의 추적기·좌표 투영·스타일 Resource·HUD를 분리했습니다. 보스 생성, 피해, 문, 크레딧 로직은 수정하지 않습니다.

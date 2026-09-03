@@ -1,6 +1,8 @@
 class_name RotatingShopService
 extends RefCounted
 
+const QUOTE_POLICY := preload("res://game/features/p5_hub_progression/shop_quote_policy.gd")
+
 var profile: Node
 var offers: Array[Dictionary] = []
 var rotation: Array[Dictionary] = []
@@ -47,15 +49,19 @@ func refresh(paid: bool = false, transaction_id: StringName = &"") -> Dictionary
 	return {&"success": true, &"paid": paid, &"snapshot": get_snapshot()}
 
 
-func purchase(offer_id: StringName, transaction_id: StringName) -> Dictionary:
+func quote(offer_id: StringName) -> Dictionary:
+	return QUOTE_POLICY.quote(_find_rotation(offer_id), offers, profile.call(&"get_snapshot"), rotation_index)
+
+
+func purchase(offer_id: StringName, transaction_id: StringName, expected_rotation: int = -1) -> Dictionary:
 	if transaction_id == &"" or processed_transactions.has(transaction_id) or bool(profile.call(&"has_processed_transaction", transaction_id)):
 		return {&"success": false, &"reason": "중복 구매"}
-	var offer := _find_rotation(offer_id)
-	if offer.is_empty():
-		return {&"success": false, &"reason": "현재 회전 상품 아님"}
-	var unlock_id := StringName(offer.get(&"required_unlock_id", &""))
-	if unlock_id != &"" and not bool(profile.call(&"is_unlocked", unlock_id)):
-		return {&"success": false, &"reason": "해금 조건 미달"}
+	if expected_rotation >= 0 and expected_rotation != rotation_index:
+		return {&"success": false, &"reason": "매물이 갱신됐습니다 · 다시 선택하세요"}
+	var current_quote := quote(offer_id)
+	if not bool(current_quote.get(&"purchasable", false)):
+		return {&"success": false, &"reason": current_quote.get(&"reason", "구매 불가")}
+	var offer: Dictionary = current_quote[&"offer"]
 	if not bool(profile.call(&"spend", int(offer.get(&"price", 0)))):
 		return {&"success": false, &"reason": "크레딧 부족"}
 	var granted := int(profile.call(&"add_warehouse_item", StringName(offer.get(&"target_id", &"")), int(offer.get(&"quantity", 1))))
@@ -71,8 +77,12 @@ func purchase(offer_id: StringName, transaction_id: StringName) -> Dictionary:
 
 
 func get_snapshot() -> Dictionary:
+	var quotes: Array[Dictionary] = []
+	for offer in rotation:
+		quotes.append(quote(StringName(offer.get(&"offer_id", &""))))
 	return {&"rotation_index": rotation_index, &"offers": rotation.duplicate(true),
-		&"reroll_price": reroll_price, &"quality_count": _quality_count()}
+		&"reroll_price": reroll_price, &"quality_count": _quality_count(), &"quotes": quotes,
+		&"credits": int(profile.call(&"get_snapshot").get(&"banked_credits", 0))}
 
 
 func _quality_count() -> int:

@@ -39,8 +39,18 @@ foreach ($lane in $roadmap.lanes) {
         if ([string]$packet.id -notmatch ('^' + [regex]::Escape([string]$lane.id) + '-\d{2}$') -or -not $packetIds.Add([string]$packet.id)) {
             $errors.Add("Invalid or duplicate packet id: $($packet.id)")
         }
-        if ($packet.state -ne "planned") {
-            $errors.Add("Setup-only P7+ packet must stay planned: $($packet.id)")
+        if ($packet.state -notin @("planned", "in_progress")) {
+            $errors.Add("P7+ must not claim unverified completion: $($packet.id)")
+        }
+        if ($packet.state -eq "in_progress") {
+            if (-not $packet.completed_scope -or -not $packet.remaining_scope -or -not $packet.evidence) {
+                $errors.Add("In-progress packet needs completed/remaining scope and evidence: $($packet.id)")
+            }
+            foreach ($evidence in $packet.evidence) {
+                if (-not (Test-Path -LiteralPath (Join-Path $repositoryRoot $evidence) -PathType Leaf)) {
+                    $errors.Add("Missing packet evidence: $evidence")
+                }
+            }
         }
         if ([string]$packet.data_gate -notin $allowedDataGates) {
             $errors.Add("Unknown data gate on $($packet.id): $($packet.data_gate)")

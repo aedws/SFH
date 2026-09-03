@@ -1,9 +1,16 @@
 {
-  "version": 31,
+  "version": 32,
   "updated": "2026-09-03",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "상점 매물 비교",
+      "label": "P7-01A 선택·명시 구매 / B 품질 적용 예정",
+      "description": "세 품질 가격·수량·잔액 비교, 자동 구매 제거, 실제 품질·가방 지급은 후속 구현",
+      "category": "로비",
+      "priority": 101
+    },
     {
       "query": "다운로드판 자동 저장",
       "label": "Windows 기록 이어하기·백업",

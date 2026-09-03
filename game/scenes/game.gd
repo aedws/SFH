@@ -354,7 +354,8 @@ const P5_HUB_PROGRESSION_METHODS := [
 	&"configure", &"get_investment_context", &"get_operation_setting_contribution",
 	&"create_operation_draft",
 	&"confirm_operation_draft", &"begin_run", &"settle_run", &"refresh_hub",
-	&"toggle_utility", &"purchase_shop_offer", &"reroll_shop", &"craft_recipe",
+	&"toggle_utility", &"purchase_shop_offer", &"get_shop_snapshot", &"quote_shop_offer",
+	&"reroll_shop", &"craft_recipe",
 	&"start_training", &"record_training_hit", &"finish_training", &"get_snapshot",
 	&"perform_hub_action",
 ]
@@ -488,6 +489,7 @@ var loot_launch_validator
 var character_selection_service
 var loadout_investment_service
 var p5_hub_progression_service
+var shop_browser_panel
 var hub_economy_system
 var crafting_system
 var penalty_system
@@ -827,6 +829,15 @@ func _install_persistent_services() -> bool:
 			p5_hub_progression_service.connect(
 				&"snapshot_changed", Callable(self, &"_on_contract_changed")
 			)
+			if features.shop_browser_enabled and not p5_hub_progression_service.call(&"get_shop_snapshot").is_empty():
+				shop_browser_panel = _instantiate_feature(
+					"res://game/features/shop_browser/shop_browser_panel.tscn", ui_layer, &"ShopBrowser"
+				)
+				if _supports_panel(shop_browser_panel) and shop_browser_panel.call(&"configure", p5_hub_progression_service):
+					_connect_modal_panel(shop_browser_panel)
+				else:
+					_free_feature_node(shop_browser_panel)
+					shop_browser_panel = null
 	if features.operation_launch_preflight_enabled and not _install_operation_launch_preflight():
 		_report_configuration_error("작전 사전검증 모듈을 구성하지 못했습니다.")
 		return false
@@ -1136,6 +1147,9 @@ func _cycle_penalty() -> void:
 
 
 func _purchase_medkit() -> void:
+	if is_instance_valid(shop_browser_panel):
+		shop_browser_panel.call(&"open_panel")
+		return
 	if _perform_p5_hub_action(&"shop_purchase"): return
 	if hub_economy_system == null:
 		return
@@ -1294,9 +1308,7 @@ func _refresh_contract_setup_ui() -> void:
 			"ON" if int(p5_utility.get(&"field_medkit", 0)) > 0 else "OFF"
 		)
 		var p5_shop: Dictionary = p5_snapshot.get(&"shop", {})
-		shop_button.text = "회전 상점 · 품질 %d · 재굴림 %d C" % [
-			int(p5_shop.get(&"quality_count", 0)), int(p5_shop.get(&"reroll_price", 0)),
-		]
+		shop_button.text = "회전 상점 · %d품질 비교" % int(p5_shop.get(&"quality_count", 0))
 		var p5_training: Dictionary = p5_snapshot.get(&"training", {})
 		training_button.text = "훈련장 · %s" % (
 			"측정 종료" if not (p5_training.get(&"active", {}) as Dictionary).is_empty() else "단일/밀집"

@@ -162,6 +162,8 @@ jobs:
           grep -q "RUN_SETTLEMENT_OK auto_convert_450 permanent_unlock warehouse run_only_expiry death_loss idempotent_run_id" /tmp/sfh-run-settlement.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/p5_hub_progression_contract_test.gd" | tee /tmp/sfh-p5.log
           grep -q "P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback" /tmp/sfh-p5.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/shop_browser_contract_test.gd" | tee /tmp/sfh-p7-shop.log
+          grep -q "P7_SHOP_BROWSER_OK" /tmp/sfh-p7-shop.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_provider_contract_test.gd" | tee /tmp/sfh-p6-ranking.log
           grep -q "P6_RANKING_SUBMISSION_OK identity envelope_digest idempotency local_preserved persistent_retry timeout_retry server_rejection visible_sync_state" /tmp/sfh-p6-ranking.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_season_contract_test.gd" | tee /tmp/sfh-p6-season.log

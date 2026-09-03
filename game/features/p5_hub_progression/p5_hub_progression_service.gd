@@ -146,9 +146,19 @@ func toggle_utility(utility_id: StringName) -> Dictionary:
 	return {&"success": success, &"quantity": next_quantity if success else int(selected.get(utility_id, 0))}
 
 
-func purchase_shop_offer(offer_id: StringName, transaction_id: StringName) -> Dictionary:
+func get_shop_snapshot() -> Dictionary:
 	var shop = _module(&"shop")
-	var result: Dictionary = shop.call(&"purchase", offer_id, transaction_id) if shop != null else {&"success": false, &"reason": "상점 모듈 꺼짐"}
+	return shop.call(&"get_snapshot") if shop != null else {}
+
+
+func quote_shop_offer(offer_id: StringName) -> Dictionary:
+	var shop = _module(&"shop")
+	return shop.call(&"quote", offer_id) if shop != null else {&"purchasable": false, &"reason": "상점 모듈 꺼짐"}
+
+
+func purchase_shop_offer(offer_id: StringName, transaction_id: StringName, expected_rotation: int = -1) -> Dictionary:
+	var shop = _module(&"shop")
+	var result: Dictionary = shop.call(&"purchase", offer_id, transaction_id, expected_rotation) if shop != null else {&"success": false, &"reason": "상점 모듈 꺼짐"}
 	snapshot_changed.emit(get_snapshot())
 	return result
 

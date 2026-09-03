@@ -53,6 +53,7 @@ extends Resource
 @export var character_selection_enabled: bool = true
 @export var loadout_investment_enabled: bool = true
 @export var p5_hub_progression_enabled: bool = true
+@export var shop_browser_enabled: bool = true
 @export var extraction_defense_enabled: bool = true
 @export var hub_economy_enabled: bool = true
 @export var smart_targeting_enabled: bool = true
@@ -301,6 +302,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"loadout_investment")
 	if p5_hub_progression_enabled:
 		result.append(&"p5_hub_progression")
+	if shop_browser_enabled and p5_hub_progression_enabled:
+		result.append(&"shop_browser")
 	if extraction_defense_enabled:
 		result.append(&"extraction_defense")
 	if hub_economy_enabled:

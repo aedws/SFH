@@ -17,22 +17,22 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 80 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 81 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>MASTER GDD ALIGNED · 2026-09-03</small><strong>현재 기획 진행도</strong></span>
-    <b>96%</b>
+    <b>94%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-  <p>공개 Master GDD v1005의 체크 판독을 정정하고 P6-03 로컬 시즌 구현을 반영했습니다. 로컬 칭호·오라는 추가됐으나 실제 서버 운영은 남아 있어 기능 가중 추정치 96%를 유지합니다.</p>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="94"><i style="width: 94%"></i></div>
+  <p>공개 Master GDD v1005·77블록은 재조회 결과 동일합니다. P7-01A 상점 비교를 구현하면서 실제 품질 적용·실물 지급이 남은 경제 완료 표기를 정정해 기능 가중 추정치 94%로 조정했습니다. 보안·백업은 계획만 등록했습니다.</p>
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-03 체크박스 파서를 고친 뒤 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
-**정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스는 기획자의 표식, 구현률은 코드·테스트 근거로 분리합니다. 해시 변경은 원문 업데이트가 아니라 판독 수정 때문입니다. P6-01~04 로컬 프로토타입을 구현했지만 서버 운영·검증 지급은 남아 있어 기능 추정치 96%를 보수적으로 유지합니다.
+**정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스와 코드 완료는 별개입니다. 9월 3일 추가 재대조에서 경제 100%를 70%로 정정했습니다. 로컬 서비스·데이터는 있으나 실제 품질과 구매/제작 실물 장착 연결은 남아 있습니다. 서버 운영·검증 지급도 미구현입니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
@@ -40,14 +40,14 @@ tags:
 | 입력·자유 스킬 바인딩 | ×2 | 100% | 물리 키와 스킬→Action 배치를 분리하고 충돌 교환·HUD 반영·JSON 저장·초기화를 구현 |
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
 | 로비→준비→인게임 3단계 루프 | ×2 | 100% | 유틸리티·불변 작전 초안·원자적 확정·파산 무료 프리셋까지 허브→작전→허브에 연결 |
-| 상점 vs 제작소 경제 | ×1 | 100% | 손상·표준·고성능 회전 매물·유료 리롤·영구 도면 등록·옵션/소켓 제작과 보관함 연결 |
+| 상점 vs 제작소 경제 | ×1 | 70% | P7-01A 비교·선택 구매와 기존 회전/제작 데이터 계약. 실제 품질 성능·규격 가격·구매/제작 실물 I/U 연결은 미완료 |
 | 훈련 연습장 | ×1 | 100% | 단일·밀집 더미 시나리오, DPS·타격·AP·쿨타임 계측과 무비용 세팅 원복 구현 |
 | 전리품 2대 분류·현장 파밍 | ×2 | 100% | 생명 주기·지역 테이블·현장 비교·획득·교체·소켓과 탈출 환전·영구 해금·창고/사망 소실·중복 방지 구현 |
 | 가변 태그·등급 확장 | ×1 | 85% | 동적 태그·등급·불일치 비활성·메커니즘 변형과 제작 옵션 풀 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
 | 비동기 랭킹·시즌 보상 | ×1 | 75% | 3대 로컬 랭킹·공급자·익명 신원·검증 봉투·멱등·영구 재시도·거부 상태 구현. 로컬 시즌·칭호/오라 추가, 실서비스 계정·검증 지급은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 100×1 + 100×1 + 100×2 + 85×1 + 95×2 + 75×1) ÷ 15 = 96.3% → 96%`이며, Phase 4·5와 P6-01~03의 로컬 보존·검증 제출·재시도 계약을 완료로 판정합니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 70×1 + 100×1 + 100×2 + 85×1 + 95×2 + 75×1) ÷ 15 = 94.3% → 94%`입니다. 경제 10개 하위 항목 중 7개 구현·3개 미완료의 근거는 [상세 산정](design/master-gdd-alignment.md)에 기록했습니다. 과거 96%에서의 조정은 완료 범위 정정이며 코드 퇴행이 아닙니다. 보안 계획은 구현률에 포함하지 않습니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -59,7 +59,7 @@ tags:
 | Phase 2 · Q·태그·AP·쿨타임 | 완료 | 주·보조 교체, 태그 호환성, 에너지·충전·개별 쿨타임 구현 |
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
 | Phase 4 · 현장 교체·룬 소켓·환전 | 완료 | 현장 교체·룬/코어/유물 소켓→탈출 환전·영구 해금·창고/사망 소실과 중복 방지 E2E 완료 |
-| Phase 5 · 로비 허브·준비 세션 | 완료 | 유틸리티·단일 초안·파산 보호·회전 상점·제작소·훈련장·도감까지 P5-01~10 E2E 완료 |
+| Phase 5 · 로비 허브·준비 세션 | 최소 연결 완료 · 경제 상세 잔여 | 유틸리티·단일 초안·파산 보호·훈련장·도감과 P5 최소 서비스 E2E 완료. 상점/제작의 실제 품질·I/U 지급은 P7에서 보완 |
 | Phase 6 · 비동기 랭킹·시즌 보상 | P6-01~04 로컬 완료 | 마감·칭호/오라 1회 지급·저장·장착 연결. 실서비스 계정·서버 확정 지급은 미완료 |
 
 ### 2026-09-02 Master GDD v1005 재대조
@@ -88,15 +88,17 @@ tags:
 | 완료 | Phase 6 P6-02 제출·검증 | 익명 신원·무결성·멱등·영구 재시도·거부 이유 | 중복/단절/변조/시간초과/저장 복원 E2E 완료 |
 | 완료 | Phase 6 P6-03 시즌 규칙 | 로컬 임시 주간 정책과 마감 기록 | 시즌 경계·조건 불일치·마감 불변·저장 복원 E2E 완료 |
 | 완료 | Phase 6 P6-04 로컬 칭호·오라 | SeasonReward 6종·마감 지급·저장·장착 | 1회 지급·다른 신원 거부·재시작·표현·손상 보존 테스트 |
-| 1 | 내부 P7~P10 | 공식 Phase 1~6 이후 상세 작업선 | 경제→훈련→도감→출시 후보 순서와 기계 계약 유지 |
+| 진행 | 내부 P7-01 | A: 비교·선택 구매 완료, B: 실제 품질·실물 장착 미완료 | P7-01B 완료 후 P7-02 회전/리롤 심화로 이동 |
+| 예정 | 내부 P7-02~P10 | 경제→훈련→도감→출시 후보 | 선행 패킷 완료 후 순서대로 착수 |
+| 착수 보류 | 위변조 감지·거래 원장·백업 | 사용자 지시로 문서만 등록 | 운영 정책과 별도 구현 승인 전 서비스·과금 변경 없음 |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 20 · IMPROVE 24 · CHANGE 19 · FIX 21</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 21 · IMPROVE 26 · CHANGE 21 · FIX 23</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>20</b><small>BUILD</small></span><span><b>24</b><small>IMPROVE</small></span><span><b>19</b><small>CHANGE</small></span><span><b>21</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>21</b><small>BUILD</small></span><span><b>26</b><small>IMPROVE</small></span><span><b>21</b><small>CHANGE</small></span><span><b>23</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -205,7 +207,7 @@ tags:
         <p><a href="features/elite-pursuit/">경고·방향 표시 규칙 →</a> · <a href="quality/e2e-play-session/">검증 범위 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 10</small><b>Windows 자동 저장 · 종료 후 진행 이어가기</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 다운로드판을 껐다 켜도 확정한 거점 세팅과 반출한 재화·성장·기록을 이어갑니다.</strong></div>
@@ -215,6 +217,18 @@ tags:
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>재실행 시 거점 세팅이 사라지는 경로와 개발 테스트가 플레이어 기본 저장을 사용하는 경로를 수정했습니다.</p></div>
         <p>전투 도중 이어하기·클라우드 동기화는 아닙니다. 중단 시 미반출 전리품은 지급하지 않으며 기존 실패 규칙을 유지합니다.</p>
         <p><a href="getting-started/run-project/#desktop-save">저장·백업 안내 →</a> · <a href="quality/e2e-play-session/#desktop-save-e2e">재실행 검증 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>상점 매물 비교 · 골라서 구매 · 다음 작업 범위 정정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 상점 버튼이 첫 상품을 즉시 사던 동작을 없애고, 가격·수량을 비교한 뒤 고른 상품만 구매합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>3품질 매물 카드와 읽기 전용 견적·명시적 선택 구매 화면을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>같은 상품의 개당 가격을 비교하고, ESC로 준비 화면과 거점의 이전 일시정지 상태로 돌아갑니다. 4개 화면 크기에서 버튼 경계를 검사합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>Notion v1005·77블록은 재조회 결과 동일합니다. 실제 품질 성능과 구매/제작 장비 지급 연결은 미완료로 정정했고, 경제 항목 재산정에 따라 전체 가중 추정치는 94%입니다. 위변조 감지·감사·백업 확장은 구현 예정으로만 등록했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>상점 열기만으로 결제되던 경로와 오래된 회전 견적으로 구매하던 경로를 차단했습니다.</p></div>
+        <p>P7-01A 완료 범위는 비교·선택 구매입니다. 현재 지급은 창고 수량이며 실제 품질 성능·I/U 실물 장착 연결은 다음 P7-01B에서 처리합니다. Sheet·CSV·과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/hub-economy/#shop-browser">상점 사용법 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">검증 범위 →</a> · <a href="design/master-gdd-alignment/">94% 산정 근거 →</a> · <a href="design/p7-plus-preimplementation/#economy-integrity-plan">보안·백업 구현 예정 →</a></p>
       </div>
     </details>
   </div>
