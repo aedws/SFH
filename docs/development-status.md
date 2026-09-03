@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 82 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 83 TOPICS</span><span>91 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -31,6 +31,8 @@ tags:
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-03 체크박스 파서를 고친 뒤 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
+
+P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신규 시즌의 대형 참가 조건과 기존 시즌 보존을 수정·검증하고, [기획자 튜토리얼](getting-started/planner-item-balance-tutorial.md)을 추가했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분하며 가중 추정 94%는 유지합니다.
 
 **정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스와 코드 완료는 별개입니다. 9월 3일 추가 재대조에서 경제 100%를 70%로 정정했습니다. 로컬 서비스·데이터는 있으나 실제 품질과 구매/제작 실물 장착 연결은 남아 있습니다. 서버 운영·검증 지급도 미구현입니다.
 
@@ -96,9 +98,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 22 · IMPROVE 28 · CHANGE 22 · FIX 25</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 22 · IMPROVE 30 · CHANGE 24 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>22</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>22</b><small>CHANGE</small></span><span><b>25</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>22</b><small>BUILD</small></span><span><b>30</b><small>IMPROVE</small></span><span><b>24</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -231,7 +233,7 @@ tags:
         <p><a href="features/hub-economy/#shop-browser">상점 사용법 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">검증 범위 →</a> · <a href="design/master-gdd-alignment/">94% 산정 근거 →</a> · <a href="design/p7-plus-preimplementation/#economy-integrity-plan">보안·백업 구현 예정 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 12</small><b>로비 상점·출격 준비 · 장착한 그대로 작전 진입</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 로비에서 세팅을 마친 뒤 작전에 들어갑니다. 진입 화면에서 무기를 다시 고르지 않습니다.</strong></div>
@@ -241,6 +243,18 @@ tags:
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>카탈로그가 로비 무기·모듈·파츠를 덮어쓰거나 장착 무기를 재청구하던 경로를 제거했습니다. 미저장 편집을 직접 출격 호출로 우회하지 못하게 했습니다.</p></div>
         <p>브리핑 취소·정상 복귀는 세팅 보존, 사망/실패의 장착품 소실은 기존 규칙입니다. 상점 품질 실성능·전체 실물 지급(P7-01B), Sheet·CSV 수치, 과금 모델은 이번 변경에 포함하지 않습니다.</p>
         <p><a href="features/hub-economy/#hub-preparation">로비 사용법 →</a> · <a href="features/loadout-investment/">장착 보존 계약 →</a> · <a href="quality/e2e-play-session/#hub-preparation-e2e">회귀 검증 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 13</small><b>기획자 아이템·밸런싱 튜토리얼 · P6 로컬 마감 재검증</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자 작업실에서 수치 조정과 새 아이템 추가 절차를 바로 찾고, 시즌 참가 조건을 정확히 확인합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>실제 계정 서버·온라인 경쟁·서버 지급은 구현 완료로 처리하지 않습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>실제 Sheet 1·2행을 확인한 튜토리얼과 검색·문서 노드 연결을 추가했습니다. 시트 수정·실시간 시험·CSV 확정·되돌리기 및 개발자가 연결할 영역을 분리합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>공개 Notion v1005·77블록·해시 614a0b8ddee4 재조회 동일. P6 로컬/실서비스 종료 조건과 다음 P7-01B 작업을 구분했습니다. 문서/검증 추가만으로 기존 94% 추정치를 올리지 않습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>소·중·대 모두 허용하던 신규 시즌 기본값을 Notion의 대형 조건으로 수정했습니다. 구 시즌은 시작 때 조건과 기록을 보존하고 다음 시즌부터 새 정책을 적용합니다.</p></div>
+        <p>시즌 81조합·구 정책 저장/전환·대형 보상, 전체 플레이/실패 정산 E2E와 기존 모듈 계약을 검사합니다. Sheet 수치·CSV·과금·도메인은 변경하지 않았습니다.</p>
+        <p><a href="getting-started/planner-item-balance-tutorial/">기획자 튜토리얼 →</a> · <a href="features/ranking-provider/#p6-closeout">P6 마감 경계 →</a> · <a href="quality/e2e-play-session/#p6-closeout-e2e">검증 기준 →</a></p>
       </div>
     </details>
   </div>

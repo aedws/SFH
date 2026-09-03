@@ -22,7 +22,7 @@ func _ranking() -> ConditionalRankingSystem:
 func _run() -> void:
 	_clean()
 	var ranking := _ranking()
-	var contract := {&"condition_key": "ruined_city|standard|small", &"penalty_score": 10}
+	var contract := {&"condition_key": "ruined_city|standard|large", &"penalty_score": 10}
 	var context: Dictionary = ranking.get_season_briefing(contract)[&"context"]
 	var result := contract.merged({&"run_id": "reward-run", &"success": true, &"elapsed_seconds": 20.0, &"recovered_value": 250, &"kills": 80, &"boss_kills": 1, &"reward_multiplier": 1.0, &"season_context": context})
 	_check(ranking.submit_run(result).get(&"season", {}).get(&"accepted", false), "season submission")

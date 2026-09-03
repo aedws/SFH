@@ -471,7 +471,7 @@ func _verify_operation_session() -> bool:
 	var launch_button := game.get("operation_launch_button") as Button
 	var penalty = game.get("penalty_system")
 	if penalty == null or not bool(penalty.call(&"toggle", &"reinforced_armor")):
-		return _fail("공식 랭킹 최소 조건을 만족할 페널티를 선택하지 못했습니다.")
+		return _fail("로컬 누적 랭킹 최소 조건을 만족할 페널티를 선택하지 못했습니다.")
 	if small_button == null or small_button.disabled:
 		return _fail("소형 작전 카드가 실제 선택 가능한 상태가 아닙니다.")
 	small_button.pressed.emit()
@@ -496,7 +496,7 @@ func _verify_operation_session() -> bool:
 		return _fail("최종 검토 단계에서만 작전 투입 결정을 제공하지 않습니다.")
 	if not _judge_player_perception(&"operation_decision", "최종 작전 위험·비용 결정 이해"):
 		return false
-	if "UTC" not in String(confirmation_step.get(&"season_summary", "")) or "시즌 참가 가능" not in String(confirmation_step.get(&"season_summary", "")):
+	if "UTC" not in String(confirmation_step.get(&"season_summary", "")) or "시즌 참가 규모 불일치" not in String(confirmation_step.get(&"season_summary", "")):
 		return _fail("최종 투입 전에 시즌 종료 시각·참가 조건이 보이지 않음")
 	var season_presenter = game.get("operation_setup_presenter")
 	await _click_tutorial_button(season_presenter.season_history_button)
@@ -692,9 +692,9 @@ func _verify_operation_session() -> bool:
 	var submitted_payload: Dictionary = pending_submissions[0].get(&"envelope", {}).get(&"payload", {})
 	if not submitted_payload.has(&"boss_kills") or submitted_payload.get(&"season_context", {}) != game.get("active_ranking_context") or "시즌" not in summary.text or "보스" not in summary.text:
 		return _fail("실전 격파→정산→제출에서 보스·출격 시즌 또는 결과 안내 누락: payload=%s context=%s summary=%s" % [submitted_payload, game.get("active_ranking_context"), summary.text])
-	if ranking_snapshot.get(&"season", {}).get(&"ladder", {}).get(&"condition_count", 0) != 1:
-		return _fail("실제 탈출 결과가 현재 시즌에 기록되지 않음")
-	print("E2E_SEASON_PLAYER_OK briefing_eligibility actual_history_click readonly_history launch_context result_bosses season_persistence")
+	if ranking_snapshot.get(&"season", {}).get(&"ladder", {}).get(&"condition_count", 0) != 0 or "시즌 참가 규모 불일치" not in summary.text:
+		return _fail("소형 탈출이 대형 시즌에 집계되거나 미참가 이유가 표시되지 않음")
+	print("E2E_SEASON_PLAYER_OK briefing_eligibility actual_history_click readonly_history launch_context result_bosses small_ineligible_lifetime_preserved")
 	if (
 		int(submission_snapshot.get(&"pending_count", 0)) != 1
 		or String(ranking_snapshot.get(&"identity", {}).get(&"player_id", "")).is_empty()

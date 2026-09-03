@@ -101,6 +101,7 @@ assert.match(response.headers.get("location"), /^\/access\/login\//u);
 for (const protectedPath of [
   "/development-status/",
   "/features/game-loop/",
+  "/getting-started/planner-item-balance-tutorial/",
   "/features/",
   "/features/operations/",
   "/features/combat/",
@@ -146,7 +147,7 @@ assert.equal(session.username, "planner");
 assert.equal(session.must_change, false);
 let plannerCookie = cookieFrom(response);
 
-for (const path of ["/features/", "/features/equipment/", "/features/grid-inventory/", "/quality/"]) {
+for (const path of ["/features/", "/features/equipment/", "/features/grid-inventory/", "/quality/", "/getting-started/planner-item-balance-tutorial/"]) {
   const articleResponse = await worker.fetch(request(path, { headers: { cookie: plannerCookie } }), env);
   assert.equal(articleResponse.status, 200, "shared article must be readable after login");
   assert.equal(articleResponse.headers.get("cache-control"), "private, no-store, max-age=0");
