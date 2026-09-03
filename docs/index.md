@@ -44,10 +44,21 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 24 · IMPROVE 32 · CHANGE 25 · FIX 28</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 25 · IMPROVE 34 · CHANGE 26 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>24</b><small>BUILD</small></span><span><b>32</b><small>IMPROVE</small></span><span><b>25</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>25</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>26</b><small>CHANGE</small></span><span><b>29</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 15</small><b>모바일 크기 조절 · 첫 조작 안내 팝업</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 모바일 버튼과 글자가 커지고, 첫 모바일 선택 때 조작 안내를 확인한 뒤 로비로 이동합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>1회성 모바일 팝업에 이동·공격·스킬·사용 안내와 크기 선택을 제공합니다. 확인 완료는 이 브라우저·기기에 저장됩니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>기본 125%, 설정에서 100/125/150%를 선택합니다. 조작 글자·에너지·상단 메뉴 가독성을 높이고 좁은 화면은 양손 영역이 겹치지 않는 최대 크기로 맞춥니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>배치 정책·안내 UI·설정 저장을 분리했습니다. 기존 PC 배치와 저장 파일은 유지하며 표시 설정 초기화로 안내를 반복하지 않습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>확인 전 종료·저장 실패는 안내 완료로 기록하지 않습니다. 배율 변경 때 눌린 입력을 해제하며 설정 실제 클릭·5화면×3배율을 회귀 검사합니다.</p></div>
+        <p><a href="features/mobile-hud-settings/">크기·첫 안내 사용법 →</a> · <a href="quality/e2e-play-session/#mobile-entry-e2e">모바일 검수 기준 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 14</small><b>PC·모바일 시작 선택 · 양손 터치 전용 화면</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 실행할 때 조작 방식을 선택합니다. 모바일은 좌하단 조이스틱·우하단 공격과 스킬로 플레이합니다.</strong></div>

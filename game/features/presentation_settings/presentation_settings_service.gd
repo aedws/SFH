@@ -6,11 +6,14 @@ signal settings_changed(snapshot: Dictionary)
 const HUD_ANCHORS := [&"bottom_left", &"bottom_center", &"bottom_right"]
 const KEY_LABEL_FORMATS := [&"compact", &"boxed", &"hidden"]
 const MOBILE_CONTROL_MODES := [&"auto", &"on", &"off"]
+const MOBILE_UI_SCALES := [1.0, 1.25, 1.5]
 
 var storage_path := "user://sfh_presentation_settings.json"
 var hud_anchor: StringName = &"bottom_left"
 var key_label_format: StringName = &"compact"
 var mobile_controls_mode: StringName = &"auto"
+var mobile_ui_scale := 1.25
+var mobile_tutorial_seen := false
 var configured := false
 
 
@@ -64,10 +67,39 @@ func cycle_mobile_controls_mode(direction: int = 1) -> Dictionary:
 	return get_snapshot()
 
 
+func set_mobile_ui_scale(value: float, save_after_change: bool = true) -> bool:
+	if value not in MOBILE_UI_SCALES:
+		return false
+	var previous := mobile_ui_scale
+	mobile_ui_scale = value
+	if save_after_change and not _save():
+		mobile_ui_scale = previous
+		return false
+	settings_changed.emit(get_snapshot())
+	return true
+
+
+func cycle_mobile_ui_scale(direction: int = 1) -> Dictionary:
+	set_mobile_ui_scale(MOBILE_UI_SCALES[posmod(MOBILE_UI_SCALES.find(mobile_ui_scale) + direction, MOBILE_UI_SCALES.size())])
+	return get_snapshot()
+
+
+func complete_mobile_tutorial() -> bool:
+	var previous := mobile_tutorial_seen
+	mobile_tutorial_seen = true
+	if not _save():
+		mobile_tutorial_seen = previous
+		return false
+	settings_changed.emit(get_snapshot())
+	return true
+
+
 func reset_defaults(save_after_reset: bool = true) -> bool:
 	hud_anchor = &"bottom_left"
 	key_label_format = &"compact"
 	mobile_controls_mode = &"auto"
+	mobile_ui_scale = 1.25
+	# 안내 확인 이력은 표시/키 설정 초기화와 별개입니다.
 	return _commit(save_after_reset)
 
 
@@ -98,6 +130,10 @@ func get_snapshot() -> Dictionary:
 		&"key_label_format": key_label_format,
 		&"key_label_format_label": _label_for(key_label_format),
 		&"mobile_controls_mode": mobile_controls_mode,
+		&"mobile_ui_scale": mobile_ui_scale,
+		&"mobile_ui_scale_label": "%d%%" % roundi(mobile_ui_scale * 100),
+		&"mobile_ui_scale_options": MOBILE_UI_SCALES.duplicate(),
+		&"mobile_tutorial_seen": mobile_tutorial_seen,
 		&"mobile_controls_mode_label": _label_for(mobile_controls_mode),
 		&"hud_anchor_options": HUD_ANCHORS.duplicate(),
 		&"key_label_format_options": KEY_LABEL_FORMATS.duplicate(),
@@ -116,10 +152,12 @@ func _save() -> bool:
 	if file == null:
 		return false
 	file.store_string(JSON.stringify({
-		"version": 1,
+		"version": 2,
 		"hud_anchor": String(hud_anchor),
 		"key_label_format": String(key_label_format),
 		"mobile_controls_mode": String(mobile_controls_mode),
+		"mobile_ui_scale": mobile_ui_scale,
+		"mobile_tutorial_seen": mobile_tutorial_seen,
 	}, "  "))
 	return true
 
@@ -140,6 +178,10 @@ func _load() -> bool:
 		key_label_format = loaded_format
 	if loaded_mobile in MOBILE_CONTROL_MODES:
 		mobile_controls_mode = loaded_mobile
+	var loaded_scale: Variant = parsed.get("mobile_ui_scale", 1.25)
+	if (loaded_scale is float or loaded_scale is int) and float(loaded_scale) in MOBILE_UI_SCALES:
+		mobile_ui_scale = float(loaded_scale)
+	mobile_tutorial_seen = parsed.get("mobile_tutorial_seen", false) == true
 	return true
 
 

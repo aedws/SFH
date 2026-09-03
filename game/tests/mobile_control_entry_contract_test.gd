@@ -13,6 +13,7 @@ func _init() -> void:
 func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(isolation.root_path)
 	selection_path = isolation.root_path.path_join("mode.json")
+	await _settings_and_tutorial_contract()
 	root.content_scale_size = Vector2i.ZERO
 	root.size = Vector2i(1280, 720)
 	_check(ProjectSettings.get_setting("application/run/main_scene") == "res://game/scenes/application.tscn", "shipped optional entry assembly")
@@ -25,6 +26,13 @@ func _run() -> void:
 		_check(entry.pc_button.is_visible_in_tree() and entry.mobile_button.is_visible_in_tree(), "entry has two choices")
 		await _click(entry.pc_button if mode == &"off" else entry.mobile_button)
 		_check(entry.choosing, "actual click selected %s" % mode)
+		if mode == &"on":
+			_check(entry.tutorial != null and entry.tutorial.visible, "first mobile choice shows blocking popup")
+			_check(not entry.settings.mobile_tutorial_seen, "opening popup does not mark it complete")
+			await _click(entry.tutorial.confirm_button)
+			_check(entry.settings.mobile_tutorial_seen and not entry.tutorial.visible, "actual confirmation persists tutorial")
+		else:
+			_check(entry.tutorial == null and not entry.settings.mobile_tutorial_seen, "PC choice does not consume mobile tutorial")
 		entry.queue_free()
 		await _frames(2)
 		game = load("res://game/scenes/game.tscn").instantiate()
@@ -40,6 +48,15 @@ func _run() -> void:
 		game.queue_free()
 		await _frames(3)
 		paused = false
+	var repeat: Control = load("res://game/features/mobile_controls/control_mode_entry.tscn").instantiate()
+	repeat.launch_game = false
+	repeat.settings_path = selection_path
+	root.add_child(repeat)
+	await _frames(4)
+	await _click(repeat.mobile_button)
+	_check(repeat.tutorial == null, "new entry instance skips acknowledged mobile tutorial")
+	repeat.queue_free()
+	await _frames(2)
 	root.content_scale_size = Vector2i.ZERO
 	# Missing optional mobile module still builds the same keyboard lobby.
 	game = load("res://game/scenes/game.tscn").instantiate()
@@ -52,20 +69,74 @@ func _run() -> void:
 	await _frames(2)
 	for error in failures: push_error(error)
 	if failures.is_empty():
-		print("MOBILE_CONTROL_ENTRY_OK pc_mobile_saved hub_gate_preserved joystick_multitouch attack_skill_menu_events pause_focus_release orientation_4 hud_reserved_regions module_off")
+		print("MOBILE_CONTROL_ENTRY_OK pc_mobile_saved hub_gate_preserved joystick_multitouch attack_skill_menu_events pause_focus_release orientation_4 hud_reserved_regions module_off scale_3 persistence_migration tutorial_once_acknowledgement retry_on_failure")
 	quit(0 if failures.is_empty() else 1)
+
+func _settings_and_tutorial_contract() -> void:
+	var test_path := isolation.root_path.path_join("settings-v1.json")
+	var file := FileAccess.open(test_path, FileAccess.WRITE)
+	file.store_string('{"version":1,"hud_anchor":"bottom_right","mobile_controls_mode":"off"}')
+	file.close()
+	var service := preload("res://game/features/presentation_settings/presentation_settings_service.gd").new()
+	root.add_child(service)
+	service.configure(test_path)
+	_check(service.mobile_ui_scale == 1.25 and not service.mobile_tutorial_seen and service.hud_anchor == &"bottom_right", "v1 migration preserves PC settings and uses larger default")
+	_check(not service.set_mobile_ui_scale(99) and service.mobile_ui_scale == 1.25, "invalid scale rejected")
+	_check(service.set_mobile_ui_scale(1.5), "scale saved")
+	_check(service.complete_mobile_tutorial(), "tutorial saved")
+	service.queue_free()
+	await _frames(2)
+	service = preload("res://game/features/presentation_settings/presentation_settings_service.gd").new()
+	root.add_child(service)
+	service.configure(test_path)
+	_check(service.mobile_ui_scale == 1.5 and service.mobile_tutorial_seen, "scale and seen flag survive new settings instance")
+	service.reset_defaults()
+	_check(service.mobile_ui_scale == 1.25 and service.mobile_tutorial_seen, "reset UI preserves tutorial acknowledgement")
+	service.queue_free()
+	await _frames(2)
+	# Leaving before acknowledgement must not consume the first-use tutorial.
+	var popup_path := isolation.root_path.path_join("popup.json")
+	for attempt in 2:
+		var entry: Control = load("res://game/features/mobile_controls/control_mode_entry.tscn").instantiate()
+		entry.launch_game = false
+		entry.settings_path = popup_path
+		root.add_child(entry)
+		await _frames(4)
+		await _click(entry.mobile_button)
+		_check(entry.tutorial != null and not entry.settings.mobile_tutorial_seen, "unacknowledged tutorial returns")
+		for dimensions in [Vector2i(844, 390), Vector2i(390, 844), Vector2i(640, 360), Vector2i(320, 568)]:
+			root.size = dimensions
+			await _frames(5)
+			_check(root.get_visible_rect().grow(1).encloses(entry.tutorial.panel.get_global_rect()), "popup bounds %s" % dimensions)
+			_check(root.get_visible_rect().grow(1).encloses(entry.tutorial.confirm_button.get_global_rect()), "popup confirmation always reachable")
+		if attempt == 1:
+			await _click(entry.tutorial.scale_buttons[2])
+			_check(entry.settings.mobile_ui_scale == 1.5, "popup changes size through public settings")
+			entry.settings.storage_path = isolation.root_path.path_join("missing-directory/fail.json")
+			await _click(entry.tutorial.confirm_button)
+			_check(entry.tutorial.visible and not entry.settings.mobile_tutorial_seen and not entry.tutorial.error_label.text.is_empty(), "failed save keeps popup open and unseen")
+			entry.settings.storage_path = popup_path
+			await _click(entry.tutorial.confirm_button)
+			_check(entry.settings.mobile_tutorial_seen and not entry.tutorial.visible, "save retry succeeds")
+		entry.queue_free()
+		await _frames(3)
 
 func _mobile_play() -> void:
 	var pad: Control = game.mobile_control_pad
-	for dimensions in [Vector2i(844, 390), Vector2i(390, 844), Vector2i(1280, 720), Vector2i(640, 360)]:
+	for dimensions in [Vector2i(844, 390), Vector2i(390, 844), Vector2i(1280, 720), Vector2i(640, 360), Vector2i(320, 568)]:
 		root.size = dimensions
-		await _frames(8)
-		var bounds := root.get_visible_rect().grow(1)
-		var state: Dictionary = pad.get_snapshot()
-		_check(bounds.encloses(state.movement_rect) and bounds.encloses(state.combat_rect) and bounds.encloses(state.menu_rect), "pad bounds %s: %s" % [dimensions, state])
-		_check(not state.movement_rect.intersects(state.combat_rect), "two hand areas disjoint %s" % dimensions)
-		for button: Button in pad.action_buttons.values():
-			if button.visible: _check(button.size.x >= 44 and button.size.y >= 44, "touch target >=44")
+		var previous_width := 0.0
+		for scale_value in [1.0, 1.25, 1.5]:
+			game.presentation_settings_service.set_mobile_ui_scale(scale_value)
+			await _frames(8)
+			var bounds := root.get_visible_rect().grow(1)
+			var state: Dictionary = pad.get_snapshot()
+			_check(bounds.encloses(state.movement_rect) and bounds.encloses(state.combat_rect) and bounds.encloses(state.menu_rect), "pad bounds %s scale %s: %s" % [dimensions, scale_value, state])
+			_check(not state.movement_rect.intersects(state.combat_rect), "two hand areas disjoint %s scale %s" % [dimensions, scale_value])
+			_check(state.combat_rect.size.x > previous_width, "scale selection visibly enlarges controls")
+			previous_width = state.combat_rect.size.x
+			for button: Button in pad.action_buttons.values():
+				if button.visible: _check(button.size.x >= 44 and button.size.y >= 44, "touch target >=44")
 	root.size = Vector2i(844, 390)
 	await _frames(6)
 	# Minimap/socket GUI outside the pad must remain touchable without firing a weapon.
@@ -117,6 +188,16 @@ func _mobile_play() -> void:
 		var panel: Control = game.get(pair[1])
 		_check(panel.visible and paused and not pad.visible, "touch opens %s and hides gameplay pad" % pair[0])
 		_check(pad.pressed_actions.is_empty() and Input.emulate_mouse_from_touch, "modal releases touches and enables GUI touch")
+		if pair[0] == &"toggle_key_mapping":
+			var tabs := panel.presentation_rows_container.get_parent().get_parent() as TabContainer
+			tabs.current_tab = (panel.presentation_rows_container.get_parent() as Control).get_index()
+			var scale_button := _find_scale_button(panel)
+			await _frames(3)
+			(panel.presentation_rows_container.get_parent() as ScrollContainer).ensure_control_visible(scale_button)
+			await _frames(3)
+			var old_scale: float = game.presentation_settings_service.mobile_ui_scale
+			await _click(scale_button)
+			_check(game.presentation_settings_service.mobile_ui_scale != old_scale, "actual settings UI changes scale")
 		panel.call(&"close_panel")
 		await _frames(3)
 		_check(pad.visible and not paused, "modal returns mobile controls")
@@ -131,6 +212,7 @@ func _mobile_play() -> void:
 	_check(game.start_hub != null and not paused, "briefing cancel restores lobby")
 	_check(game.start_run("small"), "mobile selected gear launches combat")
 	game.operation_tutorial_overlay.dismiss()
+	game.presentation_settings_service.set_mobile_ui_scale(1.5)
 	await _frames(8)
 	for dimensions in [Vector2i(844, 390), Vector2i(390, 844)]:
 		root.size = dimensions
@@ -171,6 +253,13 @@ func _touch(index: int, point: Vector2, pressed: bool) -> void:
 	event.pressed = pressed
 	root.push_input(event, true)
 	Input.flush_buffered_events()
+
+func _find_scale_button(node: Node) -> Button:
+	if node is Button and node.get_meta(&"presentation_setting", &"") == &"mobile_ui_scale": return node
+	for child in node.get_children():
+		var found := _find_scale_button(child)
+		if found != null: return found
+	return null
 
 func _click(button: Button) -> void:
 	for pressed in [true, false]:

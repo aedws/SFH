@@ -341,6 +341,7 @@ func _refresh_presentation_rows() -> void:
 	presentation_rows_container.add_child(guide)
 	var snapshot: Dictionary = presentation_provider.call(&"get_snapshot")
 	presentation_summary_label = Label.new()
+	presentation_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	presentation_summary_label.text = "현재 · HUD %s · 키 %s · 모바일 %s" % [
 		snapshot.get(&"hud_anchor_label", "좌하단"),
 		snapshot.get(&"key_label_format_label", "간결"),
@@ -366,6 +367,12 @@ func _refresh_presentation_rows() -> void:
 		String(snapshot.get(&"mobile_controls_mode_label", "터치 자동")),
 		&"mobile_controls_mode"
 	)
+	_add_presentation_row(
+		"모바일 버튼·글자 크기",
+		"100% / 125% / 150%. 조이스틱·공격·스킬·에너지 표시를 확대합니다. 좁은 화면은 겹치지 않는 최대 크기로 자동 제한합니다.",
+		String(snapshot.get(&"mobile_ui_scale_label", "125%")),
+		&"mobile_ui_scale"
+	)
 
 
 func _add_presentation_row(
@@ -386,6 +393,7 @@ func _add_presentation_row(
 	header.add_child(title)
 	var button := Button.new()
 	button.text = "%s  ›" % value_text
+	button.set_meta(&"presentation_setting", setting_id)
 	button.custom_minimum_size = Vector2(180, 44)
 	button.pressed.connect(_cycle_presentation_setting.bind(setting_id))
 	header.add_child(button)
@@ -461,6 +469,8 @@ func _cycle_presentation_setting(setting_id: StringName) -> void:
 			presentation_provider.call(&"cycle_key_label_format", 1)
 		&"mobile_controls_mode":
 			presentation_provider.call(&"cycle_mobile_controls_mode", 1)
+		&"mobile_ui_scale":
+			presentation_provider.call(&"cycle_mobile_ui_scale", 1)
 	_refresh_presentation_rows()
 
 
