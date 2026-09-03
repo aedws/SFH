@@ -15,3 +15,5 @@ if (-not $godotExecutable) { throw "Godot console executable not found." }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/ranking_season_contract_test.gd"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/season_reward_contract_test.gd"
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

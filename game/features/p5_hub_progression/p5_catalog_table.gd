@@ -16,12 +16,17 @@ static func load_table(
 	var csv_text := _read_csv_text(path, payload)
 	if csv_text.is_empty():
 		return {&"success": false, &"rows": rows, &"errors": ["CSV 파일 없음: %s" % path]}
+	return parse_table(csv_text, required_headers, unique_id_column)
+
+
+static func parse_table(csv_text: String, required_headers: Array = [], unique_id_column: StringName = &"") -> Dictionary:
+	var rows: Array[Dictionary] = []
 	var csv_lines := _parse_csv_text(csv_text)
 	if csv_lines.is_empty():
-		return {&"success": false, &"rows": rows, &"errors": ["CSV 내용 없음: %s" % path]}
+		return {&"success": false, &"rows": rows, &"errors": ["CSV 내용 없음"]}
 	var headers: PackedStringArray = csv_lines[0]
 	if headers.is_empty():
-		return {&"success": false, &"rows": rows, &"errors": ["CSV 헤더 없음: %s" % path]}
+		return {&"success": false, &"rows": rows, &"errors": ["CSV 헤더 없음"]}
 	var normalized_headers := PackedStringArray()
 	for header in headers:
 		normalized_headers.append(String(header).strip_edges())

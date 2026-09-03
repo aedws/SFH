@@ -93,6 +93,11 @@ func get_candidates(context: Dictionary) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for entry in entries:
 		if entry.matches(context):
+			var requested_type := StringName(context.get(&"item_type", &""))
+			if requested_type != &"":
+				var definition := _definition_for(entry.item_id)
+				if definition == null or definition.item_type != requested_type:
+					continue
 			result.append(entry.to_snapshot(multiplier))
 	result.sort_custom(func(a: Dictionary, b: Dictionary): return float(a[&"effective_weight"]) > float(b[&"effective_weight"]))
 	return result
@@ -133,14 +138,12 @@ func get_briefing(context: Dictionary) -> Dictionary:
 	for candidate in candidates:
 		highest_grade = maxi(highest_grade, int(candidate[&"grade"]))
 		var item_id := StringName(candidate[&"item_id"])
-		if seen.has(item_id):
+		if seen.has(item_id) or labels.size() >= config.briefing_item_count:
 			continue
 		seen[item_id] = true
 		ids.append(String(item_id))
 		var definition := _definition_for(item_id)
 		labels.append(String(definition.get("display_name")) if definition != null else String(item_id))
-		if labels.size() >= config.briefing_item_count:
-			break
 	return {
 		&"candidate_count": candidates.size(),
 		&"target_item_ids": ids,

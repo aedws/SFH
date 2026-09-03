@@ -234,8 +234,9 @@ const LOOT_TABLE_METHODS := [
 ]
 const FIELD_LOOT_ACQUISITION_METHODS := [
 	&"configure", &"spawn_from_source", &"spawn_candidate", &"acquire_focused",
-	&"equip_focused", &"restore_equipment_swaps", &"cancel_preview",
+	&"equip_focused", &"restore_equipment_swaps", &"restore_run_inventory", &"cancel_preview",
 	&"get_active_drops", &"get_panel", &"get_snapshot",
+	&"register_enemy", &"spawn_room_reward",
 ]
 const SESSION_SOCKET_METHODS := [
 	&"configure", &"request_live_catalog", &"load_csv_text", &"socket_item",
@@ -544,6 +545,10 @@ func _ready() -> void:
 		if not _install_cyberpunk_theme():
 			return
 	var operation_controls: Dictionary = operation_setup_presenter.call(&"install", run_setup_overlay)
+	operation_setup_presenter.connect(&"honor_requested", func():
+		if conditional_ranking_system != null:
+			conditional_ranking_system.call(&"show_honors", run_setup_overlay)
+	)
 	operation_launch_button = operation_controls.get(&"launch_button") as Button
 	character_selection_button = operation_controls.get(&"character_button") as Button
 	main_weapon_investment_button = operation_controls.get(&"main_weapon_button") as Button
@@ -626,11 +631,11 @@ func _ready() -> void:
 	if features.loot_lifecycle_enabled and not _install_loot_lifecycle():
 		_show_initialization_recovery("전리품 생명주기 초기화 실패")
 		return
-	if features.run_settlement_enabled and not _install_run_settlement():
-		_show_initialization_recovery("런 정산 초기화 실패")
-		return
 	if features.loot_tables_enabled and not _load_field_loot_equip_catalog():
 		_show_initialization_recovery("현장 전리품 카탈로그 초기화 실패")
+		return
+	if features.run_settlement_enabled and not _install_run_settlement():
+		_show_initialization_recovery("런 정산 초기화 실패")
 		return
 	if features.loot_tables_enabled and not _install_loot_table_provider():
 		_show_initialization_recovery("드랍 테이블 초기화 실패")
@@ -1517,6 +1522,8 @@ func _install_start_hub() -> bool:
 		_report_configuration_error("시작 거점 플레이어를 설치하지 못했습니다.")
 		return false
 	player.global_position = start_hub.call(&"get_spawn_position")
+	if conditional_ranking_system != null:
+		conditional_ranking_system.call(&"attach_honor_presentation", player, true)
 	player.call(&"configure_damage", false)
 	if not _install_hub_loadout_views():
 		return false
@@ -1638,6 +1645,7 @@ func _return_to_start_hub(route_initial_entry: bool = true) -> void:
 		operation_tutorial_overlay.call(&"dismiss")
 	if field_loot_acquisition_service != null:
 		field_loot_acquisition_service.call(&"restore_equipment_swaps")
+		field_loot_acquisition_service.call(&"restore_run_inventory")
 	if lose_equipped_loadout_on_return:
 		prepared_equipment_state.clear()
 		lose_equipped_loadout_on_return = false
@@ -1783,6 +1791,8 @@ func _assemble_game() -> bool:
 	if player == null:
 		_report_configuration_error("플레이어 모듈을 설치하지 못했습니다.")
 		return false
+	if conditional_ranking_system != null:
+		conditional_ranking_system.call(&"attach_honor_presentation", player, false)
 	if (
 		not _supports_methods(player, PLAYER_METHODS)
 		or not player.has_signal(&"health_changed")
@@ -2281,7 +2291,7 @@ func _install_run_settlement() -> bool:
 		or not run_settlement_service.has_signal(&"run_loot_settled")
 		or not run_settlement_service.call(
 			&"configure", loot_lifecycle_service, persistent_profile,
-			load(features.operation_result_config_path)
+			load(features.operation_result_config_path), field_loot_equip_catalog
 		)
 	):
 		_report_configuration_error("런 전리품 정산 모듈의 공개 계약이 올바르지 않습니다.")
@@ -2401,6 +2411,8 @@ func _select_balance_source_mode(source_mode: int) -> void:
 	):
 		return
 	selected_balance_source_mode = source_mode
+	if conditional_ranking_system != null:
+		conditional_ranking_system.call(&"set_reward_source_mode", source_mode)
 	locked_balance_button.button_pressed = (
 		source_mode == WeaponBalanceConfig.SourceMode.LOCKED_CSV
 	)
@@ -2985,13 +2997,18 @@ func _install_field_loot_acquisition() -> bool:
 		inventory_system,
 		context,
 		effective_seed,
-		field_loot_equip_catalog if features.field_loot_immediate_equip_enabled else null,
+		field_loot_equip_catalog,
 		combat_skill_system if features.field_loot_skill_equip_enabled else null,
 		skill_binding_service if features.field_loot_skill_equip_enabled else null,
-		session_socket_service if features.session_sockets_enabled else null
+		session_socket_service if features.session_sockets_enabled else null,
+		credit_ledger,
+		features.field_loot_immediate_equip_enabled
 	):
 		_report_configuration_error("현장 전리품 비교·획득 모듈을 작전 문맥에 연결하지 못했습니다.")
 		return false
+	if is_instance_valid(enemy_spawner):
+		for enemy in enemy_spawner.call(&"get_active_targets"):
+			field_loot_acquisition_service.call(&"register_enemy", enemy)
 	field_loot_acquisition_service.connect(
 		&"loot_acquired", Callable(self, &"_on_field_loot_acquired")
 	)
@@ -3417,6 +3434,8 @@ func _supports_methods(candidate: Node, methods: Array) -> bool:
 
 func _on_enemy_spawned(enemy: Node) -> void:
 	run_combat_metrics.register_enemy(enemy)
+	if is_instance_valid(field_loot_acquisition_service):
+		field_loot_acquisition_service.call(&"register_enemy", enemy)
 	if enemy.has_signal(&"defeated"):
 		enemy.connect(&"defeated", Callable(self, &"_on_enemy_defeated"))
 	var enemy_hit_reaction: Node = enemy.get_node_or_null("HitReaction")
@@ -3687,7 +3706,7 @@ func _on_room_encounter_cleared(room_index: int) -> void:
 		)
 		if not positions.is_empty():
 			field_drop_spawned = field_loot_acquisition_service.call(
-				&"spawn_from_source", positions[0] + Vector2(88.0, 0.0), &"room_reward", room_index
+				&"spawn_room_reward", positions[0], room_index
 			) != null
 	combat_hud_presenter.call(
 		&"show_status",

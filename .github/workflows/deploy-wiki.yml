@@ -19,6 +19,7 @@ on:
       - "scripts/test_windows_release_retention.py"
       - "scripts/sync_item_lifecycle.py"
       - "scripts/sync_loot_table.py"
+      - "scripts/sync_season_rewards.py"
       - "scripts/sync_skill_catalog.py"
       - "scripts/sync_session_socket_rules.py"
       - "scripts/sync_character_catalog.py"
@@ -57,6 +58,7 @@ on:
       - "scripts/test_windows_release_retention.py"
       - "scripts/sync_item_lifecycle.py"
       - "scripts/sync_loot_table.py"
+      - "scripts/sync_season_rewards.py"
       - "scripts/sync_skill_catalog.py"
       - "scripts/sync_session_socket_rules.py"
       - "scripts/sync_character_catalog.py"
@@ -132,6 +134,7 @@ jobs:
           grep -q "Creative Commons Zero" "$GITHUB_WORKSPACE/game/assets/vfx/kenney_particle_pack/LICENSE.txt"
           python3 scripts/sync_item_lifecycle.py --check
           python3 scripts/sync_loot_table.py --check
+          python3 scripts/sync_season_rewards.py --check
           python3 scripts/sync_skill_catalog.py --check
           python3 scripts/sync_session_socket_rules.py --check
           python3 scripts/sync_character_catalog.py --check
@@ -139,7 +142,7 @@ jobs:
           python3 scripts/sync_p5_catalogs.py --check
           python3 scripts/check_p5_modularity.py
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loot_table_contract_test.gd" | tee /tmp/sfh-loot-table.log
-          grep -q "LOOT_TABLE_TEST_OK rows_29 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link" /tmp/sfh-loot-table.log
+          grep -q "LOOT_TABLE_TEST_OK rows_77 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link" /tmp/sfh-loot-table.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/field_loot_acquisition_contract_test.gd" | tee /tmp/sfh-field-loot.log
           grep -q "FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip skill_swap_slot_binding_restore provisional_policy restore_on_hub viewport_safe modular_boundary" /tmp/sfh-field-loot.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/operation_combination_contract_test.gd" | tee /tmp/sfh-operation-combinations.log
@@ -161,6 +164,8 @@ jobs:
           grep -q "P6_RANKING_SUBMISSION_OK identity envelope_digest idempotency local_preserved persistent_retry timeout_retry server_rejection visible_sync_state" /tmp/sfh-p6-ranking.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_season_contract_test.gd" | tee /tmp/sfh-p6-season.log
           grep -q "P6_SEASON_OK boss_identity defeat_once legacy_zero digest_v1_v2 slayer_tiebreak frozen_launch_context eligibility deadline_crossing lifetime_preserved offline_close immutable_archive restart clock_rollback optional_module" /tmp/sfh-p6-season.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/season_reward_contract_test.gd" | tee /tmp/sfh-p6-rewards.log
+          grep -q "P6_REWARD_OK" /tmp/sfh-p6-rewards.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log
           grep -q "SMOKE_TEST_OK hit_feedback hit_reaction local_stagger knockback impact_burst camera_trauma hit_feedback_optional impact_budget module_reference_ui module_effect_summary module_card_metadata module_sort_controls operation_briefing" /tmp/sfh-smoke.log
           grep -q "WEAPON_PARTS_UI_OK code_weapon_schematic socket_map installed_state socket_interaction" /tmp/sfh-smoke.log
@@ -221,6 +226,8 @@ jobs:
         run: |
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK" /tmp/sfh-e2e.log
+          grep -q "E2E_LOOT_SESSION_OK" /tmp/sfh-e2e.log
+          grep -q "E2E_LOOT_DEATH_OK" /tmp/sfh-e2e.log
           grep -q "E2E_SEASON_PLAYER_OK briefing_eligibility actual_history_click readonly_history launch_context result_bosses season_persistence" /tmp/sfh-e2e.log
           grep -q "E2E_HUB_LOADOUT_OK transitions_6 focused_controls repeated_open pause_restored live_edit_draft_refresh save_discard_cancel modules_parts" /tmp/sfh-e2e.log
           grep -q "ui_state_contracts_23 player_perception_contracts_31 gameplay_flows_15" /tmp/sfh-e2e.log
@@ -310,6 +317,7 @@ jobs:
             --csv game/features/growth_balance/data/upgrade_balance.csv \
             --csv game/features/loot_lifecycle/data/item_lifecycle.csv \
             --csv game/features/loot_tables/data/loot_table.csv \
+            --csv game/features/conditional_ranking/data/season_reward.csv \
             --csv game/features/combat_skills/data/skill_catalog.csv \
             --csv game/features/session_sockets/data/session_socket_rules.csv \
             --csv game/features/character_selection/data/character_catalog.csv \

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "34d5603a0f17a52bb8dfb23ce42322f86c27173d1c250eac7591024cceaaafe1",
+  "source_sha256": "f96d7c049523d7de81c687dabfe1595a1ce18780ca0189ddcb00559821e19bef",
   "layers": [
     {
       "id": "contract",
@@ -25,9 +25,9 @@
   ],
   "summary": {
     "modules": 55,
-    "scripts": 203,
-    "named_classes": 177,
-    "relationships": 164,
+    "scripts": 212,
+    "named_classes": 184,
+    "relationships": 165,
     "project_inheritance": 6,
     "enabled_toggles": 64
   },
@@ -146,8 +146,8 @@
       "path": "game/features/conditional_ranking",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 12,
-      "class_count": 12,
+      "file_count": 17,
+      "class_count": 17,
       "classes": [
         "ConditionalRankingPolicy",
         "ConditionalRankingSystem",
@@ -158,12 +158,17 @@
         "RankingProviderConfig",
         "RankingSubmissionQueue",
         "RunSubmissionEnvelope",
+        "SeasonHonorPanel",
+        "SeasonHonorPresentation",
+        "SeasonHonorProfile",
         "SeasonPolicy",
         "SeasonPresenter",
-        "SeasonRankingService"
+        "SeasonRankingService",
+        "SeasonRewardCatalog",
+        "SeasonRewardService"
       ],
       "incoming_count": 3,
-      "outgoing_count": 0
+      "outgoing_count": 1
     },
     {
       "id": "crafting",
@@ -315,8 +320,8 @@
       "path": "game/features/field_loot",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 9,
-      "class_count": 9,
+      "file_count": 11,
+      "class_count": 11,
       "classes": [
         "FieldLootAcquisitionService",
         "FieldLootComparisonPanel",
@@ -325,8 +330,10 @@
         "FieldLootEquipCatalog",
         "FieldLootEquipEntry",
         "FieldLootEquipService",
+        "FieldLootInventoryService",
         "FieldLootSkillEntry",
-        "FieldLootSkillEquipService"
+        "FieldLootSkillEquipService",
+        "FieldLootSpawnPolicy"
       ],
       "incoming_count": 3,
       "outgoing_count": 0
@@ -685,7 +692,7 @@
         "UtilityInvestmentService",
         "WorkshopService"
       ],
-      "incoming_count": 3,
+      "incoming_count": 4,
       "outgoing_count": 0
     },
     {
@@ -971,7 +978,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 22,
+      "file_count": 24,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1250,6 +1257,33 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:SeasonHonorPanel",
+      "name": "SeasonHonorPanel",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/season_honor_panel.gd",
+      "extends": "AcceptDialog",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:SeasonHonorPresentation",
+      "name": "SeasonHonorPresentation",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/season_honor_presentation.gd",
+      "extends": "Node2D",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:SeasonHonorProfile",
+      "name": "SeasonHonorProfile",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/season_honor_profile.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:SeasonPolicy",
       "name": "SeasonPolicy",
       "module": "conditional_ranking",
@@ -1273,6 +1307,24 @@
       "module": "conditional_ranking",
       "path": "game/features/conditional_ranking/season_ranking_service.gd",
       "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:SeasonRewardCatalog",
+      "name": "SeasonRewardCatalog",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/season_reward_catalog.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:SeasonRewardService",
+      "name": "SeasonRewardService",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/season_reward_service.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -1646,6 +1698,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:FieldLootInventoryService",
+      "name": "FieldLootInventoryService",
+      "module": "field_loot",
+      "path": "game/features/field_loot/field_loot_inventory_service.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:FieldLootSkillEntry",
       "name": "FieldLootSkillEntry",
       "module": "field_loot",
@@ -1660,6 +1721,15 @@
       "module": "field_loot",
       "path": "game/features/field_loot/field_loot_skill_equip_service.gd",
       "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:FieldLootSpawnPolicy",
+      "name": "FieldLootSpawnPolicy",
+      "module": "field_loot",
+      "path": "game/features/field_loot/field_loot_spawn_policy.gd",
+      "extends": "Resource",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -2587,6 +2657,12 @@
       "evidence_count": 1
     },
     {
+      "from": "conditional_ranking",
+      "to": "p5_hub_progression",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
       "from": "core",
       "to": "character_selection",
       "type": "references",
@@ -3286,7 +3362,7 @@
       "from": "verification",
       "to": "conditional_ranking",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",
@@ -3370,7 +3446,7 @@
       "from": "verification",
       "to": "inventory",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",

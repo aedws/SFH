@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 13 · IMPROVE 19 · CHANGE 15 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 16 · IMPROVE 21 · CHANGE 17 · FIX 19</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>13</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>15</b><small>CHANGE</small></span><span><b>16</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>16</b><small>BUILD</small></span><span><b>21</b><small>IMPROVE</small></span><span><b>17</b><small>CHANGE</small></span><span><b>19</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>P6 로컬 완결 · 장비 드랍으로 한 판 파밍</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 주운 장비·모듈·파츠를 실제 가방에서 사용하고 탈출해 반출합니다. 시즌 마감 후 칭호·오라도 장착할 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>실물 가방 획득, 방·적·보스 드랍 연결, 시즌 칭호·오라 지급/장착을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>네 방의 무기→방어구→모듈→파츠 순환과 가방 부족·태그 불일치 안내로 한 판의 파밍 목적을 명확히 했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>LootTable 77행·SeasonReward 6행을 Sheet/CSV에 반영하고 생성·가방·정산·지급·표현의 모듈 경계를 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>장비 정의 초기화 순서로 인한 반출 누락, 가방과 창고 이중 보유, 실패한 획득 입력이 다른 상호작용으로 전달되는 경로를 차단했습니다.</p></div>
+        <p>실제 네 방·F/I·장착·보스·탈출·사망 자동 E2E를 통과했습니다. P6는 로컬 프로토타입 완료이며 실서비스 계정·서버 검증 지급은 별도입니다. 과금·도메인은 변경하지 않았습니다.</p>
+        <p><a href="features/field-loot-acquisition/">한 판 파밍 방법 →</a> · <a href="features/ranking-provider/">시즌 명예 보상 →</a> · <a href="quality/e2e-play-session/">검증 범위 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 7</small><b>50% 회수 추격 보스 · 거점 인벤토리 자유 전환</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 진입비의 절반을 회수하면 보스가 한 번 등장합니다. 방을 클리어해 문이 열려도 추격과 전투는 끝나지 않습니다.</strong></div>

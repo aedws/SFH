@@ -16,6 +16,7 @@ const GAMEPLAY_FLOW_JUDGE_SCRIPT := preload(
 )
 
 var game: Node
+var loot_session_contract := preload("res://game/tests/support/loot_session_contract.gd").new()
 var ui_state_judge := UI_STATE_JUDGE_SCRIPT.new()
 var player_perception_judge := PLAYER_PERCEPTION_JUDGE_SCRIPT.new()
 var gameplay_flow_judge := GAMEPLAY_FLOW_JUDGE_SCRIPT.new()
@@ -585,6 +586,9 @@ func _verify_operation_session() -> bool:
 		return false
 	if not await _verify_run_augment_choice():
 		return false
+	var loot_session_error: String = await loot_session_contract.verify(self, game, _tap_key)
+	if not loot_session_error.is_empty():
+		return _fail(loot_session_error)
 
 	await _tap_key(KEY_I)
 	var inventory = game.get("inventory_window") as Control
@@ -703,6 +707,9 @@ func _verify_operation_session() -> bool:
 			summary.text,
 		])
 	var settlement: Dictionary = game.get("last_loot_settlement")
+	var loot_settlement_error: String = loot_session_contract.verify_settlement(game)
+	if not loot_settlement_error.is_empty():
+		return _fail(loot_settlement_error)
 	var acquired_items: Dictionary = game.get("field_loot_acquisition_service").call(
 		&"get_snapshot"
 	).get(&"acquired_items", {})
@@ -729,6 +736,10 @@ func _verify_operation_session() -> bool:
 	if game.get("start_hub") == null or bool(game.get("run_started")) or paused:
 		return _fail("정산 화면의 실제 Enter 입력이 시작 거점으로 복귀하지 못했습니다.")
 	var restored_equipment = game.get("equipment_system")
+	var loot_return_error: String = loot_session_contract.verify_return(game)
+	if not loot_return_error.is_empty():
+		return _fail(loot_return_error)
+	print("E2E_LOOT_SESSION_OK four_real_rooms physical_f_bag weapon_armor_module_part equip_exact_instances save_resume full_bag_atomic boss_two_drops room_idempotent extract_warehouse no_hub_duplicate")
 	var restored_main = restored_equipment.call(&"get_equipment_state", &"main")
 	if (
 		restored_main == null
@@ -808,6 +819,14 @@ func _verify_failure_and_return_session() -> bool:
 		return false
 	var player = game.get("player")
 	var field_loot = game.get("field_loot_acquisition_service")
+	var warehouse_before_death: Dictionary = game.persistent_profile.get_snapshot()[&"warehouse"]
+	var death_item_ids: Array[StringName] = []
+	for item_id in [&"assault_rifle", &"tactical_vest", &"ballistic_core_item", &"rifle_scope_item"]:
+		var drop: Node2D = field_loot.spawn_candidate(player.global_position, {&"item_id": item_id, &"grade": 2, &"quantity": 1, &"source_type": &"room_reward"})
+		drop.call(&"_process", 0.0)
+		await _tap_key(KEY_F)
+		if is_instance_valid(drop): return _fail("사망 검증용 실제 가방 획득 실패")
+		death_item_ids.append_array(field_loot.last_acquisition_result.get(&"instance_ids", []))
 	if field_loot == null:
 		return _fail("사망 전리품 소실을 검증할 현장 획득 서비스가 없습니다.")
 	var failure_drop: Node2D = field_loot.call(&"spawn_candidate", player.global_position, {
@@ -853,6 +872,11 @@ func _verify_failure_and_return_session() -> bool:
 	await _tap_key(KEY_ENTER)
 	if game.get("start_hub") == null or bool(game.get("run_started")) or paused:
 		return _fail("실패 정산 후 실제 Enter 입력이 시작 거점으로 복귀하지 못했습니다.")
+	if game.persistent_profile.get_snapshot()[&"warehouse"] != warehouse_before_death:
+		return _fail("사망한 런의 장비·모듈·파츠가 영구 창고에 유출되었습니다.")
+	for id in death_item_ids:
+		if game.inventory_system.items.has(id): return _fail("사망 전리품이 거점 가방에 남았습니다.")
+	print("E2E_LOOT_DEATH_OK weapon_armor_module_part_lost warehouse_unchanged hub_bag_clean")
 	if not _judge_ui_state(&"hub", "실패 정산 후 거점"):
 		return false
 	if not _judge_player_perception(&"hub_context_restored", "실패 후 거점 복원", {
@@ -1201,9 +1225,12 @@ func _verify_field_loot_acquisition(player: Node2D) -> bool:
 	if service == null:
 		return _fail("현장 비교·획득 서비스가 작전 세션에 설치되지 않았습니다.")
 	var drops: Array = service.call(&"get_active_drops")
+	drops = drops.filter(func(value): return value.candidate.get(&"source_type", &"") == &"room_reward")
 	if drops.is_empty():
 		return _fail("방 확보 뒤 접근 가능한 비교 전리품이 생성되지 않았습니다.")
 	var drop := drops[0] as Node2D
+	service.cancel_preview()
+	service.suppressed_drop = null
 	player.global_position = drop.global_position
 	drop.call(&"_process", 0.0)
 	await process_frame
@@ -1657,6 +1684,7 @@ func _cleanup_test_profile() -> void:
 		E2E_RANKINGS_PATH.replace(".json", "_identity.json"),
 		E2E_RANKINGS_PATH.replace(".json", "_submissions.json"),
 		E2E_RANKINGS_PATH.replace(".json", "_seasons.json"),
+		E2E_RANKINGS_PATH.replace(".json", "_honors.json"),
 		E2E_META_PATH, E2E_KEY_MAPPING_PATH, E2E_SKILL_BINDING_PATH,
 		E2E_PRESENTATION_SETTINGS_PATH,
 	]:

@@ -28,3 +28,51 @@ rx_boss_magnetic_bp,research_complex,any,any,boss,magnetic_field_blueprint,4,82,
 rx_boss_phase,research_complex,nightmare,large,boss,phase_artifact,5,28,1,2,TRUE,TRUE,대형 악몽 위상 유물 묶음
 id_room_pulse_rifle,industrial_district,veteran,medium,room_reward,pulse_rifle,3,14,1,1,FALSE,TRUE,P4-04 현장 즉시 장착 검증용 주무기
 rx_room_arc_dash,research_complex,veteran,medium,room_reward,arc_dash,4,12,1,1,FALSE,TRUE,P4-04B 현장 스킬 즉시 교체 검증
+session_0_assault_rifle,ruined_city,any,any,room_reward,assault_rifle,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_service_pistol,ruined_city,any,any,room_reward,service_pistol,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_greatsword,ruined_city,any,any,room_reward,greatsword,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_tactical_vest,ruined_city,any,any,room_reward,tactical_vest,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_runner_boots,ruined_city,any,any,room_reward,runner_boots,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_rifle_scope_item,ruined_city,any,any,room_reward,rifle_scope_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_pistol_compensator_item,ruined_city,any,any,room_reward,pistol_compensator_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_greatsword_edge_item,ruined_city,any,any,room_reward,greatsword_edge_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_ballistic_core_item,ruined_city,any,any,room_reward,ballistic_core_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_vitality_matrix_item,ruined_city,any,any,room_reward,vitality_matrix_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_mobility_chip_item,ruined_city,any,any,room_reward,mobility_chip_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_0_armor_plate_item,ruined_city,any,any,room_reward,armor_plate_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_boss_0_0,ruined_city,any,any,boss,assault_rifle,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_boss_0_1,ruined_city,any,any,boss,tactical_vest,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_boss_0_2,ruined_city,any,any,boss,ballistic_core_item,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_boss_0_3,ruined_city,any,any,boss,rifle_scope_item,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_1_assault_rifle,industrial_district,any,any,room_reward,assault_rifle,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_service_pistol,industrial_district,any,any,room_reward,service_pistol,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_greatsword,industrial_district,any,any,room_reward,greatsword,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_tactical_vest,industrial_district,any,any,room_reward,tactical_vest,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_runner_boots,industrial_district,any,any,room_reward,runner_boots,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_rifle_scope_item,industrial_district,any,any,room_reward,rifle_scope_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_pistol_compensator_item,industrial_district,any,any,room_reward,pistol_compensator_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_greatsword_edge_item,industrial_district,any,any,room_reward,greatsword_edge_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_ballistic_core_item,industrial_district,any,any,room_reward,ballistic_core_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_vitality_matrix_item,industrial_district,any,any,room_reward,vitality_matrix_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_mobility_chip_item,industrial_district,any,any,room_reward,mobility_chip_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_1_armor_plate_item,industrial_district,any,any,room_reward,armor_plate_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_boss_1_0,industrial_district,any,any,boss,assault_rifle,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_boss_1_1,industrial_district,any,any,boss,tactical_vest,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_boss_1_2,industrial_district,any,any,boss,ballistic_core_item,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_boss_1_3,industrial_district,any,any,boss,rifle_scope_item,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_2_assault_rifle,research_complex,any,any,room_reward,assault_rifle,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_service_pistol,research_complex,any,any,room_reward,service_pistol,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_greatsword,research_complex,any,any,room_reward,greatsword,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_tactical_vest,research_complex,any,any,room_reward,tactical_vest,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_runner_boots,research_complex,any,any,room_reward,runner_boots,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_rifle_scope_item,research_complex,any,any,room_reward,rifle_scope_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_pistol_compensator_item,research_complex,any,any,room_reward,pistol_compensator_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_greatsword_edge_item,research_complex,any,any,room_reward,greatsword_edge_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_ballistic_core_item,research_complex,any,any,room_reward,ballistic_core_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_vitality_matrix_item,research_complex,any,any,room_reward,vitality_matrix_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_mobility_chip_item,research_complex,any,any,room_reward,mobility_chip_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_2_armor_plate_item,research_complex,any,any,room_reward,armor_plate_item,2,16,1,1,FALSE,TRUE,임시 한 판 파밍 목록 · 4방 순환 분류 보정
+session_boss_2_0,research_complex,any,any,boss,assault_rifle,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_boss_2_1,research_complex,any,any,boss,tactical_vest,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_boss_2_2,research_complex,any,any,boss,ballistic_core_item,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+session_boss_2_3,research_complex,any,any,boss,rifle_scope_item,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠

@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 77 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 78 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -27,12 +27,12 @@ tags:
     <b>96%</b>
   </div>
   <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-  <p>공개 Master GDD v1005의 체크 판독을 정정하고 P6-03 로컬 시즌 구현을 반영했습니다. 실제 서버·보상은 남아 있어 기능 가중 추정치 96%를 유지합니다.</p>
+  <p>공개 Master GDD v1005의 체크 판독을 정정하고 P6-03 로컬 시즌 구현을 반영했습니다. 로컬 칭호·오라는 추가됐으나 실제 서버 운영은 남아 있어 기능 가중 추정치 96%를 유지합니다.</p>
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-03 체크박스 파서를 고친 뒤 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
-**정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스는 기획자의 표식, 구현률은 코드·테스트 근거로 분리합니다. 해시 변경은 원문 업데이트가 아니라 판독 수정 때문입니다. P6-03 로컬 시즌까지 구현했지만 서버 운영·보상은 남아 있어 기능 추정치 96%를 보수적으로 유지합니다.
+**정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스는 기획자의 표식, 구현률은 코드·테스트 근거로 분리합니다. 해시 변경은 원문 업데이트가 아니라 판독 수정 때문입니다. P6-01~04 로컬 프로토타입을 구현했지만 서버 운영·검증 지급은 남아 있어 기능 추정치 96%를 보수적으로 유지합니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
@@ -45,7 +45,7 @@ tags:
 | 전리품 2대 분류·현장 파밍 | ×2 | 100% | 생명 주기·지역 테이블·현장 비교·획득·교체·소켓과 탈출 환전·영구 해금·창고/사망 소실·중복 방지 구현 |
 | 가변 태그·등급 확장 | ×1 | 85% | 동적 태그·등급·불일치 비활성·메커니즘 변형과 제작 옵션 풀 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
-| 비동기 랭킹·시즌 보상 | ×1 | 75% | 3대 로컬 랭킹·공급자·익명 신원·검증 봉투·멱등·영구 재시도·거부 상태 구현. 실서비스 계정·시즌 보상은 없음 |
+| 비동기 랭킹·시즌 보상 | ×1 | 75% | 3대 로컬 랭킹·공급자·익명 신원·검증 봉투·멱등·영구 재시도·거부 상태 구현. 로컬 시즌·칭호/오라 추가, 실서비스 계정·검증 지급은 없음 |
 
 계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 100×1 + 100×1 + 100×2 + 85×1 + 95×2 + 75×1) ÷ 15 = 96.3% → 96%`이며, Phase 4·5와 P6-01~03의 로컬 보존·검증 제출·재시도 계약을 완료로 판정합니다.
 
@@ -60,7 +60,7 @@ tags:
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
 | Phase 4 · 현장 교체·룬 소켓·환전 | 완료 | 현장 교체·룬/코어/유물 소켓→탈출 환전·영구 해금·창고/사망 소실과 중복 방지 E2E 완료 |
 | Phase 5 · 로비 허브·준비 세션 | 완료 | 유틸리티·단일 초안·파산 보호·회전 상점·제작소·훈련장·도감까지 P5-01~10 E2E 완료 |
-| Phase 6 · 비동기 랭킹·시즌 보상 | P6-01~03 완료 | 보스 격파, 로컬 시즌 기간·참여·마감 읽기 전용까지 연결. 실서비스 계정·서버 시즌·칭호·오라는 없음 |
+| Phase 6 · 비동기 랭킹·시즌 보상 | P6-01~04 로컬 완료 | 마감·칭호/오라 1회 지급·저장·장착 연결. 실서비스 계정·서버 확정 지급은 미완료 |
 
 ### 2026-09-02 Master GDD v1005 재대조
 
@@ -87,16 +87,16 @@ tags:
 | 완료 | Phase 6 P6-01 랭킹 제공자 | 3대 로컬 랭킹만 존재 | 온라인/로컬 교체·오프라인 폴백·상태 표시 E2E 완료 |
 | 완료 | Phase 6 P6-02 제출·검증 | 익명 신원·무결성·멱등·영구 재시도·거부 이유 | 중복/단절/변조/시간초과/저장 복원 E2E 완료 |
 | 완료 | Phase 6 P6-03 시즌 규칙 | 로컬 임시 주간 정책과 마감 기록 | 시즌 경계·조건 불일치·마감 불변·저장 복원 E2E 완료 |
-| 1 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
-| 4 | 내부 P7~P10 | 공식 Phase 1~6 이후 상세 작업선 | 경제→훈련→도감→출시 후보 순서와 기계 계약 유지 |
+| 완료 | Phase 6 P6-04 로컬 칭호·오라 | SeasonReward 6종·마감 지급·저장·장착 | 1회 지급·다른 신원 거부·재시작·표현·손상 보존 테스트 |
+| 1 | 내부 P7~P10 | 공식 Phase 1~6 이후 상세 작업선 | 경제→훈련→도감→출시 후보 순서와 기계 계약 유지 |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 13 · IMPROVE 19 · CHANGE 15 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 16 · IMPROVE 21 · CHANGE 17 · FIX 19</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>13</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>15</b><small>CHANGE</small></span><span><b>16</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>16</b><small>BUILD</small></span><span><b>21</b><small>IMPROVE</small></span><span><b>17</b><small>CHANGE</small></span><span><b>19</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -170,7 +170,7 @@ tags:
         <p><a href="features/ranking-provider/">시즌 동작 →</a> · <a href="design/master-gdd-alignment/">판독 정정 근거 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 7</small><b>50% 회수 추격 보스 · 거점 인벤토리 자유 전환</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 진입비의 절반을 회수하면 보스가 한 번 등장합니다. 방을 클리어해 문이 열려도 추격과 전투는 끝나지 않습니다.</strong></div>
@@ -180,6 +180,18 @@ tags:
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>열린 장비 창 재진입 후 거점이 멈추던 일시정지 오류와, 생성 실패가 추격자의 1회 등장 기회를 소모하던 오류를 수정했습니다.</p></div>
         <p>101 C 진입은 51 C, 무료 작전은 첫 1 C 회수 기준입니다. 보스 처치 뒤 같은 런에서 재생성하지 않습니다. Sheet 목록·과금 변경 없음.</p>
         <p><a href="features/elite-pursuit/">추격 보스 →</a> · <a href="features/grid-inventory/">거점 편집 →</a> · <a href="quality/e2e-play-session/">검증 목록 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>P6 로컬 완결 · 장비 드랍으로 한 판 파밍</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 주운 장비·모듈·파츠를 실제 가방에서 사용하고 탈출해 반출합니다. 시즌 마감 후 칭호·오라도 장착할 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>실물 가방 획득, 방·적·보스 드랍 연결, 시즌 칭호·오라 지급/장착을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>네 방의 무기→방어구→모듈→파츠 순환과 가방 부족·태그 불일치 안내로 한 판의 파밍 목적을 명확히 했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>LootTable 77행·SeasonReward 6행을 Sheet/CSV에 반영하고 생성·가방·정산·지급·표현의 모듈 경계를 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>장비 정의 초기화 순서로 인한 반출 누락, 가방과 창고 이중 보유, 실패한 획득 입력이 다른 상호작용으로 전달되는 경로를 차단했습니다.</p></div>
+        <p>실제 네 방·F/I·장착·보스·탈출·사망 자동 E2E를 통과했습니다. P6는 로컬 프로토타입 완료이며 실서비스 계정·서버 검증 지급은 별도입니다. 과금·도메인은 변경하지 않았습니다.</p>
+        <p><a href="features/field-loot-acquisition/">한 판 파밍 방법 →</a> · <a href="features/ranking-provider/">시즌 명예 보상 →</a> · <a href="quality/e2e-play-session/">검증 범위 →</a></p>
       </div>
     </details>
   </div>

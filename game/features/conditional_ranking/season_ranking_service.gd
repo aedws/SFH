@@ -66,6 +66,13 @@ func preview(contract: Dictionary) -> Dictionary:
 	}, true)
 
 
+func freeze_reward_catalog(rows: Array) -> void:
+	advance()
+	if storage_error.is_empty() and not active.is_empty() and not active.has(&"reward_catalog"):
+		active[&"reward_catalog"] = rows.duplicate(true)
+		_save()
+
+
 func submit_run(result: Dictionary) -> Dictionary:
 	var state := preview(result)
 	if not bool(state.get(&"eligible", false)):

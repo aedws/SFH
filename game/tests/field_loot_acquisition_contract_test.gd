@@ -169,7 +169,7 @@ func _run() -> void:
 	var drops := Node2D.new()
 	var ui := CanvasLayer.new()
 	var equipment := EquipmentStub.new()
-	var inventory := InventoryStub.new()
+	var inventory := GridInventory.new()
 	var skills := SkillSystemStub.new()
 	var bindings := BindingStub.new()
 	var equip_catalog := load(
@@ -177,6 +177,8 @@ func _run() -> void:
 	) as FieldLootEquipCatalog
 	for node in [lifecycle, table, service, player, drops, ui, equipment, inventory, skills, bindings]:
 		root.add_child(node)
+	if not inventory.configure(load("res://game/features/inventory/catalogs/default_inventory.tres")):
+		return _fail("실제 가방 구성 실패")
 	await process_frame
 	if not lifecycle.call(
 		&"configure", load("res://game/features/loot_lifecycle/configs/default_loot_lifecycle.tres")
@@ -299,7 +301,12 @@ func _run() -> void:
 		or bindings.action_for_skill(&"speed_boost") != &"combat_skill_3"
 	):
 		return _fail("스킬·키 바인딩이 런 이전 상태로 복구되지 않았습니다.")
-	print("FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip skill_swap_slot_binding_restore provisional_policy restore_on_hub viewport_safe modular_boundary")
+	service.call(&"configure", player, drops, ui, lifecycle, table, equipment, inventory, context, 7411, equip_catalog, null, null, null, null, false)
+	var armor_drop: Node2D = service.spawn_candidate(Vector2.ZERO, {&"item_id": &"tactical_vest", &"quantity": 1, &"grade": 2})
+	armor_drop.call(&"_process", 0.0)
+	if service.equip_focused() or not service.acquire_focused() or not service.last_acquisition_result.get(&"stored_in_bag", false):
+		return _fail("R 기능 제거가 F 방어구 가방 획득을 함께 제거했습니다.")
+	print("FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip skill_swap_slot_binding_restore provisional_policy restore_on_hub viewport_safe modular_boundary bag_without_immediate_equip")
 	quit(0)
 
 

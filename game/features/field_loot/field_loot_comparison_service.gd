@@ -6,6 +6,7 @@ var equipment_provider: Node
 var inventory_provider: Node
 var equip_catalog: FieldLootEquipCatalog
 var skill_equip_provider: Variant
+var immediate_equip_enabled := true
 
 
 func configure(
@@ -49,12 +50,13 @@ func compare(candidate: Dictionary) -> Dictionary:
 	elif owned_count > 0:
 		comparison_label = "보유 +%d" % int(candidate.get(&"quantity", 1))
 	var equip_preview := {}
-	if equip_catalog != null and equip_catalog.get_entry(item_id) != null:
+	if immediate_equip_enabled and equip_catalog != null and equip_catalog.get_entry(item_id) != null:
 		var entry := equip_catalog.get_entry(item_id)
 		var current = equipment_provider.call(&"get_equipment_state", entry.target_slot)
 		equip_preview = {
-			&"available": true,
-			&"equip_kind": &"weapon",
+			&"available": not equipment_provider.has_method(&"can_equip_definition") or equipment_provider.call(&"can_equip_definition", entry.target_slot, entry.definition),
+			&"reason": &"equipment_tags_mismatch",
+			&"equip_kind": definition.item_type,
 			&"target_slot": entry.target_slot,
 			&"previous_name": (
 				String(current.definition.get("display_name"))
@@ -64,7 +66,7 @@ func compare(candidate: Dictionary) -> Dictionary:
 			&"policy_status": StringName(equip_catalog.policy_status),
 		}
 	elif (
-		equip_catalog != null
+		immediate_equip_enabled and equip_catalog != null
 		and equip_catalog.get_skill_entry(item_id) != null
 		and skill_equip_provider != null
 		and skill_equip_provider.has_method(&"preview")

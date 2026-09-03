@@ -10,7 +10,7 @@ func _run() -> void:
 	var parsed := LootTable.parse(file.get_as_text() if file != null else "")
 	var errors: PackedStringArray = parsed.get(&"errors", PackedStringArray())
 	var entries: Array = parsed.get(&"data", [])
-	if not errors.is_empty() or entries.size() != 29:
+	if not errors.is_empty() or entries.size() != 77:
 		_fail("rows=%d errors=%s" % [entries.size(), " / ".join(errors)])
 		return
 	var lifecycle_scene := load("res://game/features/loot_lifecycle/loot_lifecycle_service.tscn") as PackedScene
@@ -79,21 +79,17 @@ func _run() -> void:
 	industrial[&"difficulty_id"] = &"veteran"
 	industrial[&"map_size"] = &"medium"
 	industrial[&"source_type"] = &"room_reward"
-	var industrial_ids: PackedStringArray = provider.call(&"get_briefing", industrial).get(
-		&"target_item_ids", PackedStringArray()
-	)
+	var industrial_ids: Array = provider.call(&"get_candidates", industrial).map(func(row): return row[&"item_id"])
 	if "pulse_rifle" not in industrial_ids:
 		_fail("Weapon 탭 기반 현장 장비가 산업 지구 드랍 후보에 연결되지 않았습니다.")
 		return
 	var skill_region := industrial.duplicate(true)
 	skill_region[&"region_id"] = &"research_complex"
-	var skill_ids: PackedStringArray = provider.call(&"get_briefing", skill_region).get(
-		&"target_item_ids", PackedStringArray()
-	)
+	var skill_ids: Array = provider.call(&"get_candidates", skill_region).map(func(row): return row[&"item_id"])
 	if "arc_dash" not in skill_ids:
 		_fail("Skill 탭 기반 현장 스킬이 연구 단지 드랍 후보에 연결되지 않았습니다.")
 		return
-	print("LOOT_TABLE_TEST_OK rows_29 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link skill_definition_link")
+	print("LOOT_TABLE_TEST_OK rows_77 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link skill_definition_link")
 	quit(0)
 
 
