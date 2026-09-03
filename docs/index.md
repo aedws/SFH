@@ -53,7 +53,7 @@ search:
         <div class="sfh-summary"><strong>무엇이 변했나 · 보스가 나타나면 짧게 경고하고, 화면 밖에서 오는 방향을 외곽 화살표로 알려줍니다.</strong></div>
         <div class="sfh-group"><h3>구현 · 2</h3><p>추격·일반 보스 등장 배너와 보스별 화면 외곽 방향 표시를 추가했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 1</h3><p>카메라·줌에 맞춰 방향을 갱신하고 화면 안 진입·처치·가방·일시정지 시 표시를 정리해 전투 시야를 확보합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>추적·좌표·표현·수치를 독립 모듈로 분리하고 8방향·4화면 크기·실제 I/ESC E2E를 필수 검사에 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>추적·좌표·표현·수치를 독립 모듈로 분리하고 8방향·4화면 크기·실제 I/ESC E2E를 필수 검사에 추가했습니다. 입력 대기 후 카메라 좌표도 새로 계산해 화면 내부 판정의 오탐을 방지합니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>보스 발생 임계·드랍·전투 수치는 변경하지 않았습니다.</p></div>
         <p><a href="features/elite-pursuit/">경고·방향 표시 규칙 →</a> · <a href="quality/e2e-play-session/">검증 범위 →</a></p>
       </div>

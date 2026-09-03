@@ -31,7 +31,14 @@ func verify(tree: SceneTree, game: Node, boss: Node2D, tap_key: Callable) -> Str
 	await tree.process_frame
 	if not hud.is_visible_in_tree():
 		return "ESC 전투 복귀 후 보스 경고 미복원"
-	boss.global_position = to_world * (view * 0.5)
+	# Camera smoothing keeps moving after the preceding room teleport. Never reuse
+	# a screen-to-world transform across awaited UI input / process frames.
+	var current_to_world: Transform2D = game.get("player").get_canvas_transform().affine_inverse()
+	var current_view: Vector2 = tree.root.get_visible_rect().size
+	boss.global_position = current_to_world * (current_view * 0.5)
+	var visible_position: Vector2 = game.get("player").get_canvas_transform() * boss.global_position
+	if not Rect2(Vector2.ZERO, current_view).has_point(visible_position):
+		return "보스 화면 내부 테스트 위치 구성 실패: %s" % visible_position
 	hud.call(&"_process", 0.0)
 	for marker: Dictionary in hud.call(&"get_snapshot")[&"indicators"]:
 		if marker[&"id"] == boss.get_instance_id():
