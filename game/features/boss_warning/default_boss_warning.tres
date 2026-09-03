@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="BossWarningStyle" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/boss_warning/boss_warning_style.gd" id="1_style"]
+
+[resource]
+script = ExtResource("1_style")
+warning_seconds = 3.5
+edge_inset = 24.0
+arrow_radius = 12.0

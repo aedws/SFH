@@ -63,6 +63,7 @@ skill_binding_enabled = true
 presentation_settings_enabled = true
 mobile_controls_enabled = true
 elite_pursuit_enabled = true
+boss_warning_enabled = true
 cyberpunk_theme_enabled = true
 cyberpunk_motion_enabled = true
 cyberpunk_noise_enabled = true
