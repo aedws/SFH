@@ -17,20 +17,20 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 86 TOPICS</span><span>91 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-04</span><span>SEARCH COMMAND</span><span>7 DAYS · 87 TOPICS</span><span>91 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
-    <span><small>MASTER GDD ALIGNED · 2026-09-03</small><strong>현재 기획 진행도</strong></span>
+    <span><small>MASTER GDD ALIGNED · 2026-09-04</small><strong>현재 기획 진행도</strong></span>
     <b>94%</b>
   </div>
   <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="94"><i style="width: 94%"></i></div>
-  <p>공개 Master GDD v1005·77블록은 재조회 결과 동일합니다. P7-01A 상점 비교를 구현하면서 실제 품질 적용·실물 지급이 남은 경제 완료 표기를 정정해 기능 가중 추정치 94%로 조정했습니다. 보안·백업은 계획만 등록했습니다.</p>
+  <p>2026-09-04 공개 Master GDD v1005·77블록·해시 614a0b8ddee4 재조회 결과는 동일합니다. P7-01A 상점 비교 뒤 실제 품질 적용·실물 지급이 남아 기능 가중 추정치 94%를 유지합니다. 보안·백업은 계획만 등록했습니다.</p>
 </div>
 
-권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-03 체크박스 파서를 고친 뒤 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
+권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-04 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
 P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신규 시즌의 대형 참가 조건과 기존 시즌 보존을 수정·검증하고, [기획자 튜토리얼](getting-started/planner-item-balance-tutorial.md)을 추가했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분하며 가중 추정 94%는 유지합니다.
 
@@ -98,7 +98,25 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 26 · IMPROVE 35 · CHANGE 27 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 0 · CHANGE 2 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>0</b><small>IMPROVE</small></span><span><b>2</b><small>CHANGE</small></span><span><b>0</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 공개 Notion과 최신 main·배포 상태를 다시 확인해 완료, 다음 구현, 별도 승인 대기를 구분했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>이번 묶음은 상태 감사이며 새 기능을 완료로 계산하지 않습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 0</h3><p>플레이어 UI·밸런스·데이터 스키마는 변경하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>Notion v1005·77블록·해시 614a0b8ddee4와 체크 0/6을 재확인했습니다. 저장소 구현과 플레이어 인식 E2E를 기준으로 94% 산식 및 P7-01B→P7-02~04→P8→P9→P10 순서를 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>실행 코드 변경은 없습니다.</p></div>
+        <p>P6-01~04는 로컬 프로토타입 완료입니다. 온라인 계정·검증 서버·서버 시간·확정 시즌 지급은 별도 승인 전 미착수이며, 상점 품질 실성능·실물 지급과 혼동하지 않습니다.</p>
+        <p><a href="design/master-gdd-alignment/">94% 산정 근거 →</a> · <a href="design/current-milestone-workline/">현행 작업 순서 →</a></p>
+      </div>
+    </details>
+  </div>
+</details>
+<details class="sfh-day" open>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><small>16 UPDATE BUNDLES · BUILD 26 · IMPROVE 35 · CHANGE 27 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview"><span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>26</b><small>BUILD</small></span><span><b>35</b><small>IMPROVE</small></span><span><b>27</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
     <details class="sfh-bundle">

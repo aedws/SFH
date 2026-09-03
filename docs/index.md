@@ -44,188 +44,19 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 26 · IMPROVE 35 · CHANGE 27 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 0 · CHANGE 2 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>26</b><small>BUILD</small></span><span><b>35</b><small>IMPROVE</small></span><span><b>27</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>0</b><small>IMPROVE</small></span><span><b>2</b><small>CHANGE</small></span><span><b>0</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 16</small><b>모바일 가로 기본 · 회전 요청과 안전한 폴백</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 모바일은 가로 플레이를 기본으로 선택하고, 세로로 열었으면 회전 방법을 안내합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>모바일 활성화 시 가로 방향을 요청합니다. 세로 시작 화면과 첫 팝업에 전체화면·가로 전환 요청 버튼을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>네이티브 기본 방향을 좌·우 가로 센서로 지정하고, 이미 가로인 화면에는 추가 버튼을 숨깁니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>방향 요청은 독립 정책 모듈이 담당합니다. 1회 안내와 크기 저장, PC 창 크기는 보존합니다. 전체화면은 명시적 버튼 클릭으로만 요청합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>잠금 미지원·거절·예외가 로비 진입을 막지 않게 처리했습니다. 팝업 검수를 실제 세로 논리 해상도와 스크롤 클릭으로 보강했습니다.</p></div>
-        <p><a href="features/mobile-hud-settings/">가로 사용법·지원 경계 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 15</small><b>모바일 크기 조절 · 첫 조작 안내 팝업</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 모바일 버튼과 글자가 커지고, 첫 모바일 선택 때 조작 안내를 확인한 뒤 로비로 이동합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>1회성 모바일 팝업에 이동·공격·스킬·사용 안내와 크기 선택을 제공합니다. 확인 완료는 이 브라우저·기기에 저장됩니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>기본 125%, 설정에서 100/125/150%를 선택합니다. 조작 글자·에너지·상단 메뉴 가독성을 높이고 좁은 화면은 양손 영역이 겹치지 않는 최대 크기로 맞춥니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>배치 정책·안내 UI·설정 저장을 분리했습니다. 기존 PC 배치와 저장 파일은 유지하며 표시 설정 초기화로 안내를 반복하지 않습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>확인 전 종료·저장 실패는 안내 완료로 기록하지 않습니다. 배율 변경 때 눌린 입력을 해제하며 설정 실제 클릭·5화면×3배율을 회귀 검사합니다.</p></div>
-        <p><a href="features/mobile-hud-settings/">크기·첫 안내 사용법 →</a> · <a href="quality/e2e-play-session/#mobile-entry-e2e">모바일 검수 기준 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 14</small><b>PC·모바일 시작 선택 · 양손 터치 전용 화면</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 실행할 때 조작 방식을 선택합니다. 모바일은 좌하단 조이스틱·우하단 공격과 스킬로 플레이합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>PC/모바일 진입 선택과 손가락별 조이스틱 입력을 추가했습니다. 선택 뒤에는 로비 준비→작전 게이트 동선을 유지합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>모바일 버튼에 에너지·쿨타임을 표시하고 PC용 중복 HUD를 숨깁니다. 가로/세로 논리 해상도와 양손 영역을 별도로 배치합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>선택은 표시 설정에 저장하며 K/화면 설정에서 변경합니다. 입력·뷰포트·시작 조립을 분리하고 전투와 장비 원본은 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>터치 버튼이 이벤트 기반 가방·지도·설정을 열지 못하던 경로를 수정했습니다. 창 전환·백그라운드·기기 모드 변경 때 눌린 입력을 해제합니다.</p></div>
-        <p><a href="features/mobile-hud-settings/">모바일 사용법 →</a> · <a href="quality/e2e-play-session/#mobile-entry-e2e">입력·화면 검증 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 13</small><b>기획자 아이템·밸런싱 튜토리얼 · P6 로컬 마감 재검증</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자 작업실에서 수치 조정과 새 아이템 추가 절차를 바로 찾고, 시즌 참가 조건을 정확히 확인합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 0</h3><p>실제 계정 서버·온라인 경쟁·서버 지급은 구현 완료로 처리하지 않습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>실제 Sheet 1·2행을 확인한 튜토리얼과 검색·문서 노드 연결을 추가했습니다. 시트 수정·실시간 시험·CSV 확정·되돌리기 및 개발자가 연결할 영역을 분리합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>공개 Notion v1005·77블록·해시 614a0b8ddee4 재조회 동일. P6 로컬/실서비스 종료 조건과 다음 P7-01B 작업을 구분했습니다. 문서/검증 추가만으로 기존 94% 추정치를 올리지 않습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>소·중·대 모두 허용하던 신규 시즌 기본값을 Notion의 대형 조건으로 수정했습니다. 구 시즌은 시작 때 조건과 기록을 보존하고 다음 시즌부터 새 정책을 적용합니다.</p></div>
-        <p>시즌 81조합·구 정책 저장/전환·대형 보상, 전체 플레이/실패 정산 E2E와 기존 모듈 계약을 검사합니다. Sheet 수치·CSV·과금·도메인은 변경하지 않았습니다.</p>
-        <p><a href="getting-started/planner-item-balance-tutorial/">기획자 튜토리얼 →</a> · <a href="features/ranking-provider/#p6-closeout">P6 마감 경계 →</a> · <a href="quality/e2e-play-session/#p6-closeout-e2e">검증 기준 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 12</small><b>로비 상점·출격 준비 · 장착한 그대로 작전 진입</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 로비에서 세팅을 마친 뒤 작전에 들어갑니다. 진입 화면에서 무기를 다시 고르지 않습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>로비 보급 상점·출격 준비 단말을 F로 열고 요원·스킬·소모품을 준비합니다. 위치·이름·반경은 별도 Scene에서 조정합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>작전 2단계를 현재 장착 상태 확인 전용으로 바꾸고, 준비 패널은 4개 화면 크기에서 세로 스크롤과 고정 닫기·장비 버튼을 제공합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>실물 장비 상태를 출격 원본으로 고정했습니다. 위키 사용법·모듈 관계·E2E도 새 로비 동선으로 갱신했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>카탈로그가 로비 무기·모듈·파츠를 덮어쓰거나 장착 무기를 재청구하던 경로를 제거했습니다. 미저장 편집을 직접 출격 호출로 우회하지 못하게 했습니다.</p></div>
-        <p>브리핑 취소·정상 복귀는 세팅 보존, 사망/실패의 장착품 소실은 기존 규칙입니다. 상점 품질 실성능·전체 실물 지급(P7-01B), Sheet·CSV 수치, 과금 모델은 이번 변경에 포함하지 않습니다.</p>
-        <p><a href="features/hub-economy/#hub-preparation">로비 사용법 →</a> · <a href="features/loadout-investment/">장착 보존 계약 →</a> · <a href="quality/e2e-play-session/#hub-preparation-e2e">회귀 검증 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 11</small><b>상점 매물 비교 · 골라서 구매 · 다음 작업 범위 정정</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 상점 버튼이 첫 상품을 즉시 사던 동작을 없애고, 가격·수량을 비교한 뒤 고른 상품만 구매합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>3품질 매물 카드와 읽기 전용 견적·명시적 선택 구매 화면을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>같은 상품의 개당 가격을 비교하고, ESC로 준비 화면과 거점의 이전 일시정지 상태로 돌아갑니다. 4개 화면 크기에서 버튼 경계를 검사합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>Notion v1005·77블록은 재조회 결과 동일합니다. 실제 품질 성능과 구매/제작 장비 지급 연결은 미완료로 정정했고, 경제 항목 재산정에 따라 전체 가중 추정치는 94%입니다. 위변조 감지·감사·백업 확장은 구현 예정으로만 등록했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>상점 열기만으로 결제되던 경로와 오래된 회전 견적으로 구매하던 경로를 차단했습니다.</p></div>
-        <p>P7-01A 완료 범위는 비교·선택 구매입니다. 현재 지급은 창고 수량이며 실제 품질 성능·I/U 실물 장착 연결은 다음 P7-01B에서 처리합니다. Sheet·CSV·과금 모델은 변경하지 않았습니다.</p>
-        <p><a href="features/hub-economy/#shop-browser">상점 사용법 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">검증 범위 →</a> · <a href="design/master-gdd-alignment/">94% 산정 근거 →</a> · <a href="design/p7-plus-preimplementation/#economy-integrity-plan">보안·백업 구현 예정 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 10</small><b>Windows 자동 저장 · 종료 후 진행 이어가기</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 다운로드판을 껐다 켜도 확정한 거점 세팅과 반출한 재화·성장·기록을 이어갑니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>가방·장비·모듈·파츠 체크포인트와 최근 100회 작전 이력을 로컬 저장합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>기존 프로필·성장에 검증 저장과 이전본 복구를 더하고, 거점 상태·다운로드 안내로 저장 위치를 확인합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>파일 보관·형식 변환·런 경계·표시를 분리하고 재실행 검증을 배포 필수 검사에 추가했습니다. Sheet 목록·밸런스는 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>재실행 시 거점 세팅이 사라지는 경로와 개발 테스트가 플레이어 기본 저장을 사용하는 경로를 수정했습니다.</p></div>
-        <p>전투 도중 이어하기·클라우드 동기화는 아닙니다. 중단 시 미반출 전리품은 지급하지 않으며 기존 실패 규칙을 유지합니다.</p>
-        <p><a href="getting-started/run-project/#desktop-save">저장·백업 안내 →</a> · <a href="quality/e2e-play-session/#desktop-save-e2e">재실행 검증 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 9</small><b>보스 등장 경고 · 외곽 접근 방향</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 보스가 나타나면 짧게 경고하고, 화면 밖에서 오는 방향을 외곽 화살표로 알려줍니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>추격·일반 보스 등장 배너와 보스별 화면 외곽 방향 표시를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>카메라·줌에 맞춰 방향을 갱신하고 화면 안 진입·처치·가방·일시정지 시 표시를 정리해 전투 시야를 확보합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>추적·좌표·표현·수치를 독립 모듈로 분리하고 8방향·4화면 크기·실제 I/ESC E2E를 필수 검사에 추가했습니다. 입력 대기 후 카메라 좌표도 새로 계산해 화면 내부 판정의 오탐을 방지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>보스 발생 임계·드랍·전투 수치는 변경하지 않았습니다.</p></div>
-        <p><a href="features/elite-pursuit/">경고·방향 표시 규칙 →</a> · <a href="quality/e2e-play-session/">검증 범위 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 8</small><b>P6 로컬 완결 · 장비 드랍으로 한 판 파밍</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 주운 장비·모듈·파츠를 실제 가방에서 사용하고 탈출해 반출합니다. 시즌 마감 후 칭호·오라도 장착할 수 있습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 3</h3><p>실물 가방 획득, 방·적·보스 드랍 연결, 시즌 칭호·오라 지급/장착을 구현했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>네 방의 무기→방어구→모듈→파츠 순환과 가방 부족·태그 불일치 안내로 한 판의 파밍 목적을 명확히 했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>LootTable 77행·SeasonReward 6행을 Sheet/CSV에 반영하고 생성·가방·정산·지급·표현의 모듈 경계를 분리했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>장비 정의 초기화 순서로 인한 반출 누락, 가방과 창고 이중 보유, 실패한 획득 입력이 다른 상호작용으로 전달되는 경로를 차단했습니다.</p></div>
-        <p>실제 네 방·F/I·장착·보스·탈출·사망 자동 E2E를 통과했습니다. P6는 로컬 프로토타입 완료이며 실서비스 계정·서버 검증 지급은 별도입니다. 과금·도메인은 변경하지 않았습니다.</p>
-        <p><a href="features/field-loot-acquisition/">한 판 파밍 방법 →</a> · <a href="features/ranking-provider/">시즌 명예 보상 →</a> · <a href="quality/e2e-play-session/">검증 범위 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 7</small><b>50% 회수 추격 보스 · 거점 인벤토리 자유 전환</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 진입비의 절반을 회수하면 보스가 한 번 등장합니다. 방을 클리어해 문이 열려도 추격과 전투는 끝나지 않습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>추격자를 명시적 보스 역할로 생성해 보스 격파·랭킹 집계에 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>거점 I/U/E 여섯 방향 전환, 장비·모듈·파츠 변경 후 최신 편집본과 저장 확인을 실제 입력으로 검증합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>기존 100% 회수·엘리트 1~2기를 50% 회수·추격 보스 1기로 변경했습니다. 임계·수량·재시도는 정책 Resource로 분리합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>열린 장비 창 재진입 후 거점이 멈추던 일시정지 오류와, 생성 실패가 추격자의 1회 등장 기회를 소모하던 오류를 수정했습니다.</p></div>
-        <p>101 C 진입은 51 C, 무료 작전은 첫 1 C 회수 기준입니다. 보스 처치 뒤 같은 런에서 재생성하지 않습니다. Sheet 목록·과금 변경 없음.</p>
-        <p><a href="features/elite-pursuit/">추격 보스 →</a> · <a href="features/grid-inventory/">거점 편집 →</a> · <a href="quality/e2e-play-session/">검증 목록 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 6</small><b>체크박스 판독 정정 · 보스 격파 · 로컬 시즌</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 출격 전에 시즌 참가 조건과 종료 시각을 확인하고, 보스 격파를 포함한 결과와 마감 이력을 읽을 수 있습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>보스 격파 계측·제출과 P6-03 로컬 시즌 기간·참여·마감 저장·조회 모듈을 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>준비 단계의 참가 안내·기록 버튼과 결과 화면의 보스·시즌 상태로 집계 여부를 설명합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>시즌 경계·재시작·선택 제거 E2E, 역할 작업실·기획 요청을 현행화했습니다. 다음 작업은 P6-04 보상입니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>Notion No를 참으로 읽던 오류(실제 0/6), 보스 격파 통계 누락, 방 생성에서 보스 확정 조건이 빠지던 경로를 수정했습니다.</p></div>
-        <p>주간 7일·페널티 10·보스 동점 정렬은 임시 정책입니다. 실제 서버·명예 보상은 미구현입니다.</p>
-        <p><a href="features/ranking-provider/">시즌 동작 →</a> · <a href="design/master-gdd-alignment/">판독 정정 근거 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 5</small><b>위키 검색·플레이 구분과 실행 아이콘 정렬</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 원형 삼각형 대신 청록색 게임 플레이 버튼을 표시하고 문서 검색은 돋보기와 검색 문구로 구분합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>독립 헤더 스타일과 폰트에 의존하지 않는 SVG 실행 아이콘을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>휴대폰에서도 검색·플레이 글자를 유지하고 44px 클릭 영역과 키보드 포커스를 적용했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>검색은 현재 위키, 플레이는 새 게임 탭이라는 동작과 안내·검증 계약을 분리했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>아이콘을 밀던 점멸 가상 요소와 검색창이 헤더·모바일 문서 너비를 침범하던 스타일을 제거했습니다.</p></div>
-        <p><a href="getting-started/search-wiki/">사용법 →</a> · <a href="quality/wiki-responsive-e2e/">화면별 검증 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 4</small><b>위키 문서형 탐색 · 큰 문서에서 작은 문서로</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 긴 기능 목록 대신 SFH 종합 문서에서 작전·전투·장비·전리품·성장 주제를 읽고, 필요한 세부 문서로 내려갑니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>주제별 상위 문서와 빌드 시 자동 생성하는 상위·하위 문서 탐색을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>목차·읽는 순서·모바일 한 열 링크를 제공하고, 전체 노드맵은 필요할 때만 펼칩니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>역할 작업실과 검색 진입점을 종합 문서로 연결하고 탐색·추가 문서 작성 안내를 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>상위 문서에서 빠진 세부 링크와 고정 문서 수 안내를 정리하고, 실제 출력 HTML의 누락·깨진 링크를 검사합니다.</p></div>
-        <p><a href="features/">SFH 종합 문서 →</a> · <a href="getting-started/search-wiki/">읽는 방법 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>통합 인벤토리 · 이동·장착·저장 확인</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 보기만 하던 I 가방에서 아이템 이동, 장비 교체, 무기·방어구 모듈 편집까지 처리하고 탭을 나갈 때 저장 여부를 선택합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 3</h3><p>원본과 분리된 편집본, 무기/방어구 모듈 탭, 저장·취소·계속 편집 확인을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>장비→스탯→스크롤 가방→상세 정보 배치, 칸 크기 자동 조정, 작은 화면 세로 구성을 적용했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 3</h3><p>이동·장착·해제 입력, 캐릭터 수치 미리보기, 4해상도×3탭과 저장 흐름 E2E를 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>미저장 이탈, 가방 공간/슬롯 불일치 시 손실, 편집 중 원본 변경의 무단 덮어쓰기를 차단했습니다.</p></div>
-        <p><a href="features/grid-inventory/">편집·저장 범위 →</a> · <a href="quality/e2e-play-session/">인벤토리 E2E →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>첫 작전 튜토리얼 · 화면 가림과 조작 안내 수정</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 화면을 가로지르던 검은 안내판을 좌상단 338px 카드로 축소하고, 튜토리얼이 열린 상태까지 전투 시야 검사에 포함했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>열린 안내판의 4화면×4단계 경계·실제 버튼 클릭·이동·임무 복원 회귀를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>임무 영역을 안내와 공유하고, 44px 조작 버튼과 짧은 문장으로 중앙 전장을 비웠습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>대시는 회피, 점멸은 별도 스킬로 설명하며 스킬·지도·상호작용 키 재설정도 안내에 반영합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>좌우 앵커로 인한 화면 밖 확장, 줄바꿈 전 최소 높이 잔류, 튜토리얼을 닫은 뒤에만 시야를 검사하던 누락을 해결했습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>전투 HUD · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>전투 필수 정보는 화면 가장자리로 압축하고, 비어 있는 런 소켓 패널은 숨겨 중앙 전장을 가리지 않게 했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 3</h3><p>가로형 스킬 클러스터, 중앙 안전 영역, 상황형 소켓 표시 계약을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 5</h3><p>스킬·에너지·소켓·행동 안내의 배치와 화면 점유율을 낮췄습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 4</h3><p>런타임 HUD 배치 책임, 플레이어 인식 E2E, 기능·감사 문서를 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>빈 소켓 패널 잔류와 중앙 우측 세로 스킬 패널의 시야 침범을 제거했습니다.</p></div>
+        <div class="sfh-summary"><strong>무엇이 변했나 · 공개 기획 원문과 최신 배포 코드를 다시 대조해 다음 작업과 승인 대기 범위를 분리했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>상태 점검만 수행했으며 새 게임 기능이나 밸런스 수치를 완료로 계산하지 않습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 0</h3><p>기존 플레이·모바일·위키 UI는 변경하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>Notion v1005·77블록·해시 614a0b8ddee4가 동일함을 확인했습니다. 기능 가중 추정치 94%를 유지하고 다음 작업을 P7-01B 실제 품질 성능·실물 I/U 지급으로 고정했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>코드 변경이나 오류 수정은 포함하지 않습니다.</p></div>
+        <p>후속 순서는 P7-01B→P7-02~04→P8→P9→P10입니다. 온라인 계정·검증 서버·서버 확정 시즌 보상은 별도 승인 전 미착수입니다.</p>
+        <p><a href="development-status/">상세 잔여 작업과 산정 근거 →</a></p>
       </div>
     </details>
   </div>
