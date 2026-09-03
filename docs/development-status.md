@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 85 TOPICS</span><span>91 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 86 TOPICS</span><span>91 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -98,9 +98,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 25 · IMPROVE 34 · CHANGE 26 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 26 · IMPROVE 35 · CHANGE 27 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>25</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>26</b><small>CHANGE</small></span><span><b>29</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>26</b><small>BUILD</small></span><span><b>35</b><small>IMPROVE</small></span><span><b>27</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -268,7 +268,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
         <p><a href="features/mobile-hud-settings/">모바일 사용법 →</a> · <a href="quality/e2e-play-session/#mobile-entry-e2e">입력·화면 검증 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 15</small><b>모바일 크기 조절 · 첫 조작 안내 팝업</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 모바일 버튼과 글자가 커지고, 첫 모바일 선택 때 조작 안내를 확인한 뒤 로비로 이동합니다.</strong></div>
@@ -277,6 +277,17 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
         <div class="sfh-group"><h3>수정 · 1</h3><p>배치 정책·안내 UI·설정 저장을 분리했습니다. 기존 PC 배치와 저장 파일은 유지하며 표시 설정 초기화로 안내를 반복하지 않습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>확인 전 종료·저장 실패는 안내 완료로 기록하지 않습니다. 배율 변경 때 눌린 입력을 해제하며 설정 실제 클릭·5화면×3배율을 회귀 검사합니다.</p></div>
         <p><a href="features/mobile-hud-settings/">크기·첫 안내 사용법 →</a> · <a href="quality/e2e-play-session/#mobile-entry-e2e">모바일 검수 기준 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 16</small><b>모바일 가로 기본 · 회전 요청과 안전한 폴백</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 모바일은 가로 플레이를 기본으로 선택하고, 세로로 열었으면 회전 방법을 안내합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>모바일 활성화 시 가로 방향을 요청합니다. 세로 시작 화면과 첫 팝업에 전체화면·가로 전환 요청 버튼을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>네이티브 기본 방향을 좌·우 가로 센서로 지정하고, 이미 가로인 화면에는 추가 버튼을 숨깁니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>방향 요청은 독립 정책 모듈이 담당합니다. 1회 안내와 크기 저장, PC 창 크기는 보존합니다. 전체화면은 명시적 버튼 클릭으로만 요청합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>잠금 미지원·거절·예외가 로비 진입을 막지 않게 처리했습니다. 팝업 검수를 실제 세로 논리 해상도와 스크롤 클릭으로 보강했습니다.</p></div>
+        <p><a href="features/mobile-hud-settings/">가로 사용법·지원 경계 →</a></p>
       </div>
     </details>
   </div>

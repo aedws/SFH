@@ -9,6 +9,7 @@ var scale_buttons: Array[Button] = []
 var error_label: Label
 var panel: PanelContainer
 var body: VBoxContainer
+var orientation_button: Button
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -38,6 +39,13 @@ func _ready() -> void:
 	scroll.add_child(body)
 	_text("모바일 조작 안내", 26, Color("02e5e1"))
 	_text("이 기기에서 처음 한 번만 안내합니다.", 18)
+	_text("가로 플레이가 기본입니다. 기기를 가로로 돌려 주세요. 자동 회전이 막혀 있으면 기기의 회전 잠금을 해제하세요.", 20, Color("02e5e1"))
+	orientation_button = Button.new()
+	orientation_button.text = "전체화면 · 가로 전환 요청"
+	orientation_button.custom_minimum_size.y = 48
+	orientation_button.add_theme_font_size_override("font_size", 18)
+	orientation_button.pressed.connect(func(): preload("res://game/features/mobile_controls/mobile_orientation_policy.gd").request_landscape(true))
+	body.add_child(orientation_button)
 	_text("왼쪽 아래 · 이동\n조이스틱을 끌어서 이동합니다. 손을 떼면 멈춥니다.", 20)
 	_text("오른쪽 아래 · 공격과 스킬\n공격을 누른 채 이동할 수 있습니다. 스킬·대시의 대기 시간과 EN(에너지)을 확인하세요.", 20)
 	_text("상단 · 가방과 설정\n로비에서 장비를 준비한 뒤 동쪽 게이트에 접근하고 ‘사용’을 눌러 작전을 시작합니다.", 20)
@@ -87,5 +95,6 @@ func show_error(message: String) -> void:
 
 func _layout() -> void:
 	if panel == null: return
+	orientation_button.visible = size.y > size.x
 	panel.size = Vector2(minf(620, size.x - 32), minf(700, size.y - 32))
 	panel.position = (size - panel.size) * 0.5

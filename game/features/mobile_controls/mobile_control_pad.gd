@@ -41,6 +41,8 @@ var original_scale_size := Vector2i.ZERO
 var managed_mobile_scale := false
 var layout_policy := preload("res://game/features/mobile_controls/mobile_pad_layout.gd").new()
 var effective_ui_scale := 1.0
+var landscape_requested := false
+const OrientationPolicy := preload("res://game/features/mobile_controls/mobile_orientation_policy.gd")
 var gui_bridge := preload("res://game/features/mobile_controls/touch_gui_bridge.gd").new()
 
 
@@ -115,6 +117,8 @@ func get_snapshot() -> Dictionary:
 		&"multi_touch_ready": true,
 		&"context_enabled": context_enabled,
 		&"effective_ui_scale": effective_ui_scale,
+		&"preferred_orientation": &"landscape",
+		&"portrait_fallback": OrientationPolicy.is_portrait(size),
 		&"joystick_direction": joystick.direction,
 		&"touch_count": touch_actions.size() + int(joystick.finger >= 0),
 	}
@@ -228,6 +232,9 @@ func _refresh_status() -> void:
 		button.text = "%s\n%s" % [String(state.get(&"display_name", str(index + 1))).left(4), label]
 		button.tooltip_text = "스킬 %d · %s · EN %d · 충전 %d/%d" % [index + 1, state.get(&"display_name", ""), state.get(&"energy_cost", 0), state.get(&"current_charges", 0), state.get(&"maximum_charges", 0)]
 		energy_label.text = "EN %d / %d" % [state.get(&"energy_current", 0), state.get(&"energy_maximum", 0)]
+	if OrientationPolicy.is_portrait(size):
+		energy_label.text = "가로 권장 · " + energy_label.text
+	energy_label.tooltip_text = OrientationPolicy.guidance(size)
 	var dash := action_buttons[&"dash"] as Button
 	dash.text = "대시"
 	if is_instance_valid(movement_provider):
@@ -240,6 +247,12 @@ func _resize_viewport() -> void:
 	if not adapt_viewport or settings_provider == null:
 		return
 	var mobile := bool(settings_provider.call(&"should_show_mobile_controls", _touchscreen_available()))
+	if mobile != landscape_requested:
+		landscape_requested = mobile
+		if mobile:
+			OrientationPolicy.request_landscape()
+		else:
+			OrientationPolicy.release_lock()
 	# 기존 PC/테스트 호스트의 해상도 정책에는 관여하지 않습니다.
 	if not mobile and not managed_mobile_scale:
 		return

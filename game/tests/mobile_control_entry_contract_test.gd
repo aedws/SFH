@@ -13,10 +13,12 @@ func _init() -> void:
 func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(isolation.root_path)
 	selection_path = isolation.root_path.path_join("mode.json")
-	await _settings_and_tutorial_contract()
 	root.content_scale_size = Vector2i.ZERO
 	root.size = Vector2i(1280, 720)
+	await _settings_and_tutorial_contract()
+	root.size = Vector2i(1280, 720)
 	_check(ProjectSettings.get_setting("application/run/main_scene") == "res://game/scenes/application.tscn", "shipped optional entry assembly")
+	_check(ProjectSettings.get_setting("display/window/handheld/orientation") == DisplayServer.SCREEN_SENSOR_LANDSCAPE, "mobile native default is sensor landscape")
 	for mode in [&"off", &"on"]:
 		var entry: Control = load("res://game/features/mobile_controls/control_mode_entry.tscn").instantiate()
 		entry.launch_game = false
@@ -108,8 +110,12 @@ func _settings_and_tutorial_contract() -> void:
 			root.size = dimensions
 			await _frames(5)
 			_check(root.get_visible_rect().grow(1).encloses(entry.tutorial.panel.get_global_rect()), "popup bounds %s" % dimensions)
+			_check(entry.orientation_button.visible == (dimensions.y > dimensions.x), "rotation request only shown in portrait")
+			_check(entry.tutorial.orientation_button.visible == (dimensions.y > dimensions.x), "tutorial requests landscape without repeating the popup")
 			_check(root.get_visible_rect().grow(1).encloses(entry.tutorial.confirm_button.get_global_rect()), "popup confirmation always reachable")
 		if attempt == 1:
+			(entry.tutorial.body.get_parent() as ScrollContainer).ensure_control_visible(entry.tutorial.scale_buttons[2])
+			await _frames(3)
 			await _click(entry.tutorial.scale_buttons[2])
 			_check(entry.settings.mobile_ui_scale == 1.5, "popup changes size through public settings")
 			entry.settings.storage_path = isolation.root_path.path_join("missing-directory/fail.json")
@@ -131,6 +137,7 @@ func _mobile_play() -> void:
 			await _frames(8)
 			var bounds := root.get_visible_rect().grow(1)
 			var state: Dictionary = pad.get_snapshot()
+			_check(state.preferred_orientation == &"landscape" and state.portrait_fallback == (dimensions.y > dimensions.x), "landscape preferred with safe unsupported-browser fallback")
 			_check(bounds.encloses(state.movement_rect) and bounds.encloses(state.combat_rect) and bounds.encloses(state.menu_rect), "pad bounds %s scale %s: %s" % [dimensions, scale_value, state])
 			_check(not state.movement_rect.intersects(state.combat_rect), "two hand areas disjoint %s scale %s" % [dimensions, scale_value])
 			_check(state.combat_rect.size.x > previous_width, "scale selection visibly enlarges controls")

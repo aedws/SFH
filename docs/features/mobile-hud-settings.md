@@ -17,6 +17,14 @@ tags:
 
 스킬을 다른 키/Action으로 재배치해도 화면의 스킬 버튼은 현재 스킬 배치를 따라갑니다. 손을 뗄 때에는 누를 당시의 Action을 해제하여 입력이 남지 않도록 합니다.
 
+## 모바일은 가로 기본
+
+모바일 선택과 터치 모드 활성화 시 **가로 방향 잠금**을 요청합니다. 네이티브 모바일 프로젝트 기본값은 좌·우 가로 센서 방향입니다. PC 모드와 Windows 창 크기는 바꾸지 않습니다.
+
+세로로 열었으면 시작 화면과 첫 안내에서 **기기를 가로로 돌려 주세요**를 표시하고 **전체화면·가로 전환 요청** 버튼을 제공합니다. 전체화면은 이 버튼을 직접 눌렀을 때만 요청합니다. 이미 가로이면 버튼을 숨깁니다. 안내 확인 이력은 그대로 유지되므로 회전했다고 1회성 팝업이 다시 나타나지 않습니다.
+
+방향 잠금 지원/권한은 브라우저마다 다르고 보통 전체화면 조건이 필요합니다. 지원하지 않거나 거절한 경우에는 기기의 자동 회전 잠금을 해제하고 직접 돌립니다. 실패를 무한 대기하거나 시작 실패로 처리하지 않으며, 기존 세로 배치는 호환성 폴백으로 유지합니다. 세로 플레이 중에는 에너지 영역에 ‘가로 권장’을 표시합니다. [브라우저 방향 잠금 규격](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/lock), [Godot 방향 설정](https://docs.godotengine.org/en/stable/classes/class_displayserver.html#class-displayserver-method-screen-set-orientation).
+
 ## 플레이어가 바꿀 수 있는 항목
 
 ### 첫 모바일 안내와 크기
@@ -55,6 +63,7 @@ PC에서는 저장한 HUD 위치를 사용합니다. 모바일에서는 양손 �
 | `VirtualJoystick` | 손가락 소유권·데드존·방향 벡터 | Action·플레이어 속도 |
 | `TouchGuiBridge` | 패드 밖의 지도·소켓 등 GUI 터치/드래그 전달 | 마우스 공격 Action 상태 |
 | `MobileViewportPolicy` | 가로/세로 논리 해상도 | 게임 세계·장비·경제 |
+| `MobileOrientationPolicy` | 가로 요청·명시적 전체화면·미지원/거절 처리 | 로비 진입·저장·전투·기기 회전 강제 보장 |
 | `MobilePadLayout` (배치 정책) | 배율·버튼/조이스틱 크기·양손 안전 영역 | 설정 저장·입력·전투 |
 | `MobileTutorialPopup` (안내 UI) | 스크롤 안내·크기 요청·확인 Signal | 저장 경로·전투·Scene 전환 |
 | `ControlModeEntry` | PC/모바일 선택·설정 저장·로비로 전달 | 작전 진입 조건·투입비 |
