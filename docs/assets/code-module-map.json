@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "189e9454123fa036675d9b4fa0ed1c4ca47edc92faa9009d2c783361f85bd661",
+  "source_sha256": "bbfa45137a93aa8f28814e8018a980ec3dca352bd1749a7b961e4553e5059886",
   "layers": [
     {
       "id": "contract",
@@ -25,8 +25,8 @@
   ],
   "summary": {
     "modules": 59,
-    "scripts": 238,
-    "named_classes": 197,
+    "scripts": 240,
+    "named_classes": 199,
     "relationships": 181,
     "project_inheritance": 7,
     "enabled_toggles": 68
@@ -636,10 +636,12 @@
       "path": "game/features/mobile_controls",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 5,
-      "class_count": 1,
+      "file_count": 7,
+      "class_count": 3,
       "classes": [
-        "MobileControlPad"
+        "MobileControlPad",
+        "MobilePadLayout",
+        "MobileTutorialPopup"
       ],
       "incoming_count": 2,
       "outgoing_count": 3
@@ -2289,6 +2291,24 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:MobilePadLayout",
+      "name": "MobilePadLayout",
+      "module": "mobile_controls",
+      "path": "game/features/mobile_controls/mobile_pad_layout.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:MobileTutorialPopup",
+      "name": "MobileTutorialPopup",
+      "module": "mobile_controls",
+      "path": "game/features/mobile_controls/mobile_tutorial_popup.gd",
+      "extends": "Control",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:DashCooldownHud",
       "name": "DashCooldownHud",
       "module": "movement_hud",
@@ -3836,7 +3856,7 @@
       "from": "verification",
       "to": "presentation_settings",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",

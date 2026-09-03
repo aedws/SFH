@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 84 TOPICS</span><span>91 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 85 TOPICS</span><span>91 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -98,9 +98,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 24 · IMPROVE 32 · CHANGE 25 · FIX 28</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 25 · IMPROVE 34 · CHANGE 26 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>24</b><small>BUILD</small></span><span><b>32</b><small>IMPROVE</small></span><span><b>25</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>25</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>26</b><small>CHANGE</small></span><span><b>29</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -257,7 +257,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
         <p><a href="getting-started/planner-item-balance-tutorial/">기획자 튜토리얼 →</a> · <a href="features/ranking-provider/#p6-closeout">P6 마감 경계 →</a> · <a href="quality/e2e-play-session/#p6-closeout-e2e">검증 기준 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 14</small><b>PC·모바일 시작 선택 · 양손 터치 전용 화면</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 실행할 때 조작 방식을 선택합니다. 모바일은 좌하단 조이스틱·우하단 공격과 스킬로 플레이합니다.</strong></div>
@@ -266,6 +266,17 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
         <div class="sfh-group"><h3>수정 · 1</h3><p>선택은 표시 설정에 저장하며 K/화면 설정에서 변경합니다. 입력·뷰포트·시작 조립을 분리하고 전투와 장비 원본은 유지합니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>터치 버튼이 이벤트 기반 가방·지도·설정을 열지 못하던 경로를 수정했습니다. 창 전환·백그라운드·기기 모드 변경 때 눌린 입력을 해제합니다.</p></div>
         <p><a href="features/mobile-hud-settings/">모바일 사용법 →</a> · <a href="quality/e2e-play-session/#mobile-entry-e2e">입력·화면 검증 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 15</small><b>모바일 크기 조절 · 첫 조작 안내 팝업</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 모바일 버튼과 글자가 커지고, 첫 모바일 선택 때 조작 안내를 확인한 뒤 로비로 이동합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>1회성 모바일 팝업에 이동·공격·스킬·사용 안내와 크기 선택을 제공합니다. 확인 완료는 이 브라우저·기기에 저장됩니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>기본 125%, 설정에서 100/125/150%를 선택합니다. 조작 글자·에너지·상단 메뉴 가독성을 높이고 좁은 화면은 양손 영역이 겹치지 않는 최대 크기로 맞춥니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>배치 정책·안내 UI·설정 저장을 분리했습니다. 기존 PC 배치와 저장 파일은 유지하며 표시 설정 초기화로 안내를 반복하지 않습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>확인 전 종료·저장 실패는 안내 완료로 기록하지 않습니다. 배율 변경 때 눌린 입력을 해제하며 설정 실제 클릭·5화면×3배율을 회귀 검사합니다.</p></div>
+        <p><a href="features/mobile-hud-settings/">크기·첫 안내 사용법 →</a> · <a href="quality/e2e-play-session/#mobile-entry-e2e">모바일 검수 기준 →</a></p>
       </div>
     </details>
   </div>

@@ -10,6 +10,7 @@ var pc_button: Button
 var mobile_button: Button
 var status: Label
 var choosing := false
+var tutorial: Control
 const ViewportPolicy := preload("res://game/features/mobile_controls/mobile_viewport_policy.gd")
 
 func _ready() -> void:
@@ -83,6 +84,29 @@ func select_mode(mode: StringName) -> void:
 		status.text = "조작 설정을 저장하지 못했습니다. 저장 권한을 확인하고 다시 선택해 주세요."
 		return
 	choosing = true
+	if mode == &"on" and not bool(settings.call(&"get_snapshot").get(&"mobile_tutorial_seen", false)):
+		card.hide()
+		tutorial = preload("res://game/features/mobile_controls/mobile_tutorial_popup.gd").new()
+		add_child(tutorial)
+		tutorial.set_scale_value(settings.call(&"get_snapshot").mobile_ui_scale)
+		tutorial.acknowledged.connect(_acknowledge_tutorial)
+		tutorial.scale_requested.connect(_set_tutorial_scale)
+		return
+	_finish_selection(mode)
+
+func _set_tutorial_scale(value: float) -> void:
+	if not settings.call(&"set_mobile_ui_scale", value):
+		tutorial.show_error("크기 설정을 저장하지 못했습니다. 다시 선택해 주세요.")
+	tutorial.set_scale_value(settings.call(&"get_snapshot").mobile_ui_scale)
+
+func _acknowledge_tutorial() -> void:
+	if not settings.call(&"complete_mobile_tutorial"):
+		tutorial.show_error("안내 완료를 저장하지 못했습니다. 저장 권한을 확인하고 다시 눌러 주세요.")
+		return
+	tutorial.hide()
+	_finish_selection(&"on")
+
+func _finish_selection(mode: StringName) -> void:
 	mode_selected.emit(mode)
 	if launch_game:
 		get_window().size_changed.disconnect(_queue_resize)

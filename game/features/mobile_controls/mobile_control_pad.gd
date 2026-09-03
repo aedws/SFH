@@ -39,6 +39,8 @@ var original_mouse_emulation := true
 var focus_available := true
 var original_scale_size := Vector2i.ZERO
 var managed_mobile_scale := false
+var layout_policy := preload("res://game/features/mobile_controls/mobile_pad_layout.gd").new()
+var effective_ui_scale := 1.0
 var gui_bridge := preload("res://game/features/mobile_controls/touch_gui_bridge.gd").new()
 
 
@@ -112,6 +114,7 @@ func get_snapshot() -> Dictionary:
 		&"semantic_actions": true,
 		&"multi_touch_ready": true,
 		&"context_enabled": context_enabled,
+		&"effective_ui_scale": effective_ui_scale,
 		&"joystick_direction": joystick.direction,
 		&"touch_count": touch_actions.size() + int(joystick.finger >= 0),
 	}
@@ -309,27 +312,38 @@ func _build_ui() -> void:
 func _apply_layout() -> void:
 	if movement_group == null:
 		return
-	var button_size := clampf((size.x - 56.0) / 7.0, 48.0, 64.0)
-	var gap := 5.0
-	var stick_size := button_size * 2.6
-	movement_group.size = Vector2.ONE * stick_size
-	movement_group.position = Vector2(18, size.y - stick_size - 24)
+	release_all()
+	var settings: Dictionary = settings_provider.call(&"get_snapshot") if is_instance_valid(settings_provider) else {}
+	var layout: Dictionary = layout_policy.calculate(size, float(settings.get(&"mobile_ui_scale", 1.25)))
+	var button_size: float = layout.button_size
+	var gap: float = layout.button_gap
+	var energy_height: float = layout.energy_height
+	effective_ui_scale = layout.effective_scale
+	movement_group.size = layout.movement_rect.size
+	movement_group.position = layout.movement_rect.position
 	joystick.size = movement_group.size
 	joystick.queue_redraw()
-	combat_group.size = Vector2(button_size * 3 + gap * 2, button_size * 2 + gap + 24)
-	combat_group.position = size - combat_group.size - Vector2(18, 24)
+	combat_group.size = layout.combat_rect.size
+	combat_group.position = layout.combat_rect.position
 	energy_label.position = Vector2.ZERO
+	energy_label.add_theme_font_size_override("font_size", roundi(16 * effective_ui_scale))
+	for child: Control in combat_group.get_children():
+		if child is Button:
+			child.add_theme_font_size_override("font_size", roundi(14 * effective_ui_scale))
+			child.modulate.a = 1.0
 	for index in range(3):
-		_place_combat_button(StringName("combat_skill_%d" % (index + 1)), index * (button_size + gap), 24, button_size)
-	_place_combat_button(&"dash", 0, button_size + gap + 24, button_size)
-	_place_combat_button(&"primary_attack", button_size + gap, button_size + gap + 24, button_size)
-	_place_combat_button(&"interact", (button_size + gap) * 2, button_size + gap + 24, button_size)
+		_place_combat_button(StringName("combat_skill_%d" % (index + 1)), index * (button_size + gap), energy_height, button_size)
+	_place_combat_button(&"dash", 0, button_size + gap + energy_height, button_size)
+	_place_combat_button(&"primary_attack", button_size + gap, button_size + gap + energy_height, button_size)
+	_place_combat_button(&"interact", (button_size + gap) * 2, button_size + gap + energy_height, button_size)
 	action_buttons[&"primary_attack"].text = "공격"
 	action_buttons[&"interact"].text = "사용"
 	var menu_width := minf(418.0, size.x - 36.0)
 	menu_group.position = Vector2((size.x - menu_width) * 0.5, 8)
 	menu_group.size = Vector2(menu_width, 44)
 	for child in menu_group.get_children():
+		(child as Button).add_theme_font_size_override("font_size", 18)
+		(child as Button).modulate.a = 1.0
 		(child as Button).custom_minimum_size = Vector2(44, 44)
 		(child as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	action_buttons[&"toggle_key_mapping"].text = "설정"
@@ -384,6 +398,7 @@ func _send_action(action_id: StringName, pressed: bool) -> void:
 func _on_settings_changed(_snapshot: Dictionary) -> void:
 	_refresh_visibility()
 	_resize_viewport()
+	_apply_layout()
 
 
 func _refresh_visibility() -> void:
