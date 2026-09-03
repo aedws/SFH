@@ -1463,8 +1463,9 @@ func start_run(map_size: String) -> bool:
 
 	selected_map_size = map_size
 	run_sequence += 1
-	# Persistent settlement/history identities must remain unique across processes.
-	current_run_id = StringName(Crypto.new().generate_random_bytes(16).hex_encode())
+	# Match the cross-platform anonymous identity strategy; ticks alone reset on restart.
+	var run_identity_seed := "%d|%d|%d|%d" % [Time.get_unix_time_from_system(), Time.get_ticks_usec(), randi(), run_sequence]
+	current_run_id = StringName(run_identity_seed.sha256_text().left(32))
 	run_combat_metrics.reset()
 	active_ranking_context = conditional_ranking_system.call(&"get_season_briefing", active_contract).get(&"context", {}) if conditional_ranking_system != null and conditional_ranking_system.has_method(&"get_season_briefing") else {}
 	if p5_hub_progression_service != null and not bool(
