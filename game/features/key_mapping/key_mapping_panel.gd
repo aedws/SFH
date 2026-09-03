@@ -90,6 +90,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func open_panel() -> void:
 	for panel in get_tree().get_nodes_in_group(&"game_modal_panel"):
+		if panel != self and panel.visible and panel.has_method(&"request_leave"):
+			panel.call(&"request_leave", func():
+				panel.call(&"close_panel")
+				open_panel()
+			)
+			return
 		if panel != self and panel.has_method(&"close_panel"):
 			panel.call(&"close_panel")
 	paused_before_open = get_tree().paused

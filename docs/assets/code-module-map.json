@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "77ae4b7a17dd709e14e7b58da8ff25d2aa18d11f74c16a6f0d5445b8db9c2ee9",
+  "source_sha256": "8bb12284a386d66572e0ebd2fbcdda9dca3c4f9531c8fbe15bf5d80c40c27908",
   "layers": [
     {
       "id": "contract",
@@ -25,8 +25,8 @@
   ],
   "summary": {
     "modules": 55,
-    "scripts": 193,
-    "named_classes": 171,
+    "scripts": 196,
+    "named_classes": 173,
     "relationships": 163,
     "project_inheritance": 6,
     "enabled_toggles": 64
@@ -415,14 +415,16 @@
       "path": "game/features/inventory",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 5,
-      "class_count": 5,
+      "file_count": 7,
+      "class_count": 7,
       "classes": [
         "GridInventory",
         "GridInventoryWindow",
         "InventoryCatalog",
+        "InventoryEditSession",
         "InventoryGridView",
-        "InventoryItemDefinition"
+        "InventoryItemDefinition",
+        "InventorySlotButton"
       ],
       "incoming_count": 4,
       "outgoing_count": 0
@@ -965,7 +967,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 18,
+      "file_count": 19,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1748,6 +1750,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:InventoryEditSession",
+      "name": "InventoryEditSession",
+      "module": "inventory",
+      "path": "game/features/inventory/inventory_edit_session.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:InventoryGridView",
       "name": "InventoryGridView",
       "module": "inventory",
@@ -1762,6 +1773,15 @@
       "module": "inventory",
       "path": "game/features/inventory/inventory_item_definition.gd",
       "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:InventorySlotButton",
+      "name": "InventorySlotButton",
+      "module": "inventory",
+      "path": "game/features/inventory/inventory_slot_button.gd",
+      "extends": "Button",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -3304,7 +3324,7 @@
       "from": "verification",
       "to": "inventory",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",

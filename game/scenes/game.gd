@@ -2520,9 +2520,28 @@ func _install_inventory() -> bool:
 	if inventory_window == null or not _supports_panel(inventory_window):
 		_report_configuration_error("가방 UI 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
-	inventory_window.call(&"configure", inventory_system)
+	inventory_window.call(&"configure", inventory_system, equipment_system)
+	inventory_window.connect(&"settings_saved", _on_inventory_settings_saved)
+	inventory_window.connect(&"external_panel_requested", _open_inventory_destination)
 	_connect_modal_panel(inventory_window)
 	return true
+
+
+func _open_inventory_destination(action: StringName) -> void:
+	if action == &"toggle_equipment" and is_instance_valid(equipment_workbench):
+		equipment_workbench.call(&"show_weapon_tab")
+	elif action == &"toggle_modification" and is_instance_valid(equipment_workbench):
+		equipment_workbench.call(&"show_modification_tab")
+	elif action == &"toggle_key_mapping" and is_instance_valid(key_mapping_panel):
+		key_mapping_panel.call(&"open_panel")
+	elif action == &"toggle_map" and is_instance_valid(minimap):
+		minimap.call(&"set_expanded", true)
+
+
+func _on_inventory_settings_saved() -> void:
+	# Combat edits remain run-owned; death/settlement retain their existing authority.
+	if not run_started:
+		_capture_prepared_loadout()
 
 
 func _capture_prepared_loadout(include_equipment: bool = true) -> void:
