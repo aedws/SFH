@@ -788,7 +788,7 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 				var cancel_event := InputEventAction.new()
 				cancel_event.action = &"ui_cancel"
 				cancel_event.pressed = true
-				hub_inventory.call(&"_unhandled_input", cancel_event)
+				hub_inventory.call(&"_input", cancel_event)
 				if hub_inventory.visible or paused:
 					failure_message = "거점 I 가방이 ESC로 닫히지 않았습니다."
 				elif not hub_hud.visible:
@@ -916,15 +916,13 @@ func _hub_loadout_ui_density_failure(inventory_window: Node, workbench: Node) ->
 	var grid_size: Vector2 = inventory_density.get(&"grid_minimum_size", Vector2.ZERO)
 	var inventory_window_size: Vector2 = inventory_density.get(&"window_size", Vector2.ZERO)
 	if (
-		float(inventory_density.get(&"cell_pixel_size", 0.0)) < 38.0
-		or float(inventory_density.get(&"cell_pixel_size", 0.0)) > 44.0
-		or grid_size.x < 480.0
-		or grid_size.x > 520.0
-		or grid_size.y < 320.0
-		or grid_size.y > 350.0
-		or float(inventory_density.get(&"detail_minimum_width", 0.0)) < 280.0
-		or float(inventory_density.get(&"detail_minimum_width", 0.0)) > 310.0
-		or inventory_window_size.x > 1224.0
+		float(inventory_density.get(&"cell_pixel_size", 0.0)) < 20.0
+		or float(inventory_density.get(&"cell_pixel_size", 0.0)) > 52.0
+		or grid_size.x < 240.0
+		or grid_size.x > 624.0
+		or not inventory_density.get(&"scrollable_bag", false)
+		or int(inventory_density.get(&"slot_count", 0)) < 4
+		or inventory_window_size.x > 1240.0
 		or inventory_window_size.y > 680.0
 	):
 		return "I 가방 밀도 기준 실패: grid=%s detail=%.0f cell=%.0f window=%s" % [

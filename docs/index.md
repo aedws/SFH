@@ -44,10 +44,21 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 4 · IMPROVE 8 · CHANGE 6 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 7 · IMPROVE 11 · CHANGE 9 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>8</b><small>IMPROVE</small></span><span><b>6</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>9</b><small>CHANGE</small></span><span><b>8</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>통합 인벤토리 · 이동·장착·저장 확인</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 보기만 하던 I 가방에서 아이템 이동, 장비 교체, 무기·방어구 모듈 편집까지 처리하고 탭을 나갈 때 저장 여부를 선택합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>원본과 분리된 편집본, 무기/방어구 모듈 탭, 저장·취소·계속 편집 확인을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>장비→스탯→스크롤 가방→상세 정보 배치, 칸 크기 자동 조정, 작은 화면 세로 구성을 적용했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>이동·장착·해제 입력, 캐릭터 수치 미리보기, 4해상도×3탭과 저장 흐름 E2E를 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>미저장 이탈, 가방 공간/슬롯 불일치 시 손실, 편집 중 원본 변경의 무단 덮어쓰기를 차단했습니다.</p></div>
+        <p><a href="features/grid-inventory/">편집·저장 범위 →</a> · <a href="quality/e2e-play-session/">인벤토리 E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>첫 작전 튜토리얼 · 화면 가림과 조작 안내 수정</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 화면을 가로지르던 검은 안내판을 좌상단 338px 카드로 축소하고, 튜토리얼이 열린 상태까지 전투 시야 검사에 포함했습니다.</strong></div>

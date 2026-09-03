@@ -84,10 +84,27 @@ func _rebuild_runtime_stats() -> void:
 		if previous_max_health > 0.0
 		else 1.0
 	)
-	runtime_stats = base_stats.duplicate(true)
+	runtime_stats = _calculate_runtime_stats(stat_modifier_sources)
+
+	max_health = maxf(1.0, float(runtime_stats.get(&"max_health", max_health)))
+	defense = maxf(0.0, float(runtime_stats.get(&"defense", defense)))
+	movement.speed = maxf(0.0, float(runtime_stats.get(&"movement_speed", movement.speed)))
+	current_health = clampf(max_health * previous_health_ratio, 0.0, max_health)
+	health_changed.emit(current_health, max_health)
+	runtime_stats_changed.emit(get_runtime_stats())
+
+
+func preview_modifier_source(source_id: StringName, modifiers: Dictionary) -> Dictionary:
+	var sources := stat_modifier_sources.duplicate(true)
+	sources[source_id] = modifiers.duplicate(true)
+	return _calculate_runtime_stats(sources)
+
+
+func _calculate_runtime_stats(sources: Dictionary) -> Dictionary:
+	var result := base_stats.duplicate(true)
 	var aggregated: Dictionary = {}
-	for source_id in stat_modifier_sources:
-		var source: Dictionary = stat_modifier_sources[source_id]
+	for source_id in sources:
+		var source: Dictionary = sources[source_id]
 		for stat_id in source:
 			var modifier_data: Dictionary = source[stat_id]
 			var entry: Dictionary = aggregated.get(
@@ -101,18 +118,13 @@ func _rebuild_runtime_stats() -> void:
 			)
 			aggregated[stat_id] = entry
 	for stat_id in aggregated:
-		var base_value := float(runtime_stats.get(stat_id, 0.0))
+		var base_value := float(result.get(stat_id, 0.0))
 		var entry: Dictionary = aggregated[stat_id]
-		runtime_stats[stat_id] = (
+		result[stat_id] = (
 			(base_value + float(entry[&"add"])) * float(entry[&"multiply"])
 		)
 
-	max_health = maxf(1.0, float(runtime_stats.get(&"max_health", max_health)))
-	defense = maxf(0.0, float(runtime_stats.get(&"defense", defense)))
-	movement.speed = maxf(0.0, float(runtime_stats.get(&"movement_speed", movement.speed)))
-	current_health = clampf(max_health * previous_health_ratio, 0.0, max_health)
-	health_changed.emit(current_health, max_health)
-	runtime_stats_changed.emit(get_runtime_stats())
+	return result
 
 
 func get_runtime_stats() -> Dictionary:

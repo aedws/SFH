@@ -124,6 +124,35 @@ func get_stat_modifiers() -> Dictionary:
 	return aggregated_stat_modifiers.duplicate(true)
 
 
+## A disconnected editor copy: previews must never mutate the live player.
+func create_edit_copy(preview_stats_target: Node) -> Node:
+	var draft = get_script().new()
+	draft.stats_target = preview_stats_target
+	draft.weapons_enabled = weapons_enabled
+	draft.skills_enabled = skills_enabled
+	draft.armor_enabled = armor_enabled
+	draft.upgrade_balance_provider = upgrade_balance_provider
+	if not draft.restore_runtime_state(export_runtime_state()):
+		draft.free()
+		return null
+	return draft
+
+
+func get_slot_descriptors() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if loadout == null:
+		return result
+	for rule in loadout.slot_rules:
+		result.append({&"slot_id": rule.slot_id, &"kind": rule.item_kind})
+	return result
+
+
+func get_player_stat_preview(modifiers: Dictionary) -> Dictionary:
+	if is_instance_valid(stats_target) and stats_target.has_method(&"preview_modifier_source"):
+		return stats_target.call(&"preview_modifier_source", &"equipment", modifiers)
+	return {}
+
+
 func get_equipment_state(slot_id: StringName) -> EquipmentItemState:
 	return equipment_states.get(slot_id) as EquipmentItemState
 

@@ -72,6 +72,14 @@ func _run() -> void:
 
 	if not await _verify_hub_input_session():
 		return
+	var inventory_contract := preload("res://game/tests/support/inventory_editor_contract.gd").new()
+	var inventory_error: String = await inventory_contract.verify(self, game)
+	if not inventory_error.is_empty():
+		_fail(inventory_error)
+		return
+	if not await _verify_inventory_edit_inputs():
+		return
+	print("E2E_INVENTORY_EDITOR_OK draft_atomic move_overlap_bounds equip_tags modules_unequip full_bag conflict_guard save_discard_cancel viewports_4 tabs_3")
 	if not await _verify_operation_session():
 		return
 	if not await _verify_operation_combination_matrix(game_scene):
@@ -92,6 +100,132 @@ func _run() -> void:
 	])
 	_cleanup_test_profile()
 	quit(0)
+
+
+func _verify_inventory_edit_inputs() -> bool:
+	var was_paused := paused
+	await _tap_key(KEY_I)
+	var window = game.inventory_window
+	var original: Dictionary = game.inventory_system.export_runtime_state()
+	var entry: Dictionary = window.session.inventory.get_snapshot()[&"items"][0]
+	var id: StringName = entry[&"instance_id"]
+	var destination := Vector2i(0, 6)
+	var grid: Control = window.grid_view
+	for _frame in 8:
+		await process_frame
+	if "--capture-inventory" in OS.get_cmdline_user_args() and DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().save_png("res://.godot/inventory-editor.png")
+	# Real viewport mouse events: select the card then choose an empty cell.
+	await _click_inventory_position(grid.global_position + Vector2(entry[&"position"]) * grid.cell_pixel_size + Vector2(8, 8))
+	await _click_inventory_position(grid.global_position + Vector2(destination) * grid.cell_pixel_size + Vector2(8, 8))
+	if not window.session.dirty or window.session.inventory.placements[id] != destination:
+		return _fail("실제 가방 선택→빈 칸 클릭 이동 실패: %s selected %s grid %s bag %s error %s" % [window.get_density_snapshot(), grid.selected_instance_id, grid.get_global_rect(), window.bag_scroll.get_global_rect(), window.session.error_message])
+	await _tap_key(KEY_ESCAPE)
+	if not window.visible or not window.confirmation_visible or not paused:
+		return _fail("ESC 미저장 이탈 방지 실패")
+	await _tap_key(KEY_ESCAPE)
+	if not window.visible or window.confirmation_visible or not window.session.dirty:
+		return _fail("확인창 ESC는 계속 편집이어야 함")
+	window.request_tab(1)
+	if window.current_tab != 0 or not window.confirmation_visible:
+		return _fail("모듈 탭 이동이 저장 확인을 우회함")
+	for _press in 4:
+		await _tap_key(KEY_TAB)
+		if root.gui_get_focus_owner() not in window.confirm_buttons:
+			return _fail("저장 확인 중 포커스가 배경으로 이탈함")
+	await _click_tutorial_button(window.confirm_buttons[0])
+	if window.current_tab != 1 or game.inventory_system.placements[id] != destination:
+		return _fail("저장 후 무기 모듈 탭 전환 실패")
+	window.session.move_item(id, entry[&"position"])
+	await _tap_key(KEY_U)
+	if not window.confirmation_visible or game.equipment_workbench.visible:
+		return _fail("U 전환이 미저장 확인을 우회함")
+	await _click_tutorial_button(window.confirm_buttons[1])
+	if window.visible or not game.equipment_workbench.visible or game.inventory_system.placements[id] != destination:
+		return _fail("변경 취소 후 U 이동 / 원본 보존 실패")
+	await _tap_key(KEY_ESCAPE)
+	game.inventory_system.restore_runtime_state(original)
+	await _tap_key(KEY_I)
+	window.session.move_item(id, destination)
+	game.key_mapping_panel.open_panel()
+	if game.key_mapping_panel.visible or not window.confirmation_visible:
+		return _fail("프로그램 진입이 저장 가드를 우회함")
+	window.resolve_exit(&"cancel")
+	window.close_panel()
+	window.resolve_exit(&"discard")
+	await _tap_key(KEY_I)
+	for _frame in 5:
+		await process_frame
+	grid = window.grid_view
+	var drag_start: Vector2 = grid.global_position + Vector2(entry[&"position"]) * grid.cell_pixel_size + Vector2(8, 8)
+	var drag_end: Vector2 = grid.global_position + Vector2(destination) * grid.cell_pixel_size + Vector2(8, 8)
+	await _drag_inventory_item(drag_start, drag_end)
+	if not window.session.dirty or window.session.inventory.placements[id] != destination:
+		return _fail("드래그 시작·드롭 계약 실패: selected %s position %s target %s error %s" % [grid.selected_instance_id, window.session.inventory.placements[id], destination, window.session.error_message])
+	window.close_panel()
+	window.resolve_exit(&"discard")
+	await _tap_key(KEY_I)
+	if "--capture-inventory" in OS.get_cmdline_user_args() and DisplayServer.get_name() != "headless":
+		for _frame in 8:
+			await process_frame
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().save_png("res://.godot/inventory-editor.png")
+	await _tap_key(KEY_ESCAPE)
+	return true if paused == was_paused else _fail("인벤토리 종료 후 기존 일시정지 상태 복원 실패")
+
+
+func _click_inventory_position(position: Vector2) -> void:
+	for pressed in [true, false]:
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
+		event.pressed = pressed
+		event.position = position
+		event.global_position = position
+		root.push_input(event, true)
+		await process_frame
+	await process_frame
+
+
+func _drag_inventory_item(start: Vector2, finish: Vector2) -> void:
+	var hover := InputEventMouseMotion.new()
+	hover.position = start
+	hover.global_position = start
+	root.push_input(hover, true)
+	await process_frame
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.button_mask = MOUSE_BUTTON_MASK_LEFT
+	press.pressed = true
+	press.position = start
+	press.global_position = start
+	root.push_input(press, true)
+	await process_frame
+	for point in [start + Vector2(16, 0), finish]:
+		var motion := InputEventMouseMotion.new()
+		motion.button_mask = MOUSE_BUTTON_MASK_LEFT
+		motion.position = point
+		motion.global_position = point
+		motion.relative = point - start
+		root.push_input(motion, true)
+		await process_frame
+		await process_frame
+	# Offscreen/headless OS cursor is not moved by push_input. Verify native drag
+	# creation, then feed the drop contract local coordinates without moving a user's mouse.
+	var data: Variant = root.gui_get_drag_data()
+	var grid: Control = game.inventory_window.grid_view
+	if data is Dictionary:
+		grid.call(&"_drop_data", finish - grid.global_position, data)
+	root.gui_cancel_drag()
+	press = press.duplicate()
+	press.pressed = false
+	press.button_mask = 0
+	press.position = finish
+	press.global_position = finish
+	root.push_input(press, true)
+	await process_frame
+	await process_frame
 
 
 func _verify_hub_input_session() -> bool:
