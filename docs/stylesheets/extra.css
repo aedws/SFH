@@ -1271,60 +1271,6 @@ body {
   font: 750 0.56rem var(--sfh-mono);
 }
 
-a.sfh-global-play {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  flex: 0 0 auto;
-  margin-left: 0.6rem;
-  min-width: 0;
-  padding: 0.35rem;
-  border: 1px solid color-mix(in srgb, var(--sfh-lime) 68%, var(--sfh-line));
-  border-radius: 0.75rem;
-  background: color-mix(in srgb, var(--sfh-panel-raised) 94%, transparent);
-  color: var(--sfh-text);
-  text-decoration: none;
-  box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.24);
-  backdrop-filter: blur(14px);
-  transition: border-color 0.18s ease, transform 0.18s ease;
-}
-
-a.sfh-global-play:hover {
-  border-color: var(--sfh-lime);
-  color: var(--sfh-text);
-  transform: translateY(-2px);
-}
-
-.sfh-global-play i {
-  display: grid;
-  width: 1.9rem;
-  height: 1.9rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--sfh-lime);
-  color: #11200b;
-  font-size: 0.64rem;
-  font-style: normal;
-}
-
-.sfh-global-play span,
-.sfh-global-play small,
-.sfh-global-play strong {
-  display: none;
-}
-
-.sfh-global-play small {
-  color: var(--sfh-lime);
-  font: 800 0.46rem var(--sfh-mono);
-  letter-spacing: 0.08em;
-}
-
-.sfh-global-play strong {
-  margin-top: 0.05rem;
-  font-size: 0.64rem;
-}
-
 @media screen and (max-width: 76.1875em) {
   .sfh-hero {
     grid-template-columns: 1fr;
@@ -1422,15 +1368,6 @@ a.sfh-global-play:hover {
     gap: 0.25rem;
   }
 
-  a.sfh-global-play {
-    margin-left: 0.25rem;
-    min-width: 0;
-    padding: 0.35rem;
-  }
-
-  .sfh-global-play span {
-    display: none;
-  }
 }
 
 /* Global L1-L4 document graph. Injected at the end of every rendered article. */
@@ -2098,8 +2035,7 @@ body::after {
   letter-spacing: 0.12em;
 }
 
-.sfh-operation-state::before,
-.sfh-global-play i::before {
+.sfh-operation-state::before {
   display: inline-block;
   width: 0.34rem;
   height: 0.34rem;
@@ -2120,14 +2056,12 @@ body::after {
 .sfh-meta span,
 .sfh-intent,
 .sfh-entry-body a,
-.md-typeset .sfh-button,
-a.sfh-global-play {
+.md-typeset .sfh-button {
   border-radius: 0.05rem !important;
   border-color: rgba(var(--sfh-accent-rgb), 0.48) !important;
 }
 
-.md-typeset .sfh-button.is-primary,
-.sfh-global-play i {
+.md-typeset .sfh-button.is-primary {
   background: var(--sfh-cyan) !important;
   color: #001012 !important;
   box-shadow: 0 0 0.9rem rgba(var(--sfh-accent-rgb), 0.28);
@@ -2137,8 +2071,7 @@ a.sfh-global-play {
 .sfh-search-rank:focus-visible,
 .sfh-search-chip:hover,
 .sfh-search-chip:focus-visible,
-.sfh-link-card:hover,
-a.sfh-global-play:hover {
+.sfh-link-card:hover {
   border-color: var(--sfh-cyan) !important;
   background: rgba(var(--sfh-accent-rgb), 0.095) !important;
   box-shadow: inset 3px 0 0 var(--sfh-cyan), 0 0 1.1rem rgba(var(--sfh-accent-rgb), 0.12);
@@ -2157,8 +2090,7 @@ a.sfh-global-play:hover {
 
 @media (prefers-reduced-motion: reduce) {
   body::after,
-  .sfh-operation-state::before,
-  .sfh-global-play i::before {
+  .sfh-operation-state::before {
     animation: none !important;
   }
 
