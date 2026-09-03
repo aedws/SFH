@@ -30,6 +30,8 @@ func _run() -> void:
 	var frozen: Array = ranking.get_snapshot()[&"season"][&"active"][&"reward_catalog"].duplicate(true)
 	var csv := FileAccess.get_file_as_string("res://game/features/conditional_ranking/data/season_reward.csv")
 	_check(ranking.reward_catalog.load_csv_text(csv.replace("회수 전문가", "다음 시즌 이름"), "live fixture"), "live valid")
+	_check(ranking.reward_catalog.load_csv_text(csv.replace("02e5e1", "001234"), "numeric hex") and ranking.reward_catalog.rows[0][&"color"] == "001234", "leading-zero hex color lost")
+	_check(not ranking.reward_catalog.load_csv_text(csv.replace("recovered_value,3,title", "recovered_value,1.5,title"), "fractional rank"), "fractional max rank accepted")
 	_check(ranking.get_snapshot()[&"season"][&"active"][&"reward_catalog"] == frozen, "frozen season changed")
 	_check(not ranking.reward_catalog.load_csv_text(csv.replace("salvager_title,recovered_value,3,title", "salvager_title,recovered_value,0,weapon"), "invalid"), "invalid kind/rank accepted")
 	ranking.free() # Close while offline; next initialization closes and grants once.

@@ -1,7 +1,7 @@
 class_name SeasonRewardCatalog
 extends Node
 signal changed
-const TABLE := preload("res://game/features/p5_hub_progression/p5_catalog_table.gd")
+const TABLE := preload("res://game/core/catalog_csv_table.gd")
 var rows: Array[Dictionary] = []
 var request: HTTPRequest
 var live_url := ""
@@ -26,7 +26,7 @@ func configure(path: String, payload: Resource, url: String) -> bool:
 		else:
 			last_error = "시즌 보상 요청 실패 · 마지막 검증 데이터 유지"
 	)
-	var table: Dictionary = TABLE.load_table(path, [], &"reward_id", payload)
+	var table: Dictionary = TABLE.load_table(path, [], &"reward_id", payload, [&"reward_id", &"color"])
 	return _accept(table, "확정 CSV")
 
 
@@ -35,11 +35,11 @@ func set_source_mode(mode: int) -> void:
 	live_enabled = mode == 1
 	remaining = 0
 	if not live_enabled:
-		_accept(TABLE.load_table(locked_path, [], &"reward_id", locked_payload), "확정 CSV")
+		_accept(TABLE.load_table(locked_path, [], &"reward_id", locked_payload, [&"reward_id", &"color"]), "확정 CSV")
 
 
 func load_csv_text(text: String, label: String) -> bool:
-	return _accept(TABLE.parse_table(text, ["reward_id", "ranking_id", "max_rank", "kind", "display_name", "color", "runtime_enabled"], &"reward_id"), label)
+	return _accept(TABLE.parse_table(text, ["reward_id", "ranking_id", "max_rank", "kind", "display_name", "color", "runtime_enabled"], &"reward_id", [&"reward_id", &"color"]), label)
 
 
 func _accept(table: Dictionary, label: String) -> bool:
@@ -47,6 +47,9 @@ func _accept(table: Dictionary, label: String) -> bool:
 		last_error = "시즌 보상 CSV 형식 오류"
 		return false
 	for row in table[&"rows"]:
+		if typeof(row.get(&"max_rank")) != TYPE_INT or typeof(row.get(&"runtime_enabled")) != TYPE_BOOL or String(row.get(&"color", "")).length() != 6:
+			last_error = "시즌 보상 순위 정수·활성 TRUE/FALSE·6자리 색상 필요"
+			return false
 		if String(row.get(&"kind", "")) not in ["title", "aura"] or String(row.get(&"ranking_id", "")) not in ["recovered_value", "elapsed_seconds", "kills"] or int(row.get(&"max_rank", 0)) < 1 or String(row.get(&"display_name", "")).is_empty() or not Color.html_is_valid(String(row.get(&"color", ""))):
 			last_error = "시즌 보상 종류·순위·이름·색상 검증 실패"
 			return false

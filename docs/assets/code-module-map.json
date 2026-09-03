@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "f96d7c049523d7de81c687dabfe1595a1ce18780ca0189ddcb00559821e19bef",
+  "source_sha256": "57b639a029a5d3a3f519c41602fd8f4ef245f7900c15787aa4acb26f15568b05",
   "layers": [
     {
       "id": "contract",
@@ -25,10 +25,10 @@
   ],
   "summary": {
     "modules": 55,
-    "scripts": 212,
-    "named_classes": 184,
-    "relationships": 165,
-    "project_inheritance": 6,
+    "scripts": 213,
+    "named_classes": 185,
+    "relationships": 167,
+    "project_inheritance": 7,
     "enabled_toggles": 64
   },
   "modules": [
@@ -52,14 +52,15 @@
       "path": "game/core",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 3,
-      "class_count": 3,
+      "file_count": 4,
+      "class_count": 4,
       "classes": [
         "ArenaGrid",
+        "CatalogCsvTable",
         "FeatureManifest",
         "RunCombatMetrics"
       ],
-      "incoming_count": 2,
+      "incoming_count": 4,
       "outgoing_count": 29
     },
     {
@@ -692,8 +693,8 @@
         "UtilityInvestmentService",
         "WorkshopService"
       ],
-      "incoming_count": 4,
-      "outgoing_count": 0
+      "incoming_count": 3,
+      "outgoing_count": 1
     },
     {
       "id": "penalty_modifiers",
@@ -1334,6 +1335,15 @@
       "module": "core",
       "path": "game/core/arena_grid.gd",
       "extends": "Node2D",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:CatalogCsvTable",
+      "name": "CatalogCsvTable",
+      "module": "core",
+      "path": "game/core/catalog_csv_table.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -2233,9 +2243,9 @@
       "name": "P5CatalogTable",
       "module": "p5_hub_progression",
       "path": "game/features/p5_hub_progression/p5_catalog_table.gd",
-      "extends": "RefCounted",
-      "base_id": "",
-      "inheritance": "engine"
+      "extends": "CatalogCsvTable",
+      "base_id": "class:CatalogCsvTable",
+      "inheritance": "project"
     },
     {
       "id": "class:P5HubActionPresenter",
@@ -2658,7 +2668,7 @@
     },
     {
       "from": "conditional_ranking",
-      "to": "p5_hub_progression",
+      "to": "core",
       "type": "references",
       "evidence_count": 1
     },
@@ -2953,6 +2963,18 @@
     {
       "from": "operation_launch",
       "to": "loot",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "p5_hub_progression",
+      "to": "core",
+      "type": "inherits",
+      "evidence_count": 1
+    },
+    {
+      "from": "p5_hub_progression",
+      "to": "core",
       "type": "references",
       "evidence_count": 1
     },
