@@ -27,6 +27,12 @@ func _run() -> void:
 		return
 	if not await _verify_elite_pursuit():
 		return
+	var pursuit_contract := preload("res://game/tests/support/pursuit_boss_contract.gd").new()
+	var pursuit_error: String = await pursuit_contract.verify(self)
+	if not pursuit_error.is_empty():
+		_fail(pursuit_error)
+		return
+	print("PURSUIT_BOSS_OK half_cost rounded_free_entry failed_spawn_retry locked_door_damage reclosed_door_damage boss_kill_once no_respawn")
 	_cleanup()
 	print("MOBILE_HUD_ELITE_OK optional_modules dependencies hud_bottom_left movable_anchor key_format mobile_semantic_pad threshold_entry_cost random_elite faster_stronger infinite_room_independent")
 	quit(0)
@@ -141,7 +147,7 @@ func _verify_elite_pursuit() -> bool:
 		460601
 	):
 		return _fail("엘리트 추격 서비스를 구성하지 못했습니다.")
-	ledger.call(&"add_carried", 99)
+	ledger.call(&"add_carried", 49)
 	await process_frame
 	if bool(elite_service.call(&"get_snapshot").get(&"triggered", false)):
 		return _fail("투입비 회수 전 엘리트가 조기 생성됐습니다.")
@@ -152,9 +158,9 @@ func _verify_elite_pursuit() -> bool:
 	var targets: Array = spawner.call(&"get_active_targets")
 	if (
 		not bool(snapshot.get(&"triggered", false))
-		or int(snapshot.get(&"threshold_credits", 0)) != 100
+		or int(snapshot.get(&"threshold_credits", 0)) != 50
 		or int(snapshot.get(&"active_elite_count", 0)) < 1
-		or int(snapshot.get(&"active_elite_count", 0)) > 2
+		or int(snapshot.get(&"active_elite_count", 0)) != 1
 		or int(spawner_snapshot.get(&"total_spawned", -1)) != 0
 		or int(spawner_snapshot.get(&"elite_pursuer_count", 0)) != targets.size()
 	):

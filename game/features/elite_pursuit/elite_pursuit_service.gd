@@ -17,6 +17,18 @@ var triggered := false
 var spawned_elites: Array[Node] = []
 var last_carried_credits := 0
 var random := RandomNumberGenerator.new()
+var spawned_count := 0
+var retry_remaining := 0.0
+
+
+func _ready() -> void:
+	set_process(false)
+
+
+func _process(delta: float) -> void:
+	retry_remaining = maxf(0.0, retry_remaining - delta)
+	if retry_remaining <= 0.0:
+		_evaluate_threshold(last_carried_credits)
 
 
 func configure(
@@ -40,21 +52,26 @@ func configure(
 		or new_deployment_cost < 0
 	):
 		return false
+	var callback := Callable(self, &"_on_credits_changed")
+	if is_instance_valid(credit_ledger) and credit_ledger.is_connected(&"credits_changed", callback):
+		credit_ledger.disconnect(&"credits_changed", callback)
 	player = new_player
 	credit_ledger = new_credit_ledger
 	enemy_spawner = new_enemy_spawner
 	map_provider = new_map_provider
-	config = new_config
+	config = new_config.duplicate(true)
 	deployment_cost = new_deployment_cost
 	threshold_credits = maxi(1, ceili(
 		float(deployment_cost) * float(config.get("carried_credit_threshold_multiplier"))
 	))
 	player_attack_reference = maxf(0.1, new_player_attack_reference)
 	triggered = false
+	spawned_count = 0
+	retry_remaining = 0.0
+	set_process(false)
 	spawned_elites.clear()
 	last_carried_credits = int(credit_ledger.call(&"get_snapshot").get(&"carried", 0))
 	random.seed = seed_value if seed_value != 0 else int(Time.get_ticks_usec())
-	var callback := Callable(self, &"_on_credits_changed")
 	if not credit_ledger.is_connected(&"credits_changed", callback):
 		credit_ledger.connect(&"credits_changed", callback)
 	_evaluate_threshold(last_carried_credits)
@@ -70,7 +87,9 @@ func get_snapshot() -> Dictionary:
 		&"last_carried_credits": last_carried_credits,
 		&"triggered": triggered,
 		&"active_elite_count": spawned_elites.size(),
-		&"spawned_elite_count": spawned_elites.size(),
+		&"spawned_elite_count": spawned_count,
+		&"spawn_as_boss": bool(config.get("spawn_as_boss")) if config != null else false,
+		&"pursuit_active": triggered and not spawned_elites.is_empty(),
 		&"room_independent": true,
 		&"door_state_independent": true,
 		&"infinite_pursuit": true,
@@ -94,9 +113,15 @@ func _on_credits_changed(carried: int, _secured: int) -> void:
 
 
 func _evaluate_threshold(carried: int) -> bool:
-	if triggered or carried < threshold_credits or not is_instance_valid(player):
+	if triggered or config == null or not is_instance_valid(player) or not is_instance_valid(enemy_spawner):
+		set_process(false)
 		return false
-	triggered = true
+	if carried < threshold_credits:
+		set_process(false)
+		return false
+	if retry_remaining > 0.0:
+		set_process(true)
+		return false
 	var count := random.randi_range(
 		int(config.get("minimum_elite_count")),
 		int(config.get("maximum_elite_count"))
@@ -112,12 +137,21 @@ func _evaluate_threshold(carried: int) -> bool:
 		&"max_armor": float(config.get("maximum_armor")),
 		&"priority_rank": int(config.get("priority_rank")),
 		&"ignore_room_barriers": true,
+		&"is_boss": bool(config.get("spawn_as_boss")),
 	}
 	for index in count:
 		var position := _random_spawn_position(index, count)
 		var elite: Node2D = enemy_spawner.call(&"spawn_elite_pursuer_at", position, profile)
 		if is_instance_valid(elite):
 			spawned_elites.append(elite)
+	if spawned_elites.is_empty():
+		# A temporarily unavailable spawn point must not consume the one-shot trigger.
+		retry_remaining = float(config.get("spawn_retry_seconds"))
+		set_process(true)
+		return false
+	triggered = true
+	spawned_count = spawned_elites.size()
+	set_process(false)
 	pursuit_triggered.emit(threshold_credits, carried, spawned_elites.size())
 	return not spawned_elites.is_empty()
 

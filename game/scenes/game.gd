@@ -3668,10 +3668,11 @@ func _on_room_encounter_started(room_index: int, enemy_count: int) -> void:
 
 
 func _on_elite_pursuit_triggered(threshold: int, carried: int, elite_count: int) -> void:
+	var role := "추격 보스" if bool(elite_pursuit_service.call(&"get_snapshot").get(&"spawn_as_boss", false)) else "엘리트 추격자"
 	combat_hud_presenter.call(
 		&"show_status",
-		"위협 경보 · 회수액 %d/%d C · 전역 엘리트 추격자 %d기 접근" % [
-			carried, threshold, elite_count,
+		"위협 경보 · 회수액 %d/%d C · %s %d기 접근 · 문과 무관하게 추격" % [
+			carried, threshold, role, elite_count,
 		],
 		5,
 		4.0

@@ -122,7 +122,7 @@ const CHECKPOINT_RULES := {
 	&"elite_pursuit_warning": {
 		&"unit": &"state_feedback",
 		&"surfaces": [&"combat"],
-		&"phrases": ["위협 경보", "회수액", "전역 엘리트", "추격자"],
+		&"phrases": ["위협 경보", "회수액", "추격 보스", "문과 무관"],
 	},
 	&"loot_feedback": {
 		&"unit": &"resource_feedback",

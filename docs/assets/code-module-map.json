@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "11f544c68b37915cbef1300ecfbfc833330aa1fd8162d800533ace7f9af6098d",
+  "source_sha256": "34d5603a0f17a52bb8dfb23ce42322f86c27173d1c250eac7591024cceaaafe1",
   "layers": [
     {
       "id": "contract",
@@ -25,7 +25,7 @@
   ],
   "summary": {
     "modules": 55,
-    "scripts": 201,
+    "scripts": 203,
     "named_classes": 177,
     "relationships": 164,
     "project_inheritance": 6,
@@ -971,7 +971,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 20,
+      "file_count": 22,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -3292,7 +3292,7 @@
       "from": "verification",
       "to": "core",
       "type": "verifies",
-      "evidence_count": 5
+      "evidence_count": 6
     },
     {
       "from": "verification",
@@ -3304,13 +3304,13 @@
       "from": "verification",
       "to": "credits",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
       "to": "elite_pursuit",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
@@ -3472,7 +3472,7 @@
       "from": "verification",
       "to": "player",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",
@@ -3490,7 +3490,7 @@
       "from": "verification",
       "to": "room_encounters",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
@@ -3532,7 +3532,7 @@
       "from": "verification",
       "to": "spawning",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",
