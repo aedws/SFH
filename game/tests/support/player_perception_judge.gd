@@ -17,7 +17,7 @@ const CHECKPOINT_RULES := {
 	&"mobile_controls_comprehension": {
 		&"unit": &"choice",
 		&"surfaces": [&"mobile_controls"],
-		&"phrases": ["위로 이동", "기본 공격", "대시", "스킬 1", "상호작용", "설정"],
+		&"phrases": ["이동 조이스틱", "기본 공격", "대시", "스킬 1", "상호작용", "설정"],
 	},
 	&"inventory_comprehension": {
 		&"unit": &"choice",

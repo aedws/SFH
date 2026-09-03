@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 83 TOPICS</span><span>91 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 84 TOPICS</span><span>91 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -98,9 +98,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 22 · IMPROVE 30 · CHANGE 24 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 24 · IMPROVE 32 · CHANGE 25 · FIX 28</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>22</b><small>BUILD</small></span><span><b>30</b><small>IMPROVE</small></span><span><b>24</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>24</b><small>BUILD</small></span><span><b>32</b><small>IMPROVE</small></span><span><b>25</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -245,7 +245,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
         <p><a href="features/hub-economy/#hub-preparation">로비 사용법 →</a> · <a href="features/loadout-investment/">장착 보존 계약 →</a> · <a href="quality/e2e-play-session/#hub-preparation-e2e">회귀 검증 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 13</small><b>기획자 아이템·밸런싱 튜토리얼 · P6 로컬 마감 재검증</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획자 작업실에서 수치 조정과 새 아이템 추가 절차를 바로 찾고, 시즌 참가 조건을 정확히 확인합니다.</strong></div>
@@ -255,6 +255,17 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>소·중·대 모두 허용하던 신규 시즌 기본값을 Notion의 대형 조건으로 수정했습니다. 구 시즌은 시작 때 조건과 기록을 보존하고 다음 시즌부터 새 정책을 적용합니다.</p></div>
         <p>시즌 81조합·구 정책 저장/전환·대형 보상, 전체 플레이/실패 정산 E2E와 기존 모듈 계약을 검사합니다. Sheet 수치·CSV·과금·도메인은 변경하지 않았습니다.</p>
         <p><a href="getting-started/planner-item-balance-tutorial/">기획자 튜토리얼 →</a> · <a href="features/ranking-provider/#p6-closeout">P6 마감 경계 →</a> · <a href="quality/e2e-play-session/#p6-closeout-e2e">검증 기준 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 14</small><b>PC·모바일 시작 선택 · 양손 터치 전용 화면</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 실행할 때 조작 방식을 선택합니다. 모바일은 좌하단 조이스틱·우하단 공격과 스킬로 플레이합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>PC/모바일 진입 선택과 손가락별 조이스틱 입력을 추가했습니다. 선택 뒤에는 로비 준비→작전 게이트 동선을 유지합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>모바일 버튼에 에너지·쿨타임을 표시하고 PC용 중복 HUD를 숨깁니다. 가로/세로 논리 해상도와 양손 영역을 별도로 배치합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>선택은 표시 설정에 저장하며 K/화면 설정에서 변경합니다. 입력·뷰포트·시작 조립을 분리하고 전투와 장비 원본은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>터치 버튼이 이벤트 기반 가방·지도·설정을 열지 못하던 경로를 수정했습니다. 창 전환·백그라운드·기기 모드 변경 때 눌린 입력을 해제합니다.</p></div>
+        <p><a href="features/mobile-hud-settings/">모바일 사용법 →</a> · <a href="quality/e2e-play-session/#mobile-entry-e2e">입력·화면 검증 →</a></p>
       </div>
     </details>
   </div>

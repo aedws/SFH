@@ -7,7 +7,7 @@ config_version=5
 
 config/name="SFH"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-run/main_scene="res://game/scenes/game.tscn"
+run/main_scene="res://game/scenes/application.tscn"
 
 [display]
 

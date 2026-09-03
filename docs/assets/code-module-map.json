@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "d669a7482b2e0484241330fec5a73b145d5a7fb48ee2e647f5c6ab05804bead8",
+  "source_sha256": "7cffe2b518fed07b54838e0106388042501626d4284bab5a6a8933d7693c3bb8",
   "layers": [
     {
       "id": "contract",
@@ -25,9 +25,9 @@
   ],
   "summary": {
     "modules": 59,
-    "scripts": 232,
+    "scripts": 237,
     "named_classes": 197,
-    "relationships": 178,
+    "relationships": 181,
     "project_inheritance": 7,
     "enabled_toggles": 68
   },
@@ -39,10 +39,10 @@
       "path": "game/scenes",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 1,
+      "file_count": 2,
       "class_count": 0,
       "classes": [],
-      "incoming_count": 1,
+      "incoming_count": 2,
       "outgoing_count": 54
     },
     {
@@ -61,7 +61,7 @@
         "FeatureManifest",
         "RunCombatMetrics"
       ],
-      "incoming_count": 7,
+      "incoming_count": 8,
       "outgoing_count": 29
     },
     {
@@ -636,13 +636,13 @@
       "path": "game/features/mobile_controls",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 1,
+      "file_count": 4,
       "class_count": 1,
       "classes": [
         "MobileControlPad"
       ],
       "incoming_count": 2,
-      "outgoing_count": 1
+      "outgoing_count": 3
     },
     {
       "id": "movement_hud",
@@ -1047,7 +1047,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 30,
+      "file_count": 31,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -3150,8 +3150,26 @@
     },
     {
       "from": "mobile_controls",
+      "to": "core",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "mobile_controls",
+      "to": "presentation_settings",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "mobile_controls",
       "to": "presentation_settings",
       "type": "requires",
+      "evidence_count": 1
+    },
+    {
+      "from": "mobile_controls",
+      "to": "scene_assembly",
+      "type": "references",
       "evidence_count": 1
     },
     {
@@ -3254,7 +3272,7 @@
       "from": "scene_assembly",
       "to": "core",
       "type": "references",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "scene_assembly",
@@ -3404,7 +3422,7 @@
       "from": "scene_assembly",
       "to": "mobile_controls",
       "type": "references",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "scene_assembly",
@@ -3758,7 +3776,7 @@
       "from": "verification",
       "to": "mobile_controls",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
@@ -3848,7 +3866,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 10
+      "evidence_count": 11
     },
     {
       "from": "verification",

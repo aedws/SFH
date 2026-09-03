@@ -37,17 +37,28 @@ search:
 </section>
 
 <section class="sfh-public-test-guide" aria-label="테스트 안내">
-  <article><span>PREPARE</span><b>I / U / E · F</b><p>로비 상점·준비 단말과 장비창에서 세팅한 뒤 동쪽 작전 게이트에서 F를 누르세요.</p></article>
+  <article><span>PREPARE</span><b>PC / 모바일 선택</b><p>실행 시 조작 방식을 선택하세요. 로비에서 준비한 뒤 게이트에서 F 또는 모바일 ‘사용’을 누릅니다.</p></article>
   <article><span>SKILL</span><b>1 · 2 · 3</b><p>점멸, 지속형 자기장, 이동 가속을 상황에 맞게 사용하세요.</p></article>
   <article><span>ESCAPE</span><b>F / M</b><p>보상을 회수하고 지도와 탈출 지점을 확인해 살아서 돌아오세요.</p></article>
 </section>
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 22 · IMPROVE 30 · CHANGE 24 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 24 · IMPROVE 32 · CHANGE 25 · FIX 28</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>22</b><small>BUILD</small></span><span><b>30</b><small>IMPROVE</small></span><span><b>24</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>24</b><small>BUILD</small></span><span><b>32</b><small>IMPROVE</small></span><span><b>25</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 14</small><b>PC·모바일 시작 선택 · 양손 터치 전용 화면</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 실행할 때 조작 방식을 선택합니다. 모바일은 좌하단 조이스틱·우하단 공격과 스킬로 플레이합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>PC/모바일 진입 선택과 손가락별 조이스틱 입력을 추가했습니다. 선택 뒤에는 로비 준비→작전 게이트 동선을 유지합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>모바일 버튼에 에너지·쿨타임을 표시하고 PC용 중복 HUD를 숨깁니다. 가로/세로 논리 해상도와 양손 영역을 별도로 배치합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>선택은 표시 설정에 저장하며 K/화면 설정에서 변경합니다. 입력·뷰포트·시작 조립을 분리하고 전투와 장비 원본은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>터치 버튼이 이벤트 기반 가방·지도·설정을 열지 못하던 경로를 수정했습니다. 창 전환·백그라운드·기기 모드 변경 때 눌린 입력을 해제합니다.</p></div>
+        <p><a href="features/mobile-hud-settings/">모바일 사용법 →</a> · <a href="quality/e2e-play-session/#mobile-entry-e2e">입력·화면 검증 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 13</small><b>기획자 아이템·밸런싱 튜토리얼 · P6 로컬 마감 재검증</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획자 작업실에서 수치 조정과 새 아이템 추가 절차를 바로 찾고, 시즌 참가 조건을 정확히 확인합니다.</strong></div>

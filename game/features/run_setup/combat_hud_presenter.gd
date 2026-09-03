@@ -240,7 +240,7 @@ func get_snapshot(hud: Control) -> Dictionary:
 		&"loadout_split": equipment_panel != null and weapon_panel != null and telemetry_panel != null,
 		&"icon_count": icon_count,
 		&"action_count": action_labels.size(),
-		&"responsive": layout_mode in [&"player_orbit", &"compact_edge", &"minimal_edge"],
+		&"responsive": layout_mode in [&"player_orbit", &"compact_edge", &"minimal_edge", &"mobile_touch"],
 		&"context_reveal": detail_reveal_timer != null,
 		&"revealed_detail": revealed_detail,
 		&"details_persistent": false,
@@ -401,6 +401,23 @@ func _apply_responsive_layout() -> void:
 
 func _apply_layout_for_width(viewport_width: float) -> void:
 	if layout_root == null:
+		return
+	# 모바일은 패드 자체에 에너지·스킬/대시 대기를 표시합니다. PC용 중복 HUD를 제거합니다.
+	_set_visible(combat_skill_hud, not avoid_mobile_controls)
+	_set_visible(dash_cooldown_hud, not avoid_mobile_controls)
+	if avoid_mobile_controls:
+		layout_mode = &"mobile_touch"
+		_set_top_left_rect(mission_tracker, 18, 58, 260, 94)
+		_set_top_left_rect(core_panel, 18, 158, 260, 72)
+		_set_top_left_rect(telemetry_panel, 18, 234, 260, 32)
+		_set_visible(action_dock, false)
+		_set_visible(equipment_panel, false)
+		_set_visible(weapon_panel, false)
+		if viewport_width < 720:
+			_set_top_left_rect(session_socket_hud, 18, 272, viewport_width - 36, 62)
+		else:
+			_set_top_left_rect(session_socket_hud, 294, 58, minf(360, viewport_width - 462), 62)
+		_set_center_rect(interaction_prompt, -140, 38, 280, 30)
 		return
 	if viewport_width >= WIDE_LAYOUT_MINIMUM:
 		layout_mode = &"player_orbit"

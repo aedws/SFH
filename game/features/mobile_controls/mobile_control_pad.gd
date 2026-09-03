@@ -5,6 +5,9 @@ extends Control
 ## 게임 규칙과 키보드 바인딩을 알지 못하며 semantic Action만 누르고 뗍니다.
 
 const ACCENT := Color("02e5e1")
+const Joystick := preload("res://game/features/mobile_controls/virtual_joystick.gd")
+const ViewportPolicy := preload("res://game/features/mobile_controls/mobile_viewport_policy.gd")
+@export var adapt_viewport := true
 const ACTIONS := [
 	[&"move_up", "▲", "위로 이동"], [&"move_left", "◀", "왼쪽 이동"],
 	[&"move_down", "▼", "아래로 이동"], [&"move_right", "▶", "오른쪽 이동"],
@@ -25,6 +28,14 @@ var movement_group: Control
 var combat_group: Control
 var menu_group: Control
 var context_enabled := true
+var joystick: Control
+var touch_actions: Dictionary = {}
+var skill_provider: Node
+var movement_provider: Node
+var energy_label: Label
+var refresh_elapsed := 0.0
+var original_mouse_emulation := true
+var focus_available := true
 
 
 func _ready() -> void:
@@ -33,6 +44,9 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_ui()
 	resized.connect(_apply_layout)
+	visibility_changed.connect(_on_visibility_changed)
+	get_window().size_changed.connect(_resize_viewport)
+	original_mouse_emulation = Input.emulate_mouse_from_touch
 	_apply_layout()
 	visible = false
 
@@ -51,6 +65,7 @@ func configure(new_settings_provider: Node, force_touchscreen: Variant = null) -
 		if not settings_provider.is_connected(&"settings_changed", callback):
 			settings_provider.connect(&"settings_changed", callback)
 	_refresh_visibility()
+	_resize_viewport()
 	return true
 
 
@@ -62,8 +77,12 @@ func simulate_action(action_id: StringName, pressed: bool) -> bool:
 
 
 func release_all() -> void:
+	if joystick != null:
+		joystick.release()
+	touch_actions.clear()
 	for action_id: StringName in pressed_actions.keys():
-		Input.action_release(action_id)
+		_send_action(action_id, false)
+		(action_buttons[action_id] as Button).set_pressed_no_signal(false)
 	pressed_actions.clear()
 
 
@@ -85,11 +104,129 @@ func get_snapshot() -> Dictionary:
 		&"semantic_actions": true,
 		&"multi_touch_ready": true,
 		&"context_enabled": context_enabled,
+		&"joystick_direction": joystick.direction,
+		&"touch_count": touch_actions.size() + int(joystick.finger >= 0),
 	}
 
 
 func _exit_tree() -> void:
 	release_all()
+	Input.emulate_mouse_from_touch = original_mouse_emulation
+
+
+func configure_runtime(skills: Node, movement: Node) -> void:
+	skill_provider = skills
+	movement_provider = movement
+	_refresh_status()
+
+
+func _process(delta: float) -> void:
+	# 모달이 Game의 컨텍스트 신호보다 먼저 일시정지하더라도 입력을 즉시 해제합니다.
+	var allowed := focus_available and not get_tree().paused
+	var show_mobile := settings_provider != null and bool(settings_provider.call(&"should_show_mobile_controls", _touchscreen_available()))
+	var desired := allowed and context_enabled and show_mobile
+	if visible != desired:
+		visible = desired
+	if not visible:
+		return
+	refresh_elapsed += delta
+	if refresh_elapsed >= 0.1:
+		refresh_elapsed = 0
+		_refresh_status()
+
+
+func _notification(what: int) -> void:
+	if what in [NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_WM_WINDOW_FOCUS_OUT]:
+		focus_available = false
+		release_all()
+	elif what in [NOTIFICATION_APPLICATION_FOCUS_IN, NOTIFICATION_WM_WINDOW_FOCUS_IN]:
+		focus_available = true
+
+
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree() or get_tree().paused:
+		return
+	if event is InputEventScreenTouch:
+		if event.pressed and not event.canceled:
+			if joystick.begin(event.index, event.position):
+				get_viewport().set_input_as_handled()
+				return
+			for action_id in action_buttons:
+				var button := action_buttons[action_id] as Button
+				if button.is_visible_in_tree() and button.get_global_rect().has_point(event.position):
+					touch_actions[event.index] = action_id
+					get_viewport().set_input_as_handled()
+					_set_action_pressed(action_id, true)
+					return
+		else:
+			if event.index == joystick.finger:
+				joystick.release(event.index)
+				get_viewport().set_input_as_handled()
+			if touch_actions.has(event.index):
+				var action: StringName = touch_actions[event.index]
+				touch_actions.erase(event.index)
+				if not touch_actions.values().has(action):
+					_set_action_pressed(action, false)
+				get_viewport().set_input_as_handled()
+	elif event is InputEventScreenDrag:
+		if event.index == joystick.finger:
+			joystick.drag(event.index, event.position)
+			get_viewport().set_input_as_handled()
+		elif touch_actions.has(event.index):
+			get_viewport().set_input_as_handled()
+
+
+func _on_direction_changed(direction: Vector2) -> void:
+	var values := {&"move_left": maxf(0, -direction.x), &"move_right": maxf(0, direction.x), &"move_up": maxf(0, -direction.y), &"move_down": maxf(0, direction.y)}
+	for action: StringName in values:
+		var strength: float = values[action]
+		if strength > 0:
+			pressed_actions[action] = true
+			Input.action_press(action, strength)
+		elif pressed_actions.erase(action):
+			Input.action_release(action)
+
+
+func _refresh_status() -> void:
+	var states: Array = skill_provider.call(&"get_skill_states") if is_instance_valid(skill_provider) else []
+	energy_label.text = "EN --"
+	for index in range(3):
+		var button := action_buttons[StringName("combat_skill_%d" % (index + 1))] as Button
+		button.text = "%d\n--" % (index + 1)
+		if index >= states.size():
+			continue
+		var state: Dictionary = states[index]
+		var remaining := float(state.get(&"cooldown_remaining", 0))
+		var label := "READY" if bool(state.get(&"ready", false)) else ("%.1fs" % remaining if remaining > 0 else "WAIT")
+		if not bool(state.get(&"weapon_tags_ready", true)):
+			label = "LOCK"
+		button.text = "%d\n%s" % [index + 1, label]
+		button.tooltip_text = "스킬 %d · %s · EN %d · 충전 %d/%d" % [index + 1, state.get(&"display_name", ""), state.get(&"energy_cost", 0), state.get(&"current_charges", 0), state.get(&"maximum_charges", 0)]
+		energy_label.text = "EN %d / %d" % [state.get(&"energy_current", 0), state.get(&"energy_maximum", 0)]
+	var dash := action_buttons[&"dash"] as Button
+	dash.text = "대시"
+	if is_instance_valid(movement_provider):
+		var movement: Dictionary = movement_provider.call(&"get_movement_snapshot")
+		if not bool(movement.get(&"dash_ready", true)):
+			dash.text = "%.1fs" % float(movement.get(&"dash_cooldown_remaining", 0))
+
+
+func _resize_viewport() -> void:
+	if not adapt_viewport or settings_provider == null:
+		return
+	var mobile := bool(settings_provider.call(&"should_show_mobile_controls", _touchscreen_available()))
+	var target := ViewportPolicy.logical_size(get_window().size, mobile)
+	if get_window().content_scale_size != target:
+		release_all()
+		get_window().content_scale_size = target
+
+
+func _on_visibility_changed() -> void:
+	if not visible:
+		release_all()
+	# 월드에서는 첫 터치가 마우스 공격으로 중복 변환되지 않게 합니다.
+	# 모달에서는 Godot 기본 터치→GUI 클릭 변환을 복구합니다.
+	Input.emulate_mouse_from_touch = false if visible else original_mouse_emulation
 
 
 func _build_ui() -> void:
@@ -97,10 +234,19 @@ func _build_ui() -> void:
 	movement_group.name = "MovementPad"
 	movement_group.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(movement_group)
+	joystick = Joystick.new()
+	joystick.tooltip_text = "이동 조이스틱 · 손가락을 드래그하여 방향과 속도 조절"
+	joystick.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	joystick.direction_changed.connect(_on_direction_changed)
+	movement_group.add_child(joystick)
 	combat_group = Control.new()
 	combat_group.name = "CombatPad"
 	combat_group.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(combat_group)
+	energy_label = Label.new()
+	energy_label.add_theme_font_size_override("font_size", 14)
+	energy_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	combat_group.add_child(energy_label)
 	menu_group = HBoxContainer.new()
 	menu_group.name = "MenuPad"
 	menu_group.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -127,6 +273,7 @@ func _build_ui() -> void:
 		action_buttons[action_id] = button
 		if action_id in [&"move_up", &"move_left", &"move_down", &"move_right"]:
 			movement_group.add_child(button)
+			button.hide()
 		elif action_id in [&"primary_attack", &"dash", &"combat_skill_1", &"combat_skill_2", &"combat_skill_3", &"interact"]:
 			combat_group.add_child(button)
 		else:
@@ -136,30 +283,30 @@ func _build_ui() -> void:
 func _apply_layout() -> void:
 	if movement_group == null:
 		return
-	var compact := size.x < 720.0
-	var button_size := 54.0 if compact else 62.0
+	var button_size := clampf((size.x - 56.0) / 7.0, 48.0, 64.0)
 	var gap := 5.0
-	movement_group.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	movement_group.position = Vector2(14, -(button_size * 3.0 + gap * 2.0 + 16.0))
-	movement_group.size = Vector2(button_size * 3.0 + gap * 2.0, button_size * 3.0 + gap * 2.0)
-	_place_button(&"move_up", button_size + gap, 0, button_size)
-	_place_button(&"move_left", 0, button_size + gap, button_size)
-	_place_button(&"move_down", button_size + gap, button_size + gap, button_size)
-	_place_button(&"move_right", (button_size + gap) * 2.0, button_size + gap, button_size)
-	combat_group.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	combat_group.position = Vector2(-(button_size * 3.0 + gap * 2.0 + 14.0), -(button_size * 3.0 + gap * 2.0 + 16.0))
-	combat_group.size = movement_group.size
-	_place_combat_button(&"combat_skill_1", 0, 0, button_size)
-	_place_combat_button(&"combat_skill_2", button_size + gap, 0, button_size)
-	_place_combat_button(&"combat_skill_3", (button_size + gap) * 2.0, 0, button_size)
-	_place_combat_button(&"dash", 0, button_size + gap, button_size)
-	_place_combat_button(&"primary_attack", button_size + gap, button_size + gap, button_size)
-	_place_combat_button(&"interact", (button_size + gap) * 2.0, button_size + gap, button_size)
-	menu_group.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	menu_group.position = Vector2(-minf(430.0, size.x - 24.0), 12)
-	menu_group.size = Vector2(minf(418.0, size.x - 24.0), 44)
+	var stick_size := button_size * 2.6
+	movement_group.size = Vector2.ONE * stick_size
+	movement_group.position = Vector2(18, size.y - stick_size - 24)
+	joystick.size = movement_group.size
+	joystick.queue_redraw()
+	combat_group.size = Vector2(button_size * 3 + gap * 2, button_size * 2 + gap + 24)
+	combat_group.position = size - combat_group.size - Vector2(18, 24)
+	energy_label.position = Vector2.ZERO
+	for index in range(3):
+		_place_combat_button(StringName("combat_skill_%d" % (index + 1)), index * (button_size + gap), 24, button_size)
+	_place_combat_button(&"dash", 0, button_size + gap + 24, button_size)
+	_place_combat_button(&"primary_attack", button_size + gap, button_size + gap + 24, button_size)
+	_place_combat_button(&"interact", (button_size + gap) * 2, button_size + gap + 24, button_size)
+	action_buttons[&"primary_attack"].text = "공격"
+	action_buttons[&"interact"].text = "사용"
+	var menu_width := minf(418.0, size.x - 36.0)
+	menu_group.position = Vector2((size.x - menu_width) * 0.5, 8)
+	menu_group.size = Vector2(menu_width, 44)
 	for child in menu_group.get_children():
 		(child as Button).custom_minimum_size = Vector2(44, 44)
+		(child as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	action_buttons[&"toggle_key_mapping"].text = "설정"
 
 
 func _place_button(action_id: StringName, x: float, y: float, button_size: float) -> void:
@@ -173,16 +320,31 @@ func _place_combat_button(action_id: StringName, x: float, y: float, button_size
 
 
 func _set_action_pressed(action_id: StringName, pressed: bool) -> void:
+	if pressed and (not is_visible_in_tree() or get_tree().paused):
+		return
+	if pressed == pressed_actions.has(action_id):
+		return
 	if pressed:
 		pressed_actions[action_id] = true
-		Input.action_press(action_id)
 	else:
 		pressed_actions.erase(action_id)
-		Input.action_release(action_id)
+	(action_buttons[action_id] as Button).set_pressed_no_signal(pressed)
+	_send_action(action_id, pressed)
+
+
+func _send_action(action_id: StringName, pressed: bool) -> void:
+	# action_press만 사용하면 _unhandled_input 기반 가방/지도/설정이 열리지 않습니다.
+	var event := InputEventAction.new()
+	event.action = action_id
+	event.pressed = pressed
+	event.strength = 1.0 if pressed else 0.0
+	Input.parse_input_event(event)
+	Input.flush_buffered_events()
 
 
 func _on_settings_changed(_snapshot: Dictionary) -> void:
 	_refresh_visibility()
+	_resize_viewport()
 
 
 func _refresh_visibility() -> void:
@@ -192,7 +354,7 @@ func _refresh_visibility() -> void:
 	)
 	if visible and (not should_show or not context_enabled):
 		release_all()
-	visible = should_show and context_enabled
+	visible = should_show and context_enabled and not get_tree().paused and focus_available
 
 
 func _touchscreen_available() -> bool:

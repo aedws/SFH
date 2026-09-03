@@ -15,6 +15,12 @@ signal expanded_changed(expanded: bool)
 var low_obstruction_mode := true
 var responsive_layout_mode := &"full_map_compact"
 var expanded := false
+var mobile_layout := false
+
+
+func set_mobile_layout(enabled: bool) -> void:
+	mobile_layout = enabled
+	_apply_responsive_layout()
 
 
 func _ready() -> void:
@@ -109,6 +115,15 @@ func _apply_layout_for_width(viewport_width: float) -> void:
 		map_view.custom_minimum_size = Vector2.ZERO
 		return
 	var compact := viewport_width < COMPACT_WIDTH_THRESHOLD
+	if mobile_layout:
+		responsive_layout_mode = &"mobile_edge"
+		map_view.custom_minimum_size = Vector2(120, 74)
+		set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		offset_left = -150
+		offset_right = -14
+		offset_top = 58
+		offset_bottom = 148
+		return
 	responsive_layout_mode = &"edge_compact" if compact else &"full_map_compact"
 	map_view.custom_minimum_size = Vector2(154, 98) if compact else Vector2(196, 126)
 	set_anchor(SIDE_LEFT, 1.0)
