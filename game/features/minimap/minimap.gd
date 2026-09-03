@@ -121,8 +121,8 @@ func _apply_layout_for_width(viewport_width: float) -> void:
 		set_anchors_preset(Control.PRESET_TOP_RIGHT)
 		offset_left = -150
 		offset_right = -14
-		offset_top = 58
-		offset_bottom = 148
+		offset_top = 158 if viewport_width < 720 else 58
+		offset_bottom = offset_top + 90
 		return
 	responsive_layout_mode = &"edge_compact" if compact else &"full_map_compact"
 	map_view.custom_minimum_size = Vector2(154, 98) if compact else Vector2(196, 126)

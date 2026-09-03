@@ -39,7 +39,7 @@ func _ready() -> void:
 	status = _label("", 15, Color("ffce85"))
 	resized.connect(_layout)
 	if launch_game:
-		get_window().size_changed.connect(_resize_viewport)
+		get_window().size_changed.connect(_queue_resize)
 		_resize_viewport()
 	_layout()
 	if settings.call(&"get_snapshot").get(&"mobile_controls_mode") == &"on":
@@ -67,6 +67,9 @@ func _button(text: String, mode: StringName) -> Button:
 func _resize_viewport() -> void:
 	get_window().content_scale_size = ViewportPolicy.logical_size(get_window().size, true)
 
+func _queue_resize() -> void:
+	_resize_viewport.call_deferred()
+
 func _layout() -> void:
 	if card == null:
 		return
@@ -82,7 +85,8 @@ func select_mode(mode: StringName) -> void:
 	choosing = true
 	mode_selected.emit(mode)
 	if launch_game:
-		get_window().size_changed.disconnect(_resize_viewport)
+		get_window().size_changed.disconnect(_queue_resize)
+		get_window().set_meta(&"sfh_control_entry", true)
 		get_window().content_scale_size = ViewportPolicy.logical_size(get_window().size, mode == &"on")
 		_enter_game()
 

@@ -23,6 +23,7 @@ const ACTIONS := [
 var settings_provider: Node
 var action_buttons: Dictionary = {}
 var pressed_actions: Dictionary = {}
+var emitted_actions: Dictionary = {}
 var touchscreen_override: Variant = null
 var movement_group: Control
 var combat_group: Control
@@ -36,6 +37,8 @@ var energy_label: Label
 var refresh_elapsed := 0.0
 var original_mouse_emulation := true
 var focus_available := true
+var original_scale_size := Vector2i.ZERO
+var managed_mobile_scale := false
 
 
 func _ready() -> void:
@@ -45,8 +48,9 @@ func _ready() -> void:
 	_build_ui()
 	resized.connect(_apply_layout)
 	visibility_changed.connect(_on_visibility_changed)
-	get_window().size_changed.connect(_resize_viewport)
+	get_window().size_changed.connect(func(): _resize_viewport.call_deferred())
 	original_mouse_emulation = Input.emulate_mouse_from_touch
+	original_scale_size = Vector2i(1280, 720) if get_window().has_meta(&"sfh_control_entry") else get_window().content_scale_size
 	_apply_layout()
 	visible = false
 
@@ -84,6 +88,7 @@ func release_all() -> void:
 		_send_action(action_id, false)
 		(action_buttons[action_id] as Button).set_pressed_no_signal(false)
 	pressed_actions.clear()
+	emitted_actions.clear()
 
 
 func set_context_enabled(enabled: bool) -> void:
@@ -114,10 +119,15 @@ func _exit_tree() -> void:
 	Input.emulate_mouse_from_touch = original_mouse_emulation
 
 
-func configure_runtime(skills: Node, movement: Node) -> void:
+func configure_runtime(skills: Node, movement: Node) -> bool:
+	if skills != null and not skills.has_method(&"get_skill_states"):
+		return false
+	if movement != null and not movement.has_method(&"get_movement_snapshot"):
+		return false
 	skill_provider = skills
 	movement_provider = movement
 	_refresh_status()
+	return true
 
 
 func _process(delta: float) -> void:
@@ -198,9 +208,12 @@ func _refresh_status() -> void:
 		var state: Dictionary = states[index]
 		var remaining := float(state.get(&"cooldown_remaining", 0))
 		var label := "READY" if bool(state.get(&"ready", false)) else ("%.1fs" % remaining if remaining > 0 else "WAIT")
+		if remaining <= 0 and not bool(state.get(&"resource_ready", true)):
+			var recovery := float(state.get(&"charge_recovery_remaining", 0))
+			label = "%.1fs" % recovery if int(state.get(&"current_charges", -1)) == 0 else "EN 부족"
 		if not bool(state.get(&"weapon_tags_ready", true)):
 			label = "LOCK"
-		button.text = "%d\n%s" % [index + 1, label]
+		button.text = "%s\n%s" % [String(state.get(&"display_name", str(index + 1))).left(4), label]
 		button.tooltip_text = "스킬 %d · %s · EN %d · 충전 %d/%d" % [index + 1, state.get(&"display_name", ""), state.get(&"energy_cost", 0), state.get(&"current_charges", 0), state.get(&"maximum_charges", 0)]
 		energy_label.text = "EN %d / %d" % [state.get(&"energy_current", 0), state.get(&"energy_maximum", 0)]
 	var dash := action_buttons[&"dash"] as Button
@@ -215,7 +228,11 @@ func _resize_viewport() -> void:
 	if not adapt_viewport or settings_provider == null:
 		return
 	var mobile := bool(settings_provider.call(&"should_show_mobile_controls", _touchscreen_available()))
-	var target := ViewportPolicy.logical_size(get_window().size, mobile)
+	# 기존 PC/테스트 호스트의 해상도 정책에는 관여하지 않습니다.
+	if not mobile and not managed_mobile_scale:
+		return
+	var target := ViewportPolicy.logical_size(get_window().size, true) if mobile else original_scale_size
+	managed_mobile_scale = mobile
 	if get_window().content_scale_size != target:
 		release_all()
 		get_window().content_scale_size = target
@@ -307,6 +324,8 @@ func _apply_layout() -> void:
 		(child as Button).custom_minimum_size = Vector2(44, 44)
 		(child as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	action_buttons[&"toggle_key_mapping"].text = "설정"
+	for entry in [[&"switch_weapon", "무기"], [&"toggle_map", "지도"], [&"toggle_inventory", "가방"], [&"toggle_equipment", "장비"], [&"toggle_modification", "모듈"]]:
+		action_buttons[entry[0]].text = entry[1]
 
 
 func _place_button(action_id: StringName, x: float, y: float, button_size: float) -> void:
@@ -334,8 +353,19 @@ func _set_action_pressed(action_id: StringName, pressed: bool) -> void:
 
 func _send_action(action_id: StringName, pressed: bool) -> void:
 	# action_press만 사용하면 _unhandled_input 기반 가방/지도/설정이 열리지 않습니다.
+	var resolved: StringName = emitted_actions.get(action_id, action_id)
+	if pressed:
+		# 화면 슬롯은 현재 스킬을 뜻합니다. K에서 Action을 옮겨도 동일한 스킬을 누릅니다.
+		if String(action_id).begins_with("combat_skill_") and is_instance_valid(skill_provider):
+			var index := int(String(action_id).trim_prefix("combat_skill_")) - 1
+			var states: Array = skill_provider.call(&"get_skill_states")
+			if index >= 0 and index < states.size():
+				resolved = StringName(states[index].get(&"input_action", action_id))
+		emitted_actions[action_id] = resolved
+	else:
+		emitted_actions.erase(action_id)
 	var event := InputEventAction.new()
-	event.action = action_id
+	event.action = resolved
 	event.pressed = pressed
 	event.strength = 1.0 if pressed else 0.0
 	Input.parse_input_event(event)

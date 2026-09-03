@@ -37,6 +37,11 @@ func get_snapshot() -> Dictionary:
 	return fx_snapshot
 
 
+func set_mobile_layout(enabled: bool) -> void:
+	# 터치 메뉴 위에 장식 상태 문구를 중첩하지 않습니다.
+	status_label.get_parent().visible = not enabled
+
+
 func _process(delta: float) -> void:
 	elapsed += delta
 	var viewport_size := get_viewport().get_visible_rect().size

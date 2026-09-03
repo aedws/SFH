@@ -115,15 +115,21 @@ func _mobile_play() -> void:
 		for rect: Rect2 in [snapshot.core_rect, snapshot.telemetry_rect, snapshot.mission_rect]:
 			_check(not rect.intersects(pad.movement_group.get_global_rect()) and not rect.intersects(pad.combat_group.get_global_rect()), "HUD clears both hands %s" % dimensions)
 		_check(root.get_visible_rect().grow(1).encloses(game.minimap.get_global_rect()), "mobile minimap bounds")
+		_check(not snapshot.mission_rect.intersects(game.minimap.get_global_rect()), "mission and minimap do not overlap")
 	var energy_before := float(game.combat_skill_system.get_skill_states()[0].energy_current)
+	var skill_id: StringName = game.combat_skill_system.get_skill_states()[0].skill_id
+	game.skill_binding_service.assign_skill(skill_id, &"combat_skill_9")
+	await _frames(3)
 	_touch(10, pad.joystick.get_global_rect().get_center() + Vector2(50, 0), true)
 	_touch(11, pad.action_buttons[&"primary_attack"].get_global_rect().get_center(), true)
 	_touch(12, pad.action_buttons[&"combat_skill_1"].get_global_rect().get_center(), true)
 	for _i in 10: await physics_frame
 	_check(float(game.combat_skill_system.get_skill_states()[0].energy_current) < energy_before, "third finger casts actual skill while moving and firing")
+	_check(Input.is_action_pressed(&"combat_skill_9") and not Input.is_action_pressed(&"combat_skill_1"), "touch slot follows remapped skill action")
 	_check(not pad.energy_label.text.contains("--"), "touch HUD has current energy")
 	pad.notification(Node.NOTIFICATION_APPLICATION_FOCUS_OUT)
 	_check(not Input.is_action_pressed(&"primary_attack") and not Input.is_action_pressed(&"move_right") and pad.pressed_actions.is_empty(), "background tab releases all")
+	_check(not Input.is_action_pressed(&"combat_skill_9"), "release uses action captured before remapping")
 	pad.notification(Node.NOTIFICATION_APPLICATION_FOCUS_IN)
 	await _frames(3)
 	game.presentation_settings_service.set_mobile_controls_mode(&"off")

@@ -384,6 +384,7 @@ const PRESENTATION_SETTINGS_METHODS := [
 ]
 const MOBILE_CONTROL_PAD_METHODS := [
 	&"configure", &"get_snapshot", &"simulate_action", &"release_all", &"set_context_enabled",
+	&"configure_runtime",
 ]
 const ELITE_PURSUIT_METHODS := [&"configure", &"get_snapshot", &"force_evaluate"]
 const SKILL_BINDING_METHODS := [
@@ -564,6 +565,7 @@ func _ready() -> void:
 		if button is Button:
 			skill_investment_buttons.append(button)
 	combat_hud_presenter.call(&"install", hud_margin)
+	combat_hud_presenter.call(&"attach_hub", start_hub_hud)
 	restart_button.pressed.connect(_restart_run)
 	setup_close_button.pressed.connect(_close_run_setup)
 	locked_balance_button.pressed.connect(
@@ -1055,6 +1057,8 @@ func _on_presentation_settings_changed(snapshot: Dictionary) -> void:
 	combat_hud_presenter.call(&"apply_user_preferences", resolved_snapshot)
 	if is_instance_valid(minimap) and minimap.has_method(&"set_mobile_layout"):
 		minimap.call(&"set_mobile_layout", resolved_snapshot[&"mobile_controls_visible"])
+	if is_instance_valid(cyberpunk_overlay) and cyberpunk_overlay.has_method(&"set_mobile_layout"):
+		cyberpunk_overlay.call(&"set_mobile_layout", resolved_snapshot[&"mobile_controls_visible"])
 	_refresh_control_hints()
 
 
