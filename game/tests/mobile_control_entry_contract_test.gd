@@ -85,6 +85,13 @@ func _mobile_play() -> void:
 	_touch(20, gui.get_global_rect().get_center(), true)
 	pad.release_all()
 	_check(int(gui.get_meta(&"clicks")) == 1, "canceled GUI touch must not click")
+	_touch(20, gui.get_global_rect().get_center(), true)
+	var canceled := InputEventScreenTouch.new()
+	canceled.index = 20
+	canceled.position = gui.get_global_rect().get_center()
+	canceled.canceled = true
+	root.push_input(canceled, true)
+	_check(int(gui.get_meta(&"clicks")) == 1, "OS touch cancellation must not click")
 	gui.queue_free()
 	var center: Vector2 = pad.joystick.get_global_rect().get_center()
 	var before: Vector2 = game.player.global_position

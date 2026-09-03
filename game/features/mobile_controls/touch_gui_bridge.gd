@@ -12,7 +12,7 @@ func handle(event: InputEvent, viewport: Viewport) -> void:
 			_mouse_button(viewport, true)
 		elif event.index == finger and (not event.pressed or event.canceled):
 			position = Vector2(-1000, -1000) if event.canceled else event.position
-			release(viewport)
+			release(viewport, event.canceled)
 	elif event is InputEventScreenDrag and event.index == finger:
 		var motion := InputEventMouseMotion.new()
 		motion.position = event.position
