@@ -1,9 +1,16 @@
 {
-  "version": 30,
+  "version": 31,
   "updated": "2026-09-03",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "다운로드판 자동 저장",
+      "label": "Windows 기록 이어하기·백업",
+      "description": "가방·장비·모듈·파츠·영구 획득 복원, 저장 위치와 작전 중단 규칙",
+      "category": "실행",
+      "priority": 100
+    },
     {
       "query": "SFH 종합 문서",
       "label": "처음 읽는 SFH · 주제별 문서",

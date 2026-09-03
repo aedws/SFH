@@ -1,4 +1,5 @@
 extends SceneTree
+var save_test_isolation: RefCounted
 
 const GAME_SCENE_PATH := "res://game/scenes/game.tscn"
 const WARMUP_FRAMES := 90
@@ -11,13 +12,12 @@ const MINIMUM_LARGE_ROOM_HORDE := 24
 
 
 func _init() -> void:
+	save_test_isolation = preload("res://game/tests/support/save_test_isolation.gd").new()
+	node_added.connect(save_test_isolation.isolate)
 	_run.call_deferred()
 
 
 func _run() -> void:
-	for path in ["user://sfh_profile.json", "user://sfh_rankings.json"]:
-		if FileAccess.file_exists(path):
-			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	var game_scene := load(GAME_SCENE_PATH) as PackedScene
 	if game_scene == null:
 		_fail("Game Scene을 불러오지 못했습니다.")

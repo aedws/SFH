@@ -5,6 +5,9 @@ signal profile_changed(snapshot: Dictionary)
 
 var storage_path := "user://sfh_profile.json"
 var persistence_enabled := true
+var safe_persistence := false
+var storage_error := ""
+var save_store = preload("res://game/core/persistence/atomic_json_store.gd").new()
 var banked_credits := 5000
 var unlock_ids: Array[StringName] = [&"operation_gate", &"region_ruined_city"]
 var warehouse: Dictionary = {&"scrap": 8, &"field_medkit": 2}
@@ -18,9 +21,11 @@ var codex_progress: Dictionary = {}
 var processed_transaction_ids: Array[StringName] = []
 
 
-func configure(new_storage_path: String, enable_persistence: bool = true) -> bool:
+func configure(new_storage_path: String, enable_persistence: bool = true, use_safe_storage: bool = false) -> bool:
 	storage_path = new_storage_path
 	persistence_enabled = enable_persistence and not storage_path.is_empty()
+	safe_persistence = use_safe_storage
+	storage_error = ""
 	_reset_defaults()
 	if persistence_enabled:
 		_load()
@@ -246,6 +251,11 @@ func _commit() -> void:
 
 
 func _save() -> void:
+	if safe_persistence:
+		if not storage_error.is_empty(): return
+		if not save_store.write(storage_path, get_snapshot(), true):
+			storage_error = save_store.last_error
+		return
 	var file := FileAccess.open(storage_path, FileAccess.WRITE)
 	if file == null:
 		push_warning("영구 프로필 저장 파일을 열 수 없습니다: %s" % storage_path)
@@ -266,11 +276,22 @@ func _save() -> void:
 
 
 func _load() -> void:
-	if not FileAccess.file_exists(storage_path):
-		return
-	var file := FileAccess.open(storage_path, FileAccess.READ)
-	var parsed = JSON.parse_string(file.get_as_text()) if file != null else null
+	var parsed: Variant
+	if safe_persistence:
+		var stored: Dictionary = save_store.read(storage_path, true)
+		if not stored.ok:
+			storage_error = "영구 프로필 복원 실패 · 원본 보존"
+			return
+		if stored.status == "new": return
+		parsed = stored.data
+	else:
+		if not FileAccess.file_exists(storage_path): return
+		var file := FileAccess.open(storage_path, FileAccess.READ)
+		parsed = JSON.parse_string(file.get_as_text()) if file != null else null
 	if not parsed is Dictionary:
+		return
+	if not _valid_saved_profile(parsed):
+		storage_error = "영구 프로필 형식 오류 · 원본 보존"
 		return
 	banked_credits = maxi(0, int(parsed.get("banked_credits", banked_credits)))
 	unlock_ids = _string_name_array(parsed.get("unlock_ids", []))
@@ -283,6 +304,26 @@ func _load() -> void:
 	registered_blueprint_ids = _string_name_array(parsed.get("registered_blueprint_ids", []))
 	codex_progress = _string_name_key_dictionary(parsed.get("codex_progress", {}))
 	processed_transaction_ids = _string_name_array(parsed.get("processed_transaction_ids", []))
+
+
+func get_storage_status() -> Dictionary:
+	return {"ok": storage_error.is_empty(), "message": storage_error, "path": storage_path}
+
+
+func _valid_saved_profile(data: Dictionary) -> bool:
+	if not (data.get("banked_credits") is float or data.get("banked_credits") is int): return false
+	for key in ["warehouse", "blueprints", "codex_progress"]:
+		if not data.get(key, {}) is Dictionary: return false
+		for quantity in data.get(key, {}).values():
+			if not (quantity is float or quantity is int): return false
+	for key in ["unlock_ids", "consumable_loadout", "unlocked_shop_offer_ids", "unlocked_skill_ids", "registered_blueprint_ids", "processed_transaction_ids"]:
+		if not data.get(key, []) is Array: return false
+		for value in data.get(key, []):
+			if not value is String: return false
+	if not data.get("crafted_items", []) is Array: return false
+	for item in data.get("crafted_items", []):
+		if not item is Dictionary: return false
+	return true
 
 
 func _string_key_dictionary(source: Dictionary) -> Dictionary:

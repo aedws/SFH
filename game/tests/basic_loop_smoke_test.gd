@@ -1,4 +1,5 @@
 extends SceneTree
+var save_test_isolation: RefCounted
 
 const GAME_SCENE_PATH := "res://game/scenes/game.tscn"
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
@@ -432,9 +433,8 @@ func _verify_web_export_data_contract() -> bool:
 
 
 func _reset_persistent_test_data() -> void:
-	for path in ["user://sfh_profile.json", "user://sfh_rankings.json"]:
-		if FileAccess.file_exists(path):
-			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	save_test_isolation = preload("res://game/tests/support/save_test_isolation.gd").new()
+	node_added.connect(save_test_isolation.isolate)
 
 
 func _verify_meta_operation_modules() -> bool:
