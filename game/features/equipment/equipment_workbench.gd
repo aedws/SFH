@@ -613,7 +613,9 @@ func _equip_selected_candidate() -> void:
 	var equipped := bool(
 		equipment_provider.call(&"equip_state", selected_slot_id, saved_state)
 		if saved_state != null
-		else equipment_provider.call(&"equip_definition", selected_slot_id, definition)
+		else equipment_provider.call(
+			&"equip_definition", selected_slot_id, definition, payload
+		)
 	)
 	if not equipped:
 		inventory_provider.call(
@@ -711,7 +713,8 @@ func _install_selected_modification() -> void:
 			selected_slot_id,
 			candidate_id,
 			definition,
-			int(payload.get(&"upgrade_level", 1))
+			int(payload.get(&"upgrade_level", 1)),
+			payload
 		))
 	elif item_type == &"part":
 		installed = bool(equipment_provider.call(
@@ -725,9 +728,13 @@ func _install_selected_modification() -> void:
 		return
 	var item_name: String = selected_inventory_entry.get(&"display_name", "아이템")
 	if not removed.is_empty():
-		inventory_provider.call(&"add_linked_resource", removed.get(&"definition"), {
-			&"upgrade_level": int(removed.get(&"upgrade_level", 1)),
-		})
+		var removed_payload: Dictionary = (
+			removed.get(&"item_quality_payload", {}) as Dictionary
+		).duplicate(true)
+		removed_payload[&"upgrade_level"] = int(removed.get(&"upgrade_level", 1))
+		inventory_provider.call(
+			&"add_linked_resource", removed.get(&"definition"), removed_payload
+		)
 	selected_inventory_entry.clear()
 	selected_installed_kind = &""
 	selected_installed_id = &""
@@ -761,10 +768,12 @@ func _uninstall_selected_modification() -> void:
 		selected_slot_id,
 		selected_id
 	)
+	var removed_payload: Dictionary = (
+		removed.get(&"item_quality_payload", {}) as Dictionary
+	).duplicate(true)
+	removed_payload[&"upgrade_level"] = int(removed.get(&"upgrade_level", 1))
 	if removed.is_empty() or inventory_provider.call(
-		&"add_linked_resource", removed.get(&"definition"), {
-			&"upgrade_level": int(removed.get(&"upgrade_level", 1)),
-		}
+		&"add_linked_resource", removed.get(&"definition"), removed_payload
 	) == &"":
 		_restore_removed_modification(selected_kind, removed, selected_id)
 		_set_status("모듈/파츠 해제에 실패했습니다.")
@@ -785,7 +794,8 @@ func _restore_removed_modification(
 	if kind == &"module":
 		equipment_provider.call(
 			&"install_module", selected_slot_id, target_id,
-			removed.get(&"definition"), int(removed.get(&"upgrade_level", 1))
+			removed.get(&"definition"), int(removed.get(&"upgrade_level", 1)),
+			removed.get(&"item_quality_payload", {})
 		)
 	else:
 		equipment_provider.call(

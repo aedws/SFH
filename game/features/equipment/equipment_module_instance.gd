@@ -4,12 +4,27 @@ extends Resource
 @export var instance_id: StringName
 @export var definition: EquipmentModuleDefinition
 @export_range(1, 100, 1) var upgrade_level: int = 1
+@export var item_quality_payload: Dictionary = {}
 
 
-func configure(new_instance_id: StringName, new_definition: EquipmentModuleDefinition) -> void:
+func configure(
+	new_instance_id: StringName,
+	new_definition: EquipmentModuleDefinition,
+	quality_payload: Dictionary = {}
+) -> void:
 	instance_id = new_instance_id
 	definition = new_definition
 	upgrade_level = 1
+	item_quality_payload = quality_payload.duplicate(true)
+
+
+func quality_multiplier() -> float:
+	var value := float(item_quality_payload.get(&"performance_multiplier", 1.0))
+	return value if is_finite(value) and value > 0.0 else 1.0
+
+
+func quality_label() -> String:
+	return String(item_quality_payload.get(&"quality_label", "표준"))
 
 
 func can_upgrade(maximum_level_override: int = -1) -> bool:

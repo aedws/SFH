@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-09-03",
+  "updated": "2026-09-04",
   "source": {
     "url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
     "root_version": 1005,
@@ -26,12 +26,12 @@
           "id": "P7-01",
           "title": "상점 매물 정의와 3대 품질군",
           "state": "in_progress",
-          "completed_scope": ["P7-01A: 읽기 전용 매물 견적·수량당 비교·명시 구매·ESC 복귀"],
-          "remaining_scope": ["P7-01B: 실제 품질 성능·옵션·소켓 적용", "품질 장비 실물 지급·I/U 장착 연결", "손상품 가격/성능 범위와 고성능 규칙 확정"],
-          "evidence": ["game/tests/shop_browser_contract_test.gd", "docs/features/hub-economy.md"],
+          "completed_scope": ["P7-01A: 읽기 전용 매물 견적·수량당 비교·명시 구매·ESC 복귀", "P7-01B: 개별 품질·옵션·소켓 payload, I 가방 실물 지급, U/E 장착 실제 배율, 해제 왕복 보존"],
+          "remaining_scope": ["손상품 가격/성능 범위와 고성능 옵션·소켓 규칙 기획 확정"],
+          "evidence": ["game/tests/shop_browser_contract_test.gd", "game/tests/shop_quality_inventory_contract_test.gd", "docs/features/hub-economy.md"],
           "dependencies": ["P5_COMPLETE", "P6_COMPLETE"],
           "data_gate": "sheet_if_catalog",
-          "modules": ["ShopOfferDefinition", "ShopQualityPolicy", "ShopCatalogProvider"],
+          "modules": ["ShopOfferDefinition", "ShopQualityPolicy", "ShopCatalogProvider", "ShopItemQualityPolicy", "ShopInventoryDeliveryService"],
           "player_outcome": "손상·표준·고성능 매물의 가격, 성능, 위험을 구매 전에 구분한다.",
           "e2e": "세 품질군 표시→견적 비교→구매 결과→다음 로드아웃 반영"
         },

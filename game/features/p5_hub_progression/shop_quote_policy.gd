@@ -1,17 +1,20 @@
 class_name ShopQuotePolicy
 extends RefCounted
-## Pure, read-only quote. Quality metadata is NOT a runtime stat grant.
+## Pure, read-only quote. Delivery and quality effects remain external providers.
 
-const QUALITY_LABELS := {&"damaged": "손상", &"standard": "표준", &"high_performance": "고성능"}
+const QUALITY_POLICY := preload(
+	"res://game/features/p5_hub_progression/shop_item_quality_policy.gd"
+)
 
 
 static func quote(offer: Dictionary, catalog: Array[Dictionary], profile: Dictionary,
-		rotation_index: int) -> Dictionary:
+		rotation_index: int, delivery_preview: Dictionary = {}) -> Dictionary:
 	var result := {
 		&"purchasable": false, &"reason": "현재 회전 상품 아님",
 		&"offer": offer.duplicate(true), &"rotation_index": rotation_index,
 		&"credits": int(profile.get(&"banked_credits", 0)),
-		&"quality_applied": false, &"delivery": "창고 수량 지급",
+		&"quality_applied": not delivery_preview.is_empty(),
+		&"delivery": delivery_preview.get(&"delivery", "창고 수량 지급"),
 	}
 	if offer.is_empty(): return result
 	var price: Variant = offer.get(&"price")
@@ -20,17 +23,23 @@ static func quote(offer: Dictionary, catalog: Array[Dictionary], profile: Dictio
 	var quality := StringName(offer.get(&"quality", &""))
 	if not price is int or price < 0 or not quantity is int or quantity <= 0 \
 			or not is_finite(multiplier) or multiplier <= 0.0 \
-			or not QUALITY_LABELS.has(quality) or String(offer.get(&"target_id", "")).is_empty():
+			or not QUALITY_POLICY.QUALITY_LABELS.has(quality) or String(offer.get(&"target_id", "")).is_empty():
 		result[&"reason"] = "매물 데이터 오류 · 구매 불가"
 		return result
 	if StringName(offer.get(&"target_type", &"")) != &"item":
 		result[&"reason"] = "미지원 지급 유형 · 구매 불가"
 		return result
-	result[&"quality_label"] = QUALITY_LABELS[quality]
+	result[&"quality_label"] = QUALITY_POLICY.QUALITY_LABELS[quality]
 	result[&"configured_performance"] = multiplier
 	result[&"unit_price"] = float(price) / float(quantity)
 	result[&"balance_after"] = int(result[&"credits"]) - int(price)
-	result[&"owned_quantity"] = int((profile.get(&"warehouse", {}) as Dictionary).get(offer[&"target_id"], 0))
+	result[&"owned_quantity"] = int(delivery_preview.get(
+		&"owned_quantity",
+		(profile.get(&"warehouse", {}) as Dictionary).get(offer[&"target_id"], 0)
+	))
+	result[&"quality_option_ids"] = QUALITY_POLICY.QUALITY_OPTIONS[quality]
+	result[&"quality_socket_count"] = int(QUALITY_POLICY.QUALITY_SOCKETS[quality])
+	result[&"item_type"] = delivery_preview.get(&"item_type", &"item")
 	result[&"source_status"] = String(offer.get(&"source_status", "provisional"))
 	# Compare like-for-like targets, never unrelated goods or pack totals.
 	for candidate in catalog:
@@ -46,6 +55,8 @@ static func quote(offer: Dictionary, catalog: Array[Dictionary], profile: Dictio
 		result[&"reason"] = "해금 조건 미달"
 	elif int(result[&"balance_after"]) < 0:
 		result[&"reason"] = "크레딧 부족"
+	elif not delivery_preview.is_empty() and not bool(delivery_preview.get(&"can_deliver", false)):
+		result[&"reason"] = String(delivery_preview.get(&"reason", "가방 지급 불가"))
 	else:
 		result[&"purchasable"] = true
 		result[&"reason"] = ""

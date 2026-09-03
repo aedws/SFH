@@ -2894,7 +2894,7 @@ func _verify_optional_meta_operation_modules(game_scene: PackedScene) -> bool:
 		"persistent_profile_enabled", "operation_contracts_enabled",
 		"operation_launch_preflight_enabled",
 		"character_selection_enabled", "loadout_investment_enabled",
-		"p5_hub_progression_enabled",
+		"p5_hub_progression_enabled", "shop_item_delivery_enabled",
 		"extraction_defense_enabled", "hub_economy_enabled", "smart_targeting_enabled",
 		"crafting_enabled", "penalty_modifiers_enabled", "conditional_ranking_enabled",
 		"run_settlement_enabled",

@@ -54,6 +54,7 @@ extends Resource
 @export var loadout_investment_enabled: bool = true
 @export var p5_hub_progression_enabled: bool = true
 @export var shop_browser_enabled: bool = true
+@export var shop_item_delivery_enabled: bool = true
 @export var hub_preparation_enabled: bool = true
 @export var extraction_defense_enabled: bool = true
 @export var hub_economy_enabled: bool = true
@@ -305,6 +306,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"p5_hub_progression")
 	if shop_browser_enabled and p5_hub_progression_enabled:
 		result.append(&"shop_browser")
+	if shop_item_delivery_enabled and p5_hub_progression_enabled and inventory_enabled:
+		result.append(&"shop_item_delivery")
 	if hub_preparation_enabled and start_hub_enabled:
 		result.append(&"hub_preparation")
 	if extraction_defense_enabled:
@@ -531,6 +534,8 @@ func validation_errors() -> PackedStringArray:
 		errors.append("p5_hub_progression은 persistent_profile·operation_contracts 모듈이 필요합니다.")
 	if p5_hub_progression_enabled and not _resource_exists(p5_hub_progression_config_path):
 		errors.append("P5 거점 진행 설정 Resource 경로가 유효하지 않습니다.")
+	if shop_item_delivery_enabled and (not p5_hub_progression_enabled or not inventory_enabled):
+		errors.append("shop_item_delivery는 p5_hub_progression·inventory 모듈이 필요합니다.")
 	if extraction_defense_enabled and not extraction_enabled:
 		errors.append("extraction_defense는 extraction 모듈이 필요합니다.")
 	if extraction_defense_enabled and not _resource_exists(extraction_defense_config_path):

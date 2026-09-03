@@ -9,6 +9,7 @@ var placements: Dictionary = {}
 var serials: Dictionary = {}
 var runtime_payloads: Dictionary = {}
 var item_definitions_by_resource: Dictionary = {}
+var item_definitions_by_id: Dictionary = {}
 
 
 func configure(catalog: InventoryCatalog) -> bool:
@@ -21,7 +22,9 @@ func configure(catalog: InventoryCatalog) -> bool:
 	serials.clear()
 	runtime_payloads.clear()
 	item_definitions_by_resource.clear()
+	item_definitions_by_id.clear()
 	for definition in catalog.items:
+		item_definitions_by_id[definition.item_id] = definition
 		if definition.linked_resource != null:
 			item_definitions_by_resource[_resource_key(definition.linked_resource)] = definition
 	for definition in catalog.items:
@@ -36,6 +39,14 @@ func add_item(
 	definition: InventoryItemDefinition,
 	preferred_position: Vector2i = Vector2i(-1, -1)
 ) -> StringName:
+	return add_item_with_payload(definition, {}, preferred_position)
+
+
+func add_item_with_payload(
+	definition: InventoryItemDefinition,
+	runtime_payload: Dictionary = {},
+	preferred_position: Vector2i = Vector2i(-1, -1)
+) -> StringName:
 	if definition == null or not definition.is_valid():
 		return &""
 	var position := preferred_position
@@ -46,9 +57,70 @@ func add_item(
 	var instance_id := _next_instance_id(definition.item_id)
 	items[instance_id] = definition
 	placements[instance_id] = position
-	runtime_payloads[instance_id] = {}
+	runtime_payloads[instance_id] = runtime_payload.duplicate(true)
 	inventory_changed.emit(get_snapshot())
 	return instance_id
+
+
+func get_item_definition(item_id: StringName) -> InventoryItemDefinition:
+	return item_definitions_by_id.get(item_id) as InventoryItemDefinition
+
+
+func can_add_catalog_items(item_id: StringName, quantity: int) -> bool:
+	var definition := get_item_definition(item_id)
+	if definition == null or quantity <= 0:
+		return false
+	var occupied: Array[Rect2i] = []
+	for instance_id in placements:
+		var current := items[instance_id] as InventoryItemDefinition
+		occupied.append(Rect2i(placements[instance_id], current.grid_size))
+	var bounds := Rect2i(Vector2i.ZERO, grid_size)
+	for _index in quantity:
+		var placement := Vector2i(-1, -1)
+		for y in range(grid_size.y - definition.grid_size.y + 1):
+			for x in range(grid_size.x - definition.grid_size.x + 1):
+				var candidate := Rect2i(Vector2i(x, y), definition.grid_size)
+				if not bounds.encloses(candidate):
+					continue
+				var blocked := false
+				for other in occupied:
+					if candidate.intersects(other):
+						blocked = true
+						break
+				if not blocked:
+					placement = candidate.position
+					occupied.append(candidate)
+					break
+			if placement.x >= 0:
+				break
+		if placement.x < 0:
+			return false
+	return true
+
+
+func add_catalog_item(
+	item_id: StringName,
+	runtime_payload: Dictionary = {},
+	preferred_position: Vector2i = Vector2i(-1, -1)
+) -> StringName:
+	return add_item_with_payload(
+		get_item_definition(item_id), runtime_payload, preferred_position
+	)
+
+
+func remove_item_instances(instance_ids: Array) -> bool:
+	var removed_any := false
+	for value in instance_ids:
+		var instance_id := StringName(value)
+		if not items.has(instance_id):
+			continue
+		items.erase(instance_id)
+		placements.erase(instance_id)
+		runtime_payloads.erase(instance_id)
+		removed_any = true
+	if removed_any:
+		inventory_changed.emit(get_snapshot())
+	return removed_any
 
 
 func add_linked_resource(
@@ -59,10 +131,9 @@ func add_linked_resource(
 	var definition := _inventory_definition_for_resource(linked_resource)
 	if definition == null:
 		return &""
-	var instance_id := add_item(definition, preferred_position)
+	var instance_id := add_item_with_payload(definition, runtime_payload, preferred_position)
 	if instance_id != &"":
-		runtime_payloads[instance_id] = runtime_payload.duplicate(true)
-		inventory_changed.emit(get_snapshot())
+		item_definitions_by_id[definition.item_id] = definition
 	return instance_id
 
 

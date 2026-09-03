@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "9c9035919e8686b37bbd3292bc4ab0f9700911202b7f487679a1fa64fd377b99",
+  "source_sha256": "a43dbdae577c31b6b50af5b1301fb62373c2e3e51aa279dfea7651c03e2db1d1",
   "layers": [
     {
       "id": "contract",
@@ -25,11 +25,11 @@
   ],
   "summary": {
     "modules": 59,
-    "scripts": 241,
-    "named_classes": 200,
+    "scripts": 244,
+    "named_classes": 202,
     "relationships": 181,
     "project_inheritance": 7,
-    "enabled_toggles": 68
+    "enabled_toggles": 69
   },
   "modules": [
     {
@@ -732,8 +732,8 @@
       "path": "game/features/p5_hub_progression",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 12,
-      "class_count": 12,
+      "file_count": 14,
+      "class_count": 14,
       "classes": [
         "BankruptcyProtectionPolicy",
         "CodexService",
@@ -743,6 +743,8 @@
         "P5HubProgressionConfig",
         "P5HubProgressionService",
         "RotatingShopService",
+        "ShopInventoryDeliveryService",
+        "ShopItemQualityPolicy",
         "ShopQuotePolicy",
         "TrainingService",
         "UtilityInvestmentService",
@@ -1050,7 +1052,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 31,
+      "file_count": 32,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -2463,6 +2465,24 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:ShopInventoryDeliveryService",
+      "name": "ShopInventoryDeliveryService",
+      "module": "p5_hub_progression",
+      "path": "game/features/p5_hub_progression/shop_inventory_delivery_service.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:ShopItemQualityPolicy",
+      "name": "ShopItemQualityPolicy",
+      "module": "p5_hub_progression",
+      "path": "game/features/p5_hub_progression/shop_item_quality_policy.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:ShopQuotePolicy",
       "name": "ShopQuotePolicy",
       "module": "p5_hub_progression",
@@ -3704,7 +3724,7 @@
       "from": "verification",
       "to": "equipment",
       "type": "verifies",
-      "evidence_count": 6
+      "evidence_count": 7
     },
     {
       "from": "verification",
@@ -3752,7 +3772,7 @@
       "from": "verification",
       "to": "inventory",
       "type": "verifies",
-      "evidence_count": 5
+      "evidence_count": 6
     },
     {
       "from": "verification",
@@ -3842,7 +3862,7 @@
       "from": "verification",
       "to": "p5_hub_progression",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
@@ -3854,13 +3874,13 @@
       "from": "verification",
       "to": "persistent_profile",
       "type": "verifies",
-      "evidence_count": 8
+      "evidence_count": 9
     },
     {
       "from": "verification",
       "to": "player",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "verification",

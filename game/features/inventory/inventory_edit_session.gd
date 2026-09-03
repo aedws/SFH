@@ -64,7 +64,12 @@ func equip_item(instance_id: StringName, slot_id: StringName) -> bool:
 	var before := _checkpoint()
 	var item: Dictionary = inventory.take_item_entry(instance_id)
 	var saved: Resource = item.get(&"runtime_payload", {}).get(&"equipment_state")
-	var ok := bool(equipment.equip_state(slot_id, saved) if saved != null else equipment.equip_definition(slot_id, definition))
+	var runtime_payload: Dictionary = item.get(&"runtime_payload", {})
+	var ok := bool(
+		equipment.equip_state(slot_id, saved)
+		if saved != null
+		else equipment.equip_definition(slot_id, definition, runtime_payload)
+	)
 	if ok and previous != null:
 		ok = inventory.add_linked_resource(previous.definition, {&"equipment_state": previous}) != &""
 	return _finish_operation(ok, before)
@@ -89,8 +94,12 @@ func install_item(instance_id: StringName, slot_id: StringName) -> bool:
 	# Validate on an isolated state before taking anything from the draft bag.
 	var preview: Resource = state.duplicate(true)
 	preview.set_upgrade_balance_provider(state.upgrade_balance_provider)
-	var level := int(entry.get(&"runtime_payload", {}).get(&"upgrade_level", 1))
-	var valid := bool(preview.install_module(instance_id, definition, level) if kind == &"module" else preview.install_part(definition, level))
+	var runtime_payload: Dictionary = entry.get(&"runtime_payload", {})
+	var level := int(runtime_payload.get(&"upgrade_level", 1))
+	var valid := bool(
+		preview.install_module(instance_id, definition, level, runtime_payload)
+		if kind == &"module" else preview.install_part(definition, level)
+	)
 	if not valid or not preview.validation_errors().is_empty():
 		return _reject("장착 불가 · 태그, 고유 소켓, 중복 또는 모듈 코스트를 확인하세요.")
 	var before := _checkpoint()
@@ -109,7 +118,11 @@ func remove_modification(slot_id: StringName, kind: StringName, item_id: StringN
 	var before := _checkpoint()
 	var ok := bool(equipment.equip_state(slot_id, preview))
 	if ok:
-		ok = inventory.add_linked_resource(removed[&"definition"], {&"upgrade_level": removed.get(&"upgrade_level", 1)}) != &""
+		var payload: Dictionary = (
+			removed.get(&"item_quality_payload", {}) as Dictionary
+		).duplicate(true)
+		payload[&"upgrade_level"] = removed.get(&"upgrade_level", 1)
+		ok = inventory.add_linked_resource(removed[&"definition"], payload) != &""
 	return _finish_operation(ok, before)
 
 

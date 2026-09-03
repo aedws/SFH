@@ -11,6 +11,7 @@ var reroll_price := 25
 var slot_count := 3
 var rotation_index := 0
 var processed_transactions: Dictionary = {}
+var delivery_provider
 
 
 func configure(profile_provider: Node, rows: Array[Dictionary], seed: int,
@@ -50,7 +51,23 @@ func refresh(paid: bool = false, transaction_id: StringName = &"") -> Dictionary
 
 
 func quote(offer_id: StringName) -> Dictionary:
-	return QUOTE_POLICY.quote(_find_rotation(offer_id), offers, profile.call(&"get_snapshot"), rotation_index)
+	var offer := _find_rotation(offer_id)
+	var delivery_preview: Dictionary = (
+		delivery_provider.call(&"preview", offer)
+		if delivery_provider != null else {}
+	)
+	return QUOTE_POLICY.quote(
+		offer, offers, profile.call(&"get_snapshot"), rotation_index, delivery_preview
+	)
+
+
+func set_delivery_provider(provider) -> bool:
+	if provider != null:
+		for method_name in [&"preview", &"deliver", &"rollback"]:
+			if not provider.has_method(method_name):
+				return false
+	delivery_provider = provider
+	return true
 
 
 func purchase(offer_id: StringName, transaction_id: StringName, expected_rotation: int = -1) -> Dictionary:
@@ -64,6 +81,22 @@ func purchase(offer_id: StringName, transaction_id: StringName, expected_rotatio
 	var offer: Dictionary = current_quote[&"offer"]
 	if not bool(profile.call(&"spend", int(offer.get(&"price", 0)))):
 		return {&"success": false, &"reason": "크레딧 부족"}
+	if delivery_provider != null:
+		var receipt: Dictionary = delivery_provider.call(
+			&"deliver", offer, transaction_id
+		)
+		if not bool(receipt.get(&"success", false)):
+			profile.call(&"add_credits", int(offer.get(&"price", 0)))
+			return {&"success": false, &"reason": receipt.get(&"reason", "지급 실패")}
+		if not bool(profile.call(&"mark_transaction_processed", transaction_id)):
+			delivery_provider.call(&"rollback", receipt)
+			profile.call(&"add_credits", int(offer.get(&"price", 0)))
+			return {&"success": false, &"reason": "구매 거래 기록 실패"}
+		processed_transactions[transaction_id] = true
+		return {
+			&"success": true, &"offer": offer,
+			&"granted": int(receipt.get(&"granted", 0)), &"delivery": receipt,
+		}
 	var granted := int(profile.call(&"add_warehouse_item", StringName(offer.get(&"target_id", &"")), int(offer.get(&"quantity", 1))))
 	if granted <= 0:
 		profile.call(&"add_credits", int(offer.get(&"price", 0)))
