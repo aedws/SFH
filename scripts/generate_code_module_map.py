@@ -61,6 +61,8 @@ def module_layer(module_id: str) -> str:
 
 
 def wiki_route(module_id: str) -> str:
+    if module_id == "shop_browser":
+        return "features/hub-economy/"
     if module_id == "local_save":
         return "getting-started/run-project/"
     if module_id == "boss_warning":

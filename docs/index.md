@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 20 · IMPROVE 24 · CHANGE 19 · FIX 21</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 21 · IMPROVE 26 · CHANGE 21 · FIX 23</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>20</b><small>BUILD</small></span><span><b>24</b><small>IMPROVE</small></span><span><b>19</b><small>CHANGE</small></span><span><b>21</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>21</b><small>BUILD</small></span><span><b>26</b><small>IMPROVE</small></span><span><b>21</b><small>CHANGE</small></span><span><b>23</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>상점 매물 비교 · 골라서 구매 · 다음 작업 범위 정정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 상점 버튼이 첫 상품을 즉시 사던 동작을 없애고, 가격·수량을 비교한 뒤 고른 상품만 구매합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>3품질 매물 카드와 읽기 전용 견적·명시적 선택 구매 화면을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>같은 상품의 개당 가격을 비교하고, ESC로 준비 화면과 거점의 이전 일시정지 상태로 돌아갑니다. 4개 화면 크기에서 버튼 경계를 검사합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>Notion v1005·77블록은 재조회 결과 동일합니다. 실제 품질 성능과 구매/제작 장비 지급 연결은 미완료로 정정했고, 경제 항목 재산정에 따라 전체 가중 추정치는 94%입니다. 위변조 감지·감사·백업 확장은 구현 예정으로만 등록했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>상점 열기만으로 결제되던 경로와 오래된 회전 견적으로 구매하던 경로를 차단했습니다.</p></div>
+        <p>P7-01A 완료 범위는 비교·선택 구매입니다. 현재 지급은 창고 수량이며 실제 품질 성능·I/U 실물 장착 연결은 다음 P7-01B에서 처리합니다. Sheet·CSV·과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/hub-economy/#shop-browser">상점 사용법 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">검증 범위 →</a> · <a href="design/master-gdd-alignment/">94% 산정 근거 →</a> · <a href="design/p7-plus-preimplementation/#economy-integrity-plan">보안·백업 구현 예정 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 10</small><b>Windows 자동 저장 · 종료 후 진행 이어가기</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 다운로드판을 껐다 켜도 확정한 거점 세팅과 반출한 재화·성장·기록을 이어갑니다.</strong></div>
