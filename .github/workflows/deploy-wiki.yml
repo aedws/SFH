@@ -152,7 +152,9 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/character_selection_contract_test.gd" | tee /tmp/sfh-character-selection.log
           grep -q "CHARACTER_SELECTION_OK characters_3 optional_module locked_live_csv briefing_quote passive_runtime entry_cost_once" /tmp/sfh-character-selection.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loadout_investment_contract_test.gd" | tee /tmp/sfh-loadout-investment.log
-          grep -q "LOADOUT_INVESTMENT_E2E_OK owned_locked_run_purchase price_once weapon_skill_runtime tag_gate restore hub_module_part_preserved same_weapon_customization transient_weapon_override preflight modular_boundary" /tmp/sfh-loadout-investment.log
+          grep -q "LOADOUT_INVESTMENT_E2E_OK owned_locked_run_purchase skill_price_once equipped_weapon_preserved tag_gate hub_module_part_preserved same_weapon_customization no_catalog_override preflight modular_boundary" /tmp/sfh-loadout-investment.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/hub_preparation_contract_test.gd" | tee /tmp/sfh-hub-preparation.log
+          grep -q "HUB_PREPARATION_OK" /tmp/sfh-hub-preparation.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/mobile_hud_elite_contract_test.gd" | tee /tmp/sfh-mobile-hud-elite.log
           grep -q "PURSUIT_BOSS_OK half_cost rounded_free_entry failed_spawn_retry locked_door_damage reclosed_door_damage boss_kill_once no_respawn" /tmp/sfh-mobile-hud-elite.log
           grep -q "MOBILE_HUD_ELITE_OK optional_modules dependencies hud_bottom_left movable_anchor key_format mobile_semantic_pad threshold_entry_cost random_elite faster_stronger infinite_room_independent" /tmp/sfh-mobile-hud-elite.log

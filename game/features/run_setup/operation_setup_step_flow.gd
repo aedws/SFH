@@ -4,7 +4,7 @@ extends RefCounted
 signal step_changed(snapshot: Dictionary)
 
 const STEP_IDS: Array[StringName] = [&"mission", &"loadout", &"confirm"]
-const STEP_LABELS := ["지역·작전", "요원·장비", "검토·투입"]
+const STEP_LABELS := ["지역·작전", "세팅 확인", "검토·투입"]
 
 var current_step: int = 0
 

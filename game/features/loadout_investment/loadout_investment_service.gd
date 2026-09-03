@@ -18,6 +18,12 @@ var source_label := ""
 var active_run_id: StringName
 var refresh_remaining := 0.0
 var pending_live_text := {}
+var equipped_weapons_only := false
+
+
+func preserve_equipped_weapons() -> void:
+	equipped_weapons_only = true
+	selection_changed.emit(get_snapshot())
 
 
 func _ready() -> void:
@@ -84,6 +90,7 @@ func load_catalog_text(weapon_csv: String, skill_csv: String, new_source_label: 
 
 
 func cycle_weapon(slot_id: StringName, direction: int = 1) -> Dictionary:
+	if equipped_weapons_only: return get_snapshot()
 	var candidates := _entries_for_slot(weapon_entries, slot_id)
 	if candidates.is_empty():
 		return {}
@@ -115,6 +122,7 @@ func cycle_skill(slot_index: int, direction: int = 1) -> Dictionary:
 
 
 func select_weapon(slot_id: StringName, item_id: StringName) -> bool:
+	if equipped_weapons_only: return false
 	var entry := _find_entry(weapon_entries, item_id)
 	if entry == null or entry.slot_id != slot_id:
 		return false
@@ -144,6 +152,9 @@ func get_selection_errors() -> PackedStringArray:
 		if not bool(snapshot[&"unlocked"]):
 			errors.append("%s 미해금" % entry.display_name)
 	var selected_weapons: Array[Resource] = []
+	# In equipped mode compatibility disables individual skills in combat; it must
+	# not replace the weapon or prevent a valid lobby loadout from entering a raid.
+	if equipped_weapons_only: return errors
 	for slot_id in [&"main", &"secondary"]:
 		var entry := _find_entry(weapon_entries, selected_weapon_ids.get(slot_id, &""))
 		if entry != null:
@@ -183,7 +194,7 @@ func get_investment_context() -> Dictionary:
 
 func get_operation_setting_contribution() -> Dictionary:
 	var context := get_investment_context()
-	context[&"equipment_override_policy"] = &"replace_selected_slot_restore_hub_state"
+	context[&"equipment_override_policy"] = &"preserve_hub_equipment" if equipped_weapons_only else &"replace_selected_slot_restore_hub_state"
 	return {
 		&"contributor_id": &"loadout_investment",
 		&"context_key": &"loadout_investment",
@@ -226,6 +237,7 @@ func get_snapshot() -> Dictionary:
 			skills.append(snapshot)
 	return {
 		&"configured": config != null, &"source_label": source_label,
+		&"equipped_weapons_only": equipped_weapons_only,
 		&"weapon_count": weapon_entries.size(), &"skill_count": skill_entries.size(),
 		&"weapons": weapons, &"skills": skills,
 		&"additional_entry_cost": context[&"additional_entry_cost"],
@@ -317,7 +329,7 @@ func _selected_entries() -> Array[LoadoutInvestmentEntry]:
 	var result: Array[LoadoutInvestmentEntry] = []
 	for slot_id in [&"main", &"secondary"]:
 		var entry := _find_entry(weapon_entries, selected_weapon_ids.get(slot_id, &""))
-		if entry != null: result.append(entry)
+		if entry != null and not equipped_weapons_only: result.append(entry)
 	for slot_index in selected_skill_ids:
 		var entry := _find_entry(skill_entries, selected_skill_ids[slot_index])
 		if entry != null: result.append(entry)

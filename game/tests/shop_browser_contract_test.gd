@@ -74,13 +74,13 @@ func _verify_game_flow() -> void:
 	_check(game.start_hub != null and not game.run_started and not paused, "boot hub unchanged")
 	var profile: Node = game.persistent_profile
 	var initial: Dictionary = profile.get_snapshot()
-	# Real gate F -> preparation step 2 -> real shop button click.
-	game.player.global_position = game.start_hub.get_snapshot().operation_position
+	# Physical lobby shop: opening must not enter mission configuration.
+	var station: Node2D = game.hub_service_stations.get_node("ShopStation")
+	_check(not station.request_service(game.player), "shop requires nearby player")
+	game.player.global_position = station.global_position
 	for _frame in 4: await physics_frame
 	await _tap(KEY_F)
-	await _click(game.operation_setup_presenter.next_button)
-	await _click(game.shop_button)
-	_check(panel.visible and not game.run_setup_overlay.visible and paused, "open shop hides setup")
+	_check(panel.visible and not game.run_setup_overlay.visible and paused, "F opens shop from lobby")
 	_check(profile.get_snapshot() == initial and panel.get_snapshot().selected_id == &"" and not panel.get_snapshot().purchase_enabled, "open never purchases")
 	for id in panel.offer_buttons.keys():
 		await _click(panel.offer_buttons[id])
@@ -106,9 +106,7 @@ func _verify_game_flow() -> void:
 	_check(profile.get_snapshot() == poor_state, "disabled purchase changes nothing")
 	profile.add_credits(remaining_credits)
 	await _tap(KEY_ESCAPE)
-	_check(not panel.visible and game.run_setup_overlay.visible and paused, "ESC restores paused briefing")
-	await _tap(KEY_ESCAPE)
-	_check(not game.run_setup_overlay.visible and not paused and game.start_hub != null, "second ESC returns moving hub")
+	_check(not panel.visible and not game.run_setup_overlay.visible and not paused and game.start_hub != null, "ESC returns moving hub")
 	# Layout and pause restoration independent from a paused preparation screen.
 	for dimensions in [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(640, 360), Vector2i(390, 844)]:
 		root.size = dimensions

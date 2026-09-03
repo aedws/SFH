@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 81 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 82 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -96,9 +96,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 21 · IMPROVE 26 · CHANGE 21 · FIX 23</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 22 · IMPROVE 28 · CHANGE 22 · FIX 25</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>21</b><small>BUILD</small></span><span><b>26</b><small>IMPROVE</small></span><span><b>21</b><small>CHANGE</small></span><span><b>23</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>22</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>22</b><small>CHANGE</small></span><span><b>25</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -219,7 +219,7 @@ tags:
         <p><a href="getting-started/run-project/#desktop-save">저장·백업 안내 →</a> · <a href="quality/e2e-play-session/#desktop-save-e2e">재실행 검증 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 11</small><b>상점 매물 비교 · 골라서 구매 · 다음 작업 범위 정정</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 상점 버튼이 첫 상품을 즉시 사던 동작을 없애고, 가격·수량을 비교한 뒤 고른 상품만 구매합니다.</strong></div>
@@ -229,6 +229,18 @@ tags:
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>상점 열기만으로 결제되던 경로와 오래된 회전 견적으로 구매하던 경로를 차단했습니다.</p></div>
         <p>P7-01A 완료 범위는 비교·선택 구매입니다. 현재 지급은 창고 수량이며 실제 품질 성능·I/U 실물 장착 연결은 다음 P7-01B에서 처리합니다. Sheet·CSV·과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/hub-economy/#shop-browser">상점 사용법 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">검증 범위 →</a> · <a href="design/master-gdd-alignment/">94% 산정 근거 →</a> · <a href="design/p7-plus-preimplementation/#economy-integrity-plan">보안·백업 구현 예정 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>로비 상점·출격 준비 · 장착한 그대로 작전 진입</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 로비에서 세팅을 마친 뒤 작전에 들어갑니다. 진입 화면에서 무기를 다시 고르지 않습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>로비 보급 상점·출격 준비 단말을 F로 열고 요원·스킬·소모품을 준비합니다. 위치·이름·반경은 별도 Scene에서 조정합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>작전 2단계를 현재 장착 상태 확인 전용으로 바꾸고, 준비 패널은 4개 화면 크기에서 세로 스크롤과 고정 닫기·장비 버튼을 제공합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>실물 장비 상태를 출격 원본으로 고정했습니다. 위키 사용법·모듈 관계·E2E도 새 로비 동선으로 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>카탈로그가 로비 무기·모듈·파츠를 덮어쓰거나 장착 무기를 재청구하던 경로를 제거했습니다. 미저장 편집을 직접 출격 호출로 우회하지 못하게 했습니다.</p></div>
+        <p>브리핑 취소·정상 복귀는 세팅 보존, 사망/실패의 장착품 소실은 기존 규칙입니다. 상점 품질 실성능·전체 실물 지급(P7-01B), Sheet·CSV 수치, 과금 모델은 이번 변경에 포함하지 않습니다.</p>
+        <p><a href="features/hub-economy/#hub-preparation">로비 사용법 →</a> · <a href="features/loadout-investment/">장착 보존 계약 →</a> · <a href="quality/e2e-play-session/#hub-preparation-e2e">회귀 검증 →</a></p>
       </div>
     </details>
   </div>
