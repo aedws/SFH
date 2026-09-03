@@ -1147,6 +1147,11 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 		return _fail("투입 비용 50%를 회수했지만 추격 보스가 생성되지 않았습니다: %s" % elite_after)
 	if not bool(elite_target.call(&"get_combat_identity").get(&"is_boss", false)):
 		return _fail("추격자가 보스 역할로 등록되지 않았습니다.")
+	var warning_contract := preload("res://game/tests/support/boss_warning_play_contract.gd").new()
+	var warning_error: String = await warning_contract.verify(self, game, elite_target, _tap_key)
+	if not warning_error.is_empty():
+		return _fail(warning_error)
+	print("E2E_BOSS_WARNING_OK half_cost_spawn actual_camera_edge physical_i_esc onscreen_hide")
 	var elite_distance_before := elite_target.global_position.distance_to(player.global_position)
 	for _frame in range(4):
 		await physics_frame

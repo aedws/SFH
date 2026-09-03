@@ -156,6 +156,8 @@ func _init() -> void:
 		return
 	if not await _verify_optional_hit_feedback_module(game_scene):
 		return
+	if not await _verify_optional_boss_warning_module(game_scene):
+		return
 	if not await _verify_optional_combat_resource_module(game_scene):
 		return
 	if not await _verify_optional_room_encounter_module(game_scene):
@@ -1525,6 +1527,25 @@ func _verify_optional_combat_resource_module(game_scene: PackedScene) -> bool:
 		_fail("전투 자원 선택 모듈 실패: %s" % failure_message)
 		return false
 	return true
+
+
+func _verify_optional_boss_warning_module(game_scene: PackedScene) -> bool:
+	var instance := game_scene.instantiate()
+	var config: Resource = instance.get("features").duplicate(true)
+	config.set("boss_warning_enabled", false)
+	config.set("run_setup_enabled", false)
+	config.set("start_hub_enabled", false)
+	instance.set("features", config)
+	root.add_child(instance)
+	await process_frame
+	var valid := bool(instance.get("run_started")) and instance.get("boss_warning_hud") == null \
+		and instance.get("enemy_spawner") != null and instance.get("elite_pursuit_service") != null
+	root.remove_child(instance)
+	instance.free()
+	await process_frame
+	if not valid:
+		_fail("보스 경고 선택 제거가 보스 생성/전투를 중단했습니다.")
+	return valid
 
 
 func _verify_optional_room_encounter_module(game_scene: PackedScene) -> bool:

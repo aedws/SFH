@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 78 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 79 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 16 · IMPROVE 21 · CHANGE 17 · FIX 19</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 18 · IMPROVE 22 · CHANGE 18 · FIX 19</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>16</b><small>BUILD</small></span><span><b>21</b><small>IMPROVE</small></span><span><b>17</b><small>CHANGE</small></span><span><b>19</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>18</b><small>BUILD</small></span><span><b>22</b><small>IMPROVE</small></span><span><b>18</b><small>CHANGE</small></span><span><b>19</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -182,7 +182,7 @@ tags:
         <p><a href="features/elite-pursuit/">추격 보스 →</a> · <a href="features/grid-inventory/">거점 편집 →</a> · <a href="quality/e2e-play-session/">검증 목록 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 8</small><b>P6 로컬 완결 · 장비 드랍으로 한 판 파밍</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 주운 장비·모듈·파츠를 실제 가방에서 사용하고 탈출해 반출합니다. 시즌 마감 후 칭호·오라도 장착할 수 있습니다.</strong></div>
@@ -192,6 +192,17 @@ tags:
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>장비 정의 초기화 순서로 인한 반출 누락, 가방과 창고 이중 보유, 실패한 획득 입력이 다른 상호작용으로 전달되는 경로를 차단했습니다.</p></div>
         <p>실제 네 방·F/I·장착·보스·탈출·사망 자동 E2E를 통과했습니다. P6는 로컬 프로토타입 완료이며 실서비스 계정·서버 검증 지급은 별도입니다. 과금·도메인은 변경하지 않았습니다.</p>
         <p><a href="features/field-loot-acquisition/">한 판 파밍 방법 →</a> · <a href="features/ranking-provider/">시즌 명예 보상 →</a> · <a href="quality/e2e-play-session/">검증 범위 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 9</small><b>보스 등장 경고 · 외곽 접근 방향</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 보스가 나타나면 짧게 경고하고, 화면 밖에서 오는 방향을 외곽 화살표로 알려줍니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>추격·일반 보스 등장 배너와 보스별 화면 외곽 방향 표시를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>카메라·줌에 맞춰 방향을 갱신하고 화면 안 진입·처치·가방·일시정지 시 표시를 정리해 전투 시야를 확보합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>추적·좌표·표현·수치를 독립 모듈로 분리하고 8방향·4화면 크기·실제 I/ESC E2E를 필수 검사에 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>보스 발생 임계·드랍·전투 수치는 변경하지 않았습니다.</p></div>
+        <p><a href="features/elite-pursuit/">경고·방향 표시 규칙 →</a> · <a href="quality/e2e-play-session/">검증 범위 →</a></p>
       </div>
     </details>
   </div>

@@ -156,6 +156,8 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/mobile_hud_elite_contract_test.gd" | tee /tmp/sfh-mobile-hud-elite.log
           grep -q "PURSUIT_BOSS_OK half_cost rounded_free_entry failed_spawn_retry locked_door_damage reclosed_door_damage boss_kill_once no_respawn" /tmp/sfh-mobile-hud-elite.log
           grep -q "MOBILE_HUD_ELITE_OK optional_modules dependencies hud_bottom_left movable_anchor key_format mobile_semantic_pad threshold_entry_cost random_elite faster_stronger infinite_room_independent" /tmp/sfh-mobile-hud-elite.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/boss_warning_contract_test.gd" | tee /tmp/sfh-boss-warning.log
+          grep -q "BOSS_WARNING_OK" /tmp/sfh-boss-warning.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/run_settlement_contract_test.gd" | tee /tmp/sfh-run-settlement.log
           grep -q "RUN_SETTLEMENT_OK auto_convert_450 permanent_unlock warehouse run_only_expiry death_loss idempotent_run_id" /tmp/sfh-run-settlement.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/p5_hub_progression_contract_test.gd" | tee /tmp/sfh-p5.log
@@ -227,6 +229,7 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK" /tmp/sfh-e2e.log
           grep -q "E2E_LOOT_SESSION_OK" /tmp/sfh-e2e.log
+          grep -q "E2E_BOSS_WARNING_OK" /tmp/sfh-e2e.log
           grep -q "E2E_LOOT_DEATH_OK" /tmp/sfh-e2e.log
           grep -q "E2E_SEASON_PLAYER_OK briefing_eligibility actual_history_click readonly_history launch_context result_bosses season_persistence" /tmp/sfh-e2e.log
           grep -q "E2E_HUB_LOADOUT_OK transitions_6 focused_controls repeated_open pause_restored live_edit_draft_refresh save_discard_cancel modules_parts" /tmp/sfh-e2e.log

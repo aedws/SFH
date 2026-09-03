@@ -498,6 +498,7 @@ var key_mapping_panel
 var presentation_settings_service
 var mobile_control_pad
 var elite_pursuit_service
+var boss_warning_hud
 var cyberpunk_overlay
 var operation_tutorial_overlay
 var operation_setup_presenter := OPERATION_SETUP_PRESENTER_SCRIPT.new()
@@ -1666,6 +1667,7 @@ func _return_to_start_hub(route_initial_entry: bool = true) -> void:
 	for node in [
 		fog_of_war, minimap, inventory_window, equipment_workbench,
 		run_buff_selector, combat_skill_hud, dash_cooldown_hud, session_socket_hud,
+		boss_warning_hud,
 	]:
 		_free_feature_node(node)
 	for container in [
@@ -1714,6 +1716,7 @@ func _reset_run_references() -> void:
 	session_socket_hud = null
 	enemy_spawner = null
 	elite_pursuit_service = null
+	boss_warning_hud = null
 	room_encounter_system = null
 	room_warp_system = null
 	auto_weapon = null
@@ -1895,6 +1898,8 @@ func _assemble_game() -> bool:
 		return false
 	if features.enemies_enabled and features.spawning_enabled:
 		if not _install_enemy_spawner():
+			return false
+		if features.boss_warning_enabled and not _install_boss_warning():
 			return false
 	if features.room_encounters_enabled and not _install_room_encounters():
 		return false
@@ -2915,6 +2920,17 @@ func _install_room_encounters() -> bool:
 		&"interaction_availability_changed",
 		Callable(self, &"_on_interaction_availability_changed")
 	)
+	return true
+
+
+func _install_boss_warning() -> bool:
+	boss_warning_hud = _instantiate_feature(
+		"res://game/features/boss_warning/boss_warning_hud.tscn", ui_layer, &"BossWarningHud"
+	)
+	if not _supports_methods(boss_warning_hud, [&"configure", &"get_snapshot"]) \
+		or not boss_warning_hud.call(&"configure", enemy_spawner, player, hud_margin):
+		_report_configuration_error("보스 경고 HUD의 생성·플레이어·전투 표시 계약이 올바르지 않습니다.")
+		return false
 	return true
 
 

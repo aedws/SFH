@@ -64,6 +64,7 @@ extends Resource
 @export var presentation_settings_enabled: bool = true
 @export var mobile_controls_enabled: bool = true
 @export var elite_pursuit_enabled: bool = true
+@export var boss_warning_enabled: bool = true
 @export var cyberpunk_theme_enabled: bool = true
 @export var cyberpunk_motion_enabled: bool = true
 @export var cyberpunk_noise_enabled: bool = true
@@ -320,6 +321,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"mobile_controls")
 	if elite_pursuit_enabled:
 		result.append(&"elite_pursuit")
+	if boss_warning_enabled and spawning_enabled:
+		result.append(&"boss_warning")
 	if cyberpunk_theme_enabled:
 		result.append(&"cyberpunk_theme")
 

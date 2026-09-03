@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "57b639a029a5d3a3f519c41602fd8f4ef245f7900c15787aa4acb26f15568b05",
+  "source_sha256": "feb0cfc626158a46f5504df1c504880aecf563b162614b3d456865bf57f1d51a",
   "layers": [
     {
       "id": "contract",
@@ -24,12 +24,12 @@
     }
   ],
   "summary": {
-    "modules": 55,
-    "scripts": 213,
-    "named_classes": 185,
-    "relationships": 167,
+    "modules": 56,
+    "scripts": 219,
+    "named_classes": 189,
+    "relationships": 169,
     "project_inheritance": 7,
-    "enabled_toggles": 64
+    "enabled_toggles": 65
   },
   "modules": [
     {
@@ -43,7 +43,7 @@
       "class_count": 0,
       "classes": [],
       "incoming_count": 1,
-      "outgoing_count": 50
+      "outgoing_count": 51
     },
     {
       "id": "core",
@@ -76,6 +76,24 @@
         "EmbeddedCsvPayload"
       ],
       "incoming_count": 0,
+      "outgoing_count": 0
+    },
+    {
+      "id": "boss_warning",
+      "label": "boss warning",
+      "layer": "feature",
+      "path": "game/features/boss_warning",
+      "wiki_route": "features/elite-pursuit/",
+      "enabled": true,
+      "file_count": 4,
+      "class_count": 4,
+      "classes": [
+        "BossEdgeProjection",
+        "BossThreatTracker",
+        "BossWarningHud",
+        "BossWarningStyle"
+      ],
+      "incoming_count": 2,
       "outgoing_count": 0
     },
     {
@@ -979,11 +997,11 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 24,
+      "file_count": 26,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
-      "outgoing_count": 47
+      "outgoing_count": 48
     }
   ],
   "classes": [
@@ -992,6 +1010,42 @@
       "name": "EmbeddedCsvPayload",
       "module": "balance_data",
       "path": "game/features/balance_data/embedded_csv_payload.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:BossEdgeProjection",
+      "name": "BossEdgeProjection",
+      "module": "boss_warning",
+      "path": "game/features/boss_warning/boss_edge_projection.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:BossThreatTracker",
+      "name": "BossThreatTracker",
+      "module": "boss_warning",
+      "path": "game/features/boss_warning/boss_threat_tracker.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:BossWarningHud",
+      "name": "BossWarningHud",
+      "module": "boss_warning",
+      "path": "game/features/boss_warning/boss_warning_hud.gd",
+      "extends": "Control",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:BossWarningStyle",
+      "name": "BossWarningStyle",
+      "module": "boss_warning",
+      "path": "game/features/boss_warning/boss_warning_style.gd",
       "extends": "Resource",
       "base_id": "",
       "inheritance": "engine"
@@ -3016,6 +3070,12 @@
     },
     {
       "from": "scene_assembly",
+      "to": "boss_warning",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "scene_assembly",
       "to": "character_selection",
       "type": "references",
       "evidence_count": 1
@@ -3360,6 +3420,12 @@
       "from": "start_hub",
       "to": "player",
       "type": "requires",
+      "evidence_count": 1
+    },
+    {
+      "from": "verification",
+      "to": "boss_warning",
+      "type": "verifies",
       "evidence_count": 1
     },
     {
