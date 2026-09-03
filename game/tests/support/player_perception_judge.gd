@@ -52,7 +52,7 @@ const CHECKPOINT_RULES := {
 	&"field_loot_immediate_equip": {
 		&"unit": &"decision",
 		&"surfaces": [&"field_loot"],
-		&"phrases": ["R 무기 장착", "F 런 보관", "ESC 보류", "임시 정책", "기존 장비"],
+		&"phrases": ["R 무기 장착", "F 획득·가방", "ESC 보류", "임시 정책", "기존 장비"],
 	},
 	&"field_loot_skill_swap": {
 		&"unit": &"decision",

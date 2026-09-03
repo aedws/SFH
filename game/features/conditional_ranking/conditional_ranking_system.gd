@@ -17,6 +17,10 @@ var envelope_builder
 var submission_queue
 var legacy_run_sequence := 0
 var season_service: Node
+var reward_catalog: Node
+var honor_profile: Node
+var reward_service: RefCounted
+var honor_panel: AcceptDialog
 
 
 func configure(
@@ -66,6 +70,26 @@ func configure(
 		add_child(season_service)
 		if not season_service.configure(_sibling_storage_path(new_storage_path, "seasons"), provider_config.season_policy, ranking_policy, enable_persistence, time_source):
 			return false
+	if is_instance_valid(honor_panel):
+		honor_panel.free()
+	honor_panel = null
+	for module in [reward_catalog, honor_profile]:
+		if is_instance_valid(module):
+			module.free()
+	reward_catalog = null
+	honor_profile = null
+	reward_service = null
+	if is_instance_valid(season_service) and provider_config.season_rewards_enabled:
+		reward_catalog = load("res://game/features/conditional_ranking/season_reward_catalog.gd").new()
+		add_child(reward_catalog)
+		if not reward_catalog.configure(provider_config.reward_csv_path, provider_config.reward_csv_payload, provider_config.reward_live_url):
+			return false
+		honor_profile = load("res://game/features/conditional_ranking/season_honor_profile.gd").new()
+		add_child(honor_profile)
+		# Damaged cosmetic files fail closed without blocking an operation.
+		honor_profile.configure(_sibling_storage_path(new_storage_path, "honors"), identity.get_player_id(), enable_persistence)
+		reward_service = load("res://game/features/conditional_ranking/season_reward_service.gd").new()
+		_synchronize_rewards()
 	online_provider.configure(provider_gateway, provider_config.online_provider_label)
 	_publish_provider_status(_resolve_provider_status())
 	return true
@@ -145,6 +169,7 @@ func get_entries(condition_key: String, ranking_id: StringName = &"recovered_val
 
 
 func get_snapshot() -> Dictionary:
+	_synchronize_rewards()
 	var local_snapshot: Dictionary = local_provider.get_snapshot() if local_provider != null else {}
 	var snapshot: Dictionary = local_snapshot.duplicate(true)
 	snapshot[&"provider_mode"] = provider_config.provider_mode if provider_config != null else "local"
@@ -154,16 +179,53 @@ func get_snapshot() -> Dictionary:
 	snapshot[&"identity"] = identity.get_snapshot() if identity != null else {}
 	snapshot[&"submission_queue"] = submission_queue.get_snapshot() if submission_queue != null else {}
 	snapshot[&"season"] = season_service.get_snapshot() if is_instance_valid(season_service) else {}
+	snapshot[&"honors"] = honor_profile.get_snapshot() if is_instance_valid(honor_profile) else {}
 	return snapshot
 
 
 func get_season_briefing(contract: Dictionary) -> Dictionary:
 	if not is_instance_valid(season_service):
 		return {}
+	_synchronize_rewards()
 	var state: Dictionary = season_service.preview(contract)
 	state[&"text"] = load("res://game/features/conditional_ranking/season_presenter.gd").briefing(state)
 	state[&"history_text"] = load("res://game/features/conditional_ranking/season_presenter.gd").history(season_service.get_snapshot())
+	state[&"honors_available"] = is_instance_valid(honor_profile)
 	return state
+
+
+func _synchronize_rewards() -> void:
+	if reward_service == null:
+		return
+	season_service.call(&"freeze_reward_catalog", reward_catalog.rows)
+	reward_service.call(&"synchronize", season_service.call(&"get_snapshot"), honor_profile, identity.get_player_id())
+
+
+func set_reward_source_mode(mode: int) -> void:
+	if is_instance_valid(reward_catalog):
+		reward_catalog.call(&"set_source_mode", mode)
+
+
+func show_honors(parent: Node) -> void:
+	if not is_instance_valid(honor_profile):
+		return
+	_synchronize_rewards()
+	if not is_instance_valid(honor_panel):
+		honor_panel = load("res://game/features/conditional_ranking/season_honor_panel.gd").new()
+		parent.add_child(honor_panel)
+		honor_panel.configure(honor_profile)
+	var view := get_viewport().get_visible_rect().size
+	honor_panel.popup_centered(Vector2i(mini(620, int(view.x) - 32), mini(430, int(view.y) - 48)))
+
+
+func attach_honor_presentation(actor: Node2D, hub: bool) -> void:
+	if not is_instance_valid(honor_profile):
+		return
+	_synchronize_rewards()
+	var presentation: Node2D = load("res://game/features/conditional_ranking/season_honor_presentation.gd").new()
+	presentation.name = &"SeasonHonorPresentation"
+	actor.add_child(presentation)
+	presentation.configure(honor_profile, hub)
 
 
 func get_season_archive(season_id: String) -> Dictionary:

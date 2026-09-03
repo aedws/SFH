@@ -1,4 +1,5 @@
 extends RefCounted
+signal honor_requested
 
 ## 작전 계약 데이터를 계산하지 않고, 기존 설정 Control을 브리핑 중심 화면으로 재배치합니다.
 
@@ -17,6 +18,7 @@ var season_summary: Label
 var season_history_button: Button
 var season_history_dialog: AcceptDialog
 var season_history_content: RichTextLabel
+var season_honor_button: Button
 var character_button: Button
 var character_summary: Label
 var main_weapon_button: Button
@@ -271,6 +273,11 @@ func install(overlay: Control) -> Dictionary:
 	season_history_button.custom_minimum_size.y = 28
 	_fit_button(season_history_button)
 	confirm_step.add_child(season_history_button)
+	season_honor_button = Button.new()
+	season_honor_button.text = "시즌 보상 · 칭호 / 오라"
+	_fit_button(season_honor_button)
+	season_honor_button.pressed.connect(func(): honor_requested.emit())
+	confirm_step.add_child(season_honor_button)
 	season_history_dialog = AcceptDialog.new()
 	season_history_dialog.title = "시즌 기록 · 로컬 테스트"
 	season_history_dialog.dialog_hide_on_ok = true
@@ -387,6 +394,7 @@ func update(payload: Dictionary) -> void:
 	season_summary.text = String(payload.get(&"season", {}).get(&"text", ""))
 	season_summary.visible = not season_summary.text.is_empty()
 	season_history_button.visible = season_summary.visible
+	season_honor_button.visible = bool(payload.get(&"season", {}).get(&"honors_available", false))
 	season_history_content.text = String(payload.get(&"season", {}).get(&"history_text", ""))
 	launch_button.text = "작전 투입  ·  %d C" % int(quote.get(&"entry_cost", 0))
 	launch_button.disabled = not bool(payload.get(&"can_launch", true))

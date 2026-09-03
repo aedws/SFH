@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="FieldLootSpawnPolicy" load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/features/field_loot/field_loot_spawn_policy.gd" id="1"]
+[resource]
+script = ExtResource("1")
+room_categories = PackedStringArray("weapon", "armor", "module", "part")
+enemy_drop_chance = 0.12
+maximum_world_drops = 48
+boss_drop_count = 2

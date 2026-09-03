@@ -1,5 +1,5 @@
 {
-  "version": 28,
+  "version": 29,
   "updated": "2026-09-03",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
@@ -154,13 +154,13 @@
     {
       "query": "개발 진행도",
       "label": "개발 진행도",
-      "description": "Master GDD v1005 체크 판독 정정, P6-03 로컬 시즌 완료와 P6-04 다음 작업 근거",
+      "description": "Master GDD v1005 체크 판독 정정, P6-01~04 로컬 완료와 실제 서버 운영 승인 대기 근거",
       "category": "기획",
       "priority": 100
     },
     {
       "query": "시즌",
-      "label": "P6-03 시즌과 학살자 랭킹",
+      "label": "P6 시즌·칭호·오라와 학살자 랭킹",
       "description": "참가 조건·종료 시각·보스 격파·읽기 전용 마감 기록·임시 운영 정책",
       "category": "기획",
       "priority": 98

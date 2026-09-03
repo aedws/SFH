@@ -68,10 +68,12 @@ func show_comparison(snapshot: Dictionary) -> void:
 		(
 			"R 스킬 교체   ·   F 런 보관   ·   ESC 보류"
 			if StringName(equip_preview.get(&"equip_kind", &"")) == &"skill"
-			else "R 무기 장착   ·   F 런 보관   ·   ESC 보류"
+			else "R %s 장착 · F 획득·가방 · ESC 보류" % ("방어구" if snapshot.get(&"item_type") == &"armor" else "무기")
 		)
 		if bool(equip_preview.get(&"available", false))
 		else (
+			"장비 태그 불일치 · F 획득·가방 · ESC 보류"
+			if StringName(equip_preview.get(&"reason", &"")) == &"equipment_tags_mismatch" else
 			"무기 태그 불일치   ·   F 런 보관   ·   ESC 보류"
 			if StringName(equip_preview.get(&"reason", &"")) == &"weapon_tags_mismatch"
 			else "F 획득   ·   ESC 보류"
@@ -88,6 +90,10 @@ func show_comparison(snapshot: Dictionary) -> void:
 func hide_comparison() -> void:
 	current_snapshot.clear()
 	visible = false
+
+
+func show_acquisition_error(message: String) -> void:
+	controls_label.text = message + " · ESC 보류"
 
 
 func get_snapshot() -> Dictionary:

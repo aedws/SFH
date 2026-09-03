@@ -10,6 +10,10 @@ extends Resource
 @export_range(1, 32, 1) var submissions_per_retry := 8
 ## Null removes season tracking without affecting lifetime rankings.
 @export var season_policy: Resource
+@export var season_rewards_enabled := false
+@export var reward_csv_path := "res://game/features/conditional_ranking/data/season_reward.csv"
+@export var reward_csv_payload: Resource
+@export var reward_live_url := ""
 
 
 func is_valid() -> bool:

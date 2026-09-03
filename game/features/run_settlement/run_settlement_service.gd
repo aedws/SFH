@@ -8,12 +8,14 @@ var profile_provider: Node
 var unlock_policy: Resource
 var processed_results: Dictionary = {}
 var last_result: Dictionary = {}
+var additional_definition_provider: Resource
 
 
 func configure(
 	new_lifecycle_provider: Node,
 	new_profile_provider: Node,
-	new_unlock_policy: Resource
+	new_unlock_policy: Resource,
+	new_definition_provider: Resource = null
 ) -> bool:
 	if (
 		not _supports(new_lifecycle_provider, [&"resolve_outcome", &"get_definition"])
@@ -28,6 +30,7 @@ func configure(
 	lifecycle_provider = new_lifecycle_provider
 	profile_provider = new_profile_provider
 	unlock_policy = new_unlock_policy
+	additional_definition_provider = new_definition_provider
 	return true
 
 
@@ -53,6 +56,10 @@ func settle(run_id: StringName, acquired_items: Dictionary, extracted: bool) -> 
 		var entry: Dictionary = acquired_items.get(item_key, {})
 		var quantity := maxi(1, int(entry.get(&"quantity", 1)))
 		var outcome: Dictionary = lifecycle_provider.call(&"resolve_outcome", item_id, extracted)
+		if outcome.is_empty() and additional_definition_provider != null:
+			var definition: Resource = additional_definition_provider.call(&"get_definition", item_id)
+			if definition != null:
+				outcome = {&"item_id": item_id, &"result": definition.extract_result if extracted else definition.death_result, &"retained": extracted}
 		if outcome.is_empty():
 			outcome = {&"item_id": item_id, &"result": &"lost", &"retained": false}
 		outcome[&"quantity"] = quantity
@@ -63,8 +70,9 @@ func settle(run_id: StringName, acquired_items: Dictionary, extracted: bool) -> 
 				converted_credits += credits
 				outcome[&"applied_credits"] = credits
 			&"wallet":
-				wallet_credits += quantity
-				outcome[&"applied_credits"] = quantity
+				var paid := 0 if bool(entry.get(&"wallet_already_carried", false)) else quantity
+				wallet_credits += paid
+				outcome[&"applied_credits"] = paid
 			&"warehouse":
 				warehouse_items[item_id] = int(warehouse_items.get(item_id, 0)) + quantity
 			&"permanent_unlock":

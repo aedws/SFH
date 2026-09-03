@@ -40,7 +40,7 @@ func preview(item_id: StringName) -> Dictionary:
 		&"item_id": item_id,
 		&"target_slot": entry.target_slot,
 		&"candidate_name": entry.definition.display_name,
-		&"candidate_weapon_id": entry.definition.weapon_id,
+		&"candidate_weapon_id": entry.definition.get("weapon_id") if entry.definition is EquipmentWeaponDefinition else &"",
 		&"previous_name": (
 			String(current.definition.get("display_name"))
 			if current != null and current.definition != null else "없음"
@@ -57,13 +57,17 @@ func equip(item_id: StringName) -> Dictionary:
 		return {&"success": false, &"reason": &"not_equipable"}
 	var entry := catalog.get_entry(item_id)
 	var slot_id := entry.target_slot
+	if equipment_provider.has_method(&"can_equip_definition") and not equipment_provider.call(&"can_equip_definition", slot_id, entry.definition):
+		return {&"success": false, &"reason": &"slot_rejected"}
 	var active_before: StringName = equipment_provider.call(&"get_active_weapon_slot")
 	var removed = equipment_provider.call(&"take_equipment_state", slot_id)
 	if not bool(equipment_provider.call(&"equip_definition", slot_id, entry.definition)):
 		if removed != null:
 			equipment_provider.call(&"equip_state", slot_id, removed)
+		if active_before != &"":
+			equipment_provider.call(&"set_active_weapon_slot", active_before)
 		return {&"success": false, &"reason": &"slot_rejected"}
-	if not bool(equipment_provider.call(&"set_active_weapon_slot", slot_id)):
+	if entry.definition is EquipmentWeaponDefinition and not bool(equipment_provider.call(&"set_active_weapon_slot", slot_id)):
 		equipment_provider.call(&"take_equipment_state", slot_id)
 		if removed != null:
 			equipment_provider.call(&"equip_state", slot_id, removed)

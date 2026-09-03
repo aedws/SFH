@@ -106,7 +106,7 @@
       "decision_id": "DEC-P6-ONLINE-PENDING", "source_anchor": "3ce5b728-0040-81c9-978c-d33f6138f3aa", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
       "summary": "P6-03 로컬 시즌은 7일·최소 페널티 10·최근 12시즌 보관, 학살자는 총 처치→보스 격파 동점 정렬로 구현했습니다. 임시 정책이므로 서버 구현 전 공식 기준·시즌 마감 경계·보상 범위를 확정해야 합니다.",
       "basis": "Master GDD Phase 6 비동기 3대 보드와 주간 명예 보상",
-      "notion_prompt": "PLAN-P6-02-01 제목으로 로그인 제공자·서버 승인 주체·시즌 UTC 기준·참가 규격·종료를 넘긴 런·보스 동점·이력 보관 수·제재·보상 지급 규칙을 작성해 주세요. 로컬 시즌·마감 기록은 구현됐고 P6-04 명예 보상이 다음 작업입니다.",
+      "notion_prompt": "PLAN-P6-02-01 제목으로 로그인 제공자·서버 승인 주체·시즌 UTC 기준·참가 규격·종료를 넘긴 런·보스 동점·이력 보관 수·제재·보상 지급 규칙을 작성해 주세요. 로컬 시즌·마감 기록과 P6-04 칭호/오라는 구현됐습니다. SeasonReward 시트의 상위 3명 칭호·1명 오라는 임시값입니다. 실제 서버 순위·지급 기준과 기간/자격/운영 승인 범위를 확정해 주세요.",
       "acceptance": ["신원과 기록 소유권 정의", "검증·재시도·중복·변조 처리 정의", "시즌 기간·동점·칭호·오라 지급 규칙"],
       "evidence": [{"label": "P6-01 랭킹 제공자", "href": "features/ranking-provider/"}, {"label": "현행 작업 라인", "href": "design/current-milestone-workline/"}]
     },

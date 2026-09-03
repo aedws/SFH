@@ -1,10 +1,23 @@
-[gd_resource type="Resource" script_class="FieldLootEquipCatalog" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="FieldLootEquipCatalog" load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://game/features/field_loot/field_loot_equip_catalog.gd" id="1_catalog"]
 [ext_resource type="Script" path="res://game/features/field_loot/field_loot_equip_entry.gd" id="2_entry"]
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/pulse_rifle.tres" id="3_weapon"]
 [ext_resource type="Script" path="res://game/features/field_loot/field_loot_skill_entry.gd" id="4_skill_entry"]
 [ext_resource type="Resource" path="res://game/features/combat_skills/definitions/arc_dash.tres" id="5_arc_dash"]
+
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/assault_rifle.tres" id="assault_rifle"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/service_pistol.tres" id="service_pistol"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/greatsword.tres" id="greatsword"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/tactical_vest.tres" id="tactical_vest"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/runner_boots.tres" id="runner_boots"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/rifle_scope_item.tres" id="rifle_scope_item"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/pistol_compensator_item.tres" id="pistol_compensator_item"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/greatsword_edge_item.tres" id="greatsword_edge_item"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/ballistic_core_item.tres" id="ballistic_core_item"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/vitality_matrix_item.tres" id="vitality_matrix_item"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/mobility_chip_item.tres" id="mobility_chip_item"]
+[ext_resource type="Resource" path="res://game/features/inventory/items/armor_plate_item.tres" id="armor_plate_item"]
 
 [sub_resource type="Resource" id="PulseRifle"]
 script = ExtResource("2_entry")
@@ -21,9 +34,45 @@ grade = 4
 definition = ExtResource("5_arc_dash")
 region_tags = PackedStringArray("research_complex", "industrial_district")
 
+[sub_resource type="Resource" id="Assault"]
+script = ExtResource("2_entry")
+item_id = &"assault_rifle"
+target_slot = &"main"
+definition = ExtResource("assault_rifle")
+region_tags = PackedStringArray("global")
+
+[sub_resource type="Resource" id="Pistol"]
+script = ExtResource("2_entry")
+item_id = &"service_pistol"
+target_slot = &"secondary"
+definition = ExtResource("service_pistol")
+region_tags = PackedStringArray("global")
+
+[sub_resource type="Resource" id="Sword"]
+script = ExtResource("2_entry")
+item_id = &"greatsword"
+target_slot = &"main"
+definition = ExtResource("greatsword")
+region_tags = PackedStringArray("global")
+
+[sub_resource type="Resource" id="Vest"]
+script = ExtResource("2_entry")
+item_id = &"tactical_vest"
+target_slot = &"body"
+definition = ExtResource("tactical_vest")
+region_tags = PackedStringArray("global")
+
+[sub_resource type="Resource" id="Boots"]
+script = ExtResource("2_entry")
+item_id = &"runner_boots"
+target_slot = &"feet"
+definition = ExtResource("runner_boots")
+region_tags = PackedStringArray("global")
+
 [resource]
 script = ExtResource("1_catalog")
-entries = Array[FieldLootEquipEntry]([SubResource("PulseRifle")])
+entries = Array[FieldLootEquipEntry]([SubResource("PulseRifle"), SubResource("Assault"), SubResource("Pistol"), SubResource("Sword"), SubResource("Vest"), SubResource("Boots")])
 skill_entries = Array[FieldLootSkillEntry]([SubResource("ArcDash")])
 replaced_item_destination = "run_storage"
 policy_status = "provisional"
+inventory_items = Array[InventoryItemDefinition]([ExtResource("rifle_scope_item"), ExtResource("pistol_compensator_item"), ExtResource("greatsword_edge_item"), ExtResource("ballistic_core_item"), ExtResource("vitality_matrix_item"), ExtResource("mobility_chip_item"), ExtResource("armor_plate_item")])

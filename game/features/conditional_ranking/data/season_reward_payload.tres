@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EmbeddedCsvPayload" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/balance_data/embedded_csv_payload.gd" id="1_payload"]
+
+[resource]
+script = ExtResource("1_payload")
+source_path = "res://game/features/conditional_ranking/data/season_reward.csv"
+csv_text = "reward_id,ranking_id,max_rank,kind,display_name,color,runtime_enabled,description\n보상 고유 ID · 출시 후 변경 금지,recovered_value / elapsed_seconds / kills,,title 칭호 / aura 오라,보유·장착 화면 표시명,6자리 HEX 색상 · # 제외,,임시 운영 정책 설명\nsalvager_title,recovered_value,3,title,회수 전문가,02e5e1,TRUE,로컬 주간 마감 상위 3명 · 능력치 없음 · 실서버 보상 아님\nsalvager_aura,recovered_value,1,aura,회수 전문가 오라,02e5e1,TRUE,로컬 주간 마감 1위 · 순수 외형 · 다음 시즌에 수치 변경 반영\nrunner_title,elapsed_seconds,3,title,탈출 선봉,80caff,TRUE,로컬 주간 마감 상위 3명 · 능력치 없음 · 실서버 보상 아님\nrunner_aura,elapsed_seconds,1,aura,탈출 선봉 오라,80caff,TRUE,로컬 주간 마감 1위 · 순수 외형 · 다음 시즌에 수치 변경 반영\nslayer_title,kills,3,title,전장 정리자,c8a2ff,TRUE,로컬 주간 마감 상위 3명 · 능력치 없음 · 실서버 보상 아님\nslayer_aura,kills,1,aura,전장 정리자 오라,c8a2ff,TRUE,로컬 주간 마감 1위 · 순수 외형 · 다음 시즌에 수치 변경 반영\n"
