@@ -27,12 +27,17 @@ func release(viewport: Viewport, cancel: bool = false) -> void:
 	finger = -1
 	if cancel:
 		position = Vector2(-1000, -1000)
-	_mouse_button(viewport, false)
+		var motion := InputEventMouseMotion.new()
+		motion.position = position
+		motion.button_mask = MOUSE_BUTTON_MASK_LEFT
+		viewport.push_input(motion, true)
+	_mouse_button(viewport, false, cancel)
 
-func _mouse_button(viewport: Viewport, pressed: bool) -> void:
+func _mouse_button(viewport: Viewport, pressed: bool, canceled: bool = false) -> void:
 	var event := InputEventMouseButton.new()
 	event.position = position
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
 	event.pressed = pressed
+	event.canceled = canceled
 	viewport.push_input(event, true)
