@@ -5,7 +5,7 @@
   "root_version": 1005,
   "root_last_edited_time": 1788290042314,
   "block_count": 77,
-  "content_sha256": "67f9bef85449685580c6c7f95f0316300d37775867d38d7bec96bc3fcf1198e4",
+  "content_sha256": "614a0b8ddee42640d0df21d17bf11d170e0243c85724fa16ae8f0d9e7b899461",
   "blocks": [
     {
       "id": "3ce5b728-0040-8105-8b26-e9ec520c724b",
@@ -20,7 +20,7 @@
       "type": "to_do",
       "version": 3,
       "title": "Phase 5: 로비 1단계 허브(창고, 상점 리롤, 제작소, 연습장) 및 2단계 준비 세션 UI 연동",
-      "checked": true,
+      "checked": false,
       "last_edited_time": 1788290040285
     },
     {
@@ -28,7 +28,7 @@
       "type": "to_do",
       "version": 3,
       "title": "Phase 2: Q 무기 스왑, 가변 태그 호환성 검사 및 공용 자원(AP)+쿨타임 복합 관리 구현",
-      "checked": true,
+      "checked": false,
       "last_edited_time": 1788290040283
     },
     {
@@ -36,7 +36,7 @@
       "type": "to_do",
       "version": 3,
       "title": "Phase 4: 인게임 장비 즉시 스왑 및 모디파이어 룬 소켓 결합, 탈출 시 골드 환전 정산 시스템 연동",
-      "checked": true,
+      "checked": false,
       "last_edited_time": 1788290040284
     },
     {
@@ -284,7 +284,7 @@
       "type": "to_do",
       "version": 3,
       "title": "Phase 3: 탈출 신호기(F) 상호작용 및 Area2D Timer 일시정지/재개 방어전, 생존/사망 정산 로직 구현",
-      "checked": true,
+      "checked": false,
       "last_edited_time": 1788290040284
     },
     {
@@ -396,7 +396,7 @@
       "type": "to_do",
       "version": 3,
       "title": "Phase 1: 2D 탑다운 CharacterBody2D 이동(WASD), Area2D 스마트 오토 타겟팅, 자유 스킬 바인딩 시스템 구현",
-      "checked": true,
+      "checked": false,
       "last_edited_time": 1788290040283
     },
     {
@@ -492,7 +492,7 @@
       "type": "to_do",
       "version": 3,
       "title": "Phase 6: 맵 계약/페널티 모디파이어 및 비동기 랭킹 3대 보드 연동",
-      "checked": true,
+      "checked": false,
       "last_edited_time": 1788290040286
     },
     {
@@ -624,5 +624,5 @@
       "last_edited_time": 1788290042314
     }
   ],
-  "captured_at": "2026-09-01T23:47:33+00:00"
+  "captured_at": "2026-09-03T02:37:15+00:00"
 }

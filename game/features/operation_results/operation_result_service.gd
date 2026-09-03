@@ -59,6 +59,8 @@ func settle_success(run_data: Dictionary, contract: Dictionary) -> Dictionary:
 			&"condition_key": contract.get(&"ranking_condition_key", ""),
 			&"elapsed_seconds": run_data.get(&"elapsed_seconds", 0.0),
 			&"kills": run_data.get(&"kills", 0),
+			&"boss_kills": run_data.get(&"boss_kills", 0),
+			&"season_context": run_data.get(&"season_context", {}),
 			&"recovered_value": recovered,
 			&"reward_multiplier": reward_multiplier,
 			&"penalty_score": int(contract.get(&"penalty_score", 0)),

@@ -153,6 +153,8 @@ func _spawn_enemy(spawn_as_boss: bool = false) -> bool:
 
 
 func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"", spawn_as_boss: bool = false) -> Node2D:
+	# Room encounters and free reinforcements share the guaranteed-boss contract.
+	spawn_as_boss = spawn_as_boss or (bool(operation_spawn_rules.get(&"boss_spawn_guaranteed", false)) and not boss_spawned)
 	if enemy_scene == null or spawn_config == null:
 		push_error("EnemySpawner에 Enemy Scene 또는 등급 정책이 지정되지 않았습니다.")
 		return null
@@ -172,6 +174,11 @@ func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"", spa
 		return null
 
 	if spawn_as_boss:
+		if not enemy.has_method(&"set_boss_role"):
+			enemy.free()
+			push_error("보스 생성에는 set_boss_role 공개 계약이 필요합니다.")
+			return null
+		enemy.call(&"set_boss_role", true)
 		enemy.set("max_health", float(enemy.get("max_health")) * 12.0)
 		enemy.set("max_armor", float(enemy.get("max_armor")) * 6.0)
 		enemy.set("contact_damage", float(enemy.get("contact_damage")) * 1.8)

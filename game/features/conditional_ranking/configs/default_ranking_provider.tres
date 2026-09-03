@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="RankingProviderConfig" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="RankingProviderConfig" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://game/features/conditional_ranking/ranking_provider_config.gd" id="1_config"]
+[ext_resource type="Resource" path="res://game/features/conditional_ranking/configs/default_season_policy.tres" id="2_season"]
 
 [resource]
 script = ExtResource("1_config")
@@ -11,3 +12,4 @@ submission_build_id = "0.1.0-prototype"
 maximum_pending_submissions = 64
 maximum_submission_attempts = 5
 submissions_per_retry = 8
+season_policy = ExtResource("2_season")

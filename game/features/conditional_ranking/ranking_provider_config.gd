@@ -8,6 +8,8 @@ extends Resource
 @export_range(1, 256, 1) var maximum_pending_submissions := 64
 @export_range(1, 20, 1) var maximum_submission_attempts := 5
 @export_range(1, 32, 1) var submissions_per_retry := 8
+## Null removes season tracking without affecting lifetime rankings.
+@export var season_policy: Resource
 
 
 func is_valid() -> bool:
@@ -18,4 +20,5 @@ func is_valid() -> bool:
 		and maximum_pending_submissions > 0
 		and maximum_submission_attempts > 0
 		and submissions_per_retry > 0
+		and (season_policy == null or (season_policy.has_method(&"is_valid") and season_policy.is_valid()))
 	)

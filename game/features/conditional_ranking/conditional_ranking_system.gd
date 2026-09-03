@@ -16,6 +16,7 @@ var identity
 var envelope_builder
 var submission_queue
 var legacy_run_sequence := 0
+var season_service: Node
 
 
 func configure(
@@ -23,7 +24,8 @@ func configure(
 	ranking_policy: Resource,
 	enable_persistence: bool = true,
 	new_provider_config: Resource = null,
-	provider_gateway: Node = null
+	provider_gateway: Node = null,
+	time_source: Callable = Callable()
 ) -> bool:
 	provider_config = new_provider_config
 	if provider_config == null:
@@ -56,6 +58,14 @@ func configure(
 
 	if not local_provider.configure(new_storage_path, ranking_policy, enable_persistence):
 		return false
+	if is_instance_valid(season_service):
+		season_service.free()
+		season_service = null
+	if provider_config.season_policy != null:
+		season_service = load("res://game/features/conditional_ranking/season_ranking_service.gd").new()
+		add_child(season_service)
+		if not season_service.configure(_sibling_storage_path(new_storage_path, "seasons"), provider_config.season_policy, ranking_policy, enable_persistence, time_source):
+			return false
 	online_provider.configure(provider_gateway, provider_config.online_provider_label)
 	_publish_provider_status(_resolve_provider_status())
 	return true
@@ -83,6 +93,10 @@ func submit_run(result: Dictionary) -> Dictionary:
 	local_payload[&"idempotency_key"] = envelope.get(&"idempotency_key", "")
 	# 온라인 상태와 관계없이 검증 가능한 로컬 기록을 먼저 보존합니다.
 	var local_result: Dictionary = local_provider.submit_run(local_payload)
+	# Season rules can be broader or narrower than lifetime participation.
+	if is_instance_valid(season_service):
+		local_result[&"season"] = season_service.submit_run(local_payload)
+		local_result[&"season_text"] = load("res://game/features/conditional_ranking/season_presenter.gd").result_text(local_result[&"season"])
 	if not bool(local_result.get(&"accepted", false)):
 		var ineligible_status := _ineligible_status(String(local_result.get(&"reason", "조건 미충족")))
 		local_result[&"provider_status"] = ineligible_status
@@ -139,7 +153,21 @@ func get_snapshot() -> Dictionary:
 	snapshot[&"online_snapshot"] = online_provider.get_snapshot() if online_provider != null else {}
 	snapshot[&"identity"] = identity.get_snapshot() if identity != null else {}
 	snapshot[&"submission_queue"] = submission_queue.get_snapshot() if submission_queue != null else {}
+	snapshot[&"season"] = season_service.get_snapshot() if is_instance_valid(season_service) else {}
 	return snapshot
+
+
+func get_season_briefing(contract: Dictionary) -> Dictionary:
+	if not is_instance_valid(season_service):
+		return {}
+	var state: Dictionary = season_service.preview(contract)
+	state[&"text"] = load("res://game/features/conditional_ranking/season_presenter.gd").briefing(state)
+	state[&"history_text"] = load("res://game/features/conditional_ranking/season_presenter.gd").history(season_service.get_snapshot())
+	return state
+
+
+func get_season_archive(season_id: String) -> Dictionary:
+	return season_service.get_archive(season_id) if is_instance_valid(season_service) else {}
 
 
 func get_provider_status() -> Dictionary:
@@ -263,7 +291,7 @@ func _ineligible_status(reason: String) -> Dictionary:
 	return {
 		&"mode": StringName(provider_config.provider_mode) if provider_config != null else &"local",
 		&"state": &"ineligible",
-		&"label": "랭킹 미집계 · %s" % reason,
+		&"label": "일반 랭킹 미집계 · %s" % reason,
 		&"online": false,
 		&"local_preserved": false,
 		&"sync_state": &"not_eligible",

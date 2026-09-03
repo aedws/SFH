@@ -51,6 +51,8 @@ try {
 	& (Join-Path $PSScriptRoot "check-wiki-role-auth.ps1")
 	& (Join-Path $PSScriptRoot "check-p7-roadmap.ps1")
 	& $virtualPython (Join-Path $PSScriptRoot "snapshot_notion_source.py") --check
+	& $virtualPython (Join-Path $PSScriptRoot "test_notion_snapshot.py")
+	if ($LASTEXITCODE -ne 0) { throw "Notion checkbox regression failed." }
     & $virtualPython -m mkdocs $Action --strict
     if ($Action -eq "build") {
         Copy-Item -LiteralPath (Join-Path $repositoryRoot "cloudflare/wiki-auth/_worker.js") -Destination (Join-Path $repositoryRoot ".wiki-site/_worker.js") -Force

@@ -4,6 +4,8 @@ extends Resource
 @export_range(1, 1000, 1) var maximum_entries_per_condition := 20
 @export_range(0.0, 1000.0, 0.1) var recovered_value_weight := 1.0
 @export_range(0.0, 1000.0, 0.1) var kill_weight := 10.0
+## Provisional Slayer policy: total kills first, explicit boss defeats break ties.
+@export var slayer_boss_tiebreak_enabled := true
 @export_range(0.0, 1000.0, 0.1) var reward_multiplier_weight := 100.0
 @export_range(0.0, 100.0, 0.01) var elapsed_seconds_penalty := 0.25
 @export_range(0, 1000, 1) var minimum_penalty_score := 10
@@ -44,5 +46,10 @@ func ranks_before(ranking_id: StringName, first: Dictionary, second: Dictionary)
 	var first_value := metric_value(ranking_id, first)
 	var second_value := metric_value(ranking_id, second)
 	if is_equal_approx(first_value, second_value):
+		if ranking_id == &"kills" and slayer_boss_tiebreak_enabled:
+			var first_bosses := int(first.get(&"boss_kills", 0))
+			var second_bosses := int(second.get(&"boss_kills", 0))
+			if first_bosses != second_bosses:
+				return first_bosses > second_bosses
 		return int(first.get(&"timestamp", 0)) < int(second.get(&"timestamp", 0))
 	return first_value < second_value if ranking_id == &"elapsed_seconds" else first_value > second_value

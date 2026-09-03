@@ -49,6 +49,7 @@ func submit_run(result: Dictionary) -> Dictionary:
 		&"score": score,
 		&"elapsed_seconds": float(result.get(&"elapsed_seconds", 0.0)),
 		&"kills": int(result.get(&"kills", 0)),
+		&"boss_kills": int(result.get(&"boss_kills", 0)),
 		&"recovered_value": int(result.get(&"recovered_value", 0)),
 		&"penalty_score": int(result.get(&"penalty_score", 0)),
 		&"timestamp": int(Time.get_unix_time_from_system()),
@@ -112,7 +113,30 @@ func get_snapshot() -> Dictionary:
 		&"ranking_ids": policy.get("ranking_ids") if policy != null else PackedStringArray(),
 		&"minimum_penalty_score": int(policy.get("minimum_penalty_score")) if policy != null else 0,
 		&"processed_submission_count": processed_submission_ids.size(),
+		&"processed_submission_ids": processed_submission_ids.duplicate(),
 	}
+
+
+func restore_snapshot(snapshot: Dictionary) -> bool:
+	if not snapshot.get(&"entries_by_condition", {}) is Dictionary or not snapshot.get(&"processed_submission_ids", []) is Array:
+		return false
+	for condition in snapshot.get(&"entries_by_condition", {}):
+		var value: Variant = snapshot[&"entries_by_condition"][condition]
+		if not value is Dictionary and not value is Array:
+			return false
+		var lists: Array = value.values() if value is Dictionary else [value]
+		for entries in lists:
+			if not entries is Array:
+				return false
+			for entry in entries:
+				if not entry is Dictionary:
+					return false
+	entries_by_condition = snapshot.get(&"entries_by_condition", {}).duplicate(true)
+	processed_submission_ids.clear()
+	for value in snapshot.get(&"processed_submission_ids", []):
+		processed_submission_ids.append(String(value))
+	_migrate_legacy_entries()
+	return true
 
 
 func get_provider_status() -> Dictionary:
@@ -154,12 +178,21 @@ func _load() -> void:
 func _migrate_legacy_entries() -> void:
 	for condition_key in entries_by_condition.keys():
 		var legacy: Variant = entries_by_condition[condition_key]
+		if legacy is Dictionary:
+			for ranking_name in legacy:
+				for entry in legacy[ranking_name]:
+					if not entry.has("boss_kills"):
+						entry["boss_kills"] = 0
+				legacy[ranking_name].sort_custom(func(a, b): return bool(policy.call(&"ranks_before", StringName(ranking_name), a, b)))
 		if not legacy is Array:
 			continue
 		var ladders := {}
 		for ranking_name in policy.get("ranking_ids"):
 			var ranking_id := StringName(ranking_name)
 			var entries: Array = (legacy as Array).duplicate(true)
+			for entry in entries:
+				if not entry.has("boss_kills"):
+					entry["boss_kills"] = 0
 			entries.sort_custom(func(a, b): return bool(policy.call(&"ranks_before", ranking_id, a, b)))
 			ladders[ranking_id] = entries
 		entries_by_condition[condition_key] = ladders

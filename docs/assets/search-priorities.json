@@ -154,9 +154,16 @@
     {
       "query": "개발 진행도",
       "label": "개발 진행도",
-      "description": "Master GDD v1005 기준 96% 진행률과 P5-01~10·P6-01~02 완료, P6-03 다음 작업 근거",
+      "description": "Master GDD v1005 체크 판독 정정, P6-03 로컬 시즌 완료와 P6-04 다음 작업 근거",
       "category": "기획",
       "priority": 100
+    },
+    {
+      "query": "시즌",
+      "label": "P6-03 시즌과 학살자 랭킹",
+      "description": "참가 조건·종료 시각·보스 격파·읽기 전용 마감 기록·임시 운영 정책",
+      "category": "기획",
+      "priority": 98
     },
     {
       "query": "Master GDD",

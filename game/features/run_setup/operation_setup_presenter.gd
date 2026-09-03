@@ -13,6 +13,10 @@ var reward_summary: Label
 var target_farming_summary: Label
 var risk_summary: Label
 var selection_summary: Label
+var season_summary: Label
+var season_history_button: Button
+var season_history_dialog: AcceptDialog
+var season_history_content: RichTextLabel
 var character_button: Button
 var character_summary: Label
 var main_weapon_button: Button
@@ -258,6 +262,29 @@ func install(overlay: Control) -> Dictionary:
 	selection_summary = _label("계약 선택 대기", 12, Color("02e5e1"))
 	_wrap_label(selection_summary)
 	confirm_step.add_child(selection_summary)
+	season_summary = _label("", 11, Color("b6d8dd"))
+	season_summary.name = "SeasonSummary"
+	_wrap_label(season_summary)
+	confirm_step.add_child(season_summary)
+	season_history_button = Button.new()
+	season_history_button.text = "시즌 기록 · 읽기 전용"
+	season_history_button.custom_minimum_size.y = 28
+	_fit_button(season_history_button)
+	confirm_step.add_child(season_history_button)
+	season_history_dialog = AcceptDialog.new()
+	season_history_dialog.title = "시즌 기록 · 로컬 테스트"
+	season_history_dialog.dialog_hide_on_ok = true
+	season_history_dialog.get_ok_button().text = "닫기"
+	overlay.add_child(season_history_dialog)
+	season_history_content = RichTextLabel.new()
+	season_history_content.bbcode_enabled = false
+	season_history_content.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	season_history_content.offset_left = 12
+	season_history_content.offset_top = 12
+	season_history_content.offset_right = -12
+	season_history_content.offset_bottom = -52
+	season_history_dialog.add_child(season_history_content)
+	season_history_button.pressed.connect(func(): season_history_dialog.popup_centered(Vector2i(mini(640, int(overlay.size.x) - 32), mini(440, int(overlay.size.y) - 48))))
 	var launch_spacer := Control.new()
 	launch_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	confirm_step.add_child(launch_spacer)
@@ -357,6 +384,10 @@ func update(payload: Dictionary) -> void:
 	selection_summary.text = "현재 계약  %s · %s · %s  |  소모품 %s" % [
 		region_name, difficulty_name, tier_name, String(payload.get(&"loadout", "비어 있음")),
 	]
+	season_summary.text = String(payload.get(&"season", {}).get(&"text", ""))
+	season_summary.visible = not season_summary.text.is_empty()
+	season_history_button.visible = season_summary.visible
+	season_history_content.text = String(payload.get(&"season", {}).get(&"history_text", ""))
 	launch_button.text = "작전 투입  ·  %d C" % int(quote.get(&"entry_cost", 0))
 	launch_button.disabled = not bool(payload.get(&"can_launch", true))
 	for id in tier_buttons:
@@ -403,6 +434,8 @@ func get_snapshot() -> Dictionary:
 		&"largest_minimums": _largest_minimum_sizes(),
 		&"mission_title": mission_title.text if mission_title != null else "",
 		&"selection_summary": selection_summary.text if selection_summary != null else "",
+		&"season_summary": season_summary.text if season_summary != null else "",
+		&"season_history_visible": season_history_dialog.visible if season_history_dialog != null else false,
 		&"target_farming_summary": target_farming_summary.text if target_farming_summary != null else "",
 		&"character_summary": character_summary.text if character_summary != null else "",
 		&"loadout_investment_summary": (

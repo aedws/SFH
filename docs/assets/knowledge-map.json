@@ -253,7 +253,7 @@
               {"label": "P5-03~10 로비 허브 진행", "source": "features/p5-hub-progression.md", "route": "features/p5-hub-progression/", "summary": "유틸리티·작전 초안·파산 보호·상점·제작·훈련·도감"},
               {"label": "도면 제작과 랜덤 옵션", "source": "features/blueprint-crafting.md", "route": "features/blueprint-crafting/", "summary": "도면 해금·제작·옵션 정책"},
               {"label": "페널티 변형과 조건부 랭킹", "source": "features/penalty-ranking.md", "route": "features/penalty-ranking/", "summary": "리스크 보상과 3종 기록"},
-              {"label": "P6 검증형 랭킹 제출과 오프라인 보존", "source": "features/ranking-provider.md", "route": "features/ranking-provider/", "summary": "익명 신원·멱등 키·변조 검증·영구 재시도와 공급자 교체"}
+              {"label": "P6 검증형 랭킹 제출과 오프라인 보존", "source": "features/ranking-provider.md", "route": "features/ranking-provider/", "summary": "보스 격파·로컬 시즌 기간·참가·마감 읽기 전용·검증 제출"}
             ]
           }
         ]
