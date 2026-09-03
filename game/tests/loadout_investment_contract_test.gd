@@ -23,7 +23,7 @@ func _run() -> void:
 		return
 	if not await _verify_player_visible_flow():
 		return
-	print("LOADOUT_INVESTMENT_E2E_OK owned_locked_run_purchase price_once weapon_skill_runtime tag_gate restore hub_module_part_preserved same_weapon_customization transient_weapon_override preflight modular_boundary")
+	print("LOADOUT_INVESTMENT_E2E_OK owned_locked_run_purchase skill_price_once equipped_weapon_preserved tag_gate hub_module_part_preserved same_weapon_customization no_catalog_override preflight modular_boundary")
 	quit(0)
 
 
@@ -117,12 +117,12 @@ func _verify_player_visible_flow() -> bool:
 		))
 	):
 		return _fail("출격 전 모듈·파츠 장착 상태를 만들지 못했습니다.")
-	service.call(&"select_weapon", &"main", &"pulse_rifle")
+	if service.call(&"select_weapon", &"main", &"pulse_rifle"):
+		return _fail("로비 장비 보존 모드에서 카탈로그 무기 교체를 허용했습니다.")
 	service.call(&"select_skill", 2, &"arc_dash")
 	await process_frame
-	var presenter_snapshot: Dictionary = game.get("operation_setup_presenter").call(&"get_snapshot")
-	if "미해금" not in String(presenter_snapshot.get(&"main_weapon_text", "")):
-		return _fail("브리핑이 미해금 상태를 플레이어에게 표시하지 않습니다: %s" % presenter_snapshot)
+	if not service.call(&"get_investment_context")[&"weapon_paths"].is_empty():
+		return _fail("계약에 장비 덮어쓰기 경로가 남아 있습니다.")
 	var credits_before := int(profile.call(&"get_snapshot").get(&"banked_credits", 0))
 	if game.call(&"start_run", "small"):
 		return _fail("미해금 런 장비로 작전에 진입했습니다.")
@@ -136,8 +136,8 @@ func _verify_player_visible_flow() -> bool:
 	var quote: Dictionary = game.get("operation_contract_service").call(
 		&"quote", tier_config, {}, game.call(&"_operation_investment_context")
 	)
-	if int(quote.get(&"entry_cost", 0)) - int(base_quote.get(&"entry_cost", 0)) != 140:
-		return _fail("무기·스킬 가격이 계약에 정확히 한 번 합산되지 않았습니다: %s" % quote)
+	if int(quote.get(&"entry_cost", 0)) - int(base_quote.get(&"entry_cost", 0)) != 60:
+		return _fail("스킬 비용 외에 장착 무기를 다시 청구했습니다: %s" % quote)
 	if not game.call(&"start_run", "small"):
 		return _fail("해금 후 런 장비 투자 작전에 진입하지 못했습니다.")
 	await process_frame
@@ -147,17 +147,22 @@ func _verify_player_visible_flow() -> bool:
 		return _fail("계약 총액이 한 번만 차감되지 않았습니다: %d / %s" % [spent, quote])
 	var equipment = game.get("equipment_system")
 	var main_weapon: Resource = equipment.call(&"get_weapon", &"main") if equipment != null else null
-	if main_weapon == null or main_weapon.get("weapon_id") != &"pulse_rifle":
-		return _fail("선택한 메인 무기가 런타임에 적용되지 않았습니다.")
+	if main_weapon == null or main_weapon.get("weapon_id") != &"assault_rifle":
+		return _fail("실제 로비 메인 무기가 출격 시 교체됐습니다.")
 	var transient_state: EquipmentItemState = equipment.call(&"get_equipment_state", &"main")
-	if not transient_state.installed_modules.is_empty() or not transient_state.installed_parts.is_empty():
-		return _fail("임시 런 구매 총기에 거점 총기의 개조 상태가 잘못 복제됐습니다.")
+	if transient_state.installed_modules.size() != 1 or transient_state.installed_parts.size() != 1:
+		return _fail("로비 모듈·파츠가 출격에서 유실됐습니다.")
 	var skill_system = game.get("combat_skill_system")
 	var states: Array[Dictionary] = skill_system.call(&"get_skill_states") if skill_system != null else []
 	if states.size() < 3 or states[2].get(&"skill_id") != &"arc_dash" or not bool(states[2].get(&"weapon_tags_ready", false)):
-		return _fail("선택 스킬 또는 무기 태그 계약이 런타임에 적용되지 않았습니다: %s" % states)
+		return _fail("로비 무기의 태그가 스킬에 적용되지 않았습니다: %s" % [states])
 	if not bool(skill_system.call(&"try_activate", 2)):
 		return _fail("태그가 일치하는 아크 질주가 발동하지 않았습니다.")
+	equipment.call(&"set_active_weapon_slot", &"secondary")
+	states = skill_system.call(&"get_skill_states")
+	if bool(states[2].get(&"weapon_tags_ready", true)):
+		return _fail("비전격 보조 무기에서 스킬 태그 불일치가 표시되지 않았습니다.")
+	equipment.call(&"set_active_weapon_slot", &"main")
 	game.call(&"_abandon_run_to_start_hub")
 	await process_frame
 	var hub_equipment = game.get("equipment_system")
@@ -168,7 +173,7 @@ func _verify_player_visible_flow() -> bool:
 	if restored_state.installed_modules.size() != 1 or restored_state.installed_parts.size() != 1:
 		return _fail("런 구매 총기 사용 후 거점 모듈·파츠 상태가 복원되지 않았습니다.")
 	var after: Dictionary = service.call(&"get_snapshot")
-	if after.get(&"active_run_id", &"") != &"" or after.get(&"weapons", {}).get(&"main", {}).get(&"state") != &"run_purchase":
+	if after.get(&"active_run_id", &"") != &"" or not after.get(&"equipped_weapons_only", false):
 		return _fail("복귀 후 런 구매 상태가 초기화되지 않았습니다: %s" % after)
 	service.call(&"select_weapon", &"main", &"assault_rifle")
 	service.call(&"select_skill", 2, &"speed_boost")

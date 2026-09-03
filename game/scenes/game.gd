@@ -347,6 +347,7 @@ const CHARACTER_SELECTION_METHODS := [
 const LOADOUT_INVESTMENT_METHODS := [
 	&"configure", &"request_live_catalog", &"load_catalog_text",
 	&"cycle_weapon", &"cycle_skill", &"select_weapon", &"select_skill",
+	&"preserve_equipped_weapons",
 	&"can_launch", &"get_selection_errors", &"get_investment_context",
 	&"get_operation_setting_contribution", &"commit_run_purchase", &"finish_run", &"get_snapshot",
 ]
@@ -490,6 +491,8 @@ var character_selection_service
 var loadout_investment_service
 var p5_hub_progression_service
 var shop_browser_panel
+var hub_preparation_panel
+var hub_service_stations
 var hub_economy_system
 var crafting_system
 var penalty_system
@@ -646,6 +649,17 @@ func _ready() -> void:
 		return
 	_refresh_contract_setup_ui()
 
+	if features.hub_preparation_enabled and features.start_hub_enabled:
+		hub_preparation_panel = _instantiate_feature(
+			"res://game/features/hub_preparation/hub_preparation_panel.tscn", ui_layer, &"HubPreparation")
+		if not _supports_panel(hub_preparation_panel):
+			_show_initialization_recovery("로비 준비 UI 구성 실패")
+			return
+		hub_preparation_panel.call(&"configure", operation_setup_presenter.call(&"take_hub_preparation_content"))
+		hub_preparation_panel.connect(&"inventory_requested", func():
+			if is_instance_valid(inventory_window): inventory_window.call(&"open_panel"))
+		_connect_modal_panel(hub_preparation_panel)
+		operation_setup_presenter.connect(&"hub_edit_requested", _close_run_setup)
 	_route_initial_entry()
 
 
@@ -802,6 +816,7 @@ func _install_persistent_services() -> bool:
 		loadout_investment_service.connect(
 			&"selection_changed", Callable(self, &"_on_contract_changed")
 		)
+		loadout_investment_service.call(&"preserve_equipped_weapons")
 	if features.p5_hub_progression_enabled:
 		p5_hub_progression_service = _instantiate_feature(
 			P5_HUB_PROGRESSION_SCENE_PATH, self, &"P5HubProgression"
@@ -1365,6 +1380,7 @@ func _refresh_contract_setup_ui() -> void:
 				&"maximum_enemies": int(spawn_config.get("maximum_active_enemies")),
 			}
 		operation_setup_presenter.call(&"update", {
+			&"equipped": equipment_system.call(&"get_summary") if is_instance_valid(equipment_system) else {},
 			&"tier_id": StringName(selected_tier),
 			&"region_id": contract_snapshot.get(&"selected_region_id", &"ruined_city"),
 			&"region_name": contract_snapshot.get(&"selected_region_name", "기본"),
@@ -1406,6 +1422,10 @@ func _refresh_contract_setup_ui() -> void:
 func start_run(map_size: String) -> bool:
 	if run_started:
 		return false
+	for open_panel in get_tree().get_nodes_in_group(&"game_modal_panel"):
+		if open_panel.visible:
+			status_label.text = "열린 준비 창을 저장·닫은 뒤 출격하세요."
+			return false
 	if map_size not in MAP_TIER_IDS:
 		_report_configuration_error("지원하지 않는 맵 등급입니다: %s" % map_size)
 		return false
@@ -1571,6 +1591,21 @@ func _install_start_hub() -> bool:
 	if not _install_hub_loadout_views():
 		return false
 	start_hub.connect(&"operation_requested", Callable(self, &"_open_run_setup"))
+	if is_instance_valid(hub_preparation_panel):
+		hub_service_stations = _instantiate_feature(
+			"res://game/features/hub_preparation/hub_stations.tscn", start_hub, &"HubServices")
+		if not is_instance_valid(hub_service_stations):
+			_report_configuration_error("로비 서비스 단말 구성 실패")
+			return false
+		for station in hub_service_stations.get_children():
+			if not station.has_signal(&"service_requested") or not station.has_signal(&"interaction_availability_changed"):
+				_report_configuration_error("로비 단말의 공개 상호작용 계약 누락")
+				return false
+			if station.get("service_id") == &"shop" and not is_instance_valid(shop_browser_panel):
+				_free_feature_node(station)
+				continue
+			station.connect(&"service_requested", _on_hub_service_requested)
+			station.connect(&"interaction_availability_changed", _on_interaction_availability_changed)
 	start_hub.connect(
 		&"interaction_availability_changed",
 		Callable(self, &"_on_interaction_availability_changed")
@@ -1580,8 +1615,17 @@ func _install_start_hub() -> bool:
 	hud_margin.visible = false
 	start_hub_hud.visible = true
 	interaction_label.visible = false
-	status_label.text = "거점 준비 · I 가방 · U 장비 · E 모듈·파츠 · Q 무기 · F 작전 게이트"
+	status_label.text = "로비 보급 상점 / 출격 준비 · F 상호작용 · I/U/E 장비 저장 → 우측 작전 게이트"
 	return true
+
+
+func _on_hub_service_requested(service_id: StringName) -> void:
+	if run_started or not is_instance_valid(start_hub): return
+	_refresh_contract_setup_ui()
+	if service_id == &"shop" and is_instance_valid(shop_browser_panel):
+		shop_browser_panel.call(&"open_panel")
+	elif service_id == &"preparation" and is_instance_valid(hub_preparation_panel):
+		hub_preparation_panel.call(&"open_panel")
 
 
 func _install_hub_loadout_views() -> bool:
@@ -1609,6 +1653,15 @@ func _install_hub_loadout_views() -> bool:
 func _open_run_setup() -> void:
 	if run_started or start_hub == null:
 		return
+	for other in get_tree().get_nodes_in_group(&"game_modal_panel"):
+		if not other.visible: continue
+		if other.has_method(&"request_leave"):
+			other.call(&"request_leave", func():
+				other.call(&"close_panel")
+				_open_run_setup())
+			return
+		other.call(&"close_panel")
+	_capture_prepared_loadout()
 	run_setup_overlay.visible = true
 	start_hub_hud.visible = false
 	interaction_label.visible = false
@@ -1697,7 +1750,7 @@ func _return_to_start_hub(route_initial_entry: bool = true) -> void:
 		prepared_equipment_state.clear()
 		lose_equipped_loadout_on_return = false
 	else:
-		_capture_prepared_loadout(loadout_investment_service == null)
+		_capture_prepared_loadout()
 	_restore_run_skill_bindings()
 	active_launch_plan.clear()
 	if operation_launch_preflight_service != null:
@@ -2561,9 +2614,8 @@ func _install_equipment() -> bool:
 	):
 		_report_configuration_error("준비한 장비 로드아웃을 복구하지 못했습니다.")
 		return false
-	if not _apply_run_weapon_selection():
-		_report_configuration_error("선택한 런 무기 로드아웃을 적용하지 못했습니다.")
-		return false
+	# The restored item instances are authoritative. Operation catalogs must never
+	# replace equipped definitions, parts, modules, levels or empty slots.
 	equipment_system.connect(
 		&"active_weapon_changed", Callable(self, &"_on_active_weapon_changed")
 	)
@@ -2624,25 +2676,6 @@ func _capture_prepared_loadout(include_equipment: bool = true) -> void:
 		prepared_equipment_state = equipment_system.call(&"export_runtime_state")
 	if is_instance_valid(inventory_system) and inventory_system.has_method(&"export_runtime_state"):
 		prepared_inventory_state = inventory_system.call(&"export_runtime_state")
-
-
-func _apply_run_weapon_selection() -> bool:
-	if equipment_system == null or active_contract.is_empty():
-		return true
-	var context: Dictionary = active_contract.get(&"investment_context", {})
-	var investment: Dictionary = context.get(&"loadout_investment", {})
-	var weapon_paths: Dictionary = investment.get(&"weapon_paths", {})
-	for slot_id in weapon_paths:
-		var path := String(weapon_paths[slot_id])
-		if not ResourceLoader.exists(path):
-			return false
-		var definition: Resource = load(path)
-		var current: Resource = equipment_system.call(&"get_weapon", StringName(slot_id))
-		if current != null and current.get("weapon_id") == definition.get("weapon_id"):
-			continue
-		if not bool(equipment_system.call(&"equip_definition", StringName(slot_id), definition)):
-			return false
-	return true
 
 
 func _get_active_run_skill_loadout() -> Resource:

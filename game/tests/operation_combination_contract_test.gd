@@ -187,7 +187,9 @@ func _verify_setting_change_matrix(game_scene: PackedScene) -> int:
 				):
 					failure = "출격 전 모듈·파츠 상태 구성 실패"
 			if failure.is_empty() and profile_id == &"paid_weapon_override":
-				game.get("loadout_investment_service").call(&"select_weapon", &"main", &"pulse_rifle")
+				# A stale catalog choice must no longer replace the actual lobby item.
+				if game.get("loadout_investment_service").call(&"select_weapon", &"main", &"pulse_rifle"):
+					failure = "로비 무기 대신 카탈로그 선택을 허용함"
 				game.get("loadout_investment_service").call(&"select_skill", 2, &"arc_dash")
 			if failure.is_empty() and profile_id == &"utility_penalty":
 				game.get("p5_hub_progression_service").call(&"set_utility_quantity", &"field_medkit", 1)
@@ -208,8 +210,8 @@ func _verify_setting_change_matrix(game_scene: PackedScene) -> int:
 						failure = "동일 총기 모듈·파츠가 작전에 유지되지 않음"
 				elif profile_id == &"paid_weapon_override":
 					var state: EquipmentItemState = game.get("equipment_system").call(&"get_equipment_state", &"main")
-					if state.definition_id() != &"pulse_rifle" or not state.installed_modules.is_empty() or not state.installed_parts.is_empty():
-						failure = "임시 유료 총기 교체 정책이 일관되지 않음"
+					if state.definition_id() != &"assault_rifle" or state.installed_modules.size() != 1 or state.installed_parts.size() != 1:
+						failure = "로비 무기·모듈·파츠를 구형 카탈로그가 덮어씀"
 				elif profile_id == &"utility_penalty":
 					var context: Dictionary = game.get("active_contract").get(&"investment_context", {})
 					if int(context.get(&"utility_investment", {}).get(&"additional_entry_cost", 0)) != 30:

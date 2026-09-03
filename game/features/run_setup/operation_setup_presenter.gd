@@ -1,5 +1,6 @@
 extends RefCounted
 signal honor_requested
+signal hub_edit_requested
 
 ## 작전 계약 데이터를 계산하지 않고, 기존 설정 Control을 브리핑 중심 화면으로 재배치합니다.
 
@@ -42,6 +43,31 @@ var overlay_root: Control
 var main_columns: HBoxContainer
 var outer_margin: MarginContainer
 var responsive_mode := &"wide"
+var equipped_summary: Label
+
+
+func take_hub_preparation_content() -> Control:
+	var controls := VBoxContainer.new()
+	controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	controls.add_theme_constant_override("separation", 8)
+	for child in step_pages[1].get_children():
+		child.reparent(controls)
+	# Weapon editing belongs to the item inventory, never the rental catalog.
+	main_weapon_button.get_parent().hide()
+	var meta_actions := controls.find_child("MetaActions", true, false) as GridContainer
+	if meta_actions != null: meta_actions.columns = 2
+	equipped_summary = _label("로비 장비 확인 중...", 16, Color("d2fffe"))
+	_wrap_label(equipped_summary)
+	step_pages[1].add_child(equipped_summary)
+	var hint := _label("무기·방어구·모듈·파츠는 로비 I/U/E에서 저장한 그대로 출격합니다.\n무기를 다시 고르거나 장착 무기 비용을 재청구하지 않습니다.\n스킬 태그가 맞지 않으면 해당 스킬만 비활성화됩니다.", 13, Color("9fc7cf"))
+	_wrap_label(hint)
+	step_pages[1].add_child(hint)
+	var back := _compact_selection_button("ReturnToHubPreparation")
+	back.text = "로비로 돌아가 세팅 변경"
+	back.custom_minimum_size.y = 44
+	back.pressed.connect(func(): hub_edit_requested.emit())
+	step_pages[1].add_child(back)
+	return controls
 
 
 func install(overlay: Control) -> Dictionary:
@@ -183,7 +209,7 @@ func install(overlay: Control) -> Dictionary:
 	character_summary = _label("패시브 데이터 계산 중...", 12, Color("8ffffc"))
 	_wrap_label(character_summary)
 	loadout_step.add_child(character_summary)
-	loadout_step.add_child(_section_title("런 장비 투자"))
+	loadout_step.add_child(_section_title("스킬 설정 · 무기/방어구는 I/U에서 장착"))
 	var weapon_row := HBoxContainer.new()
 	weapon_row.add_theme_constant_override("separation", 6)
 	loadout_step.add_child(weapon_row)
@@ -361,6 +387,14 @@ func update(payload: Dictionary) -> void:
 	]
 	_update_loadout_investment(payload.get(&"loadout_investment", {}))
 	_update_p5_progression(payload.get(&"p5_progression", {}))
+	if equipped_summary != null:
+		var equipped: Dictionary = payload.get(&"equipped", {})
+		equipped_summary.text = "현재 로비 세팅\nMAIN · %s\nSUB · %s\n방어구 %d개 · 활성 무기 %s\n요원 · %s\n소모품 · %s\n%s" % [
+			equipped.get(&"main_weapon_name", "비어 있음"),
+			equipped.get(&"secondary_weapon_name", "비어 있음"),
+			int(equipped.get(&"armor_count", 0)), equipped.get(&"active_weapon_name", "비어 있음"),
+			character.get(&"display_name", "기본 요원"), payload.get(&"loadout", "비어 있음"),
+			loadout_investment_summary.text]
 	mission_title.text = "%s  ·  %s" % [region_name, tier_name]
 	mission_code.text = "%s / %s / %s" % [String(region_id).to_upper(), String(difficulty_id).to_upper(), String(tier_id).to_upper()]
 	mission_intel.text = "목표 %d분  ·  방 %d~%d개  ·  동시 적 %d~%d명\n핵심 루프  침투 → 탐색·교전 → 자원 회수 → 탈출 방어" % [
@@ -477,6 +511,7 @@ func get_snapshot() -> Dictionary:
 func _update_loadout_investment(snapshot: Dictionary) -> void:
 	if main_weapon_button == null:
 		return
+	main_weapon_button.get_parent().visible = not bool(snapshot.get(&"equipped_weapons_only", false))
 	var weapons: Dictionary = snapshot.get(&"weapons", {})
 	_update_investment_button(main_weapon_button, "MAIN", weapons.get(&"main", {}))
 	_update_investment_button(secondary_weapon_button, "SUB", weapons.get(&"secondary", {}))

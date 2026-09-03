@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://game/features/hub_preparation/hub_service_station.gd" id="1"]
+[node name="HubServices" type="Node2D"]
+
+[node name="ShopStation" type="Node2D" parent="." groups=["hub_service_station"]]
+position = Vector2(-580, -245)
+script = ExtResource("1")
+
+[node name="PreparationStation" type="Node2D" parent="." groups=["hub_service_station"]]
+position = Vector2(-580, 245)
+script = ExtResource("1")
+service_id = &"preparation"
+display_name = "출격 준비 · 장비는 I/U"
