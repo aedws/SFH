@@ -206,7 +206,7 @@
               {"label": "타격감과 피격 피드백", "source": "features/hit-feedback.md", "route": "features/hit-feedback/", "summary": "섬광·넉백·충격·카메라 반응"},
               {"label": "적과 증원형 생성 시스템", "source": "features/enemies.md", "route": "features/enemies/", "summary": "규모별 물량·분리·재생성 한계"},
               {"label": "적 체력과 방어력", "source": "features/enemy-defense.md", "route": "features/enemy-defense/", "summary": "적 생존 스탯과 상태 바"},
-              {"label": "투입액 회수 엘리트 추격자", "source": "features/elite-pursuit.md", "route": "features/elite-pursuit/", "summary": "투입액 임계·랜덤 생성·방과 문 독립 전역 추적"},
+              {"label": "투입액 50% 회수 추격 보스", "source": "features/elite-pursuit.md", "route": "features/elite-pursuit/", "summary": "진입비 절반 회수·보스 1기·문 독립 추격·격파 집계"},
               {"label": "방 진입 전투와 봉쇄 보상", "source": "features/room-encounters.md", "route": "features/room-encounters/", "summary": "문 폐쇄·1~5개 크레딧 박스·조기 탈출"}
             ]
           },

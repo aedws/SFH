@@ -94,7 +94,7 @@ nav:
           - 타격감과 피격 피드백: features/hit-feedback.md
           - 적과 증원형 생성 시스템: features/enemies.md
           - 적 체력과 방어력: features/enemy-defense.md
-          - 투입액 회수 엘리트 추격자: features/elite-pursuit.md
+          - 투입액 50% 회수 추격 보스: features/elite-pursuit.md
           - 방 진입 전투와 봉쇄 보상: features/room-encounters.md
       - 장비와 인벤토리:
           - 장비와 인벤토리: features/equipment.md

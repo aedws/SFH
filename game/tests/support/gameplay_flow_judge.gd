@@ -346,10 +346,10 @@ func _judge_elite_pursuit(evidence: Dictionary, errors: PackedStringArray) -> vo
 	var cleared: Dictionary = evidence.get(&"cleared", {})
 	if bool(before.get(&"triggered", false)) or not bool(after.get(&"triggered", false)):
 		errors.append("투입액 회수 임계 전후 엘리트 발생 상태가 바뀌지 않았습니다.")
-	if int(after.get(&"threshold_credits", -1)) != int(after.get(&"deployment_cost", -2)):
-		errors.append("엘리트 발생 임계값이 실제 투입 비용과 같지 않습니다.")
-	if int(after.get(&"spawned_elite_count", 0)) < 1 or int(after.get(&"spawned_elite_count", 0)) > 2:
-		errors.append("엘리트 랜덤 생성 수가 임시 정책 1~2마리를 벗어났습니다.")
+	if int(after.get(&"threshold_credits", -1)) != maxi(1, ceili(float(after.get(&"deployment_cost", -2)) * 0.5)):
+		errors.append("추격 보스 임계값이 실제 투입 비용 50%와 다릅니다.")
+	if int(after.get(&"spawned_elite_count", 0)) != 1 or not bool(after.get(&"spawn_as_boss", false)):
+		errors.append("50% 회수 시 추격 보스 1기 생성 정책이 적용되지 않았습니다.")
 	if (
 		float(after.get(&"player_speed_multiplier", 1.0)) <= 1.0
 		or float(after.get(&"player_attack_multiplier", 1.0)) <= 1.0

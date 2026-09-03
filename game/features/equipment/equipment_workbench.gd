@@ -145,6 +145,11 @@ func toggle_panel() -> void:
 
 
 func open_panel() -> void:
+	if visible:
+		# Re-selecting U/E or opening a tab programmatically must not replace
+		# the original pause state with the modal's own paused state.
+		_refresh()
+		return
 	for panel in get_tree().get_nodes_in_group(&"game_modal_panel"):
 		if panel != self and panel.visible and panel.has_method(&"request_leave"):
 			panel.call(&"request_leave", func():

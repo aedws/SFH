@@ -70,6 +70,12 @@ func _run() -> void:
 		_fail("사이버펑크 화면 효과가 입력을 가로채거나 뷰포트를 채우지 못했습니다.")
 		return
 
+	var hub_contract := preload("res://game/tests/support/hub_inventory_transition_contract.gd").new()
+	var hub_error: String = await hub_contract.verify(self, game, _tap_key, _click_tutorial_button)
+	if not hub_error.is_empty():
+		_fail(hub_error)
+		return
+	print("E2E_HUB_LOADOUT_OK transitions_6 focused_controls repeated_open pause_restored live_edit_draft_refresh save_discard_cancel modules_parts")
 	if not await _verify_hub_input_session():
 		return
 	var inventory_contract := preload("res://game/tests/support/inventory_editor_contract.gd").new()
@@ -1114,7 +1120,9 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 			elite_target = target as Node2D
 			break
 	if elite_target == null:
-		return _fail("투입 비용만큼 휴대 크레딧을 모았지만 엘리트 추격자가 생성되지 않았습니다: %s" % elite_after)
+		return _fail("투입 비용 50%를 회수했지만 추격 보스가 생성되지 않았습니다: %s" % elite_after)
+	if not bool(elite_target.call(&"get_combat_identity").get(&"is_boss", false)):
+		return _fail("추격자가 보스 역할로 등록되지 않았습니다.")
 	var elite_distance_before := elite_target.global_position.distance_to(player.global_position)
 	for _frame in range(4):
 		await physics_frame

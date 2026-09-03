@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 12 · IMPROVE 18 · CHANGE 14 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 13 · IMPROVE 19 · CHANGE 15 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>12</b><small>BUILD</small></span><span><b>18</b><small>IMPROVE</small></span><span><b>14</b><small>CHANGE</small></span><span><b>14</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>13</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>15</b><small>CHANGE</small></span><span><b>16</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>50% 회수 추격 보스 · 거점 인벤토리 자유 전환</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 진입비의 절반을 회수하면 보스가 한 번 등장합니다. 방을 클리어해 문이 열려도 추격과 전투는 끝나지 않습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>추격자를 명시적 보스 역할로 생성해 보스 격파·랭킹 집계에 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>거점 I/U/E 여섯 방향 전환, 장비·모듈·파츠 변경 후 최신 편집본과 저장 확인을 실제 입력으로 검증합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>기존 100% 회수·엘리트 1~2기를 50% 회수·추격 보스 1기로 변경했습니다. 임계·수량·재시도는 정책 Resource로 분리합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>열린 장비 창 재진입 후 거점이 멈추던 일시정지 오류와, 생성 실패가 추격자의 1회 등장 기회를 소모하던 오류를 수정했습니다.</p></div>
+        <p>101 C 진입은 51 C, 무료 작전은 첫 1 C 회수 기준입니다. 보스 처치 뒤 같은 런에서 재생성하지 않습니다. Sheet 목록·과금 변경 없음.</p>
+        <p><a href="features/elite-pursuit/">추격 보스 →</a> · <a href="features/grid-inventory/">거점 편집 →</a> · <a href="quality/e2e-play-session/">검증 목록 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>체크박스 판독 정정 · 보스 격파 · 로컬 시즌</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 출격 전에 시즌 참가 조건과 종료 시각을 확인하고, 보스 격파를 포함한 결과와 마감 이력을 읽을 수 있습니다.</strong></div>

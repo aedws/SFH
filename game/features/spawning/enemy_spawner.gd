@@ -216,11 +216,14 @@ func spawn_elite_pursuer_at(world_position: Vector2, profile: Dictionary) -> Nod
 		enemy == null
 		or not enemy.has_method(&"configure")
 		or not enemy.has_method(&"configure_elite_pursuer")
+		or (bool(profile.get(&"is_boss", false)) and not enemy.has_method(&"set_boss_role"))
 		or not enemy.has_signal(&"defeated")
 	):
 		if enemy != null:
 			enemy.free()
 		return null
+	if bool(profile.get(&"is_boss", false)):
+		enemy.call(&"set_boss_role", true)
 	enemy.set("move_speed", float(profile.get(&"move_speed", 300.0)))
 	enemy.set("contact_damage", float(profile.get(&"contact_damage", 4.0)))
 	enemy.set("max_health", float(profile.get(&"max_health", 24.0)))

@@ -4,13 +4,15 @@
 
 [resource]
 script = ExtResource("1_config")
-carried_credit_threshold_multiplier = 1.0
+carried_credit_threshold_multiplier = 0.5
+spawn_as_boss = true
+spawn_retry_seconds = 1.0
 minimum_elite_count = 1
-maximum_elite_count = 2
+maximum_elite_count = 1
 minimum_spawn_distance = 420.0
 maximum_spawn_distance = 680.0
 player_speed_multiplier = 1.08
 player_attack_multiplier = 1.12
 maximum_health = 24.0
 maximum_armor = 10.0
-priority_rank = 4
+priority_rank = 5

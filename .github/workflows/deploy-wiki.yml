@@ -151,6 +151,7 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loadout_investment_contract_test.gd" | tee /tmp/sfh-loadout-investment.log
           grep -q "LOADOUT_INVESTMENT_E2E_OK owned_locked_run_purchase price_once weapon_skill_runtime tag_gate restore hub_module_part_preserved same_weapon_customization transient_weapon_override preflight modular_boundary" /tmp/sfh-loadout-investment.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/mobile_hud_elite_contract_test.gd" | tee /tmp/sfh-mobile-hud-elite.log
+          grep -q "PURSUIT_BOSS_OK half_cost rounded_free_entry failed_spawn_retry locked_door_damage reclosed_door_damage boss_kill_once no_respawn" /tmp/sfh-mobile-hud-elite.log
           grep -q "MOBILE_HUD_ELITE_OK optional_modules dependencies hud_bottom_left movable_anchor key_format mobile_semantic_pad threshold_entry_cost random_elite faster_stronger infinite_room_independent" /tmp/sfh-mobile-hud-elite.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/run_settlement_contract_test.gd" | tee /tmp/sfh-run-settlement.log
           grep -q "RUN_SETTLEMENT_OK auto_convert_450 permanent_unlock warehouse run_only_expiry death_loss idempotent_run_id" /tmp/sfh-run-settlement.log
@@ -221,6 +222,7 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK" /tmp/sfh-e2e.log
           grep -q "E2E_SEASON_PLAYER_OK briefing_eligibility actual_history_click readonly_history launch_context result_bosses season_persistence" /tmp/sfh-e2e.log
+          grep -q "E2E_HUB_LOADOUT_OK transitions_6 focused_controls repeated_open pause_restored live_edit_draft_refresh save_discard_cancel modules_parts" /tmp/sfh-e2e.log
           grep -q "ui_state_contracts_23 player_perception_contracts_31 gameplay_flows_15" /tmp/sfh-e2e.log
           grep -q "physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace" /tmp/sfh-e2e.log
           grep -q "key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format" /tmp/sfh-e2e.log
