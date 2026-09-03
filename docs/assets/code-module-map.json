@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "bbfa45137a93aa8f28814e8018a980ec3dca352bd1749a7b961e4553e5059886",
+  "source_sha256": "9c9035919e8686b37bbd3292bc4ab0f9700911202b7f487679a1fa64fd377b99",
   "layers": [
     {
       "id": "contract",
@@ -25,8 +25,8 @@
   ],
   "summary": {
     "modules": 59,
-    "scripts": 240,
-    "named_classes": 199,
+    "scripts": 241,
+    "named_classes": 200,
     "relationships": 181,
     "project_inheritance": 7,
     "enabled_toggles": 68
@@ -636,10 +636,11 @@
       "path": "game/features/mobile_controls",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 7,
-      "class_count": 3,
+      "file_count": 8,
+      "class_count": 4,
       "classes": [
         "MobileControlPad",
+        "MobileOrientationPolicy",
         "MobilePadLayout",
         "MobileTutorialPopup"
       ],
@@ -2287,6 +2288,15 @@
       "module": "mobile_controls",
       "path": "game/features/mobile_controls/mobile_control_pad.gd",
       "extends": "Control",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:MobileOrientationPolicy",
+      "name": "MobileOrientationPolicy",
+      "module": "mobile_controls",
+      "path": "game/features/mobile_controls/mobile_orientation_policy.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },

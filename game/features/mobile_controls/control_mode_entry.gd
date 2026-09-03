@@ -11,7 +11,10 @@ var mobile_button: Button
 var status: Label
 var choosing := false
 var tutorial: Control
+var orientation_hint: Label
+var orientation_button: Button
 const ViewportPolicy := preload("res://game/features/mobile_controls/mobile_viewport_policy.gd")
+const OrientationPolicy := preload("res://game/features/mobile_controls/mobile_orientation_policy.gd")
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -35,8 +38,14 @@ func _ready() -> void:
 	_label("조작 방식을 선택하세요", 30, Color("e5f6f7"))
 	_label("선택 후 로비에서 준비하고 작전 게이트로 이동합니다.", 16, Color("adc5cb"))
 	pc_button = _button("PC · 키보드 / 마우스", &"off")
-	mobile_button = _button("모바일 · 조이스틱 / 터치", &"on")
-	_label("모바일: 왼쪽 이동 · 오른쪽 공격 / 스킬\n설정(K 또는 화면의 설정 버튼)에서 다시 변경할 수 있습니다.", 16, Color("adc5cb"))
+	mobile_button = _button("모바일 · 가로 플레이", &"on")
+	orientation_hint = _label("", 16, Color("adc5cb"))
+	orientation_button = Button.new()
+	orientation_button.text = "전체화면 · 가로 전환 요청"
+	orientation_button.custom_minimum_size.y = 44
+	orientation_button.add_theme_font_size_override("font_size", 18)
+	orientation_button.pressed.connect(func(): OrientationPolicy.request_landscape(true))
+	card.add_child(orientation_button)
 	status = _label("", 15, Color("ffce85"))
 	resized.connect(_layout)
 	if launch_game:
@@ -74,6 +83,9 @@ func _queue_resize() -> void:
 func _layout() -> void:
 	if card == null:
 		return
+	if orientation_hint != null:
+		orientation_hint.text = OrientationPolicy.guidance(size)
+		orientation_button.visible = OrientationPolicy.is_portrait(size)
 	card.size.x = minf(560, size.x - 40)
 	card.position = Vector2((size.x - card.size.x) * 0.5, maxf(20, (size.y - card.get_combined_minimum_size().y) * 0.5))
 
@@ -84,6 +96,10 @@ func select_mode(mode: StringName) -> void:
 		status.text = "조작 설정을 저장하지 못했습니다. 저장 권한을 확인하고 다시 선택해 주세요."
 		return
 	choosing = true
+	if mode == &"on":
+		OrientationPolicy.request_landscape()
+	else:
+		OrientationPolicy.release_lock()
 	if mode == &"on" and not bool(settings.call(&"get_snapshot").get(&"mobile_tutorial_seen", false)):
 		card.hide()
 		tutorial = preload("res://game/features/mobile_controls/mobile_tutorial_popup.gd").new()

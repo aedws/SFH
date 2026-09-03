@@ -379,6 +379,7 @@ jobs:
 
       - name: Test Cloudflare release gateway
         run: |
+          node scripts/test_mobile_orientation_policy.mjs
           node scripts/test_cloudflare_worker.mjs
           node scripts/test_wiki_auth_seed.mjs
           node scripts/test_wiki_auth_worker.mjs
