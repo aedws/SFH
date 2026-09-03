@@ -44,10 +44,21 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 9 · IMPROVE 14 · CHANGE 11 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 10 · IMPROVE 16 · CHANGE 12 · FIX 11</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>9</b><small>BUILD</small></span><span><b>14</b><small>IMPROVE</small></span><span><b>11</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>16</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>11</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 5</small><b>위키 검색·플레이 구분과 실행 아이콘 정렬</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 원형 삼각형 대신 청록색 게임 플레이 버튼을 표시하고 문서 검색은 돋보기와 검색 문구로 구분합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>독립 헤더 스타일과 폰트에 의존하지 않는 SVG 실행 아이콘을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>휴대폰에서도 검색·플레이 글자를 유지하고 44px 클릭 영역과 키보드 포커스를 적용했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>검색은 현재 위키, 플레이는 새 게임 탭이라는 동작과 안내·검증 계약을 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>아이콘을 밀던 점멸 가상 요소와 검색창이 헤더·모바일 문서 너비를 침범하던 스타일을 제거했습니다.</p></div>
+        <p><a href="getting-started/search-wiki/">사용법 →</a> · <a href="quality/wiki-responsive-e2e/">화면별 검증 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>위키 문서형 탐색 · 큰 문서에서 작은 문서로</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 긴 기능 목록 대신 SFH 종합 문서에서 작전·전투·장비·전리품·성장 주제를 읽고, 필요한 세부 문서로 내려갑니다.</strong></div>

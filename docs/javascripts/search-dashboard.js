@@ -211,9 +211,26 @@
   function initializeSearch() {
     if (window.location.pathname === "/" || window.location.pathname === "/index.html" || window.location.pathname.startsWith("/access/login")) return;
     var searchRoot = document.querySelector('[data-md-component="search"]');
-    if (!searchRoot || initializedSearchRoots.has(searchRoot)) {
+    if (!searchRoot) {
       return;
     }
+    // Header and search panel have different lifetimes during instant navigation.
+    var trigger = document.querySelector('.md-header__button[for="__search"]');
+    if (trigger && !trigger.classList.contains("sfh-header-search")) {
+      trigger.classList.add("sfh-header-search");
+      trigger.append(createElement("span", "sfh-search-label", "검색"));
+      trigger.setAttribute("aria-label", "문서 검색 열기");
+      trigger.setAttribute("title", "문서 검색 · 게임 실행 아님");
+      trigger.setAttribute("role", "button");
+      trigger.tabIndex = 0;
+      trigger.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          trigger.click();
+        }
+      });
+    }
+    if (initializedSearchRoots.has(searchRoot)) return;
     var input = searchRoot.querySelector('[data-md-component="search-query"]');
     var result = searchRoot.querySelector('[data-md-component="search-result"]');
     var meta = result && result.querySelector(".md-search-result__meta");
@@ -222,7 +239,8 @@
       return;
     }
     initializedSearchRoots.add(searchRoot);
-    input.placeholder = "기획·기능·버그·키워드 검색";
+    input.placeholder = "문서 검색 · 기획 / 기능 / 버그";
+    input.setAttribute("aria-label", "문서 검색");
 
     loadDashboardConfig().then(function (config) {
       if (!result.isConnected || result.querySelector(".sfh-search-dashboard")) {

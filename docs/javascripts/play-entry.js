@@ -46,18 +46,18 @@
       entry.className = "sfh-global-play";
       entry.setAttribute("data-sfh-global-play", "");
       entry.setAttribute("data-sfh-surface", "gameplay");
-      entry.setAttribute("aria-label", "SFH 브라우저 빌드 플레이");
-      entry.title = "브라우저로 플레이";
+      entry.setAttribute("aria-label", "게임 플레이 (새 탭)");
+      entry.title = "게임 플레이 · 새 탭에서 실행";
       entry.innerHTML = [
-        '<i aria-hidden="true">▶</i>',
-        '<span><small>PLAY SFH</small><strong>브라우저로 플레이</strong></span>'
+        '<svg class="sfh-play-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5 18 12 8 19Z"/></svg>',
+        '<span class="sfh-play-label"><span class="sfh-play-prefix">게임 </span>플레이</span>'
       ].join("");
     }
 	entry.href = getPlayUrl();
     entry.target = "_blank";
     entry.rel = "noopener noreferrer";
     if (entry.parentElement !== host) {
-      host.insertBefore(entry, host.querySelector('.md-header__source'));
+      host.insertBefore(entry, host.querySelector('[data-sfh-role-auth-bar], .md-header__source'));
     }
 	loadEffectiveOrigin().then(function (origin) {
 	  entry.href = origin + "/";

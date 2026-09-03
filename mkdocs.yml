@@ -36,6 +36,7 @@ hooks:
 extra_css:
   - stylesheets/extra.css
   - stylesheets/articles.css
+  - stylesheets/header-actions.css
 
 extra_javascript:
   - javascripts/search-dashboard.js

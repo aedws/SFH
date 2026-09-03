@@ -1,0 +1,79 @@
+/* Header actions only. Search behavior/auth and game destination stay in their modules. */
+a.sfh-global-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: 6px;
+  min-height: 44px;
+  margin: 2px 12px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--sfh-cyan);
+  border-radius: 4px;
+  background: var(--sfh-cyan);
+  color: #001012;
+  font: 700 13px/1.2 var(--sfh-sans);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+a.sfh-global-play:hover { background: var(--sfh-cyan-bright); color: #001012; }
+.sfh-global-play .sfh-play-label, .sfh-global-play .sfh-play-prefix { display: inline; }
+.sfh-play-icon { display: block; flex: 0 0 20px; width: 20px; height: 20px; fill: currentColor; pointer-events: none; }
+.sfh-header-search {
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 44px;
+  min-width: 72px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  color: var(--sfh-text);
+  background: var(--sfh-panel);
+  border: 1px solid var(--sfh-line);
+  border-radius: 4px;
+  font: 700 13px/1.2 var(--sfh-sans);
+  white-space: nowrap;
+}
+.sfh-header-search svg { flex: 0 0 20px; width: 20px; height: 20px; }
+.sfh-search-label { display: inline; }
+.md-search__form { border: 1px solid var(--sfh-line); border-radius: 4px; }
+.md-search__input::placeholder { color: var(--sfh-muted); opacity: 1; }
+@media screen and (min-width: 60em) {
+  .md-header__inner .md-search { flex: 0 1 24rem; margin-left: auto; }
+  .md-search__inner { width: 100%; }
+  #__search:checked ~ .md-header .md-search__inner { width: min(42rem, calc(100vw - 3rem)); }
+  .md-search__form { min-height: 44px; }
+  .md-search__input { height: 44px; }
+}
+a.sfh-global-play:focus-visible, .sfh-header-search:focus-visible {
+  outline: 3px solid var(--sfh-text);
+  outline-offset: 3px;
+}
+@media screen and (max-width: 59.984375em) {
+  /* Keep Material's desktop/mobile visibility contract for the native toggle. */
+  .md-header__button.sfh-header-search { display: inline-flex; }
+  /* A transformed, closed results panel must not enlarge the document scroll area. */
+  #__search:not(:checked) ~ .md-header .md-search__inner { display: none; }
+}
+@media screen and (max-width: 48em) {
+  .md-header__title { display: none; }
+  .md-header .md-header__inner { padding-inline: max(4px, env(safe-area-inset-left), env(safe-area-inset-right)); }
+  .md-header__inner > .md-header__button { margin-inline: 0; }
+  .md-header__option { margin-inline: 0; }
+  .sfh-global-play .sfh-play-prefix { display: none; }
+  a.sfh-global-play { padding-inline: 8px; margin-inline: 6px; }
+  .md-header__button.sfh-header-search { margin-inline: 0; }
+}
+@media screen and (max-width: 30em) {
+  /* Keep the role entry; additional account routes remain in the navigation menu. */
+  .sfh-role-auth-bar .sfh-auth-chip:not(.is-active):not(:first-child) { display: none; }
+}
+@media screen and (max-width: 24em) {
+  .md-header__option { display: none; }
+  .md-header__button.sfh-header-search { min-width: 68px; padding-inline: 5px; }
+}
+@media (forced-colors: active) {
+  a.sfh-global-play, .sfh-header-search { border-color: ButtonText; }
+}
