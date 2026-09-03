@@ -306,12 +306,19 @@
     if (!article || initializedHosts.has(article)) return;
     initializedHosts.add(article);
     var host = article.querySelector("[data-sfh-knowledge-map-host]") || article;
-    loadMapData().then(function (data) {
-      if (!host.isConnected || host.querySelector("[data-sfh-knowledge-map]")) return;
-      host.append(buildMap(data));
-    }).catch(function () {
-      var notice = element("p", "sfh-knowledge-map__error", "문서 노드맵을 불러오지 못했습니다. 좌측 목차 또는 상단 검색을 사용해 주세요.");
-      host.append(notice);
+    var drawer = element("details", "sfh-article-map");
+    drawer.append(element("summary", "", "전체 문서 노드맵 펼치기 · 구조를 한눈에 볼 때"));
+    host.append(drawer);
+    var requested = false;
+    drawer.addEventListener("toggle", function () {
+      if (!drawer.open || requested) return;
+      requested = true;
+      loadMapData().then(function (data) {
+        if (!drawer.isConnected || drawer.querySelector("[data-sfh-knowledge-map]")) return;
+        drawer.append(buildMap(data));
+      }).catch(function () {
+        drawer.append(element("p", "sfh-knowledge-map__error", "문서 노드맵을 불러오지 못했습니다. 상위·하위 문서 링크 또는 상단 검색을 사용해 주세요."));
+      });
     });
   }
 

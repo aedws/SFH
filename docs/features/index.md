@@ -1,55 +1,47 @@
-# 기능 색인
+---
+title: SFH 종합 문서
+description: SFH의 게임 개요에서 작전·전투·장비·전리품·성장과 개발 문서로 내려가는 위키 대문
+---
 
-구현된 기능:
+# SFH 종합 문서
 
-- [랜덤 맵 생성](map-generation.md)
-- [전장의 안개](fog-of-war.md)
-- [전술 미니맵](minimap.md)
-- [작전 선택과 탈출](raid-setup-extraction.md)
-- [작전 진입 마법사와 첫 투입 안내](operation-entry-wizard.md)
-- [작전 투입 사전검증과 불변 계획](operation-launch-preflight.md)
-- [탈출 방어전과 작전 결과 정산](extraction-defense-results.md)
-- [투입 비용·지역·난이도 계약](operation-contracts.md)
-- [P5-01 캐릭터 선택·패시브·투입 가격](character-selection.md)
-- [P5-02 주·보조무기·스킬 런 투자](loadout-investment.md)
-- [P5-03~10 로비 허브 진행 시스템](p5-hub-progression.md)
-- [시작 거점과 전투 세션 전환](start-hub.md)
-- [영구 해금·상점·창고·소모품 로드아웃](hub-economy.md)
-- [크레딧 파밍과 회수](credit-loot.md)
-- [전리품 생명 주기](loot-lifecycle.md)
-- [지역·난이도 전리품 테이블](loot-tables.md)
-- [현장 전리품 비교·획득](field-loot-acquisition.md)
-- [현장 무기 즉시 장착](field-loot-immediate-equip.md)
-- [현장 스킬 즉시 교체](field-loot-skill-swap.md)
-- [런 전용 룬·코어·유물 소켓](session-sockets.md)
-- [런 전리품 정산](run-settlement.md)
-- [플레이어 이동](player.md)
-- [K 키 설정과 영구 바인딩](key-mapping.md)
-- [모바일 키패드와 HUD 표시 설정](mobile-hud-settings.md)
-- [부분 체력 회복](health-recovery.md)
-- [전투 스킬과 쿨타임 HUD](combat-skills.md)
-- [타격감과 피격 피드백](hit-feedback.md)
-- [전투 에너지·충전·회복 드랍](combat-resources.md)
-- [스마트 자동 타게팅](smart-targeting.md)
-- [도면 제작과 랜덤 옵션](blueprint-crafting.md)
-- [페널티 변형과 조건부 랭킹](penalty-ranking.md)
-- [최소·권장 사양과 성능 예산](../performance/minimum-requirements.md)
-- [캐릭터 장비와 로드아웃](character-equipment.md)
-- [격자 가방 인벤토리](grid-inventory.md)
-- [장비 파츠·모듈 개조](equipment-customization.md)
-- [모듈·고유 파츠 강화 경제](equipment-upgrade-economy.md)
-- [적과 증원형 생성 시스템](enemies.md)
-- [투입액 회수 엘리트 추격자](elite-pursuit.md)
-- [방 진입 전투와 봉쇄 보상](room-encounters.md)
-- [적 체력과 방어력](enemy-defense.md)
-- [좌클릭 기본 무기](weapons.md)
-- [Q 무기 교체와 Google Sheets 밸런스](weapon-balance.md)
-- [내부 성장·장비 강화 Google Sheets 연동](growth-balance.md)
-- [내부·외부 로그라이크 성장](progression.md)
-- [게임 루프와 HUD](game-loop.md)
-- [P6 랭킹 제공자와 오프라인 보존](ranking-provider.md)
+**살아서 싸우고, 가져와 성장하세요.** SFH는 거점에서 출격을 준비하고, 전장에서 전리품을 모아 살아 돌아오는 탑다운 익스트랙션 액션 게임입니다.
 
-다음 구현 예정 기능은 [P5·P6 사전 구현 설계](../design/p5-p6-preimplementation.md)의 P6-02 이후 순서를 따릅니다.
+이 문서는 게임 전체를 소개하는 **큰 문서**입니다. 아래에서 궁금한 주제를 고르면 작은 문서로 이어집니다. 기능 이름을 몰라도 게임을 하는 순서대로 읽을 수 있습니다.
 
-1. P6-02~04 검증 제출·시즌·칭호/오라 보상
-2. 병행 실기: 저사양 GPU·브라우저 장시간 주행과 다중 해상도
+[TOC]
+
+## 1. 개요
+
+플레이 흐름은 **거점 준비 → 작전 진입 → 전투·탐색 → 전리품 회수 → 탈출·성장**입니다. 직접 조준하는 대신 이동과 스킬 사용에 집중합니다. 탈출 성공 여부에 따라 이번 판에서 얻은 물건의 처리 결과가 달라집니다.
+
+게임의 목표와 범위는 [게임 개요](../design/game-overview.md), 기획 원문과 구현의 차이는 [기획 대조 문서](../design/master-gdd-alignment.md)에서 확인할 수 있습니다. 이 문서는 탐색 안내이며 새로운 기획 확정이나 진행률 판정은 아닙니다.
+
+## 2. 하위 문서
+
+처음이라면 **작전과 맵**부터 읽으세요. 장비를 바꾸고 싶다면 **장비와 인벤토리**, 주운 물건의 처리 방식이 궁금하다면 **전리품과 회수**를 선택하세요.
+
+<!-- sfh:children -->
+
+## 3. 자주 궁금한 내용
+
+- 어디서 출격하나요? → [거점과 작전 진입](start-hub.md)
+- 가방에서 물건을 옮기거나 저장하려면? → [격자 가방 인벤토리](grid-inventory.md)
+- 스킬은 무엇이 있고 어떻게 쓰나요? → [전투 스킬](combat-skills.md)
+- 탈출하거나 죽으면 물건은 어떻게 되나요? → [런 전리품 정산](run-settlement.md)
+- 다음에 무엇을 만들거나 결정해야 하나요? → [현행 작업 라인](../design/current-milestone-workline.md)
+- 오늘 무엇이 바뀌었나요? → [개발 현황과 업데이트](../development-status.md)
+
+## 4. 문서 읽는 방법
+
+1. 이 종합 문서에서 **주제 문서**를 선택합니다.
+2. 주제의 짧은 설명을 읽고 **하위 문서**에서 필요한 기능을 고릅니다.
+3. 문서 맨 위 **상위 문서 경로**를 누르면 이전 주제나 이 종합 문서로 돌아옵니다.
+
+상단 검색은 정확한 기능 이름을 알 때 사용하세요. 전체 관계가 궁금할 때만 문서 아래의 **전체 문서 노드맵 펼치기**를 열면 됩니다. [탐색·검색 사용법](../getting-started/search-wiki.md)에서 자세히 설명합니다.
+
+공개 홈은 플레이 테스트 안내로 유지하며, 내부 문서는 로그인 후 열립니다. 기획자·개발자 작업실은 각 역할의 할 일과 결정을 다루고, 이 종합 문서는 두 역할이 같은 게임 내용을 읽는 공통 시작점입니다.
+
+## 검색 별칭
+
+SFH 종합 문서, 기능 목록, 기능 색인, 게임 시스템, 문서 대문, 상위 문서, 하위 문서, 나무위키 방식

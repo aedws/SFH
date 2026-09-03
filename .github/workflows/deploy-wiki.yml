@@ -26,6 +26,8 @@ on:
       - "scripts/snapshot_notion_source.py"
       - "scripts/loot-table.ps1"
       - "scripts/wiki.ps1"
+      - "scripts/wiki_articles.py"
+      - "scripts/test_wiki_articles.py"
       - "scripts/compress-wiki-release-days.ps1"
       - "scripts/check-wiki-no-github-backlinks.ps1"
       - "scripts/deploy_cloudflare_assets.py"
@@ -61,6 +63,8 @@ on:
       - "scripts/snapshot_notion_source.py"
       - "scripts/loot-table.ps1"
       - "scripts/wiki.ps1"
+      - "scripts/wiki_articles.py"
+      - "scripts/test_wiki_articles.py"
       - "scripts/compress-wiki-release-days.ps1"
       - "scripts/check-wiki-no-github-backlinks.ps1"
       - "scripts/deploy_cloudflare_assets.py"
@@ -361,6 +365,7 @@ jobs:
           ./scripts/check-p7-roadmap.ps1
           python scripts/snapshot_notion_source.py --check
           python -m mkdocs build --strict
+          python scripts/test_wiki_articles.py .wiki-site
           Copy-Item cloudflare/wiki-auth/_worker.js .wiki-site/_worker.js
           python scripts/check_wiki_search_index.py .wiki-site/search/search_index.json
           ./scripts/check-wiki-no-github-backlinks.ps1 -SiteRoot .wiki-site

@@ -22,7 +22,6 @@ theme:
   features:
     - navigation.instant
     - navigation.indexes
-    - navigation.sections
     - navigation.top
     - search.highlight
     - search.share
@@ -31,8 +30,12 @@ theme:
 extra:
   generator: false
 
+hooks:
+  - scripts/wiki_articles.py
+
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/articles.css
 
 extra_javascript:
   - javascripts/search-dashboard.js
@@ -62,96 +65,105 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - 홈: index.md
+  - 공개 플레이 홈: index.md
+  - SFH 문서:
+      - SFH 종합 문서: features/index.md
+      - 작전과 맵:
+          - 작전과 맵: features/operations.md
+          - 시작 거점과 전투 세션 전환: features/start-hub.md
+          - 작전 진입 마법사와 첫 투입 안내: features/operation-entry-wizard.md
+          - 투입 비용·지역·난이도 계약: features/operation-contracts.md
+          - 작전 선택과 탈출: features/raid-setup-extraction.md
+          - 랜덤 맵 생성: features/map-generation.md
+          - 전장의 안개: features/fog-of-war.md
+          - 전술 미니맵: features/minimap.md
+          - 탈출 방어전과 결과 정산: features/extraction-defense-results.md
+          - 게임 루프와 HUD: features/game-loop.md
+          - 작전 투입 사전검증과 불변 계획: features/operation-launch-preflight.md
+      - 전투와 조작:
+          - 전투와 조작: features/combat.md
+          - 플레이어: features/player.md
+          - K 입력 설정과 자유 스킬 배치: features/key-mapping.md
+          - 모바일 키패드와 HUD 표시 설정: features/mobile-hud-settings.md
+          - 자동 무기: features/weapons.md
+          - 스마트 자동 타게팅: features/smart-targeting.md
+          - 전투 스킬과 쿨타임 HUD: features/combat-skills.md
+          - 전투 에너지·충전·회복 드랍: features/combat-resources.md
+          - 부분 체력 회복: features/health-recovery.md
+          - 타격감과 피격 피드백: features/hit-feedback.md
+          - 적과 증원형 생성 시스템: features/enemies.md
+          - 적 체력과 방어력: features/enemy-defense.md
+          - 투입액 회수 엘리트 추격자: features/elite-pursuit.md
+          - 방 진입 전투와 봉쇄 보상: features/room-encounters.md
+      - 장비와 인벤토리:
+          - 장비와 인벤토리: features/equipment.md
+          - P5-01 캐릭터 선택: features/character-selection.md
+          - 캐릭터 장비와 로드아웃: features/character-equipment.md
+          - 격자 가방 인벤토리: features/grid-inventory.md
+          - 장비 파츠·모듈 개조: features/equipment-customization.md
+          - 모듈·고유 파츠 강화 경제: features/equipment-upgrade-economy.md
+          - P5-02 무기·스킬 런 투자: features/loadout-investment.md
+          - Q 무기 교체와 Google Sheets 밸런스: features/weapon-balance.md
+      - 전리품과 회수:
+          - 전리품과 회수: features/loot.md
+          - 크레딧 파밍과 회수: features/credit-loot.md
+          - 지역·난이도 전리품 테이블: features/loot-tables.md
+          - 전리품 생명 주기: features/loot-lifecycle.md
+          - 현장 전리품 비교·획득: features/field-loot-acquisition.md
+          - 현장 무기 즉시 장착: features/field-loot-immediate-equip.md
+          - 현장 스킬 즉시 교체: features/field-loot-skill-swap.md
+          - 런 전용 룬·코어·유물 소켓: features/session-sockets.md
+          - 런 전리품 정산: features/run-settlement.md
+      - 성장과 거점 경제:
+          - 성장과 거점 경제: features/growth.md
+          - 내부·외부 로그라이크 성장: features/progression.md
+          - 내부 성장·장비 강화 Google Sheets 연동: features/growth-balance.md
+          - 영구 해금·상점·창고·소모품: features/hub-economy.md
+          - P5-03~10 로비 허브 진행: features/p5-hub-progression.md
+          - 도면 제작과 랜덤 옵션: features/blueprint-crafting.md
+          - 페널티 변형과 조건부 랭킹: features/penalty-ranking.md
+          - P6 검증형 랭킹 제출과 오프라인 보존: features/ranking-provider.md
+      - 게임 설계:
+          - 게임 설계: design/index.md
+          - Master GDD 구현 대조: design/master-gdd-alignment.md
+          - 현행 마일스톤 작업 라인: design/current-milestone-workline.md
+          - P5·P6 사전 구현 설계: design/p5-p6-preimplementation.md
+          - P7 이후 사전 구현 설계: design/p7-plus-preimplementation.md
+          - 기획 요청·밸런스 데이터 운영: design/planner-request-workflow.md
+          - AI 개발자·기획자 위키 협업 개선안: design/wiki-collaboration-workflow.md
+          - 게임 개요: design/game-overview.md
+          - MVP 범위: design/mvp-scope.md
+          - 사이버펑크 비주얼 테마: design/cyberpunk-visual-theme.md
+      - 개발 구조:
+          - 아키텍처: architecture/index.md
+          - 모듈 규칙: architecture/module-rules.md
+          - 현재 코드 모듈 노드맵: architecture/code-module-map.md
+          - 모듈화 점검 기록: architecture/module-audit.md
+          - 위키 역할 인증과 권한 경계: architecture/wiki-role-auth.md
+          - 장면 트리: architecture/scene-tree.md
+          - Signal 규칙: architecture/signals.md
+          - 외부 에셋 라이선스 원장: architecture/third-party-assets.md
+      - 시작과 위키 사용법:
+          - 시작하기: getting-started/index.md
+          - 설치: getting-started/install.md
+          - 편집기 기초: getting-started/editor-basics.md
+          - 프로젝트 실행: getting-started/run-project.md
+          - 위키 수정 요청과 반영: getting-started/edit-wiki-online.md
+          - 위키 실시간 검색: getting-started/search-wiki.md
+      - 검증과 문제 해결:
+          - 검증과 문제 해결: quality/index.md
+          - 최소·권장 사양과 성능 예산: performance/minimum-requirements.md
+          - 실제 플레이 세션 E2E: quality/e2e-play-session.md
+          - 플레이어 인식 단위 E2E 감사: quality/player-perception-audit.md
+          - 모바일 위키 반응형 E2E: quality/wiki-responsive-e2e.md
+          - 문제 해결: troubleshooting/index.md
+      - 결정 기록:
+          - 결정 기록: decisions/index.md
+          - 0001 기술 스택: decisions/0001-technology-stack.md
+          - DEC-P4-04 현장 교체 안전 정책: decisions/DEC-P4-04-field-replacement-policy.md
   - 개발 현황과 업데이트: development-status.md
   - 역할 작업 공간:
       - 로그인: access/login.md
       - 계정 설정: access/account.md
       - 기획자 작업실: access/planner.md
       - 개발자 작업실: access/developer.md
-  - 시작하기:
-      - getting-started/index.md
-      - 설치: getting-started/install.md
-      - 편집기 기초: getting-started/editor-basics.md
-      - 프로젝트 실행: getting-started/run-project.md
-      - 웹에서 위키 수정: getting-started/edit-wiki-online.md
-      - 위키 실시간 검색: getting-started/search-wiki.md
-  - 게임 설계:
-      - design/index.md
-      - Master GDD 구현 대조: design/master-gdd-alignment.md
-      - 현행 마일스톤 작업 라인: design/current-milestone-workline.md
-      - P5·P6 사전 구현 설계: design/p5-p6-preimplementation.md
-      - P7 이후 사전 구현 설계: design/p7-plus-preimplementation.md
-      - 기획 요청·밸런스 데이터 운영: design/planner-request-workflow.md
-      - AI 개발자·기획자 위키 협업 개선안: design/wiki-collaboration-workflow.md
-      - 게임 개요: design/game-overview.md
-      - MVP 범위: design/mvp-scope.md
-      - 사이버펑크 비주얼 테마: design/cyberpunk-visual-theme.md
-  - 아키텍처:
-      - architecture/index.md
-      - 모듈 규칙: architecture/module-rules.md
-      - 현재 코드 모듈 노드맵: architecture/code-module-map.md
-      - 모듈화 점검 기록: architecture/module-audit.md
-      - 위키 역할 인증과 권한 경계: architecture/wiki-role-auth.md
-      - 외부 에셋 라이선스 원장: architecture/third-party-assets.md
-      - 장면 트리: architecture/scene-tree.md
-      - Signal 규칙: architecture/signals.md
-  - 성능:
-      - 최소·권장 사양과 성능 예산: performance/minimum-requirements.md
-  - 품질 검수:
-      - 실제 플레이 세션 E2E: quality/e2e-play-session.md
-      - 플레이어 인식 단위 E2E 감사: quality/player-perception-audit.md
-      - 모바일 위키 반응형 E2E: quality/wiki-responsive-e2e.md
-  - 기능:
-      - features/index.md
-      - 현장 무기 즉시 장착: features/field-loot-immediate-equip.md
-      - 현장 스킬 즉시 교체: features/field-loot-skill-swap.md
-      - 런 전용 룬·코어·유물 소켓: features/session-sockets.md
-      - 런 전리품 정산: features/run-settlement.md
-      - 랜덤 맵 생성: features/map-generation.md
-      - 전장의 안개: features/fog-of-war.md
-      - 전술 미니맵: features/minimap.md
-      - 작전 선택과 탈출: features/raid-setup-extraction.md
-      - 작전 진입 마법사와 첫 투입 안내: features/operation-entry-wizard.md
-      - 작전 투입 사전검증과 불변 계획: features/operation-launch-preflight.md
-      - 탈출 방어전과 결과 정산: features/extraction-defense-results.md
-      - 투입 비용·지역·난이도 계약: features/operation-contracts.md
-      - P5-01 캐릭터 선택·패시브·가격: features/character-selection.md
-      - P5-02 무기·스킬 런 투자: features/loadout-investment.md
-      - P5-03~10 거점 진행 통합: features/p5-hub-progression.md
-      - 시작 거점과 전투 세션 전환: features/start-hub.md
-      - 영구 해금·상점·창고·소모품: features/hub-economy.md
-      - 크레딧 파밍과 회수: features/credit-loot.md
-      - 전리품 생명 주기: features/loot-lifecycle.md
-      - 지역·난이도 전리품 테이블: features/loot-tables.md
-      - 현장 전리품 비교·획득: features/field-loot-acquisition.md
-      - 플레이어: features/player.md
-      - K 입력 설정과 자유 스킬 배치: features/key-mapping.md
-      - 모바일 키패드와 HUD 표시 설정: features/mobile-hud-settings.md
-      - 부분 체력 회복: features/health-recovery.md
-      - 전투 스킬과 쿨타임 HUD: features/combat-skills.md
-      - 타격감과 피격 피드백: features/hit-feedback.md
-      - 전투 에너지·충전·회복 드랍: features/combat-resources.md
-      - 스마트 자동 타게팅: features/smart-targeting.md
-      - 도면 제작과 랜덤 옵션: features/blueprint-crafting.md
-      - 페널티 변형과 조건부 랭킹: features/penalty-ranking.md
-      - P6 검증형 랭킹 제출과 오프라인 보존: features/ranking-provider.md
-      - 캐릭터 장비와 로드아웃: features/character-equipment.md
-      - 격자 가방 인벤토리: features/grid-inventory.md
-      - 장비 파츠·모듈 개조: features/equipment-customization.md
-      - 모듈·고유 파츠 강화 경제: features/equipment-upgrade-economy.md
-      - 적과 증원형 생성 시스템: features/enemies.md
-      - 투입액 회수 엘리트 추격자: features/elite-pursuit.md
-      - 방 진입 전투와 봉쇄 보상: features/room-encounters.md
-      - 적 체력과 방어력: features/enemy-defense.md
-      - 자동 무기: features/weapons.md
-      - Q 무기 교체와 Google Sheets 밸런스: features/weapon-balance.md
-      - 내부 성장·장비 강화 Google Sheets 연동: features/growth-balance.md
-      - 내부·외부 로그라이크 성장: features/progression.md
-      - 게임 루프와 HUD: features/game-loop.md
-  - 문제 해결:
-      - troubleshooting/index.md
-  - 결정 기록:
-      - decisions/index.md
-      - 0001 기술 스택: decisions/0001-technology-stack.md
-      - DEC-P4-04 현장 교체 안전 정책: decisions/DEC-P4-04-field-replacement-policy.md
