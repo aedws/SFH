@@ -1,6 +1,6 @@
 class_name ShopOfferPresenter
 extends RefCounted
-## Presentation only. Never calculates prices or claims unimplemented quality effects.
+## Presentation only. Never calculates prices or invents quality effects.
 
 
 static func card(quote: Dictionary) -> String:
@@ -17,7 +17,11 @@ static func detail(quote: Dictionary) -> String:
 	var comparison := "동일 품목의 표준 단가 없음"
 	if quote.has(&"price_ratio"):
 		comparison = "동일 품목 표준 단가 대비 %.0f%%" % (float(quote[&"price_ratio"]) * 100.0)
-	return "%s\n개당 %.1f C · %s\n창고 보유 %d개 → 구매 후 %d개\n크레딧 %d C → %d C\n설정된 품질 성능 ×%.2f · 실제 성능 적용은 후속 구현\n현재 지급: 창고 수량만 증가 · 장비/모듈 개별 품질 적용 및 가방 직접 지급은 미연결" % [
+	var options: Array = quote.get(&"quality_option_ids", [])
+	var option_text := ", ".join(PackedStringArray(options)) if not options.is_empty() else "없음"
+	return "%s\n개당 %.1f C · %s\n가방 보유 %d개 → 구매 후 %d개\n크레딧 %d C → %d C\n품질 성능 ×%.2f · 옵션 %s · 품질 소켓 %d\n지급: %s · 인스턴스별 품질 유지" % [
 		offer.get(&"display_name", ""), float(quote.get(&"unit_price", 0.0)), comparison,
 		int(quote.get(&"owned_quantity", 0)), int(quote.get(&"owned_quantity", 0)) + int(offer.get(&"quantity", 0)),
-		int(quote.get(&"credits", 0)), int(quote.get(&"balance_after", 0)), float(quote.get(&"configured_performance", 1.0))]
+		int(quote.get(&"credits", 0)), int(quote.get(&"balance_after", 0)),
+		float(quote.get(&"configured_performance", 1.0)), option_text,
+		int(quote.get(&"quality_socket_count", 0)), quote.get(&"delivery", "지급 확인 필요")]

@@ -17,7 +17,7 @@ func _run() -> void:
 	await _verify_game_flow()
 	paused = false
 	if failures.is_empty():
-		print("P7_SHOP_BROWSER_OK quote_no_mutation unit_price_compare quality_pending selected_purchase no_double_click stale_rotation locked_insufficient invalid_data snapshot_copy esc_restore viewports_4 optional isolated_saves")
+		print("P7_SHOP_BROWSER_OK quote_no_mutation unit_price_compare quality_instance_delivery selected_purchase no_double_click stale_rotation locked_insufficient invalid_data snapshot_copy esc_restore viewports_4 optional isolated_saves")
 		quit(0)
 	else:
 		printerr("P7_SHOP_BROWSER_FAILED: %s" % " / ".join(failures))
@@ -74,6 +74,7 @@ func _verify_game_flow() -> void:
 	_check(game.start_hub != null and not game.run_started and not paused, "boot hub unchanged")
 	var profile: Node = game.persistent_profile
 	var initial: Dictionary = profile.get_snapshot()
+	var initial_bag: Dictionary = game.inventory_system.get_snapshot()
 	# Physical lobby shop: opening must not enter mission configuration.
 	var station: Node2D = game.hub_service_stations.get_node("ShopStation")
 	_check(not station.request_service(game.player), "shop requires nearby player")
@@ -85,12 +86,30 @@ func _verify_game_flow() -> void:
 	for id in panel.offer_buttons.keys():
 		await _click(panel.offer_buttons[id])
 		_check(panel.get_snapshot().selected_id == id and profile.get_snapshot() == initial, "three qualities selectable no charge")
-		_check("후속 구현" in panel.detail_label.text, "unapplied quality disclosed")
+		_check("인스턴스별 품질 유지" in panel.detail_label.text, "quality delivery disclosed")
 	var selected: Dictionary = panel.get_snapshot().selected_quote
 	await _click(panel.buy_button)
 	var after: Dictionary = profile.get_snapshot()
+	var after_bag: Dictionary = game.inventory_system.get_snapshot()
 	_check(int(initial.banked_credits) - int(after.banked_credits) == int(selected.offer.price), "selected offer exact price")
-	_check(int(after.warehouse.get(selected.offer.target_id, 0)) - int(initial.warehouse.get(selected.offer.target_id, 0)) == int(selected.offer.quantity), "selected offer exact quantity")
+	_check(
+		int(after_bag.items.size()) - int(initial_bag.items.size()) == int(selected.offer.quantity),
+		"selected offer exact bag quantity"
+	)
+	var delivered := 0
+	for entry: Dictionary in after_bag.items:
+		var payload: Dictionary = entry.get(&"runtime_payload", {})
+		if payload.get(&"source_offer_id", &"") == selected.offer.offer_id:
+			delivered += 1
+			_check(
+				payload.get(&"quality_id", &"") == selected.offer.quality
+				and is_equal_approx(
+					float(payload.get(&"performance_multiplier", 0.0)),
+					float(selected.offer.performance_multiplier)
+				),
+				"quality payload matches offer"
+			)
+	_check(delivered == int(selected.offer.quantity), "each purchased item is a quality instance")
 	await _click(panel.buy_button)
 	_check(profile.get_snapshot() == after and not panel.get_snapshot().purchase_enabled, "double click no extra grant")
 	_check("구매 완료" in panel.status_label.text, "success receipt visible")

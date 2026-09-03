@@ -8,10 +8,15 @@ extends Resource
 @export var part_upgrade_levels: Dictionary = {}
 @export var installed_modules: Array[EquipmentModuleInstance] = []
 @export var granted_module_tags: Array[StringName] = []
+@export var item_quality_payload: Dictionary = {}
 var upgrade_balance_provider: Node
 
 
-func configure(new_state_id: StringName, new_definition: Resource) -> void:
+func configure(
+	new_state_id: StringName,
+	new_definition: Resource,
+	quality_payload: Dictionary = {}
+) -> void:
 	state_id = new_state_id
 	definition = new_definition
 	level = 1
@@ -19,6 +24,12 @@ func configure(new_state_id: StringName, new_definition: Resource) -> void:
 	part_upgrade_levels.clear()
 	installed_modules.clear()
 	granted_module_tags.clear()
+	item_quality_payload = quality_payload.duplicate(true)
+
+
+func quality_multiplier() -> float:
+	var value := float(item_quality_payload.get(&"performance_multiplier", 1.0))
+	return value if is_finite(value) and value > 0.0 else 1.0
 
 
 func is_weapon() -> bool:
@@ -159,12 +170,13 @@ func can_install_module(module_definition: EquipmentModuleDefinition) -> bool:
 func install_module(
 	instance_id: StringName,
 	module_definition: EquipmentModuleDefinition,
-	upgrade_level: int = 1
+	upgrade_level: int = 1,
+	quality_payload: Dictionary = {}
 ) -> bool:
 	if not can_install_module(module_definition):
 		return false
 	var module_instance := EquipmentModuleInstance.new()
-	module_instance.configure(instance_id, module_definition)
+	module_instance.configure(instance_id, module_definition, quality_payload)
 	module_instance.upgrade_level = clampi(
 		upgrade_level, 1, module_definition.maximum_upgrade_level()
 	)
@@ -180,6 +192,7 @@ func remove_module(instance_id: StringName) -> Dictionary:
 		var result := {
 			&"definition": module_instance.definition,
 			&"upgrade_level": module_instance.upgrade_level,
+			&"item_quality_payload": module_instance.item_quality_payload.duplicate(true),
 		}
 		installed_modules.remove_at(index)
 		return result
@@ -363,4 +376,7 @@ func snapshot() -> Dictionary:
 		&"used_module_cost": used_module_cost(),
 		&"module_cost_limit": module_cost_limit(),
 		&"granted_module_tags": granted_tags,
+		&"quality_label": item_quality_payload.get(&"quality_label", "표준"),
+		&"quality_multiplier": quality_multiplier(),
+		&"quality_socket_count": int(item_quality_payload.get(&"quality_socket_count", 0)),
 	}

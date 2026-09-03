@@ -14,9 +14,13 @@ const STAT_LABELS := {
 
 func installed_card_text(state, module_instance) -> String:
 	var definition = module_instance.definition
-	return "COST %d  |  LV.%d\n%s\n%s" % [
+	var quality := ""
+	if not module_instance.item_quality_payload.is_empty():
+		quality = " | Q×%.2f" % module_instance.quality_multiplier()
+	return "COST %d | LV.%d%s\n%s\n%s" % [
 		state.effective_module_cost(module_instance),
 		module_instance.upgrade_level,
+		quality,
 		definition.display_name,
 		_join_names(definition.module_tags, "태그 없음"),
 	]
@@ -27,8 +31,13 @@ func inventory_card_text(entry: Dictionary, compatible: bool) -> String:
 	var status := "장착 가능" if compatible else "조건 확인"
 	if definition is EquipmentModuleDefinition:
 		var module_definition := definition as EquipmentModuleDefinition
-		return "MOD  |  COST %d\n%s\n%s\n%s" % [
+		var payload: Dictionary = entry.get(&"runtime_payload", {})
+		var quality := ""
+		if payload.has(&"quality_id"):
+			quality = " | Q×%.2f" % float(payload.get(&"performance_multiplier", 1.0))
+		return "MOD | COST %d%s\n%s\n%s\n%s" % [
 			module_definition.cost_at_level(1),
+			quality,
 			entry.get(&"display_name", "이름 없음"),
 			_join_names(module_definition.module_tags, "태그 없음"),
 			status,
@@ -53,14 +62,17 @@ func applied_effects_text(state) -> String:
 	var features := PackedStringArray()
 	for module_instance in state.installed_modules:
 		var definition = module_instance.definition
+		var quality_multiplier: float = float(module_instance.quality_multiplier())
 		for modifier in definition.stat_modifiers:
 			var entry: Dictionary = totals.get(
 				modifier.stat_id, {&"add": 0.0, &"multiply": 1.0}
 			)
 			if modifier.operation == EquipmentStatModifier.Operation.ADD:
-				entry[&"add"] = float(entry[&"add"]) + modifier.amount
+				entry[&"add"] = float(entry[&"add"]) + modifier.amount * quality_multiplier
 			else:
-				entry[&"multiply"] = float(entry[&"multiply"]) * modifier.amount
+				entry[&"multiply"] = float(entry[&"multiply"]) * (
+					1.0 + (modifier.amount - 1.0) * quality_multiplier
+				)
 			totals[modifier.stat_id] = entry
 		for feature_id in definition.special_feature_ids:
 			if not features.has(String(feature_id)):

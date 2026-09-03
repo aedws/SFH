@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 0 · CHANGE 2 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 2 · CHANGE 4 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>0</b><small>IMPROVE</small></span><span><b>2</b><small>CHANGE</small></span><span><b>0</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>2</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>P7-01B · 품질 장비 실물 지급과 실제 성능</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 상점에서 산 물건이 I 가방에 들어오고 U/E 장착 뒤 품질 배율로 실제 수치가 달라집니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>손상·표준·고성능별 실물 인스턴스와 품질 배율·옵션·소켓 보존, 가방→장비 실제 능력치 적용을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>상점에서 창고 수량 대신 가방 보유량·공간과 실제 지급 결과를 보여주며, 장착/해제 뒤에도 품질을 잃지 않습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>품질 정책·가방 지급 어댑터·장비 계산을 분리하고 E2E·모듈 감사·로드맵을 새 계약에 맞췄습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>구매품이 I/U 흐름과 단절되던 문제와 장착 왕복 중 품질 정보가 사라질 수 있던 경로를 제거했습니다.</p></div>
+        <p>기존 확정 CSV 6행을 재사용했으며 가격·배율·옵션·소켓은 임시값입니다. Google Sheet 목록·결제 상품·Cloudflare 과금 설정은 변경하지 않았습니다.</p>
+        <p><a href="features/hub-economy/#shop-browser">상점 품질 실물 규칙 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">플레이어 인식 E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 공개 기획 원문과 최신 배포 코드를 다시 대조해 다음 작업과 승인 대기 범위를 분리했습니다.</strong></div>

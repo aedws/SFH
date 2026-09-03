@@ -9,6 +9,7 @@ const SCRIPT_PATHS := {
 	&"operation_draft": "res://game/features/p5_hub_progression/operation_draft_service.gd",
 	&"bankruptcy": "res://game/features/p5_hub_progression/bankruptcy_protection_policy.gd",
 	&"shop": "res://game/features/p5_hub_progression/rotating_shop_service.gd",
+	&"shop_delivery": "res://game/features/p5_hub_progression/shop_inventory_delivery_service.gd",
 	&"workshop": "res://game/features/p5_hub_progression/workshop_service.gd",
 	&"training": "res://game/features/p5_hub_progression/training_service.gd",
 	&"codex": "res://game/features/p5_hub_progression/codex_service.gd",
@@ -154,6 +155,20 @@ func get_shop_snapshot() -> Dictionary:
 func quote_shop_offer(offer_id: StringName) -> Dictionary:
 	var shop = _module(&"shop")
 	return shop.call(&"quote", offer_id) if shop != null else {&"purchasable": false, &"reason": "상점 모듈 꺼짐"}
+
+
+func set_shop_inventory_provider(inventory_provider: Node) -> bool:
+	var shop = _module(&"shop")
+	if shop == null:
+		return false
+	var delivery = _new_script_instance(&"shop_delivery")
+	if delivery == null or not bool(delivery.call(&"configure", inventory_provider)):
+		return false
+	_modules[&"shop_delivery"] = delivery
+	var success := bool(shop.call(&"set_delivery_provider", delivery))
+	if success:
+		snapshot_changed.emit(get_snapshot())
+	return success
 
 
 func purchase_shop_offer(offer_id: StringName, transaction_id: StringName, expected_rotation: int = -1) -> Dictionary:

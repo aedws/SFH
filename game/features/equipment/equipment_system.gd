@@ -181,21 +181,26 @@ func set_upgrade_balance_provider(provider: Node) -> bool:
 
 func get_active_weapon_upgrade_modifiers() -> Dictionary:
 	var state := get_equipment_state(active_weapon_slot)
-	if state == null or not state.is_weapon() or upgrade_balance_provider == null:
+	if state == null or not state.is_weapon():
 		return {}
-	var result: Dictionary = upgrade_balance_provider.call(
-		&"get_weapon_modifiers", &"weapon", state.definition_id(), state.level
+	var result: Dictionary = (
+		upgrade_balance_provider.call(
+			&"get_weapon_modifiers", &"weapon", state.definition_id(), state.level
+		)
+		if upgrade_balance_provider != null else {}
 	)
+	result[&"damage_multiply"] = float(result.get(&"damage_multiply", 1.0)) * state.quality_multiplier()
 	for module_instance in state.installed_modules:
-		_accumulate_weapon_modifier_dictionary(
-			result,
-			upgrade_balance_provider.call(
+		if upgrade_balance_provider != null:
+			_accumulate_weapon_modifier_dictionary(
+				result,
+				_scaled_modifier_dictionary(upgrade_balance_provider.call(
 				&"get_weapon_modifiers",
 				&"module",
 				module_instance.definition.module_id,
 				module_instance.upgrade_level
+				), module_instance.item_quality_payload)
 			)
-		)
 	return result
 
 
@@ -210,11 +215,15 @@ func can_equip_definition(slot_id: StringName, definition: Resource) -> bool:
 	return armor_enabled
 
 
-func equip_definition(slot_id: StringName, definition: Resource) -> bool:
+func equip_definition(
+	slot_id: StringName,
+	definition: Resource,
+	quality_payload: Dictionary = {}
+) -> bool:
 	if not can_equip_definition(slot_id, definition):
 		return false
 	var state := EquipmentItemState.new()
-	state.configure(slot_id, definition)
+	state.configure(slot_id, definition, quality_payload)
 	return equip_state(slot_id, state)
 
 
@@ -286,10 +295,13 @@ func install_module(
 	slot_id: StringName,
 	instance_id: StringName,
 	module_definition: EquipmentModuleDefinition,
-	upgrade_level: int = 1
+	upgrade_level: int = 1,
+	quality_payload: Dictionary = {}
 ) -> bool:
 	var state := get_equipment_state(slot_id)
-	if state == null or not state.install_module(instance_id, module_definition, upgrade_level):
+	if state == null or not state.install_module(
+		instance_id, module_definition, upgrade_level, quality_payload
+	):
 		return false
 	_refresh_after_customization()
 	return true
@@ -534,10 +546,13 @@ func _resolve_stat_modifiers() -> void:
 		stat_modifiers_changed.emit(get_stat_modifiers())
 		return
 
-	for armor_item in loadout.armor:
-		_accumulate_modifiers(armor_item.stat_modifiers)
 	for slot_id in equipment_states:
 		var state := equipment_states[slot_id] as EquipmentItemState
+		if state.is_armor():
+			_accumulate_modifiers(
+				(state.definition as EquipmentArmorDefinition).stat_modifiers,
+				state.quality_multiplier()
+			)
 		if upgrade_balance_provider != null and state.is_armor():
 			_accumulate_modifier_dictionary(upgrade_balance_provider.call(
 				&"get_player_modifiers", &"armor", state.definition_id(), state.level
@@ -545,18 +560,24 @@ func _resolve_stat_modifiers() -> void:
 		for part in state.installed_parts:
 			_accumulate_modifiers(part.stat_modifiers)
 		for module_instance in state.installed_modules:
-			_accumulate_modifiers(module_instance.definition.stat_modifiers)
+			_accumulate_modifiers(
+				module_instance.definition.stat_modifiers,
+				module_instance.quality_multiplier()
+			)
 			if upgrade_balance_provider != null:
 				_accumulate_modifier_dictionary(upgrade_balance_provider.call(
 					&"get_player_modifiers",
 					&"module",
 					module_instance.definition.module_id,
 					module_instance.upgrade_level
-				))
+				), module_instance.item_quality_payload)
 	stat_modifiers_changed.emit(get_stat_modifiers())
 
 
-func _accumulate_modifiers(modifiers: Array[EquipmentStatModifier]) -> void:
+func _accumulate_modifiers(
+	modifiers: Array[EquipmentStatModifier],
+	quality_multiplier: float = 1.0
+) -> void:
 	for modifier in modifiers:
 		var stat_id := modifier.stat_id
 		var entry: Dictionary = aggregated_stat_modifiers.get(
@@ -564,23 +585,49 @@ func _accumulate_modifiers(modifiers: Array[EquipmentStatModifier]) -> void:
 			{&"add": 0.0, &"multiply": 1.0}
 		)
 		if modifier.operation == EquipmentStatModifier.Operation.ADD:
-			entry[&"add"] = float(entry[&"add"]) + modifier.amount
+			entry[&"add"] = float(entry[&"add"]) + modifier.amount * quality_multiplier
 		else:
-			entry[&"multiply"] = float(entry[&"multiply"]) * modifier.amount
+			entry[&"multiply"] = float(entry[&"multiply"]) * (
+				1.0 + (modifier.amount - 1.0) * quality_multiplier
+			)
 		aggregated_stat_modifiers[stat_id] = entry
 
 
-func _accumulate_modifier_dictionary(modifiers: Dictionary) -> void:
+func _accumulate_modifier_dictionary(
+	modifiers: Dictionary,
+	quality_payload: Dictionary = {}
+) -> void:
+	var quality_multiplier := float(quality_payload.get(&"performance_multiplier", 1.0))
+	if not is_finite(quality_multiplier) or quality_multiplier <= 0.0:
+		quality_multiplier = 1.0
 	for stat_id in modifiers:
 		var source: Dictionary = modifiers[stat_id]
 		var entry: Dictionary = aggregated_stat_modifiers.get(
 			stat_id, {&"add": 0.0, &"multiply": 1.0}
 		)
-		entry[&"add"] = float(entry[&"add"]) + float(source.get(&"add", 0.0))
+		entry[&"add"] = (
+			float(entry[&"add"]) + float(source.get(&"add", 0.0)) * quality_multiplier
+		)
 		entry[&"multiply"] = (
-			float(entry[&"multiply"]) * float(source.get(&"multiply", 1.0))
+			float(entry[&"multiply"])
+			* (1.0 + (float(source.get(&"multiply", 1.0)) - 1.0) * quality_multiplier)
 		)
 		aggregated_stat_modifiers[stat_id] = entry
+
+
+func _scaled_modifier_dictionary(modifiers: Dictionary, quality_payload: Dictionary) -> Dictionary:
+	var quality_multiplier := float(quality_payload.get(&"performance_multiplier", 1.0))
+	if not is_finite(quality_multiplier) or quality_multiplier <= 0.0:
+		quality_multiplier = 1.0
+	var result: Dictionary = {}
+	for modifier_id in modifiers:
+		var value := float(modifiers[modifier_id])
+		result[modifier_id] = (
+			value * quality_multiplier
+			if modifier_id == &"damage_add"
+			else 1.0 + (value - 1.0) * quality_multiplier
+		)
+	return result
 
 
 func _accumulate_weapon_modifier_dictionary(target: Dictionary, source: Dictionary) -> void:

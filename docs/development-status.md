@@ -24,17 +24,17 @@ tags:
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>MASTER GDD ALIGNED · 2026-09-04</small><strong>현재 기획 진행도</strong></span>
-    <b>94%</b>
+    <b>96%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="94"><i style="width: 94%"></i></div>
-  <p>2026-09-04 공개 Master GDD v1005·77블록·해시 614a0b8ddee4 재조회 결과는 동일합니다. P7-01A 상점 비교 뒤 실제 품질 적용·실물 지급이 남아 기능 가중 추정치 94%를 유지합니다. 보안·백업은 계획만 등록했습니다.</p>
+  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
+  <p>2026-09-04 공개 Master GDD v1005·77블록·해시 614a0b8ddee4는 동일합니다. P7-01B의 품질 실물 지급과 실제 장비 수치 연결을 반영해 기능 가중 추정치를 96%로 갱신했습니다. 보안·백업은 계획만 등록했습니다.</p>
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-04 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
-P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신규 시즌의 대형 참가 조건과 기존 시즌 보존을 수정·검증하고, [기획자 튜토리얼](getting-started/planner-item-balance-tutorial.md)을 추가했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분하며 가중 추정 94%는 유지합니다.
+P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분합니다. P7-01B는 로컬 플레이 흐름을 완료했지만 임시 품질 수치의 기획 확정과 서버 운영을 완료로 오인하지 않습니다.
 
-**정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스와 코드 완료는 별개입니다. 9월 3일 추가 재대조에서 경제 100%를 70%로 정정했습니다. 로컬 서비스·데이터는 있으나 실제 품질과 구매/제작 실물 장착 연결은 남아 있습니다. 서버 운영·검증 지급도 미구현입니다.
+**정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스와 코드 완료는 별개입니다. 경제는 P7-01B의 실제 품질·가방·장착 연결로 90%이며, 손상품/고성능 규칙의 기획 확정과 서버 운영·검증 지급은 미구현입니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
@@ -42,14 +42,14 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
 | 입력·자유 스킬 바인딩 | ×2 | 100% | 물리 키와 스킬→Action 배치를 분리하고 충돌 교환·HUD 반영·JSON 저장·초기화를 구현 |
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
 | 로비→준비→인게임 3단계 루프 | ×2 | 100% | 유틸리티·불변 작전 초안·원자적 확정·파산 무료 프리셋까지 허브→작전→허브에 연결 |
-| 상점 vs 제작소 경제 | ×1 | 70% | P7-01A 비교·선택 구매와 기존 회전/제작 데이터 계약. 실제 품질 성능·규격 가격·구매/제작 실물 I/U 연결은 미완료 |
+| 상점 vs 제작소 경제 | ×1 | 90% | P7-01A/B 비교·구매→I 실물→U/E 장착→실제 품질 배율·옵션·소켓 보존. 운영 가격/성능 규칙 확정 잔여 |
 | 훈련 연습장 | ×1 | 100% | 단일·밀집 더미 시나리오, DPS·타격·AP·쿨타임 계측과 무비용 세팅 원복 구현 |
 | 전리품 2대 분류·현장 파밍 | ×2 | 100% | 생명 주기·지역 테이블·현장 비교·획득·교체·소켓과 탈출 환전·영구 해금·창고/사망 소실·중복 방지 구현 |
 | 가변 태그·등급 확장 | ×1 | 85% | 동적 태그·등급·불일치 비활성·메커니즘 변형과 제작 옵션 풀 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
 | 비동기 랭킹·시즌 보상 | ×1 | 75% | 3대 로컬 랭킹·공급자·익명 신원·검증 봉투·멱등·영구 재시도·거부 상태 구현. 로컬 시즌·칭호/오라 추가, 실서비스 계정·검증 지급은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 70×1 + 100×1 + 100×2 + 85×1 + 95×2 + 75×1) ÷ 15 = 94.3% → 94%`입니다. 경제 10개 하위 항목 중 7개 구현·3개 미완료의 근거는 [상세 산정](design/master-gdd-alignment.md)에 기록했습니다. 과거 96%에서의 조정은 완료 범위 정정이며 코드 퇴행이 아닙니다. 보안 계획은 구현률에 포함하지 않습니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 90×1 + 100×1 + 100×2 + 85×1 + 95×2 + 75×1) ÷ 15 = 95.7% → 96%`입니다. 경제 10개 하위 항목 중 9개 구현·기획 확정 1개 잔여의 근거는 [상세 산정](design/master-gdd-alignment.md)에 기록했습니다. 보안 계획은 구현률에 포함하지 않습니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -61,7 +61,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
 | Phase 2 · Q·태그·AP·쿨타임 | 완료 | 주·보조 교체, 태그 호환성, 에너지·충전·개별 쿨타임 구현 |
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
 | Phase 4 · 현장 교체·룬 소켓·환전 | 완료 | 현장 교체·룬/코어/유물 소켓→탈출 환전·영구 해금·창고/사망 소실과 중복 방지 E2E 완료 |
-| Phase 5 · 로비 허브·준비 세션 | 최소 연결 완료 · 경제 상세 잔여 | 유틸리티·단일 초안·파산 보호·훈련장·도감과 P5 최소 서비스 E2E 완료. 상점/제작의 실제 품질·I/U 지급은 P7에서 보완 |
+| Phase 5 · 로비 허브·준비 세션 | 연결 완료 · 운영 수치 잔여 | 유틸리티·단일 초안·파산 보호·훈련장·도감과 상점 품질 실물·I/U 장착·실제 수치 E2E 완료 |
 | Phase 6 · 비동기 랭킹·시즌 보상 | P6-01~04 로컬 완료 | 마감·칭호/오라 1회 지급·저장·장착 연결. 실서비스 계정·서버 확정 지급은 미완료 |
 
 ### 2026-09-02 Master GDD v1005 재대조
@@ -90,7 +90,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
 | 완료 | Phase 6 P6-02 제출·검증 | 익명 신원·무결성·멱등·영구 재시도·거부 이유 | 중복/단절/변조/시간초과/저장 복원 E2E 완료 |
 | 완료 | Phase 6 P6-03 시즌 규칙 | 로컬 임시 주간 정책과 마감 기록 | 시즌 경계·조건 불일치·마감 불변·저장 복원 E2E 완료 |
 | 완료 | Phase 6 P6-04 로컬 칭호·오라 | SeasonReward 6종·마감 지급·저장·장착 | 1회 지급·다른 신원 거부·재시작·표현·손상 보존 테스트 |
-| 진행 | 내부 P7-01 | A: 비교·선택 구매 완료, B: 실제 품질·실물 장착 미완료 | P7-01B 완료 후 P7-02 회전/리롤 심화로 이동 |
+| 기획 확정 대기 | 내부 P7-01 | A/B 구현 완료, 손상품 가격/성능과 고성능 옵션·소켓 운영값은 임시 | 기획 확정 뒤 P7-01 종료, 구현은 P7-02 회전/리롤 심화로 이동 |
 | 예정 | 내부 P7-02~P10 | 경제→훈련→도감→출시 후보 | 선행 패킷 완료 후 순서대로 착수 |
 | 착수 보류 | 위변조 감지·거래 원장·백업 | 사용자 지시로 문서만 등록 | 운영 정책과 별도 구현 승인 전 서비스·과금 변경 없음 |
 
@@ -98,10 +98,10 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 0 · CHANGE 2 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 2 · CHANGE 4 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>0</b><small>BUILD</small></span><span><b>0</b><small>IMPROVE</small></span><span><b>2</b><small>CHANGE</small></span><span><b>0</b><small>FIX</small></span></div>
-    <details class="sfh-bundle" open>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>2</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 공개 Notion과 최신 main·배포 상태를 다시 확인해 완료, 다음 구현, 별도 승인 대기를 구분했습니다.</strong></div>
@@ -111,6 +111,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 신�
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>실행 코드 변경은 없습니다.</p></div>
         <p>P6-01~04는 로컬 프로토타입 완료입니다. 온라인 계정·검증 서버·서버 시간·확정 시즌 지급은 별도 승인 전 미착수이며, 상점 품질 실성능·실물 지급과 혼동하지 않습니다.</p>
         <p><a href="design/master-gdd-alignment/">94% 산정 근거 →</a> · <a href="design/current-milestone-workline/">현행 작업 순서 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>P7-01B · 품질 장비 실물 지급과 실제 성능</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 상점 구매가 창고 숫자에서 끝나지 않고 I 가방 실물, U/E 장착, 실제 품질 수치까지 이어집니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>품질별 개별 아이템 payload와 가방 실물 지급, 장비·모듈·무기 능력치 배율을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>구매 전 가방 수용 가능성을 검사하고, 옵션·소켓·가방 보유량과 실제 지급 결과를 상점 UI에 표시합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>품질 정책→지급 어댑터→장비 계산을 공개 계약으로 분리하고, 거점/작전 가방 교체 때 공급자를 다시 연결합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>구매품이 장비 편집과 분리되던 문제, 모듈 장착·해제 왕복에서 품질 payload가 유실되던 경로를 수정했습니다.</p></div>
+        <p>`P7_SHOP_QUALITY_OK`는 고성능 모듈 구매→I→U→실제 1.25배→해제 보존을 판정합니다. 현행 품질 수치는 임시이며 Sheet 목록과 과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/hub-economy/#shop-browser">P7-01A/B 규칙 →</a> · <a href="architecture/module-audit/#p7-01b-2026-09-04">모듈 감사 →</a></p>
       </div>
     </details>
   </div>

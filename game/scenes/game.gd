@@ -246,6 +246,11 @@ const RUN_SETTLEMENT_METHODS := [&"configure", &"settle", &"get_snapshot"]
 const INVENTORY_METHODS := [
 	&"configure",
 	&"add_item",
+	&"add_item_with_payload",
+	&"get_item_definition",
+	&"can_add_catalog_items",
+	&"add_catalog_item",
+	&"remove_item_instances",
 	&"can_place",
 	&"move_item",
 	&"take_item",
@@ -356,6 +361,7 @@ const P5_HUB_PROGRESSION_METHODS := [
 	&"create_operation_draft",
 	&"confirm_operation_draft", &"begin_run", &"settle_run", &"refresh_hub",
 	&"toggle_utility", &"purchase_shop_offer", &"get_shop_snapshot", &"quote_shop_offer",
+	&"set_shop_inventory_provider",
 	&"reroll_shop", &"craft_recipe",
 	&"start_training", &"record_training_hit", &"finish_training", &"get_snapshot",
 	&"perform_hub_action",
@@ -2652,6 +2658,15 @@ func _install_inventory() -> bool:
 		and not inventory_system.call(&"restore_runtime_state", prepared_inventory_state)
 	):
 		_report_configuration_error("준비한 가방 상태를 복구하지 못했습니다.")
+		return false
+	if (
+		features.shop_item_delivery_enabled
+		and is_instance_valid(p5_hub_progression_service)
+		and not bool(p5_hub_progression_service.call(
+			&"set_shop_inventory_provider", inventory_system
+		))
+	):
+		_report_configuration_error("상점 실물 아이템 지급 모듈을 가방에 연결하지 못했습니다.")
 		return false
 	inventory_window = _instantiate_feature(
 		INVENTORY_WINDOW_SCENE_PATH, ui_layer, &"GridInventoryWindow"
