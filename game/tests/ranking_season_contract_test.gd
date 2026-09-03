@@ -19,6 +19,7 @@ func _run() -> void:
 	_cleanup()
 	_verify_boss_defeats()
 	_verify_envelopes()
+	_verify_shipped_policy()
 	var ranking := _ranking(true)
 	var state: Dictionary = ranking.get_season_briefing(_result("preview"))
 	_check(bool(state.get(&"eligible")), "시작 시각에 참가 불가")
@@ -111,12 +112,62 @@ func _run() -> void:
 	_check(single.season_at(999).is_empty() and not single.season_at(1000).is_empty() and single.season_at(1060).is_empty(), "단발 시즌 시작/종료 경계 실패")
 	_cleanup()
 	if failures.is_empty():
-		print("P6_SEASON_OK boss_identity defeat_once legacy_zero digest_v1_v2 slayer_tiebreak frozen_launch_context eligibility deadline_crossing lifetime_preserved offline_close immutable_archive restart clock_rollback optional_module")
+		print("P6_SEASON_OK boss_identity defeat_once legacy_zero digest_v1_v2 slayer_tiebreak frozen_launch_context eligibility deadline_crossing lifetime_preserved offline_close immutable_archive restart clock_rollback optional_module shipped_policy_81 legacy_policy_rollover")
 		quit(0)
 	else:
 		for failure in failures:
 			push_error(failure)
 		quit(1)
+
+
+func _verify_shipped_policy() -> void:
+	var shipped: Resource = load("res://game/features/conditional_ranking/configs/default_season_policy.tres")
+	_check(shipped.is_valid(), "배포 시즌 정책 유효성")
+	var season: Dictionary = shipped.season_at(shipped.starts_at + 1)
+	var accepted := 0
+	for region in ["ruined_city", "industrial_district", "research_complex"]:
+		for difficulty in ["standard", "veteran", "nightmare"]:
+			for size in ["small", "medium", "large"]:
+				for penalty in [0, 9, 10]:
+					var quote := {&"ranking_condition_key": "%s|%s|%s" % [region, difficulty, size], &"penalty_score": penalty}
+					var state: Dictionary = shipped.participation(season, quote)
+					var expected: bool = size == "large" and penalty >= 10
+					_check(bool(state.get(&"eligible", false)) == expected, "배포 시즌 규모/페널티 조합: %s" % quote)
+					accepted += int(bool(state.get(&"eligible", false)))
+	_check(accepted == 9, "시즌 81조합 중 대형/10점 9조합만 참가")
+	# A rules update must never rewrite a running season or its earned records.
+	var path := "user://sfh_p6_default_policy_contract.json"
+	for candidate in [path, path + ".tmp"]:
+		if FileAccess.file_exists(candidate): DirAccess.remove_absolute(candidate)
+	var clock_value := [shipped.starts_at + 1]
+	var service_script := preload("res://game/features/conditional_ranking/season_ranking_service.gd")
+	var legacy := shipped.duplicate(true)
+	legacy.policy_id = "prototype-weekly-v1"
+	legacy.allowed_map_sizes = PackedStringArray(["small", "medium", "large"])
+	var old_service := service_script.new()
+	root.add_child(old_service)
+	_check(old_service.configure(path, legacy, POLICY.new(), true, func(): return clock_value[0]), "구 정책 저장 구성")
+	var old_state: Dictionary = old_service.preview(_result("legacy"))
+	var run := _result("legacy", old_state[&"context"])
+	_check(bool(old_service.submit_run(run).get(&"accepted", false)), "구 시즌 기록 생성")
+	old_service.free()
+	var updated := service_script.new()
+	root.add_child(updated)
+	_check(updated.configure(path, shipped, POLICY.new(), true, func(): return clock_value[0]), "신규 정책 저장 복원")
+	_check(bool(updated.preview(run).get(&"eligible", false)), "진행 중 구 시즌 조건 무단 변경")
+	_check(updated.get_snapshot()[&"ladder"][&"condition_count"] == 1, "정책 변경 중 기록 손실")
+	var text: String = preload("res://game/features/conditional_ranking/season_presenter.gd").briefing(updated.preview(run))
+	_check("prototype-weekly-v1" in text and "시작 때 조건 유지" in text, "구 정책 유지 UI 설명 누락")
+	clock_value[0] = shipped.starts_at + shipped.duration_seconds
+	var next: Dictionary = updated.preview(run)
+	_check(not bool(next.get(&"eligible", true)) and next[&"season"][&"policy_id"] == shipped.policy_id, "다음 시즌 대형 규칙 적용 실패")
+	var archive: Dictionary = updated.get_archive(old_state[&"context"][&"season_id"])
+	_check(bool(archive.get(&"read_only", false)) and archive[&"ladder"][&"condition_count"] == 1, "구 시즌 마감 보존")
+	var late: Dictionary = updated.submit_run(run)
+	_check(not bool(late.get(&"accepted", false)), "구 소형 기록 신규 시즌 주입")
+	updated.free()
+	for candidate in [path, path + ".tmp"]:
+		if FileAccess.file_exists(candidate): DirAccess.remove_absolute(candidate)
 
 
 func _ranking(persist: bool) -> Node:

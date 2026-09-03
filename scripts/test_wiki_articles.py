@@ -130,4 +130,20 @@ def reachable(source):
 reachable(ROOT_SOURCE)
 expected_tree = set(sources) - EXCLUDED - {"development-status.md", "access/planner.md", "access/developer.md"}
 assert visited == expected_tree, f"Orphaned article branches: {expected_tree - visited}"
+# Planner onboarding must be discoverable and its in-page links must survive build.
+tutorial_source = "getting-started/planner-item-balance-tutorial.md"
+tutorial_text = (SITE / route(tutorial_source) / "index.html").read_text(encoding="utf-8")
+tutorial = Article(tutorial_text)
+for anchor in ["choose", "sheet", "balance", "new-item", "drop", "growth", "publish", "troubleshoot"]:
+    assert anchor in tutorial.ids, f"Tutorial section missing: {anchor}"
+planner_text = (SITE / "access/planner/index.html").read_text(encoding="utf-8")
+for anchor in ["balance", "new-item"]:
+    link = f"../../{route(tutorial_source)}#{anchor}"
+    assert link in planner_text, f"Planner tutorial entry missing: {anchor}"
+    target(link, "access/planner.md")
+search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
+assert any(d.get("location", "").startswith(route(tutorial_source)) for d in search["docs"]), "Tutorial not searchable"
+for phrase in ["직접 실시간 로더 없음", "CSV 확정", "시트 값을 바꾸지 않았습니다", "P7-01B"]:
+    assert phrase in tutorial_text, f"Tutorial boundary missing: {phrase}"
+print("PLANNER_TUTORIAL_OK anchors_8 planner_entries search_index support_boundaries")
 print(f"WIKI_ARTICLES_OK pages={len(sources)} breadcrumbs={count} reachable={len(visited)} no_js=true")

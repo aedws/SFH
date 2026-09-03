@@ -4,11 +4,11 @@
 
 [resource]
 script = ExtResource("1")
-policy_id = "prototype-weekly-v1"
+policy_id = "prototype-weekly-large-v2"
 display_name = "주간 테스트 시즌"
 starts_at = 1788134400
 duration_seconds = 604800
 recurring = true
 minimum_penalty_score = 10
-allowed_map_sizes = PackedStringArray("small", "medium", "large")
+allowed_map_sizes = PackedStringArray("large")
 maximum_archives = 12

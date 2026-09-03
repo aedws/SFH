@@ -8,11 +8,11 @@ static func briefing(state: Dictionary) -> String:
 	var season: Dictionary = state.get(&"season", {})
 	if season.is_empty():
 		return "시즌 비활성 · 일반 작전 가능"
-	return "%s · 로컬 테스트\n종료 %s UTC · %s · 최소 페널티 %d점\n%s" % [
+	return "%s · 로컬 테스트\n종료 %s UTC · %s · 최소 페널티 %d점\n%s\n규칙 %s · 진행 중 시즌은 시작 때 조건 유지" % [
 		season.get(&"display_name", "시즌"),
 		Time.get_datetime_string_from_unix_time(int(season.get(&"ends_at", 0)), true),
 		_tier_labels(season.get(&"allowed_map_sizes", [])),
-		int(season.get(&"minimum_penalty_score", 0)), state.get(&"reason", ""),
+		int(season.get(&"minimum_penalty_score", 0)), state.get(&"reason", ""), season.get(&"policy_id", ""),
 	]
 
 

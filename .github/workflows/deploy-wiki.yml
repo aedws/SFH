@@ -170,6 +170,7 @@ jobs:
           grep -q "P6_RANKING_SUBMISSION_OK identity envelope_digest idempotency local_preserved persistent_retry timeout_retry server_rejection visible_sync_state" /tmp/sfh-p6-ranking.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_season_contract_test.gd" | tee /tmp/sfh-p6-season.log
           grep -q "P6_SEASON_OK boss_identity defeat_once legacy_zero digest_v1_v2 slayer_tiebreak frozen_launch_context eligibility deadline_crossing lifetime_preserved offline_close immutable_archive restart clock_rollback optional_module" /tmp/sfh-p6-season.log
+          grep -q "shipped_policy_81 legacy_policy_rollover" /tmp/sfh-p6-season.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/season_reward_contract_test.gd" | tee /tmp/sfh-p6-rewards.log
           grep -q "P6_REWARD_OK" /tmp/sfh-p6-rewards.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/basic_loop_smoke_test.gd" | tee /tmp/sfh-smoke.log

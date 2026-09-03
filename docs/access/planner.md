@@ -22,7 +22,19 @@ hide:
   </div>
 </section>
 
-## 지금 플레이할 수 있는 것
+## 아이템 추가·밸런싱 처음 하기 {#item-balance}
+
+**① 표에서 대상 찾기 → ② 하나씩 시험하기 → ③ Notion 확정 후 개발자에게 CSV 배포 요청.**
+
+- [기존 무기 수치 바꾸기](../getting-started/planner-item-balance-tutorial.md#balance): 소총 피해 예제로 시작합니다.
+- [새 아이템 추가하기](../getting-started/planner-item-balance-tutorial.md#new-item): 행 복사 → 새 ID → 실제 효과·드랍 연결 → 플레이 확인.
+- [탭 선택과 전체 튜토리얼](../getting-started/planner-item-balance-tutorial.md): 단위, 성장, 드랍, 시즌 보상, 오류와 되돌리기.
+
+시트는 1행 변수명·2행 설명·3행부터 데이터입니다. **Armor와 새 아이템 효과는 행 입력만으로 게임에 생성되지 않습니다.** 상세 튜토리얼에서 기획자 작성과 개발자 연결 작업을 구분했습니다.
+
+## 현재 변경과 완료 범위
+
+**P6 마감 확인:** 시즌 신규 기본값은 대형/페널티 10점입니다. 이미 시작한 구 시즌은 마감까지 기존 조건을 유지합니다. 3대 기록·시즌 마감·칭호/오라는 로컬에서 검증했으며, 실제 계정 서버·서버 검증 지급은 아직 아닙니다. [완료/남은 범위](../features/ranking-provider.md#p6-closeout)를 구분해 두었습니다.
 
 **이번 변경:** 이제 로비 왼쪽 위의 보급 상점에 가서 F를 누르면 상품을 보고 구매합니다. 왼쪽 아래 출격 준비 단말에서는 요원·스킬·소모품을 정하고, I/U/E에서는 가진 장비를 장착합니다. 준비가 끝나면 오른쪽 게이트로 가세요. 작전 화면에서 무기를 또 고르지 않고 **입고 든 그대로** 들어갑니다. I에서 저장하지 않은 편집은 확인창으로 보호합니다. 사망 시 장착품 소실은 기존 규칙입니다. 상점 품질 실성능·전체 가방 지급(P7-01B)과 서버 검증은 아직 남아 있습니다. 이번은 사용 동선 개선이며 기존 94% 추정치를 새로 산정하지 않았습니다.
 
@@ -40,7 +52,7 @@ hide:
 
 <div class="sfh-decision-lanes">
   <a href="../../design/planner-request-workflow/"><small>먼저 결정</small><b>실서비스 랭킹 신원</b><span>현재 익명 기기 ID를 어떤 로그인 계정으로 교체하고, 어떤 서버가 최종 기록을 승인할지 정해야 합니다.</span><em>P6 LIVE</em></a>
-  <a href="../../design/current-milestone-workline/"><small>그다음 결정</small><b>시즌과 명예 보상</b><span>시즌 기간·참가 조건·동점·주간 칭호·오라의 지급 기준과 중복 지급 정책이 필요합니다.</span><em>P6-03~04</em></a>
+  <a href="../../features/ranking-provider/#p6-closeout"><small>운영값 결정</small><b>시즌과 명예 보상</b><span>대형 조건·마감·로컬 1회 지급은 구현됐습니다. 기간·최소 점수·동점·상위 인원과 실서버 지급 정책을 확정해 주세요.</span><em>P6 LOCAL</em></a>
   <a href="../../design/planner-request-workflow/"><small>수치 확정</small><b>상점·제작·훈련 데이터</b><span>현재 교체 가능한 임시값을 실제 가격·효과·회전 주기·레시피·계측 기준으로 확정해야 합니다.</span><em>SHEET</em></a>
   <a href="../../quality/player-perception-audit/"><small>플레이 판단</small><b>재미와 이해 가능성</b><span>처음 플레이한 사람이 준비→전투→회수→성장을 설명 없이 이해하는지 수락 여부를 남겨야 합니다.</span><em>PLAYTEST</em></a>
 </div>
