@@ -509,6 +509,7 @@ var skill_investment_buttons: Array[Button] = []
 var active_contract: Dictionary = {}
 var active_launch_plan: Dictionary = {}
 var current_run_id: StringName = &""
+var active_ranking_context: Dictionary = {}
 var run_sequence: int = 0
 var last_loot_settlement: Dictionary = {}
 var consumed_run_items: Array[StringName] = []
@@ -525,6 +526,7 @@ var target_run_duration_seconds: float = 600.0
 var extraction_unlock_seconds: float = 600.0
 var extraction_unlocked: bool = false
 var defeated_enemies: int = 0
+var run_combat_metrics := preload("res://game/core/run_combat_metrics.gd").new()
 var run_started: bool = false
 var run_ended: bool = false
 var initialization_recovery_active: bool = false
@@ -1334,6 +1336,7 @@ func _refresh_contract_setup_ui() -> void:
 			&"difficulty_id": contract_snapshot.get(&"selected_difficulty_id", &"standard"),
 			&"difficulty_name": contract_snapshot.get(&"selected_difficulty_name", "표준"),
 			&"quote": quote,
+			&"season": conditional_ranking_system.call(&"get_season_briefing", quote) if conditional_ranking_system != null and conditional_ranking_system.has_method(&"get_season_briefing") else {},
 			&"character": (
 				character_selection_service.call(&"get_snapshot")
 				if character_selection_service != null else {}
@@ -1434,6 +1437,8 @@ func start_run(map_size: String) -> bool:
 	selected_map_size = map_size
 	run_sequence += 1
 	current_run_id = StringName("%d-%d" % [Time.get_ticks_usec(), run_sequence])
+	run_combat_metrics.reset()
+	active_ranking_context = conditional_ranking_system.call(&"get_season_briefing", active_contract).get(&"context", {}) if conditional_ranking_system != null and conditional_ranking_system.has_method(&"get_season_briefing") else {}
 	if p5_hub_progression_service != null and not bool(
 		p5_hub_progression_service.call(&"begin_run", current_run_id)
 	):
@@ -1495,6 +1500,7 @@ func _rollback_operation_investment() -> void:
 	if operation_launch_preflight_service != null:
 		operation_launch_preflight_service.call(&"clear_plan")
 	current_run_id = &""
+	active_ranking_context.clear()
 
 
 func _install_start_hub() -> bool:
@@ -1725,9 +1731,11 @@ func _reset_run_state() -> void:
 	elapsed_time = 0.0
 	extraction_unlocked = false
 	defeated_enemies = 0
+	run_combat_metrics.reset()
 	pending_buff_levels.clear()
 	active_contract.clear()
 	current_run_id = &""
+	active_ranking_context.clear()
 	active_run_skill_loadout = null
 	last_loot_settlement.clear()
 	consumed_run_items.clear()
@@ -3408,6 +3416,7 @@ func _supports_methods(candidate: Node, methods: Array) -> bool:
 
 
 func _on_enemy_spawned(enemy: Node) -> void:
+	run_combat_metrics.register_enemy(enemy)
 	if enemy.has_signal(&"defeated"):
 		enemy.connect(&"defeated", Callable(self, &"_on_enemy_defeated"))
 	var enemy_hit_reaction: Node = enemy.get_node_or_null("HitReaction")
@@ -3573,21 +3582,25 @@ func _on_extraction_completed(_actor: Node2D) -> void:
 			&"carried_credits": carried_credits,
 			&"elapsed_seconds": elapsed_time,
 			&"kills": defeated_enemies,
+			&"boss_kills": run_combat_metrics.get_snapshot().get(&"boss_kills", 0),
+			&"season_context": active_ranking_context.duplicate(true),
 		}, active_contract)
 	var ranking: Dictionary = settlement.get(&"ranking", {})
 	var ranks: Dictionary = ranking.get(&"ranks", {})
 	var ranking_provider_label := _format_ranking_provider_status(
 		ranking.get(&"provider_status", {})
 	)
+	ranking_provider_label += String(ranking.get(&"season_text", ""))
 	var blueprint_label := ""
 	if StringName(settlement.get(&"blueprint_id", &"")) != &"":
 		blueprint_label = " · 도면 획득"
 	_finish_run(
 		"탈출 성공",
-		"%s 작전 · 생존 %s · 처치 %d · 정산 %d C · 고철 %d%s · 가치 #%d / 시간 #%d / 처치 #%d%s%s" % [
+		"%s 작전 · 생존 %s · 처치 %d (보스 %d) · 정산 %d C · 고철 %d%s · 가치 #%d / 시간 #%d / 처치 #%d%s%s" % [
 			_selected_map_display_name(),
 			_format_time(elapsed_time),
 			defeated_enemies,
+			int(run_combat_metrics.get_snapshot().get(&"boss_kills", 0)),
 			int(settlement.get(&"recovered_credits", carried_credits)),
 			int(settlement.get(&"salvage", 0)),
 			blueprint_label,

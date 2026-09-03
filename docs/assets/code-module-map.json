@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "8bb12284a386d66572e0ebd2fbcdda9dca3c4f9531c8fbe15bf5d80c40c27908",
+  "source_sha256": "11f544c68b37915cbef1300ecfbfc833330aa1fd8162d800533ace7f9af6098d",
   "layers": [
     {
       "id": "contract",
@@ -25,9 +25,9 @@
   ],
   "summary": {
     "modules": 55,
-    "scripts": 196,
-    "named_classes": 173,
-    "relationships": 163,
+    "scripts": 201,
+    "named_classes": 177,
+    "relationships": 164,
     "project_inheritance": 6,
     "enabled_toggles": 64
   },
@@ -43,7 +43,7 @@
       "class_count": 0,
       "classes": [],
       "incoming_count": 1,
-      "outgoing_count": 49
+      "outgoing_count": 50
     },
     {
       "id": "core",
@@ -52,13 +52,14 @@
       "path": "game/core",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 2,
-      "class_count": 2,
+      "file_count": 3,
+      "class_count": 3,
       "classes": [
         "ArenaGrid",
-        "FeatureManifest"
+        "FeatureManifest",
+        "RunCombatMetrics"
       ],
-      "incoming_count": 1,
+      "incoming_count": 2,
       "outgoing_count": 29
     },
     {
@@ -145,8 +146,8 @@
       "path": "game/features/conditional_ranking",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 9,
-      "class_count": 9,
+      "file_count": 12,
+      "class_count": 12,
       "classes": [
         "ConditionalRankingPolicy",
         "ConditionalRankingSystem",
@@ -156,7 +157,10 @@
         "RankingProvider",
         "RankingProviderConfig",
         "RankingSubmissionQueue",
-        "RunSubmissionEnvelope"
+        "RunSubmissionEnvelope",
+        "SeasonPolicy",
+        "SeasonPresenter",
+        "SeasonRankingService"
       ],
       "incoming_count": 3,
       "outgoing_count": 0
@@ -967,7 +971,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 19,
+      "file_count": 20,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1246,6 +1250,33 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:SeasonPolicy",
+      "name": "SeasonPolicy",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/season_policy.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:SeasonPresenter",
+      "name": "SeasonPresenter",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/season_presenter.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:SeasonRankingService",
+      "name": "SeasonRankingService",
+      "module": "conditional_ranking",
+      "path": "game/features/conditional_ranking/season_ranking_service.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:ArenaGrid",
       "name": "ArenaGrid",
       "module": "core",
@@ -1260,6 +1291,15 @@
       "module": "core",
       "path": "game/core/feature_manifest.gd",
       "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:RunCombatMetrics",
+      "name": "RunCombatMetrics",
+      "module": "core",
+      "path": "game/core/run_combat_metrics.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -2902,6 +2942,12 @@
     },
     {
       "from": "scene_assembly",
+      "to": "core",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "scene_assembly",
       "to": "crafting",
       "type": "references",
       "evidence_count": 1
@@ -3240,13 +3286,13 @@
       "from": "verification",
       "to": "conditional_ranking",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
       "to": "core",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "verification",
@@ -3486,7 +3532,7 @@
       "from": "verification",
       "to": "spawning",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",

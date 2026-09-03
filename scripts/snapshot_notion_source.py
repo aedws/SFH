@@ -32,6 +32,24 @@ def _plain_title(properties: object) -> str:
     return "".join(output).strip()
 
 
+def _checked(properties: object) -> bool | None:
+    """Decode Notion rich-text checkbox values, never Python string truthiness.
+
+    Missing means unknown/not applicable, not confirmed. Unknown encodings fail
+    the snapshot refresh so upstream format drift cannot silently report done.
+    """
+    if not isinstance(properties, dict) or "checked" not in properties:
+        return None
+    value = properties["checked"]
+    if isinstance(value, list) and len(value) == 1 and isinstance(value[0], list) and value[0]:
+        value = value[0][0]
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str) and value in ("Yes", "No"):
+        return value == "Yes"
+    raise ValueError(f"unknown Notion checkbox encoding: {value!r}")
+
+
 def fetch_snapshot() -> dict:
     body = json.dumps({
         "pageId": PAGE_ID, "limit": 100, "cursor": {"stack": []},
@@ -54,8 +72,7 @@ def fetch_snapshot() -> dict:
             "type": value.get("type", "unknown"),
             "version": int(value.get("version", 0) or 0),
             "title": _plain_title(properties),
-            "checked": bool((properties if isinstance(properties, dict) else {}).get("checked", [[False]])[0][0])
-            if (properties if isinstance(properties, dict) else {}).get("checked") else None,
+            "checked": _checked(properties),
             "last_edited_time": int(value.get("last_edited_time", 0) or 0),
         })
     blocks.sort(key=lambda item: item["id"])
@@ -87,6 +104,8 @@ def validate(snapshot: dict) -> None:
         raise ValueError("content hash mismatch")
     if not any(block.get("id") == PAGE_ID for block in blocks):
         raise ValueError("root block missing")
+    if any(block.get("checked") is not None and not isinstance(block["checked"], bool) for block in blocks):
+        raise ValueError("checkbox must be boolean or null")
 
 
 def main() -> int:

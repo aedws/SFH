@@ -42,6 +42,7 @@ var crowd_steering_cooldown: float = 0.0
 var cached_crowd_steering := Vector2.ZERO
 var active_statuses: Dictionary = {}
 var elite_pursuer: bool = false
+var boss: bool = false
 var ignore_room_barriers: bool = false
 
 
@@ -110,6 +111,14 @@ func configure_elite_pursuer(profile: Dictionary) -> void:
 	heading.color = Color("02e5e1")
 	scale = Vector2.ONE * 1.18
 	set_meta(&"elite_pursuer", true)
+
+
+func set_boss_role(enabled: bool) -> void:
+	boss = enabled
+
+
+func get_combat_identity() -> Dictionary:
+	return {&"is_boss": boss, &"is_elite_pursuer": elite_pursuer}
 
 
 func _physics_process(delta: float) -> void:

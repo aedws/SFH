@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 10 · IMPROVE 16 · CHANGE 12 · FIX 11</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 12 · IMPROVE 18 · CHANGE 14 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>16</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>11</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>12</b><small>BUILD</small></span><span><b>18</b><small>IMPROVE</small></span><span><b>14</b><small>CHANGE</small></span><span><b>14</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>체크박스 판독 정정 · 보스 격파 · 로컬 시즌</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 출격 전에 시즌 참가 조건과 종료 시각을 확인하고, 보스 격파를 포함한 결과와 마감 이력을 읽을 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>보스 격파 계측·제출과 P6-03 로컬 시즌 기간·참여·마감 저장·조회 모듈을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>준비 단계의 참가 안내·기록 버튼과 결과 화면의 보스·시즌 상태로 집계 여부를 설명합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>시즌 경계·재시작·선택 제거 E2E, 역할 작업실·기획 요청을 현행화했습니다. 다음 작업은 P6-04 보상입니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>Notion No를 참으로 읽던 오류(실제 0/6), 보스 격파 통계 누락, 방 생성에서 보스 확정 조건이 빠지던 경로를 수정했습니다.</p></div>
+        <p>주간 7일·페널티 10·보스 동점 정렬은 임시 정책입니다. 실제 서버·명예 보상은 미구현입니다.</p>
+        <p><a href="features/ranking-provider/">시즌 동작 →</a> · <a href="design/master-gdd-alignment/">판독 정정 근거 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>위키 검색·플레이 구분과 실행 아이콘 정렬</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 원형 삼각형 대신 청록색 게임 플레이 버튼을 표시하고 문서 검색은 돋보기와 검색 문구로 구분합니다.</strong></div>

@@ -17,22 +17,22 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 75 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 76 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
-    <span><small>MASTER GDD ALIGNED · 2026-09-02</small><strong>현재 기획 진행도</strong></span>
+    <span><small>MASTER GDD ALIGNED · 2026-09-03</small><strong>현재 기획 진행도</strong></span>
     <b>96%</b>
   </div>
   <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-  <p>공개 Master GDD v1005의 10개 확정 시스템을 현재 구현과 재대조했습니다. P6-02 검증형 랭킹 제출 완료를 반영한 게임 기능 가중 진행도는 96%입니다.</p>
+  <p>공개 Master GDD v1005의 체크 판독을 정정하고 P6-03 로컬 시즌 구현을 반영했습니다. 실제 서버·보상은 남아 있어 기능 가중 추정치 96%를 유지합니다.</p>
 </div>
 
-권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-02 공개 본문 77블록·root v1005를 읽고 `67f9bef85449`로 검증했습니다. 현재 본문에는 `(미확정)` 표기가 없으므로 모두 확정 요구로 처리합니다. 핵심 플레이 흐름은 ×2, 기반·확장 서비스는 ×1을 적용하며 실제 코드·데이터·자동 검증만 완료 근거로 사용합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
+권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-03 체크박스 파서를 고친 뒤 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
-공개 원문은 v797·57블록에서 v1005·77블록으로 변경됐습니다. Phase 1~6 체크박스는 6개 모두 활성 상태라 확정 범위로 가중하되, 수동 기획 표시를 코드 완료 근거로 승격하지 않고 저장소 구현과 플레이어 인식 E2E를 기준으로 판정합니다.
+**정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스는 기획자의 표식, 구현률은 코드·테스트 근거로 분리합니다. 해시 변경은 원문 업데이트가 아니라 판독 수정 때문입니다. P6-03 로컬 시즌까지 구현했지만 서버 운영·보상은 남아 있어 기능 추정치 96%를 보수적으로 유지합니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
@@ -47,7 +47,7 @@ tags:
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
 | 비동기 랭킹·시즌 보상 | ×1 | 75% | 3대 로컬 랭킹·공급자·익명 신원·검증 봉투·멱등·영구 재시도·거부 상태 구현. 실서비스 계정·시즌 보상은 없음 |
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 100×1 + 100×1 + 100×2 + 85×1 + 95×2 + 75×1) ÷ 15 = 96.3% → 96%`이며, Phase 4·5와 P6-01~02의 로컬 보존·검증 제출·재시도 계약을 완료로 판정합니다.
+계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 100×1 + 100×1 + 100×2 + 85×1 + 95×2 + 75×1) ÷ 15 = 96.3% → 96%`이며, Phase 4·5와 P6-01~03의 로컬 보존·검증 제출·재시도 계약을 완료로 판정합니다.
 
 `완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
 
@@ -60,7 +60,7 @@ tags:
 | Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
 | Phase 4 · 현장 교체·룬 소켓·환전 | 완료 | 현장 교체·룬/코어/유물 소켓→탈출 환전·영구 해금·창고/사망 소실과 중복 방지 E2E 완료 |
 | Phase 5 · 로비 허브·준비 세션 | 완료 | 유틸리티·단일 초안·파산 보호·회전 상점·제작소·훈련장·도감까지 P5-01~10 E2E 완료 |
-| Phase 6 · 비동기 랭킹·시즌 보상 | P6-01~02 완료 | 제공자 경계·익명 신원·검증 제출·영구 재시도 완료. 실서비스 계정·시즌·칭호·오라는 없음 |
+| Phase 6 · 비동기 랭킹·시즌 보상 | P6-01~03 완료 | 보스 격파, 로컬 시즌 기간·참여·마감 읽기 전용까지 연결. 실서비스 계정·서버 시즌·칭호·오라는 없음 |
 
 ### 2026-09-02 Master GDD v1005 재대조
 
@@ -86,17 +86,17 @@ tags:
 | 완료 | Phase 5 P5-03~10 | 유틸·초안·파산 보호·상점·제작·훈련·도감 | Sheet→UI→거래→런/영구 정산→재접속→모듈 제거 E2E 완료 |
 | 완료 | Phase 6 P6-01 랭킹 제공자 | 3대 로컬 랭킹만 존재 | 온라인/로컬 교체·오프라인 폴백·상태 표시 E2E 완료 |
 | 완료 | Phase 6 P6-02 제출·검증 | 익명 신원·무결성·멱등·영구 재시도·거부 이유 | 중복/단절/변조/시간초과/저장 복원 E2E 완료 |
-| 1 | Phase 6 P6-03 시즌 규칙 | 기간·조건·종료 스냅샷 없음 | 시즌 경계·조건 불일치·종료 읽기 전용 E2E |
-| 2 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
+| 완료 | Phase 6 P6-03 시즌 규칙 | 로컬 임시 주간 정책과 마감 기록 | 시즌 경계·조건 불일치·마감 불변·저장 복원 E2E 완료 |
+| 1 | Phase 6 P6-04 칭호·오라 | 주간 명예 보상 지급·장착 없음 | 순위 확정→1회 지급→재로그인→시각 적용 E2E |
 | 4 | 내부 P7~P10 | 공식 Phase 1~6 이후 상세 작업선 | 경제→훈련→도감→출시 후보 순서와 기계 계약 유지 |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 10 · IMPROVE 16 · CHANGE 12 · FIX 11</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 12 · IMPROVE 18 · CHANGE 14 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>16</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>11</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>12</b><small>BUILD</small></span><span><b>18</b><small>IMPROVE</small></span><span><b>14</b><small>CHANGE</small></span><span><b>14</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -147,7 +147,7 @@ tags:
         <p><a href="features/">SFH 종합 문서 →</a> · <a href="getting-started/search-wiki/">읽는 방법 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>위키 검색·플레이 구분과 실행 아이콘 정렬</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 원형 삼각형 대신 청록색 게임 플레이 버튼을 표시하고 문서 검색은 돋보기와 검색 문구로 구분합니다.</strong></div>
@@ -156,6 +156,18 @@ tags:
         <div class="sfh-group"><h3>수정 · 1</h3><p>검색은 현재 위키, 플레이는 새 게임 탭이라는 동작과 안내·검증 계약을 분리했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>아이콘을 밀던 점멸 가상 요소와 검색창이 헤더·모바일 문서 너비를 침범하던 스타일을 제거했습니다.</p></div>
         <p><a href="getting-started/search-wiki/">사용법 →</a> · <a href="quality/wiki-responsive-e2e/">화면별 검증 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>체크박스 판독 정정 · 보스 격파 · 로컬 시즌</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 출격 전에 시즌 참가 조건과 종료 시각을 확인하고, 보스 격파를 포함한 결과와 마감 이력을 읽을 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>보스 격파 계측·제출과 P6-03 로컬 시즌 기간·참여·마감 저장·조회 모듈을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>준비 단계의 참가 안내·기록 버튼과 결과 화면의 보스·시즌 상태로 집계 여부를 설명합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>시즌 경계·재시작·선택 제거 E2E, 역할 작업실·기획 요청을 현행화했습니다. 다음 작업은 P6-04 보상입니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>Notion No를 참으로 읽던 오류(실제 0/6), 보스 격파 통계 누락, 방 생성에서 보스 확정 조건이 빠지던 경로를 수정했습니다.</p></div>
+        <p>주간 7일·페널티 10·보스 동점 정렬은 임시 정책입니다. 실제 서버·명예 보상은 미구현입니다.</p>
+        <p><a href="features/ranking-provider/">시즌 동작 →</a> · <a href="design/master-gdd-alignment/">판독 정정 근거 →</a></p>
       </div>
     </details>
   </div>
@@ -168,7 +180,7 @@ tags:
       <summary><span><small>UPDATE 1</small><b>Master GDD v1005 재대조 · P7 이후 작업선 세팅</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획자가 확정한 로비 허브·상점·제작소·훈련장 범위를 새 기준선으로 삼고, 공식 Phase 1~6 뒤 내부 P7~P10을 바로 착수 가능한 계약으로 준비했습니다.</strong><ul>
-          <li><b>원문:</b> 공개 Notion을 root v1005·77블록·해시 <code>67f9bef85449</code>로 갱신하고 0~10장을 다시 대조했습니다.</li>
+          <li><b>원문:</b> 공개 Notion을 root v1005·77블록·해시 <code>614a0b8ddee4</code>로 갱신하고 0~10장을 다시 대조했습니다.</li>
           <li><b>신규 범위:</b> 손상·표준·고성능 상점 매물, 런 종료 회전·리롤, 설계도 맞춤 제작, 단일·밀집 훈련 더미, DPS·AP·쿨타임 계측, 도감 힌트를 확정 요구로 반영했습니다.</li>
           <li><b>진행률:</b> 10개 기획 묶음·가중치 15 기준 79%입니다. 기존 87% 대비 하락은 구현 퇴행이 아니라 20개 신규 블록과 훈련장 0%가 분모에 추가된 결과입니다.</li>
           <li><b>P7+:</b> Notion 공식 Phase는 1~6으로 유지하고, 저장소 내부 후속 ID로 P7 경제→P8 훈련→P9 도감·프리셋→P10 출시 후보 회귀를 세팅했습니다.</li>
@@ -749,7 +761,7 @@ tags:
       <summary><span><small>UPDATE 17</small><b>남은 11개 작업 패킷 · Master GDD 진행도 78%</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 공개 기획의 확정 상태와 현재 main 구현을 다시 대조해 남은 작업·차단 데이터를 한 실행선으로 정리했습니다.</strong><ul>
-          <li><b>Notion:</b> v797·57블록·해시 `b22dce53d706` 유지, Phase 1~6 체크 6/6 활성.</li>
+          <li><b>Notion:</b> 당시 v797·57블록·해시 `b22dce53d706` 유지. 체크 6/6이라는 과거 판독은 문자열 처리 오류였으며 9월 3일 정정했습니다.</li>
           <li><b>저장소:</b> P4-04A/B의 무기·스킬 현장 교체와 복구 E2E를 전리품 구현률 40%로 반영.</li>
           <li><b>산식:</b> 핵심 흐름 ×2·기반/확장 ×1의 기존 가중치를 유지해 78%로 현행화.</li>
           <li><b>잔여:</b> P4 2개, P5 5개, P6 4개 총 11개. 다음은 P4-05 세션 소켓.</li>

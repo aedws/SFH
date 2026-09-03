@@ -489,6 +489,16 @@ func _verify_operation_session() -> bool:
 		return _fail("최종 검토 단계에서만 작전 투입 결정을 제공하지 않습니다.")
 	if not _judge_player_perception(&"operation_decision", "최종 작전 위험·비용 결정 이해"):
 		return false
+	if "UTC" not in String(confirmation_step.get(&"season_summary", "")) or "시즌 참가 가능" not in String(confirmation_step.get(&"season_summary", "")):
+		return _fail("최종 투입 전에 시즌 종료 시각·참가 조건이 보이지 않음")
+	var season_presenter = game.get("operation_setup_presenter")
+	await _click_tutorial_button(season_presenter.season_history_button)
+	if not season_presenter.season_history_dialog.visible or "읽기 전용" not in season_presenter.season_history_content.text:
+		return _fail("시즌 기록 클릭 후 읽기 전용 조회가 열리지 않음")
+	await _tap_key(KEY_ESCAPE)
+	if season_presenter.season_history_dialog.visible or not setup.visible:
+		return _fail("시즌 이력 ESC 종료가 준비 화면까지 닫거나 모달을 남김")
+	await process_frame
 	launch_button.pressed.emit()
 	await process_frame
 	if setup.visible or paused or not bool(game.get("run_started")):
@@ -666,6 +676,15 @@ func _verify_operation_session() -> bool:
 		return _fail("탈출 완료 후 성공 정산 화면이 표시되지 않았습니다.")
 	var ranking_snapshot: Dictionary = game.get("conditional_ranking_system").call(&"get_snapshot")
 	var submission_snapshot: Dictionary = ranking_snapshot.get(&"submission_queue", {})
+	var pending_submissions: Array = submission_snapshot.get(&"pending", [])
+	if pending_submissions.is_empty():
+		return _fail("시즌 E2E 제출 대기열이 비어 있음")
+	var submitted_payload: Dictionary = pending_submissions[0].get(&"envelope", {}).get(&"payload", {})
+	if not submitted_payload.has(&"boss_kills") or submitted_payload.get(&"season_context", {}) != game.get("active_ranking_context") or "시즌" not in summary.text or "보스" not in summary.text:
+		return _fail("실전 격파→정산→제출에서 보스·출격 시즌 또는 결과 안내 누락: payload=%s context=%s summary=%s" % [submitted_payload, game.get("active_ranking_context"), summary.text])
+	if ranking_snapshot.get(&"season", {}).get(&"ladder", {}).get(&"condition_count", 0) != 1:
+		return _fail("실제 탈출 결과가 현재 시즌에 기록되지 않음")
+	print("E2E_SEASON_PLAYER_OK briefing_eligibility actual_history_click readonly_history launch_context result_bosses season_persistence")
 	if (
 		int(submission_snapshot.get(&"pending_count", 0)) != 1
 		or String(ranking_snapshot.get(&"identity", {}).get(&"player_id", "")).is_empty()
@@ -1541,6 +1560,7 @@ func _cleanup_tier_profile(suffix: String) -> void:
 		"user://sfh_e2e_%s_rankings.json" % suffix,
 		"user://sfh_e2e_%s_rankings_identity.json" % suffix,
 		"user://sfh_e2e_%s_rankings_submissions.json" % suffix,
+		"user://sfh_e2e_%s_rankings_seasons.json" % suffix,
 		"user://sfh_e2e_%s_meta.json" % suffix,
 		"user://sfh_e2e_%s_keys.json" % suffix,
 		"user://sfh_e2e_%s_skills.json" % suffix,
@@ -1628,6 +1648,7 @@ func _cleanup_test_profile() -> void:
 		E2E_PROFILE_PATH, E2E_RANKINGS_PATH,
 		E2E_RANKINGS_PATH.replace(".json", "_identity.json"),
 		E2E_RANKINGS_PATH.replace(".json", "_submissions.json"),
+		E2E_RANKINGS_PATH.replace(".json", "_seasons.json"),
 		E2E_META_PATH, E2E_KEY_MAPPING_PATH, E2E_SKILL_BINDING_PATH,
 		E2E_PRESENTATION_SETTINGS_PATH,
 	]:
