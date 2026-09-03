@@ -9,6 +9,8 @@ hide:
 
 # 기획자 작업실
 
+<a class="sfh-article-entry" href="../../features/"><strong>SFH 종합 문서부터 읽기 →</strong><small>게임 개요 → 작전·전투·장비 → 세부 규칙. 큰 문서에서 작은 문서로 내려갑니다.</small></a>
+
 <section class="sfh-role-console is-planner sfh-role-workspace">
   <header><span class="sfh-kicker">PLANNER ROOM · PLAIN LANGUAGE</span><h2>이 게임을 처음 봐도 여기서부터 읽으면 됩니다</h2><p>SFH는 거점에서 장비를 고르고, 위험한 지역에 들어가 전리품을 모은 뒤, 살아서 탈출해 다음 출격을 준비하는 탑다운 액션 게임입니다.</p></header>
   <div class="sfh-plain-loop" aria-label="플레이 흐름 다섯 단계">

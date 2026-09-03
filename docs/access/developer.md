@@ -9,6 +9,8 @@ hide:
 
 # 개발자 작업실
 
+<a class="sfh-article-entry" href="../../features/"><strong>SFH 종합 문서부터 읽기 →</strong><small>주제별 게임 규칙과 개발 구조를 찾는 공통 문서 대문입니다.</small></a>
+
 <section class="sfh-role-console is-developer sfh-role-workspace">
   <header><span class="sfh-kicker">DEVELOPER ROOM · EXECUTION FIRST</span><h2>다음 변경과 회귀 위험을 먼저 봅니다</h2><p>완료 이력은 기준선으로 압축하고, 현재 오류·다음 작업·모듈 경계·검증 원칙을 구현 순서대로 배치합니다.</p></header>
   <div class="sfh-dev-focus">

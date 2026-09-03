@@ -1,6 +1,6 @@
 {
-  "version": 20,
-  "updated": "2026-09-02",
+  "version": 21,
+  "updated": "2026-09-03",
   "root": {
     "id": "sfh",
     "label": "SFH 개발 위키",
@@ -16,7 +16,12 @@
             "label": "현재 빌드",
             "description": "첫 진입과 최신 개발 상태",
             "documents": [
-              {"label": "위키 홈", "source": "index.md", "route": "", "summary": "게임 정체성·즉시 플레이·최신 업데이트"},
+              {
+                "label": "위키 홈",
+                "source": "index.md",
+                "route": "",
+                "summary": "게임 정체성·즉시 플레이·최신 업데이트"
+              },
               {"label": "개발 현황과 업데이트", "source": "development-status.md", "route": "development-status/", "summary": "진행률·구현 단계·남은 작업"}
             ]
           },
@@ -137,6 +142,7 @@
             "label": "성능 예산",
             "description": "평균 PC 목표와 측정 기준",
             "documents": [
+              {"label": "검증과 문제 해결", "source": "quality/index.md", "route": "quality/", "summary": "테스트·성능·오류 해결 문서의 읽기 시작점"},
               {"label": "최소·권장 사양과 성능 예산", "source": "performance/minimum-requirements.md", "route": "performance/minimum-requirements/", "summary": "60 FPS·Node·이펙트 상한"}
             ]
           },
@@ -159,83 +165,95 @@
         "groups": [
           {
             "id": "feature-hub",
-            "label": "기능 허브",
-            "description": "전체 기능 문서 진입점",
+            "label": "SFH 종합 문서",
+            "description": "모든 주제의 읽기 시작점",
             "documents": [
-              {"label": "기능 목록", "source": "features/index.md", "route": "features/", "summary": "구현 기능과 연결 문서 전체"}
+              {"label": "SFH 종합 문서", "source": "features/index.md", "route": "features/", "summary": "게임 개요에서 주제별·세부 문서로 내려가는 문서형 대문"}
             ]
           },
           {
             "id": "world-operations",
-            "label": "작전·세계",
-            "description": "맵 생성부터 투입·탈출·복귀까지",
+            "label": "작전과 맵",
+            "description": "작전 준비부터 탐험·탈출까지",
             "documents": [
+              {"label": "작전과 맵", "source": "features/operations.md", "route": "features/operations/", "summary": "작전 준비부터 탐험·탈출까지"},
+              {"label": "시작 거점과 전투 세션 전환", "source": "features/start-hub.md", "route": "features/start-hub/", "summary": "거점→작전→거점 루프"},
+              {"label": "작전 진입 마법사와 첫 투입 안내", "source": "features/operation-entry-wizard.md", "route": "features/operation-entry-wizard/", "summary": "3단계 설정·초기 4경로·실패 복구·현장 가이드"},
+              {"label": "투입 비용·지역·난이도 계약", "source": "features/operation-contracts.md", "route": "features/operation-contracts/", "summary": "투자와 위험·보상 데이터 연결"},
+              {"label": "작전 선택과 탈출", "source": "features/raid-setup-extraction.md", "route": "features/raid-setup-extraction/", "summary": "규모 선택·진입 비용·탈출"},
               {"label": "랜덤 맵 생성", "source": "features/map-generation.md", "route": "features/map-generation/", "summary": "규모별 방·통로·건물 생성"},
               {"label": "전장의 안개", "source": "features/fog-of-war.md", "route": "features/fog-of-war/", "summary": "방·통로·정면 시야 규칙"},
               {"label": "전술 미니맵", "source": "features/minimap.md", "route": "features/minimap/", "summary": "M 확장 지도와 조건부 방 워프"},
-              {"label": "작전 선택과 탈출", "source": "features/raid-setup-extraction.md", "route": "features/raid-setup-extraction/", "summary": "규모 선택·진입 비용·탈출"},
-              {"label": "작전 진입 마법사와 첫 투입 안내", "source": "features/operation-entry-wizard.md", "route": "features/operation-entry-wizard/", "summary": "3단계 설정·초기 4경로·실패 복구·현장 가이드"},
-              {"label": "작전 투입 사전검증과 불변 계획", "source": "features/operation-launch-preflight.md", "route": "features/operation-launch-preflight/", "summary": "모든 세팅의 결제 전 집계·검증과 동일 계획 조립"},
               {"label": "탈출 방어전과 결과 정산", "source": "features/extraction-defense-results.md", "route": "features/extraction-defense-results/", "summary": "카운트다운·성공·실패 정산"},
-              {"label": "투입 비용·지역·난이도 계약", "source": "features/operation-contracts.md", "route": "features/operation-contracts/", "summary": "투자와 위험·보상 데이터 연결"},
-              {"label": "P5-01 캐릭터 선택", "source": "features/character-selection.md", "route": "features/character-selection/", "summary": "캐릭터 가격·패시브·작전 견적과 실전 적용"},
-              {"label": "P5-02 무기·스킬 런 투자", "source": "features/loadout-investment.md", "route": "features/loadout-investment/", "summary": "주·보조무기·스킬 가격·해금·태그·런 구매와 복원"},
-              {"label": "P5-03~10 로비 허브 진행", "source": "features/p5-hub-progression.md", "route": "features/p5-hub-progression/", "summary": "유틸리티·작전 초안·파산 보호·상점·제작·훈련·도감"},
-              {"label": "시작 거점과 전투 세션 전환", "source": "features/start-hub.md", "route": "features/start-hub/", "summary": "거점→작전→거점 루프"},
-              {"label": "게임 루프와 HUD", "source": "features/game-loop.md", "route": "features/game-loop/", "summary": "플레이 단계와 화면 정보 흐름"}
+              {"label": "게임 루프와 HUD", "source": "features/game-loop.md", "route": "features/game-loop/", "summary": "플레이 단계와 화면 정보 흐름"},
+              {"label": "작전 투입 사전검증과 불변 계획", "source": "features/operation-launch-preflight.md", "route": "features/operation-launch-preflight/", "summary": "모든 세팅의 결제 전 집계·검증과 동일 계획 조립"}
             ]
           },
           {
             "id": "combat-controls",
-            "label": "전투·조작",
-            "description": "이동·공격·스킬·피드백",
+            "label": "전투와 조작",
+            "description": "이동·공격·스킬·적과 싸우는 규칙",
             "documents": [
+              {"label": "전투와 조작", "source": "features/combat.md", "route": "features/combat/", "summary": "이동·공격·스킬·적과 싸우는 규칙"},
               {"label": "플레이어", "source": "features/player.md", "route": "features/player/", "summary": "탑다운 이동·대시·조작감"},
               {"label": "K 입력 설정과 자유 스킬 배치", "source": "features/key-mapping.md", "route": "features/key-mapping/", "summary": "23개 물리 키와 별도인 1~9 스킬 위치 교환·저장"},
               {"label": "모바일 키패드와 HUD 표시 설정", "source": "features/mobile-hud-settings.md", "route": "features/mobile-hud-settings/", "summary": "터치 Action·상태 HUD 위치·키 표시 형식"},
-              {"label": "부분 체력 회복", "source": "features/health-recovery.md", "route": "features/health-recovery/", "summary": "회복 규칙과 제한"},
-              {"label": "전투 스킬과 쿨타임 HUD", "source": "features/combat-skills.md", "route": "features/combat-skills/", "summary": "점멸·자기장·기동 가속"},
-              {"label": "타격감과 피격 피드백", "source": "features/hit-feedback.md", "route": "features/hit-feedback/", "summary": "섬광·넉백·충격·카메라 반응"},
-              {"label": "전투 에너지·충전·회복 드랍", "source": "features/combat-resources.md", "route": "features/combat-resources/", "summary": "스킬 자원과 처치 드랍"},
-              {"label": "스마트 자동 타게팅", "source": "features/smart-targeting.md", "route": "features/smart-targeting/", "summary": "대상·밀집·이동 방향 정책"},
               {"label": "자동 무기", "source": "features/weapons.md", "route": "features/weapons/", "summary": "무조준 기본기와 무기 태그"},
-              {"label": "Q 무기 교체와 Google Sheets 밸런스", "source": "features/weapon-balance.md", "route": "features/weapon-balance/", "summary": "무기 특색·실시간 수치 테스트"}
+              {"label": "스마트 자동 타게팅", "source": "features/smart-targeting.md", "route": "features/smart-targeting/", "summary": "대상·밀집·이동 방향 정책"},
+              {"label": "전투 스킬과 쿨타임 HUD", "source": "features/combat-skills.md", "route": "features/combat-skills/", "summary": "점멸·자기장·기동 가속"},
+              {"label": "전투 에너지·충전·회복 드랍", "source": "features/combat-resources.md", "route": "features/combat-resources/", "summary": "스킬 자원과 처치 드랍"},
+              {"label": "부분 체력 회복", "source": "features/health-recovery.md", "route": "features/health-recovery/", "summary": "회복 규칙과 제한"},
+              {"label": "타격감과 피격 피드백", "source": "features/hit-feedback.md", "route": "features/hit-feedback/", "summary": "섬광·넉백·충격·카메라 반응"},
+              {"label": "적과 증원형 생성 시스템", "source": "features/enemies.md", "route": "features/enemies/", "summary": "규모별 물량·분리·재생성 한계"},
+              {"label": "적 체력과 방어력", "source": "features/enemy-defense.md", "route": "features/enemy-defense/", "summary": "적 생존 스탯과 상태 바"},
+              {"label": "투입액 회수 엘리트 추격자", "source": "features/elite-pursuit.md", "route": "features/elite-pursuit/", "summary": "투입액 임계·랜덤 생성·방과 문 독립 전역 추적"},
+              {"label": "방 진입 전투와 봉쇄 보상", "source": "features/room-encounters.md", "route": "features/room-encounters/", "summary": "문 폐쇄·1~5개 크레딧 박스·조기 탈출"}
             ]
           },
           {
-            "id": "growth-equipment",
-            "label": "성장·장비·경제",
-            "description": "파밍 결과를 빌드와 영구 성장으로 전환",
+            "id": "equipment",
+            "label": "장비와 인벤토리",
+            "description": "요원·무기·방어구·가방을 준비하는 방법",
             "documents": [
-              {"label": "영구 해금·상점·창고·소모품", "source": "features/hub-economy.md", "route": "features/hub-economy/", "summary": "거점 경제와 파산 방지"},
-              {"label": "크레딧 파밍과 회수", "source": "features/credit-loot.md", "route": "features/credit-loot/", "summary": "현장 자원·금고·회수 배율"},
-              {"label": "전리품 생명 주기", "source": "features/loot-lifecycle.md", "route": "features/loot-lifecycle/", "summary": "영구·이번 런 자산, 탈출·사망 결과와 Item Sheet"},
-              {"label": "지역·난이도 전리품 테이블", "source": "features/loot-tables.md", "route": "features/loot-tables/", "summary": "세 지역 29행·난이도·출처별 타겟 파밍과 브리핑"},
-              {"label": "현장 전리품 비교·획득", "source": "features/field-loot-acquisition.md", "route": "features/field-loot-acquisition/", "summary": "접근 비교·ESC 보류·F 획득과 런 임시 보관"},
-              {"label": "현장 무기 즉시 장착", "source": "features/field-loot-immediate-equip.md", "route": "features/field-loot-immediate-equip/", "summary": "R 즉시 장착·기존 무기 런 임시 보관·거점 복구"},
-              {"label": "현장 스킬 즉시 교체", "source": "features/field-loot-skill-swap.md", "route": "features/field-loot-skill-swap/", "summary": "R 슬롯 교체·키 유지·쿨다운·충전 복구"},
-              {"label": "런 전용 룬·코어·유물 소켓", "source": "features/session-sockets.md", "route": "features/session-sockets/", "summary": "RunAsset 기반 작전 한정 슬롯·즉시 효과·HUD 해제"},
-              {"label": "런 전리품 정산", "source": "features/run-settlement.md", "route": "features/run-settlement/", "summary": "자동 환전·영구 해금·창고 보관·사망 소실과 중복 방지"},
-              {"label": "도면 제작과 랜덤 옵션", "source": "features/blueprint-crafting.md", "route": "features/blueprint-crafting/", "summary": "도면 해금·제작·옵션 정책"},
-              {"label": "페널티 변형과 조건부 랭킹", "source": "features/penalty-ranking.md", "route": "features/penalty-ranking/", "summary": "리스크 보상과 3종 기록"},
-              {"label": "P6 검증형 랭킹 제출과 오프라인 보존", "source": "features/ranking-provider.md", "route": "features/ranking-provider/", "summary": "익명 신원·멱등 키·변조 검증·영구 재시도와 공급자 교체"},
+              {"label": "장비와 인벤토리", "source": "features/equipment.md", "route": "features/equipment/", "summary": "요원·무기·방어구·가방을 준비하는 방법"},
+              {"label": "P5-01 캐릭터 선택", "source": "features/character-selection.md", "route": "features/character-selection/", "summary": "캐릭터 가격·패시브·작전 견적과 실전 적용"},
               {"label": "캐릭터 장비와 로드아웃", "source": "features/character-equipment.md", "route": "features/character-equipment/", "summary": "무기·방어구·스킬 슬롯"},
               {"label": "격자 가방 인벤토리", "source": "features/grid-inventory.md", "route": "features/grid-inventory/", "summary": "크기가 다른 아이템 배치"},
               {"label": "장비 파츠·모듈 개조", "source": "features/equipment-customization.md", "route": "features/equipment-customization/", "summary": "호환 파츠·모듈 코스트·태그"},
               {"label": "모듈·고유 파츠 강화 경제", "source": "features/equipment-upgrade-economy.md", "route": "features/equipment-upgrade-economy/", "summary": "재료·크레딧·강화 단계"},
-              {"label": "내부 성장·장비 강화 Google Sheets 연동", "source": "features/growth-balance.md", "route": "features/growth-balance/", "summary": "런 버프와 강화 수치 데이터"},
-              {"label": "내부·외부 로그라이크 성장", "source": "features/progression.md", "route": "features/progression/", "summary": "증강 카드와 영구 계열 경험치"}
+              {"label": "P5-02 무기·스킬 런 투자", "source": "features/loadout-investment.md", "route": "features/loadout-investment/", "summary": "주·보조무기·스킬 가격·해금·태그·런 구매와 복원"},
+              {"label": "Q 무기 교체와 Google Sheets 밸런스", "source": "features/weapon-balance.md", "route": "features/weapon-balance/", "summary": "무기 특색·실시간 수치 테스트"}
             ]
           },
           {
-            "id": "enemies-rooms",
-            "label": "적·방 전투",
-            "description": "핵앤슬래시 물량과 방 봉쇄",
+            "id": "loot",
+            "label": "전리품과 회수",
+            "description": "발견한 자원이 내 것이 되기까지",
             "documents": [
-              {"label": "적과 증원형 생성 시스템", "source": "features/enemies.md", "route": "features/enemies/", "summary": "규모별 물량·분리·재생성 한계"},
-              {"label": "투입액 회수 엘리트 추격자", "source": "features/elite-pursuit.md", "route": "features/elite-pursuit/", "summary": "투입액 임계·랜덤 생성·방과 문 독립 전역 추적"},
-              {"label": "방 진입 전투와 봉쇄 보상", "source": "features/room-encounters.md", "route": "features/room-encounters/", "summary": "문 폐쇄·1~5개 크레딧 박스·조기 탈출"},
-              {"label": "적 체력과 방어력", "source": "features/enemy-defense.md", "route": "features/enemy-defense/", "summary": "적 생존 스탯과 상태 바"}
+              {"label": "전리품과 회수", "source": "features/loot.md", "route": "features/loot/", "summary": "발견한 자원이 내 것이 되기까지"},
+              {"label": "크레딧 파밍과 회수", "source": "features/credit-loot.md", "route": "features/credit-loot/", "summary": "현장 자원·금고·회수 배율"},
+              {"label": "지역·난이도 전리품 테이블", "source": "features/loot-tables.md", "route": "features/loot-tables/", "summary": "세 지역 29행·난이도·출처별 타겟 파밍과 브리핑"},
+              {"label": "전리품 생명 주기", "source": "features/loot-lifecycle.md", "route": "features/loot-lifecycle/", "summary": "영구·이번 런 자산, 탈출·사망 결과와 Item Sheet"},
+              {"label": "현장 전리품 비교·획득", "source": "features/field-loot-acquisition.md", "route": "features/field-loot-acquisition/", "summary": "접근 비교·ESC 보류·F 획득과 런 임시 보관"},
+              {"label": "현장 무기 즉시 장착", "source": "features/field-loot-immediate-equip.md", "route": "features/field-loot-immediate-equip/", "summary": "R 즉시 장착·기존 무기 런 임시 보관·거점 복구"},
+              {"label": "현장 스킬 즉시 교체", "source": "features/field-loot-skill-swap.md", "route": "features/field-loot-skill-swap/", "summary": "R 슬롯 교체·키 유지·쿨다운·충전 복구"},
+              {"label": "런 전용 룬·코어·유물 소켓", "source": "features/session-sockets.md", "route": "features/session-sockets/", "summary": "RunAsset 기반 작전 한정 슬롯·즉시 효과·HUD 해제"},
+              {"label": "런 전리품 정산", "source": "features/run-settlement.md", "route": "features/run-settlement/", "summary": "자동 환전·영구 해금·창고 보관·사망 소실과 중복 방지"}
+            ]
+          },
+          {
+            "id": "growth",
+            "label": "성장과 거점 경제",
+            "description": "이번 판의 강화와 다음 판에 남는 성장",
+            "documents": [
+              {"label": "성장과 거점 경제", "source": "features/growth.md", "route": "features/growth/", "summary": "이번 판의 강화와 다음 판에 남는 성장"},
+              {"label": "내부·외부 로그라이크 성장", "source": "features/progression.md", "route": "features/progression/", "summary": "증강 카드와 영구 계열 경험치"},
+              {"label": "내부 성장·장비 강화 Google Sheets 연동", "source": "features/growth-balance.md", "route": "features/growth-balance/", "summary": "런 버프와 강화 수치 데이터"},
+              {"label": "영구 해금·상점·창고·소모품", "source": "features/hub-economy.md", "route": "features/hub-economy/", "summary": "거점 경제와 파산 방지"},
+              {"label": "P5-03~10 로비 허브 진행", "source": "features/p5-hub-progression.md", "route": "features/p5-hub-progression/", "summary": "유틸리티·작전 초안·파산 보호·상점·제작·훈련·도감"},
+              {"label": "도면 제작과 랜덤 옵션", "source": "features/blueprint-crafting.md", "route": "features/blueprint-crafting/", "summary": "도면 해금·제작·옵션 정책"},
+              {"label": "페널티 변형과 조건부 랭킹", "source": "features/penalty-ranking.md", "route": "features/penalty-ranking/", "summary": "리스크 보상과 3종 기록"},
+              {"label": "P6 검증형 랭킹 제출과 오프라인 보존", "source": "features/ranking-provider.md", "route": "features/ranking-provider/", "summary": "익명 신원·멱등 키·변조 검증·영구 재시도와 공급자 교체"}
             ]
           }
         ]

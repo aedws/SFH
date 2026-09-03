@@ -57,6 +57,8 @@ try {
         & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1") -SiteRoot ".wiki-site"
         & (Join-Path $PSScriptRoot "check-wiki-planner-requests.ps1") -SiteRoot ".wiki-site"
         & (Join-Path $PSScriptRoot "check-wiki-role-auth.ps1") -SiteRoot ".wiki-site"
+        & $virtualPython (Join-Path $PSScriptRoot "test_wiki_articles.py") ".wiki-site"
+        if ($LASTEXITCODE -ne 0) { throw "Article hierarchy verification failed." }
     }
 }
 finally {
