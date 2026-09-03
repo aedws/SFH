@@ -37,6 +37,22 @@ var key_label_format: StringName = &"compact"
 var raw_action_bindings: Dictionary = {}
 var avoid_mobile_controls := false
 var tutorial_overlay: Control
+var hub_view: Control
+var hub_hint: Label
+var hub_objective: Label
+var hub_objective_text := ""
+
+
+func attach_hub(view: Control) -> void:
+	hub_view = view
+	hub_hint = view.get_node_or_null("Panel/Margin/Content/Controls") as Label
+	hub_objective = view.get_node_or_null("Panel/Margin/Content/Objective") as Label
+	if hub_objective != null:
+		hub_objective_text = hub_objective.text
+		hub_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if hub_hint != null:
+		hub_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_apply_responsive_layout()
 
 
 func attach_tutorial(overlay: Control) -> void:
@@ -240,7 +256,7 @@ func get_snapshot(hud: Control) -> Dictionary:
 		&"loadout_split": equipment_panel != null and weapon_panel != null and telemetry_panel != null,
 		&"icon_count": icon_count,
 		&"action_count": action_labels.size(),
-		&"responsive": layout_mode in [&"player_orbit", &"compact_edge", &"minimal_edge"],
+		&"responsive": layout_mode in [&"player_orbit", &"compact_edge", &"minimal_edge", &"mobile_touch"],
 		&"context_reveal": detail_reveal_timer != null,
 		&"revealed_detail": revealed_detail,
 		&"details_persistent": false,
@@ -401,6 +417,29 @@ func _apply_responsive_layout() -> void:
 
 func _apply_layout_for_width(viewport_width: float) -> void:
 	if layout_root == null:
+		return
+	if is_instance_valid(hub_view):
+		_set_top_left_rect(hub_view, 18, 58 if avoid_mobile_controls else 16, minf(420 if avoid_mobile_controls else 596, viewport_width - 36), 116)
+		if hub_hint != null:
+			hub_hint.visible = not avoid_mobile_controls
+		if hub_objective != null:
+			hub_objective.text = "동쪽 작전 게이트에서 ‘사용’을 누르세요." if avoid_mobile_controls else hub_objective_text
+	# 모바일은 패드 자체에 에너지·스킬/대시 대기를 표시합니다. PC용 중복 HUD를 제거합니다.
+	_set_visible(combat_skill_hud, not avoid_mobile_controls)
+	_set_visible(dash_cooldown_hud, not avoid_mobile_controls)
+	if avoid_mobile_controls:
+		layout_mode = &"mobile_touch"
+		_set_top_left_rect(mission_tracker, 18, 58, viewport_width - 36 if viewport_width < 720 else 334, 94)
+		_set_top_left_rect(core_panel, 18, 158, 260, 72)
+		_set_top_left_rect(telemetry_panel, 18, 234, 260, 32)
+		_set_visible(action_dock, false)
+		_set_visible(equipment_panel, false)
+		_set_visible(weapon_panel, false)
+		if viewport_width < 720:
+			_set_top_left_rect(session_socket_hud, 18, 272, viewport_width - 36, 62)
+		else:
+			_set_top_left_rect(session_socket_hud, 368, 58, minf(360, viewport_width - 536), 62)
+		_set_center_rect(interaction_prompt, -140, 38, 280, 30)
 		return
 	if viewport_width >= WIDE_LAYOUT_MINIMUM:
 		layout_mode = &"player_orbit"

@@ -156,6 +156,9 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/hub_preparation_contract_test.gd" | tee /tmp/sfh-hub-preparation.log
           grep -q "HUB_PREPARATION_OK" /tmp/sfh-hub-preparation.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/mobile_hud_elite_contract_test.gd" | tee /tmp/sfh-mobile-hud-elite.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/mobile_control_entry_contract_test.gd" 2>&1 | tee /tmp/sfh-mobile-control-entry.log
+          grep -q "MOBILE_CONTROL_ENTRY_OK" /tmp/sfh-mobile-control-entry.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-mobile-control-entry.log
           grep -q "PURSUIT_BOSS_OK half_cost rounded_free_entry failed_spawn_retry locked_door_damage reclosed_door_damage boss_kill_once no_respawn" /tmp/sfh-mobile-hud-elite.log
           grep -q "MOBILE_HUD_ELITE_OK optional_modules dependencies hud_bottom_left movable_anchor key_format mobile_semantic_pad threshold_entry_cost random_elite faster_stronger infinite_room_independent" /tmp/sfh-mobile-hud-elite.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/boss_warning_contract_test.gd" | tee /tmp/sfh-boss-warning.log
