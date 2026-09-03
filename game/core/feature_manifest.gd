@@ -47,6 +47,7 @@ extends Resource
 @export var meta_progression_enabled: bool = true
 @export var equipment_upgrade_economy_enabled: bool = true
 @export var persistent_profile_enabled: bool = true
+@export var desktop_progress_enabled: bool = true
 @export var operation_contracts_enabled: bool = true
 @export var operation_launch_preflight_enabled: bool = true
 @export var character_selection_enabled: bool = true
@@ -124,6 +125,7 @@ extends Resource
 )
 @export var meta_progression_storage_path: String = "user://sfh_meta_progression.json"
 @export var persistent_profile_storage_path: String = "user://sfh_profile.json"
+@export var desktop_progress_storage_path: String = "user://sfh_desktop_progress.json"
 @export var conditional_ranking_storage_path: String = "user://sfh_rankings.json"
 @export_file("*.tres") var ranking_provider_config_path: String = (
 	"res://game/features/conditional_ranking/configs/default_ranking_provider.tres"
@@ -287,6 +289,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"equipment_upgrade_economy")
 	if persistent_profile_enabled:
 		result.append(&"persistent_profile")
+	if desktop_progress_enabled and persistent_profile_enabled and inventory_enabled and equipment_enabled:
+		result.append(&"desktop_progress")
 	if operation_contracts_enabled:
 		result.append(&"operation_contracts")
 	if operation_launch_preflight_enabled:

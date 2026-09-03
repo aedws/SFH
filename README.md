@@ -42,6 +42,7 @@ Godot 4 기반 모듈형 탑다운 익스트랙션 액션입니다.
 - 데스크톱 Chrome, Edge, Whale 등 최신 Chromium 브라우저와 키보드를 권장합니다.
 - 첫 로딩에는 Godot WebAssembly와 게임 데이터 다운로드 시간이 필요합니다.
 - Windows 빌드는 [SFH-Windows-x64-v0.1.0.zip](https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip)으로 바로 받고 [SHA-256 체크섬](https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip.sha256)으로 무결성을 확인합니다.
+- 다운로드판은 거점 세팅과 반출한 재화·창고·해금·성장·플레이 기록을 `%APPDATA%\Godot\app_userdata\SFH\`에 자동 저장합니다. 새 ZIP에서도 같은 Windows 계정의 기록이 이어집니다. 전투 도중 이어하기나 브라우저 저장 동기화는 지원하지 않으며, 자세한 안내는 ZIP의 `WINDOWS-README.txt`에서 확인합니다.
 - 개발 중인 프로토타입이므로 세이브 호환성과 밸런스는 변경될 수 있습니다.
 - Web 빌드는 `main` 변경 시 자동 생성되며, 내보내기나 E2E에 실패하면 Cloudflare 운영 배포도 중단됩니다.
 

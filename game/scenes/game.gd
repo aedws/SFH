@@ -481,6 +481,7 @@ var run_buff_selector
 var meta_progression_system
 var equipment_upgrade_service
 var persistent_profile
+var desktop_progress
 var operation_contract_service
 var operation_launch_preflight_service
 var loot_launch_validator
@@ -710,9 +711,23 @@ func _install_persistent_services() -> bool:
 			_report_configuration_error("영구 프로필 모듈의 공개 계약이 올바르지 않습니다.")
 			return false
 		persistent_profile.call(
-			&"configure", features.persistent_profile_storage_path, true
+			&"configure", features.persistent_profile_storage_path, true,
+			not OS.has_feature("web") and (
+				not OS.get_cmdline_args().has("--script")
+				or (features.desktop_progress_enabled and features.desktop_progress_storage_path != "user://sfh_desktop_progress.json")
+			)
 		)
 		persistent_profile.connect(&"profile_changed", Callable(self, &"_on_profile_changed"))
+	if features.desktop_progress_enabled and features.persistent_profile_enabled and features.inventory_enabled and features.equipment_enabled and not OS.has_feature("web"):
+		# Existing headless contracts stay isolated; restart tests supply their own path.
+		if not OS.get_cmdline_args().has("--script") or features.desktop_progress_storage_path != "user://sfh_desktop_progress.json":
+			desktop_progress = load("res://game/features/local_save/desktop_progress_service.gd").new()
+			add_child(desktop_progress)
+			desktop_progress.call(&"configure", features.desktop_progress_storage_path)
+			desktop_progress.call(&"register_storage_provider", persistent_profile)
+			var save_label: Label = load("res://game/features/local_save/save_status_label.gd").new()
+			hub_control_hint_label.get_parent().add_child(save_label)
+			save_label.call(&"configure", desktop_progress)
 	if features.conditional_ranking_enabled:
 		conditional_ranking_system = _instantiate_feature(
 			RANKING_SCENE_PATH, self, &"ConditionalRanking"
@@ -850,6 +865,8 @@ func _install_persistent_services() -> bool:
 		):
 			_report_configuration_error("작전 결과 정산 모듈을 구성하지 못했습니다.")
 			return false
+		if desktop_progress != null:
+			operation_result_service.connect(&"operation_settled", Callable(desktop_progress, &"observe_settlement"))
 	return true
 
 
@@ -1392,6 +1409,10 @@ func start_run(map_size: String) -> bool:
 		return false
 	var pending_config: Resource = load(MAP_CONFIG_PATH_PATTERN % map_size)
 	_capture_prepared_loadout()
+	if desktop_progress != null and not bool(desktop_progress.call(&"flush")):
+		status_label.text = "출격 보류 · 로컬 저장 오류를 확인하세요. 기존 데이터는 유지됩니다."
+		_close_run_setup()
+		return false
 	var launch_plan: Dictionary = {}
 	if operation_contract_service != null:
 		var penalty_snapshot: Dictionary = (
@@ -1442,7 +1463,8 @@ func start_run(map_size: String) -> bool:
 
 	selected_map_size = map_size
 	run_sequence += 1
-	current_run_id = StringName("%d-%d" % [Time.get_ticks_usec(), run_sequence])
+	# Persistent settlement/history identities must remain unique across processes.
+	current_run_id = StringName(Crypto.new().generate_random_bytes(16).hex_encode())
 	run_combat_metrics.reset()
 	active_ranking_context = conditional_ranking_system.call(&"get_season_briefing", active_contract).get(&"context", {}) if conditional_ranking_system != null and conditional_ranking_system.has_method(&"get_season_briefing") else {}
 	if p5_hub_progression_service != null and not bool(
@@ -1460,6 +1482,11 @@ func start_run(map_size: String) -> bool:
 		_refresh_contract_setup_ui()
 		return false
 	_prepare_run_skill_bindings()
+	if desktop_progress != null and not bool(desktop_progress.call(&"begin_run", current_run_id, active_contract)):
+		_rollback_operation_investment()
+		status_label.text = "출격 보류 · 작전 시작 상태를 저장하지 못했습니다."
+		_close_run_setup()
+		return false
 	last_loot_settlement.clear()
 	get_tree().paused = false
 	_clear_start_hub()
@@ -1489,6 +1516,8 @@ func start_run(map_size: String) -> bool:
 
 
 func _rollback_operation_investment() -> void:
+	if desktop_progress != null:
+		desktop_progress.call(&"cancel_run")
 	_restore_run_skill_bindings()
 	if p5_hub_progression_service != null:
 		p5_hub_progression_service.call(&"settle_run", false, {})
@@ -1549,6 +1578,8 @@ func _install_hub_loadout_views() -> bool:
 		return false
 	if features.equipment_customization_enabled and not _install_equipment_workbench(false):
 		return false
+	if desktop_progress != null:
+		desktop_progress.call(&"bind_hub", inventory_system, equipment_system)
 	if operation_launch_preflight_service != null:
 		for registration in [
 			[&"equipment", equipment_system],
@@ -1596,6 +1627,8 @@ func _close_run_setup() -> void:
 
 
 func _clear_start_hub() -> void:
+	if desktop_progress != null:
+		desktop_progress.call(&"unbind_hub")
 	if operation_launch_preflight_service != null:
 		operation_launch_preflight_service.call(&"unregister_validator", &"equipment")
 		operation_launch_preflight_service.call(&"unregister_validator", &"inventory")
@@ -2159,14 +2192,18 @@ func _install_meta_progression() -> bool:
 	if not _supports_methods(meta_progression_system, META_PROGRESSION_METHODS):
 		_report_configuration_error("외부 성장 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
-	var persistence_enabled := not OS.get_cmdline_args().has("--script")
+	var persistence_enabled := not OS.get_cmdline_args().has("--script") or desktop_progress != null
 	if not meta_progression_system.call(
-		&"configure", features.meta_progression_storage_path, persistence_enabled
+		&"configure", features.meta_progression_storage_path, persistence_enabled,
+		persistence_enabled and not OS.has_feature("web")
 	):
 		return false
 	meta_progression_system.call(
 		&"apply_to_targets", player, auto_weapon, equipment_system
 	)
+	if desktop_progress != null:
+		if not bool(desktop_progress.call(&"register_storage_provider", meta_progression_system)):
+			return false
 	return true
 
 
@@ -3985,6 +4022,15 @@ func _finish_run(title: String, summary: String) -> void:
 		final_summary += "\n" + String(meta_progression_system.call(
 			&"get_summary_line", settlement[&"gained_experience"]
 		))
+	if desktop_progress != null:
+		desktop_progress.call(&"finish_run", current_run_id, not lose_equipped_loadout_on_return, {
+			"outcome": "failure" if lose_equipped_loadout_on_return else "extracted",
+			"map_size": selected_map_size, "elapsed_seconds": elapsed_time,
+			"kills": defeated_enemies, "boss_kills": run_combat_metrics.get_snapshot().get(&"boss_kills", 0),
+			"entry_cost": int(active_contract.get(&"entry_cost", 0)),
+			"warehouse_items": last_loot_settlement.get(&"warehouse_items", {}).duplicate(true),
+			"permanent_unlocks": last_loot_settlement.get(&"permanent_unlocks", {}).duplicate(true),
+		})
 	_hide_active_run_ui()
 	if is_instance_valid(mobile_control_pad):
 		mobile_control_pad.call(&"set_context_enabled", false)

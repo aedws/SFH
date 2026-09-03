@@ -13,14 +13,20 @@ var levels: Dictionary = {}
 var experience: Dictionary = {}
 var storage_path: String = "user://sfh_meta_progression.json"
 var persistence_enabled: bool = true
+var safe_persistence := false
+var storage_error := ""
+var save_store = preload("res://game/core/persistence/atomic_json_store.gd").new()
 
 
 func configure(
 	new_storage_path: String = "user://sfh_meta_progression.json",
-	enable_persistence: bool = true
+	enable_persistence: bool = true,
+	use_safe_storage: bool = false
 ) -> bool:
 	storage_path = new_storage_path
 	persistence_enabled = enable_persistence and not storage_path.is_empty()
+	safe_persistence = use_safe_storage
+	storage_error = ""
 	_reset_values()
 	if persistence_enabled:
 		_load()
@@ -112,6 +118,11 @@ func _reset_values() -> void:
 
 
 func _save() -> void:
+	if safe_persistence:
+		if not storage_error.is_empty(): return
+		if not save_store.write(storage_path, {"levels": levels, "experience": experience}, true):
+			storage_error = save_store.last_error
+		return
 	var file := FileAccess.open(storage_path, FileAccess.WRITE)
 	if file == null:
 		push_warning("외부 성장 저장 파일을 열 수 없습니다: %s" % storage_path)
@@ -123,21 +134,39 @@ func _save() -> void:
 
 
 func _load() -> void:
-	if not FileAccess.file_exists(storage_path):
-		return
-	var file := FileAccess.open(storage_path, FileAccess.READ)
-	if file == null:
-		return
-	var parsed = JSON.parse_string(file.get_as_text())
+	var parsed: Variant
+	if safe_persistence:
+		var stored: Dictionary = save_store.read(storage_path, true)
+		if not stored.ok:
+			storage_error = "외부 성장 복원 실패 · 원본 보존"
+			return
+		if stored.status == "new": return
+		parsed = stored.data
+	else:
+		if not FileAccess.file_exists(storage_path): return
+		var file := FileAccess.open(storage_path, FileAccess.READ)
+		parsed = JSON.parse_string(file.get_as_text()) if file != null else null
 	if not parsed is Dictionary:
 		push_warning("외부 성장 저장 데이터 형식이 올바르지 않습니다.")
 		return
+	for key in ["levels", "experience"]:
+		if not parsed.get(key, {}) is Dictionary:
+			storage_error = "외부 성장 저장 형식 오류"
+			return
+		for value in parsed.get(key, {}).values():
+			if not (value is float or value is int):
+				storage_error = "외부 성장 저장 수치 오류"
+				return
 	var parsed_levels: Dictionary = parsed.get("levels", {})
 	var parsed_experience: Dictionary = parsed.get("experience", {})
 	for target_id in TARGET_IDS:
 		var key := String(target_id)
 		levels[target_id] = maxi(1, int(parsed_levels.get(key, 1)))
 		experience[target_id] = maxi(0, int(parsed_experience.get(key, 0)))
+
+
+func get_storage_status() -> Dictionary:
+	return {"ok": storage_error.is_empty(), "message": storage_error, "path": storage_path}
 
 
 func _string_key_dictionary(source: Dictionary) -> Dictionary:

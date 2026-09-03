@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 18 · IMPROVE 22 · CHANGE 18 · FIX 19</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 20 · IMPROVE 24 · CHANGE 19 · FIX 21</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>18</b><small>BUILD</small></span><span><b>22</b><small>IMPROVE</small></span><span><b>18</b><small>CHANGE</small></span><span><b>19</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>20</b><small>BUILD</small></span><span><b>24</b><small>IMPROVE</small></span><span><b>19</b><small>CHANGE</small></span><span><b>21</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 10</small><b>Windows 자동 저장 · 종료 후 진행 이어가기</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 다운로드판을 껐다 켜도 확정한 거점 세팅과 반출한 재화·성장·기록을 이어갑니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>가방·장비·모듈·파츠 체크포인트와 최근 100회 작전 이력을 로컬 저장합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>기존 프로필·성장에 검증 저장과 이전본 복구를 더하고, 거점 상태·다운로드 안내로 저장 위치를 확인합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>파일 보관·형식 변환·런 경계·표시를 분리하고 재실행 검증을 배포 필수 검사에 추가했습니다. Sheet 목록·밸런스는 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>재실행 시 거점 세팅이 사라지는 경로와 개발 테스트가 플레이어 기본 저장을 사용하는 경로를 수정했습니다.</p></div>
+        <p>전투 도중 이어하기·클라우드 동기화는 아닙니다. 중단 시 미반출 전리품은 지급하지 않으며 기존 실패 규칙을 유지합니다.</p>
+        <p><a href="getting-started/run-project/#desktop-save">저장·백업 안내 →</a> · <a href="quality/e2e-play-session/#desktop-save-e2e">재실행 검증 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>보스 등장 경고 · 외곽 접근 방향</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 보스가 나타나면 짧게 경고하고, 화면 밖에서 오는 방향을 외곽 화살표로 알려줍니다.</strong></div>

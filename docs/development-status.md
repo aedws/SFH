@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 79 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-03</span><span>SEARCH COMMAND</span><span>6 DAYS · 80 TOPICS</span><span>90 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -94,9 +94,9 @@ tags:
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 18 · IMPROVE 22 · CHANGE 18 · FIX 19</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-03</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 20 · IMPROVE 24 · CHANGE 19 · FIX 21</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>18</b><small>BUILD</small></span><span><b>22</b><small>IMPROVE</small></span><span><b>18</b><small>CHANGE</small></span><span><b>19</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>20</b><small>BUILD</small></span><span><b>24</b><small>IMPROVE</small></span><span><b>19</b><small>CHANGE</small></span><span><b>21</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투 HUD 가장자리 재배치 · 중앙 시야 확보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -194,7 +194,7 @@ tags:
         <p><a href="features/field-loot-acquisition/">한 판 파밍 방법 →</a> · <a href="features/ranking-provider/">시즌 명예 보상 →</a> · <a href="quality/e2e-play-session/">검증 범위 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>보스 등장 경고 · 외곽 접근 방향</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 보스가 나타나면 짧게 경고하고, 화면 밖에서 오는 방향을 외곽 화살표로 알려줍니다.</strong></div>
@@ -203,6 +203,18 @@ tags:
         <div class="sfh-group"><h3>수정 · 1</h3><p>추적·좌표·표현·수치를 독립 모듈로 분리하고 8방향·4화면 크기·실제 I/ESC E2E를 필수 검사에 추가했습니다. 입력 대기 후 카메라 좌표도 새로 계산해 화면 내부 판정의 오탐을 방지합니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>보스 발생 임계·드랍·전투 수치는 변경하지 않았습니다.</p></div>
         <p><a href="features/elite-pursuit/">경고·방향 표시 규칙 →</a> · <a href="quality/e2e-play-session/">검증 범위 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 10</small><b>Windows 자동 저장 · 종료 후 진행 이어가기</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 다운로드판을 껐다 켜도 확정한 거점 세팅과 반출한 재화·성장·기록을 이어갑니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>가방·장비·모듈·파츠 체크포인트와 최근 100회 작전 이력을 로컬 저장합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>기존 프로필·성장에 검증 저장과 이전본 복구를 더하고, 거점 상태·다운로드 안내로 저장 위치를 확인합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>파일 보관·형식 변환·런 경계·표시를 분리하고 재실행 검증을 배포 필수 검사에 추가했습니다. Sheet 목록·밸런스는 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>재실행 시 거점 세팅이 사라지는 경로와 개발 테스트가 플레이어 기본 저장을 사용하는 경로를 수정했습니다.</p></div>
+        <p>전투 도중 이어하기·클라우드 동기화는 아닙니다. 중단 시 미반출 전리품은 지급하지 않으며 기존 실패 규칙을 유지합니다.</p>
+        <p><a href="getting-started/run-project/#desktop-save">저장·백업 안내 →</a> · <a href="quality/e2e-play-session/#desktop-save-e2e">재실행 검증 →</a></p>
       </div>
     </details>
   </div>

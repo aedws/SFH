@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -62,6 +63,8 @@ def main() -> None:
         "product": "SFH",
         "release_version": version,
         "platform": "windows-x86_64",
+        "desktop_save_schema_version": 1,
+        "desktop_save_location": "%APPDATA%/Godot/app_userdata/SFH/",
         "build_commit": args.commit,
         "godot_version": godot_version,
         "csv_data_version": csv_version,
@@ -71,6 +74,10 @@ def main() -> None:
     metadata_path = input_dir / "BUILD-METADATA.json"
     metadata_path.write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    shutil.copyfile(
+        Path(__file__).resolve().parents[1] / "game/distribution/WINDOWS-README.txt",
+        input_dir / "WINDOWS-README.txt",
     )
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -88,7 +95,7 @@ def main() -> None:
 
     with ZipFile(archive) as bundle:
         names = set(bundle.namelist())
-        required_names = {"SFH.exe", "SFH.pck", "BUILD-METADATA.json"}
+        required_names = {"SFH.exe", "SFH.pck", "BUILD-METADATA.json", "WINDOWS-README.txt"}
         missing = required_names - names
         if missing:
             raise RuntimeError(f"archive verification failed, missing: {sorted(missing)}")

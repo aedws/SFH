@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "84a4d9d2f5aae4260b87bb8ab01f33f5991934adf5a19fd0f1178a761ba79a1e",
+  "source_sha256": "77554c076e95a3e7538373925bbeca24a8780e372ffedb3b05aea8262f1bc624",
   "layers": [
     {
       "id": "contract",
@@ -24,12 +24,12 @@
     }
   ],
   "summary": {
-    "modules": 56,
-    "scripts": 219,
-    "named_classes": 189,
-    "relationships": 169,
+    "modules": 57,
+    "scripts": 225,
+    "named_classes": 192,
+    "relationships": 176,
     "project_inheritance": 7,
-    "enabled_toggles": 65
+    "enabled_toggles": 66
   },
   "modules": [
     {
@@ -43,7 +43,7 @@
       "class_count": 0,
       "classes": [],
       "incoming_count": 1,
-      "outgoing_count": 51
+      "outgoing_count": 52
     },
     {
       "id": "core",
@@ -52,15 +52,16 @@
       "path": "game/core",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 4,
-      "class_count": 4,
+      "file_count": 5,
+      "class_count": 5,
       "classes": [
         "ArenaGrid",
+        "AtomicJsonStore",
         "CatalogCsvTable",
         "FeatureManifest",
         "RunCombatMetrics"
       ],
-      "incoming_count": 4,
+      "incoming_count": 7,
       "outgoing_count": 29
     },
     {
@@ -281,7 +282,7 @@
         "WeaponPartsBoard",
         "WeaponTagProfile"
       ],
-      "incoming_count": 5,
+      "incoming_count": 6,
       "outgoing_count": 0
     },
     {
@@ -456,7 +457,7 @@
         "InventoryItemDefinition",
         "InventorySlotButton"
       ],
-      "incoming_count": 4,
+      "incoming_count": 5,
       "outgoing_count": 0
     },
     {
@@ -493,6 +494,22 @@
       ],
       "incoming_count": 3,
       "outgoing_count": 2
+    },
+    {
+      "id": "local_save",
+      "label": "local save",
+      "layer": "feature",
+      "path": "game/features/local_save",
+      "wiki_route": "getting-started/run-project/",
+      "enabled": null,
+      "file_count": 3,
+      "class_count": 2,
+      "classes": [
+        "DesktopProgressService",
+        "LoadoutValueCodec"
+      ],
+      "incoming_count": 2,
+      "outgoing_count": 3
     },
     {
       "id": "loot",
@@ -578,7 +595,7 @@
         "MetaProgressionSystem"
       ],
       "incoming_count": 2,
-      "outgoing_count": 1
+      "outgoing_count": 2
     },
     {
       "id": "minimap",
@@ -743,7 +760,7 @@
         "PersistentProfile"
       ],
       "incoming_count": 5,
-      "outgoing_count": 0
+      "outgoing_count": 1
     },
     {
       "id": "player",
@@ -997,11 +1014,11 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 26,
+      "file_count": 28,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
-      "outgoing_count": 48
+      "outgoing_count": 49
     }
   ],
   "classes": [
@@ -1389,6 +1406,15 @@
       "module": "core",
       "path": "game/core/arena_grid.gd",
       "extends": "Node2D",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:AtomicJsonStore",
+      "name": "AtomicJsonStore",
+      "module": "core",
+      "path": "game/core/persistence/atomic_json_store.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -2018,6 +2044,24 @@
       "name": "LoadoutInvestmentTable",
       "module": "loadout_investment",
       "path": "game/features/loadout_investment/loadout_investment_table.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:DesktopProgressService",
+      "name": "DesktopProgressService",
+      "module": "local_save",
+      "path": "game/features/local_save/desktop_progress_service.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:LoadoutValueCodec",
+      "name": "LoadoutValueCodec",
+      "module": "local_save",
+      "path": "game/features/local_save/loadout_value_codec.gd",
       "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
@@ -2967,6 +3011,24 @@
       "evidence_count": 1
     },
     {
+      "from": "local_save",
+      "to": "core",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "local_save",
+      "to": "equipment",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "local_save",
+      "to": "inventory",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
       "from": "loot",
       "to": "credits",
       "type": "requires",
@@ -2988,6 +3050,12 @@
       "from": "loot_tables",
       "to": "loot_lifecycle",
       "type": "requires",
+      "evidence_count": 1
+    },
+    {
+      "from": "meta_progression",
+      "to": "core",
+      "type": "references",
       "evidence_count": 1
     },
     {
@@ -3028,6 +3096,12 @@
     },
     {
       "from": "p5_hub_progression",
+      "to": "core",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "persistent_profile",
       "to": "core",
       "type": "references",
       "evidence_count": 1
@@ -3197,6 +3271,12 @@
     {
       "from": "scene_assembly",
       "to": "loadout_investment",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "scene_assembly",
+      "to": "local_save",
       "type": "references",
       "evidence_count": 1
     },
@@ -3456,7 +3536,7 @@
       "from": "verification",
       "to": "core",
       "type": "verifies",
-      "evidence_count": 6
+      "evidence_count": 8
     },
     {
       "from": "verification",
@@ -3534,7 +3614,7 @@
       "from": "verification",
       "to": "inventory",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "verification",
@@ -3545,6 +3625,12 @@
     {
       "from": "verification",
       "to": "loadout_investment",
+      "type": "verifies",
+      "evidence_count": 1
+    },
+    {
+      "from": "verification",
+      "to": "local_save",
       "type": "verifies",
       "evidence_count": 1
     },
@@ -3576,7 +3662,7 @@
       "from": "verification",
       "to": "meta_progression",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
@@ -3630,7 +3716,7 @@
       "from": "verification",
       "to": "persistent_profile",
       "type": "verifies",
-      "evidence_count": 6
+      "evidence_count": 7
     },
     {
       "from": "verification",
@@ -3672,7 +3758,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 6
+      "evidence_count": 8
     },
     {
       "from": "verification",

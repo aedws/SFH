@@ -177,6 +177,16 @@ jobs:
           grep -q "LOOT_LIFECYCLE_OK items_15 families_2 session_convertible_3 policy_validation presenter" /tmp/sfh-smoke.log
           grep -q "SESSION_SOCKET_OK runasset_csv rune_2 core_1 artifact_1 duplicate_limit runtime_effects hud_unsocket run_clear optional_module" /tmp/sfh-smoke.log
 
+      - name: Verify native progress across separate processes
+        run: |
+          save_root=$(mktemp -d /tmp/sfh-desktop-progress.XXXXXX)
+          for phase in write read; do
+            timeout 90 godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/desktop_progress_contract_test.gd" -- --save-root="$save_root" --phase="$phase" > "/tmp/sfh-save-$phase.log" 2>&1
+            cat "/tmp/sfh-save-$phase.log"
+            grep -q "DESKTOP_PROGRESS_OK phase=$phase" "/tmp/sfh-save-$phase.log"
+            if grep -Eq 'SCRIPT ERROR|DESKTOP_PROGRESS_FAILED' "/tmp/sfh-save-$phase.log"; then exit 1; fi
+          done
+
       - name: Export browser game
         run: |
           mkdir -p "$GITHUB_WORKSPACE/game-web"
