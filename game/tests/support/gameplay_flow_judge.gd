@@ -163,14 +163,15 @@ func _judge_fog_transition(evidence: Dictionary, errors: PackedStringArray) -> v
 	var corridor: Dictionary = evidence.get(&"corridor", {})
 	var entering: Dictionary = evidence.get(&"entering", {})
 	var returned: Dictionary = evidence.get(&"returned", {})
+	var handoff: Dictionary = evidence.get(&"handoff", {})
 	if room.get(&"transition_phase") != &"room" or float(room.get(&"room_visibility_blend", 0.0)) < 0.999:
 		errors.append("방 안에서 방 전체 시야가 안정적으로 열리지 않았습니다.")
 	if (
-		grace.get(&"transition_phase") != &"doorway_grace"
+		grace.get(&"transition_phase") != &"doorway_hysteresis"
 		or float(grace.get(&"room_visibility_blend", 0.0)) < 0.999
-		or float(grace.get(&"doorway_grace_remaining", 0.0)) <= 0.0
+		or not bool(grace.get(&"doorway_hysteresis_active", false))
 	):
-		errors.append("문턱을 지날 때 방 시야를 잠시 유지하는 완충 단계가 없습니다.")
+		errors.append("문턱 공간 안에서 떠나는 방 시야가 안정적으로 유지되지 않습니다.")
 	if leaving.get(&"transition_phase") != &"leaving_room":
 		errors.append("방에서 통로로 나갈 때 부드러운 감쇠 단계가 없습니다.")
 	if corridor.get(&"transition_phase") != &"corridor" or float(corridor.get(&"room_visibility_blend", 1.0)) > 0.001:
@@ -179,13 +180,31 @@ func _judge_fog_transition(evidence: Dictionary, errors: PackedStringArray) -> v
 		errors.append("통로에서 방으로 들어갈 때 부드러운 개방 단계가 없습니다.")
 	if returned.get(&"transition_phase") != &"room":
 		errors.append("방 재진입 뒤 방 전체 시야가 복원되지 않았습니다.")
+	if not bool(evidence.get(&"threshold_stable", false)):
+		errors.append("문턱 왕복 중 방 시야가 깜빡이거나 조기에 접혔습니다.")
+	if not bool(evidence.get(&"facing_smoothed", false)):
+		errors.append("통로에서 180도 급선회할 때 시야 방향이 한 프레임에 튑니다.")
+	if (
+		handoff.is_empty()
+		or float(handoff.get(&"previous_room_visibility_blend", 0.0)) <= 0.0
+		or float(handoff.get(&"room_visibility_blend", 1.0)) >= 1.0
+	):
+		errors.append("빠른 방 간 이동에서 이전 방과 새 방 시야가 공간적으로 교대하지 않습니다.")
 	if (
 		float(corridor.get(&"corridor_comfort_shell_radius", 0.0))
 		<= float(corridor.get(&"corridor_near_radius", 0.0))
 		or float(corridor.get(&"corridor_comfort_shell_visibility", 0.0)) <= 0.0
-		or corridor.get(&"corridor_comfort_policy") != &"wide_front_near_shell_doorway_grace"
+		or corridor.get(&"corridor_comfort_policy") != &"wide_front_near_shell_spatial_doorway_hysteresis"
 	):
 		errors.append("통로 이동을 위한 근거리 완충 시야가 활성화되지 않았습니다.")
+	if (
+		not bool(corridor.get(&"occlusion_enabled", false))
+		or int(corridor.get(&"occlusion_ray_count", 0)) < 32
+		or int(corridor.get(&"occlusion_blocked_ray_count", 0)) <= 0
+	):
+		errors.append("통로 벽·코너 차폐 샘플이 활성화되지 않았습니다.")
+	if int(returned.get(&"explored_room_count", 0)) < 1:
+		errors.append("방문한 방의 탐색 기억이 유지되지 않았습니다.")
 	for snapshot in [room, grace, leaving, corridor, entering, returned]:
 		if not bool(snapshot.get(&"non_active_rooms_occluded", false)):
 			errors.append("현재 방 밖의 다른 방을 가리는 정책이 유지되지 않습니다.")

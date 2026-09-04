@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-04</span><span>SEARCH COMMAND</span><span>7 DAYS · 89 TOPICS</span><span>93 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-04</span><span>SEARCH COMMAND</span><span>7 DAYS · 90 TOPICS</span><span>93 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 31 · IMPROVE 42 · CHANGE 57 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 33 · IMPROVE 46 · CHANGE 61 · FIX 34</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>31</b><small>BUILD</small></span><span><b>42</b><small>IMPROVE</small></span><span><b>57</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>33</b><small>BUILD</small></span><span><b>46</b><small>IMPROVE</small></span><span><b>61</b><small>CHANGE</small></span><span><b>34</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -249,7 +249,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="features/equipment-fixed-identity/">장비 고정 정체성 →</a> · <a href="architecture/module-audit/#equipment-fixed-identity-2026-09-04">모듈 감사 →</a> · <a href="quality/player-perception-audit/#equipment-fixed-identity-perception-2026-09-04">인식 검사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 13</small><b>기획 기준 전환 · Master GDD 백업본 고정</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 앞으로 기획 변경과 진행도를 확인할 공개 Notion 기준이 사용자가 지정한 2026-09-02 04:14 Master GDD 백업본으로 통일됐습니다.</strong></div>
@@ -259,6 +259,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>복제 페이지에서 바뀐 블록 ID 때문에 근거 앵커 검증이 끊기는 문제를 제목·종류 일대일 대응으로 이관했습니다.</p></div>
         <p>새 기준은 root v153·77블록·해시 f06bd08f2159이며 Phase 체크는 0/6입니다. 기존 77개 기획 블록의 내용은 동일하고 과금·게임 데이터는 변경하지 않았습니다.</p>
         <p><a href="design/master-gdd-alignment/">새 Master GDD 대조 기준 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 14</small><b>전장의 안개 체감 개선 · 문턱·벽·탐색 기억</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 문 앞 왕복에서 화면이 깜빡이지 않고, 통로 시야가 벽과 기둥을 통과하지 않으며, 빠르게 다음 방에 들어가도 이전 방이 한 프레임에 사라지지 않습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>48광선 벽·코너 차폐와 오브젝트를 노출하지 않는 방문 방 기억색을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>14px 공간 히스테리시스, 프레임률 독립 방향 보간, 빠른 방 간 마스크 교대, 정적 안개 질감을 적용했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>맵 가시성 계약, 단일 Shader, 플레이어 인식 E2E와 성능·모듈 문서를 새 판정 기준으로 확장했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>시간만으로 남던 방 시야, 문턱 떨림, 180도 시야 튐, 벽 너머 통로 노출을 차단했습니다.</p></div>
+        <p>대형 작전 성능은 평균 7.527ms·피크 19.855ms·Node 2,022개로 예산을 통과했습니다. Sheet/CSV·경제·과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/fog-of-war/">새 안개 동작 →</a> · <a href="quality/player-perception-audit/#fog-perception-2026-09-04">인식 검사 →</a> · <a href="architecture/module-audit/#fog-perception-2026-09-04">모듈 감사 →</a></p>
       </div>
     </details>
   </div>

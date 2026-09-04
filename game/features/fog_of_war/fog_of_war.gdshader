@@ -1,6 +1,8 @@
 shader_type canvas_item;
 
 const int MAX_ROOM_RECTS = 64;
+const int MAX_OCCLUSION_RAYS = 48;
+const float TAU_VALUE = 6.28318530718;
 uniform vec2 viewport_size = vec2(1280.0, 720.0);
 uniform vec2 focus_position = vec2(640.0, 360.0);
 uniform vec2 facing_direction = vec2(1.0, 0.0);
@@ -14,9 +16,18 @@ uniform float corridor_comfort_shell_visibility = 0.24;
 uniform float room_edge_softness = 18.0;
 uniform float room_visibility_blend = 0.0;
 uniform vec4 active_room_rect = vec4(0.0);
+uniform float previous_room_visibility_blend = 0.0;
+uniform vec4 previous_room_rect = vec4(0.0);
 uniform int room_count = 0;
 uniform vec4 room_rects[MAX_ROOM_RECTS];
+uniform float room_memory[MAX_ROOM_RECTS];
+uniform bool occlusion_enabled = true;
+uniform float occlusion_distances[MAX_OCCLUSION_RAYS];
+uniform float occlusion_edge_softness = 18.0;
+uniform float explored_room_tint_strength = 0.12;
+uniform float fog_noise_strength = 0.008;
 uniform vec4 fog_color : source_color = vec4(0.008, 0.014, 0.025, 0.97);
+uniform vec4 explored_fog_color : source_color = vec4(0.006, 0.09, 0.11, 0.97);
 
 
 float inside_rect(vec2 point, vec4 rect) {
@@ -38,6 +49,12 @@ float room_block_mask(vec2 point) {
 	if (inside_rect(point, active_room_rect) > 0.5) {
 		return 0.0;
 	}
+	if (
+		previous_room_visibility_blend > 0.001
+		&& inside_rect(point, previous_room_rect) > 0.5
+	) {
+		return 0.0;
+	}
 	float blocked = 0.0;
 	for (int index = 0; index < MAX_ROOM_RECTS; index++) {
 		if (index >= room_count) {
@@ -46,6 +63,38 @@ float room_block_mask(vec2 point) {
 		blocked = max(blocked, inside_rect(point, room_rects[index]));
 	}
 	return blocked;
+}
+
+
+float explored_room_mask(vec2 point) {
+	float explored = 0.0;
+	for (int index = 0; index < MAX_ROOM_RECTS; index++) {
+		if (index >= room_count) {
+			break;
+		}
+		explored = max(explored, inside_rect(point, room_rects[index]) * room_memory[index]);
+	}
+	return explored;
+}
+
+
+float ray_occlusion(vec2 delta) {
+	if (!occlusion_enabled) {
+		return 1.0;
+	}
+	float radial_distance = length(delta);
+	float normalized_angle = fract((atan(delta.y, delta.x) + TAU_VALUE) / TAU_VALUE);
+	float ray_position = normalized_angle * float(MAX_OCCLUSION_RAYS);
+	int ray_a = int(floor(ray_position)) % MAX_OCCLUSION_RAYS;
+	int ray_b = (ray_a + 1) % MAX_OCCLUSION_RAYS;
+	float visible_distance = mix(
+		occlusion_distances[ray_a], occlusion_distances[ray_b], fract(ray_position)
+	);
+	return 1.0 - smoothstep(
+		max(0.0, visible_distance - occlusion_edge_softness),
+		visible_distance + occlusion_edge_softness,
+		radial_distance
+	);
 }
 
 
@@ -75,7 +124,7 @@ float corridor_visibility(vec2 pixel_position) {
 		1.0 - smoothstep(corridor_near_radius, corridor_comfort_shell_radius, radial_distance)
 	) * corridor_comfort_shell_visibility;
 	float visibility = max(max(near_visibility, comfort_shell), cone * in_front * distance_visibility);
-	return visibility * (1.0 - room_block_mask(pixel_position));
+	return visibility * ray_occlusion(delta) * (1.0 - room_block_mask(pixel_position));
 }
 
 
@@ -85,10 +134,23 @@ void fragment() {
 	float room = soft_rect_visibility(
 		pixel_position, active_room_rect, room_edge_softness
 	);
+	float previous_room = soft_rect_visibility(
+		pixel_position, previous_room_rect, room_edge_softness
+	) * smoothstep(0.0, 1.0, previous_room_visibility_blend);
 	float eased_blend = smoothstep(0.0, 1.0, room_visibility_blend);
-	float visibility = mix(corridor, room, eased_blend);
-	COLOR = vec4(
+	float visibility = max(mix(corridor, room, eased_blend), previous_room);
+	float memory = explored_room_mask(pixel_position) * (1.0 - visibility);
+	vec3 base_fog = mix(
 		fog_color.rgb,
+		explored_fog_color.rgb,
+		memory * explored_room_tint_strength
+	);
+	float static_noise = fract(
+		sin(dot(floor(pixel_position * 0.5), vec2(12.9898, 78.233))) * 43758.5453
+	);
+	base_fog += (static_noise - 0.5) * fog_noise_strength * (1.0 - visibility);
+	COLOR = vec4(
+		base_fog,
 		fog_color.a * (1.0 - clamp(visibility, 0.0, 1.0))
 	);
 }
