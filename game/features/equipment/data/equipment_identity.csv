@@ -1,0 +1,8 @@
+equipment_kind,definition_id,display_name,innate_skill_id,innate_skill_name,innate_trigger_hits,innate_fixed_damage,fixed_option_id,fixed_option_name,fixed_option_modifier,fixed_option_operation,fixed_option_value,scaling_policy,source_status
+weapon,assault_rifle,돌격소총,capacitor_echo,축전 반향,3,1.5,stabilized_barrel,안정화 강선,damage_multiply,multiply,1.06,fixed_identity,provisional
+weapon,service_pistol,서비스 권총,breaker_echo,브레이커 에코,2,2.2,long_sight_line,긴 조준선,target_range_multiply,multiply,1.08,fixed_identity,provisional
+weapon,combat_dagger,전투 단검,bleeding_edge,잔상 절단,2,1.0,balanced_tang,균형형 탱,damage_multiply,multiply,1.04,fixed_identity,provisional
+weapon,greatsword,대검,seismic_echo,지진파,1,2.8,weighted_spine,중량 척추,damage_multiply,multiply,1.10,fixed_identity,provisional
+weapon,pulse_rifle,펄스 소총,pulse_overflow,펄스 오버플로,4,3.0,pulse_cycle,펄스 순환기,fire_interval_multiply,multiply,0.92,fixed_identity,provisional
+armor,tactical_vest,전술 조끼,,,,,trauma_liner,충격 흡수 내피,max_health,add,10,fixed_identity,provisional
+armor,runner_boots,러너 부츠,,,,,responsive_sole,반응형 전술 밑창,movement_speed,add,12,fixed_identity,provisional

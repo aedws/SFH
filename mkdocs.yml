@@ -100,6 +100,7 @@ nav:
           - 장비와 인벤토리: features/equipment.md
           - P5-01 캐릭터 선택: features/character-selection.md
           - 캐릭터 장비와 로드아웃: features/character-equipment.md
+          - 무기 고유 스킬과 장비 고정 옵션: features/equipment-fixed-identity.md
           - 격자 가방 인벤토리: features/grid-inventory.md
           - 장비 파츠·모듈 개조: features/equipment-customization.md
           - 모듈·고유 파츠 강화 경제: features/equipment-upgrade-economy.md

@@ -143,7 +143,7 @@ for anchor in ["balance", "new-item"]:
     target(link, "access/planner.md")
 search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
 assert any(d.get("location", "").startswith(route(tutorial_source)) for d in search["docs"]), "Tutorial not searchable"
-for phrase in ["직접 실시간 로더 없음", "CSV 확정", "시트 값을 바꾸지 않았습니다", "P7-01B"]:
+for phrase in ["직접 실시간 로더 없음", "CSV 확정", "고유 스킬/고정 옵션 열", "P7-01B"]:
     assert phrase in tutorial_text, f"Tutorial boundary missing: {phrase}"
 developer_text = (SITE / "access/developer/index.html").read_text(encoding="utf-8")
 module_map_position = developer_text.find("data-sfh-code-module-map-host")

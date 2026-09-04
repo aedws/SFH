@@ -10,7 +10,7 @@ tags: [기획자, 아이템 추가, 밸런싱, Google Sheets, CSV, 튜토리얼]
 
 [기획자 작업실로 돌아가기](../access/planner.md) · [공용 밸런스 시트 열기](https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/edit) · [Notion에 결정 남기기](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)
 
-2026-09-03에 실제 시트의 탭과 1·2행을 읽어 코드와 대조했습니다. 아래 수치는 **설명용 예시이며 이번 작업에서 시트 값을 바꾸지 않았습니다.**
+2026-09-04에 실제 시트의 탭과 1·2행을 읽어 코드와 대조했습니다. Weapon의 고유 스킬/고정 옵션 열과 Armor의 고정 옵션 열은 이번 작업에서 추가했으며, 아래 전투 수치 예시는 설명용입니다.
 
 ## 1. 먼저 할 일 고르기 {#choose}
 
@@ -45,6 +45,16 @@ tags: [기획자, 아이템 추가, 밸런싱, Google Sheets, CSV, 튜토리얼]
 | SeasonReward | 칭호·오라 | 로컬 시즌의 외형 보상만. 다음 시즌부터 적용 |
 
 Weapon의 기존 `run_investment_price` 열은 남아 있지만 **현재 로비에 장착한 무기를 출격 때 다시 구매·청구하지 않습니다.** 상점 가격과 혼동하지 마세요.
+
+### 고유 스킬과 고정 옵션
+
+- Weapon의 `innate_skill_*`는 같은 `weapon_id`가 항상 공유하는 고유 스킬입니다.
+- Weapon/Armor의 `fixed_option_*`는 장비 정의에 붙는 기본 옵션입니다.
+- 제작·드랍으로 뽑힌 옵션은 아이템 인스턴스에 별도 귀속되지만 같은 무기의 고유 스킬은 바뀌지 않습니다.
+- 고유 스킬 피해와 고정 옵션 값은 내부 런 레벨, 외부 장비 레벨, 품질, 모듈 강화 배율을 받지 않습니다.
+- 현재 행의 `source_status`는 `provisional`이므로 이름·주기·피해·옵션 값은 기획 확정 전 임시값입니다.
+
+세부 계산과 7개 장비 현행값은 [무기 고유 스킬과 장비 고정 옵션](../features/equipment-fixed-identity.md)을 확인하세요.
 
 !!! warning "현재 Item 탭 정리 요청"
 
@@ -155,13 +165,14 @@ Weapon의 기존 `run_investment_price` 열은 남아 있지만 **현재 로비�
     ~~~powershell
     python scripts/sync_weapon_balance.py --url "https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/gviz/tq?tqx=out:csv&headers=1&sheet=Weapon"
     python scripts/sync_weapon_balance.py --check
+    python scripts/sync_equipment_identity.py --check
     python scripts/sync_item_lifecycle.py --check
     python scripts/sync_loot_table.py --check
     python scripts/sync_growth_balance.py --check
     python scripts/sync_season_rewards.py --check
     ~~~
 
-    Item·LootTable·SeasonReward의 실제 동기화는 각 스크립트를 `--check` 없이 실행합니다. 성장 동기화는 `python scripts/sync_growth_balance.py --spreadsheet-id "1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM"`입니다. Weapon은 위처럼 명시적 URL이 필요합니다. Armor 정의, 가방 크기, 새 파츠/모듈 효과와 카탈로그 연결은 이 CSV 명령이 자동 생성하지 않습니다.
+    Item·LootTable·SeasonReward의 실제 동기화는 각 스크립트를 `--check` 없이 실행합니다. 성장 동기화는 `python scripts/sync_growth_balance.py --spreadsheet-id "1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM"`입니다. Weapon은 위처럼 명시적 URL이 필요합니다. 고유 스킬/고정 옵션은 `sync_equipment_identity.py`에 Weapon·Armor 공개 CSV URL을 함께 전달해 잠금 CSV를 만듭니다. 가방 크기, 새 파츠/모듈 효과와 카탈로그 연결은 이 CSV 명령이 자동 생성하지 않습니다.
 
 되돌릴 때는 **테스트 중인 Sheet 값은 기존 값으로 복구**, 이미 배포했다면 **개발자에게 이전 검증 CSV/코드로 되돌리는 PR을 요청**합니다. 공유 시트 전체 버전을 임의로 복원하면 다른 기획자의 변경도 지워질 수 있으므로 대상 셀 단위 복원을 우선합니다. 오래된 아이템 ID 삭제는 저장 호환성 검토 없이 진행하지 않습니다.
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "d824c85501182803e8cbca7ba49b1ccef1cb98c3b9ecb8fd484e1ed49af81298",
+  "source_sha256": "7b6dea3b570f641dd03bea5dadca17253438e60cae3fae5c3d896198623f1698",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 273,
-    "named_classes": 226,
+    "scripts": 279,
+    "named_classes": 231,
     "relationships": 185,
     "project_inheritance": 7,
     "enabled_toggles": 70
@@ -328,11 +328,14 @@
       "path": "game/features/equipment",
       "wiki_route": "features/equipment/",
       "enabled": true,
-      "file_count": 15,
-      "class_count": 15,
+      "file_count": 19,
+      "class_count": 19,
       "classes": [
         "CharacterEquipmentSystem",
         "EquipmentArmorDefinition",
+        "EquipmentFixedOption",
+        "EquipmentFixedOptionFactory",
+        "EquipmentIdentityTable",
         "EquipmentItemState",
         "EquipmentLoadout",
         "EquipmentModuleDefinition",
@@ -344,6 +347,7 @@
         "EquipmentStatModifier",
         "EquipmentWeaponDefinition",
         "EquipmentWorkbench",
+        "WeaponInnateSkillDefinition",
         "WeaponPartsBoard",
         "WeaponTagProfile"
       ],
@@ -1230,10 +1234,11 @@
       "path": "game/features/weapons",
       "wiki_route": "features/weapons/",
       "enabled": true,
-      "file_count": 2,
-      "class_count": 2,
+      "file_count": 3,
+      "class_count": 3,
       "classes": [
         "AutoWeapon",
+        "WeaponInnateSkillSystem",
         "WeaponProjectile"
       ],
       "incoming_count": 5,
@@ -1248,7 +1253,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 37,
+      "file_count": 38,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1797,6 +1802,33 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:EquipmentFixedOption",
+      "name": "EquipmentFixedOption",
+      "module": "equipment",
+      "path": "game/features/equipment/equipment_fixed_option.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:EquipmentFixedOptionFactory",
+      "name": "EquipmentFixedOptionFactory",
+      "module": "equipment",
+      "path": "game/features/equipment/equipment_fixed_option_factory.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:EquipmentIdentityTable",
+      "name": "EquipmentIdentityTable",
+      "module": "equipment",
+      "path": "game/features/equipment/equipment_identity_table.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:EquipmentItemState",
       "name": "EquipmentItemState",
       "module": "equipment",
@@ -1892,6 +1924,15 @@
       "module": "equipment",
       "path": "game/features/equipment/equipment_workbench.gd",
       "extends": "PanelContainer",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:WeaponInnateSkillDefinition",
+      "name": "WeaponInnateSkillDefinition",
+      "module": "equipment",
+      "path": "game/features/equipment/weapon_innate_skill_definition.gd",
+      "extends": "Resource",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -3282,6 +3323,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:WeaponInnateSkillSystem",
+      "name": "WeaponInnateSkillSystem",
+      "module": "weapons",
+      "path": "game/features/weapons/weapon_innate_skill_system.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:WeaponProjectile",
       "name": "WeaponProjectile",
       "module": "weapons",
@@ -4154,7 +4204,7 @@
       "from": "verification",
       "to": "equipment",
       "type": "verifies",
-      "evidence_count": 7
+      "evidence_count": 8
     },
     {
       "from": "verification",
@@ -4388,7 +4438,7 @@
       "from": "verification",
       "to": "weapons",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "weapon_balance",

@@ -2208,13 +2208,13 @@ func _verify_equipment_modules() -> bool:
 		failure_message = "호환 스킬 두 개가 활성화되지 않았습니다: %s" % active_ids
 	elif inactive_ids.size() != 1 or &"dagger_dash" not in inactive_ids:
 		failure_message = "비호환 단검 스킬이 비활성 목록에 없습니다: %s" % inactive_ids
-	elif not is_equal_approx(float(modifiers[&"max_health"][&"add"]), 25.0):
+	elif not is_equal_approx(float(modifiers[&"max_health"][&"add"]), 35.0):
 		failure_message = "방어구 최대 체력 수정자가 집계되지 않았습니다."
-	elif not is_equal_approx(float(player.get("max_health")), 125.0):
+	elif not is_equal_approx(float(player.get("max_health")), 135.0):
 		failure_message = "장비 최대 체력이 플레이어에 적용되지 않았습니다."
 	elif not is_equal_approx(float(player.get("defense")), 3.0):
 		failure_message = "장비 방어력이 플레이어에 적용되지 않았습니다."
-	elif not is_equal_approx(float(player.get_node("Movement").get("speed")), 300.0):
+	elif not is_equal_approx(float(player.get_node("Movement").get("speed")), 312.0):
 		failure_message = "장비 이동 속도가 플레이어에 적용되지 않았습니다."
 	elif equipment.call(&"get_active_weapon_slot") != &"main":
 		failure_message = "초기 활성 무기가 메인 슬롯이 아닙니다."
@@ -2230,7 +2230,7 @@ func _verify_equipment_modules() -> bool:
 		failure_message = "메인 무기로 복귀하지 못했습니다."
 	else:
 		player.call(&"take_damage", 10.0)
-		if not is_equal_approx(float(player.get("current_health")), 118.0):
+		if not is_equal_approx(float(player.get("current_health")), 128.0):
 			failure_message = "방어력 3이 피해 10에서 차감되지 않았습니다."
 
 	if failure_message.is_empty():

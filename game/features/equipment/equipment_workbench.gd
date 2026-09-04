@@ -908,6 +908,12 @@ func _equipment_stats_text(state: EquipmentItemState) -> String:
 		var weapon := state.definition as EquipmentWeaponDefinition
 		lines.append("전용 파츠 소켓  %s" % (", ".join(weapon.part_socket_ids) if not weapon.part_socket_ids.is_empty() else "없음"))
 		lines.append("무기 태그       %s" % weapon.tags.display_text())
+		if weapon.innate_skill != null:
+			lines.append("고유 스킬       %s · %d회 명중마다 고정 %.1f 피해" % [
+				weapon.innate_skill.display_name,
+				weapon.innate_skill.trigger_every_hits,
+				weapon.innate_skill.fixed_damage,
+			])
 		if not weapon.description.is_empty():
 			lines.append("\n%s" % weapon.description)
 	else:
@@ -915,6 +921,17 @@ func _equipment_stats_text(state: EquipmentItemState) -> String:
 		lines.append("스탯 효과       %d개" % armor.stat_modifiers.size())
 		if not armor.description.is_empty():
 			lines.append("\n%s" % armor.description)
+	var fixed_option_lines := PackedStringArray()
+	for option in state.get_fixed_options():
+		fixed_option_lines.append("%s %s%s" % [
+			option.display_name,
+			"+" if option.operation == EquipmentFixedOption.Operation.ADD else "×",
+			"%.2f" % option.amount,
+		])
+	lines.append("\n고정 옵션  %s" % (
+		", ".join(fixed_option_lines) if not fixed_option_lines.is_empty() else "없음"
+	))
+	lines.append("고정 기믹은 내부·외부 레벨 및 모듈 배율의 영향을 받지 않습니다.")
 	var tags: PackedStringArray = snapshot[&"granted_module_tags"]
 	lines.append("\n개조 태그  %s" % (", ".join(tags) if not tags.is_empty() else "없음"))
 	return "\n".join(lines)

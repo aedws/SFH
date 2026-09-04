@@ -2,6 +2,7 @@ class_name CharacterEquipmentSystem
 extends Node
 
 const ITEM_QUALITY := preload("res://game/core/item_quality_descriptor.gd")
+const FIXED_OPTION_FACTORY := preload("res://game/features/equipment/equipment_fixed_option_factory.gd")
 
 signal equipment_changed(summary: Dictionary)
 signal skill_activation_changed(active_skill_ids: PackedStringArray, inactive_skill_ids: PackedStringArray)
@@ -9,6 +10,7 @@ signal stat_modifiers_changed(modifiers: Dictionary)
 signal customization_changed(snapshot: Dictionary)
 signal active_weapon_changed(slot_id: StringName, weapon_definition: EquipmentWeaponDefinition)
 signal weapon_upgrade_modifiers_changed(modifiers: Dictionary)
+signal weapon_fixed_identity_changed(snapshot: Dictionary)
 
 const TARGET_METHOD := &"apply_equipment_modifiers"
 
@@ -59,6 +61,7 @@ func configure(
 	equipment_changed.emit(get_summary())
 	customization_changed.emit(get_customization_snapshot())
 	active_weapon_changed.emit(active_weapon_slot, get_active_weapon())
+	weapon_fixed_identity_changed.emit(get_active_weapon_identity_snapshot())
 	return true
 
 
@@ -110,6 +113,7 @@ func set_active_weapon_slot(slot_id: StringName) -> bool:
 	active_weapon_slot = slot_id
 	active_weapon_changed.emit(active_weapon_slot, get_active_weapon())
 	weapon_upgrade_modifiers_changed.emit(get_active_weapon_upgrade_modifiers())
+	weapon_fixed_identity_changed.emit(get_active_weapon_identity_snapshot())
 	equipment_changed.emit(get_summary())
 	return true
 
@@ -206,6 +210,34 @@ func get_active_weapon_upgrade_modifiers() -> Dictionary:
 	return result
 
 
+func get_active_weapon_fixed_modifiers() -> Dictionary:
+	var state := get_equipment_state(active_weapon_slot)
+	if state == null or not state.is_weapon():
+		return {}
+	var result: Dictionary = {}
+	for option in state.get_fixed_options():
+		if option.target_kind != EquipmentFixedOption.TargetKind.WEAPON:
+			continue
+		var neutral := 0.0 if option.operation == EquipmentFixedOption.Operation.ADD else 1.0
+		var current := float(result.get(option.modifier_id, neutral))
+		result[option.modifier_id] = (
+			current + option.amount
+			if option.operation == EquipmentFixedOption.Operation.ADD
+			else current * option.amount
+		)
+	return result
+
+
+func get_active_weapon_identity_snapshot() -> Dictionary:
+	var state := get_equipment_state(active_weapon_slot)
+	if state == null or not state.is_weapon():
+		return {}
+	var result := state.get_fixed_identity_snapshot()
+	result[&"slot_id"] = active_weapon_slot
+	result[&"fixed_modifiers"] = get_active_weapon_fixed_modifiers()
+	return result
+
+
 func can_equip_definition(slot_id: StringName, definition: Resource) -> bool:
 	if loadout == null:
 		return false
@@ -225,7 +257,12 @@ func equip_definition(
 	if not can_equip_definition(slot_id, definition):
 		return false
 	var state := EquipmentItemState.new()
-	state.configure(slot_id, definition, quality_payload)
+	state.configure(
+		slot_id,
+		definition,
+		quality_payload,
+		FIXED_OPTION_FACTORY.from_payload(definition, quality_payload)
+	)
 	return equip_state(slot_id, state)
 
 
@@ -240,6 +277,7 @@ func equip_state(slot_id: StringName, saved_state: EquipmentItemState) -> bool:
 	_refresh_after_customization()
 	if slot_id == active_weapon_slot and state.definition is EquipmentWeaponDefinition:
 		active_weapon_changed.emit(active_weapon_slot, state.definition)
+		weapon_fixed_identity_changed.emit(get_active_weapon_identity_snapshot())
 	return true
 
 
@@ -401,6 +439,7 @@ func restore_runtime_state(saved: Dictionary) -> bool:
 		active_weapon_slot = &"main" if get_weapon(&"main") != null else &"secondary"
 	_refresh_after_customization()
 	active_weapon_changed.emit(active_weapon_slot, get_active_weapon())
+	weapon_fixed_identity_changed.emit(get_active_weapon_identity_snapshot())
 	return true
 
 
@@ -509,6 +548,7 @@ func _refresh_after_customization() -> void:
 	equipment_changed.emit(get_summary())
 	customization_changed.emit(get_customization_snapshot())
 	weapon_upgrade_modifiers_changed.emit(get_active_weapon_upgrade_modifiers())
+	weapon_fixed_identity_changed.emit(get_active_weapon_identity_snapshot())
 
 
 func _resolve_skills() -> void:
@@ -550,6 +590,9 @@ func _resolve_stat_modifiers() -> void:
 
 	for slot_id in equipment_states:
 		var state := equipment_states[slot_id] as EquipmentItemState
+		for option in state.get_fixed_options():
+			if option.target_kind == EquipmentFixedOption.TargetKind.PLAYER:
+				_accumulate_fixed_player_option(option)
 		if state.is_armor():
 			_accumulate_modifiers(
 				(state.definition as EquipmentArmorDefinition).stat_modifiers,
@@ -574,6 +617,17 @@ func _resolve_stat_modifiers() -> void:
 					module_instance.upgrade_level
 				), module_instance.item_quality_payload)
 	stat_modifiers_changed.emit(get_stat_modifiers())
+
+
+func _accumulate_fixed_player_option(option: EquipmentFixedOption) -> void:
+	var entry: Dictionary = aggregated_stat_modifiers.get(
+		option.modifier_id, {&"add": 0.0, &"multiply": 1.0}
+	)
+	if option.operation == EquipmentFixedOption.Operation.ADD:
+		entry[&"add"] = float(entry[&"add"]) + option.amount
+	else:
+		entry[&"multiply"] = float(entry[&"multiply"]) * option.amount
+	aggregated_stat_modifiers[option.modifier_id] = entry
 
 
 func _accumulate_modifiers(

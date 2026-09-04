@@ -11,13 +11,15 @@ const QUALITY := preload("res://game/core/item_quality_descriptor.gd")
 @export var installed_modules: Array[EquipmentModuleInstance] = []
 @export var granted_module_tags: Array[StringName] = []
 @export var item_quality_payload: Dictionary = {}
+@export var assigned_fixed_options: Array[EquipmentFixedOption] = []
 var upgrade_balance_provider: Node
 
 
 func configure(
 	new_state_id: StringName,
 	new_definition: Resource,
-	quality_payload: Dictionary = {}
+	quality_payload: Dictionary = {},
+	new_fixed_options: Array[EquipmentFixedOption] = []
 ) -> void:
 	state_id = new_state_id
 	definition = new_definition
@@ -27,6 +29,37 @@ func configure(
 	installed_modules.clear()
 	granted_module_tags.clear()
 	item_quality_payload = quality_payload.duplicate(true)
+	assigned_fixed_options = new_fixed_options.duplicate(true)
+
+
+func get_fixed_options() -> Array[EquipmentFixedOption]:
+	var result: Array[EquipmentFixedOption] = []
+	var option_ids: Dictionary = {}
+	var definition_options: Array = definition.get("fixed_options") if definition != null else []
+	for option in definition_options + assigned_fixed_options:
+		if option == null or option_ids.has(option.option_id):
+			continue
+		result.append(option)
+		option_ids[option.option_id] = true
+	return result
+
+
+func get_fixed_identity_snapshot() -> Dictionary:
+	var option_snapshots: Array[Dictionary] = []
+	for option in get_fixed_options():
+		option_snapshots.append(option.snapshot())
+	var result := {
+		&"definition_id": definition_id(),
+		&"fixed_options": option_snapshots,
+		&"scaling_policy": &"fixed_identity",
+	}
+	if is_weapon():
+		var weapon := definition as EquipmentWeaponDefinition
+		result[&"weapon_id"] = weapon.weapon_id
+		result[&"innate_skill"] = (
+			weapon.innate_skill.snapshot() if weapon.innate_skill != null else {}
+		)
+	return result
 
 
 func quality_multiplier() -> float:
@@ -336,6 +369,14 @@ func validation_errors() -> PackedStringArray:
 		if module_tag == &"" or String(module_tag) in granted_tags:
 			errors.append("개조 모듈 태그가 비어 있거나 중복됩니다.")
 		granted_tags.append(String(module_tag))
+	for option in assigned_fixed_options:
+		if option == null or not option.is_valid():
+			errors.append("유효하지 않은 장비 고정 옵션이 있습니다.")
+			continue
+		if is_weapon() and option.target_kind != EquipmentFixedOption.TargetKind.WEAPON:
+			errors.append("무기에는 무기 대상 고정 옵션만 부여할 수 있습니다.")
+		if is_armor() and option.target_kind != EquipmentFixedOption.TargetKind.PLAYER:
+			errors.append("방어구에는 플레이어 대상 고정 옵션만 부여할 수 있습니다.")
 	return errors
 
 
@@ -380,4 +421,5 @@ func snapshot() -> Dictionary:
 		&"quality_label": QUALITY.label(item_quality_payload),
 		&"quality_multiplier": quality_multiplier(),
 		&"quality_socket_count": QUALITY.socket_count(item_quality_payload),
+		&"fixed_identity": get_fixed_identity_snapshot(),
 	}
