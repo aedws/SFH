@@ -110,15 +110,15 @@ if (
 	$plannerContent -notmatch 'data-sfh-proposal-composer' -or
 	$plannerContent -notmatch 'name="status"' -or
 	$plannerContent -notmatch 'name="unknowns"' -or
-	$plannerContent -notmatch '부분 확정' -or
-	$plannerContent -notmatch 'Notion 저장만으로 자동 배포되지는 않습니다' -or
+	$plannerContent -notmatch '\uBD80\uBD84 \uD655\uC815' -or
+	$plannerContent -notmatch 'Notion \uC800\uC7A5\uB9CC\uC73C\uB85C \uC790\uB3D9 \uBC30\uD3EC\uB418\uC9C0\uB294 \uC54A\uC2B5\uB2C8\uB2E4' -or
 	$proposalScript -notmatch 'navigator\.clipboard' -or
 	$proposalScript -notmatch 'data-sfh-proposal-output' -or
 	$proposalScript -notmatch "\[name='status'\]" -or
 	$proposalScript -notmatch "\[name='supersedes'\]" -or
-	$proposalScript -notmatch '반영 준비' -or
-	$proposalScript -notmatch '정식 구현 검토 가능' -or
-	$proposalScript -notmatch '작업 금지'
+	$proposalScript -notmatch '\uBC18\uC601 \uC900\uBE44' -or
+	$proposalScript -notmatch '\uC815\uC2DD \uAD6C\uD604 \uAC80\uD1A0 \uAC00\uB2A5' -or
+	$proposalScript -notmatch '\uC791\uC5C5 \uAE08\uC9C0'
 ) {
 	throw "Safe local proposal composer contract is missing."
 }

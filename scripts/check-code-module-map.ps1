@@ -64,8 +64,8 @@ if (
     $errors.Add("The relationship flow or its 12/8/6 responsive contract is missing.")
 }
 if (
-    $javascript -notmatch '사용처 → 선택 기능' -or
-    $javascript -notmatch '선택 기능 → 의존처' -or
+    $javascript -notmatch '\uC0AC\uC6A9\uCC98 \u2192 \uC120\uD0DD \uAE30\uB2A5' -or
+    $javascript -notmatch '\uC120\uD0DD \uAE30\uB2A5 \u2192 \uC758\uC874\uCC98' -or
     $javascript -notmatch 'sfh-code-map__trace' -or
     $javascript -notmatch 'sfh-code-map__domain'
 ) {
