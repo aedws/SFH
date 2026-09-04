@@ -98,6 +98,21 @@ tags:
 
 성공 마커는 `P5_HUB_PROGRESSION_OK`, `P7_SHOP_BROWSER_OK`, `P7_SHOP_QUALITY_OK`, `P7_SHOP_DELIVERY_MODULE_OK`입니다. 이 검사는 자동 입력·상태·레이아웃 판정이며 브라우저/Windows 육안 검수나 임시 가격·옵션·리롤 정책의 기획 확정을 대신하지 않습니다. 서버 위변조·백업 E2E는 사전 설계에만 등록된 **미실행 계획**입니다.
 
+## P7-03 · 반출 도면 영구 등록 {#p7-blueprint-e2e}
+
+`game/tests/workshop_blueprint_registry_contract_test.gd`는 실제 영구 프로필 파일을 두 번의 독립 서비스 세션에서 열어 다음 인과를 검사합니다.
+
+| 플레이어 인식/실패 상황 | 판정 근거 |
+|---|---|
+| 첫 제작소 상태 | Recipe 3종과 `도면 반출 필요` 0/3 표시 |
+| 성공 반출 | 수량 1 이상의 연결 도면만 영구 등록되고 `재제작 가능`으로 전환 |
+| 잘못된 보상 | Recipe에 없는 ID와 수량 0은 등록하지 않음 |
+| 중복 반출 | 이미 등록한 도면은 다시 늘리지 않는 멱등 처리 |
+| 게임 재실행 | 프로필 재로드→P5 재조립 뒤 1/3과 제작 후보 상태 유지 |
+| 제작 연결 | 등록 후보를 같은 façade로 제작하며 중복 거래·실패 롤백 검사는 기존 P5 계약 유지 |
+
+성공 마커는 `P7_BLUEPRINT_REGISTRY_OK extraction permanent_registration unknown_guard idempotent reconnect recipe_candidates facade_status`입니다. `Recipe` 운영 비용·옵션·소켓 확정은 P7-04의 별도 완료 조건입니다.
+
 <a id="desktop-save-e2e"></a>
 ## 2026-09-03 추가 · 다운로드판 종료와 재실행
 

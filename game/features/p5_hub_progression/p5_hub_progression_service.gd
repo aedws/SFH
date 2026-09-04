@@ -203,6 +203,11 @@ func register_extracted_blueprints(acquired: Dictionary) -> PackedStringArray:
 	return workshop.call(&"register_extracted_blueprints", acquired) if workshop != null else PackedStringArray()
 
 
+func get_workshop_candidates() -> Array[Dictionary]:
+	var workshop = _module(&"workshop")
+	return workshop.call(&"get_candidates") if workshop != null else []
+
+
 func craft_recipe(recipe_id: StringName, transaction_id: StringName) -> Dictionary:
 	var workshop = _module(&"workshop")
 	var result: Dictionary = workshop.call(&"craft", recipe_id, transaction_id) if workshop != null else {&"success": false, &"reason": "제작 모듈 꺼짐"}

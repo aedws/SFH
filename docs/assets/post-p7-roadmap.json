@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "updated": "2026-09-04",
   "source": {
     "url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
@@ -51,7 +51,10 @@
         {
           "id": "P7-03",
           "title": "설계도 영구 제작 등록",
-          "state": "planned",
+          "state": "in_progress",
+          "completed_scope": ["반출 수량 기반 영구 등록", "레시피 없는 도면 차단과 중복 등록 멱등", "재접속 뒤 등록 수·제작 후보 유지", "거점 제작소 등록 수·후보 상태 표시"],
+          "remaining_scope": ["Recipe 비용·재료와 P7-04 옵션·소켓 Roll 운영값 기획 확정", "Item 탭의 Utility 중복 4행 정리"],
+          "evidence": ["game/tests/workshop_blueprint_registry_contract_test.gd", "game/tests/p5_hub_progression_contract_test.gd", "docs/features/blueprint-crafting.md"],
           "dependencies": ["P7-01"],
           "data_gate": "sheet_if_catalog",
           "modules": ["BlueprintRegistry", "WorkshopRecipeProvider", "WorkshopUnlockService"],
