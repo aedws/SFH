@@ -280,7 +280,7 @@ jobs:
           grep -q "operation_combinations_9" /tmp/sfh-e2e.log
           grep -q "responsive_operation_briefing_widths_4" /tmp/sfh-e2e.log
           grep -q "E2E_TUTORIAL_LAYOUT_OK viewports_4 steps_16 visible_panel_bounds remapped_hints" /tmp/sfh-e2e.log
-          grep -q "E2E_INVENTORY_EDITOR_OK draft_atomic move_overlap_bounds equip_tags modules_unequip full_bag conflict_guard save_discard_cancel viewports_4 tabs_3" /tmp/sfh-e2e.log
+          grep -q "E2E_INVENTORY_EDITOR_OK draft_atomic move_overlap_bounds select_r_rotate_persist_collision_bounds equip_tags modules_unequip full_bag conflict_guard save_discard_cancel viewports_4 tabs_3" /tmp/sfh-e2e.log
           grep -q "E2E_TUTORIAL_VISIBLE_OK live_clicks movement_passthrough mission_restore central_safe" /tmp/sfh-e2e.log
           grep -q "session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone" /tmp/sfh-e2e.log
           grep -q "run_loot_success_duplicate_guard" /tmp/sfh-e2e.log

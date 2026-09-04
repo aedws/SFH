@@ -1,9 +1,16 @@
 {
-  "version": 42,
+  "version": 43,
   "updated": "2026-09-05",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "가방 아이템 회전 R 3x2 2x3",
+      "label": "가방 선택 후 R · 점유 방향 저장",
+      "description": "비정사각 아이템 90도 회전, 충돌·경계 거부, 다운로드판 방향 복원",
+      "category": "장비",
+      "priority": 110
+    },
     {
       "query": "작업 폴더 정리 Git 백업 복구",
       "label": "바탕화면은 하나 · 커밋과 PR로 복구",

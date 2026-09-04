@@ -2566,6 +2566,71 @@ func _verify_inventory_modules() -> bool:
 	if sizes.size() < 4:
 		_fail("아이템별 가변 패널 크기가 충분히 구성되지 않았습니다.")
 		return false
+	var rotatable: Dictionary = {}
+	for entry: Dictionary in entries:
+		if bool(entry.get(&"can_rotate", false)):
+			rotatable = entry
+			break
+	if rotatable.is_empty():
+		_fail("회전 가능한 비정사각형 가방 아이템이 없습니다.")
+		return false
+	var original_state: Dictionary = inventory.call(&"export_runtime_state")
+	var rotated_id: StringName = rotatable[&"instance_id"]
+	var original_size: Vector2i = rotatable[&"grid_size"]
+	var rotated_size := Vector2i(original_size.y, original_size.x)
+	var rotation_position := Vector2i(-1, -1)
+	for y in inventory.grid_size.y:
+		for x in inventory.grid_size.x:
+			var cell := Vector2i(x, y)
+			if (
+				inventory.call(&"can_place", original_size, cell, rotated_id)
+				and inventory.call(&"can_place", rotated_size, cell, rotated_id)
+			):
+				rotation_position = cell
+				break
+		if rotation_position.x >= 0:
+			break
+	if (
+		rotation_position.x < 0
+		or not inventory.call(&"move_item", rotated_id, rotation_position)
+		or not inventory.call(&"rotate_item", rotated_id)
+	):
+		_fail("가방 아이템의 유효한 90도 회전이 실패했습니다.")
+		return false
+	var rotated_entry: Dictionary = {}
+	for entry: Dictionary in inventory.call(&"get_snapshot")[&"items"]:
+		if entry[&"instance_id"] == rotated_id:
+			rotated_entry = entry
+			break
+	if (
+		rotated_entry.get(&"grid_size", Vector2i.ZERO) != rotated_size
+		or not bool(rotated_entry.get(&"rotated", false))
+		or not bool((inventory.call(&"export_runtime_state")[&"rotations"] as Dictionary).get(rotated_id, false))
+	):
+		_fail("회전 방향과 2×3/3×2 점유 크기가 스냅샷에 보존되지 않았습니다.")
+		return false
+	var boundary_inventory := inventory_scene.instantiate()
+	root.add_child(boundary_inventory)
+	var boundary_state := {
+		&"grid_size": original_size,
+		&"items": {rotated_id: inventory.items[rotated_id]},
+		&"placements": {rotated_id: Vector2i.ZERO},
+		&"rotations": {rotated_id: false},
+		&"serials": {},
+		&"runtime_payloads": {rotated_id: {}},
+	}
+	if (
+		not boundary_inventory.call(&"restore_runtime_state", boundary_state)
+		or boundary_inventory.call(&"rotate_item", rotated_id)
+		or bool(boundary_inventory.rotations.get(rotated_id, false))
+	):
+		_fail("가방 경계를 넘는 회전이 원상태를 보존하지 않았습니다.")
+		return false
+	root.remove_child(boundary_inventory)
+	boundary_inventory.free()
+	if not inventory.call(&"restore_runtime_state", original_state):
+		_fail("회전 검증 뒤 원본 가방 복구에 실패했습니다.")
+		return false
 	var first: Dictionary = entries[0]
 	if inventory.call(&"move_item", first[&"instance_id"], Vector2i(-1, 0)):
 		_fail("가방 경계 밖 이동이 허용됐습니다.")
@@ -2578,6 +2643,9 @@ func _verify_inventory_modules() -> bool:
 		return false
 	if not _has_key_binding(&"toggle_modification", KEY_E):
 		_fail("E 키가 모듈·파츠 화면 입력에 연결되지 않았습니다.")
+		return false
+	if not _has_key_binding(&"equip_field_loot", KEY_R):
+		_fail("R 키가 전투 현장 장착과 가방 선택 회전의 문맥 입력에 연결되지 않았습니다.")
 		return false
 	root.remove_child(inventory)
 	inventory.free()
