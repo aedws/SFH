@@ -39,6 +39,16 @@ func _run() -> void:
 	_check(game.training_telemetry_presenter.visible, "전용 계측 HUD 표시")
 	_check(game.training_loadout_presenter.visible, "무료 세팅 원복 안내 표시")
 	_check(game.training_combat_skill_hud.visible, "훈련 AP·쿨타임 HUD 표시")
+	_check(is_instance_valid(game.training_hud_layout), "훈련 HUD 전용 레이아웃 설치")
+	var hud_layout: Dictionary = game.training_hud_layout.call(&"get_snapshot")
+	_check(bool(hud_layout.get(&"all_inside_viewport", false)), "훈련 HUD 화면 안 배치")
+	_check(bool(hud_layout.get(&"panels_do_not_overlap", false)), "훈련 HUD 상호 비겹침")
+	_check(bool(hud_layout.get(&"skill_compact", false)), "훈련 스킬 HUD 빈 영역 제거")
+	_check(
+		"훈련 계측" in game.training_telemetry_presenter.title_label.text
+		and "단일 중장 더미" in game.training_telemetry_presenter.timer_label.text,
+		"훈련 시나리오와 계측 상태 즉시 인지"
+	)
 	_check(game.training_combat_skill_system.call(&"try_activate", 0), "훈련 스킬 실제 발동")
 	await process_frame
 	_check(
@@ -102,7 +112,7 @@ func _run() -> void:
 	_check(game.training_ground_service == null and game.auto_weapon == null, "거점 이탈 훈련 런타임 제거")
 
 	if failures.is_empty():
-		print("E2E_P8_TRAINING_GROUND_OK hub_station interaction single_attack_telemetry telemetry_hud ap_rate cooldown_cycle isolated_skill_runtime free_loadout_restore dense_switch spawn_isolation hub_exit_cleanup")
+		print("E2E_P8_TRAINING_GROUND_OK hub_station interaction single_attack_telemetry telemetry_hud viewport_safe no_overlap compact_skill_hud scenario_readable ap_rate cooldown_cycle isolated_skill_runtime free_loadout_restore dense_switch spawn_isolation hub_exit_cleanup")
 		quit(0)
 	else:
 		print("E2E_P8_TRAINING_GROUND_FAILED: %s" % " / ".join(failures))

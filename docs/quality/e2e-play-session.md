@@ -139,18 +139,18 @@ tags:
 | 거점에서 시작 | 실제 `Game` 시작 거점과 훈련장 단말·훈련 전용 자동 무기가 함께 설치되고 일반 적 생성기는 없음 |
 | 단일 시험 | 단말 공개 상호작용 경로로 HP 1,000·방어 25인 보스 역할 더미 1기 생성 |
 | 실제 공격 | 플레이어를 더미 근처로 이동하고 `primary_attack`을 누르면 HP+방어 합이 감소하고 P5 타격 횟수가 증가 |
-| 계측 HUD | 실제 타격 뒤 DPS·최대 타격·누적 피해가 표시되고 스킬 사용 뒤 AP/s·평균 쿨타임이 갱신 |
+| 계측 HUD | 실제 타격 뒤 DPS·최대 타격·누적 피해가 표시되고 스킬 사용 뒤 AP/s·평균 쿨타임이 갱신. 계측·무료 세팅·스킬 패널이 뷰포트 안에서 겹치지 않고 스킬 패널 높이는 96px 이하 |
 | 결과 고정 | 측정 시간이 끝나면 최종 스냅샷이 고정되고 추가 타격은 기존 결과에 섞이지 않음 |
 | 격리 스킬 | 훈련 전용 복제 런타임에서 1/2/3 스킬의 AP·충전·쿨타임이 실제로 소비되며 실전 런타임은 불변 |
 | 자유 세팅·복원 | 진입 전 장비·가방을 캡처하고 무료 변경 뒤 작전 준비/퇴장 시 원상 복구 |
 | 밀집 시험 전환 | 다음 단말 상호작용에서 8기가 생성되고 각 더미 간 최소 간격 75 이상 유지 |
 | 스마트 타게팅 | 밀집 중심 공급자가 범위 안 가장 밀집된 지점을 반환 |
-| 반복 측정 | 전부 처치하면 짧은 지연 뒤 같은 시나리오가 자동 초기화되고 수동 reset revision도 증가 |
+| 반복 측정 | 전부 처치하면 짧은 지연 뒤 같은 시나리오와 계측 시간이 함께 초기화되고 새 타격이 다시 집계되며 수동 reset revision도 증가 |
 | 일반 게임 비간섭 | 일반 적 스폰 예산 영향 0, 작전 처치 수·경험치·전리품·방 보상 불변. 안전 거리는 이동 후 현재 위치가 아니라 생성 순간 거리로 판정 |
 | 거점 이탈 | 작전 진입 준비로 거점을 지우면 더미·서비스·훈련 무기가 남지 않음 |
 | 선택 제거 | 훈련 플래그 OFF 또는 선행 거점 OFF에서 나머지 Manifest와 게임은 정상 유지 |
 
-성공 마커는 `P8_TRAINING_GROUND_OK ... telemetry_window final_snapshot ap_rate cooldown_cycle ...`과 `E2E_P8_TRAINING_GROUND_OK ... telemetry_hud ap_rate cooldown_cycle isolated_skill_runtime free_loadout_restore ...`입니다. Headless 실제 입력·상태 판정이며 사람의 장시간 육안 플레이나 임시 더미 수치의 기획 확정을 대신하지 않습니다.
+성공 마커는 `P8_TRAINING_GROUND_OK ... final_snapshot reset_restarts_telemetry ...`와 `E2E_P8_TRAINING_GROUND_OK ... telemetry_hud viewport_safe no_overlap compact_skill_hud scenario_readable ...`입니다. Headless 실제 입력·상태 판정이며 사람의 장시간 육안 플레이나 임시 더미 수치의 기획 확정을 대신하지 않습니다.
 
 <a id="desktop-save-e2e"></a>
 ## 2026-09-03 추가 · 다운로드판 종료와 재실행

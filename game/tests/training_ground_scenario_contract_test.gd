@@ -77,6 +77,10 @@ func _run() -> void:
 	var reset_snapshot: Dictionary = service.call(&"get_snapshot")
 	_check(int(reset_snapshot.get(&"active_count", 0)) == 8, "전멸 후 자동 초기화")
 	_check(int(reset_snapshot.get(&"reset_revision", 0)) == reset_before + 1, "초기화 리비전")
+	var restarted_telemetry: Dictionary = service.call(&"get_telemetry_snapshot")
+	_check(not bool(restarted_telemetry.get(&"finalized", true)), "자동 초기화 뒤 계측 재시작")
+	_check(float(restarted_telemetry.get(&"elapsed_seconds", -1.0)) < 1.0, "새 시간창 0초부터 시작")
+	_check(service.call(&"record_hit", 25.0, 0.0), "재생성 더미 타격 재계측")
 
 	var manual_reset: Dictionary = service.call(&"reset_active_scenario")
 	_check(bool(manual_reset.get(&"success", false)) and int(manual_reset.get(&"dummy_count", 0)) == 8, "수동 초기화")
@@ -89,7 +93,7 @@ func _run() -> void:
 	_check((disabled_manifest.call(&"validation_errors") as PackedStringArray).is_empty(), "훈련장 물리 제거 가능")
 
 	if failures.is_empty():
-		print("P8_TRAINING_GROUND_OK scenario_resource single_boss dense_8 no_overlap smart_targeting reset_service auto_reset telemetry_window final_snapshot ap_rate cooldown_cycle spawn_budget_isolated optional_module")
+		print("P8_TRAINING_GROUND_OK scenario_resource single_boss dense_8 no_overlap smart_targeting reset_service auto_reset telemetry_window final_snapshot reset_restarts_telemetry ap_rate cooldown_cycle spawn_budget_isolated optional_module")
 		quit(0)
 	else:
 		print("P8_TRAINING_GROUND_FAILED: %s" % " / ".join(failures))
