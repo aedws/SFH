@@ -11,7 +11,12 @@ let response = await request("/");
 assert.equal(response.status, 200, "public wiki must remain available");
 const publicHome = await response.text();
 assert.match(publicHome, /PUBLIC PLAYTEST/u, "public home must be the promotional playtest surface");
+assert.match(publicHome, /NO AIM FATIGUE/u, "public home must explain a player-facing feature");
+assert.match(publicHome, /ROOM LOCKDOWN/u, "public home must explain the room combat loop");
+assert.match(publicHome, /RISK · REWARD/u, "public home must explain extraction risk and reward");
 assert.doesNotMatch(publicHome, /개발 현황과 업데이트/u, "public home HTML must not expose internal navigation");
+assert.doesNotMatch(publicHome, /owner-decision-registry/u, "public home must not expose internal ontology sources");
+assert.doesNotMatch(publicHome, /P9-01/u, "public home must not expose the internal delivery queue");
 assert.doesNotMatch(publicHome, /data-md-component="search"/u, "public home HTML must not expose protected search UI");
 assert.doesNotMatch(publicHome, /rel="next" href="development-status\//u, "public home must not advertise a protected next page");
 assert.doesNotMatch(publicHome, /data-md-toggle="search"/u, "public home must not retain a hidden search control");
@@ -40,6 +45,9 @@ for (const protectedPath of [
   "/search/search_index.json",
   "/assets/knowledge-map.json",
   "/assets/search-priorities.json",
+  "/assets/owner-decision-registry.json",
+  "/assets/project-ontology.json",
+  "/architecture/project-ontology/",
   "/sitemap.xml",
   "/404.html",
 ]) {

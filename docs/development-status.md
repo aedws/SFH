@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 7 · IMPROVE 11 · CHANGE 14 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 10 · IMPROVE 16 · CHANGE 21 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>14</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>16</b><small>IMPROVE</small></span><span><b>21</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>단일 작업 폴더 · Git 커밋 기반 복구</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -129,7 +129,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="features/grid-inventory/">플레이 규칙 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a> · <a href="quality/e2e-play-session/#desktop-save-e2e">E2E →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>프로젝트 오너 판단 온톨로지 · 개발자 콘솔</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획자와 개발자는 근거 제공자로 분리하고, 사용자인 프로젝트 오너가 범위·우선순위·수락·출시를 최종 판단하는 읽기 전용 운영 계층을 개발자 화면 최상단에 추가했습니다.</strong></div>
@@ -138,6 +138,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>수정 · 5</h3><p>Notion=기획, Sheet=후보, CSV=확정 데이터, Git/E2E=구현 근거, 위키=읽기 전용 뷰로 원본 경계를 고정했습니다. 생성·CI 검사가 중복 ID·소유권 누락·깨진 관계·없는 문서를 차단합니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>기획자를 최종 판단자로 오인하던 협업 표현을 바로잡고, 하위 문서에서 게임 배포 주소 레지스트리를 현재 경로 아래로 잘못 요청하던 404를 제거했습니다.</p></div>
         <p><a href="architecture/project-ontology/">판단 온톨로지 계약 →</a> · <a href="access/developer/">개발자 판단 화면 →</a></p>
+        <p>게임 코드·밸런스 Sheet/CSV·과금·서버 설정은 변경하지 않았습니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>권한별 위키 재배치 · 운영 온톨로지 폐루프</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 개발자는 객체·관계·행동·원본·검증을 한 콘솔에서 추적하고, 기획자는 게임 대상을 기획 가능한 형식으로 작성하며, 공개 사용자는 플레이 가치와 테스트 진입만 보도록 역할별 화면을 전면 재배치했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>객체 유형·인터페이스·원본 시스템 6개·행동 계약 5개·생명 주기와 객체 탐색·관계 계보·행동 관측 화면을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>개발자 화면은 판단 폐루프를, 기획자 화면은 객체→관계·행동→수락 기준 작성법을, 공개 홈은 실제 플레이 특징 6개를 먼저 보여줍니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 7</h3><p>프로젝트 오너의 최종 판단권, 자동 행동 금지, Notion·Sheet·CSV·Git·E2E·CI 원본 계보, 공개/기획/개발 접근 경계를 생성·빌드·Worker E2E 계약으로 고정했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기능 결함 수정이 아니라 정보 구조와 운영 계약 확장입니다.</p></div>
+        <p><a href="architecture/project-ontology/">운영 온톨로지 계약 →</a> · <a href="access/developer/">개발자 운영 콘솔 →</a> · <a href="access/planner/">기획 작성 가이드 →</a></p>
         <p>게임 코드·밸런스 Sheet/CSV·과금·서버 설정은 변경하지 않았습니다.</p>
       </div>
     </details>

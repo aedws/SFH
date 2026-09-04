@@ -30,6 +30,8 @@ $requiredStylePatterns = [ordered]@{
 	"non-blocking decoration" = 'pointer-events:\s*none'
 	"closed search click passthrough" = '\.md-search__output\s*\{[\s\S]*pointer-events:\s*none'
 	"active search click restore" = '\.md-search__inner:focus-within\s+\.md-search__output[\s\S]*pointer-events:\s*auto'
+    "desktop ontology lifecycle rail" = '\.sfh-owner-console__lifecycle\s*\{[\s\S]*grid-template-columns:\s*repeat\(5'
+    "mobile ontology lifecycle scroll" = '@media screen and \(max-width:\s*48em\)[\s\S]*\.sfh-owner-console__lifecycle\s*\{[\s\S]*width:\s*max-content'
     "reduced motion" = '@media\s*\(prefers-reduced-motion:\s*reduce\)'
     "high contrast focus" = '@media\s*\(prefers-contrast:\s*more\)'
     "mobile breakpoint" = '@media screen and \(max-width:\s*48em\)'
@@ -87,10 +89,20 @@ foreach ($forbiddenPublicContent in @('data-sfh-planner-requests', 'data-sfh-pro
         $errors.Add("Public home leaks internal collaboration content: $forbiddenPublicContent")
     }
 }
+foreach ($publicFeature in @('NO AIM FATIGUE', 'ROOM LOCKDOWN', 'RISK · REWARD', 'LOOT IDENTITY', 'TACTICAL VISION', 'PC · MOBILE')) {
+    if ($index -notmatch [regex]::Escape($publicFeature)) {
+        $errors.Add("Public home player feature is missing: $publicFeature")
+    }
+}
+foreach ($internalLeak in @('owner-decision-registry', 'P9-01', '코드 모듈', '서버 위변조')) {
+    if ($index -match [regex]::Escape($internalLeak)) {
+        $errors.Add("Public home exposes internal delivery information: $internalLeak")
+    }
+}
 if ($index -match '<details class="sfh-day"\s+open>') {
     $errors.Add("Wiki home must keep the daily release detail collapsed by default.")
 }
-if ($style -notmatch '\.sfh-public-test-guide' -or $style -notmatch '\.sfh-plain-loop') {
+if ($style -notmatch '\.sfh-public-test-guide' -or $style -notmatch '\.sfh-public-showcase' -or $style -notmatch '\.sfh-plain-loop') {
     $errors.Add("Public and planner responsive layouts are missing.")
 }
 

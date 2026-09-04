@@ -6,7 +6,7 @@ SFH는 Godot의 Scene, Node, Resource, Signal을 조합해 기능을 분리합�
 
 ## 1. 읽는 순서
 
-먼저 [프로젝트 오너 판단 온톨로지](project-ontology.md)에서 무엇을 왜 판단하는지 확인합니다. 구현 관계가 필요하면 [코드 모듈 노드맵](code-module-map.md), 조립 규칙은 [모듈 규칙](module-rules.md)과 [장면 트리](scene-tree.md)·[Signal 규칙](signals.md) 순서로 확인합니다.
+먼저 [프로젝트 오너 운영 온톨로지](project-ontology.md)에서 객체·관계·행동·원본·권한과 판단 폐루프를 확인합니다. 실제 구현 관계가 필요하면 [코드 모듈 노드맵](code-module-map.md), 조립 규칙은 [모듈 규칙](module-rules.md)과 [장면 트리](scene-tree.md)·[Signal 규칙](signals.md) 순서로 확인합니다.
 
 ## 2. 하위 문서
 
