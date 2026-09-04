@@ -1,6 +1,8 @@
 class_name EquipmentModuleInstance
 extends Resource
 
+const QUALITY := preload("res://game/core/item_quality_descriptor.gd")
+
 @export var instance_id: StringName
 @export var definition: EquipmentModuleDefinition
 @export_range(1, 100, 1) var upgrade_level: int = 1
@@ -19,12 +21,11 @@ func configure(
 
 
 func quality_multiplier() -> float:
-	var value := float(item_quality_payload.get(&"performance_multiplier", 1.0))
-	return value if is_finite(value) and value > 0.0 else 1.0
+	return QUALITY.multiplier(item_quality_payload)
 
 
 func quality_label() -> String:
-	return String(item_quality_payload.get(&"quality_label", "표준"))
+	return QUALITY.label(item_quality_payload)
 
 
 func can_upgrade(maximum_level_override: int = -1) -> bool:

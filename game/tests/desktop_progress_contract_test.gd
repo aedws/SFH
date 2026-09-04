@@ -36,12 +36,21 @@ func _run() -> void:
 	# Same safe mode as the downloaded executable; other tests retain their legacy paths.
 	profile.configure(features.persistent_profile_storage_path, true, true)
 	if phase == "write":
+		var quality_module_id := StringName(bag.call(&"add_catalog_item", &"ballistic_core_item", {
+			&"quality_id": &"high_performance",
+			&"quality_label": "고성능",
+			&"performance_multiplier": 1.25,
+			&"quality_option_ids": [&"overclocked_output"],
+			&"quality_socket_count": 1,
+			&"transaction_id": &"desktop-quality-persist",
+		}))
+		_check(quality_module_id != &"", "quality module added to hub bag")
 		var editor: Node = load("res://game/features/inventory/inventory_edit_session.gd").new()
 		game.add_child(editor)
 		editor.configure(bag, gear)
 		_check(editor.begin(), "begin hub edit")
 		for entry in editor.inventory.get_snapshot().items:
-			if entry.item_id == &"ballistic_core_item":
+			if entry.instance_id == quality_module_id:
 				_check(editor.install_item(entry.instance_id, &"main"), "install module")
 			if entry.item_id == &"rifle_scope_item":
 				_check(editor.install_item(entry.instance_id, &"main"), "install part")
@@ -90,6 +99,14 @@ func _run() -> void:
 		_check(not service.get_snapshot().blocked, "restore service: %s" % service.get_snapshot())
 		var state: Resource = gear.get_equipment_state(&"main")
 		_check(not state.installed_modules.is_empty() and state.installed_modules[0].upgrade_level == 2, "module upgrade persisted")
+		_check(
+			not state.installed_modules.is_empty()
+			and is_equal_approx(state.installed_modules[0].quality_multiplier(), 1.25)
+			and state.installed_modules[0].item_quality_payload.get(
+				&"transaction_id", &""
+			) == &"desktop-quality-persist",
+			"quality payload persisted across process restart"
+		)
 		_check(state.part_upgrade_levels.get(&"rifle_scope", 0) == 2, "part upgrade persisted")
 		_check(gear.active_weapon_slot == &"secondary", "active weapon persisted")
 		var moved := false
@@ -186,5 +203,5 @@ func _check(ok: bool, label: String) -> void:
 
 func _finish() -> void:
 	if failures.is_empty():
-		print("DESKTOP_PROGRESS_OK phase=%s hub_bag module_part_levels profile_warehouse_unlocks meta ranking history process_restart atomic_backup corrupt_recovery legacy_migration optional_module" % phase)
+		print("DESKTOP_PROGRESS_OK phase=%s hub_bag module_part_levels item_quality profile_warehouse_unlocks meta ranking history process_restart atomic_backup corrupt_recovery legacy_migration optional_module" % phase)
 	quit(0 if failures.is_empty() else 1)

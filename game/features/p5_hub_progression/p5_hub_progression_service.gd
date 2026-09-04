@@ -43,7 +43,11 @@ func configure(profile_provider: Node, contract_service: Node, progression_confi
 	if not _install_csv_module(&"utility", bool(config.get("utility_enabled")), "utility_csv_path", [profile]): return false
 	if bool(config.get("operation_draft_enabled")) and not _install_module(&"operation_draft", [contract_service]): return false
 	if not _install_csv_module(&"bankruptcy", bool(config.get("bankruptcy_preset_enabled")), "operation_preset_csv_path", []): return false
-	if not _install_csv_module(&"shop", bool(config.get("rotating_shop_enabled")), "shop_offer_csv_path", [profile], [seed, int(config.get("shop_reroll_price")), int(config.get("shop_rotation_slots"))]): return false
+	if not _install_csv_module(
+		&"shop", bool(config.get("rotating_shop_enabled")), "shop_offer_csv_path", [profile],
+		[seed, int(config.get("shop_reroll_price")), int(config.get("shop_rotation_slots")),
+		config.get("shop_quality_catalog")]
+	): return false
 	if not _install_csv_module(&"workshop", bool(config.get("workshop_enabled")), "recipe_csv_path", [profile], [seed]): return false
 	if not _install_csv_module(&"training", bool(config.get("training_enabled")), "training_scenario_csv_path", []): return false
 	if not _install_csv_module(&"codex", bool(config.get("codex_enabled")), "codex_csv_path", [profile]): return false
@@ -162,7 +166,9 @@ func set_shop_inventory_provider(inventory_provider: Node) -> bool:
 	if shop == null:
 		return false
 	var delivery = _new_script_instance(&"shop_delivery")
-	if delivery == null or not bool(delivery.call(&"configure", inventory_provider)):
+	if delivery == null or not bool(delivery.call(
+		&"configure", inventory_provider, config.get("shop_quality_catalog")
+	)):
 		return false
 	_modules[&"shop_delivery"] = delivery
 	var success := bool(shop.call(&"set_delivery_provider", delivery))

@@ -27,13 +27,13 @@ P5-03~10을 완료해 작전 전 준비와 작전 후 영구 성장이 하나의
 | 훈련장 | 단일·밀집 더미, DPS·최대 타격·AP·쿨타임 | 비용 없는 측정 세션, 종료 시 준비 로드아웃 원복 |
 | 도감 | 완료 수·누적 수량·미해금 지역 힌트 | 탈출 성공 때만 누적하고 재접속 후 유지 |
 
-## 모듈 경계
+## 모듈 경계 {#quality-module-contract}
 
-`P5HubProgressionService`는 공개 façade와 조립만 담당합니다. 실제 정책은 `UtilityInvestmentService`, `OperationDraftService`, `BankruptcyProtectionPolicy`, `RotatingShopService`, `ShopItemQualityPolicy`, `ShopInventoryDeliveryService`, `WorkshopService`, `TrainingService`, `CodexService`가 각각 소유하고, 버튼 행동·표시 문구는 `P5HubActionPresenter`가 소유합니다. 각 하위 서비스는 설정의 `*_enabled`로 독립 제거할 수 있고 월드 Scene 내부 Node를 참조하지 않습니다.
+`P5HubProgressionService`는 공개 façade와 조립만 담당합니다. 실제 정책은 `UtilityInvestmentService`, `OperationDraftService`, `BankruptcyProtectionPolicy`, `RotatingShopService`, `ShopItemQualityPolicy`, `ShopInventoryDeliveryService`, `WorkshopService`, `TrainingService`, `CodexService`가 각각 소유하고, 버튼 행동·표시 문구는 `P5HubActionPresenter`가 소유합니다. 각 하위 서비스는 설정의 `*_enabled`로 독립 제거할 수 있고 월드 Scene 내부 Node를 참조하지 않습니다. 품질 표시명·옵션·소켓은 `ItemQualityCatalog` Resource에 있으며 다른 카탈로그를 주입해 코드 수정 없이 교체합니다. 인스턴스 payload 키와 수치 배율은 공용 `ItemQualityDescriptor`만 해석합니다.
 
 하위 스크립트는 집계기에서 정적 `preload`하지 않습니다. 활성 플래그일 때만 문자열 경로로 지연 로드하므로 상점이나 훈련장을 끈 빌드는 해당 스크립트와 CSV가 물리적으로 없어도 구성됩니다. 비활성 경로를 존재 검사하지 않는 계약과 `res://removed/` 경로 회귀 테스트가 이 제거성을 고정합니다.
 
-프로필은 재화·창고·영구 도면·도감 진행·처리 완료 거래 ID만 저장합니다. 상점·제작·도감 서비스가 저장 형식이나 UI를 직접 소유하지 않으므로 공급자를 바꿔도 기존 플레이 데이터 계약은 유지됩니다. 지급 또는 거래 ID 기록이 실패하면 상점은 지급품·크레딧을, 제작소는 제작 결과·재료·크레딧을 전부 원복합니다.
+프로필은 재화·창고·영구 도면·도감 진행·처리 완료 거래 ID만 저장합니다. 상점·제작·도감 서비스가 저장 형식이나 UI를 직접 소유하지 않으므로 공급자를 바꿔도 기존 플레이 데이터 계약은 유지됩니다. 지급 또는 거래 ID 기록이 실패하면 정상 보상 가능한 경우 지급품·크레딧을 함께 원복합니다. 교체 공급자의 지급 원복까지 실패하면 크레딧을 환불하지 않고 `consistency_error`를 반환해 아이템과 환불액이 동시에 생기는 중복 보상을 차단합니다.
 
 훈련은 테스트가 내부 `TrainingService`를 직접 호출하지 않습니다. Game 조립부가 생성된 적의 표준 `damaged` 신호를 공개 `record_training_hit` façade에 전달합니다. 타격 피드백 표현을 꺼도 계측은 유지되며, 훈련 결과의 DPS·최대 타격·AP·쿨타임은 실제 공격이 적에게 적용된 경우에만 증가합니다.
 
@@ -45,7 +45,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\check-p5-modularity.ps1
 powershell -ExecutionPolicy Bypass -File .\scripts\test-e2e.ps1
 ```
 
-`P5_HUB_PROGRESSION_OK`는 유틸 사용·단일 확정·무료 반복 출격·3품질 회전·구매/재굴림 중복 차감 방지·도면/도감 재접속·실제 훈련 façade·하위 모듈 제거·잘못된 CSV 거부·강제 거래 실패 롤백을 판정합니다. `P7_SHOP_QUALITY_OK`는 고성능 모듈 구매→가방 실물→U 장착→실제 1.25배 수치→해제 후 품질 보존을 판정합니다. `P5_MODULARITY_OK`는 필수 열·중복 ID·표준 Item/Region/Weapon/Skill/Character 외래 ID와 Game의 P5 도메인 결정 누수를 정적으로 차단합니다.
+`P5_HUB_PROGRESSION_OK`는 유틸 사용·단일 확정·무료 반복 출격·3품질 회전·구매/재굴림 중복 차감 방지·도면/도감 재접속·실제 훈련 façade·하위 모듈 제거·잘못된 CSV 거부·강제 거래 실패 롤백을 판정합니다. `P7_SHOP_QUALITY_OK`는 고성능 모듈 구매→가방 실물→U 장착→실제 1.25배 수치→해제 후 품질 보존, 카탈로그 교체와 롤백 실패 중복 보상 차단을 판정합니다. `P7_SHOP_DELIVERY_MODULE_OK`는 P5·상점을 켠 채 실물 지급만 제거했을 때 가방 불변·레거시 창고 지급을 판정합니다. `P5_MODULARITY_OK`는 품질 Resource·공용 payload 계약·필수 CI 게이트까지 정적으로 차단합니다.
 
 ## 데이터·과금 경계
 

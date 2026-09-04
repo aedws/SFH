@@ -1,6 +1,8 @@
 class_name EquipmentItemState
 extends Resource
 
+const QUALITY := preload("res://game/core/item_quality_descriptor.gd")
+
 @export var state_id: StringName
 @export var definition: Resource
 @export_range(1, 100, 1) var level: int = 1
@@ -28,8 +30,7 @@ func configure(
 
 
 func quality_multiplier() -> float:
-	var value := float(item_quality_payload.get(&"performance_multiplier", 1.0))
-	return value if is_finite(value) and value > 0.0 else 1.0
+	return QUALITY.multiplier(item_quality_payload)
 
 
 func is_weapon() -> bool:
@@ -376,7 +377,7 @@ func snapshot() -> Dictionary:
 		&"used_module_cost": used_module_cost(),
 		&"module_cost_limit": module_cost_limit(),
 		&"granted_module_tags": granted_tags,
-		&"quality_label": item_quality_payload.get(&"quality_label", "표준"),
+		&"quality_label": QUALITY.label(item_quality_payload),
 		&"quality_multiplier": quality_multiplier(),
-		&"quality_socket_count": int(item_quality_payload.get(&"quality_socket_count", 0)),
+		&"quality_socket_count": QUALITY.socket_count(item_quality_payload),
 	}

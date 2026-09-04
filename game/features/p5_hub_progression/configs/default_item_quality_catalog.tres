@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="ItemQualityCatalog" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://game/features/p5_hub_progression/item_quality_catalog.gd" id="1_catalog"]
+[ext_resource type="Script" path="res://game/features/p5_hub_progression/item_quality_definition.gd" id="2_definition"]
+
+[sub_resource type="Resource" id="QualityDamaged"]
+script = ExtResource("2_definition")
+quality_id = &"damaged"
+display_name = "손상"
+option_ids = Array[StringName]([&"worn_output"])
+socket_count = 0
+
+[sub_resource type="Resource" id="QualityStandard"]
+script = ExtResource("2_definition")
+quality_id = &"standard"
+display_name = "표준"
+option_ids = Array[StringName]([&"factory_spec"])
+socket_count = 0
+
+[sub_resource type="Resource" id="QualityHighPerformance"]
+script = ExtResource("2_definition")
+quality_id = &"high_performance"
+display_name = "고성능"
+option_ids = Array[StringName]([&"overclocked_output"])
+socket_count = 1
+
+[resource]
+script = ExtResource("1_catalog")
+definitions = Array[Resource]([SubResource("QualityDamaged"), SubResource("QualityStandard"), SubResource("QualityHighPerformance")])

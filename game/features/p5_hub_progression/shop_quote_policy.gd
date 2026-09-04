@@ -8,7 +8,11 @@ const QUALITY_POLICY := preload(
 
 
 static func quote(offer: Dictionary, catalog: Array[Dictionary], profile: Dictionary,
-		rotation_index: int, delivery_preview: Dictionary = {}) -> Dictionary:
+		rotation_index: int, delivery_preview: Dictionary = {},
+		quality_catalog: Resource = null) -> Dictionary:
+	var definition_catalog := (
+		quality_catalog if quality_catalog != null else QUALITY_POLICY.default_catalog()
+	)
 	var result := {
 		&"purchasable": false, &"reason": "현재 회전 상품 아님",
 		&"offer": offer.duplicate(true), &"rotation_index": rotation_index,
@@ -23,13 +27,15 @@ static func quote(offer: Dictionary, catalog: Array[Dictionary], profile: Dictio
 	var quality := StringName(offer.get(&"quality", &""))
 	if not price is int or price < 0 or not quantity is int or quantity <= 0 \
 			or not is_finite(multiplier) or multiplier <= 0.0 \
-			or not QUALITY_POLICY.QUALITY_LABELS.has(quality) or String(offer.get(&"target_id", "")).is_empty():
+			or not QUALITY_POLICY.is_valid_offer(offer, definition_catalog) \
+			or String(offer.get(&"target_id", "")).is_empty():
 		result[&"reason"] = "매물 데이터 오류 · 구매 불가"
 		return result
 	if StringName(offer.get(&"target_type", &"")) != &"item":
 		result[&"reason"] = "미지원 지급 유형 · 구매 불가"
 		return result
-	result[&"quality_label"] = QUALITY_POLICY.QUALITY_LABELS[quality]
+	var quality_definition: Resource = definition_catalog.call(&"get_definition", quality)
+	result[&"quality_label"] = quality_definition.get("display_name")
 	result[&"configured_performance"] = multiplier
 	result[&"unit_price"] = float(price) / float(quantity)
 	result[&"balance_after"] = int(result[&"credits"]) - int(price)
@@ -37,8 +43,8 @@ static func quote(offer: Dictionary, catalog: Array[Dictionary], profile: Dictio
 		&"owned_quantity",
 		(profile.get(&"warehouse", {}) as Dictionary).get(offer[&"target_id"], 0)
 	))
-	result[&"quality_option_ids"] = QUALITY_POLICY.QUALITY_OPTIONS[quality]
-	result[&"quality_socket_count"] = int(QUALITY_POLICY.QUALITY_SOCKETS[quality])
+	result[&"quality_option_ids"] = (quality_definition.get("option_ids") as Array).duplicate()
+	result[&"quality_socket_count"] = int(quality_definition.get("socket_count"))
 	result[&"item_type"] = delivery_preview.get(&"item_type", &"item")
 	result[&"source_status"] = String(offer.get(&"source_status", "provisional"))
 	# Compare like-for-like targets, never unrelated goods or pack totals.

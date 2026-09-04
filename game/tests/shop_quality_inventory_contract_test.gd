@@ -7,6 +7,7 @@ const INVENTORY := preload("res://game/features/inventory/grid_inventory.gd")
 const EQUIPMENT_SCENE := preload("res://game/features/equipment/equipment_system.tscn")
 const PLAYER_SCENE := preload("res://game/features/player/player.tscn")
 const EDIT_SESSION := preload("res://game/features/inventory/inventory_edit_session.gd")
+const FAILING_PROFILE := preload("res://game/tests/fixtures/failing_transaction_profile.gd")
 
 var failures := PackedStringArray()
 
@@ -118,8 +119,53 @@ func _run() -> void:
 			break
 	_check(returned_quality_found, "quality survives equipment to bag return")
 
+	var custom_catalog: Resource = load(
+		"res://game/features/p5_hub_progression/configs/default_item_quality_catalog.tres"
+	).duplicate(true)
+	custom_catalog.definitions = custom_catalog.definitions.duplicate(true)
+	custom_catalog.definitions[2] = custom_catalog.definitions[2].duplicate(true)
+	custom_catalog.definitions[2].display_name = "시험용 초고성능"
+	custom_catalog.definitions[2].socket_count = 3
+	var custom_shop := SHOP.new()
+	_check(custom_shop.configure(
+		profile, offers, 7102, 25, 3, custom_catalog
+	), "custom catalogue configured")
+	var custom_quote: Dictionary = custom_shop.quote(&"high_performance_ballistic")
+	_check(
+		custom_quote.quality_label == "시험용 초고성능"
+		and int(custom_quote.quality_socket_count) == 3,
+		"catalogue replaces quality tuning without code changes"
+	)
+
+	var failing_profile := FAILING_PROFILE.new()
+	sandbox.add_child(failing_profile)
+	failing_profile.configure("", false)
+	var rollback_provider := FailingRollbackDelivery.new()
+	var rollback_shop := SHOP.new()
+	_check(rollback_shop.configure(
+		failing_profile, offers, 7103, 25, 3
+	), "rollback shop configured")
+	_check(rollback_shop.set_delivery_provider(rollback_provider), "rollback provider bound")
+	var credits_before := int(failing_profile.get_snapshot().banked_credits)
+	var rollback_result: Dictionary = rollback_shop.purchase(
+		&"standard_ballistic", &"rollback-failure", rollback_shop.rotation_index
+	)
+	_check(
+		not rollback_result.success
+		and bool(rollback_result.consistency_error)
+		and not bool(rollback_result.compensated)
+		and int(failing_profile.get_snapshot().banked_credits) == credits_before - 100,
+		"rollback failure never duplicates refunded credits and delivered item"
+	)
+	_check(
+		not rollback_shop.purchase(
+			&"standard_ballistic", &"rollback-failure", rollback_shop.rotation_index
+		).success,
+		"unresolved transaction cannot retry in the same session"
+	)
+
 	if failures.is_empty():
-		print("P7_SHOP_QUALITY_OK quote delivery_instance option_socket inventory_equipment_roundtrip actual_stat_1_25")
+		print("P7_SHOP_QUALITY_OK quote delivery_instance option_socket inventory_equipment_roundtrip actual_stat_1_25 catalog_replaceable rollback_consistency")
 		quit(0)
 	else:
 		printerr("P7_SHOP_QUALITY_FAILED: %s" % " / ".join(failures))
@@ -129,3 +175,19 @@ func _run() -> void:
 func _check(condition: bool, label: String) -> void:
 	if not condition:
 		failures.append(label)
+
+
+class FailingRollbackDelivery:
+	extends RefCounted
+
+	func get_delivery_contract() -> Dictionary:
+		return {&"version": 1, &"compensating_rollback": true}
+
+	func preview(_offer: Dictionary) -> Dictionary:
+		return {&"can_deliver": true}
+
+	func deliver(_offer: Dictionary, _transaction_id: StringName) -> Dictionary:
+		return {&"success": true, &"granted": 1, &"instance_ids": [&"delivered"]}
+
+	func rollback(_receipt: Dictionary) -> bool:
+		return false

@@ -171,6 +171,10 @@ jobs:
           grep -q "P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback" /tmp/sfh-p5.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/shop_browser_contract_test.gd" | tee /tmp/sfh-p7-shop.log
           grep -q "P7_SHOP_BROWSER_OK" /tmp/sfh-p7-shop.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/shop_quality_inventory_contract_test.gd" | tee /tmp/sfh-p7-shop-quality.log
+          grep -q "P7_SHOP_QUALITY_OK quote delivery_instance option_socket inventory_equipment_roundtrip actual_stat_1_25 catalog_replaceable rollback_consistency" /tmp/sfh-p7-shop-quality.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/shop_delivery_modularity_contract_test.gd" | tee /tmp/sfh-p7-shop-delivery-module.log
+          grep -q "P7_SHOP_DELIVERY_MODULE_OK p5_on delivery_off legacy_warehouse bag_unchanged manifest_dependency" /tmp/sfh-p7-shop-delivery-module.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_provider_contract_test.gd" | tee /tmp/sfh-p6-ranking.log
           grep -q "P6_RANKING_SUBMISSION_OK identity envelope_digest idempotency local_preserved persistent_retry timeout_retry server_rejection visible_sync_state" /tmp/sfh-p6-ranking.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_season_contract_test.gd" | tee /tmp/sfh-p6-season.log
@@ -405,6 +409,7 @@ jobs:
           ./scripts/check-p7-roadmap.ps1
           python scripts/snapshot_notion_source.py --check
           python scripts/test_notion_snapshot.py
+          ./scripts/check-code-module-map.ps1
           python -m mkdocs build --strict
           python scripts/test_wiki_articles.py .wiki-site
           Copy-Item cloudflare/wiki-auth/_worker.js .wiki-site/_worker.js

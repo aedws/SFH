@@ -12,17 +12,31 @@ var slot_count := 3
 var rotation_index := 0
 var processed_transactions: Dictionary = {}
 var delivery_provider
+var quality_catalog: Resource
 
 
 func configure(profile_provider: Node, rows: Array[Dictionary], seed: int,
-		price: int, slots: int) -> bool:
+		price: int, slots: int, configured_quality_catalog: Resource = null) -> bool:
 	profile = profile_provider
 	offers = rows.duplicate(true)
+	quality_catalog = (
+		configured_quality_catalog
+		if configured_quality_catalog != null
+		else preload("res://game/features/p5_hub_progression/shop_item_quality_policy.gd").default_catalog()
+	)
+	if (
+		not is_instance_valid(profile)
+		or offers.is_empty()
+		or quality_catalog == null
+		or not quality_catalog.has_method(&"is_valid")
+		or not bool(quality_catalog.call(&"is_valid"))
+	):
+		return false
 	random.seed = seed if seed != 0 else 50507
 	reroll_price = maxi(0, price)
 	slot_count = maxi(1, slots)
 	refresh(false)
-	return is_instance_valid(profile) and not offers.is_empty()
+	return true
 
 
 func refresh(paid: bool = false, transaction_id: StringName = &"") -> Dictionary:
@@ -37,7 +51,7 @@ func refresh(paid: bool = false, transaction_id: StringName = &"") -> Dictionary
 		processed_transactions[transaction_id] = true
 	rotation_index += 1
 	rotation.clear()
-	var qualities := [&"damaged", &"standard", &"high_performance"]
+	var qualities: Array[StringName] = quality_catalog.call(&"get_quality_ids")
 	for quality in qualities:
 		var candidates := offers.filter(func(row): return StringName(row.get(&"quality", &"")) == quality)
 		if not candidates.is_empty() and rotation.size() < slot_count:
@@ -57,15 +71,22 @@ func quote(offer_id: StringName) -> Dictionary:
 		if delivery_provider != null else {}
 	)
 	return QUOTE_POLICY.quote(
-		offer, offers, profile.call(&"get_snapshot"), rotation_index, delivery_preview
+		offer, offers, profile.call(&"get_snapshot"), rotation_index, delivery_preview,
+		quality_catalog
 	)
 
 
 func set_delivery_provider(provider) -> bool:
 	if provider != null:
-		for method_name in [&"preview", &"deliver", &"rollback"]:
+		for method_name in [&"get_delivery_contract", &"preview", &"deliver", &"rollback"]:
 			if not provider.has_method(method_name):
 				return false
+		var contract: Dictionary = provider.call(&"get_delivery_contract")
+		if (
+			int(contract.get(&"version", 0)) != 1
+			or not bool(contract.get(&"compensating_rollback", false))
+		):
+			return false
 	delivery_provider = provider
 	return true
 
@@ -86,12 +107,27 @@ func purchase(offer_id: StringName, transaction_id: StringName, expected_rotatio
 			&"deliver", offer, transaction_id
 		)
 		if not bool(receipt.get(&"success", false)):
-			profile.call(&"add_credits", int(offer.get(&"price", 0)))
+			var consistency_error := bool(receipt.get(&"consistency_error", false))
+			if consistency_error:
+				processed_transactions[transaction_id] = true
+			else:
+				profile.call(&"add_credits", int(offer.get(&"price", 0)))
 			return {&"success": false, &"reason": receipt.get(&"reason", "지급 실패")}
 		if not bool(profile.call(&"mark_transaction_processed", transaction_id)):
-			delivery_provider.call(&"rollback", receipt)
-			profile.call(&"add_credits", int(offer.get(&"price", 0)))
-			return {&"success": false, &"reason": "구매 거래 기록 실패"}
+			var compensated := bool(delivery_provider.call(&"rollback", receipt))
+			if compensated:
+				profile.call(&"add_credits", int(offer.get(&"price", 0)))
+			else:
+				processed_transactions[transaction_id] = true
+			return {
+				&"success": false,
+				&"reason": (
+					"구매 거래 기록 실패"
+					if compensated else "지급 롤백 실패 · 결제 보류"
+				),
+				&"compensated": compensated,
+				&"consistency_error": not compensated,
+			}
 		processed_transactions[transaction_id] = true
 		return {
 			&"success": true, &"offer": offer,
