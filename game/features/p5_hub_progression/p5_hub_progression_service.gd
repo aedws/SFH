@@ -2,6 +2,8 @@ class_name P5HubProgressionService
 extends Node
 
 signal snapshot_changed(snapshot: Dictionary)
+signal training_started(scenario: Dictionary)
+signal training_finished(result: Dictionary)
 
 const SCRIPT_PATHS := {
 	&"table": "res://game/features/p5_hub_progression/p5_catalog_table.gd",
@@ -21,7 +23,7 @@ const TABLE_SCHEMAS := {
 	&"bankruptcy": [["preset_id", "character_id", "main_weapon_id", "secondary_weapon_id", "skill_ids", "tier_id", "region_id", "difficulty_id", "runtime_enabled"], &"preset_id"],
 	&"shop": [["offer_id", "display_name", "quality", "target_id", "quantity", "price", "runtime_enabled"], &"offer_id"],
 	&"workshop": [["recipe_id", "blueprint_id", "result_id", "credit_cost", "materials", "runtime_enabled"], &"recipe_id"],
-	&"training": [["scenario_id", "display_name", "dummy_mode", "measurement_seconds", "runtime_enabled"], &"scenario_id"],
+	&"training": [["scenario_id", "display_name", "dummy_mode", "dummy_count", "dummy_health", "dummy_armor", "measurement_seconds", "allow_free_loadout", "metrics", "restore_on_exit", "runtime_enabled", "source_status"], &"scenario_id"],
 	&"codex": [["entry_id", "display_name", "source_id", "region_hint", "required_count", "runtime_enabled"], &"entry_id"],
 }
 
@@ -228,6 +230,8 @@ func craft_recipe(recipe_id: StringName, transaction_id: StringName) -> Dictiona
 func start_training(scenario_id: StringName) -> Dictionary:
 	var training = _module(&"training")
 	var result: Dictionary = training.call(&"start", scenario_id) if training != null else {&"success": false, &"reason": "훈련 모듈 꺼짐"}
+	if bool(result.get(&"success", false)):
+		training_started.emit((result.get(&"scenario", {}) as Dictionary).duplicate(true))
 	snapshot_changed.emit(get_snapshot())
 	return result
 
@@ -242,8 +246,15 @@ func record_training_hit(damage: float, armor_penetration: float, cooldown_secon
 func finish_training() -> Dictionary:
 	var training = _module(&"training")
 	var result: Dictionary = training.call(&"finish") if training != null else {&"success": false, &"reason": "훈련 모듈 꺼짐"}
+	if bool(result.get(&"success", false)):
+		training_finished.emit(result.duplicate(true))
 	snapshot_changed.emit(get_snapshot())
 	return result
+
+
+func get_training_scenarios() -> Array[Dictionary]:
+	var training = _module(&"training")
+	return training.call(&"get_scenarios") if training != null else []
 
 
 func get_codex_entry(entry_id: StringName) -> Dictionary:

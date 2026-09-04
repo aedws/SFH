@@ -1448,3 +1448,19 @@ Web payload는 CSV의 별도 수동 사본이 아니라 생성 스크립트가 �
 .\scripts\check-p5-modularity.ps1
 .\scripts\test-p5.ps1
 ```
+
+## P8-01 실제 훈련장 감사 (2026-09-04) {#p8-01-2026-09-04}
+
+| 검사 항목 | 결과 | 근거 |
+|---|---|---|
+| 시나리오 정의 분리 | 통과 | `TrainingScenarioDefinition` Resource가 CSV 행 전체를 검증하고 런타임 스냅샷만 공개 |
+| 생성 책임 분리 | 통과 | `TrainingDummySpawner`가 더미 Scene·소유 목록·비중첩 배치·제거만 담당 |
+| 초기화 책임 분리 | 통과 | `TrainingScenarioResetService`가 활성 정의와 수동/자동 reset revision만 소유 |
+| 조립 façade | 통과 | `TrainingGroundService`가 정의·생성·초기화를 조립하고 `Game`은 공개 메서드·신호만 사용 |
+| 데이터 확장성 | 통과 | P5 훈련 스키마가 12개 열 전체를 검증하며 기존 `TrainingScenario` 2행을 재사용. 새 목록·Sheet 변경 없음 |
+| 일반 게임 격리 | 통과 | 훈련 기능은 적 생성 예산·방 전투·전리품 모듈을 참조하지 않고 경험치·드랍·처치 집계 신호에도 연결하지 않음 |
+| 선택 제거 | 통과 | 독립 Manifest 플래그와 config 경로를 사용하며 선행 기능 OFF에서는 전체 Manifest 실패 없이 자동 제외 |
+| 실제 플레이 E2E | 통과 | 거점 단말 상호작용→단일 보스→실제 좌클릭 피해·타격 기록→밀집 8기→이탈 정리 |
+| 전체 구조 | 통과 | 57개 feature, 218개 `class_name`, 26개 의존, 순환 0, 서비스/정책의 Scene 침범 0, P8 경계 4개 |
+
+더미 HP·방어·수량·측정 시간은 기존 CSV의 임시값입니다. 기획 확정 시 정의 행만 교체하며 게임 조립·생성·초기화 코드는 바꾸지 않습니다. 다음 `P8-02`는 기존 타격 기록에서 전용 수집기·시간창·HUD Presenter를 분리합니다.

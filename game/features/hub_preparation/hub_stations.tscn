@@ -11,3 +11,10 @@ position = Vector2(-580, 245)
 script = ExtResource("1")
 service_id = &"preparation"
 display_name = "출격 준비 · 장비는 I/U"
+
+[node name="TrainingStation" type="Node2D" parent="." groups=["hub_service_station"]]
+position = Vector2(95, -300)
+script = ExtResource("1")
+service_id = &"training"
+display_name = "훈련장 · 단일/밀집 전환"
+accent = Color(0.62, 0.38, 1, 1)

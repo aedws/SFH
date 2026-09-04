@@ -180,6 +180,8 @@ jobs:
           grep -q "P7_BLUEPRINT_REGISTRY_OK extraction permanent_registration unknown_guard idempotent reconnect recipe_candidates facade_status" /tmp/sfh-p7-blueprint.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/workshop_craft_transaction_contract_test.gd" | tee /tmp/sfh-p7-workshop.log
           grep -q "P7_WORKSHOP_TRANSACTION_OK quote_no_mutation visible_cost_material_roll atomic_single_commit duplicate_guard invalid_no_mutation actual_affixes_sockets reconnect replaceable_policy provider_failure storage_failure_rollback" /tmp/sfh-p7-workshop.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/training_ground_scenario_contract_test.gd" | tee /tmp/sfh-p8-training-contract.log
+          grep -q "P8_TRAINING_GROUND_OK scenario_resource single_boss dense_8 no_overlap smart_targeting reset_service auto_reset spawn_budget_isolated optional_module" /tmp/sfh-p8-training-contract.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_provider_contract_test.gd" | tee /tmp/sfh-p6-ranking.log
           grep -q "P6_RANKING_SUBMISSION_OK identity envelope_digest idempotency local_preserved persistent_retry timeout_retry server_rejection visible_sync_state" /tmp/sfh-p6-ranking.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_season_contract_test.gd" | tee /tmp/sfh-p6-season.log
@@ -255,6 +257,8 @@ jobs:
 
       - name: Test real-input play session
         run: |
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/training_ground_gameplay_e2e_test.gd" | tee /tmp/sfh-p8-training-e2e.log
+          grep -q "E2E_P8_TRAINING_GROUND_OK hub_station interaction single_attack_telemetry dense_switch spawn_isolation hub_exit_cleanup" /tmp/sfh-p8-training-e2e.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK" /tmp/sfh-e2e.log
           grep -q "E2E_LOOT_SESSION_OK" /tmp/sfh-e2e.log

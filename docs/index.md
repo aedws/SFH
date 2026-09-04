@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 14 · IMPROVE 15 · CHANGE 22 · FIX 12</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 18 · IMPROVE 19 · CHANGE 26 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>22</b><small>CHANGE</small></span><span><b>12</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>18</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>26</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>P8-01 · 실제 단일·밀집 더미 훈련장</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 거점 훈련 단말에서 단일 보스와 밀집 8기를 전환하고, 실제 공격·자동 초기화를 보상 없이 반복할 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>시나리오 Resource, 더미 생성기, 초기화 서비스, 훈련장 façade와 실제 거점 단말을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>좌클릭 피해·스마트 타게팅·타격 기록을 실제 더미에 연결하고 밀집 배치의 겹침과 반복 측정 동선을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>TrainingScenario 12열 전체 스키마, Manifest 선택 제거, 코드 노드맵, P8 로드맵·검색·E2E 문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>거점 기능을 끈 선택 빌드에서 훈련장 선행 의존성이 전체 Manifest 오류로 번지던 경계를 차단했습니다.</p></div>
+        <p>일반 적 스폰·경험치·전리품·처치·방 보상에는 영향을 주지 않습니다. 기존 TrainingScenario 2행을 재사용했으며 임시 수치와 과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/training-ground/">P8-01 플레이와 구조 →</a> · <a href="quality/e2e-play-session/#p8-training-ground-e2e">실제 플레이 E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>P7-04 · 원자적 맞춤 제작과 전체 모듈 감사</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 제작 전에 비용·재료·옵션/소켓 범위를 확인하고, 실제 결과와 거래 기록이 한 번에 저장됩니다.</strong></div>

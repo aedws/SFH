@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-04</span><span>SEARCH COMMAND</span><span>7 DAYS · 87 TOPICS</span><span>91 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-04</span><span>SEARCH COMMAND</span><span>7 DAYS · 88 TOPICS</span><span>92 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -27,7 +27,7 @@ tags:
     <b>96%</b>
   </div>
   <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-  <p>2026-09-04 공개 Master GDD v1005·77블록·해시 614a0b8ddee4는 동일합니다. P7-01B 품질 실물, P7-02 회전·리롤, P7-03 영구 도면, P7-04 원자적 제작 거래까지 반영했으며, 임시 운영값은 완료로 더하지 않아 기능 가중 추정치 96%를 유지합니다. 보안·백업은 계획만 등록했습니다.</p>
+  <p>2026-09-04 마지막 동기화된 공개 Master GDD v1005·77블록·해시 614a0b8ddee4를 기준으로 봅니다. P7-04 원자적 제작과 P8-01 실제 단일·밀집 훈련 런타임까지 반영했으며, 더미·경제 운영값은 임시이므로 기능 가중 추정치 96%를 유지합니다. 이번 실행에서는 공개 Notion 원문 재수집이 되지 않아 새 기획 변경을 추정하지 않았습니다.</p>
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-04 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
@@ -43,7 +43,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
 | 로비→준비→인게임 3단계 루프 | ×2 | 100% | 유틸리티·불변 작전 초안·원자적 확정·파산 무료 프리셋까지 허브→작전→허브에 연결 |
 | 상점 vs 제작소 경제 | ×1 | 90% | P7-01A/B 비교·구매→I 실물→U/E 장착→실제 품질 배율·옵션·소켓 보존. 운영 가격/성능 규칙 확정 잔여 |
-| 훈련 연습장 | ×1 | 100% | 단일·밀집 더미 시나리오, DPS·타격·AP·쿨타임 계측과 무비용 세팅 원복 구현 |
+| 훈련 연습장 | ×1 | 100% | P8-01 거점 F→실제 단일 보스·밀집 8기→좌클릭·자동 초기화·스폰 격리. 기존 계측/원복 계약 유지, P8-02 전용 HUD 분리 예정 |
 | 전리품 2대 분류·현장 파밍 | ×2 | 100% | 생명 주기·지역 테이블·현장 비교·획득·교체·소켓과 탈출 환전·영구 해금·창고/사망 소실·중복 방지 구현 |
 | 가변 태그·등급 확장 | ×1 | 85% | 동적 태그·등급·불일치 비활성·메커니즘 변형과 제작 옵션 풀 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
@@ -94,16 +94,17 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 | 완료 | 내부 P7-02 | 런 복귀 회전·골드 리롤 | 정책·상태·차감 분리, 취소/중복 방지와 UI 영수증 E2E 완료 |
 | 완료 | 내부 P7-03 | 반출 설계도 영구 등록 | 등록·Recipe 공급·해금 규칙 분리, 재접속 보존과 후보 상태 E2E 완료 |
 | 완료 | 내부 P7-04 | 원자적 맞춤 제작 | 비용·재료·범위 선공개, 실제 옵션/소켓, 단일 저장과 실패 무변경 E2E 완료 |
-| 예정 | 내부 P8~P10 | 훈련→도감→출시 후보 | P8-01 보스·밀집 더미부터 순서대로 착수 |
+| 진행 | 내부 P8 | P8-01 실제 훈련 더미 구현·수치 확정 대기 | P8-02 전용 계측 HUD→P8-03 무비용 자유 세팅 순서 |
+| 예정 | 내부 P9~P10 | 도감→출시 후보 | P8 완료 뒤 도감·프리셋과 전체 산출물 회귀 |
 | 착수 보류 | 위변조 감지·거래 원장·백업 | 사용자 지시로 문서만 등록 | 운영 정책과 별도 구현 승인 전 서비스·과금 변경 없음 |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 14 · IMPROVE 15 · CHANGE 22 · FIX 12</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 18 · IMPROVE 19 · CHANGE 26 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>22</b><small>CHANGE</small></span><span><b>12</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>18</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>26</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -164,7 +165,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="features/blueprint-crafting/#p7-03">설계도 흐름 →</a> · <a href="architecture/module-audit/#p7-03-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p7-blueprint-e2e">E2E →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>P7-04 · 원자적 맞춤 제작과 전체 모듈 감사</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 제작 전에 비용·재료·옵션/소켓 범위를 확인하고, 실제 결과와 거래 기록이 한 번에 저장됩니다.</strong></div>
@@ -174,6 +175,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>제작 저장 실패의 부분 차감, 세부 표현 모듈 실행 목록 누락, 별도 Godot 프로세스가 같은 테스트 저장 폴더를 재사용하던 간헐 회귀를 차단했습니다.</p></div>
         <p>전체 감사 결과는 기능 경계 56개·클래스 213개·의존 25개·순환 0·서비스 Scene 침범 0입니다. 새 목록이 필요하지 않아 Sheet/CSV와 과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/blueprint-crafting/#p7-04">P7-04 제작 →</a> · <a href="architecture/module-audit/#p7-04-2026-09-04">전체 감사 →</a> · <a href="quality/e2e-play-session/#p7-workshop-e2e">E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>P8-01 · 실제 단일·밀집 더미 훈련장</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 거점 훈련 단말에서 단일 보스와 밀집 8기를 전환하고, 실제 공격·자동 초기화를 보상 없이 반복할 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 4</h3><p>시나리오 Resource, 더미 생성기, 초기화 서비스, 훈련장 façade와 실제 거점 단말을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>좌클릭 피해·스마트 타게팅·타격 기록을 실제 더미에 연결하고 밀집 배치의 겹침과 반복 측정 동선을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>TrainingScenario 12열 전체 스키마, Manifest 선택 제거, 코드 노드맵, P8 로드맵·검색·E2E 문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>거점 기능을 끈 선택 빌드에서 훈련장 선행 의존성이 전체 Manifest 오류로 번지던 경계를 차단했습니다.</p></div>
+        <p>일반 적 스폰·경험치·전리품·처치·방 보상에는 영향을 주지 않습니다. 기존 TrainingScenario 2행을 재사용했으며 임시 수치와 과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/training-ground/">P8-01 플레이와 구조 →</a> · <a href="architecture/module-audit/#p8-01-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p8-training-ground-e2e">실제 플레이 E2E →</a></p>
       </div>
     </details>
   </div>

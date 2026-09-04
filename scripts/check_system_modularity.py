@@ -124,6 +124,34 @@ for filename in sorted(required_workshop_boundaries):
     if not (workshop_root / filename).is_file():
         ERRORS.append(f"Workshop boundary missing: {filename}")
 
+required_training_boundaries = {
+    "training_scenario_definition.gd",
+    "training_dummy_spawner.gd",
+    "training_scenario_reset_service.gd",
+    "training_ground_service.gd",
+}
+training_root = FEATURES / "training_ground"
+for filename in sorted(required_training_boundaries):
+    if not (training_root / filename).is_file():
+        ERRORS.append(f"Training ground boundary missing: {filename}")
+training_source = "\n".join(
+    text(path) for path in training_root.glob("*.gd") if path.is_file()
+)
+for forbidden in (
+    "res://game/features/spawning/",
+    "res://game/features/loot/",
+    "res://game/features/room_encounters/",
+):
+    if forbidden in training_source:
+        ERRORS.append(f"Training ground leaks into operation runtime: {forbidden}")
+
+training_contract = ROOT / "game" / "tests" / "training_ground_scenario_contract_test.gd"
+training_e2e = ROOT / "game" / "tests" / "training_ground_gameplay_e2e_test.gd"
+if not training_contract.is_file() or "spawn_budget_isolated" not in text(training_contract):
+    ERRORS.append("P8 training ground lacks scenario/reset/spawn-isolation coverage.")
+if not training_e2e.is_file() or "single_attack_telemetry" not in text(training_e2e):
+    ERRORS.append("P8 training ground lacks real hub attack telemetry E2E coverage.")
+
 workflow = text(ROOT / ".github" / "workflows" / "deploy-wiki.yml")
 if "check_system_modularity.py" not in workflow:
     ERRORS.append("System modularity audit is not enforced by CI.")
@@ -136,5 +164,5 @@ print(
     "SYSTEM_MODULARITY_OK "
     f"features={len(feature_ids)} classes={len(class_owners)} dependencies={edge_count} "
     f"cycles=0 service_scene_reach=0 manifest_flags={len(enabled_flags)} "
-    "workshop_boundaries=5 ci_gate=1"
+    "workshop_boundaries=5 training_boundaries=4 ci_gate=1"
 )

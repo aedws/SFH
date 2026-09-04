@@ -59,6 +59,10 @@ func get_snapshot() -> Dictionary:
 		&"hit_count": hits.size(), &"metrics": [&"dps", &"hit_damage", &"armor_penetration", &"cooldown"]}
 
 
+func get_scenarios() -> Array[Dictionary]:
+	return scenarios.duplicate(true)
+
+
 func _find(scenario_id: StringName) -> Dictionary:
 	for scenario in scenarios:
 		if StringName(scenario.get(&"scenario_id", &"")) == scenario_id:
