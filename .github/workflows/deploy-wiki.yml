@@ -40,6 +40,8 @@ on:
       - "scripts/check-game-domain-cutover.ps1"
       - "scripts/check-wiki-planner-requests.ps1"
       - "scripts/check-p7-roadmap.ps1"
+      - "scripts/generate_project_ontology.py"
+      - "scripts/check-project-ontology.ps1"
       - "scripts/test-p6.ps1"
   push:
     branches:
@@ -80,6 +82,8 @@ on:
       - "scripts/check-game-domain-cutover.ps1"
       - "scripts/check-wiki-planner-requests.ps1"
       - "scripts/check-p7-roadmap.ps1"
+      - "scripts/generate_project_ontology.py"
+      - "scripts/check-project-ontology.ps1"
       - "scripts/test-p6.ps1"
   workflow_dispatch:
 
@@ -424,6 +428,7 @@ jobs:
           python scripts/snapshot_notion_source.py --check
           python scripts/test_notion_snapshot.py
           ./scripts/check-code-module-map.ps1
+          ./scripts/check-project-ontology.ps1
           python -m mkdocs build --strict
           python scripts/test_wiki_articles.py .wiki-site
           Copy-Item cloudflare/wiki-auth/_worker.js .wiki-site/_worker.js
@@ -449,12 +454,15 @@ jobs:
           test -s .wiki-site/javascripts/play-entry.js
           test -s .wiki-site/javascripts/knowledge-map.js
           test -s .wiki-site/assets/knowledge-map.json
+          test -s .wiki-site/assets/project-ontology.json
+          test -s .wiki-site/javascripts/owner-decision-console.js
           grep -q '#02e5e1' .wiki-site/stylesheets/extra.css
           grep -q 'Galmuri11.woff2' .wiki-site/stylesheets/extra.css
           grep -q 'href="https://sfh-game.vstock-market.workers.dev/"' .wiki-site/index.html
           grep -q 'data-sfh-surface="gameplay"' .wiki-site/index.html
           grep -q 'data-sfh-global-play' .wiki-site/javascripts/play-entry.js
           grep -q 'data-sfh-knowledge-map' .wiki-site/javascripts/knowledge-map.js
+          grep -q 'data-sfh-owner-decision-console' .wiki-site/javascripts/owner-decision-console.js
           test -s .wiki-site/assets/deployment-surfaces.json
           test -s .wiki-site/_worker.js
           test -s .wiki-site/access/login/index.html

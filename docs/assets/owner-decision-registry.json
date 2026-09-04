@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "updated": "2026-09-05",
+  "authority": {
+    "id": "authority:project-owner",
+    "label": "프로젝트 오너",
+    "description": "범위, 우선순위, 확정 여부, 수락과 출시를 최종 판단합니다.",
+    "decision_scope": [
+      "scope",
+      "priority",
+      "acceptance",
+      "release"
+    ]
+  },
+  "contributors": [
+    {
+      "id": "contributor:planner",
+      "label": "기획자",
+      "responsibility": "기획 근거, 수치 후보와 플레이 의도를 제안합니다.",
+      "can_finalize": false
+    },
+    {
+      "id": "contributor:developer",
+      "label": "개발자",
+      "responsibility": "구현 상태, 회귀 위험, 테스트와 배포 근거를 제공합니다.",
+      "can_finalize": false
+    }
+  ],
+  "statuses": [
+    {"id": "needs_decision", "label": "오너 판단 필요", "rank": 1},
+    {"id": "blocked", "label": "선행 조건 대기", "rank": 2},
+    {"id": "ready", "label": "구현 준비", "rank": 3},
+    {"id": "implemented", "label": "구현·검증됨", "rank": 4},
+    {"id": "deferred", "label": "명시적 보류", "rank": 5}
+  ],
+  "objects": [
+    {
+      "id": "principle:owner-authority",
+      "type": "principle",
+      "label": "최종 판단권은 프로젝트 오너에게 있다",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "기획자는 의도와 후보를, 개발자는 구현·검증 근거를 제공하며 최종 확정과 수락은 프로젝트 오너가 수행합니다.",
+      "next_action": "모든 신규 판단 객체에 오너, 근거, 수락 조건을 기록합니다.",
+      "relations": [
+        {"to": "document:architecture/project-ontology", "type": "documented_by"},
+        {"to": "document:design/wiki-collaboration-workflow", "type": "governs"}
+      ]
+    },
+    {
+      "id": "work:wiki-ontology-pilot",
+      "type": "work_item",
+      "label": "개발자 판단 콘솔 1차 도입",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "문서 목록 위에 객체·관계·근거를 읽기 전용으로 연결하고 오너가 판단 대상을 먼저 볼 수 있게 합니다.",
+      "acceptance": "개발자 작업실에서 판단 주체, 판단 대기, 구현 준비, 위험과 직접 관계를 검색·필터·키보드로 확인할 수 있습니다.",
+      "next_action": "실사용 후 객체 유형과 자동 수집 범위를 늘릴지 오너가 판단합니다.",
+      "relations": [
+        {"to": "principle:owner-authority", "type": "governed_by"},
+        {"to": "module:verification", "type": "verified_by"},
+        {"to": "document:quality/wiki-responsive-e2e", "type": "verified_by"},
+        {"to": "document:architecture/code-module-map", "type": "extends"}
+      ]
+    },
+    {
+      "id": "decision:p7-balance-finalization",
+      "type": "decision",
+      "label": "P7 품질·리롤·제작 운영값 확정",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "실물 연결과 거래 흐름은 완료됐지만 손상품·고성능·리롤·제작의 운영 수치는 임시입니다.",
+      "acceptance": "오너가 가격, 성능 배율, 옵션·소켓 범위와 재화 소모를 승인하고 확정 CSV로 잠급니다.",
+      "next_action": "기획 후보와 실제 플레이 계측을 비교해 확정·수정·보류 중 하나를 선택합니다.",
+      "relations": [
+        {"to": "document:design/current-milestone-workline", "type": "informed_by"},
+        {"to": "document:getting-started/planner-item-balance-tutorial", "type": "informed_by"},
+        {"to": "module:shop_browser", "type": "affects"},
+        {"to": "module:crafting", "type": "affects"},
+        {"to": "module:balance_data", "type": "configured_by"}
+      ]
+    },
+    {
+      "id": "risk:item-sheet-duplicate-source",
+      "type": "risk",
+      "label": "Item·Utility 중복 원본 정리",
+      "status": "blocked",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "Item 시트의 Utility 중복 행 때문에 자동 동기화 검증을 통과하지 못해 현재는 자동 반영을 금지합니다.",
+      "acceptance": "Utility 데이터의 단일 원본을 지정하고 중복 행을 제거한 뒤 동기화 검증이 성공합니다.",
+      "next_action": "오너가 단일 원본 탭을 확인한 뒤 데이터 정리를 승인합니다.",
+      "relations": [
+        {"to": "document:getting-started/planner-item-balance-tutorial", "type": "informed_by"},
+        {"to": "module:balance_data", "type": "blocks"},
+        {"to": "module:loot_tables", "type": "affects"}
+      ]
+    },
+    {
+      "id": "work:p9-01-compendium-hints",
+      "type": "work_item",
+      "label": "P9-01 도감 해금률·미해금 지역 힌트",
+      "status": "ready",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "현재 다음 작업선으로, 도감에서 해금률과 미해금 항목의 획득 지역 단서를 제공합니다.",
+      "acceptance": "잠금·해금 상태, 전체 해금률, 지역 힌트가 저장·복원되고 플레이어 인식 E2E를 통과합니다.",
+      "next_action": "오너가 착수를 선택하면 P9-01 구현과 검증을 시작합니다.",
+      "relations": [
+        {"to": "document:design/current-milestone-workline", "type": "informed_by"},
+        {"to": "module:p5_hub_progression", "type": "implemented_by"},
+        {"to": "module:persistent_profile", "type": "requires"},
+        {"to": "module:verification", "type": "verified_by"}
+      ]
+    },
+    {
+      "id": "decision:server-economy-integrity",
+      "type": "decision",
+      "label": "서버 위변조 감지·거래 원장 착수",
+      "status": "deferred",
+      "certainty": "proposed",
+      "decision_owner": "authority:project-owner",
+      "summary": "서버 신원, 검증 지급, 거래 원장과 백업은 구현 예정 문서만 존재하며 과금 모델과 운영 인프라는 건드리지 않습니다.",
+      "acceptance": "운영 공급자, 보존 기간, 비용 한도, 복구 권한과 제재 기준을 오너가 별도로 승인합니다.",
+      "next_action": "별도 착수 지시 전에는 설계와 위험 기록만 유지합니다.",
+      "relations": [
+        {"to": "document:design/p7-plus-preimplementation", "type": "documented_by"},
+        {"to": "module:persistent_profile", "type": "affects"},
+        {"to": "module:conditional_ranking", "type": "affects"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2914 @@
+{
+  "schema_version": 1,
+  "updated": "2026-09-05",
+  "source_sha256": "1baf29a9b28c66eed0db1d69e578fbae65a75b15084c86325ef3bf09757aa468",
+  "authority": {
+    "id": "authority:project-owner",
+    "label": "프로젝트 오너",
+    "description": "범위, 우선순위, 확정 여부, 수락과 출시를 최종 판단합니다.",
+    "decision_scope": [
+      "scope",
+      "priority",
+      "acceptance",
+      "release"
+    ]
+  },
+  "contributors": [
+    {
+      "id": "contributor:planner",
+      "label": "기획자",
+      "responsibility": "기획 근거, 수치 후보와 플레이 의도를 제안합니다.",
+      "can_finalize": false
+    },
+    {
+      "id": "contributor:developer",
+      "label": "개발자",
+      "responsibility": "구현 상태, 회귀 위험, 테스트와 배포 근거를 제공합니다.",
+      "can_finalize": false
+    }
+  ],
+  "statuses": [
+    {
+      "id": "needs_decision",
+      "label": "오너 판단 필요",
+      "rank": 1
+    },
+    {
+      "id": "blocked",
+      "label": "선행 조건 대기",
+      "rank": 2
+    },
+    {
+      "id": "ready",
+      "label": "구현 준비",
+      "rank": 3
+    },
+    {
+      "id": "implemented",
+      "label": "구현·검증됨",
+      "rank": 4
+    },
+    {
+      "id": "deferred",
+      "label": "명시적 보류",
+      "rank": 5
+    }
+  ],
+  "views": [
+    {
+      "id": "owner-decision",
+      "label": "오너 판단",
+      "audience": "developer",
+      "object_types": [
+        "decision",
+        "risk",
+        "work_item",
+        "principle"
+      ],
+      "read_only": true
+    }
+  ],
+  "summary": {
+    "tracked": 6,
+    "owner_decisions": 1,
+    "blocked": 1,
+    "ready": 1,
+    "implemented": 2,
+    "modules": 60,
+    "documents": 95,
+    "relations": 87
+  },
+  "objects": [
+    {
+      "id": "authority:project-owner",
+      "label": "프로젝트 오너",
+      "description": "범위, 우선순위, 확정 여부, 수락과 출시를 최종 판단합니다.",
+      "decision_scope": [
+        "scope",
+        "priority",
+        "acceptance",
+        "release"
+      ],
+      "type": "authority",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "summary": "범위, 우선순위, 확정 여부, 수락과 출시를 최종 판단합니다."
+    },
+    {
+      "id": "principle:owner-authority",
+      "type": "principle",
+      "label": "최종 판단권은 프로젝트 오너에게 있다",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "기획자는 의도와 후보를, 개발자는 구현·검증 근거를 제공하며 최종 확정과 수락은 프로젝트 오너가 수행합니다.",
+      "next_action": "모든 신규 판단 객체에 오너, 근거, 수락 조건을 기록합니다.",
+      "relations": [
+        {
+          "to": "document:architecture/project-ontology",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:design/wiki-collaboration-workflow",
+          "type": "governs"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "work:wiki-ontology-pilot",
+      "type": "work_item",
+      "label": "개발자 판단 콘솔 1차 도입",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "문서 목록 위에 객체·관계·근거를 읽기 전용으로 연결하고 오너가 판단 대상을 먼저 볼 수 있게 합니다.",
+      "acceptance": "개발자 작업실에서 판단 주체, 판단 대기, 구현 준비, 위험과 직접 관계를 검색·필터·키보드로 확인할 수 있습니다.",
+      "next_action": "실사용 후 객체 유형과 자동 수집 범위를 늘릴지 오너가 판단합니다.",
+      "relations": [
+        {
+          "to": "principle:owner-authority",
+          "type": "governed_by"
+        },
+        {
+          "to": "module:verification",
+          "type": "verified_by"
+        },
+        {
+          "to": "document:quality/wiki-responsive-e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "document:architecture/code-module-map",
+          "type": "extends"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "decision:p7-balance-finalization",
+      "type": "decision",
+      "label": "P7 품질·리롤·제작 운영값 확정",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "실물 연결과 거래 흐름은 완료됐지만 손상품·고성능·리롤·제작의 운영 수치는 임시입니다.",
+      "acceptance": "오너가 가격, 성능 배율, 옵션·소켓 범위와 재화 소모를 승인하고 확정 CSV로 잠급니다.",
+      "next_action": "기획 후보와 실제 플레이 계측을 비교해 확정·수정·보류 중 하나를 선택합니다.",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:getting-started/planner-item-balance-tutorial",
+          "type": "informed_by"
+        },
+        {
+          "to": "module:shop_browser",
+          "type": "affects"
+        },
+        {
+          "to": "module:crafting",
+          "type": "affects"
+        },
+        {
+          "to": "module:balance_data",
+          "type": "configured_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "risk:item-sheet-duplicate-source",
+      "type": "risk",
+      "label": "Item·Utility 중복 원본 정리",
+      "status": "blocked",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "Item 시트의 Utility 중복 행 때문에 자동 동기화 검증을 통과하지 못해 현재는 자동 반영을 금지합니다.",
+      "acceptance": "Utility 데이터의 단일 원본을 지정하고 중복 행을 제거한 뒤 동기화 검증이 성공합니다.",
+      "next_action": "오너가 단일 원본 탭을 확인한 뒤 데이터 정리를 승인합니다.",
+      "relations": [
+        {
+          "to": "document:getting-started/planner-item-balance-tutorial",
+          "type": "informed_by"
+        },
+        {
+          "to": "module:balance_data",
+          "type": "blocks"
+        },
+        {
+          "to": "module:loot_tables",
+          "type": "affects"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "work:p9-01-compendium-hints",
+      "type": "work_item",
+      "label": "P9-01 도감 해금률·미해금 지역 힌트",
+      "status": "ready",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "현재 다음 작업선으로, 도감에서 해금률과 미해금 항목의 획득 지역 단서를 제공합니다.",
+      "acceptance": "잠금·해금 상태, 전체 해금률, 지역 힌트가 저장·복원되고 플레이어 인식 E2E를 통과합니다.",
+      "next_action": "오너가 착수를 선택하면 P9-01 구현과 검증을 시작합니다.",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "informed_by"
+        },
+        {
+          "to": "module:p5_hub_progression",
+          "type": "implemented_by"
+        },
+        {
+          "to": "module:persistent_profile",
+          "type": "requires"
+        },
+        {
+          "to": "module:verification",
+          "type": "verified_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "decision:server-economy-integrity",
+      "type": "decision",
+      "label": "서버 위변조 감지·거래 원장 착수",
+      "status": "deferred",
+      "certainty": "proposed",
+      "decision_owner": "authority:project-owner",
+      "summary": "서버 신원, 검증 지급, 거래 원장과 백업은 구현 예정 문서만 존재하며 과금 모델과 운영 인프라는 건드리지 않습니다.",
+      "acceptance": "운영 공급자, 보존 기간, 비용 한도, 복구 권한과 제재 기준을 오너가 별도로 승인합니다.",
+      "next_action": "별도 착수 지시 전에는 설계와 위험 기록만 유지합니다.",
+      "relations": [
+        {
+          "to": "document:design/p7-plus-preimplementation",
+          "type": "documented_by"
+        },
+        {
+          "to": "module:persistent_profile",
+          "type": "affects"
+        },
+        {
+          "to": "module:conditional_ranking",
+          "type": "affects"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "module:scene_assembly",
+      "type": "module",
+      "label": "게임 조립",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "기반·검증 · assembly · 파일 2개",
+      "route": "architecture/code-module-map/?module=scene_assembly",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/scenes",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 0,
+        "incoming": 2,
+        "outgoing": 55
+      }
+    },
+    {
+      "id": "module:core",
+      "type": "module",
+      "label": "공통 계약",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "기반·검증 · contract · 파일 6개",
+      "route": "architecture/code-module-map/?module=core",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/core",
+      "kind": "implementation",
+      "metrics": {
+        "files": 6,
+        "classes": 6,
+        "incoming": 9,
+        "outgoing": 30
+      }
+    },
+    {
+      "id": "module:balance_data",
+      "type": "module",
+      "label": "밸런스 데이터",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "데이터 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=balance_data",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/balance_data",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 0,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:boss_warning",
+      "type": "module",
+      "label": "보스 경고",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 4개",
+      "route": "architecture/code-module-map/?module=boss_warning",
+      "documentation_route": "features/elite-pursuit/",
+      "source": "game/features/boss_warning",
+      "kind": "implementation",
+      "metrics": {
+        "files": 4,
+        "classes": 4,
+        "incoming": 2,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:character_selection",
+      "type": "module",
+      "label": "요원 선택",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "장비·세팅 · feature · 파일 4개",
+      "route": "architecture/code-module-map/?module=character_selection",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/character_selection",
+      "kind": "implementation",
+      "metrics": {
+        "files": 4,
+        "classes": 4,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:combat_resources",
+      "type": "module",
+      "label": "전투 자원",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 3개",
+      "route": "architecture/code-module-map/?module=combat_resources",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/combat_resources",
+      "kind": "implementation",
+      "metrics": {
+        "files": 3,
+        "classes": 3,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:combat_skills",
+      "type": "module",
+      "label": "전투 스킬",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 13개",
+      "route": "architecture/code-module-map/?module=combat_skills",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/combat_skills",
+      "kind": "implementation",
+      "metrics": {
+        "files": 13,
+        "classes": 13,
+        "incoming": 6,
+        "outgoing": 2
+      }
+    },
+    {
+      "id": "module:conditional_ranking",
+      "type": "module",
+      "label": "조건부 랭킹",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "작전 흐름 · feature · 파일 17개",
+      "route": "architecture/code-module-map/?module=conditional_ranking",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/conditional_ranking",
+      "kind": "implementation",
+      "metrics": {
+        "files": 17,
+        "classes": 17,
+        "incoming": 3,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:crafting",
+      "type": "module",
+      "label": "도면 제작",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=crafting",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/crafting",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:credits",
+      "type": "module",
+      "label": "크레딧",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=credits",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/credits",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 5,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:elite_pursuit",
+      "type": "module",
+      "label": "엘리트 추격",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=elite_pursuit",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/elite_pursuit",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 2
+      }
+    },
+    {
+      "id": "module:enemies",
+      "type": "module",
+      "label": "적 유닛",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 5개",
+      "route": "architecture/code-module-map/?module=enemies",
+      "documentation_route": "features/enemies/",
+      "source": "game/features/enemies",
+      "kind": "implementation",
+      "metrics": {
+        "files": 5,
+        "classes": 5,
+        "incoming": 4,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:equipment",
+      "type": "module",
+      "label": "장비 규칙",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "장비·세팅 · feature · 파일 19개",
+      "route": "architecture/code-module-map/?module=equipment",
+      "documentation_route": "features/equipment/",
+      "source": "game/features/equipment",
+      "kind": "implementation",
+      "metrics": {
+        "files": 19,
+        "classes": 19,
+        "incoming": 6,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:equipment_upgrade",
+      "type": "module",
+      "label": "장비 강화",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "장비·세팅 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=equipment_upgrade",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/equipment_upgrade",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:experience",
+      "type": "module",
+      "label": "경험치",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "성장 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=experience",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/experience",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 2,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:extraction",
+      "type": "module",
+      "label": "탈출",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "작전 흐름 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=extraction",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/extraction",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:field_loot",
+      "type": "module",
+      "label": "필드 전리품",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 11개",
+      "route": "architecture/code-module-map/?module=field_loot",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/field_loot",
+      "kind": "implementation",
+      "metrics": {
+        "files": 11,
+        "classes": 11,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:fog_of_war",
+      "type": "module",
+      "label": "전장의 안개",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "월드·탐색 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=fog_of_war",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/fog_of_war",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 1,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:growth_balance",
+      "type": "module",
+      "label": "성장 밸런스",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "성장 · feature · 파일 3개",
+      "route": "architecture/code-module-map/?module=growth_balance",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/growth_balance",
+      "kind": "implementation",
+      "metrics": {
+        "files": 3,
+        "classes": 3,
+        "incoming": 3,
+        "outgoing": 2
+      }
+    },
+    {
+      "id": "module:health_recovery",
+      "type": "module",
+      "label": "체력 회복",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "성장 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=health_recovery",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/health_recovery",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:hit_feedback",
+      "type": "module",
+      "label": "타격 피드백",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 3개",
+      "route": "architecture/code-module-map/?module=hit_feedback",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/hit_feedback",
+      "kind": "implementation",
+      "metrics": {
+        "files": 3,
+        "classes": 3,
+        "incoming": 2,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:hub_economy",
+      "type": "module",
+      "label": "거점 경제",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=hub_economy",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/hub_economy",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:hub_preparation",
+      "type": "module",
+      "label": "거점 준비",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=hub_preparation",
+      "documentation_route": "features/start-hub/",
+      "source": "game/features/hub_preparation",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 1,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:inventory",
+      "type": "module",
+      "label": "가방 인벤토리",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "장비·세팅 · feature · 파일 7개",
+      "route": "architecture/code-module-map/?module=inventory",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/inventory",
+      "kind": "implementation",
+      "metrics": {
+        "files": 7,
+        "classes": 7,
+        "incoming": 5,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:key_mapping",
+      "type": "module",
+      "label": "키 설정",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "UI·입력 · feature · 파일 3개",
+      "route": "architecture/code-module-map/?module=key_mapping",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/key_mapping",
+      "kind": "implementation",
+      "metrics": {
+        "files": 3,
+        "classes": 3,
+        "incoming": 4,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:loadout_investment",
+      "type": "module",
+      "label": "투입 비용",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "작전 흐름 · feature · 파일 4개",
+      "route": "architecture/code-module-map/?module=loadout_investment",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/loadout_investment",
+      "kind": "implementation",
+      "metrics": {
+        "files": 4,
+        "classes": 4,
+        "incoming": 3,
+        "outgoing": 2
+      }
+    },
+    {
+      "id": "module:local_save",
+      "type": "module",
+      "label": "로컬 저장",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 3개",
+      "route": "architecture/code-module-map/?module=local_save",
+      "documentation_route": "getting-started/run-project/",
+      "source": "game/features/local_save",
+      "kind": "implementation",
+      "metrics": {
+        "files": 3,
+        "classes": 2,
+        "incoming": 2,
+        "outgoing": 3
+      }
+    },
+    {
+      "id": "module:loot",
+      "type": "module",
+      "label": "전리품",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 4개",
+      "route": "architecture/code-module-map/?module=loot",
+      "documentation_route": "features/loot/",
+      "source": "game/features/loot",
+      "kind": "implementation",
+      "metrics": {
+        "files": 4,
+        "classes": 4,
+        "incoming": 3,
+        "outgoing": 2
+      }
+    },
+    {
+      "id": "module:loot_lifecycle",
+      "type": "module",
+      "label": "전리품 생명 주기",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 5개",
+      "route": "architecture/code-module-map/?module=loot_lifecycle",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/loot_lifecycle",
+      "kind": "implementation",
+      "metrics": {
+        "files": 5,
+        "classes": 5,
+        "incoming": 6,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:loot_tables",
+      "type": "module",
+      "label": "드랍 테이블",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 4개",
+      "route": "architecture/code-module-map/?module=loot_tables",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/loot_tables",
+      "kind": "implementation",
+      "metrics": {
+        "files": 4,
+        "classes": 4,
+        "incoming": 3,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:map_generation",
+      "type": "module",
+      "label": "맵 생성",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "월드·탐색 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=map_generation",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/map_generation",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 7,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:meta_progression",
+      "type": "module",
+      "label": "외부 성장",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "성장 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=meta_progression",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/meta_progression",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 2,
+        "outgoing": 2
+      }
+    },
+    {
+      "id": "module:minimap",
+      "type": "module",
+      "label": "미니맵",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "월드·탐색 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=minimap",
+      "documentation_route": "features/minimap/",
+      "source": "game/features/minimap",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 1,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:mobile_controls",
+      "type": "module",
+      "label": "모바일 조작",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "UI·입력 · feature · 파일 8개",
+      "route": "architecture/code-module-map/?module=mobile_controls",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/mobile_controls",
+      "kind": "implementation",
+      "metrics": {
+        "files": 8,
+        "classes": 4,
+        "incoming": 2,
+        "outgoing": 3
+      }
+    },
+    {
+      "id": "module:movement_hud",
+      "type": "module",
+      "label": "이동 HUD",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "UI·입력 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=movement_hud",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/movement_hud",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 2,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:operation_contract",
+      "type": "module",
+      "label": "작전 계약",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "작전 흐름 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=operation_contract",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/operation_contract",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:operation_launch",
+      "type": "module",
+      "label": "작전 진입",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "작전 흐름 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=operation_launch",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/operation_launch",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 2,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:operation_results",
+      "type": "module",
+      "label": "작전 결과",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "작전 흐름 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=operation_results",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/operation_results",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:operation_tutorial",
+      "type": "module",
+      "label": "작전 튜토리얼",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "작전 흐름 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=operation_tutorial",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/operation_tutorial",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 2,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:p5_hub_progression",
+      "type": "module",
+      "label": "거점 성장 루프",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "성장 · feature · 파일 24개",
+      "route": "architecture/code-module-map/?module=p5_hub_progression",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/p5_hub_progression",
+      "kind": "implementation",
+      "metrics": {
+        "files": 24,
+        "classes": 24,
+        "incoming": 3,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:penalty_modifiers",
+      "type": "module",
+      "label": "페널티 변형",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "작전 흐름 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=penalty_modifiers",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/penalty_modifiers",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:persistent_profile",
+      "type": "module",
+      "label": "영구 프로필",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=persistent_profile",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/persistent_profile",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 5,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:player",
+      "type": "module",
+      "label": "플레이어",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 3개",
+      "route": "architecture/code-module-map/?module=player",
+      "documentation_route": "features/player/",
+      "source": "game/features/player",
+      "kind": "implementation",
+      "metrics": {
+        "files": 3,
+        "classes": 3,
+        "incoming": 5,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:presentation_settings",
+      "type": "module",
+      "label": "화면 설정",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "UI·입력 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=presentation_settings",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/presentation_settings",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:presentation_theme",
+      "type": "module",
+      "label": "화면 테마",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "UI·입력 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=presentation_theme",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/presentation_theme",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 2,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:room_encounters",
+      "type": "module",
+      "label": "방 전투",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 5개",
+      "route": "architecture/code-module-map/?module=room_encounters",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/room_encounters",
+      "kind": "implementation",
+      "metrics": {
+        "files": 5,
+        "classes": 5,
+        "incoming": 3,
+        "outgoing": 3
+      }
+    },
+    {
+      "id": "module:room_navigation",
+      "type": "module",
+      "label": "방 이동",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "월드·탐색 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=room_navigation",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/room_navigation",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 1,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:run_buffs",
+      "type": "module",
+      "label": "내부 강화",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "성장 · feature · 파일 5개",
+      "route": "architecture/code-module-map/?module=run_buffs",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/run_buffs",
+      "kind": "implementation",
+      "metrics": {
+        "files": 5,
+        "classes": 5,
+        "incoming": 5,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:run_settlement",
+      "type": "module",
+      "label": "런 정산",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "작전 흐름 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=run_settlement",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/run_settlement",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 2,
+        "outgoing": 2
+      }
+    },
+    {
+      "id": "module:run_setup",
+      "type": "module",
+      "label": "런 설정",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "작전 흐름 · feature · 파일 5개",
+      "route": "architecture/code-module-map/?module=run_setup",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/run_setup",
+      "kind": "implementation",
+      "metrics": {
+        "files": 5,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:session_sockets",
+      "type": "module",
+      "label": "세션 소켓",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "장비·세팅 · feature · 파일 5개",
+      "route": "architecture/code-module-map/?module=session_sockets",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/session_sockets",
+      "kind": "implementation",
+      "metrics": {
+        "files": 5,
+        "classes": 5,
+        "incoming": 3,
+        "outgoing": 3
+      }
+    },
+    {
+      "id": "module:shop_browser",
+      "type": "module",
+      "label": "상점",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "파밍·경제 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=shop_browser",
+      "documentation_route": "features/hub-economy/",
+      "source": "game/features/shop_browser",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 1,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:skill_binding",
+      "type": "module",
+      "label": "스킬 장착",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=skill_binding",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/skill_binding",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 2
+      }
+    },
+    {
+      "id": "module:smart_targeting",
+      "type": "module",
+      "label": "자동 타게팅",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=smart_targeting",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/smart_targeting",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 2,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:spawning",
+      "type": "module",
+      "label": "적 생성",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=spawning",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/spawning",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 4,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:start_hub",
+      "type": "module",
+      "label": "시작 거점",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "월드·탐색 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=start_hub",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/start_hub",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 1,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:training_ground",
+      "type": "module",
+      "label": "훈련장",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "월드·탐색 · feature · 파일 12개",
+      "route": "architecture/code-module-map/?module=training_ground",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/training_ground",
+      "kind": "implementation",
+      "metrics": {
+        "files": 12,
+        "classes": 12,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
+      "id": "module:weapon_balance",
+      "type": "module",
+      "label": "무기 밸런스",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "장비·세팅 · feature · 파일 3개",
+      "route": "architecture/code-module-map/?module=weapon_balance",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/weapon_balance",
+      "kind": "implementation",
+      "metrics": {
+        "files": 3,
+        "classes": 3,
+        "incoming": 3,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:weapons",
+      "type": "module",
+      "label": "무기",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "장비·세팅 · feature · 파일 3개",
+      "route": "architecture/code-module-map/?module=weapons",
+      "documentation_route": "features/weapons/",
+      "source": "game/features/weapons",
+      "kind": "implementation",
+      "metrics": {
+        "files": 3,
+        "classes": 3,
+        "incoming": 5,
+        "outgoing": 1
+      }
+    },
+    {
+      "id": "module:verification",
+      "type": "module",
+      "label": "자동 검증",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "기반·검증 · verification · 파일 38개",
+      "route": "architecture/code-module-map/?module=verification",
+      "documentation_route": "quality/e2e-play-session/",
+      "source": "game/tests",
+      "kind": "implementation",
+      "metrics": {
+        "files": 38,
+        "classes": 0,
+        "incoming": 0,
+        "outgoing": 50
+      }
+    },
+    {
+      "id": "document:index",
+      "type": "document",
+      "label": "위키 홈",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "게임 정체성·즉시 플레이·최신 업데이트",
+      "route": "",
+      "source": "docs/index.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:development-status",
+      "type": "document",
+      "label": "개발 현황과 업데이트",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "진행률·구현 단계·남은 작업",
+      "route": "development-status/",
+      "source": "docs/development-status.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:access/login",
+      "type": "document",
+      "label": "역할 로그인",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "planner·developer 고정 ID와 초기 비밀번호 0000",
+      "route": "access/login/",
+      "source": "docs/access/login.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:access/account",
+      "type": "document",
+      "label": "계정 설정",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "로그인 뒤 고정 ID 확인·비밀번호 변경",
+      "route": "access/account/",
+      "source": "docs/access/account.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:access/planner",
+      "type": "document",
+      "label": "기획자 작업실",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "쉬운 게임 설명·완료 범위·남은 기획 결정",
+      "route": "access/planner/",
+      "source": "docs/access/planner.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:access/developer",
+      "type": "document",
+      "label": "개발자 작업실",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "완료·오류·다음 작업·구조·원칙",
+      "route": "access/developer/",
+      "source": "docs/access/developer.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:getting-started/index",
+      "type": "document",
+      "label": "시작하기",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "초보자용 전체 작업 순서",
+      "route": "getting-started/",
+      "source": "docs/getting-started/index.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:getting-started/install",
+      "type": "document",
+      "label": "설치",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "Godot·Python·Git 준비",
+      "route": "getting-started/install/",
+      "source": "docs/getting-started/install.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:getting-started/editor-basics",
+      "type": "document",
+      "label": "편집기 기초",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "Godot 화면과 기본 용어",
+      "route": "getting-started/editor-basics/",
+      "source": "docs/getting-started/editor-basics.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:getting-started/run-project",
+      "type": "document",
+      "label": "프로젝트 실행",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "로컬·브라우저 플레이 방법",
+      "route": "getting-started/run-project/",
+      "source": "docs/getting-started/run-project.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:getting-started/source-control-and-cleanup",
+      "type": "document",
+      "label": "작업 폴더 정리와 Git 복구",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "단일 상시 폴더·worktree 제거 판정·커밋/PR 기반 복구",
+      "route": "getting-started/source-control-and-cleanup/",
+      "source": "docs/getting-started/source-control-and-cleanup.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:getting-started/edit-wiki-online",
+      "type": "document",
+      "label": "위키 수정 요청과 반영",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "제안 초안→Notion 근거→비공개 원본 PR→Cloudflare 배포",
+      "route": "getting-started/edit-wiki-online/",
+      "source": "docs/getting-started/edit-wiki-online.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:getting-started/planner-item-balance-tutorial",
+      "type": "document",
+      "label": "기획자 아이템·밸런싱 튜토리얼",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "탭 선택→기존 수치 조정·새 아이템 연결→실시간 시험→CSV 확정·되돌리기",
+      "route": "getting-started/planner-item-balance-tutorial/",
+      "source": "docs/getting-started/planner-item-balance-tutorial.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:getting-started/search-wiki",
+      "type": "document",
+      "label": "위키 실시간 검색",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "검색 순위·빠른 탐색·노드맵",
+      "route": "getting-started/search-wiki/",
+      "source": "docs/getting-started/search-wiki.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:design/index",
+      "type": "document",
+      "label": "게임 설계",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "설계 문서 진입점",
+      "route": "design/",
+      "source": "docs/design/index.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:design/master-gdd-alignment",
+      "type": "document",
+      "label": "Master GDD 구현 대조",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "2026-09-02 백업본 v153·96% 산식·마일스톤 차이",
+      "route": "design/master-gdd-alignment/",
+      "source": "docs/design/master-gdd-alignment.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:design/current-milestone-workline",
+      "type": "document",
+      "label": "현행 마일스톤 작업 라인",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "Phase 1·4·5·6와 내부 P7+ 순서·모듈·E2E 게이트",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:design/p5-p6-preimplementation",
+      "type": "document",
+      "label": "P5·P6 사전 구현 설계",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "확장된 로비 허브와 비동기 시즌의 데이터·모듈·E2E 계약",
+      "route": "design/p5-p6-preimplementation/",
+      "source": "docs/design/p5-p6-preimplementation.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:design/p7-plus-preimplementation",
+      "type": "document",
+      "label": "P7 이후 사전 구현 설계",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "상점·제작소·훈련장·도감의 내부 P7~P10 후속 계약",
+      "route": "design/p7-plus-preimplementation/",
+      "source": "docs/design/p7-plus-preimplementation.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:design/planner-request-workflow",
+      "type": "document",
+      "label": "기획 요청·밸런스 데이터 운영",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "요청 ID·Notion 근거·Sheet 상시 확장·완료 안내",
+      "route": "design/planner-request-workflow/",
+      "source": "docs/design/planner-request-workflow.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:design/wiki-collaboration-workflow",
+      "type": "document",
+      "label": "AI 개발자·기획자 위키 협업 개선안",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "역할·상태·차단·수락 기준·근거와 단계별 수정 대안",
+      "route": "design/wiki-collaboration-workflow/",
+      "source": "docs/design/wiki-collaboration-workflow.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:design/game-overview",
+      "type": "document",
+      "label": "게임 개요",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "장르·캐치프레이즈·핵심 노선",
+      "route": "design/game-overview/",
+      "source": "docs/design/game-overview.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:design/mvp-scope",
+      "type": "document",
+      "label": "MVP 범위",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "최소 구현과 후속 범위",
+      "route": "design/mvp-scope/",
+      "source": "docs/design/mvp-scope.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:design/cyberpunk-visual-theme",
+      "type": "document",
+      "label": "사이버펑크 비주얼 테마",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "#02e5e1·도트 폰트·노이즈·HUD",
+      "route": "design/cyberpunk-visual-theme/",
+      "source": "docs/design/cyberpunk-visual-theme.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:architecture/index",
+      "type": "document",
+      "label": "아키텍처",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "구조 문서 진입점",
+      "route": "architecture/",
+      "source": "docs/architecture/index.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:architecture/module-rules",
+      "type": "document",
+      "label": "모듈 규칙",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "의존성과 공개 계약 원칙",
+      "route": "architecture/module-rules/",
+      "source": "docs/architecture/module-rules.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:architecture/code-module-map",
+      "type": "document",
+      "label": "현재 코드 모듈 노드맵",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "실제 코드에서 산출한 모듈·클래스·상속·참조 관계",
+      "route": "architecture/code-module-map/",
+      "source": "docs/architecture/code-module-map.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:architecture/project-ontology",
+      "type": "document",
+      "label": "프로젝트 오너 판단 온톨로지",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "오너 판단권과 요구·위험·구현·검증 관계를 연결하는 읽기 전용 운영 계층",
+      "route": "architecture/project-ontology/",
+      "source": "docs/architecture/project-ontology.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:architecture/module-audit",
+      "type": "document",
+      "label": "모듈화 점검 기록",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "기능별 교체성 검증 근거",
+      "route": "architecture/module-audit/",
+      "source": "docs/architecture/module-audit.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:architecture/wiki-role-auth",
+      "type": "document",
+      "label": "위키 역할 인증과 권한 경계",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "공개 홈 최소화·내부 문서 인증·고정 역할 계정",
+      "route": "architecture/wiki-role-auth/",
+      "source": "docs/architecture/wiki-role-auth.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:architecture/scene-tree",
+      "type": "document",
+      "label": "장면 트리",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "Scene과 Node 소유 관계",
+      "route": "architecture/scene-tree/",
+      "source": "docs/architecture/scene-tree.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:architecture/signals",
+      "type": "document",
+      "label": "Signal 규칙",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "모듈 간 이벤트 통신",
+      "route": "architecture/signals/",
+      "source": "docs/architecture/signals.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:architecture/third-party-assets",
+      "type": "document",
+      "label": "외부 에셋 라이선스 원장",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "출처·라이선스·해시 감사",
+      "route": "architecture/third-party-assets/",
+      "source": "docs/architecture/third-party-assets.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:quality/index",
+      "type": "document",
+      "label": "검증과 문제 해결",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "테스트·성능·오류 해결 문서의 읽기 시작점",
+      "route": "quality/",
+      "source": "docs/quality/index.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:performance/minimum-requirements",
+      "type": "document",
+      "label": "최소·권장 사양과 성능 예산",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "60 FPS·Node·이펙트 상한",
+      "route": "performance/minimum-requirements/",
+      "source": "docs/performance/minimum-requirements.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:quality/e2e-play-session",
+      "type": "document",
+      "label": "실제 플레이 세션 E2E",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "실제 입력·화면 상태·복귀 검증",
+      "route": "quality/e2e-play-session/",
+      "source": "docs/quality/e2e-play-session.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:quality/player-perception-audit",
+      "type": "document",
+      "label": "플레이어 인식 단위 E2E 감사",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "단서·피드백·결말 이해 판정",
+      "route": "quality/player-perception-audit/",
+      "source": "docs/quality/player-perception-audit.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:quality/wiki-responsive-e2e",
+      "type": "document",
+      "label": "모바일 위키 반응형 E2E",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "4개 뷰포트·검색·표·링크 검증",
+      "route": "quality/wiki-responsive-e2e/",
+      "source": "docs/quality/wiki-responsive-e2e.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/index",
+      "type": "document",
+      "label": "SFH 종합 문서",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "게임 개요에서 주제별·세부 문서로 내려가는 문서형 대문",
+      "route": "features/",
+      "source": "docs/features/index.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/operations",
+      "type": "document",
+      "label": "작전과 맵",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "작전 준비부터 탐험·탈출까지",
+      "route": "features/operations/",
+      "source": "docs/features/operations.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/start-hub",
+      "type": "document",
+      "label": "시작 거점과 전투 세션 전환",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "거점→작전→거점 루프",
+      "route": "features/start-hub/",
+      "source": "docs/features/start-hub.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/operation-entry-wizard",
+      "type": "document",
+      "label": "작전 진입 마법사와 첫 투입 안내",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "3단계 설정·초기 4경로·실패 복구·현장 가이드",
+      "route": "features/operation-entry-wizard/",
+      "source": "docs/features/operation-entry-wizard.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/operation-contracts",
+      "type": "document",
+      "label": "투입 비용·지역·난이도 계약",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "투자와 위험·보상 데이터 연결",
+      "route": "features/operation-contracts/",
+      "source": "docs/features/operation-contracts.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/raid-setup-extraction",
+      "type": "document",
+      "label": "작전 선택과 탈출",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "규모 선택·진입 비용·탈출",
+      "route": "features/raid-setup-extraction/",
+      "source": "docs/features/raid-setup-extraction.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/map-generation",
+      "type": "document",
+      "label": "랜덤 맵 생성",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "규모별 방·통로·건물 생성",
+      "route": "features/map-generation/",
+      "source": "docs/features/map-generation.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/fog-of-war",
+      "type": "document",
+      "label": "전장의 안개",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "방·통로·정면 시야 규칙",
+      "route": "features/fog-of-war/",
+      "source": "docs/features/fog-of-war.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/minimap",
+      "type": "document",
+      "label": "전술 미니맵",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "M 확장 지도와 조건부 방 워프",
+      "route": "features/minimap/",
+      "source": "docs/features/minimap.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/extraction-defense-results",
+      "type": "document",
+      "label": "탈출 방어전과 결과 정산",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "카운트다운·성공·실패 정산",
+      "route": "features/extraction-defense-results/",
+      "source": "docs/features/extraction-defense-results.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/game-loop",
+      "type": "document",
+      "label": "게임 루프와 HUD",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "플레이 단계와 화면 정보 흐름",
+      "route": "features/game-loop/",
+      "source": "docs/features/game-loop.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/operation-launch-preflight",
+      "type": "document",
+      "label": "작전 투입 사전검증과 불변 계획",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "모든 세팅의 결제 전 집계·검증과 동일 계획 조립",
+      "route": "features/operation-launch-preflight/",
+      "source": "docs/features/operation-launch-preflight.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/combat",
+      "type": "document",
+      "label": "전투와 조작",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "이동·공격·스킬·적과 싸우는 규칙",
+      "route": "features/combat/",
+      "source": "docs/features/combat.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/player",
+      "type": "document",
+      "label": "플레이어",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "탑다운 이동·대시·조작감",
+      "route": "features/player/",
+      "source": "docs/features/player.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/key-mapping",
+      "type": "document",
+      "label": "K 입력 설정과 자유 스킬 배치",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "23개 물리 키와 별도인 1~9 스킬 위치 교환·저장",
+      "route": "features/key-mapping/",
+      "source": "docs/features/key-mapping.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/mobile-hud-settings",
+      "type": "document",
+      "label": "모바일 키패드와 HUD 표시 설정",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "터치 Action·상태 HUD 위치·키 표시 형식",
+      "route": "features/mobile-hud-settings/",
+      "source": "docs/features/mobile-hud-settings.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/weapons",
+      "type": "document",
+      "label": "자동 무기",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "무조준 기본기와 무기 태그",
+      "route": "features/weapons/",
+      "source": "docs/features/weapons.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/smart-targeting",
+      "type": "document",
+      "label": "스마트 자동 타게팅",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "대상·밀집·이동 방향 정책",
+      "route": "features/smart-targeting/",
+      "source": "docs/features/smart-targeting.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/combat-skills",
+      "type": "document",
+      "label": "전투 스킬과 쿨타임 HUD",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "점멸·자기장·기동 가속",
+      "route": "features/combat-skills/",
+      "source": "docs/features/combat-skills.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/combat-resources",
+      "type": "document",
+      "label": "전투 에너지·충전·회복 드랍",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "스킬 자원과 처치 드랍",
+      "route": "features/combat-resources/",
+      "source": "docs/features/combat-resources.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/health-recovery",
+      "type": "document",
+      "label": "부분 체력 회복",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "회복 규칙과 제한",
+      "route": "features/health-recovery/",
+      "source": "docs/features/health-recovery.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/hit-feedback",
+      "type": "document",
+      "label": "타격감과 피격 피드백",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "섬광·넉백·충격·카메라 반응",
+      "route": "features/hit-feedback/",
+      "source": "docs/features/hit-feedback.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/enemies",
+      "type": "document",
+      "label": "적과 증원형 생성 시스템",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "규모별 물량·분리·재생성 한계",
+      "route": "features/enemies/",
+      "source": "docs/features/enemies.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/enemy-defense",
+      "type": "document",
+      "label": "적 체력과 방어력",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "적 생존 스탯과 상태 바",
+      "route": "features/enemy-defense/",
+      "source": "docs/features/enemy-defense.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/elite-pursuit",
+      "type": "document",
+      "label": "투입액 50% 회수 추격 보스",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "진입비 절반 회수·보스 1기·문 독립 추격·격파 집계",
+      "route": "features/elite-pursuit/",
+      "source": "docs/features/elite-pursuit.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/room-encounters",
+      "type": "document",
+      "label": "방 진입 전투와 봉쇄 보상",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "문 폐쇄·1~5개 크레딧 박스·조기 탈출",
+      "route": "features/room-encounters/",
+      "source": "docs/features/room-encounters.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/equipment",
+      "type": "document",
+      "label": "장비와 인벤토리",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "요원·무기·방어구·가방을 준비하는 방법",
+      "route": "features/equipment/",
+      "source": "docs/features/equipment.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/character-selection",
+      "type": "document",
+      "label": "P5-01 캐릭터 선택",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "캐릭터 가격·패시브·작전 견적과 실전 적용",
+      "route": "features/character-selection/",
+      "source": "docs/features/character-selection.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/character-equipment",
+      "type": "document",
+      "label": "캐릭터 장비와 로드아웃",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "무기·방어구·스킬 슬롯",
+      "route": "features/character-equipment/",
+      "source": "docs/features/character-equipment.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/equipment-fixed-identity",
+      "type": "document",
+      "label": "무기 고유 스킬과 장비 고정 옵션",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "같은 무기 고유 효과·성장 비적용 장비 옵션·Sheet/CSV",
+      "route": "features/equipment-fixed-identity/",
+      "source": "docs/features/equipment-fixed-identity.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/grid-inventory",
+      "type": "document",
+      "label": "격자 가방 인벤토리",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "가변 크기 배치·클릭 후 R 회전·방향 저장",
+      "route": "features/grid-inventory/",
+      "source": "docs/features/grid-inventory.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/equipment-customization",
+      "type": "document",
+      "label": "장비 파츠·모듈 개조",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "호환 파츠·모듈 코스트·태그",
+      "route": "features/equipment-customization/",
+      "source": "docs/features/equipment-customization.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/equipment-upgrade-economy",
+      "type": "document",
+      "label": "모듈·고유 파츠 강화 경제",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "재료·크레딧·강화 단계",
+      "route": "features/equipment-upgrade-economy/",
+      "source": "docs/features/equipment-upgrade-economy.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/loadout-investment",
+      "type": "document",
+      "label": "P5-02 무기·스킬 런 투자",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "주·보조무기·스킬 가격·해금·태그·런 구매와 복원",
+      "route": "features/loadout-investment/",
+      "source": "docs/features/loadout-investment.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/weapon-balance",
+      "type": "document",
+      "label": "Q 무기 교체와 Google Sheets 밸런스",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "무기 특색·실시간 수치 테스트",
+      "route": "features/weapon-balance/",
+      "source": "docs/features/weapon-balance.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/loot",
+      "type": "document",
+      "label": "전리품과 회수",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "발견한 자원이 내 것이 되기까지",
+      "route": "features/loot/",
+      "source": "docs/features/loot.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/credit-loot",
+      "type": "document",
+      "label": "크레딧 파밍과 회수",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "현장 자원·금고·회수 배율",
+      "route": "features/credit-loot/",
+      "source": "docs/features/credit-loot.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/loot-tables",
+      "type": "document",
+      "label": "지역·난이도 전리품 테이블",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "세 지역 29행·난이도·출처별 타겟 파밍과 브리핑",
+      "route": "features/loot-tables/",
+      "source": "docs/features/loot-tables.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/loot-lifecycle",
+      "type": "document",
+      "label": "전리품 생명 주기",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "영구·이번 런 자산, 탈출·사망 결과와 Item Sheet",
+      "route": "features/loot-lifecycle/",
+      "source": "docs/features/loot-lifecycle.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/field-loot-acquisition",
+      "type": "document",
+      "label": "현장 전리품 비교·획득",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "접근 비교·ESC 보류·F 획득과 런 임시 보관",
+      "route": "features/field-loot-acquisition/",
+      "source": "docs/features/field-loot-acquisition.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/field-loot-immediate-equip",
+      "type": "document",
+      "label": "현장 무기 즉시 장착",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "R 즉시 장착·기존 무기 런 임시 보관·거점 복구",
+      "route": "features/field-loot-immediate-equip/",
+      "source": "docs/features/field-loot-immediate-equip.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/field-loot-skill-swap",
+      "type": "document",
+      "label": "현장 스킬 즉시 교체",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "R 슬롯 교체·키 유지·쿨다운·충전 복구",
+      "route": "features/field-loot-skill-swap/",
+      "source": "docs/features/field-loot-skill-swap.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/session-sockets",
+      "type": "document",
+      "label": "런 전용 룬·코어·유물 소켓",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "RunAsset 기반 작전 한정 슬롯·즉시 효과·HUD 해제",
+      "route": "features/session-sockets/",
+      "source": "docs/features/session-sockets.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/run-settlement",
+      "type": "document",
+      "label": "런 전리품 정산",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "자동 환전·영구 해금·창고 보관·사망 소실과 중복 방지",
+      "route": "features/run-settlement/",
+      "source": "docs/features/run-settlement.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/growth",
+      "type": "document",
+      "label": "성장과 거점 경제",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "이번 판의 강화와 다음 판에 남는 성장",
+      "route": "features/growth/",
+      "source": "docs/features/growth.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/progression",
+      "type": "document",
+      "label": "내부·외부 로그라이크 성장",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "증강 카드와 영구 계열 경험치",
+      "route": "features/progression/",
+      "source": "docs/features/progression.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/growth-balance",
+      "type": "document",
+      "label": "내부 성장·장비 강화 Google Sheets 연동",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "런 버프와 강화 수치 데이터",
+      "route": "features/growth-balance/",
+      "source": "docs/features/growth-balance.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/hub-economy",
+      "type": "document",
+      "label": "영구 해금·상점·창고·소모품",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "거점 경제와 파산 방지",
+      "route": "features/hub-economy/",
+      "source": "docs/features/hub-economy.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/p5-hub-progression",
+      "type": "document",
+      "label": "P5-03~10 로비 허브 진행",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "유틸리티·작전 초안·파산 보호·상점·제작·훈련·도감",
+      "route": "features/p5-hub-progression/",
+      "source": "docs/features/p5-hub-progression.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/training-ground",
+      "type": "document",
+      "label": "P8 훈련 연습장",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "거점 단말에서 단일 보스·밀집 더미를 실제 공격하고 독립 초기화",
+      "route": "features/training-ground/",
+      "source": "docs/features/training-ground.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/blueprint-crafting",
+      "type": "document",
+      "label": "도면 제작과 랜덤 옵션",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "도면 해금·제작·옵션 정책",
+      "route": "features/blueprint-crafting/",
+      "source": "docs/features/blueprint-crafting.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/penalty-ranking",
+      "type": "document",
+      "label": "페널티 변형과 조건부 랭킹",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "리스크 보상과 3종 기록",
+      "route": "features/penalty-ranking/",
+      "source": "docs/features/penalty-ranking.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/ranking-provider",
+      "type": "document",
+      "label": "P6 검증형 랭킹 제출과 오프라인 보존",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "보스 격파·로컬 시즌 기간·참가·마감 읽기 전용·검증 제출",
+      "route": "features/ranking-provider/",
+      "source": "docs/features/ranking-provider.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:troubleshooting/index",
+      "type": "document",
+      "label": "문제 해결",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "증상별 원인과 복구 방법",
+      "route": "troubleshooting/",
+      "source": "docs/troubleshooting/index.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:decisions/index",
+      "type": "document",
+      "label": "결정 기록",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "ADR 목록과 작성 규칙",
+      "route": "decisions/",
+      "source": "docs/decisions/index.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:decisions/0001-technology-stack",
+      "type": "document",
+      "label": "0001 기술 스택",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "Godot·Python·MkDocs 선택 근거",
+      "route": "decisions/0001-technology-stack/",
+      "source": "docs/decisions/0001-technology-stack.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:decisions/DEC-P4-04-field-replacement-policy",
+      "type": "document",
+      "label": "DEC-P4-04 현장 교체 안전 정책",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "무기·스킬 런 전용 복구와 기획 확정 경계",
+      "route": "decisions/DEC-P4-04-field-replacement-policy/",
+      "source": "docs/decisions/DEC-P4-04-field-replacement-policy.md",
+      "kind": "evidence"
+    }
+  ],
+  "relations": [
+    {
+      "from": "authority:project-owner",
+      "to": "principle:owner-authority",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "principle:owner-authority",
+      "to": "document:architecture/project-ontology",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "principle:owner-authority",
+      "to": "document:design/wiki-collaboration-workflow",
+      "type": "governs",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:wiki-ontology-pilot",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:wiki-ontology-pilot",
+      "to": "principle:owner-authority",
+      "type": "governed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:wiki-ontology-pilot",
+      "to": "module:verification",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:wiki-ontology-pilot",
+      "to": "document:quality/wiki-responsive-e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:wiki-ontology-pilot",
+      "to": "document:architecture/code-module-map",
+      "type": "extends",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "decision:p7-balance-finalization",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:p7-balance-finalization",
+      "to": "document:design/current-milestone-workline",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:p7-balance-finalization",
+      "to": "document:getting-started/planner-item-balance-tutorial",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:p7-balance-finalization",
+      "to": "module:shop_browser",
+      "type": "affects",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:p7-balance-finalization",
+      "to": "module:crafting",
+      "type": "affects",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:p7-balance-finalization",
+      "to": "module:balance_data",
+      "type": "configured_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "risk:item-sheet-duplicate-source",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "risk:item-sheet-duplicate-source",
+      "to": "document:getting-started/planner-item-balance-tutorial",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "risk:item-sheet-duplicate-source",
+      "to": "module:balance_data",
+      "type": "blocks",
+      "origin": "registry"
+    },
+    {
+      "from": "risk:item-sheet-duplicate-source",
+      "to": "module:loot_tables",
+      "type": "affects",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:p9-01-compendium-hints",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:p9-01-compendium-hints",
+      "to": "document:design/current-milestone-workline",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:p9-01-compendium-hints",
+      "to": "module:p5_hub_progression",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:p9-01-compendium-hints",
+      "to": "module:persistent_profile",
+      "type": "requires",
+      "origin": "registry"
+    },
+    {
+      "from": "work:p9-01-compendium-hints",
+      "to": "module:verification",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "decision:server-economy-integrity",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:server-economy-integrity",
+      "to": "document:design/p7-plus-preimplementation",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:server-economy-integrity",
+      "to": "module:persistent_profile",
+      "type": "affects",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:server-economy-integrity",
+      "to": "module:conditional_ranking",
+      "type": "affects",
+      "origin": "registry"
+    },
+    {
+      "from": "module:scene_assembly",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:core",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:balance_data",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:boss_warning",
+      "to": "document:features/elite-pursuit",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:character_selection",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:combat_resources",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:combat_skills",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:conditional_ranking",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:crafting",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:credits",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:elite_pursuit",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:enemies",
+      "to": "document:features/enemies",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:equipment",
+      "to": "document:features/equipment",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:equipment_upgrade",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:experience",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:extraction",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:field_loot",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:fog_of_war",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:growth_balance",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:health_recovery",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:hit_feedback",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:hub_economy",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:hub_preparation",
+      "to": "document:features/start-hub",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:inventory",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:key_mapping",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:loadout_investment",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:local_save",
+      "to": "document:getting-started/run-project",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:loot",
+      "to": "document:features/loot",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:loot_lifecycle",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:loot_tables",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:map_generation",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:meta_progression",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:minimap",
+      "to": "document:features/minimap",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:mobile_controls",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:movement_hud",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:operation_contract",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:operation_launch",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:operation_results",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:operation_tutorial",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:p5_hub_progression",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:penalty_modifiers",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:persistent_profile",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:player",
+      "to": "document:features/player",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:presentation_settings",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:presentation_theme",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:room_encounters",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:room_navigation",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:run_buffs",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:run_settlement",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:run_setup",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:session_sockets",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:shop_browser",
+      "to": "document:features/hub-economy",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:skill_binding",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:smart_targeting",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:spawning",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:start_hub",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:training_ground",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:weapon_balance",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:weapons",
+      "to": "document:features/weapons",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:verification",
+      "to": "document:quality/e2e-play-session",
+      "type": "documented_by",
+      "origin": "generated"
+    }
+  ]
+}

@@ -112,6 +112,8 @@ for (const protectedPath of [
   "/search/search_index.json",
   "/assets/knowledge-map.json",
   "/assets/search-priorities.json",
+  "/assets/owner-decision-registry.json",
+  "/assets/project-ontology.json",
   "/sitemap.xml",
   "/404.html",
   "/assets/internal-notes.txt",
@@ -192,6 +194,15 @@ assert.equal(await response.text(), "asset:/access/planner/");
 response = await worker.fetch(request("/access/developer/", { headers: { cookie: plannerCookie } }), env);
 assert.equal(response.status, 403);
 
+for (const developerOnlyPath of [
+  "/architecture/project-ontology/",
+  "/assets/owner-decision-registry.json",
+  "/assets/project-ontology.json",
+]) {
+  response = await worker.fetch(request(developerOnlyPath, { headers: { cookie: plannerCookie } }), env);
+  assert.equal(response.status, 403, `${developerOnlyPath} must remain developer-only`);
+}
+
 response = await worker.fetch(request("/api/auth/login", {
   method: "POST",
   headers: { "content-type": "application/json", origin: "https://sfh-dev-wiki.pages.dev" },
@@ -223,6 +234,16 @@ const developerSession = await response.json();
 const developerCookie = cookieFrom(response);
 assert.equal(developerSession.role, "developer");
 assert.equal(developerSession.username, "developer");
+
+for (const developerOnlyPath of [
+  "/architecture/project-ontology/",
+  "/assets/owner-decision-registry.json",
+  "/assets/project-ontology.json",
+]) {
+  response = await worker.fetch(request(developerOnlyPath, { headers: { cookie: developerCookie } }), env);
+  assert.equal(response.status, 200, `${developerOnlyPath} must be readable by the developer role`);
+  assert.equal(response.headers.get("cache-control"), "private, no-store, max-age=0");
+}
 
 response = await worker.fetch(request("/access/planner/", { headers: { cookie: developerCookie } }), env);
 assert.equal(response.status, 403);

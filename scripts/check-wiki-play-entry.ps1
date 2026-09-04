@@ -28,7 +28,7 @@ if ($script -notmatch 'data-sfh-global-play' -or $script -notmatch 'document\$\.
 if ($script -notmatch 'GAMEPLAY_ORIGIN = "https://sfh-game\.vstock-market\.workers\.dev"' -or $script -notmatch 'target = "_blank"' -or $script -notmatch 'noopener noreferrer') {
     throw "The global browser play entry must open the distinct gameplay Worker safely."
 }
-if ($script -notmatch 'deployment-surfaces\.json' -or $script -notmatch 'cutover_status === "ready"' -or $script -notmatch 'desired_origin') {
+if ($script -notmatch 'deployment-surfaces\.json' -or $script -notmatch 'cutover_status === "ready"' -or $script -notmatch 'desired_origin' -or $script -notmatch 'document\.currentScript') {
     throw "The play entry does not implement the DNS-gated play-preview.dev cutover contract."
 }
 if ($headerStyle -notmatch 'a\.sfh-global-play' -or $style -notmatch '\.sfh-operation-play') {

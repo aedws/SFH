@@ -321,6 +321,8 @@ async function handleCredentialChange(request, env) {
 function requiredRole(pathname) {
   if (pathname === "/access/planner" || pathname.startsWith("/access/planner/")) return "planner";
   if (pathname === "/access/developer" || pathname.startsWith("/access/developer/")) return "developer";
+  if (pathname === "/architecture/project-ontology" || pathname.startsWith("/architecture/project-ontology/")) return "developer";
+  if (pathname === "/assets/project-ontology.json" || pathname === "/assets/owner-decision-registry.json") return "developer";
   if (pathname === "/access/account" || pathname.startsWith("/access/account/")) return "authenticated";
   if (isPublicPath(pathname)) return null;
   return "authenticated";
