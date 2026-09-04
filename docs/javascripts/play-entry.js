@@ -3,10 +3,13 @@
 
   var GAMEPLAY_ORIGIN = "https://sfh-game.vstock-market.workers.dev";
   var SURFACE_REGISTRY = "assets/deployment-surfaces.json";
+  var scriptUrl = document.currentScript && document.currentScript.src
+    ? new URL(document.currentScript.src, window.location.href)
+    : null;
 
   function siteRoot() {
-    var base = document.querySelector("base");
-    return new URL(base ? base.href : document.baseURI);
+    if (scriptUrl) return new URL("../", scriptUrl);
+    return new URL("/", window.location.href);
   }
 
   function loadEffectiveOrigin() {

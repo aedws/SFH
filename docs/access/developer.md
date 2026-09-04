@@ -9,6 +9,8 @@ hide:
 
 # 개발자 작업실
 
+<div id="owner-decision-console" data-sfh-owner-decision-console-host></div>
+
 <div id="code-module-map" data-sfh-code-module-map-host></div>
 
 <a class="sfh-article-entry" href="../../features/"><strong>SFH 종합 문서부터 읽기 →</strong><small>주제별 게임 규칙과 개발 구조를 찾는 공통 문서 대문입니다.</small></a>
@@ -72,10 +74,13 @@ hide:
 8. 병합은 빌드·Web/Windows export·E2E·위키 계약이 모두 성공한 PR만 허용합니다.
 9. 장비 제공자의 실물 상태가 출격 원본입니다. 작전 카탈로그에서 무기/모듈/파츠를 덮어쓰거나 무기 비용을 재청구하지 않습니다.
 10. 장비 고유 스킬과 고정 옵션은 `fixed_identity` 원천이며 내부/외부 성장과 모듈 modifier가 값을 변경하지 못합니다.
+11. 기획자는 의도·후보, 개발자는 구현·검증 근거를 제공하며 범위·우선순위·수락·출시의 최종 판단은 프로젝트 오너가 수행합니다.
+12. 위키의 판단 콘솔은 읽기 전용 파생 뷰입니다. Notion·Sheet/CSV·Git/E2E 원본보다 우선하지 않으며 깨진 관계나 소유권 누락은 빌드에서 차단합니다.
 
 <nav class="sfh-role-console__grid" aria-label="개발자 핵심 문서">
   <a href="../../design/current-milestone-workline/"><b>실행 작업선</b><span>다음 ID·중단 조건·E2E 게이트</span></a>
   <a href="../../architecture/code-module-map/"><b>코드 관계 웹 전체 문서</b><span>읽는 법·자동 현행화·접근성 계약</span></a>
+  <a href="../../architecture/project-ontology/"><b>프로젝트 오너 판단 온톨로지</b><span>권한·객체·관계·원본 경계·확장 중단 조건</span></a>
   <a href="../../architecture/module-audit/"><b>모듈 감사</b><span>제거성·교체성·경계 위반 기록</span></a>
   <a href="../../quality/e2e-play-session/"><b>실제 플레이 E2E</b><span>입력·상태 전이·회귀 검사</span></a>
 </nav>

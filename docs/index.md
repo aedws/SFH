@@ -44,10 +44,21 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 4 · IMPROVE 7 · CHANGE 9 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 7 · IMPROVE 11 · CHANGE 14 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>9</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>14</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>프로젝트 오너 판단 온톨로지 · 개발자 콘솔</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자와 개발자는 근거를 제공하고, 사용자인 프로젝트 오너가 범위·우선순위·수락·출시를 최종 판단하도록 개발자 화면을 재구성했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>오너 판단 레지스트리, 코드·문서 결합 생성기, 검색·필터·직접 관계 상세 콘솔을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>판단 필요·차단·준비·검증·보류를 분리하고, 선택 객체 주변 근거만 표시하며 모바일 한 열과 키보드 탐색을 지원합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>Notion·Sheet/CSV·Git/E2E를 원본으로 유지하고 위키는 읽기 전용 파생 뷰로 고정했습니다. 중복 ID·소유권 누락·깨진 문서/모듈 관계는 빌드 실패로 처리합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>기획자를 최종 결정자로 오인하던 표현을 바로잡고, 하위 문서에서 게임 배포 주소 레지스트리를 현재 경로 아래로 잘못 요청하던 404를 제거했습니다.</p></div>
+        <p>게임 코드·밸런스 Sheet/CSV·과금·서버 설정은 변경하지 않았습니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>가방 아이템 R 회전 · 방향 저장</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · I 가방에서 아이템을 한 번 선택하고 R을 누르면 3×2↔2×3처럼 점유 방향을 바꾸고, 저장한 방향이 다음 실행에도 유지됩니다.</strong></div>

@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-05</span><span>SEARCH COMMAND</span><span>8 DAYS · 91 TOPICS</span><span>94 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-05</span><span>SEARCH COMMAND</span><span>8 DAYS · 92 TOPICS</span><span>95 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 4 · IMPROVE 7 · CHANGE 9 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 7 · IMPROVE 11 · CHANGE 14 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>9</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>14</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>단일 작업 폴더 · Git 커밋 기반 복구</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -117,7 +117,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="getting-started/source-control-and-cleanup/">형상 관리·복구 운영안 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>가방 아이템 R 회전 · 방향 저장</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · I 가방에서 아이템을 한 번 선택하고 R을 누르면 3×2↔2×3처럼 점유 방향을 바꾸고, 저장한 방향이 다음 실행에도 유지됩니다.</strong></div>
@@ -127,6 +127,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기존 결함 수정이 아니라 가방 편집 기능 확장입니다.</p></div>
         <p>회전할 공간이 없으면 원래 위치와 방향을 보존합니다. 새 아이템·밸런스 목록이 없어 Google Sheet·확정 CSV·과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/grid-inventory/">플레이 규칙 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a> · <a href="quality/e2e-play-session/#desktop-save-e2e">E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>프로젝트 오너 판단 온톨로지 · 개발자 콘솔</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자와 개발자는 근거 제공자로 분리하고, 사용자인 프로젝트 오너가 범위·우선순위·수락·출시를 최종 판단하는 읽기 전용 운영 계층을 개발자 화면 최상단에 추가했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p><code>owner-decision-registry.json</code>, 코드·문서 결합 생성기, 상태·유형·검색과 선택 상세를 제공하는 오너 판단 콘솔을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>결정·위험·작업·원칙 객체를 판단 필요·차단·준비·검증·보류 순서로 표시하고, 직접 관계만 탐색하며 모바일·키보드 접근성을 유지합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>Notion=기획, Sheet=후보, CSV=확정 데이터, Git/E2E=구현 근거, 위키=읽기 전용 뷰로 원본 경계를 고정했습니다. 생성·CI 검사가 중복 ID·소유권 누락·깨진 관계·없는 문서를 차단합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>기획자를 최종 판단자로 오인하던 협업 표현을 바로잡고, 하위 문서에서 게임 배포 주소 레지스트리를 현재 경로 아래로 잘못 요청하던 404를 제거했습니다.</p></div>
+        <p><a href="architecture/project-ontology/">판단 온톨로지 계약 →</a> · <a href="access/developer/">개발자 판단 화면 →</a></p>
+        <p>게임 코드·밸런스 Sheet/CSV·과금·서버 설정은 변경하지 않았습니다.</p>
       </div>
     </details>
   </div>

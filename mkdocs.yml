@@ -43,6 +43,7 @@ extra_javascript:
   - javascripts/play-entry.js
   - javascripts/knowledge-map.js
   - javascripts/code-module-map.js
+  - javascripts/owner-decision-console.js
   - javascripts/planner-requests.js
   - javascripts/planner-proposal.js
   - javascripts/role-auth.js
@@ -141,6 +142,7 @@ nav:
           - 아키텍처: architecture/index.md
           - 모듈 규칙: architecture/module-rules.md
           - 현재 코드 모듈 노드맵: architecture/code-module-map.md
+          - 프로젝트 오너 판단 온톨로지: architecture/project-ontology.md
           - 모듈화 점검 기록: architecture/module-audit.md
           - 위키 역할 인증과 권한 경계: architecture/wiki-role-auth.md
           - 장면 트리: architecture/scene-tree.md

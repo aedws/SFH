@@ -33,7 +33,9 @@ foreach ($required in @(
     'isPublicPath',
     'return "authenticated"',
     'HTMLRewriter',
-    'data-md-component="sidebar"'
+    'data-md-component="sidebar"',
+    '/assets/project-ontology.json',
+    '/assets/owner-decision-registry.json'
 )) {
     if ($worker -notmatch [regex]::Escape($required)) {
         throw "Wiki auth worker contract is missing: $required"
@@ -112,7 +114,7 @@ if ($SiteRoot) {
             throw "Protected page leaked into the public search index: $protectedRoute"
         }
     }
-    foreach ($sensitiveArtifact in @("assets/knowledge-map.json", "assets/search-priorities.json", "sitemap.xml")) {
+    foreach ($sensitiveArtifact in @("assets/knowledge-map.json", "assets/search-priorities.json", "assets/owner-decision-registry.json", "assets/project-ontology.json", "sitemap.xml")) {
         if (-not (Test-Path -LiteralPath (Join-Path $resolvedSite $sensitiveArtifact))) {
             throw "Protected wiki artifact is missing from the build: $sensitiveArtifact"
         }

@@ -163,12 +163,16 @@ assert any(d.get("location", "").startswith(route(tutorial_source)) for d in sea
 for phrase in ["직접 실시간 로더 없음", "CSV 확정", "고유 스킬/고정 옵션 열", "P7-01B"]:
     assert phrase in tutorial_text, f"Tutorial boundary missing: {phrase}"
 developer_text = (SITE / "access/developer/index.html").read_text(encoding="utf-8")
+owner_console_position = developer_text.find("data-sfh-owner-decision-console-host")
 module_map_position = developer_text.find("data-sfh-code-module-map-host")
 developer_console_position = developer_text.find("sfh-role-console is-developer")
+assert owner_console_position >= 0, "Developer room must embed the owner decision console"
 assert module_map_position >= 0, "Developer room must embed the live code-module map"
-assert developer_console_position >= 0 and module_map_position < developer_console_position, (
-    "Code-module map must be the first developer workspace block"
+assert developer_console_position >= 0 and owner_console_position < module_map_position < developer_console_position, (
+    "Owner decisions must precede implementation evidence and the developer work queue"
 )
+assert (SITE / "assets/project-ontology.json").is_file(), "Generated project ontology missing"
+assert (SITE / "javascripts/owner-decision-console.js").is_file(), "Owner decision console runtime missing"
 print("PLANNER_TUTORIAL_OK anchors_8 planner_entries loot_flow notion_authoring search_index support_boundaries")
-print("DEVELOPER_ROOM_OK code_module_map_first")
+print("DEVELOPER_ROOM_OK owner_decisions_then_code_evidence")
 print(f"WIKI_ARTICLES_OK pages={len(sources)} breadcrumbs={count} reachable={len(visited)} no_js=true")

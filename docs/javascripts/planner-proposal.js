@@ -28,7 +28,7 @@
     var supersedes = supersedesInput || "없음";
     var required = [[titleInput, "제목"], [scopeInput, "대상"], [decisionInput, "결정"], [appliesAtInput, "적용 시점"], [acceptanceInput, "수락 기준"]];
     var missing = required.filter(function (entry) { return !entry[0]; }).map(function (entry) { return entry[1]; });
-    var readiness = "정식 구현 검토 가능";
+    var readiness = "오너 확정 검토 가능";
     if (status === "제안" || status === "보류") readiness = "작업 금지 — 상태 변경 전 비교·기록만 수행";
     else if (status === "임시" || status === "부분 확정") readiness = "임시 시험 가능 — 미정 항목은 기획 완료로 계산하지 않음";
     else if (status === "변경" && !supersedesInput) readiness = "결정 필요 — 변경할 이전 결정 ID 입력";
@@ -46,6 +46,7 @@
       "- 데이터: " + sheet,
       "- 재검토 조건: " + reviewTrigger,
       "- 반영 준비: " + readiness,
+      "- 최종 판단 주체: 프로젝트 오너",
       "- 구현 원칙: 모듈 경계 + 플레이어 인식 E2E + PR 검증",
       "- supersedes: " + supersedes,
       "- conflicts_with: 없음",

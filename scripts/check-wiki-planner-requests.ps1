@@ -117,7 +117,8 @@ if (
 	$proposalScript -notmatch "\[name='status'\]" -or
 	$proposalScript -notmatch "\[name='supersedes'\]" -or
 	$proposalScript -notmatch '\uBC18\uC601 \uC900\uBE44' -or
-	$proposalScript -notmatch '\uC815\uC2DD \uAD6C\uD604 \uAC80\uD1A0 \uAC00\uB2A5' -or
+	$proposalScript -notmatch '\uC624\uB108 \uD655\uC815 \uAC80\uD1A0 \uAC00\uB2A5' -or
+	$proposalScript -notmatch '\uCD5C\uC885 \uD310\uB2E8 \uC8FC\uCCB4: \uD504\uB85C\uC81D\uD2B8 \uC624\uB108' -or
 	$proposalScript -notmatch '\uC791\uC5C5 \uAE08\uC9C0'
 ) {
 	throw "Safe local proposal composer contract is missing."

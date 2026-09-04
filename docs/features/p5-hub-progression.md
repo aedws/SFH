@@ -54,7 +54,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\test-e2e.ps1
 - 이번 P7-03~04는 기존 `Recipe` 3행과 임시 옵션 4종을 재사용해 Sheet를 확장하지 않았고 CSV 고정본을 항상 폴백으로 유지합니다.
 - 2026-09-04 전체 대조에서 `Item!A18:P21`의 Utility 중복 4행이 Item 스키마 검증에 실패했습니다. 해당 행은 자동 반영하지 않았으며 `Utility` 탭을 단일 원본으로 유지해야 합니다.
 - Recipe·Codex·OperationPreset의 도면·지역·무기·스킬 ID는 기존 Item·작전·무기·스킬 카탈로그 ID를 재사용합니다.
-- 기획자는 `source_status=provisional` 행의 가격·성능·수량·지역 힌트만 확정하면 됩니다.
+- 기획자는 `source_status=provisional` 행의 가격·성능·수량·지역 힌트 후보와 근거를 제출하고, 프로젝트 오너가 확정합니다.
 
 ## 검색 별칭
 
