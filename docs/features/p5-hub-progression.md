@@ -45,7 +45,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\check-p5-modularity.ps1
 powershell -ExecutionPolicy Bypass -File .\scripts\test-e2e.ps1
 ```
 
-`P5_HUB_PROGRESSION_OK`는 유틸 사용·단일 확정·무료 반복 출격·3품질 회전·런 복귀 1회 갱신·취소 보존·구매/재굴림 중복 차감 방지·도면/도감 재접속·실제 훈련 façade·하위 모듈 제거·잘못된 CSV 거부·원자적 제작 거래를 판정합니다. `P8_TRAINING_GROUND_OK`와 `E2E_P8_TRAINING_GROUND_OK`는 실제 단일/밀집 생성·간격·타게팅·좌클릭 피해·자동/수동 초기화·스폰 예산 격리·거점 이탈 정리를 판정합니다. `P7_BLUEPRINT_REGISTRY_OK`는 반출→영구 등록→중복 방지→재접속→제작 후보 유지와 모르는 도면 차단을 판정합니다. `P7_WORKSHOP_TRANSACTION_OK`는 비용·재료·Roll 범위 선공개, 원자적 단일 저장, 실제 옵션·소켓과 재접속을 판정합니다. `P7_SHOP_BROWSER_OK`는 실제 로비 단말에서 리롤 견적→1회 차감→교체 수 영수증과 4화면 배치를 판정합니다. `P7_SHOP_QUALITY_OK`는 고성능 모듈 구매→가방 실물→U 장착→실제 1.25배 수치→해제 후 품질 보존, 카탈로그 교체와 롤백 실패 중복 보상 차단을 판정합니다. `P7_SHOP_DELIVERY_MODULE_OK`는 P5·상점을 켠 채 실물 지급만 제거했을 때 가방 불변·레거시 창고 지급을 판정합니다. `P5_MODULARITY_OK`는 훈련 전체 스키마와 P5 경계를, `SYSTEM_MODULARITY_OK`는 전체 57개 기능 경계·218개 클래스·26개 의존의 순환 참조·Scene 침범·Manifest 누락을 정적으로 차단합니다.
+`P5_HUB_PROGRESSION_OK`는 유틸 사용·단일 확정·무료 반복 출격·3품질 회전·런 복귀 1회 갱신·취소 보존·구매/재굴림 중복 차감 방지·도면/도감 재접속·실제 훈련 façade·하위 모듈 제거·잘못된 CSV 거부·원자적 제작 거래를 판정합니다. `P8_TRAINING_GROUND_OK`와 `E2E_P8_TRAINING_GROUND_OK`는 실제 단일/밀집 생성·간격·타게팅·좌클릭 피해·자동/수동 초기화·스폰 예산 격리·거점 이탈 정리를 판정합니다. `P7_BLUEPRINT_REGISTRY_OK`는 반출→영구 등록→중복 방지→재접속→제작 후보 유지와 모르는 도면 차단을 판정합니다. `P7_WORKSHOP_TRANSACTION_OK`는 비용·재료·Roll 범위 선공개, 원자적 단일 저장, 실제 옵션·소켓과 재접속을 판정합니다. `P7_SHOP_BROWSER_OK`는 실제 로비 단말에서 리롤 견적→1회 차감→교체 수 영수증과 4화면 배치를 판정합니다. `P7_SHOP_QUALITY_OK`는 고성능 모듈 구매→가방 실물→U 장착→실제 1.25배 수치→해제 후 품질 보존, 카탈로그 교체와 롤백 실패 중복 보상 차단을 판정합니다. `P7_SHOP_DELIVERY_MODULE_OK`는 P5·상점을 켠 채 실물 지급만 제거했을 때 가방 불변·레거시 창고 지급을 판정합니다. `P5_MODULARITY_OK`는 훈련 전체 스키마와 P5 경계를, `SYSTEM_MODULARITY_OK`는 전체 57개 기능 경계·226개 클래스·26개 의존의 순환 참조·Scene 침범·Manifest 누락을 정적으로 차단합니다.
 
 ## 데이터·과금 경계
 

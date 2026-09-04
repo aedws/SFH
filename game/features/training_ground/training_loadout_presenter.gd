@@ -30,9 +30,7 @@ func get_snapshot() -> Dictionary:
 
 
 func _build_ui() -> void:
-	set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	position = Vector2(-392.0, 186.0)
-	custom_minimum_size = Vector2(368.0, 92.0)
+	custom_minimum_size = Vector2(368.0, 74.0)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	var panel := StyleBoxFlat.new()
 	panel.bg_color = Color(0.01, 0.045, 0.06, 0.9)
@@ -64,7 +62,7 @@ func _build_ui() -> void:
 func _on_state_changed(snapshot: Dictionary) -> void:
 	latest_snapshot = snapshot.duplicate(true)
 	visible = bool(snapshot.get(&"active", false))
-	state_label.text = "FREE LOADOUT · I 가방 / U 장비 / E 모듈 · 종료 시 자동 원복"
+	state_label.text = "무료 시험 세팅 · I 가방 / U 장비 / E 모듈 · 퇴장 시 원복"
 	var skills: Array = snapshot.get(&"skills", [])
 	for index in skill_buttons.size():
 		var name := String((skills[index] as Dictionary).get(&"display_name", "SKILL")) if index < skills.size() else "SKILL"

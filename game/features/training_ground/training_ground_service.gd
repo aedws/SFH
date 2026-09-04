@@ -108,6 +108,9 @@ func reset_active_scenario() -> Dictionary:
 	reset_pending = false
 	var result: Dictionary = reset_service.call(&"reset")
 	if bool(result.get(&"success", false)):
+		var scenario: Dictionary = result.get(&"scenario", {})
+		if is_instance_valid(telemetry_service) and not scenario.is_empty():
+			telemetry_service.call(&"begin", scenario)
 		scenario_reset.emit(get_snapshot())
 	return result
 

@@ -135,6 +135,7 @@ required_training_boundaries = {
     "training_loadout_snapshot.gd",
     "training_loadout_service.gd",
     "training_loadout_presenter.gd",
+    "training_hud_layout.gd",
 }
 training_root = FEATURES / "training_ground"
 for filename in sorted(required_training_boundaries):
@@ -175,5 +176,5 @@ print(
     "SYSTEM_MODULARITY_OK "
     f"features={len(feature_ids)} classes={len(class_owners)} dependencies={edge_count} "
     f"cycles=0 service_scene_reach=0 manifest_flags={len(enabled_flags)} "
-    "workshop_boundaries=5 training_boundaries=10 ci_gate=1"
+    "workshop_boundaries=5 training_boundaries=11 ci_gate=1"
 )

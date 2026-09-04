@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "6206dfbec48493d95f129b89dcf2022079ea22db0861be1571d8b2461bcf66de",
+  "source_sha256": "d824c85501182803e8cbca7ba49b1ccef1cb98c3b9ecb8fd484e1ed49af81298",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 272,
-    "named_classes": 225,
+    "scripts": 273,
+    "named_classes": 226,
     "relationships": 185,
     "project_inheritance": 7,
     "enabled_toggles": 70
@@ -1183,13 +1183,14 @@
       "path": "game/features/training_ground",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 11,
-      "class_count": 11,
+      "file_count": 12,
+      "class_count": 12,
       "classes": [
         "CombatTelemetryCollector",
         "TrainingDummySpawner",
         "TrainingGroundConfig",
         "TrainingGroundService",
+        "TrainingHudLayout",
         "TrainingLoadoutPresenter",
         "TrainingLoadoutService",
         "TrainingLoadoutSnapshot",
@@ -3173,6 +3174,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:TrainingHudLayout",
+      "name": "TrainingHudLayout",
+      "module": "training_ground",
+      "path": "game/features/training_ground/training_hud_layout.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:TrainingLoadoutPresenter",
       "name": "TrainingLoadoutPresenter",
       "module": "training_ground",
@@ -3222,7 +3232,7 @@
       "name": "TrainingTelemetryPresenter",
       "module": "training_ground",
       "path": "game/features/training_ground/training_telemetry_presenter.gd",
-      "extends": "MarginContainer",
+      "extends": "PanelContainer",
       "base_id": "",
       "inheritance": "engine"
     },

@@ -106,6 +106,9 @@ const TRAINING_TELEMETRY_PRESENTER_SCRIPT := preload(
 const TRAINING_LOADOUT_PRESENTER_SCRIPT := preload(
 	"res://game/features/training_ground/training_loadout_presenter.gd"
 )
+const TRAINING_HUD_LAYOUT_SCRIPT := preload(
+	"res://game/features/training_ground/training_hud_layout.gd"
+)
 const HUB_ECONOMY_SCENE_PATH := "res://game/features/hub_economy/hub_economy_system.tscn"
 const CRAFTING_SCENE_PATH := "res://game/features/crafting/crafting_system.tscn"
 const PENALTY_SCENE_PATH := "res://game/features/penalty_modifiers/penalty_system.tscn"
@@ -517,6 +520,7 @@ var p5_hub_progression_service
 var training_ground_service
 var training_telemetry_presenter
 var training_loadout_presenter
+var training_hud_layout
 var training_combat_resource_system
 var training_combat_skill_system
 var training_combat_skill_hud
@@ -1759,6 +1763,14 @@ func _install_training_ground() -> bool:
 	if features.combat_resources_enabled and features.combat_skills_enabled:
 		if not _install_training_combat_runtime():
 			return false
+	training_hud_layout = TRAINING_HUD_LAYOUT_SCRIPT.new()
+	module_container.add_child(training_hud_layout)
+	if not bool(training_hud_layout.call(
+		&"configure", get_viewport(), training_telemetry_presenter,
+		training_loadout_presenter, training_combat_skill_hud
+	)):
+		_report_configuration_error("훈련 HUD 반응형 배치를 구성하지 못했습니다.")
+		return false
 	return true
 
 
@@ -1942,7 +1954,7 @@ func _clear_start_hub() -> void:
 	for node in [
 		auto_weapon, training_combat_skill_hud,
 		training_telemetry_presenter, training_loadout_presenter,
-		training_ground_service, inventory_window, equipment_workbench,
+		training_hud_layout, training_ground_service, inventory_window, equipment_workbench,
 		equipment_system, inventory_system,
 	]:
 		_free_feature_node(node)
@@ -1952,6 +1964,7 @@ func _clear_start_hub() -> void:
 	training_ground_service = null
 	training_telemetry_presenter = null
 	training_loadout_presenter = null
+	training_hud_layout = null
 	training_combat_resource_system = null
 	training_combat_skill_system = null
 	training_combat_skill_hud = null

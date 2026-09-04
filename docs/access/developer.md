@@ -36,6 +36,7 @@ hide:
 | 완료 | P7-04 맞춤 제작 | Roll 정책·원자적 거래·영구 저장 분리 | 견적→단일 차감/생성→재접속, 실패 무변경 |
 | 완료 | P8-01 실제 훈련 더미 | 시나리오·생성·초기화·façade 분리 | 거점 F→실제 좌클릭→밀집 전환→이탈 정리 |
 | 완료 | P8-02~03 계측·자유 세팅 | Collector/Service/Presenter와 Snapshot/Service/Presenter 분리 | DPS/AP/쿨타임 결과 고정·격리 스킬·퇴장 원복 |
+| 완료 | P8 체감 전수 감사 | `TrainingHudLayout` 배치 책임 분리·자동 reset 계측 재시작 | 실제 화면 내부·비겹침·84px 스킬 HUD·반복 타격 수치 갱신 |
 | 1 | P9-01~P10 | 도감→프리셋→출시 후보 | 선행 패킷 완료 후 각 흐름 E2E와 산출물 동등성 |
 | 보류 | 서버 위변조·거래 원장·백업 | [구현 예정만 등록](../design/p7-plus-preimplementation.md#economy-integrity-plan) | 별도 승인 전 코드·DB·과금 설정 변경 없음 |
 

@@ -1,5 +1,5 @@
 class_name TrainingTelemetryPresenter
-extends MarginContainer
+extends PanelContainer
 
 var service: Node
 var title_label: Label
@@ -34,9 +34,7 @@ func get_snapshot() -> Dictionary:
 
 
 func _build_ui() -> void:
-	set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	position = Vector2(-392.0, 24.0)
-	custom_minimum_size = Vector2(368.0, 154.0)
+	custom_minimum_size = Vector2(368.0, 118.0)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_theme_constant_override("margin_left", 14)
 	add_theme_constant_override("margin_top", 10)
@@ -54,7 +52,7 @@ func _build_ui() -> void:
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 4)
 	add_child(content)
-	title_label = _label("TRAINING // TELEMETRY", 14, Color("02e5e1"))
+	title_label = _label("훈련 계측 // 대기", 14, Color("02e5e1"))
 	timer_label = _label("측정 대기", 13, Color(0.78, 0.91, 0.92))
 	damage_label = _label("DPS 0.0 · HIT 0.0 · TOTAL 0", 13, Color.WHITE)
 	resource_label = _label("AP/s -- · COOLDOWN --", 12, Color(0.63, 0.78, 0.82))
@@ -84,20 +82,20 @@ func _on_snapshot_changed(snapshot: Dictionary) -> void:
 	if not visible:
 		return
 	var finalized := bool(snapshot.get(&"finalized", false))
-	title_label.text = "TRAINING // %s" % ("RESULT LOCKED" if finalized else "LIVE")
-	timer_label.text = "%s · %04.1f / %04.1fs" % [
+	title_label.text = "훈련 계측 // %s" % ("결과 고정" if finalized else "실시간")
+	timer_label.text = "%s · %04.1f / %04.1f초" % [
 		scenario_name,
 		float(snapshot.get(&"elapsed_seconds", 0.0)),
 		float(snapshot.get(&"window_seconds", 0.0)),
 	]
-	damage_label.text = "DPS %.1f · HIT %.1f · TOTAL %.0f / %d" % [
+	damage_label.text = "DPS %.1f · 최대 %.1f · 누적 %.0f / %d회" % [
 		float(snapshot.get(&"dps", 0.0)),
 		float(snapshot.get(&"maximum_hit", 0.0)),
 		float(snapshot.get(&"total_damage", 0.0)),
 		int(snapshot.get(&"hit_count", 0)),
 	]
 	var ap_cycles := int(snapshot.get(&"resource_events", 0))
-	resource_label.text = "AP/s %s · COOLDOWN %s" % [
+	resource_label.text = "AP/s %s · 평균 쿨타임 %s" % [
 		("%.1f" % float(snapshot.get(&"ap_per_second", 0.0))) if ap_cycles > 0 else "--",
 		("%.2fs" % float(snapshot.get(&"average_cooldown", 0.0))) if int(snapshot.get(&"cooldown_cycles", 0)) > 0 else "--",
 	]

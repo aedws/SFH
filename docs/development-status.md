@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 25 · IMPROVE 33 · CHANGE 40 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 26 · IMPROVE 37 · CHANGE 45 · FIX 25</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>25</b><small>BUILD</small></span><span><b>33</b><small>IMPROVE</small></span><span><b>40</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>26</b><small>BUILD</small></span><span><b>37</b><small>IMPROVE</small></span><span><b>45</b><small>CHANGE</small></span><span><b>25</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -213,7 +213,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="features/training-ground/">P8 완료 흐름 →</a> · <a href="architecture/module-audit/#p8-complete-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p8-training-ground-e2e">P8 E2E →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 10</small><b>코드 모듈 지도 초안 · 방향 고정과 한글 역할명</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 개발자는 선택 기능을 가운데 두고 왼쪽 사용처와 오른쪽 의존처를 바로 구분하며, 기획자는 한글 이름과 업무 영역으로 필요한 시스템을 찾을 수 있습니다.</strong></div>
@@ -223,6 +223,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기존 결함 수정이 아니라 구조 판독성을 높이는 위키 초안입니다.</p></div>
         <p>실제 GDScript 272개를 다시 스캔하며 새 목록·Sheet/CSV·게임 데이터·과금 모델은 변경하지 않았습니다.</p>
         <p><a href="architecture/code-module-map/">직관형 코드 모듈 지도 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>P8 체감 전수 감사 · 보이지 않던 계측과 반복 측정 복구</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 구현돼도 화면 밖이라 알 수 없던 훈련 계측과 무료 세팅이 화면 안에 배치되고, 큰 빈 패널이 사라지며, 더미 재생성 뒤에도 새 측정이 즉시 시작됩니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>뷰포트 크기만 받아 계측·세팅·스킬 패널을 배치하는 독립 <code>TrainingHudLayout</code>을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>우측 상단 계측, 바로 아래 무료 세팅, 우측 하단 84px 스킬 HUD로 정보 위치와 문구·중앙 시야·반복 피드백을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>P8 계약·실제 Game E2E·CI 마커·모듈 감사·플레이어 인식 문서를 화면 내부·비겹침·재측정 기준으로 강화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>계측/세팅 패널의 음수 X 화면 이탈, 내용 없는 240px 중앙 가림, 자동 reset 뒤 고정 결과만 남던 생명주기 불일치를 제거했습니다.</p></div>
+        <p>전체 구조는 기능 57·클래스 226·의존 26·순환 0·Scene 침범 0입니다. Sheet/CSV·밸런스·과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="quality/player-perception-audit/#p8-perception-audit-2026-09-04">체감 감사 →</a> · <a href="architecture/module-audit/#p8-perception-audit-2026-09-04">모듈 감사 →</a> · <a href="features/training-ground/">훈련장 계약 →</a></p>
       </div>
     </details>
   </div>
