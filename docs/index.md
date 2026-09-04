@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 11 · IMPROVE 11 · CHANGE 17 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 14 · IMPROVE 15 · CHANGE 22 · FIX 12</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>11</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>17</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>22</b><small>CHANGE</small></span><span><b>12</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>P7-04 · 원자적 맞춤 제작과 전체 모듈 감사</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 제작 전에 비용·재료·옵션/소켓 범위를 확인하고, 실제 결과와 거래 기록이 한 번에 저장됩니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>Roll 정책, 원자적 제작 거래, 전체 시스템 모듈 검사기를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>견적 선공개, 중복 없는 실제 옵션, 실제 소켓, 재접속 보존을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>단일 프로필 거래·P5 façade·69개 Manifest 플래그·CI·P8 다음 작업선을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>제작 저장 실패 부분 차감, 세부 표현 모듈 실행 목록 누락, 테스트 저장 경로의 프로세스 간 충돌을 차단했습니다.</p></div>
+        <p>전체 감사: 기능 56·클래스 213·의존 25·순환 0·서비스 Scene 침범 0. Sheet/CSV와 과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/blueprint-crafting/#p7-04">원자적 제작 →</a> · <a href="architecture/module-audit/#p7-04-2026-09-04">전체 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>P7-03 · 반출 설계도 영구 등록과 제작 후보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 작전에서 반출한 설계도가 재접속 뒤에도 남고, 제작소에서 제작 가능 여부를 바로 확인할 수 있습니다.</strong></div>

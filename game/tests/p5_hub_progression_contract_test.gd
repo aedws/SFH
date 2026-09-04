@@ -171,7 +171,7 @@ func _run() -> void:
 	if FileAccess.file_exists(PROFILE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE_PATH))
 	if failures.is_empty():
-		print("P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit run_return_rotation_cancel_guard workshop_blueprint_registry_provider_unlock_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback")
+		print("P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit run_return_rotation_cancel_guard workshop_blueprint_registry_provider_unlock_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection workshop_transaction_atomic")
 		quit(0)
 	else:
 		print("P5_HUB_PROGRESSION_FAILED: %s" % " / ".join(failures))

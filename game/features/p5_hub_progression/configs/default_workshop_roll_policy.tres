@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="WorkshopRollPolicy" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/p5_hub_progression/workshop_roll_policy.gd" id="1_policy"]
+
+[resource]
+script = ExtResource("1_policy")
+instance_prefix = "p7_crafted"
+seed_stride = 7049
+maximum_socket_limit = 8
+affix_pool = Array[Dictionary]([{
+"affix_id": &"damage_percent",
+"display_name": "화력",
+"maximum_value": 0.12,
+"minimum_value": 0.05,
+"stat_id": &"damage_multiply",
+"weight": 1.0
+}, {
+"affix_id": &"cycle_percent",
+"display_name": "순환",
+"maximum_value": 0.1,
+"minimum_value": 0.04,
+"stat_id": &"fire_interval_reduction",
+"weight": 0.9
+}, {
+"affix_id": &"vitality_flat",
+"display_name": "생명력",
+"maximum_value": 16.0,
+"minimum_value": 6.0,
+"stat_id": &"max_health",
+"weight": 1.0
+}, {
+"affix_id": &"armor_flat",
+"display_name": "장갑",
+"maximum_value": 8.0,
+"minimum_value": 3.0,
+"stat_id": &"defense",
+"weight": 1.0
+}])

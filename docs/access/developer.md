@@ -16,7 +16,7 @@ hide:
 <section class="sfh-role-console is-developer sfh-role-workspace">
   <header><span class="sfh-kicker">DEVELOPER ROOM · EXECUTION FIRST</span><h2>다음 변경과 회귀 위험을 먼저 봅니다</h2><p>완료 이력은 기준선으로 압축하고, 현재 오류·다음 작업·모듈 경계·검증 원칙을 구현 순서대로 배치합니다.</p></header>
   <div class="sfh-dev-focus">
-    <span><small>NEXT</small><b>P7-04</b><em>맞춤 제작·옵션·소켓 고점 · P7-03 구현 완료</em></span>
+    <span><small>NEXT</small><b>P8-01</b><em>보스·밀집 더미 시나리오 · P7-04 구현 완료</em></span>
     <span><small>BASELINE</small><b>P1·P4·P5</b><em>완료·회귀 금지</em></span>
     <span><small>KNOWN GAP</small><b>P6</b><em>실서비스 신원·서버 운영·보상</em></span>
   </div>
@@ -33,7 +33,8 @@ hide:
 | 완료 | P7-01B 품질·실물 연결 | 품질 정책·가방 지급 어댑터·장비 계산 분리 | 구매→I 실물→U/E 실제 수치→해제 보존 |
 | 완료 | P7-02 회전·리롤 심화 | 회전 정책·상태·차감 서비스 분리 | 런 복귀 갱신·리롤 견적·1회 차감·중복 방지 |
 | 완료 | P7-03 설계도 영구 등록 | 등록 저장·레시피 제공·해금 판정 분리 | 반출→등록→중복 방지→재접속→제작 후보 유지 |
-| 1 | P7-04~P10 | 맞춤 제작→훈련→도감→출시 후보 | 선행 패킷 완료 후 각 흐름 E2E와 산출물 동등성 |
+| 완료 | P7-04 맞춤 제작 | Roll 정책·원자적 거래·영구 저장 분리 | 견적→단일 차감/생성→재접속, 실패 무변경 |
+| 1 | P8-01~P10 | 훈련→도감→출시 후보 | 선행 패킷 완료 후 각 흐름 E2E와 산출물 동등성 |
 | 보류 | 서버 위변조·거래 원장·백업 | [구현 예정만 등록](../design/p7-plus-preimplementation.md#economy-integrity-plan) | 별도 승인 전 코드·DB·과금 설정 변경 없음 |
 
 ## 이미 진행한 기준선

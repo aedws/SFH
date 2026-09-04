@@ -338,6 +338,10 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"boss_warning")
 	if cyberpunk_theme_enabled:
 		result.append(&"cyberpunk_theme")
+	if cyberpunk_motion_enabled and cyberpunk_theme_enabled:
+		result.append(&"cyberpunk_motion")
+	if cyberpunk_noise_enabled and cyberpunk_theme_enabled:
+		result.append(&"cyberpunk_noise")
 
 	return result
 

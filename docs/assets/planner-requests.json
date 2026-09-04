@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "updated": "2026-09-04",
   "notion_url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
   "instruction": "기획자는 요청 ID를 Notion 결정 제목에 포함하고, AI 개발자는 수락 기준과 검증 근거를 같은 카드에 연결합니다.",
@@ -50,12 +50,12 @@
       "id": "PLAN-P7-03-01", "status": "request", "state": "needs_planner", "state_label": "제작 정책 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "후속 정책", "title": "설계도 제작·옵션·소켓 고점",
       "decision_id": "DEC-P7-WORKSHOP-PENDING", "source_anchor": "3ce5b728-0040-8131-9a1b-f4c6bc08b083", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
-      "summary": "설계도 영구 등록은 확정됐지만 제작 재료·비용, 옵션 풀, 소켓 수와 재제작 결과 정책은 추가 결정이 필요합니다.",
+      "summary": "설계도 영구 등록과 원자적 제작 거래는 임시값으로 구현했습니다. Recipe 비용·재료, 4개 옵션 풀·수치 범위, 소켓 수와 재제작 결과를 운영값으로 확정해야 합니다.",
       "basis": "Master GDD 4장 장비 제작소와 맞춤형 고점 제작",
       "notion_prompt": "PLAN-P7-03-01 제목으로 설계도별 레시피·비용·옵션 풀·소켓 최소/최대·중복·재제작 규칙을 작성해 주세요.",
-      "sheet_target": "Recipe 탭 임시값 생성 완료 · P7 심화 착수 시 Weapon/Armor 옵션 열 확장",
+      "sheet_target": "Recipe 탭 임시값 유지 · P7-04 Roll Resource 4종 구현 완료 · 확정 시 Recipe와 Weapon/Armor 옵션 데이터만 교체",
       "acceptance": ["설계도별 레시피와 비용", "옵션·소켓 Roll 범위", "실패·취소·재제작·재료 환불 규칙"],
-      "evidence": [{"label": "P7+ 사전 설계", "href": "design/p7-plus-preimplementation/"}, {"label": "도면 제작", "href": "features/blueprint-crafting/"}]
+      "evidence": [{"label": "P7+ 사전 설계", "href": "design/p7-plus-preimplementation/"}, {"label": "P7-04 원자적 제작", "href": "features/blueprint-crafting/#p7-04"}]
     },
     {
       "id": "DATA-P8-01-01", "status": "data", "state": "needs_planner", "state_label": "훈련 시나리오 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,

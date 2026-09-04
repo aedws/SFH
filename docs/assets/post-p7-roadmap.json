@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "updated": "2026-09-04",
   "source": {
     "url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
@@ -64,10 +64,13 @@
         {
           "id": "P7-04",
           "title": "맞춤 제작과 옵션·소켓 고점",
-          "state": "planned",
+          "state": "in_progress",
+          "completed_scope": ["비용·잔액·재료·옵션/소켓 범위 선공개", "중복 없는 결정적 실제 옵션과 소켓 생성", "크레딧·재료·완제품·거래 ID 단일 저장", "중복·검증·공급자 실패 무변경과 재접속 보존"],
+          "remaining_scope": ["Recipe 운영 비용·재료와 옵션 풀·소켓 상한 기획 확정"],
           "dependencies": ["P7-03"],
           "data_gate": "planner_decision",
-          "modules": ["CraftingRollPolicy", "WorkshopCraftService", "CraftResultPresenter"],
+          "modules": ["WorkshopRollPolicy", "WorkshopCraftTransactionService", "WorkshopService"],
+          "evidence": ["game/tests/workshop_craft_transaction_contract_test.gd", "scripts/check_system_modularity.py", "docs/features/blueprint-crafting.md"],
           "player_outcome": "비용, 보장 결과, 무작위 옵션·소켓 범위를 확인하고 제작한다.",
           "e2e": "레시피 선택→원자적 차감→결정 로그→장비 생성→실패 시 전액 보존"
         }
