@@ -11,3 +11,4 @@ formation_spacing = 76.0
 dense_columns = 4
 auto_reset_after_clear = true
 reset_delay_seconds = 0.35
+telemetry_refresh_seconds = 0.1

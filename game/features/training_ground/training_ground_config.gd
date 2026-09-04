@@ -7,6 +7,7 @@ extends Resource
 @export_range(1, 8, 1) var dense_columns := 4
 @export var auto_reset_after_clear := true
 @export_range(0.05, 3.0, 0.05) var reset_delay_seconds := 0.35
+@export_range(0.05, 0.5, 0.05) var telemetry_refresh_seconds := 0.1
 
 
 func is_valid() -> bool:
@@ -15,4 +16,5 @@ func is_valid() -> bool:
 		and formation_spacing >= 48.0
 		and dense_columns > 0
 		and reset_delay_seconds > 0.0
+		and telemetry_refresh_seconds > 0.0
 	)

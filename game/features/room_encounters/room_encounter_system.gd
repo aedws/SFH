@@ -40,6 +40,7 @@ var rewards_collected: int = 0
 var last_cleared_room_index: int = -1
 var last_requested_enemy_count: int = 0
 var last_spawned_enemy_count: int = 0
+var last_minimum_spawn_distance: float = 0.0
 var last_trigger_source: StringName = &"none"
 var completion_announced: bool = false
 var last_reward_box_count: int = 0
@@ -86,6 +87,7 @@ func configure(
 	last_cleared_room_index = -1
 	last_requested_enemy_count = 0
 	last_spawned_enemy_count = 0
+	last_minimum_spawn_distance = 0.0
 	last_trigger_source = &"none"
 	completion_announced = false
 	last_reward_box_count = 0
@@ -112,13 +114,6 @@ func get_snapshot() -> Dictionary:
 	_prune_active_rewards()
 	var required_count := _required_encounter_count()
 	var safety := _spawn_safety_snapshot()
-	var observed_distance := INF
-	if is_instance_valid(player):
-		for enemy in active_enemies:
-			if enemy is Node2D and is_instance_valid(enemy):
-				observed_distance = minf(observed_distance, (enemy as Node2D).global_position.distance_to(player.global_position))
-	if observed_distance == INF:
-		observed_distance = 0.0
 	return {
 		&"tier_id": tier_id,
 		&"room_count": room_definitions.size(),
@@ -149,10 +144,10 @@ func get_snapshot() -> Dictionary:
 		),
 		&"reinforcement_mode": &"room_triggered",
 		&"spawn_safety": safety,
-		&"minimum_spawn_distance_observed": observed_distance,
+		&"minimum_spawn_distance_observed": last_minimum_spawn_distance,
 		&"spawn_safety_satisfied": (
 			active_enemies.is_empty()
-			or observed_distance + 0.01 >= float(safety.get(&"minimum_player_distance", 0.0))
+			or last_minimum_spawn_distance + 0.01 >= float(safety.get(&"minimum_player_distance", 0.0))
 		),
 		&"contact_grace_remaining": contact_grace_remaining,
 		&"contact_grace_active": contact_grace_remaining > 0.0,
@@ -193,9 +188,14 @@ func try_start_room(room_index: int, trigger_source: StringName = &"external") -
 	if positions.size() < minimum_horde_size:
 		return false
 	var encounter_id := StringName("room_%d" % room_index)
+	var minimum_spawn_distance := INF
 	for world_position in positions:
 		var enemy: Node2D = enemy_spawner.call(&"spawn_enemy_at", world_position, encounter_id)
 		if is_instance_valid(enemy):
+			minimum_spawn_distance = minf(
+				minimum_spawn_distance,
+				world_position.distance_to(player.global_position)
+			)
 			_apply_contact_grace(enemy, safety)
 			active_enemies.append(enemy)
 			enemy.tree_exited.connect(_on_active_enemy_tree_exited.bind(enemy), CONNECT_ONE_SHOT)
@@ -204,11 +204,13 @@ func try_start_room(room_index: int, trigger_source: StringName = &"external") -
 			if is_instance_valid(enemy):
 				enemy.queue_free()
 		active_enemies.clear()
+		last_minimum_spawn_distance = 0.0
 		return false
 	active_room_index = room_index
 	contact_grace_remaining = float(safety.get(&"contact_damage_grace_seconds", 0.0))
 	last_requested_enemy_count = requested_count
 	last_spawned_enemy_count = active_enemies.size()
+	last_minimum_spawn_distance = minimum_spawn_distance if minimum_spawn_distance != INF else 0.0
 	last_trigger_source = trigger_source
 	_lock_doors(room)
 	encounter_started.emit(room_index, active_enemies.size())

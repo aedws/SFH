@@ -125,10 +125,16 @@ for filename in sorted(required_workshop_boundaries):
         ERRORS.append(f"Workshop boundary missing: {filename}")
 
 required_training_boundaries = {
+    "combat_telemetry_collector.gd",
     "training_scenario_definition.gd",
     "training_dummy_spawner.gd",
     "training_scenario_reset_service.gd",
     "training_ground_service.gd",
+    "training_telemetry_service.gd",
+    "training_telemetry_presenter.gd",
+    "training_loadout_snapshot.gd",
+    "training_loadout_service.gd",
+    "training_loadout_presenter.gd",
 }
 training_root = FEATURES / "training_ground"
 for filename in sorted(required_training_boundaries):
@@ -151,6 +157,11 @@ if not training_contract.is_file() or "spawn_budget_isolated" not in text(traini
     ERRORS.append("P8 training ground lacks scenario/reset/spawn-isolation coverage.")
 if not training_e2e.is_file() or "single_attack_telemetry" not in text(training_e2e):
     ERRORS.append("P8 training ground lacks real hub attack telemetry E2E coverage.")
+if "final_snapshot" not in text(training_contract):
+    ERRORS.append("P8 telemetry lacks fixed-window final snapshot coverage.")
+for marker in ("isolated_skill_runtime", "free_loadout_restore"):
+    if marker not in text(training_e2e):
+        ERRORS.append(f"P8 free-loadout E2E marker missing: {marker}")
 
 workflow = text(ROOT / ".github" / "workflows" / "deploy-wiki.yml")
 if "check_system_modularity.py" not in workflow:
@@ -164,5 +175,5 @@ print(
     "SYSTEM_MODULARITY_OK "
     f"features={len(feature_ids)} classes={len(class_owners)} dependencies={edge_count} "
     f"cycles=0 service_scene_reach=0 manifest_flags={len(enabled_flags)} "
-    "workshop_boundaries=5 training_boundaries=4 ci_gate=1"
+    "workshop_boundaries=5 training_boundaries=10 ci_gate=1"
 )

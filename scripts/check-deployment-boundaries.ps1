@@ -84,5 +84,19 @@ foreach ($workflowFile in $workflowFiles) {
 if ($workflow -notmatch 'CLOUDFLARE_API_TOKEN:\s*\$\{\{\s*secrets\.CLOUDFLARE_API_TOKEN\s*\}\}') {
     throw "Cloudflare credentials must be provided only through GitHub Secrets."
 }
+foreach ($artifactName in @("game-web", "wiki-site", "SFH-Windows-x64-")) {
+    if ($workflow -notmatch "(?s)name:\s*$([regex]::Escape($artifactName)).{0,420}retention-days:\s*1") {
+        throw "Temporary Actions artifact must use one-day retention: $artifactName"
+    }
+}
+if (
+    $workflow -notmatch 'prune-actions-artifacts:' -or
+    $workflow -notmatch 'actions:\s*write' -or
+    $workflow -notmatch 'workflow_run\.id' -or
+    $workflow -notmatch 'ACTIONS_ARTIFACT_RETENTION_OK' -or
+    $workflow -notmatch 'artifact_run_id" = "\$GITHUB_RUN_ID'
+) {
+    throw "Latest-only Actions artifact retention guard is missing."
+}
 
-Write-Host "DEPLOYMENT_BOUNDARIES_OK wiki=$($wikiOrigin.Host) game=$($gameOrigin.Host) desired=$($desiredGameOrigin.Host) cutover=$($surface.game.cutover_status) billing_untouched=true r2=private prefixes=2 actions=sha-pinned"
+Write-Host "DEPLOYMENT_BOUNDARIES_OK wiki=$($wikiOrigin.Host) game=$($gameOrigin.Host) desired=$($desiredGameOrigin.Host) cutover=$($surface.game.cutover_status) billing_untouched=true r2=private prefixes=2 actions=sha-pinned artifacts=latest-verified-only"
