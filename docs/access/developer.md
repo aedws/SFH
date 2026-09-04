@@ -9,7 +9,7 @@ hide:
 
 # 개발자 작업실
 
-<div data-sfh-code-module-map-host></div>
+<div id="code-module-map" data-sfh-code-module-map-host></div>
 
 <a class="sfh-article-entry" href="../../features/"><strong>SFH 종합 문서부터 읽기 →</strong><small>주제별 게임 규칙과 개발 구조를 찾는 공통 문서 대문입니다.</small></a>
 

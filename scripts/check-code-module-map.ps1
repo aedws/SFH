@@ -37,6 +37,14 @@ if ($map.summary.modules -lt 10 -or $map.summary.named_classes -lt 20 -or $map.s
 if ($map.modules.id.Count -ne ($map.modules.id | Sort-Object -Unique).Count) {
     $errors.Add("Code map module IDs must be unique.")
 }
+if ($map.schema_version -lt 2 -or $map.domains.Count -lt 5) {
+    $errors.Add("Code map schema must expose planning-friendly domains.")
+}
+foreach ($module in $map.modules) {
+    if ([string]::IsNullOrWhiteSpace($module.domain) -or [string]::IsNullOrWhiteSpace($module.domain_label)) {
+        $errors.Add("Module is missing its readable domain: $($module.id)")
+    }
+}
 foreach ($edge in $map.edges) {
     if ($edge.from -notin $map.modules.id -or $edge.to -notin $map.modules.id) {
         $errors.Add("Relationship references a missing module: $($edge.from) -> $($edge.to)")
@@ -53,13 +61,25 @@ if (
     $javascript -notmatch 'marker-end' -or
     $javascript -notmatch 'compact \? 6 : medium \? 8 : 12'
 ) {
-    $errors.Add("The radial relationship web or its 12/8/6 responsive contract is missing.")
+    $errors.Add("The relationship flow or its 12/8/6 responsive contract is missing.")
+}
+if (
+    $javascript -notmatch '사용처 → 선택 기능' -or
+    $javascript -notmatch '선택 기능 → 의존처' -or
+    $javascript -notmatch 'sfh-code-map__trace' -or
+    $javascript -notmatch 'sfh-code-map__domain'
+) {
+    $errors.Add("The directional lanes, navigation history, or domain filter is missing.")
 }
 if ($stylesheet -notmatch '\.sfh-code-map__workspace' -or $stylesheet -notmatch 'max-width:\s*24em') {
     $errors.Add("The code map responsive CSS contract is missing.")
 }
-if ($stylesheet -notmatch '\.sfh-code-web__stage' -or $stylesheet -notmatch '\.sfh-code-web__satellite') {
-    $errors.Add("The radial relationship web CSS contract is missing.")
+if (
+    $stylesheet -notmatch '\.sfh-code-web__stage' -or
+    $stylesheet -notmatch '\.sfh-code-web__lane' -or
+    $stylesheet -notmatch '\.sfh-code-web__satellite'
+) {
+    $errors.Add("The directional relationship flow CSS contract is missing.")
 }
 if ($mkdocs -notmatch 'architecture/code-module-map\.md' -or $mkdocs -notmatch 'javascripts/code-module-map\.js') {
     $errors.Add("MkDocs does not expose the code map page and runtime.")

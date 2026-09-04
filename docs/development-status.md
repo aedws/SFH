@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 25 · IMPROVE 28 · CHANGE 36 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 25 · IMPROVE 33 · CHANGE 40 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>25</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>36</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>25</b><small>BUILD</small></span><span><b>33</b><small>IMPROVE</small></span><span><b>40</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -201,7 +201,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="features/room-encounters/#spawn-safety">방 스폰 안전 계약 →</a> · <a href="quality/e2e-play-session/#player-perception-regression-2026-09-04">플레이어 인식 회귀 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>P8 마감 · 계측 HUD·무비용 세팅 복원·산출물 정리</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 훈련에서 실제 DPS·AP·쿨타임을 읽고 장비·스킬을 비용 없이 시험한 뒤, 작전 준비로 나가면 원래 세팅으로 안전하게 돌아옵니다.</strong></div>
@@ -211,6 +211,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>훈련 종료 중복 final 신호, 작전 준비 화면 위에 남던 계측 결과, 이동한 적을 생성 위치로 오판해 간헐 실패하던 스폰 안전 판정을 차단했습니다.</p></div>
         <p>GitHub Actions 산출물 430개 약 7.15GB를 정리해 최신 성공 런의 Web·Windows·위키 3개만 유지합니다. 새 목록이 없어 Sheet/CSV와 과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/training-ground/">P8 완료 흐름 →</a> · <a href="architecture/module-audit/#p8-complete-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p8-training-ground-e2e">P8 E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 10</small><b>코드 모듈 지도 초안 · 방향 고정과 한글 역할명</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 개발자는 선택 기능을 가운데 두고 왼쪽 사용처와 오른쪽 의존처를 바로 구분하며, 기획자는 한글 이름과 업무 영역으로 필요한 시스템을 찾을 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>게임 기능과 플레이 수치는 변경하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>고정 방향 관계도, 한글 역할명, 9개 업무 영역 필터, 탐색 이력, 모바일 목록 전환을 적용했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>60개 코드 모듈의 역할·영역 메타데이터와 생성 스키마·CI 계약·설명 문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기존 결함 수정이 아니라 구조 판독성을 높이는 위키 초안입니다.</p></div>
+        <p>실제 GDScript 272개를 다시 스캔하며 새 목록·Sheet/CSV·게임 데이터·과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="architecture/code-module-map/">직관형 코드 모듈 지도 →</a></p>
       </div>
     </details>
   </div>
