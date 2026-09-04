@@ -16,11 +16,17 @@ tags: [무기 고유 스킬, 장비 옵션, 고정 정체성, Google Sheets, CSV
 | 서비스 권총 | 브레이커 에코 | 2회 명중마다 고정 전기 피해 | 사거리 ×1.08 |
 | 전투 단검 | 잔상 절단 | 2회 명중마다 고정 전기 피해 | 피해 ×1.04 |
 | 대검 | 지진파 | 매 명중마다 강한 고정 피해 | 피해 ×1.10 |
-| 펄스 소총 | 펄스 오버플로 | 4회 명중마다 고정 전기 피해 | 발사 간격 ×0.92 |
+| 펄스 소총 | 펄스 오버플로 | 명중마다 타격 지점 반경 144의 최대 8명에게 고정 전기 피해 1 | 발사 간격 ×0.92 |
 | 전술 조끼 | 없음 | — | 최대 체력 +10 |
 | 러너 부츠 | 없음 | — | 이동 속도 +12 |
 
 고유 효과 발동 피해는 방어 계산을 거치지만 공격력·장비 레벨·런 버프·모듈 배율을 곱하지 않습니다. 따라서 성장으로 기본 공격이 강해져도 무기 고유 스킬 자체의 수치는 그대로입니다.
+
+### 펄스 오버플로 예시
+
+펄스 소총 탄환이 실제 적에게 명중한 위치를 중심으로 반경 144 안의 적을 가까운 순서로 찾아 최대 8명에게 각각 고정 피해 1을 적용합니다. 빗나간 탄환은 발동하지 않으며 반경 밖 적과 플레이어는 피해를 받지 않습니다.
+
+주 대상에는 큰 청록색 충격 링, 주변 대상에는 개별 전기 충격을 표시해 기본 탄환과 광역 발동을 구분합니다. 동시 대상 상한 8은 대형 전투에서 한 번의 명중이 전체 적 목록에 무제한 피해를 주는 것을 막는 성능 예산입니다.
 
 ## 세 가지 계산 원천
 
@@ -55,7 +61,7 @@ tags: [무기 고유 스킬, 장비 옵션, 고정 정체성, Google Sheets, CSV
 
 [SFH_item_Balance Google Sheet](https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/edit)에서 다음 열을 편집합니다.
 
-- Weapon: `innate_skill_*`, `fixed_option_*`
+- Weapon: `innate_skill_*`, `innate_effect_kind`, `innate_effect_radius`, `innate_maximum_targets`, `fixed_option_*`
 - Armor: `fixed_option_*`
 - 1행 변수명, 2행 한국어 설명, 3행부터 장비 데이터
 
@@ -66,17 +72,17 @@ tags: [무기 고유 스킬, 장비 옵션, 고정 정체성, Google Sheets, CSV
 | 모듈 | 책임 |
 |---|---|
 | `EquipmentFixedOption` | 한 옵션의 대상·연산·값과 불변 스냅샷 |
-| `WeaponInnateSkillDefinition` | 같은 무기에 고정되는 발동 횟수·피해·표현 |
+| `WeaponInnateSkillDefinition` | 같은 무기에 고정되는 발동 횟수·피해·단일/전기 광역 종류·반경·대상 상한 |
 | `EquipmentFixedOptionFactory` | 제작·드랍 payload를 장비 옵션으로 변환 |
 | `EquipmentIdentityTable` | 확정 CSV 열·행 계약과 조회 |
 | `EquipmentItemState` | 인스턴스 옵션 저장·복원·검증 |
 | `CharacterEquipmentSystem` | 고정 옵션 집계와 활성 무기 정체성 Signal |
-| `WeaponInnateSkillSystem` | 명중 카운트와 고정 효과 발동 |
+| `WeaponInnateSkillSystem` | 명중 카운트, 반경 필터, 가까운 대상 우선 선택과 고정 효과 발동 |
 | `AutoWeapon` | 발사 시점 정체성 스냅샷과 표현 조립 |
 
 ## 검증
 
-`equipment_fixed_identity_contract_test.gd`가 같은 무기의 고유 스킬 동일성, 정의/획득 옵션, 성장 불변성, 런타임 source 분리, 발동 횟수·고정 피해, 안전 저장 코덱 왕복과 잠금 CSV 계약을 자동 판정합니다. 다운로드판은 `EquipmentFixedOption`과 `WeaponInnateSkillDefinition`만 명시 허용 타입으로 복원하므로 임의 Resource 경로는 계속 거부합니다.
+`equipment_fixed_identity_contract_test.gd`가 같은 무기의 고유 스킬 동일성, 정의/획득 옵션, 성장 불변성, 런타임 source 분리, 발동 횟수·고정 피해, 전기 광역 반경·대상 상한, 안전 저장 코덱 왕복과 잠금 CSV 계약을 자동 판정합니다. 다운로드판은 `EquipmentFixedOption`과 `WeaponInnateSkillDefinition`만 명시 허용 타입으로 복원하므로 임의 Resource 경로는 계속 거부합니다.
 
 ## 검색 별칭
 

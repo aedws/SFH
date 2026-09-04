@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 33 · IMPROVE 46 · CHANGE 61 · FIX 34</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 36 · IMPROVE 49 · CHANGE 66 · FIX 35</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>33</b><small>BUILD</small></span><span><b>46</b><small>IMPROVE</small></span><span><b>61</b><small>CHANGE</small></span><span><b>34</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>36</b><small>BUILD</small></span><span><b>49</b><small>IMPROVE</small></span><span><b>66</b><small>CHANGE</small></span><span><b>35</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -261,7 +261,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="design/master-gdd-alignment/">새 Master GDD 대조 기준 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 14</small><b>전장의 안개 체감 개선 · 문턱·벽·탐색 기억</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 문 앞 왕복에서 화면이 깜빡이지 않고, 통로 시야가 벽과 기둥을 통과하지 않으며, 빠르게 다음 방에 들어가도 이전 방이 한 프레임에 사라지지 않습니다.</strong></div>
@@ -271,6 +271,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 4</h3><p>시간만으로 남던 방 시야, 문턱 떨림, 180도 시야 튐, 벽 너머 통로 노출을 차단했습니다.</p></div>
         <p>대형 작전 성능은 평균 7.527ms·피크 19.855ms·Node 2,022개로 예산을 통과했습니다. Sheet/CSV·경제·과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/fog-of-war/">새 안개 동작 →</a> · <a href="quality/player-perception-audit/#fog-perception-2026-09-04">인식 검사 →</a> · <a href="architecture/module-audit/#fog-perception-2026-09-04">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 15</small><b>펄스 오버플로 · 명중 지점 전기 광역 피해</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 펄스 소총 탄환이 적에게 명중할 때마다 타격 지점 주변에 청록색 전기 충격을 방출해 밀집된 적을 함께 공격합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>단일/전기 광역 효과 정의, 반경·거리순 대상 선택, 광역 피해 문맥과 발동 집계를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>반경 144·최대 8명 상한, 큰 중심 충격 링, U 장비 상세의 실제 발동 설명으로 전투 체감과 판독성을 높였습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>펄스 소총 Resource, 잠금 CSV 스키마·검증기, 명중 대상 공급, 계약 테스트와 장비 위키를 광역 효과 계약으로 확장했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>광역 효과가 반경 밖 적이나 무제한 대상에게 적용될 수 있는 경로를 거리 필터와 대상 예산으로 차단했습니다.</p></div>
+        <p>명중마다 피해 1·반경 144·최대 8명은 기획 확정 전 임시값입니다. 성장·모듈·과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/equipment-fixed-identity/#펄스-오버플로-예시">고유 기능 규칙 →</a> · <a href="architecture/module-audit/#전기-광역-무기-고유-기능--2026-09-04">모듈 감사 →</a></p>
       </div>
     </details>
   </div>

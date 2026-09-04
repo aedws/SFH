@@ -4,6 +4,7 @@ extends RefCounted
 const REQUIRED_COLUMNS := [
 	"equipment_kind", "definition_id", "display_name",
 	"innate_skill_id", "innate_skill_name", "innate_trigger_hits", "innate_fixed_damage",
+	"innate_effect_kind", "innate_effect_radius", "innate_maximum_targets",
 	"fixed_option_id", "fixed_option_name", "fixed_option_modifier",
 	"fixed_option_operation", "fixed_option_value", "scaling_policy", "source_status",
 ]

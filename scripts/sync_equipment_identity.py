@@ -13,6 +13,7 @@ import urllib.request
 COLUMNS = [
     "equipment_kind", "definition_id", "display_name", "innate_skill_id",
     "innate_skill_name", "innate_trigger_hits", "innate_fixed_damage",
+    "innate_effect_kind", "innate_effect_radius", "innate_maximum_targets",
     "fixed_option_id", "fixed_option_name", "fixed_option_modifier",
     "fixed_option_operation", "fixed_option_value", "scaling_policy", "source_status",
 ]
@@ -40,6 +41,9 @@ def _rows(text: str, kind: str) -> list[dict[str, str]]:
             "innate_skill_name": (row.get("innate_skill_name") or "").strip() if kind == "weapon" else "",
             "innate_trigger_hits": (row.get("innate_trigger_hits") or "").strip() if kind == "weapon" else "",
             "innate_fixed_damage": (row.get("innate_fixed_damage") or "").strip() if kind == "weapon" else "",
+            "innate_effect_kind": (row.get("innate_effect_kind") or "single_target").strip() if kind == "weapon" else "",
+            "innate_effect_radius": (row.get("innate_effect_radius") or "0").strip() if kind == "weapon" else "",
+            "innate_maximum_targets": (row.get("innate_maximum_targets") or "1").strip() if kind == "weapon" else "",
             "fixed_option_id": (row.get("fixed_option_id") or "").strip(),
             "fixed_option_name": (row.get("fixed_option_name") or "").strip(),
             "fixed_option_modifier": (row.get("fixed_option_modifier") or "").strip(),
@@ -73,10 +77,19 @@ def validate(rows: list[dict[str, str]]) -> None:
         if row["equipment_kind"] == "weapon":
             if not all(row[column] for column in [
                 "innate_skill_id", "innate_skill_name", "innate_trigger_hits", "innate_fixed_damage",
+                "innate_effect_kind", "innate_effect_radius", "innate_maximum_targets",
             ]):
                 raise ValueError(f"{index}행 무기 고유 스킬 필드가 비어 있습니다.")
             if int(row["innate_trigger_hits"]) < 1 or float(row["innate_fixed_damage"]) <= 0:
                 raise ValueError(f"{index}행 무기 고유 스킬 수치가 잘못됐습니다.")
+            if row["innate_effect_kind"] not in {"single_target", "electric_area"}:
+                raise ValueError(f"{index}행 무기 고유 효과 종류가 잘못됐습니다.")
+            radius = float(row["innate_effect_radius"])
+            maximum_targets = int(row["innate_maximum_targets"])
+            if maximum_targets < 1 or maximum_targets > 32:
+                raise ValueError(f"{index}행 무기 고유 효과 대상 수가 잘못됐습니다.")
+            if row["innate_effect_kind"] == "electric_area" and radius <= 0:
+                raise ValueError(f"{index}행 전기 광역 효과 반경이 잘못됐습니다.")
         if row["scaling_policy"] != "fixed_identity":
             raise ValueError(f"{index}행 스케일 정책이 fixed_identity가 아닙니다.")
 
