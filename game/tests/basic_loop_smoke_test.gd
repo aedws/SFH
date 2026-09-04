@@ -3037,12 +3037,16 @@ func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -
 	if corridor_position == Vector2.INF:
 		return false
 	var original_position := player.global_position
-	player.global_position = corridor_position
+	var room_index := int(room_snapshot.get(&"active_room_index", -1))
+	var room_data: Dictionary = generator.call(&"get_room_encounter_snapshot")[room_index]
+	var doorway_position := _find_doorway_corridor_position(room_data)
+	if doorway_position == Vector2.INF:
+		return false
+	player.global_position = doorway_position
 	var exit_seconds := float(room_snapshot.get(&"room_exit_transition_seconds", 0.0))
-	var grace_seconds := float(room_snapshot.get(&"doorway_grace_seconds", 0.0))
-	fog.call(&"_process", grace_seconds * 0.5)
-	var doorway_grace_snapshot: Dictionary = fog.call(&"get_snapshot")
-	fog.call(&"_process", grace_seconds * 0.5 + 0.001)
+	fog.call(&"_process", 0.016)
+	var doorway_hysteresis_snapshot: Dictionary = fog.call(&"get_snapshot")
+	player.global_position = corridor_position
 	fog.call(&"_process", exit_seconds * 0.5)
 	var doorway_exit_snapshot: Dictionary = fog.call(&"get_snapshot")
 	fog.call(&"_process", exit_seconds)
@@ -3054,10 +3058,10 @@ func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -
 	fog.call(&"_process", enter_seconds)
 	var settled_room_snapshot: Dictionary = fog.call(&"get_snapshot")
 	return (
-		doorway_grace_snapshot.get(&"visibility_mode") == &"corridor"
-		and doorway_grace_snapshot.get(&"transition_phase") == &"doorway_grace"
-		and is_equal_approx(float(doorway_grace_snapshot.get(&"room_visibility_blend", 0.0)), 1.0)
-		and float(doorway_grace_snapshot.get(&"doorway_grace_remaining", 0.0)) > 0.0
+		doorway_hysteresis_snapshot.get(&"visibility_mode") == &"corridor"
+		and doorway_hysteresis_snapshot.get(&"transition_phase") == &"doorway_hysteresis"
+		and bool(doorway_hysteresis_snapshot.get(&"doorway_hysteresis_active", false))
+		and is_equal_approx(float(doorway_hysteresis_snapshot.get(&"room_visibility_blend", 0.0)), 1.0)
 		and doorway_exit_snapshot.get(&"visibility_mode") == &"corridor"
 		and float(doorway_exit_snapshot.get(&"room_visibility_blend", 0.0)) > 0.0
 		and float(doorway_exit_snapshot.get(&"room_visibility_blend", 1.0)) < 1.0
@@ -3080,6 +3084,16 @@ func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -
 			float(settled_room_snapshot.get(&"room_visibility_blend", 0.0)), 1.0
 		)
 	)
+
+
+func _find_doorway_corridor_position(room: Dictionary) -> Vector2:
+	var doorways: Array = room.get(&"doorways", [])
+	if doorways.is_empty():
+		return Vector2.INF
+	var doorway: Dictionary = doorways[0]
+	return Vector2(doorway.get(&"position", Vector2.INF)) + Vector2(
+		doorway.get(&"outward", Vector2.ZERO)
+	) * 8.0
 
 
 func _verify_tier_population_and_value(

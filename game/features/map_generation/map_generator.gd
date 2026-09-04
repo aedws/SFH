@@ -129,11 +129,13 @@ func get_visibility_region(world_position: Vector2) -> Dictionary:
 				&"mode": &"room",
 				&"room_index": room_index,
 				&"world_rect": _room_world_rect(room),
+				&"detection_rect": _room_world_rect(room, false),
 			}
 	return {
 		&"mode": &"corridor",
 		&"room_index": -1,
 		&"world_rect": Rect2(),
+		&"detection_rect": Rect2(),
 	}
 
 

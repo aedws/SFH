@@ -102,7 +102,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_grace skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_hysteresis fog_wall_occlusion fog_exploration_memory skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -1441,20 +1441,51 @@ func _verify_fog_room_corridor_transition(
 	var corridor_position := _find_corridor_position(generator)
 	if corridor_position == Vector2.INF:
 		return _fail("방·통로 안개 전환을 확인할 통로 좌표가 없습니다.")
-	player.global_position = corridor_position
-	var grace_seconds := float(fog.get("doorway_grace_seconds"))
-	fog.call(&"_process", grace_seconds * 0.5)
+	var doorway_position := _find_doorway_corridor_position(room)
+	if doorway_position == Vector2.INF:
+		return _fail("문턱 히스테리시스를 확인할 출입구 좌표가 없습니다.")
+	var doorway: Dictionary = (room.get(&"doorways", []) as Array)[0]
+	var outward := Vector2(doorway.get(&"outward", Vector2.ZERO))
+	var threshold_stable := true
+	for offset in [-6.0, 8.0, -4.0, 6.0, -2.0, 4.0]:
+		player.global_position = Vector2(doorway.get(&"position", Vector2.ZERO)) + outward * offset
+		fog.call(&"_process", 0.016)
+		var threshold_snapshot: Dictionary = fog.call(&"get_snapshot")
+		if (
+			float(threshold_snapshot.get(&"room_visibility_blend", 0.0)) < 0.999
+			or threshold_snapshot.get(&"transition_phase") not in [&"room", &"doorway_hysteresis"]
+		):
+			threshold_stable = false
+			break
+	player.global_position = doorway_position
+	fog.call(&"_process", 0.016)
 	var grace_snapshot: Dictionary = fog.call(&"get_snapshot")
-	fog.call(&"_process", grace_seconds * 0.5 + 0.001)
+	player.global_position = corridor_position
 	fog.call(&"_process", exit_seconds * 0.5)
 	var leaving_snapshot: Dictionary = fog.call(&"get_snapshot")
 	fog.call(&"_process", exit_seconds)
 	var corridor_snapshot: Dictionary = fog.call(&"get_snapshot")
+	var facing_before := Vector2(corridor_snapshot.get(&"facing_direction", Vector2.RIGHT))
+	player.set("facing_direction", -facing_before)
+	fog.call(&"_process", 0.016)
+	var turning_snapshot: Dictionary = fog.call(&"get_snapshot")
+	var facing_smoothed := (
+		Vector2(turning_snapshot.get(&"facing_direction", Vector2.ZERO)).dot(facing_before) > -0.8
+	)
+	player.set("facing_direction", facing_before)
 	player.global_position = room[&"center"]
 	fog.call(&"_process", enter_seconds * 0.5)
 	var entering_snapshot: Dictionary = fog.call(&"get_snapshot")
 	fog.call(&"_process", enter_seconds)
 	var returned_snapshot: Dictionary = fog.call(&"get_snapshot")
+	var handoff_snapshot := {}
+	for candidate: Dictionary in generator.call(&"get_room_encounter_snapshot"):
+		if int(candidate.get(&"room_index", -1)) == int(room.get(&"room_index", -1)):
+			continue
+		player.global_position = candidate[&"center"]
+		fog.call(&"_process", 0.016)
+		handoff_snapshot = fog.call(&"get_snapshot")
+		break
 	return _judge_gameplay_flow(&"fog_room_corridor_transition", "방↔통로 전장의 안개", {
 		&"room": room_snapshot,
 		&"grace": grace_snapshot,
@@ -1462,7 +1493,20 @@ func _verify_fog_room_corridor_transition(
 		&"corridor": corridor_snapshot,
 		&"entering": entering_snapshot,
 		&"returned": returned_snapshot,
+		&"threshold_stable": threshold_stable,
+		&"facing_smoothed": facing_smoothed,
+		&"handoff": handoff_snapshot,
 	})
+
+
+func _find_doorway_corridor_position(room: Dictionary) -> Vector2:
+	var doorways: Array = room.get(&"doorways", [])
+	if doorways.is_empty():
+		return Vector2.INF
+	var doorway: Dictionary = doorways[0]
+	return Vector2(doorway.get(&"position", Vector2.INF)) + Vector2(
+		doorway.get(&"outward", Vector2.ZERO)
+	) * 8.0
 
 
 func _verify_ten_minute_sessions(game_scene: PackedScene) -> bool:
