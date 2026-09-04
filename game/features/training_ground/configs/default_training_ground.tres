@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TrainingGroundConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/features/training_ground/training_ground_config.gd" id="1_config"]
+[ext_resource type="PackedScene" path="res://game/features/enemies/enemy.tscn" id="2_dummy"]
+
+[resource]
+script = ExtResource("1_config")
+dummy_scene = ExtResource("2_dummy")
+formation_anchor = Vector2(110, -280)
+formation_spacing = 76.0
+dense_columns = 4
+auto_reset_after_clear = true
+reset_delay_seconds = 0.35

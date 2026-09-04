@@ -20,5 +20,7 @@ if (-not $godotExecutable) {
     throw "Godot 콘솔 실행 파일을 찾지 못했습니다. Godot 4.7.2 설치를 확인하세요."
 }
 
+& $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/training_ground_gameplay_e2e_test.gd"
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/e2e_play_session_test.gd"
 exit $LASTEXITCODE

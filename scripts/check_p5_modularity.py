@@ -156,7 +156,11 @@ read_rows(DATA_ROOT / "utility.csv", {"utility_id", "display_name", "utility_typ
 presets = read_rows(DATA_ROOT / "operation_preset.csv", {"preset_id", "character_id", "main_weapon_id", "secondary_weapon_id", "skill_ids", "tier_id", "region_id", "difficulty_id", "runtime_enabled"}, "preset_id")
 read_rows(DATA_ROOT / "shop_offer.csv", {"offer_id", "quality", "target_id", "quantity", "price", "runtime_enabled"}, "offer_id")
 recipes = read_rows(DATA_ROOT / "recipe.csv", {"recipe_id", "blueprint_id", "result_id", "materials", "runtime_enabled"}, "recipe_id")
-read_rows(DATA_ROOT / "training_scenario.csv", {"scenario_id", "dummy_mode", "measurement_seconds", "runtime_enabled"}, "scenario_id")
+read_rows(DATA_ROOT / "training_scenario.csv", {
+    "scenario_id", "display_name", "dummy_mode", "dummy_count", "dummy_health",
+    "dummy_armor", "measurement_seconds", "allow_free_loadout", "metrics",
+    "restore_on_exit", "runtime_enabled", "source_status",
+}, "scenario_id")
 codex = read_rows(DATA_ROOT / "codex.csv", {"entry_id", "source_id", "region_hint", "required_count", "runtime_enabled"}, "entry_id")
 
 items = {row["item_id"] for row in read_rows(ROOT / "game/features/loot_lifecycle/data/item_lifecycle.csv", {"item_id"}, "item_id")}

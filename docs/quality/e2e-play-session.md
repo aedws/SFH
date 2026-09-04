@@ -130,6 +130,24 @@ tags:
 
 성공 마커는 `P7_WORKSHOP_TRANSACTION_OK quote_no_mutation visible_cost_material_roll atomic_single_commit duplicate_guard invalid_no_mutation actual_affixes_sockets reconnect replaceable_policy provider_failure storage_failure_rollback`입니다. 전체 구조 게이트 `SYSTEM_MODULARITY_OK`는 기능 경계·순환 의존·서비스의 Scene 침범·69개 Manifest 플래그를 함께 검사합니다. 현행 Roll 값은 기획 확정 전 임시값이며 브라우저/Windows 육안 검수나 서버 거래 검증을 대신하지 않습니다.
 
+## P8-01 · 실제 단일·밀집 훈련장 {#p8-training-ground-e2e}
+
+`training_ground_scenario_contract_test.gd`와 `training_ground_gameplay_e2e_test.gd`를 P5·전체 E2E 필수 흐름에서 실행합니다.
+
+| 플레이어 인식/실패 상황 | 판정 근거 |
+|---|---|
+| 거점에서 시작 | 실제 `Game` 시작 거점과 훈련장 단말·훈련 전용 자동 무기가 함께 설치되고 일반 적 생성기는 없음 |
+| 단일 시험 | 단말 공개 상호작용 경로로 HP 1,000·방어 25인 보스 역할 더미 1기 생성 |
+| 실제 공격 | 플레이어를 더미 근처로 이동하고 `primary_attack`을 누르면 HP+방어 합이 감소하고 P5 타격 횟수가 증가 |
+| 밀집 시험 전환 | 다음 단말 상호작용에서 8기가 생성되고 각 더미 간 최소 간격 75 이상 유지 |
+| 스마트 타게팅 | 밀집 중심 공급자가 범위 안 가장 밀집된 지점을 반환 |
+| 반복 측정 | 전부 처치하면 짧은 지연 뒤 같은 시나리오가 자동 초기화되고 수동 reset revision도 증가 |
+| 일반 게임 비간섭 | 일반 적 스폰 예산 영향 0, 작전 처치 수·경험치·전리품·방 보상 불변 |
+| 거점 이탈 | 작전 진입 준비로 거점을 지우면 더미·서비스·훈련 무기가 남지 않음 |
+| 선택 제거 | 훈련 플래그 OFF 또는 선행 거점 OFF에서 나머지 Manifest와 게임은 정상 유지 |
+
+성공 마커는 `P8_TRAINING_GROUND_OK scenario_resource single_boss dense_8 no_overlap smart_targeting reset_service auto_reset spawn_budget_isolated optional_module`과 `E2E_P8_TRAINING_GROUND_OK hub_station interaction single_attack_telemetry dense_switch spawn_isolation hub_exit_cleanup`입니다. Headless 실제 입력·상태 판정이며 사람의 장시간 육안 플레이나 임시 더미 수치의 기획 확정을 대신하지 않습니다.
+
 <a id="desktop-save-e2e"></a>
 ## 2026-09-03 추가 · 다운로드판 종료와 재실행
 

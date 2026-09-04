@@ -97,6 +97,9 @@ const LOADOUT_INVESTMENT_SCENE_PATH := (
 const P5_HUB_PROGRESSION_SCENE_PATH := (
 	"res://game/features/p5_hub_progression/p5_hub_progression_service.tscn"
 )
+const TRAINING_GROUND_SCENE_PATH := (
+	"res://game/features/training_ground/training_ground_service.tscn"
+)
 const HUB_ECONOMY_SCENE_PATH := "res://game/features/hub_economy/hub_economy_system.tscn"
 const CRAFTING_SCENE_PATH := "res://game/features/crafting/crafting_system.tscn"
 const PENALTY_SCENE_PATH := "res://game/features/penalty_modifiers/penalty_system.tscn"
@@ -363,8 +366,13 @@ const P5_HUB_PROGRESSION_METHODS := [
 	&"toggle_utility", &"purchase_shop_offer", &"get_shop_snapshot", &"quote_shop_offer",
 	&"set_shop_inventory_provider",
 	&"reroll_shop", &"craft_recipe",
-	&"start_training", &"record_training_hit", &"finish_training", &"get_snapshot",
+	&"start_training", &"record_training_hit", &"finish_training", &"get_training_scenarios",
+	&"get_snapshot",
 	&"perform_hub_action",
+]
+const TRAINING_GROUND_METHODS := [
+	&"configure", &"activate_scenario", &"activate_next_scenario",
+	&"reset_active_scenario", &"stop", &"get_active_targets", &"get_snapshot",
 ]
 const HUB_ECONOMY_METHODS := [
 	&"configure", &"quote", &"purchase", &"set_consumable_loadout",
@@ -497,6 +505,7 @@ var loot_launch_validator
 var character_selection_service
 var loadout_investment_service
 var p5_hub_progression_service
+var training_ground_service
 var shop_browser_panel
 var hub_preparation_panel
 var hub_service_stations
@@ -851,6 +860,12 @@ func _install_persistent_services() -> bool:
 		else:
 			p5_hub_progression_service.connect(
 				&"snapshot_changed", Callable(self, &"_on_contract_changed")
+			)
+			p5_hub_progression_service.connect(
+				&"training_started", Callable(self, &"_on_training_started")
+			)
+			p5_hub_progression_service.connect(
+				&"training_finished", Callable(self, &"_on_training_finished")
 			)
 			if features.shop_browser_enabled and not p5_hub_progression_service.call(&"get_shop_snapshot").is_empty():
 				shop_browser_panel = _instantiate_feature(
@@ -1227,6 +1242,9 @@ func _toggle_run_utility() -> void:
 
 
 func _toggle_training_session() -> void:
+	if is_instance_valid(start_hub) and is_instance_valid(training_ground_service):
+		_cycle_hub_training()
+		return
 	_perform_p5_hub_action(&"training_toggle")
 
 
@@ -1624,6 +1642,11 @@ func _install_start_hub() -> bool:
 	player.call(&"configure_damage", false)
 	if not _install_hub_loadout_views():
 		return false
+	if (
+		features.enabled_module_ids().has(&"training_ground")
+		and not _install_training_ground()
+	):
+		return false
 	start_hub.connect(&"operation_requested", Callable(self, &"_open_run_setup"))
 	if is_instance_valid(hub_preparation_panel):
 		hub_service_stations = _instantiate_feature(
@@ -1636,6 +1659,9 @@ func _install_start_hub() -> bool:
 				_report_configuration_error("로비 단말의 공개 상호작용 계약 누락")
 				return false
 			if station.get("service_id") == &"shop" and not is_instance_valid(shop_browser_panel):
+				_free_feature_node(station)
+				continue
+			if station.get("service_id") == &"training" and not is_instance_valid(training_ground_service):
 				_free_feature_node(station)
 				continue
 			station.connect(&"service_requested", _on_hub_service_requested)
@@ -1662,6 +1688,78 @@ func _on_hub_service_requested(service_id: StringName) -> void:
 		shop_browser_panel.call(&"open_panel")
 	elif service_id == &"preparation" and is_instance_valid(hub_preparation_panel):
 		hub_preparation_panel.call(&"open_panel")
+	elif service_id == &"training" and is_instance_valid(training_ground_service):
+		_cycle_hub_training()
+
+
+func _install_training_ground() -> bool:
+	if p5_hub_progression_service == null or not ResourceLoader.exists(features.training_ground_config_path):
+		_report_configuration_error("훈련장에는 P5 시나리오와 유효한 설정이 필요합니다.")
+		return false
+	training_ground_service = _instantiate_feature(
+		TRAINING_GROUND_SCENE_PATH, module_container, &"TrainingGround"
+	)
+	if (
+		not _supports_methods(training_ground_service, TRAINING_GROUND_METHODS)
+		or not training_ground_service.has_signal(&"dummy_spawned")
+		or not bool(training_ground_service.call(
+			&"configure", player, enemies_container,
+			p5_hub_progression_service.call(&"get_training_scenarios"),
+			load(features.training_ground_config_path)
+		))
+	):
+		_report_configuration_error("훈련장 시나리오·더미 생성 계약을 구성하지 못했습니다.")
+		_free_feature_node(training_ground_service)
+		training_ground_service = null
+		return false
+	training_ground_service.connect(&"dummy_spawned", _on_training_dummy_spawned)
+	if features.weapons_enabled:
+		auto_weapon = _instantiate_feature(WEAPON_SCENE_PATH, player, &"TrainingWeapon")
+		if auto_weapon == null or not auto_weapon.has_method(&"set_target_provider"):
+			_report_configuration_error("훈련용 무기 대상 제공자를 구성하지 못했습니다.")
+			_free_feature_node(auto_weapon)
+			_free_feature_node(training_ground_service)
+			auto_weapon = null
+			training_ground_service = null
+			return false
+		auto_weapon.call(&"configure", projectiles_container, equipment_system, null)
+		if features.smart_targeting_enabled:
+			auto_weapon.call(&"set_targeting_policy", load(features.smart_targeting_policy_path))
+		if not bool(auto_weapon.call(&"set_target_provider", training_ground_service)):
+			_report_configuration_error("훈련용 무기에 더미 대상 제공자를 연결하지 못했습니다.")
+			_free_feature_node(auto_weapon)
+			_free_feature_node(training_ground_service)
+			auto_weapon = null
+			training_ground_service = null
+			return false
+	return true
+
+
+func _cycle_hub_training() -> void:
+	if p5_hub_progression_service == null or training_ground_service == null:
+		return
+	var active: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"training", {}).get(&"active", {})
+	var current_id := StringName(active.get(&"scenario_id", &""))
+	var scenarios: Array = p5_hub_progression_service.call(&"get_training_scenarios")
+	if scenarios.is_empty():
+		status_label.text = "훈련장 시작 실패 · 시나리오 데이터 없음"
+		return
+	var next_index := 0
+	for index in scenarios.size():
+		if StringName((scenarios[index] as Dictionary).get(&"scenario_id", &"")) == current_id:
+			next_index = (index + 1) % scenarios.size()
+			break
+	if not active.is_empty():
+		p5_hub_progression_service.call(&"finish_training")
+	var next_id := StringName((scenarios[next_index] as Dictionary).get(&"scenario_id", &""))
+	var started: Dictionary = p5_hub_progression_service.call(&"start_training", next_id)
+	if not bool(started.get(&"success", false)):
+		status_label.text = "훈련장 시작 실패 · %s" % started.get(&"reason", "시나리오 확인")
+		return
+	var scenario: Dictionary = started.get(&"scenario", {})
+	status_label.text = "훈련장 · %s %d기 · 좌클릭 공격 · F 시나리오 전환" % [
+		scenario.get(&"display_name", "시나리오"), int(scenario.get(&"dummy_count", 0)),
+	]
 
 
 func _install_hub_loadout_views() -> bool:
@@ -1736,8 +1834,21 @@ func _clear_start_hub() -> void:
 		operation_launch_preflight_service.call(&"unregister_validator", &"inventory")
 	start_hub_hud.visible = false
 	interaction_label.visible = false
-	for node in [inventory_window, equipment_workbench, equipment_system, inventory_system]:
+	if p5_hub_progression_service != null:
+		var training_active: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"training", {}).get(&"active", {})
+		if not training_active.is_empty():
+			p5_hub_progression_service.call(&"finish_training")
+	if is_instance_valid(training_ground_service):
+		training_ground_service.call(&"stop")
+	for node in [
+		auto_weapon, training_ground_service, inventory_window, equipment_workbench,
+		equipment_system, inventory_system,
+	]:
 		_free_feature_node(node)
+	for projectile in projectiles_container.get_children():
+		_free_feature_node(projectile)
+	auto_weapon = null
+	training_ground_service = null
 	inventory_window = null
 	equipment_workbench = null
 	equipment_system = null
@@ -1746,6 +1857,27 @@ func _clear_start_hub() -> void:
 	start_hub = null
 	_free_feature_node(player)
 	player = null
+
+
+func _on_training_started(scenario: Dictionary) -> void:
+	if not is_instance_valid(training_ground_service):
+		return
+	var result: Dictionary = training_ground_service.call(
+		&"activate_scenario", StringName(scenario.get(&"scenario_id", &""))
+	)
+	if not bool(result.get(&"success", false)):
+		status_label.text = "훈련 더미 생성 실패 · %s" % result.get(&"reason", "설정 확인")
+		p5_hub_progression_service.call_deferred(&"finish_training")
+
+
+func _on_training_finished(_result: Dictionary) -> void:
+	if is_instance_valid(training_ground_service):
+		training_ground_service.call(&"stop")
+
+
+func _on_training_dummy_spawned(dummy: Node) -> void:
+	if dummy.has_signal(&"damaged") and p5_hub_progression_service != null:
+		dummy.connect(&"damaged", Callable(self, &"_on_enemy_training_damage"))
 
 
 func _install_operation_tutorial() -> bool:
