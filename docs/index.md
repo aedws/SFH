@@ -44,7 +44,7 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 31 · IMPROVE 41 · CHANGE 51 · FIX 28</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 31 · IMPROVE 41 · CHANGE 51 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>31</b><small>BUILD</small></span><span><b>41</b><small>IMPROVE</small></span><span><b>51</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
@@ -54,7 +54,7 @@ search:
         <div class="sfh-group"><h3>구현 · 5</h3><p>고정 옵션 Resource·payload 어댑터·고유 스킬 정의/발동기·잠금 CSV 조회기를 독립 모듈로 추가했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 4</h3><p>5개 무기의 총구 섬광, 투사체 glow, 충격 색·크기·카메라 반응과 명중 누적 전기 효과를 구분했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 6</h3><p>Weapon/Armor Sheet, 7행 확정 CSV, 장비 UI, 검색, 모듈 감사와 E2E 계약을 고정 정체성 기준으로 확장했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>발사 후 Q 교체 시 탄환 정체성 혼선, 성장 배율의 고유 효과 침범, 획득 옵션이 실제 장착 계산으로 이어지지 않던 단절을 차단했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>발사 후 Q 교체 시 탄환 정체성 혼선, 성장 배율의 고유 효과 침범, 획득 옵션의 장착 계산 단절, 새 정체성 Resource가 다운로드판 저장 코덱에서 거부되던 문제를 차단했습니다.</p></div>
         <p>전체 구조는 기능 57·클래스 231·의존 26·순환 0·Scene 침범 0입니다. 신규 수치는 임시값이며 과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/equipment-fixed-identity/">장비 고정 정체성 →</a> · <a href="architecture/module-audit/#equipment-fixed-identity-2026-09-04">모듈 감사 →</a> · <a href="quality/player-perception-audit/#equipment-fixed-identity-perception-2026-09-04">인식 검사 →</a></p>
       </div>

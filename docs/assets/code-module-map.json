@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "7b6dea3b570f641dd03bea5dadca17253438e60cae3fae5c3d896198623f1698",
+  "source_sha256": "91d7919585c38c4616dfc85899f9163fa4eb06eff4b9e3ffcfae8776260fe354",
   "domains": [
     {
       "id": "system",
@@ -4270,7 +4270,7 @@
       "from": "verification",
       "to": "local_save",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
