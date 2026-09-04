@@ -28,6 +28,7 @@ extends Resource
 @export_range(0.0, 256.0, 4.0) var room_entry_inset: float = 48.0
 @export var exclude_start_room: bool = true
 @export var exclude_extraction_room: bool = true
+@export var spawn_safety_policy: Resource
 
 @export_category("Room clear reward boxes")
 @export_range(1, 5, 1) var minimum_reward_boxes: int = 1
@@ -76,6 +77,9 @@ func is_valid() -> bool:
 			return false
 	return (
 		room_entry_inset >= 0.0
+		and spawn_safety_policy != null
+		and spawn_safety_policy.has_method(&"is_valid")
+		and bool(spawn_safety_policy.call(&"is_valid"))
 		and minimum_reward_boxes >= 1
 		and maximum_reward_boxes >= minimum_reward_boxes
 	)

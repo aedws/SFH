@@ -102,6 +102,10 @@ I 화면의 이동·장착·모듈 탭은 `InventoryEditSession`이 소유한 �
 
 ## 모듈 계약과 검증
 
+### 첫 열기 레이아웃 안정화
+
+I 창을 처음 표시하는 프레임에는 `ScrollContainer`의 실제 폭이 아직 정렬되지 않을 수 있습니다. 이전 구현은 이 0에 가까운 값을 최소 240px로 해석해 아이템이 좌측에 겹친 것처럼 보였고, 첫 드래그 뒤에야 정상 폭으로 다시 계산했습니다. 이제 컨테이너 `resized` 이후 지연 레이아웃을 한 번 더 적용하며, `open_layout_ready`, 실제 가방 폭, 최소 480px 격자 폭을 자동 검사합니다.
+
 - `GridInventory`: 칸 배치·아이템 소유권·런타임 스냅샷.
 - `InventoryEditSession`: 원본과 분리된 편집본, 이동·장착·모듈 거래, 저장·충돌·롤백.
 - `InventoryGridView` / `InventorySlotButton`: 클릭·드래그 의도 전달과 격자/장착 슬롯 표현.

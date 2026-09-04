@@ -56,10 +56,12 @@ func take_hub_preparation_content() -> Control:
 	main_weapon_button.get_parent().hide()
 	var meta_actions := controls.find_child("MetaActions", true, false) as GridContainer
 	if meta_actions != null: meta_actions.columns = 2
+	var readiness_title := _label("출격 체크 · 읽기 전용", 13, Color("02e5e1"))
+	step_pages[1].add_child(readiness_title)
 	equipped_summary = _label("로비 장비 확인 중...", 16, Color("d2fffe"))
 	_wrap_label(equipped_summary)
 	step_pages[1].add_child(equipped_summary)
-	var hint := _label("무기·방어구·모듈·파츠는 로비 I/U/E에서 저장한 그대로 출격합니다.\n무기를 다시 고르거나 장착 무기 비용을 재청구하지 않습니다.\n스킬 태그가 맞지 않으면 해당 스킬만 비활성화됩니다.", 13, Color("9fc7cf"))
+	var hint := _label("이 단계는 장비를 바꾸는 화면이 아닙니다. 아래 준비 상태를 확인한 뒤 다음으로 진행하세요.\n무기·방어구·모듈·파츠는 로비 I/U/E에서 저장한 그대로 출격하며 다시 청구하지 않습니다.\n스킬 태그가 맞지 않으면 해당 스킬만 비활성화됩니다.", 13, Color("9fc7cf"))
 	_wrap_label(hint)
 	step_pages[1].add_child(hint)
 	var back := _compact_selection_button("ReturnToHubPreparation")
@@ -389,7 +391,7 @@ func update(payload: Dictionary) -> void:
 	_update_p5_progression(payload.get(&"p5_progression", {}))
 	if equipped_summary != null:
 		var equipped: Dictionary = payload.get(&"equipped", {})
-		equipped_summary.text = "현재 로비 세팅\nMAIN · %s\nSUB · %s\n방어구 %d개 · 활성 무기 %s\n요원 · %s\n소모품 · %s\n%s" % [
+		equipped_summary.text = "READY · 현재 로비 세팅\n[01] MAIN · %s\n[02] SUB · %s\n[03] 방어구 %d개 · 활성 무기 %s\n[04] 요원 · %s\n[05] 소모품 · %s\n%s" % [
 			equipped.get(&"main_weapon_name", "비어 있음"),
 			equipped.get(&"secondary_weapon_name", "비어 있음"),
 			int(equipped.get(&"armor_count", 0)), equipped.get(&"active_weapon_name", "비어 있음"),

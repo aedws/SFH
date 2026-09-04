@@ -121,6 +121,7 @@ func get_snapshot() -> Dictionary:
 		&"portrait_fallback": OrientationPolicy.is_portrait(size),
 		&"joystick_direction": joystick.direction,
 		&"touch_count": touch_actions.size() + int(joystick.finger >= 0),
+		&"viewport_coverage_ratio": _viewport_coverage_ratio(),
 	}
 
 
@@ -343,7 +344,7 @@ func _apply_layout() -> void:
 	for child: Control in combat_group.get_children():
 		if child is Button:
 			child.add_theme_font_size_override("font_size", roundi(14 * effective_ui_scale))
-			child.modulate.a = 1.0
+			child.modulate.a = 0.84
 	for index in range(3):
 		_place_combat_button(StringName("combat_skill_%d" % (index + 1)), index * (button_size + gap), energy_height, button_size)
 	_place_combat_button(&"dash", 0, button_size + gap + energy_height, button_size)
@@ -351,17 +352,28 @@ func _apply_layout() -> void:
 	_place_combat_button(&"interact", (button_size + gap) * 2, button_size + gap + energy_height, button_size)
 	action_buttons[&"primary_attack"].text = "공격"
 	action_buttons[&"interact"].text = "사용"
-	var menu_width := minf(418.0, size.x - 36.0)
+	var menu_width := minf(388.0, size.x - 36.0)
 	menu_group.position = Vector2((size.x - menu_width) * 0.5, 8)
 	menu_group.size = Vector2(menu_width, 44)
 	for child in menu_group.get_children():
-		(child as Button).add_theme_font_size_override("font_size", 18)
-		(child as Button).modulate.a = 1.0
+		(child as Button).add_theme_font_size_override("font_size", 15)
+		(child as Button).modulate.a = 0.84
 		(child as Button).custom_minimum_size = Vector2(44, 44)
 		(child as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	action_buttons[&"toggle_key_mapping"].text = "설정"
 	for entry in [[&"switch_weapon", "무기"], [&"toggle_map", "지도"], [&"toggle_inventory", "가방"], [&"toggle_equipment", "장비"], [&"toggle_modification", "모듈"]]:
 		action_buttons[entry[0]].text = entry[1]
+
+
+func _viewport_coverage_ratio() -> float:
+	if size.x <= 0.0 or size.y <= 0.0:
+		return 0.0
+	var occupied := 0.0
+	for group in [movement_group, combat_group, menu_group]:
+		if group != null:
+			var rect: Rect2 = group.get_global_rect()
+			occupied += rect.size.x * rect.size.y
+	return occupied / (size.x * size.y)
 
 
 func _place_button(action_id: StringName, x: float, y: float, button_size: float) -> void:

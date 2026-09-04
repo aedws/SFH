@@ -163,7 +163,12 @@ func get_room_encounter_snapshot() -> Array[Dictionary]:
 	return result
 
 
-func get_room_spawn_positions(room_index: int, requested_count: int) -> PackedVector2Array:
+func get_room_spawn_positions(
+	room_index: int,
+	requested_count: int,
+	avoid_position := Vector2.ZERO,
+	minimum_avoid_distance: float = 0.0
+) -> PackedVector2Array:
 	var result := PackedVector2Array()
 	if room_index < 0 or room_index >= rooms.size() or requested_count <= 0:
 		return result
@@ -181,8 +186,11 @@ func get_room_spawn_positions(room_index: int, requested_count: int) -> PackedVe
 			continue
 		if cell.distance_squared_to(_room_center_cell(room)) < 16:
 			continue
+		var world_position := _cell_center(cell)
+		if minimum_avoid_distance > 0.0 and world_position.distance_to(avoid_position) < minimum_avoid_distance:
+			continue
 		used_cells[cell] = true
-		result.append(_cell_center(cell))
+		result.append(world_position)
 	return result
 
 

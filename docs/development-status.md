@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 18 · IMPROVE 19 · CHANGE 26 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 19 · IMPROVE 23 · CHANGE 30 · FIX 19</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>18</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>26</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>19</b><small>BUILD</small></span><span><b>23</b><small>IMPROVE</small></span><span><b>30</b><small>CHANGE</small></span><span><b>19</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -177,7 +177,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="features/blueprint-crafting/#p7-04">P7-04 제작 →</a> · <a href="architecture/module-audit/#p7-04-2026-09-04">전체 감사 →</a> · <a href="quality/e2e-play-session/#p7-workshop-e2e">E2E →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 7</small><b>P8-01 · 실제 단일·밀집 더미 훈련장</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 거점 훈련 단말에서 단일 보스와 밀집 8기를 전환하고, 실제 공격·자동 초기화를 보상 없이 반복할 수 있습니다.</strong></div>
@@ -187,6 +187,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>거점 기능을 끈 선택 빌드에서 훈련장 선행 의존성이 전체 Manifest 오류로 번지던 경계를 차단했습니다.</p></div>
         <p>일반 적 스폰·경험치·전리품·처치·방 보상에는 영향을 주지 않습니다. 기존 TrainingScenario 2행을 재사용했으며 임시 수치와 과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/training-ground/">P8-01 플레이와 구조 →</a> · <a href="architecture/module-audit/#p8-01-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p8-training-ground-e2e">실제 플레이 E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>플레이 감각 회귀 · 스폰 안전·상호작용·첫 레이아웃 수정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 방에 들어가자마자 포위되어 사망하거나, F 안내가 보이는데 실행되지 않고, 가방 첫 화면이 겹쳐 보이던 체감 오류를 실제 플레이 기준으로 고쳤습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>적 수량과 분리된 교체형 RoomEncounterSpawnSafetyPolicy를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>288px 생성 배제, 1.6초 접촉 피해 유예·반투명 전개, 훈련 타격 즉시 수치, 모바일 14% 점유 예산·44px 터치 표적을 적용했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>훈련 더미를 단말에서 분리하고, 작전 2단계를 읽기 전용 READY 확인표로 바꾸며, 첫 가방 레이아웃을 컨테이너 정렬 뒤 확정합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 6</h3><p>게이트·거점 시설·보상함의 프롬프트/실행 범위 불일치, 첫 가방 압축, 즉사형 근접 생성, 훈련 단말 겹침을 회귀 테스트로 차단했습니다.</p></div>
+        <p>방당 12~34기와 경제·과금 데이터는 변경하지 않았습니다. 전체 E2E와 대형 전장 60fps CPU 예산을 통과했습니다.</p>
+        <p><a href="features/room-encounters/#spawn-safety">방 스폰 안전 계약 →</a> · <a href="quality/e2e-play-session/#player-perception-regression-2026-09-04">플레이어 인식 회귀 →</a></p>
       </div>
     </details>
   </div>

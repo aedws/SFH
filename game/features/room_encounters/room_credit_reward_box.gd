@@ -32,7 +32,7 @@ func configure(amount: int, new_reward_kind: StringName = &"field_cache") -> voi
 func request_loot(actor: Node2D) -> bool:
 	if collected or not is_instance_valid(actor) or not actor.is_in_group(&"player"):
 		return false
-	if actor.global_position.distance_to(global_position) > interaction_radius:
+	if actor != nearby_player and actor.global_position.distance_to(global_position) > interaction_radius:
 		return false
 	collected = true
 	interaction_availability_changed.emit(false, "")

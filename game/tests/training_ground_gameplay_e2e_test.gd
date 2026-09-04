@@ -57,9 +57,11 @@ func _run() -> void:
 			int(game.p5_hub_progression_service.call(&"get_snapshot").get(&"training", {}).get(&"hit_count", 0)) > 0,
 			"실제 피해 텔레메트리 전달"
 		)
+		_check("훈련 타격" in game.status_label.text and "피해" in game.status_label.text, "타격 즉시 화면 피드백")
 
 	if is_instance_valid(station):
-		game.player.global_position = station.global_position
+		game.player.global_position = station.global_position + Vector2(float(station.get("interaction_radius")) + 12.0, 0.0)
+		station.set("actor", game.player)
 		_check(bool(station.call(&"request_service", game.player)), "두 번째 F 전환")
 		await process_frame
 	var second: Dictionary = game.training_ground_service.call(&"get_snapshot")

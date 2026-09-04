@@ -3159,8 +3159,25 @@ func _verify_room_encounter_flow(
 		or not bool(active.get(&"minimum_horde_met", false))
 		or int(active.get(&"locked_door_count", 0)) <= 0
 		or active.get(&"reinforcement_mode") != &"room_triggered"
+		or not bool(active.get(&"spawn_safety_satisfied", false))
+		or not bool(active.get(&"contact_grace_active", false))
 	):
 		return false
+	var safety: Dictionary = active.get(&"spawn_safety", {})
+	if (
+		float(active.get(&"minimum_spawn_distance_observed", 0.0))
+		< float(safety.get(&"minimum_player_distance", INF))
+	):
+		return false
+	for enemy in enemy_spawner.call(&"get_active_targets"):
+		if enemy.get_meta(&"room_encounter_id", &"") == StringName("room_%d" % room_index):
+			if bool(enemy.get("damage_enabled")):
+				return false
+	room_encounters.call(&"_process", float(safety.get(&"contact_damage_grace_seconds", 0.0)) + 0.1)
+	for enemy in enemy_spawner.call(&"get_active_targets"):
+		if enemy.get_meta(&"room_encounter_id", &"") == StringName("room_%d" % room_index):
+			if not bool(enemy.get("damage_enabled")):
+				return false
 	for enemy in enemy_spawner.call(&"get_active_targets"):
 		if enemy.get_meta(&"room_encounter_id", &"") == StringName("room_%d" % room_index):
 			enemy.free()

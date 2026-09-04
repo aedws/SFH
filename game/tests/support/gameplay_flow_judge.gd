@@ -67,6 +67,10 @@ func _judge_room_encounter(evidence: Dictionary, errors: PackedStringArray) -> v
 		errors.append("방 적 무리가 티어별 핵앤슬래시 최소 스폰량보다 적습니다.")
 	if not bool(active.get(&"minimum_horde_met", false)):
 		errors.append("방 교전이 최소 무리 보장 정책을 충족하지 못했습니다.")
+	if not bool(active.get(&"spawn_safety_satisfied", false)):
+		errors.append("적이 플레이어 안전 배제 거리 안에 생성됐습니다.")
+	if not bool(active.get(&"contact_grace_active", false)):
+		errors.append("방 진입 직후 접촉 피해 유예가 활성화되지 않았습니다.")
 	if int(active.get(&"locked_door_count", 0)) <= 0:
 		errors.append("적 생성 후 문이 봉쇄되지 않았습니다.")
 	if int(cleared.get(&"active_room_index", -2)) != -1:

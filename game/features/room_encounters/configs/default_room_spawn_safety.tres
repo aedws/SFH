@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="RoomEncounterSpawnSafetyPolicy" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/room_encounters/room_encounter_spawn_safety_policy.gd" id="1_policy"]
+
+[resource]
+script = ExtResource("1_policy")
+minimum_player_distance = 288.0
+contact_damage_grace_seconds = 1.6
+telegraph_alpha = 0.55

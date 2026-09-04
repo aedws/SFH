@@ -40,6 +40,8 @@ var confirm_overlay: Control
 var pending_exit: Callable
 var confirmation_visible := false
 var confirm_buttons: Array[Button] = []
+var layout_deferred_pending := false
+var open_layout_ready := false
 
 
 func _ready() -> void:
@@ -52,6 +54,7 @@ func _ready() -> void:
 	session.changed.connect(_refresh)
 	session.committed.connect(func(): settings_saved.emit())
 	resized.connect(_layout)
+	bag_scroll.resized.connect(_queue_stable_layout)
 
 
 func configure(bag: Node, gear: Node = null) -> void:
@@ -132,7 +135,9 @@ func open_panel() -> void:
 	move_to_front()
 	visible = true
 	get_tree().paused = true
+	open_layout_ready = false
 	_layout()
+	_queue_stable_layout()
 	panel_visibility_changed.emit(true)
 
 
@@ -470,13 +475,29 @@ func _layout() -> void:
 		grid_view.queue_redraw()
 
 
+func _queue_stable_layout() -> void:
+	if layout_deferred_pending:
+		return
+	layout_deferred_pending = true
+	call_deferred(&"_apply_stable_layout")
+
+
+func _apply_stable_layout() -> void:
+	layout_deferred_pending = false
+	if not visible:
+		return
+	_layout()
+	open_layout_ready = bag_scroll.size.x > 240.0
+
+
 func get_density_snapshot() -> Dictionary:
 	return {&"window_size": size, &"grid_minimum_size": grid_view.custom_minimum_size,
 		&"detail_minimum_width": detail_column.custom_minimum_size.x,
 		&"cell_pixel_size": grid_view.cell_pixel_size, &"scrollable_bag": true,
 		&"responsive_columns": columns.vertical, &"dirty": session.dirty,
 		&"confirmation_visible": confirmation_visible, &"current_tab": current_tab,
-		&"slot_count": slot_buttons.size(), &"bag_rect": bag_scroll.get_global_rect()}
+		&"slot_count": slot_buttons.size(), &"bag_rect": bag_scroll.get_global_rect(),
+		&"bag_viewport_width": bag_scroll.size.x, &"open_layout_ready": open_layout_ready}
 
 
 func _column(parent: Node, width: float) -> VBoxContainer:

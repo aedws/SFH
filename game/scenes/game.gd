@@ -3733,13 +3733,18 @@ func _on_enemy_training_damage(
 	_world_position: Vector2,
 	context: Dictionary
 ) -> void:
+	var total_damage := maxf(0.0, health_damage + armor_damage)
 	if p5_hub_progression_service != null:
 		p5_hub_progression_service.call(
 			&"record_training_hit",
-			maxf(0.0, health_damage + armor_damage),
+			total_damage,
 			float(context.get(&"armor_penetration", 0.0)),
 			float(context.get(&"cooldown_seconds", 0.0))
 		)
+		var training: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"training", {})
+		status_label.text = "훈련 타격 · %.0f 피해 · 누적 %.0f · %d회" % [
+			total_damage, float(training.get(&"total_damage", 0.0)), int(training.get(&"hit_count", 0)),
+		]
 
 
 func _on_combat_skill_activated(
@@ -3958,9 +3963,11 @@ func _on_enemy_defeated(reward: int, world_position: Vector2) -> void:
 
 
 func _on_room_encounter_started(room_index: int, enemy_count: int) -> void:
+	var snapshot: Dictionary = room_encounter_system.call(&"get_snapshot") if room_encounter_system != null else {}
+	var grace := float(snapshot.get(&"contact_grace_remaining", 0.0))
 	combat_hud_presenter.call(
 		&"show_status",
-		"방 %d 봉쇄 · 적 %d기 섬멸" % [room_index + 1, enemy_count],
+		"방 %d 봉쇄 · 적 %d기 전개·섬멸 · %.1f초 접촉 피해 유예" % [room_index + 1, enemy_count, grace],
 		2,
 		600.0
 	)
