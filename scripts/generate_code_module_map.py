@@ -23,6 +23,111 @@ DEPENDENCY_LINE_RE = re.compile(r"^\s*if\s+([a-z0-9_]+)_enabled\b(?P<body>.*):\s
 NEGATED_TOGGLE_RE = re.compile(r"not\s+([a-z0-9_]+)_enabled")
 
 
+MODULE_LABELS = {
+    "scene_assembly": "게임 조립",
+    "core": "공통 계약",
+    "balance_data": "밸런스 데이터",
+    "boss_warning": "보스 경고",
+    "character_selection": "요원 선택",
+    "combat_resources": "전투 자원",
+    "combat_skills": "전투 스킬",
+    "conditional_ranking": "조건부 랭킹",
+    "crafting": "도면 제작",
+    "credits": "크레딧",
+    "elite_pursuit": "엘리트 추격",
+    "enemies": "적 유닛",
+    "equipment": "장비 규칙",
+    "equipment_upgrade": "장비 강화",
+    "experience": "경험치",
+    "extraction": "탈출",
+    "field_loot": "필드 전리품",
+    "fog_of_war": "전장의 안개",
+    "growth_balance": "성장 밸런스",
+    "health_recovery": "체력 회복",
+    "hit_feedback": "타격 피드백",
+    "hub_economy": "거점 경제",
+    "hub_preparation": "거점 준비",
+    "inventory": "가방 인벤토리",
+    "key_mapping": "키 설정",
+    "loadout_investment": "투입 비용",
+    "local_save": "로컬 저장",
+    "loot": "전리품",
+    "loot_lifecycle": "전리품 생명 주기",
+    "loot_tables": "드랍 테이블",
+    "map_generation": "맵 생성",
+    "meta_progression": "외부 성장",
+    "minimap": "미니맵",
+    "mobile_controls": "모바일 조작",
+    "movement_hud": "이동 HUD",
+    "operation_contract": "작전 계약",
+    "operation_launch": "작전 진입",
+    "operation_results": "작전 결과",
+    "operation_tutorial": "작전 튜토리얼",
+    "p5_hub_progression": "거점 성장 루프",
+    "penalty_modifiers": "페널티 변형",
+    "persistent_profile": "영구 프로필",
+    "player": "플레이어",
+    "presentation_settings": "화면 설정",
+    "presentation_theme": "화면 테마",
+    "room_encounters": "방 전투",
+    "room_navigation": "방 이동",
+    "run_buffs": "내부 강화",
+    "run_settlement": "런 정산",
+    "run_setup": "런 설정",
+    "session_sockets": "세션 소켓",
+    "shop_browser": "상점",
+    "skill_binding": "스킬 장착",
+    "smart_targeting": "자동 타게팅",
+    "spawning": "적 생성",
+    "start_hub": "시작 거점",
+    "training_ground": "훈련장",
+    "weapon_balance": "무기 밸런스",
+    "weapons": "무기",
+    "verification": "자동 검증",
+}
+
+DOMAIN_LABELS = {
+    "system": "기반·검증",
+    "operation": "작전 흐름",
+    "combat": "전투",
+    "world": "월드·탐색",
+    "equipment": "장비·세팅",
+    "economy": "파밍·경제",
+    "growth": "성장",
+    "presentation": "UI·입력",
+    "data": "데이터",
+}
+
+MODULE_DOMAINS = {
+    "scene_assembly": "system", "core": "system", "verification": "system",
+    "operation_contract": "operation", "operation_launch": "operation",
+    "operation_results": "operation", "operation_tutorial": "operation",
+    "run_setup": "operation", "run_settlement": "operation",
+    "loadout_investment": "operation", "extraction": "operation",
+    "conditional_ranking": "operation", "penalty_modifiers": "operation",
+    "combat_resources": "combat", "combat_skills": "combat",
+    "smart_targeting": "combat", "skill_binding": "combat",
+    "hit_feedback": "combat", "player": "combat", "enemies": "combat",
+    "spawning": "combat", "boss_warning": "combat", "elite_pursuit": "combat",
+    "room_encounters": "combat",
+    "map_generation": "world", "fog_of_war": "world", "minimap": "world",
+    "room_navigation": "world", "start_hub": "world", "training_ground": "world",
+    "weapons": "equipment", "weapon_balance": "equipment", "equipment": "equipment",
+    "inventory": "equipment", "session_sockets": "equipment",
+    "equipment_upgrade": "equipment", "character_selection": "equipment",
+    "loot": "economy", "loot_lifecycle": "economy", "loot_tables": "economy",
+    "field_loot": "economy", "credits": "economy", "hub_economy": "economy",
+    "shop_browser": "economy", "crafting": "economy", "local_save": "economy",
+    "persistent_profile": "economy", "hub_preparation": "economy",
+    "experience": "growth", "growth_balance": "growth", "health_recovery": "growth",
+    "run_buffs": "growth", "meta_progression": "growth", "p5_hub_progression": "growth",
+    "key_mapping": "presentation", "mobile_controls": "presentation",
+    "movement_hud": "presentation", "presentation_settings": "presentation",
+    "presentation_theme": "presentation",
+    "balance_data": "data",
+}
+
+
 def relative(path: Path) -> str:
     return path.relative_to(ROOT).as_posix()
 
@@ -167,9 +272,12 @@ def generate() -> dict:
 
     modules = []
     for module_id in module_ids:
+        domain = MODULE_DOMAINS.get(module_id, "system")
         modules.append({
             "id": module_id,
-            "label": module_id.replace("_", " "),
+            "label": MODULE_LABELS.get(module_id, module_id.replace("_", " ")),
+            "domain": domain,
+            "domain_label": DOMAIN_LABELS[domain],
             "layer": module_layer(module_id),
             "path": module_path(module_id),
             "wiki_route": wiki_route(module_id),
@@ -183,8 +291,12 @@ def generate() -> dict:
 
     inheritance_count = sum(1 for item in classes if item["base_id"])
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "source_sha256": source_hash.hexdigest(),
+        "domains": [
+            {"id": domain_id, "label": label}
+            for domain_id, label in DOMAIN_LABELS.items()
+        ],
         "layers": [
             {"id": "contract", "label": "계약", "description": "FeatureManifest와 공통 공개 규칙"},
             {"id": "assembly", "label": "조립", "description": "Game·Hub가 활성 모듈을 연결"},

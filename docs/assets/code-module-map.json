@@ -1,6 +1,44 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source_sha256": "6206dfbec48493d95f129b89dcf2022079ea22db0861be1571d8b2461bcf66de",
+  "domains": [
+    {
+      "id": "system",
+      "label": "기반·검증"
+    },
+    {
+      "id": "operation",
+      "label": "작전 흐름"
+    },
+    {
+      "id": "combat",
+      "label": "전투"
+    },
+    {
+      "id": "world",
+      "label": "월드·탐색"
+    },
+    {
+      "id": "equipment",
+      "label": "장비·세팅"
+    },
+    {
+      "id": "economy",
+      "label": "파밍·경제"
+    },
+    {
+      "id": "growth",
+      "label": "성장"
+    },
+    {
+      "id": "presentation",
+      "label": "UI·입력"
+    },
+    {
+      "id": "data",
+      "label": "데이터"
+    }
+  ],
   "layers": [
     {
       "id": "contract",
@@ -34,7 +72,9 @@
   "modules": [
     {
       "id": "scene_assembly",
-      "label": "scene assembly",
+      "label": "게임 조립",
+      "domain": "system",
+      "domain_label": "기반·검증",
       "layer": "assembly",
       "path": "game/scenes",
       "wiki_route": "architecture/module-rules/",
@@ -47,7 +87,9 @@
     },
     {
       "id": "core",
-      "label": "core",
+      "label": "공통 계약",
+      "domain": "system",
+      "domain_label": "기반·검증",
       "layer": "contract",
       "path": "game/core",
       "wiki_route": "architecture/module-rules/",
@@ -67,7 +109,9 @@
     },
     {
       "id": "balance_data",
-      "label": "balance data",
+      "label": "밸런스 데이터",
+      "domain": "data",
+      "domain_label": "데이터",
       "layer": "feature",
       "path": "game/features/balance_data",
       "wiki_route": "architecture/module-rules/",
@@ -82,7 +126,9 @@
     },
     {
       "id": "boss_warning",
-      "label": "boss warning",
+      "label": "보스 경고",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/boss_warning",
       "wiki_route": "features/elite-pursuit/",
@@ -100,7 +146,9 @@
     },
     {
       "id": "character_selection",
-      "label": "character selection",
+      "label": "요원 선택",
+      "domain": "equipment",
+      "domain_label": "장비·세팅",
       "layer": "feature",
       "path": "game/features/character_selection",
       "wiki_route": "architecture/module-rules/",
@@ -118,7 +166,9 @@
     },
     {
       "id": "combat_resources",
-      "label": "combat resources",
+      "label": "전투 자원",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/combat_resources",
       "wiki_route": "architecture/module-rules/",
@@ -135,7 +185,9 @@
     },
     {
       "id": "combat_skills",
-      "label": "combat skills",
+      "label": "전투 스킬",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/combat_skills",
       "wiki_route": "architecture/module-rules/",
@@ -162,7 +214,9 @@
     },
     {
       "id": "conditional_ranking",
-      "label": "conditional ranking",
+      "label": "조건부 랭킹",
+      "domain": "operation",
+      "domain_label": "작전 흐름",
       "layer": "feature",
       "path": "game/features/conditional_ranking",
       "wiki_route": "architecture/module-rules/",
@@ -193,7 +247,9 @@
     },
     {
       "id": "crafting",
-      "label": "crafting",
+      "label": "도면 제작",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/crafting",
       "wiki_route": "architecture/module-rules/",
@@ -209,7 +265,9 @@
     },
     {
       "id": "credits",
-      "label": "credits",
+      "label": "크레딧",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/credits",
       "wiki_route": "architecture/module-rules/",
@@ -224,7 +282,9 @@
     },
     {
       "id": "elite_pursuit",
-      "label": "elite pursuit",
+      "label": "엘리트 추격",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/elite_pursuit",
       "wiki_route": "architecture/module-rules/",
@@ -240,7 +300,9 @@
     },
     {
       "id": "enemies",
-      "label": "enemies",
+      "label": "적 유닛",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/enemies",
       "wiki_route": "features/enemies/",
@@ -259,7 +321,9 @@
     },
     {
       "id": "equipment",
-      "label": "equipment",
+      "label": "장비 규칙",
+      "domain": "equipment",
+      "domain_label": "장비·세팅",
       "layer": "feature",
       "path": "game/features/equipment",
       "wiki_route": "features/equipment/",
@@ -288,7 +352,9 @@
     },
     {
       "id": "equipment_upgrade",
-      "label": "equipment upgrade",
+      "label": "장비 강화",
+      "domain": "equipment",
+      "domain_label": "장비·세팅",
       "layer": "feature",
       "path": "game/features/equipment_upgrade",
       "wiki_route": "architecture/module-rules/",
@@ -304,7 +370,9 @@
     },
     {
       "id": "experience",
-      "label": "experience",
+      "label": "경험치",
+      "domain": "growth",
+      "domain_label": "성장",
       "layer": "feature",
       "path": "game/features/experience",
       "wiki_route": "architecture/module-rules/",
@@ -320,7 +388,9 @@
     },
     {
       "id": "extraction",
-      "label": "extraction",
+      "label": "탈출",
+      "domain": "operation",
+      "domain_label": "작전 흐름",
       "layer": "feature",
       "path": "game/features/extraction",
       "wiki_route": "architecture/module-rules/",
@@ -336,7 +406,9 @@
     },
     {
       "id": "field_loot",
-      "label": "field loot",
+      "label": "필드 전리품",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/field_loot",
       "wiki_route": "architecture/module-rules/",
@@ -361,7 +433,9 @@
     },
     {
       "id": "fog_of_war",
-      "label": "fog of war",
+      "label": "전장의 안개",
+      "domain": "world",
+      "domain_label": "월드·탐색",
       "layer": "feature",
       "path": "game/features/fog_of_war",
       "wiki_route": "architecture/module-rules/",
@@ -376,7 +450,9 @@
     },
     {
       "id": "growth_balance",
-      "label": "growth balance",
+      "label": "성장 밸런스",
+      "domain": "growth",
+      "domain_label": "성장",
       "layer": "feature",
       "path": "game/features/growth_balance",
       "wiki_route": "architecture/module-rules/",
@@ -393,7 +469,9 @@
     },
     {
       "id": "health_recovery",
-      "label": "health recovery",
+      "label": "체력 회복",
+      "domain": "growth",
+      "domain_label": "성장",
       "layer": "feature",
       "path": "game/features/health_recovery",
       "wiki_route": "architecture/module-rules/",
@@ -409,7 +487,9 @@
     },
     {
       "id": "hit_feedback",
-      "label": "hit feedback",
+      "label": "타격 피드백",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/hit_feedback",
       "wiki_route": "architecture/module-rules/",
@@ -426,7 +506,9 @@
     },
     {
       "id": "hub_economy",
-      "label": "hub economy",
+      "label": "거점 경제",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/hub_economy",
       "wiki_route": "architecture/module-rules/",
@@ -442,7 +524,9 @@
     },
     {
       "id": "hub_preparation",
-      "label": "hub preparation",
+      "label": "거점 준비",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/hub_preparation",
       "wiki_route": "features/start-hub/",
@@ -458,7 +542,9 @@
     },
     {
       "id": "inventory",
-      "label": "inventory",
+      "label": "가방 인벤토리",
+      "domain": "equipment",
+      "domain_label": "장비·세팅",
       "layer": "feature",
       "path": "game/features/inventory",
       "wiki_route": "architecture/module-rules/",
@@ -479,7 +565,9 @@
     },
     {
       "id": "key_mapping",
-      "label": "key mapping",
+      "label": "키 설정",
+      "domain": "presentation",
+      "domain_label": "UI·입력",
       "layer": "feature",
       "path": "game/features/key_mapping",
       "wiki_route": "architecture/module-rules/",
@@ -496,7 +584,9 @@
     },
     {
       "id": "loadout_investment",
-      "label": "loadout investment",
+      "label": "투입 비용",
+      "domain": "operation",
+      "domain_label": "작전 흐름",
       "layer": "feature",
       "path": "game/features/loadout_investment",
       "wiki_route": "architecture/module-rules/",
@@ -514,7 +604,9 @@
     },
     {
       "id": "local_save",
-      "label": "local save",
+      "label": "로컬 저장",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/local_save",
       "wiki_route": "getting-started/run-project/",
@@ -530,7 +622,9 @@
     },
     {
       "id": "loot",
-      "label": "loot",
+      "label": "전리품",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/loot",
       "wiki_route": "features/loot/",
@@ -548,7 +642,9 @@
     },
     {
       "id": "loot_lifecycle",
-      "label": "loot lifecycle",
+      "label": "전리품 생명 주기",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/loot_lifecycle",
       "wiki_route": "architecture/module-rules/",
@@ -567,7 +663,9 @@
     },
     {
       "id": "loot_tables",
-      "label": "loot tables",
+      "label": "드랍 테이블",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/loot_tables",
       "wiki_route": "architecture/module-rules/",
@@ -585,7 +683,9 @@
     },
     {
       "id": "map_generation",
-      "label": "map generation",
+      "label": "맵 생성",
+      "domain": "world",
+      "domain_label": "월드·탐색",
       "layer": "feature",
       "path": "game/features/map_generation",
       "wiki_route": "architecture/module-rules/",
@@ -601,7 +701,9 @@
     },
     {
       "id": "meta_progression",
-      "label": "meta progression",
+      "label": "외부 성장",
+      "domain": "growth",
+      "domain_label": "성장",
       "layer": "feature",
       "path": "game/features/meta_progression",
       "wiki_route": "architecture/module-rules/",
@@ -616,7 +718,9 @@
     },
     {
       "id": "minimap",
-      "label": "minimap",
+      "label": "미니맵",
+      "domain": "world",
+      "domain_label": "월드·탐색",
       "layer": "feature",
       "path": "game/features/minimap",
       "wiki_route": "features/minimap/",
@@ -632,7 +736,9 @@
     },
     {
       "id": "mobile_controls",
-      "label": "mobile controls",
+      "label": "모바일 조작",
+      "domain": "presentation",
+      "domain_label": "UI·입력",
       "layer": "feature",
       "path": "game/features/mobile_controls",
       "wiki_route": "architecture/module-rules/",
@@ -650,7 +756,9 @@
     },
     {
       "id": "movement_hud",
-      "label": "movement hud",
+      "label": "이동 HUD",
+      "domain": "presentation",
+      "domain_label": "UI·입력",
       "layer": "feature",
       "path": "game/features/movement_hud",
       "wiki_route": "architecture/module-rules/",
@@ -665,7 +773,9 @@
     },
     {
       "id": "operation_contract",
-      "label": "operation contract",
+      "label": "작전 계약",
+      "domain": "operation",
+      "domain_label": "작전 흐름",
       "layer": "feature",
       "path": "game/features/operation_contract",
       "wiki_route": "architecture/module-rules/",
@@ -681,7 +791,9 @@
     },
     {
       "id": "operation_launch",
-      "label": "operation launch",
+      "label": "작전 진입",
+      "domain": "operation",
+      "domain_label": "작전 흐름",
       "layer": "feature",
       "path": "game/features/operation_launch",
       "wiki_route": "architecture/module-rules/",
@@ -697,7 +809,9 @@
     },
     {
       "id": "operation_results",
-      "label": "operation results",
+      "label": "작전 결과",
+      "domain": "operation",
+      "domain_label": "작전 흐름",
       "layer": "feature",
       "path": "game/features/operation_results",
       "wiki_route": "architecture/module-rules/",
@@ -713,7 +827,9 @@
     },
     {
       "id": "operation_tutorial",
-      "label": "operation tutorial",
+      "label": "작전 튜토리얼",
+      "domain": "operation",
+      "domain_label": "작전 흐름",
       "layer": "feature",
       "path": "game/features/operation_tutorial",
       "wiki_route": "architecture/module-rules/",
@@ -728,7 +844,9 @@
     },
     {
       "id": "p5_hub_progression",
-      "label": "p5 hub progression",
+      "label": "거점 성장 루프",
+      "domain": "growth",
+      "domain_label": "성장",
       "layer": "feature",
       "path": "game/features/p5_hub_progression",
       "wiki_route": "architecture/module-rules/",
@@ -766,7 +884,9 @@
     },
     {
       "id": "penalty_modifiers",
-      "label": "penalty modifiers",
+      "label": "페널티 변형",
+      "domain": "operation",
+      "domain_label": "작전 흐름",
       "layer": "feature",
       "path": "game/features/penalty_modifiers",
       "wiki_route": "architecture/module-rules/",
@@ -782,7 +902,9 @@
     },
     {
       "id": "persistent_profile",
-      "label": "persistent profile",
+      "label": "영구 프로필",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/persistent_profile",
       "wiki_route": "architecture/module-rules/",
@@ -797,7 +919,9 @@
     },
     {
       "id": "player",
-      "label": "player",
+      "label": "플레이어",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/player",
       "wiki_route": "features/player/",
@@ -814,7 +938,9 @@
     },
     {
       "id": "presentation_settings",
-      "label": "presentation settings",
+      "label": "화면 설정",
+      "domain": "presentation",
+      "domain_label": "UI·입력",
       "layer": "feature",
       "path": "game/features/presentation_settings",
       "wiki_route": "architecture/module-rules/",
@@ -829,7 +955,9 @@
     },
     {
       "id": "presentation_theme",
-      "label": "presentation theme",
+      "label": "화면 테마",
+      "domain": "presentation",
+      "domain_label": "UI·입력",
       "layer": "feature",
       "path": "game/features/presentation_theme",
       "wiki_route": "architecture/module-rules/",
@@ -845,7 +973,9 @@
     },
     {
       "id": "room_encounters",
-      "label": "room encounters",
+      "label": "방 전투",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/room_encounters",
       "wiki_route": "architecture/module-rules/",
@@ -864,7 +994,9 @@
     },
     {
       "id": "room_navigation",
-      "label": "room navigation",
+      "label": "방 이동",
+      "domain": "world",
+      "domain_label": "월드·탐색",
       "layer": "feature",
       "path": "game/features/room_navigation",
       "wiki_route": "architecture/module-rules/",
@@ -879,7 +1011,9 @@
     },
     {
       "id": "run_buffs",
-      "label": "run buffs",
+      "label": "내부 강화",
+      "domain": "growth",
+      "domain_label": "성장",
       "layer": "feature",
       "path": "game/features/run_buffs",
       "wiki_route": "architecture/module-rules/",
@@ -898,7 +1032,9 @@
     },
     {
       "id": "run_settlement",
-      "label": "run settlement",
+      "label": "런 정산",
+      "domain": "operation",
+      "domain_label": "작전 흐름",
       "layer": "feature",
       "path": "game/features/run_settlement",
       "wiki_route": "architecture/module-rules/",
@@ -913,7 +1049,9 @@
     },
     {
       "id": "run_setup",
-      "label": "run setup",
+      "label": "런 설정",
+      "domain": "operation",
+      "domain_label": "작전 흐름",
       "layer": "feature",
       "path": "game/features/run_setup",
       "wiki_route": "architecture/module-rules/",
@@ -929,7 +1067,9 @@
     },
     {
       "id": "session_sockets",
-      "label": "session sockets",
+      "label": "세션 소켓",
+      "domain": "equipment",
+      "domain_label": "장비·세팅",
       "layer": "feature",
       "path": "game/features/session_sockets",
       "wiki_route": "architecture/module-rules/",
@@ -948,7 +1088,9 @@
     },
     {
       "id": "shop_browser",
-      "label": "shop browser",
+      "label": "상점",
+      "domain": "economy",
+      "domain_label": "파밍·경제",
       "layer": "feature",
       "path": "game/features/shop_browser",
       "wiki_route": "features/hub-economy/",
@@ -964,7 +1106,9 @@
     },
     {
       "id": "skill_binding",
-      "label": "skill binding",
+      "label": "스킬 장착",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/skill_binding",
       "wiki_route": "architecture/module-rules/",
@@ -980,7 +1124,9 @@
     },
     {
       "id": "smart_targeting",
-      "label": "smart targeting",
+      "label": "자동 타게팅",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/smart_targeting",
       "wiki_route": "architecture/module-rules/",
@@ -995,7 +1141,9 @@
     },
     {
       "id": "spawning",
-      "label": "spawning",
+      "label": "적 생성",
+      "domain": "combat",
+      "domain_label": "전투",
       "layer": "feature",
       "path": "game/features/spawning",
       "wiki_route": "architecture/module-rules/",
@@ -1011,7 +1159,9 @@
     },
     {
       "id": "start_hub",
-      "label": "start hub",
+      "label": "시작 거점",
+      "domain": "world",
+      "domain_label": "월드·탐색",
       "layer": "feature",
       "path": "game/features/start_hub",
       "wiki_route": "architecture/module-rules/",
@@ -1026,7 +1176,9 @@
     },
     {
       "id": "training_ground",
-      "label": "training ground",
+      "label": "훈련장",
+      "domain": "world",
+      "domain_label": "월드·탐색",
       "layer": "feature",
       "path": "game/features/training_ground",
       "wiki_route": "architecture/module-rules/",
@@ -1051,7 +1203,9 @@
     },
     {
       "id": "weapon_balance",
-      "label": "weapon balance",
+      "label": "무기 밸런스",
+      "domain": "equipment",
+      "domain_label": "장비·세팅",
       "layer": "feature",
       "path": "game/features/weapon_balance",
       "wiki_route": "architecture/module-rules/",
@@ -1068,7 +1222,9 @@
     },
     {
       "id": "weapons",
-      "label": "weapons",
+      "label": "무기",
+      "domain": "equipment",
+      "domain_label": "장비·세팅",
       "layer": "feature",
       "path": "game/features/weapons",
       "wiki_route": "features/weapons/",
@@ -1084,7 +1240,9 @@
     },
     {
       "id": "verification",
-      "label": "verification",
+      "label": "자동 검증",
+      "domain": "system",
+      "domain_label": "기반·검증",
       "layer": "verification",
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
