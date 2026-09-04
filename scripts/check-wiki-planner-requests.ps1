@@ -106,7 +106,20 @@ if (
 if ($workflow -notmatch 'sfh-standing-sheet-extension: authorized-without-separate-approval') {
     throw "Standing Google Sheet extension authorization is not documented."
 }
-if ($plannerContent -notmatch 'data-sfh-proposal-composer' -or $proposalScript -notmatch 'navigator\.clipboard' -or $proposalScript -notmatch 'data-sfh-proposal-output') {
+if (
+	$plannerContent -notmatch 'data-sfh-proposal-composer' -or
+	$plannerContent -notmatch 'name="status"' -or
+	$plannerContent -notmatch 'name="unknowns"' -or
+	$plannerContent -notmatch '부분 확정' -or
+	$plannerContent -notmatch 'Notion 저장만으로 자동 배포되지는 않습니다' -or
+	$proposalScript -notmatch 'navigator\.clipboard' -or
+	$proposalScript -notmatch 'data-sfh-proposal-output' -or
+	$proposalScript -notmatch "\[name='status'\]" -or
+	$proposalScript -notmatch "\[name='supersedes'\]" -or
+	$proposalScript -notmatch '반영 준비' -or
+	$proposalScript -notmatch '정식 구현 검토 가능' -or
+	$proposalScript -notmatch '작업 금지'
+) {
 	throw "Safe local proposal composer contract is missing."
 }
 if (-not [string]::IsNullOrWhiteSpace($SiteRoot)) {
@@ -123,4 +136,4 @@ if (-not [string]::IsNullOrWhiteSpace($SiteRoot)) {
     }
 }
 
-Write-Output "WIKI_PLANNER_REQUESTS_OK items=$($data.items.Count) schema_v3 owners states blocking acceptance evidence notion_snapshot_hash source_anchor decision_lineage role_filters safe_local_proposal responsive touch_44px sheet_extension_authorized"
+Write-Output "WIKI_PLANNER_REQUESTS_OK items=$($data.items.Count) schema_v3 owners states blocking acceptance evidence notion_snapshot_hash source_anchor decision_lineage role_filters status_aware_local_proposal responsive touch_44px sheet_extension_authorized"

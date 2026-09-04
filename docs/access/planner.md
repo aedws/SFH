@@ -88,6 +88,105 @@ hide:
 
 확정할 때는 [지역·난이도 드랍 표](../features/loot-tables.md), [전리품 생명 주기](../features/loot-lifecycle.md), [현장 비교·획득](../features/field-loot-acquisition.md)을 함께 보고 Notion에 **획득처 / 대상 장비 / 등급 / 확률 또는 가중치 / 성공·실패 결과**를 남기면 됩니다.
 
+## Notion에 어떻게 적어야 개발에 반영되나요? {#notion-authoring}
+
+**완성된 기획서가 아니어도 됩니다.** 대신 `확정 / 임시 / 제안 / 보류 / 변경 / 검수 완료` 중 현재 상태를 먼저 쓰고, 모르는 값은 빈칸 대신 `미정`이라고 적어 주세요. 개발자는 적혀 있지 않은 규칙을 확정값으로 추측하지 않습니다.
+
+| 상태 | 뜻 | 개발자가 처리하는 방식 |
+|---|---|---|
+| `확정` | 이 규칙과 수치로 구현해도 됨 | 구현·E2E·위키·PR에 반영하고 기획 완료 근거로 사용 |
+| `임시` | 지금은 이 값으로 시험해도 됨 | 나중에 교체 가능한 Resource/Sheet/CSV/Policy로 구현하고 `provisional` 유지 |
+| `제안` | 비교하거나 의견을 받고 싶음 | 구현하지 않고 선택지·영향·필요 결정을 정리 |
+| `보류` | 아직 만들지 않음 | 코드·데이터 변경을 멈추고 보류 이유와 재개 조건만 추적 |
+| `변경` | 이전 결정을 새 결정으로 교체 | 이전 결정 ID, 변경 전→후, 기존 저장·세이브 영향과 되돌리기 검사 |
+| `검수 완료` | 구현 결과가 의도와 맞음 | 화면·빌드·검수 근거를 연결해 수락 상태로 전환 |
+
+### 작성 뒤 반영 가능 상태를 판단하는 법
+
+- **정식 구현 가능:** `확정`이며 대상·결정·적용 시점·수락 기준이 있고, 수치 단위와 충돌하는 이전 결정이 정리됨
+- **임시 시험 가능:** `임시` 또는 `부분 확정`이며 시험할 대상과 플레이 결과는 분명하고, 바뀔 값이 `미정` 목록에 있음
+- **결정 필요:** 상태가 없거나 대상·결과를 알 수 없음, 서로 다른 결정이 충돌하지만 `supersedes`가 없음
+- **작업 금지:** `제안` 또는 `보류`. 비교·기록만 하고 기능과 데이터는 바꾸지 않음
+
+기획자 작업실의 **기획 제안 초안 만들기**는 입력한 상태와 필수 항목을 기준으로 `정식 구현 검토 가능 / 시험 구현 가능 / 결정 필요 / 작업 금지`를 초안 안에 표시합니다.
+
+### 최소한 이 5줄만 적어 주세요
+
+기존 요청이면 위키 카드의 `PLAN-*` 또는 `DATA-*` ID를 그대로 씁니다. 새 아이디어라 ID가 없으면 `DRAFT-날짜-키워드`로 시작해도 됩니다. 다음 개발 작업에서 정식 요청 ID와 연결합니다.
+
+~~~text
+## [요청 ID][상태] 한 줄 제목
+- 대상: 어느 화면 / 아이템 / 적 / 규칙인가
+- 결정: 플레이어에게 무엇이 어떻게 일어나야 하는가
+- 미정: 아직 결정하지 못한 값과 예외
+- 적용 시점: 즉시 / 다음 빌드 / 다음 시즌 / 미정
+- 확인 방법: 플레이어가 무엇을 보면 성공인지
+~~~
+
+한 결정 안에 상태가 섞여 있으면 제목을 `[부분 확정]`으로 쓰고 본문을 `확정`, `임시`, `미정`으로 나눕니다. **확정된 줄만 최종 기획으로 계산**하고, 임시 줄은 교체 가능한 기본값으로 구현하며, 미정 줄은 기획 요청 목록에 남깁니다.
+
+### 장비 드랍을 대충 적기 시작하는 예시
+
+아래 숫자와 이름은 형식 설명용이며 실제 게임 확정값이 아닙니다.
+
+~~~text
+## [DRAFT-20260904-ROOM-LOOT][부분 확정] 방 클리어 장비 보상
+- 대상: 일반 전투 방을 모두 정리했을 때 생기는 보상
+- 확정: 방을 클리어하면 최소 1개 보상 오브젝트가 보여야 한다
+- 임시: 무기 → 방어구 → 모듈 → 파츠 순서로 시험한다
+- 미정: 맵 크기별 수량, 등급 가중치, 같은 아이템 중복 허용 여부
+- 적용 시점: 다음 테스트 빌드
+- 확인 방법: 문이 열린 뒤 보상이 생성되고 F로 가방에 넣을 수 있다
+- 성공 결과: 탈출하면 영구 창고로 이동
+- 실패 결과: 사망하면 이번 작전 획득물을 잃음
+- Sheet 대상: LootTable / Item / Weapon / Armor
+~~~
+
+이 정도만 적혀도 개발자는 **보상 발생 자체는 확정**, 순환 순서는 **임시 데이터**, 수량·등급·중복은 **추가 결정 필요**로 나눌 수 있습니다.
+
+### 수치까지 확정하는 예시
+
+~~~text
+## [DATA-EXAMPLE-01][확정 예시] 보스 장비 보상
+- 대상: 추격 보스 최초 처치 보상
+- 결정: 보스 후보군에서 2회 독립 추첨한다
+- 단위와 범위: 보상 2개 / 중복 허용 / 장비 확정 보장 없음
+- 예외: 가방이 가득 차면 바닥에 유지하고 자동 폐기하지 않음
+- 적용 시점: 다음 빌드부터
+- 확인 방법: 동일 조건 20회 시험에서 항상 2개가 생성되고 후보 밖 ID가 나오지 않음
+- 근거: 플레이어가 위험 증가를 감수한 결과를 즉시 알아야 함
+- 되돌릴 값: 현재 배포 CSV
+~~~
+
+실제 확정에는 `확정 예시`가 아니라 `확정`을 쓰고, 확률에는 `%` 또는 가중치, 거리에는 `px`, 시간에는 `초`, 비용에는 `C`처럼 단위를 붙입니다. 수치가 많으면 Notion에는 의도와 범위를 적고 Google Sheet의 정확한 탭·ID·열을 연결합니다.
+
+### 이미 쓴 내용을 바꾸는 예시
+
+~~~text
+## [DATA-EXAMPLE-02][변경 예시] 방어구 보상 가중치 변경
+- supersedes: DATA-이전결정-ID
+- 변경 전 → 후: 전술 조끼 가중치 10 → 7
+- 이유: 같은 방어구가 지나치게 자주 반복됨
+- 기존 저장 영향: 이미 획득한 장비는 유지
+- 적용 시점: 다음 CSV 배포부터
+- 확인 방법: 후보표·브리핑·실제 드랍이 같은 버전을 표시
+- 되돌릴 값: 가중치 10
+~~~
+
+이전 문장을 조용히 덮어쓰지 말고 새 변경 블록을 아래에 추가합니다. 날짜가 더 최신이고 `supersedes`로 이전 ID를 가리키는 결정만 새 기준으로 사용합니다.
+
+### 작성 뒤 실제 반영 순서
+
+1. 게시된 SFH Notion에 위 형식으로 적습니다. **Notion 저장만으로 자동 배포되지는 않습니다.**
+2. 작업을 요청할 때 `노션 최신 내용 확인 후 [요청 ID] 반영`이라고 알려 주세요.
+3. AI 개발자는 공개 Notion 원문과 이전 스냅샷을 비교하고 상태·요청 ID·최신 변경 관계를 확인합니다.
+4. `확정`은 정식 구현, `임시`는 교체 가능한 값, `제안/보류`는 구현하지 않는 항목으로 분리합니다.
+5. 새 목록이 필요하면 Google Sheet를 확장하고 실시간 시험→확정 CSV 구조를 유지합니다.
+6. 실제 플레이 입력과 화면 결과 E2E, Web·Windows 동일 빌드, 위키 업데이트를 통과한 뒤 PR로 병합합니다.
+7. 결과가 맞으면 Notion에 `검수 완료`와 확인한 빌드 또는 화면 근거를 남깁니다.
+
+작성 중 충돌하거나 빠진 값이 있으면 개발자는 임의로 확정하지 않고 기획자 작업실의 **결정 필요** 항목으로 돌려놓습니다.
+
 ## 이제 기획자가 정해야 할 것
 
 <div class="sfh-decision-lanes">
@@ -119,11 +218,18 @@ hide:
     <p class="sfh-proposal-local-state">LOCAL ONLY · NO PUBLIC WRITE</p>
     <div class="sfh-proposal-grid">
       <label>종류<select name="kind"><option>PLAN</option><option>DATA</option><option>DEV</option><option>BUG</option></select></label>
+      <label>상태<select name="status"><option>제안</option><option>임시</option><option>부분 확정</option><option>확정</option><option>보류</option><option>변경</option><option>검수 완료</option></select></label>
       <label>요청 ID<input name="request_id" placeholder="PLAN-P6-03-01"></label>
       <label class="is-wide">제목<input name="title" placeholder="무엇을 결정하는지"></label>
+      <label class="is-wide">대상·범위<input name="scope" placeholder="어느 화면·아이템·적·규칙에 적용하는지"></label>
+      <label class="is-wide">결정 내용<input name="decision" placeholder="플레이어에게 무엇이 어떻게 일어나야 하는지"></label>
+      <label class="is-wide">미정·예외<input name="unknowns" placeholder="모르는 값은 비우지 말고 미정으로 작성"></label>
+      <label>적용 시점<input name="applies_at" placeholder="다음 빌드 / 다음 시즌 / 미정"></label>
+      <label>재검토 조건<input name="review_trigger" placeholder="플레이 20회 후 / 없음"></label>
       <label class="is-wide">작성 근거<input name="basis" placeholder="Notion Phase 또는 DEC ID"></label>
       <label class="is-wide">수락 기준<input name="acceptance" placeholder="플레이어가 확인할 결과"></label>
       <label class="is-wide">Sheet 대상<input name="sheet_target" placeholder="목록이 필요할 때만 작성"></label>
+      <label class="is-wide">이전 결정 교체<input name="supersedes" placeholder="변경일 때만 이전 결정 ID 입력"></label>
     </div>
     <textarea data-sfh-proposal-output readonly aria-label="Notion에 붙여넣을 제안 초안"></textarea>
     <div class="sfh-proposal-actions"><button type="button" data-sfh-proposal-copy>초안 복사</button><span data-sfh-proposal-state>외부로 자동 전송하지 않습니다.</span></div>

@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 36 · IMPROVE 52 · CHANGE 70 · FIX 35</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>17 UPDATE BUNDLES · BUILD 37 · IMPROVE 57 · CHANGE 75 · FIX 36</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>36</b><small>BUILD</small></span><span><b>52</b><small>IMPROVE</small></span><span><b>70</b><small>CHANGE</small></span><span><b>35</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>17</b><small>UPDATE BUNDLES</small></span><span><b>37</b><small>BUILD</small></span><span><b>57</b><small>IMPROVE</small></span><span><b>75</b><small>CHANGE</small></span><span><b>36</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 17</small><b>기획자 Notion 작성 기준 · 부분 확정과 임시값 분리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 완성되지 않은 기획도 확정·임시·미정 항목을 나눠 적으면 개발자가 추측 없이 반영할 수 있고, 장비 드랍 예시를 복사해 바로 시작할 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>상태·대상·결정·미정·적용 시점·재검토·이전 결정 교체를 포함하는 상태 인식 Notion 초안 생성기를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>6개 상태 의미, 최소 5줄, 부분 확정, 수치·변경 예시, 작성 뒤 실제 개발 반영 순서를 기획자 언어로 정리했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>기획자 작업실, 요청 운영 계약, 위키 반영 안내, 검색 우선순위, 생성 HTML·스크립트 검증을 같은 작성 기준으로 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>비어 있거나 서로 섞인 요구가 암묵적인 확정값으로 해석될 여지를 `미정`·결정 계보·반영 상태 규칙으로 차단했습니다.</p></div>
+        <p>Notion 저장은 자동 배포가 아니며 작업 요청 시 최신 공개 원문을 다시 확인합니다. 게임 데이터·Sheet/CSV·과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="access/planner/#notion-authoring">기획자 Notion 작성 가이드 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 16</small><b>기획자 장비 드랍 안내 · 획득처와 정산 경계</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획자 전용 문서에서 무기·방어구가 어느 보상에서 나오고, 도면과 무엇이 다르며, 주운 뒤 탈출·사망에 따라 어떻게 처리되는지 한 흐름으로 확인할 수 있습니다.</strong></div>
