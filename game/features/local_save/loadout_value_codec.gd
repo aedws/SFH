@@ -7,6 +7,8 @@ const TYPES := {
 	"state": "res://game/features/equipment/equipment_item_state.gd",
 	"weapon": "res://game/features/equipment/weapon_definition.gd",
 	"armor": "res://game/features/equipment/armor_definition.gd",
+	"fixed_option": "res://game/features/equipment/equipment_fixed_option.gd",
+	"innate_skill": "res://game/features/equipment/weapon_innate_skill_definition.gd",
 	"skill": "res://game/features/equipment/skill_definition.gd",
 	"tags": "res://game/features/equipment/weapon_tag_profile.gd",
 	"slot": "res://game/features/equipment/equipment_slot_rule.gd",

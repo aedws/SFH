@@ -76,7 +76,7 @@ tags: [무기 고유 스킬, 장비 옵션, 고정 정체성, Google Sheets, CSV
 
 ## 검증
 
-`equipment_fixed_identity_contract_test.gd`가 같은 무기의 고유 스킬 동일성, 정의/획득 옵션, 성장 불변성, 런타임 source 분리, 발동 횟수·고정 피해와 잠금 CSV 계약을 자동 판정합니다.
+`equipment_fixed_identity_contract_test.gd`가 같은 무기의 고유 스킬 동일성, 정의/획득 옵션, 성장 불변성, 런타임 source 분리, 발동 횟수·고정 피해, 안전 저장 코덱 왕복과 잠금 CSV 계약을 자동 판정합니다. 다운로드판은 `EquipmentFixedOption`과 `WeaponInnateSkillDefinition`만 명시 허용 타입으로 복원하므로 임의 Resource 경로는 계속 거부합니다.
 
 ## 검색 별칭
 

@@ -5,6 +5,7 @@ const EQUIPMENT_SCENE_PATH := "res://game/features/equipment/equipment_system.ts
 const AUTO_WEAPON_SCENE_PATH := "res://game/features/weapons/auto_weapon.tscn"
 const IDENTITY_CSV_PATH := "res://game/features/equipment/data/equipment_identity.csv"
 const IDENTITY_TABLE_SCRIPT := preload("res://game/features/equipment/equipment_identity_table.gd")
+const LOADOUT_CODEC_SCRIPT := preload("res://game/features/local_save/loadout_value_codec.gd")
 
 
 class DummyStats extends Node:
@@ -125,6 +126,17 @@ func _run() -> void:
 		(restored_equipment.get_active_weapon_identity_snapshot().get(&"fixed_options", []) as Array)
 		== (rolled_identity.get(&"fixed_options", []) as Array),
 		"장비 저장·복원에서 획득 고정 옵션이 달라졌습니다."
+	)
+	var codec = LOADOUT_CODEC_SCRIPT.new()
+	var encoded_state: Variant = codec.encode(equipment.export_runtime_state())
+	_assert(codec.error.is_empty() and encoded_state != null, "고정 옵션·고유 스킬을 안전 저장 형식으로 인코딩하지 못했습니다.")
+	var decoded_state: Variant = codec.decode(encoded_state)
+	_assert(codec.error.is_empty() and decoded_state is Dictionary, "고정 옵션·고유 스킬을 안전 저장 형식에서 복원하지 못했습니다.")
+	_assert(restored_equipment.restore_runtime_state(decoded_state), "직렬화된 장비 고정 정체성을 적용하지 못했습니다.")
+	_assert(
+		(restored_equipment.get_active_weapon_identity_snapshot().get(&"fixed_options", []) as Array)
+		== (rolled_identity.get(&"fixed_options", []) as Array),
+		"프로세스 저장 형식을 거치며 획득 고정 옵션이 달라졌습니다."
 	)
 	equipment.equip_state(&"main", main_state)
 

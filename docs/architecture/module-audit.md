@@ -1522,6 +1522,7 @@ P8-01~03 구현은 완료했으나 더미 HP·방어·수량·측정 시간은 �
 | source 격리 | 통과 | `equipment_fixed_identity`, 장비/모듈 upgrade, `run_buff`를 별도 런타임 source로 계산 |
 | 발사 후 Q 교체 안전 | 통과 | Projectile이 발사한 무기 정체성과 impact profile을 보존하므로 비행 중 활성 슬롯 변경에 영향받지 않음 |
 | 타격 표현 예산 | 통과 | 총구 섬광은 기존 AutoWeapon draw, 투사체 glow는 기존 노드, impact 변화는 Director의 32개 상한을 재사용 |
+| 다운로드판 저장 경계 | 통과 | 안전 코덱이 고정 옵션·고유 스킬 두 Resource만 타입 ID로 허용하고 실제 별도 프로세스 저장·복원을 검사 |
 | 데이터 확장성 | 통과 | Weapon/Armor Sheet의 신규 열과 7행 잠금 CSV를 `EquipmentIdentityTable`·동기화 스크립트가 검증 |
 | 전체 구조 | 통과 | 기능 57개·`class_name` 231개·명시 의존 26개·순환 0·서비스 Scene 침범 0 |
 
