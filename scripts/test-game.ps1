@@ -20,6 +20,14 @@ if (-not $godotExecutable) {
     throw "Godot 콘솔 실행 파일을 찾지 못했습니다. Godot 4.7.2 설치를 확인하세요."
 }
 
+# A fresh clone has no imported fonts or global GDScript class cache yet.
+# Build those generated inputs explicitly so the smoke test does not depend on
+# somebody having opened the project in the editor beforehand.
+& $godotExecutable --headless --editor --path $repositoryRoot --quit
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/basic_loop_smoke_test.gd"
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE

@@ -5,6 +5,7 @@
 1. [Godot 설치](install.md)
 2. [편집기 기초](editor-basics.md)
 3. [프로젝트 실행](run-project.md)
+4. [작업 폴더 정리와 Git 복구](source-control-and-cleanup.md)
 
 처음에는 모든 메뉴를 익히려 하지 않아도 됩니다. Scene, Node, Inspector, FileSystem, Script 패널의 역할부터 익힙니다.
 

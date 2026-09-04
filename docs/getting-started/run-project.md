@@ -87,6 +87,8 @@ Web 빌드는 게임 코드와 문서가 `main`에 반영될 때 GitHub Actions�
 
 이 방식은 강제 푸시·reset·`main` 이력 재작성을 사용하지 않아 현재 상태와 복구 변경을 PR에서 비교할 수 있습니다. GitHub Free Private 저장소의 서버 측 Ruleset 제한을 대체하는 운영 안전망이며, Cloudflare 배포 대상·스토리지·과금 플랜·결제 설정은 변경하지 않습니다.
 
+바탕화면에는 기본 `Newgame` 하나만 상시 유지합니다. 기능별 `Newgame-*` worktree는 PR 병합과 배포 확인 뒤 [작업 폴더 정리와 Git 복구](source-control-and-cleanup.md)의 `status`·`cherry` 검사를 통과한 경우에만 제거합니다. 폴더 복사본은 백업으로 쓰지 않고, 고유한 로컬 변경은 먼저 이름이 분명한 `codex/backup-*` 커밋으로 원격 보존합니다.
+
 ## Godot에서 로컬 실행
 
 1. Godot에서 `project.godot`을 가져옵니다.
