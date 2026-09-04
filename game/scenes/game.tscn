@@ -1,8 +1,20 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene format=3 uid="uid://dxdymcduuynwl"]
 
-[ext_resource type="Script" path="res://game/scenes/game.gd" id="1_game"]
+[ext_resource type="Script" uid="uid://bd8nv1sedp6by" path="res://game/scenes/game.gd" id="1_game"]
 [ext_resource type="Resource" path="res://game/core/feature_manifest.tres" id="2_features"]
-[ext_resource type="Script" path="res://game/core/arena_grid.gd" id="3_grid"]
+[ext_resource type="Script" uid="uid://csrh2ltnbc8fm" path="res://game/core/arena_grid.gd" id="3_grid"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_hub_panel"]
+bg_color = Color(0.025, 0.055, 0.072, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.12, 0.72, 0.68, 0.72)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_health_background"]
 bg_color = Color(0.025, 0.04, 0.05, 0.96)
@@ -37,18 +49,6 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_hub_panel"]
-bg_color = Color(0.025, 0.055, 0.072, 0.94)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.12, 0.72, 0.68, 0.72)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
 [sub_resource type="StyleBoxFlat" id="StyleBox_setup_panel"]
 bg_color = Color(0.025, 0.045, 0.064, 0.98)
 border_width_left = 2
@@ -61,80 +61,78 @@ corner_radius_top_right = 14
 corner_radius_bottom_right = 14
 corner_radius_bottom_left = 14
 
-[node name="Game" type="Node2D"]
+[node name="Game" type="Node2D" unique_id=652083251]
 process_mode = 3
 script = ExtResource("1_game")
 features = ExtResource("2_features")
 
-[node name="World" type="Node2D" parent="."]
+[node name="World" type="Node2D" parent="." unique_id=1801356939]
 process_mode = 1
 
-[node name="ArenaGrid" type="Node2D" parent="World"]
+[node name="ArenaGrid" type="Node2D" parent="World" unique_id=687734616]
 z_index = -100
 script = ExtResource("3_grid")
 
-[node name="Actors" type="Node2D" parent="World"]
+[node name="Actors" type="Node2D" parent="World" unique_id=280045270]
 
-[node name="Enemies" type="Node2D" parent="World"]
+[node name="Enemies" type="Node2D" parent="World" unique_id=1565094873]
 
-[node name="Projectiles" type="Node2D" parent="World"]
+[node name="Projectiles" type="Node2D" parent="World" unique_id=1999736134]
 
-[node name="Pickups" type="Node2D" parent="World"]
+[node name="Pickups" type="Node2D" parent="World" unique_id=382127538]
 
-[node name="Modules" type="Node" parent="."]
+[node name="Modules" type="Node" parent="." unique_id=921084289]
 process_mode = 1
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=707318782]
 
-[node name="StartHubHUD" type="MarginContainer" parent="UI"]
+[node name="StartHubHUD" type="MarginContainer" parent="UI" unique_id=1686309256]
 unique_name_in_owner = true
 visible = false
-anchors_preset = 0
 offset_left = 24.0
 offset_top = 16.0
 offset_right = 620.0
 offset_bottom = 132.0
-grow_horizontal = 1
 
-[node name="Panel" type="PanelContainer" parent="UI/StartHubHUD"]
+[node name="Panel" type="PanelContainer" parent="UI/StartHubHUD" unique_id=956970343]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBox_hub_panel")
 
-[node name="Margin" type="MarginContainer" parent="UI/StartHubHUD/Panel"]
+[node name="Margin" type="MarginContainer" parent="UI/StartHubHUD/Panel" unique_id=1207993111]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 10
 
-[node name="Content" type="VBoxContainer" parent="UI/StartHubHUD/Panel/Margin"]
+[node name="Content" type="VBoxContainer" parent="UI/StartHubHUD/Panel/Margin" unique_id=743179084]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Kicker" type="Label" parent="UI/StartHubHUD/Panel/Margin/Content"]
+[node name="Kicker" type="Label" parent="UI/StartHubHUD/Panel/Margin/Content" unique_id=1184709556]
 layout_mode = 2
-text = "START HUB · SAFE ZONE"
 theme_override_colors/font_color = Color(0.3, 0.9, 0.8, 1)
 theme_override_font_sizes/font_size = 11
+text = "START HUB · SAFE ZONE"
 
-[node name="Title" type="Label" parent="UI/StartHubHUD/Panel/Margin/Content"]
+[node name="Title" type="Label" parent="UI/StartHubHUD/Panel/Margin/Content" unique_id=460749718]
 layout_mode = 2
-text = "SFH 전초기지"
 theme_override_font_sizes/font_size = 22
+text = "SFH 전초기지"
 
-[node name="Objective" type="Label" parent="UI/StartHubHUD/Panel/Margin/Content"]
+[node name="Objective" type="Label" parent="UI/StartHubHUD/Panel/Margin/Content" unique_id=2059391123]
 layout_mode = 2
-text = "동쪽 작전 게이트로 이동해 F를 눌러 전투 세션을 준비하세요."
 theme_override_colors/font_color = Color(0.72, 0.84, 0.86, 1)
 theme_override_font_sizes/font_size = 14
+text = "동쪽 작전 게이트로 이동해 F를 눌러 전투 세션을 준비하세요."
 
-[node name="Controls" type="Label" parent="UI/StartHubHUD/Panel/Margin/Content"]
+[node name="Controls" type="Label" parent="UI/StartHubHUD/Panel/Margin/Content" unique_id=1952884958]
 layout_mode = 2
-text = "이동 WASD/방향키 · I 가방 · U/E 장비 · Q 무기 확인 · 게이트 F"
 theme_override_colors/font_color = Color(0.48, 0.66, 0.7, 1)
 theme_override_font_sizes/font_size = 12
+text = "이동 WASD/방향키 · I 가방 · U/E 장비 · Q 무기 확인 · 게이트 F"
 
-[node name="HUDMargin" type="MarginContainer" parent="UI"]
+[node name="HUDMargin" type="MarginContainer" parent="UI" unique_id=140790665]
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 14.0
@@ -143,138 +141,157 @@ offset_right = -14.0
 offset_bottom = 174.0
 grow_horizontal = 2
 
-[node name="Panel" type="PanelContainer" parent="UI/HUDMargin"]
+[node name="Panel" type="PanelContainer" parent="UI/HUDMargin" unique_id=979429059]
+layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="UI/HUDMargin/Panel"]
+[node name="Margin" type="MarginContainer" parent="UI/HUDMargin/Panel" unique_id=1026882221]
+layout_mode = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="Content" type="VBoxContainer" parent="UI/HUDMargin/Panel/Margin"]
+[node name="Content" type="VBoxContainer" parent="UI/HUDMargin/Panel/Margin" unique_id=1436713525]
+layout_mode = 2
 theme_override_constants/separation = 3
 
-[node name="TopRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content"]
+[node name="TopRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content" unique_id=1129155952]
+layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Title" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow"]
-text = "SFH"
+[node name="Title" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow" unique_id=1793793921]
+layout_mode = 2
 theme_override_font_sizes/font_size = 18
+text = "SFH"
 
-[node name="Spacer" type="Control" parent="UI/HUDMargin/Panel/Margin/Content/TopRow"]
+[node name="Spacer" type="Control" parent="UI/HUDMargin/Panel/Margin/Content/TopRow" unique_id=424949076]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TimeLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow"]
+[node name="TimeLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow" unique_id=439084723]
 unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
 text = "시간 00:00"
-theme_override_font_sizes/font_size = 13
 
-[node name="LevelLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow"]
+[node name="LevelLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow" unique_id=2027895630]
 unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
 text = "레벨 1"
-theme_override_font_sizes/font_size = 13
 
-[node name="KillsLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow"]
+[node name="KillsLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow" unique_id=388639956]
 unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
 text = "처치 0"
-theme_override_font_sizes/font_size = 13
 
-[node name="CreditLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow"]
+[node name="CreditLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow" unique_id=1619394128]
 unique_name_in_owner = true
-text = "휴대 크레딧 0"
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.77, 0.28, 1)
 theme_override_font_sizes/font_size = 13
+text = "휴대 크레딧 0"
 
-[node name="MapLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow"]
+[node name="MapLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/TopRow" unique_id=268501232]
 unique_name_in_owner = true
-text = "맵 생성 중..."
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.72, 0.36, 1)
 theme_override_font_sizes/font_size = 13
+text = "맵 생성 중..."
 
-[node name="HealthRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content"]
+[node name="HealthRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content" unique_id=466054396]
+layout_mode = 2
 
-[node name="Caption" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/HealthRow"]
+[node name="Caption" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/HealthRow" unique_id=1313984070]
 custom_minimum_size = Vector2(56, 0)
-text = "HP"
+layout_mode = 2
 theme_override_colors/font_color = Color(0.5, 0.93, 0.73, 1)
 theme_override_font_sizes/font_size = 15
+text = "HP"
 
-[node name="HealthBar" type="ProgressBar" parent="UI/HUDMargin/Panel/Margin/Content/HealthRow"]
+[node name="HealthBar" type="ProgressBar" parent="UI/HUDMargin/Panel/Margin/Content/HealthRow" unique_id=359289768]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 size_flags_horizontal = 3
-value = 100.0
-show_percentage = false
 theme_override_styles/background = SubResource("StyleBox_health_background")
 theme_override_styles/fill = SubResource("StyleBox_health_fill")
+value = 100.0
+show_percentage = false
 
-[node name="HealthLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/HealthRow"]
+[node name="HealthLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/HealthRow" unique_id=1626674464]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(126, 0)
-text = "100 / 100 · 100%"
-horizontal_alignment = 2
+layout_mode = 2
 theme_override_colors/font_color = Color(0.76, 0.97, 0.86, 1)
 theme_override_font_sizes/font_size = 14
+text = "100 / 100 · 100%"
+horizontal_alignment = 2
 
-[node name="ExperienceRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content"]
+[node name="ExperienceRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content" unique_id=1306673218]
+layout_mode = 2
 
-[node name="Caption" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/ExperienceRow"]
+[node name="Caption" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/ExperienceRow" unique_id=1457852501]
 custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
 text = "경험치"
 
-[node name="ExperienceBar" type="ProgressBar" parent="UI/HUDMargin/Panel/Margin/Content/ExperienceRow"]
+[node name="ExperienceBar" type="ProgressBar" parent="UI/HUDMargin/Panel/Margin/Content/ExperienceRow" unique_id=442759533]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 size_flags_horizontal = 3
-max_value = 5.0
-show_percentage = false
 theme_override_styles/background = SubResource("StyleBox_xp_background")
 theme_override_styles/fill = SubResource("StyleBox_xp_fill")
+max_value = 5.0
+show_percentage = false
 
-[node name="ExperienceLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/ExperienceRow"]
+[node name="ExperienceLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/ExperienceRow" unique_id=250614289]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(86, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "0 / 5"
 horizontal_alignment = 2
+
+[node name="FooterRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content" unique_id=408035848]
+layout_mode = 2
+
+[node name="Hint" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/FooterRow" unique_id=1707205697]
+layout_mode = 2
 theme_override_font_sizes/font_size = 12
-
-[node name="FooterRow" type="HBoxContainer" parent="UI/HUDMargin/Panel/Margin/Content"]
-
-[node name="Hint" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/FooterRow"]
 text = "이동 WASD/방향키 · 1/2/3 스킬 · Q 무기 교체 · F 상호작용 · I 가방 · U 장비/개조"
-theme_override_font_sizes/font_size = 12
 
-[node name="FooterSpacer" type="Control" parent="UI/HUDMargin/Panel/Margin/Content/FooterRow"]
+[node name="FooterSpacer" type="Control" parent="UI/HUDMargin/Panel/Margin/Content/FooterRow" unique_id=218154279]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="StatusLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/FooterRow"]
+[node name="StatusLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content/FooterRow" unique_id=1287312678]
 unique_name_in_owner = true
-text = "모듈 확인 중..."
+layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.72, 0.77, 1)
 theme_override_font_sizes/font_size = 12
+text = "모듈 확인 중..."
 
-[node name="EquipmentLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content"]
+[node name="EquipmentLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content" unique_id=325106967]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
-text = "장비 로드아웃 준비 중..."
 theme_override_colors/font_color = Color(0.67, 0.84, 0.88, 1)
 theme_override_font_sizes/font_size = 11
+text = "장비 로드아웃 준비 중..."
 autowrap_mode = 2
 
-[node name="WeaponRuntimeLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content"]
+[node name="WeaponRuntimeLabel" type="Label" parent="UI/HUDMargin/Panel/Margin/Content" unique_id=1082018203]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-text = "무기 밸런스 준비 중..."
 theme_override_colors/font_color = Color(1, 0.78, 0.4, 1)
 theme_override_font_sizes/font_size = 11
+text = "무기 밸런스 준비 중..."
 
-[node name="InteractionLabel" type="Label" parent="UI"]
+[node name="InteractionLabel" type="Label" parent="UI" unique_id=1171130778]
 unique_name_in_owner = true
 visible = false
 anchors_preset = 7
@@ -288,13 +305,13 @@ offset_right = 180.0
 offset_bottom = -128.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.72, 0.35, 1)
+theme_override_font_sizes/font_size = 17
 text = "F · 작전 지역에서 탈출"
 horizontal_alignment = 1
 vertical_alignment = 1
-theme_override_colors/font_color = Color(1, 0.72, 0.35, 1)
-theme_override_font_sizes/font_size = 17
 
-[node name="RunSetupOverlay" type="Control" parent="UI"]
+[node name="RunSetupOverlay" type="Control" parent="UI" unique_id=1802616045]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 15
@@ -303,7 +320,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Shade" type="ColorRect" parent="UI/RunSetupOverlay"]
+[node name="Shade" type="ColorRect" parent="UI/RunSetupOverlay" unique_id=2099749178]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -312,7 +329,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.008, 0.018, 0.028, 0.88)
 
-[node name="Center" type="CenterContainer" parent="UI/RunSetupOverlay"]
+[node name="Center" type="CenterContainer" parent="UI/RunSetupOverlay" unique_id=516896027]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -320,184 +337,184 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="PanelContainer" parent="UI/RunSetupOverlay/Center"]
+[node name="Panel" type="PanelContainer" parent="UI/RunSetupOverlay/Center" unique_id=252643357]
 custom_minimum_size = Vector2(1000, 610)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBox_setup_panel")
 
-[node name="Margin" type="MarginContainer" parent="UI/RunSetupOverlay/Center/Panel"]
+[node name="Margin" type="MarginContainer" parent="UI/RunSetupOverlay/Center/Panel" unique_id=2058895046]
 layout_mode = 2
 theme_override_constants/margin_left = 28
 theme_override_constants/margin_top = 18
 theme_override_constants/margin_right = 28
 theme_override_constants/margin_bottom = 18
 
-[node name="Content" type="VBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin"]
+[node name="Content" type="VBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin" unique_id=296676797]
 layout_mode = 2
 theme_override_constants/separation = 9
 alignment = 1
 
-[node name="Context" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content"]
+[node name="Context" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content" unique_id=1855229386]
 layout_mode = 2
-text = "OPERATION GATE · SESSION CONFIGURATION"
-horizontal_alignment = 1
 theme_override_colors/font_color = Color(0.27, 0.86, 0.78, 1)
 theme_override_font_sizes/font_size = 13
+text = "OPERATION GATE · SESSION CONFIGURATION"
+horizontal_alignment = 1
 
-[node name="Title" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content"]
+[node name="Title" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content" unique_id=661257645]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "전투 세션 구성"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 28
 
-[node name="Subtitle" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content"]
+[node name="Subtitle" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content" unique_id=1784719861]
 layout_mode = 2
-text = "전장 규모와 데이터 모드를 확인한 뒤 작전 지역으로 진입합니다"
-horizontal_alignment = 1
 theme_override_colors/font_color = Color(0.62, 0.74, 0.78, 1)
 theme_override_font_sizes/font_size = 15
+text = "전장 규모와 데이터 모드를 확인한 뒤 작전 지역으로 진입합니다"
+horizontal_alignment = 1
 
-[node name="ContractSection" type="VBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content"]
+[node name="ContractSection" type="VBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content" unique_id=872827961]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="ProfileSummary" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection"]
+[node name="ProfileSummary" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection" unique_id=1576348903]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.78, 0.38, 1)
 text = "영구 프로필 준비 중..."
 horizontal_alignment = 1
-theme_override_colors/font_color = Color(1, 0.78, 0.38, 1)
 
-[node name="Selectors" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection"]
+[node name="Selectors" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection" unique_id=1028328958]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="RegionButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/Selectors"]
+[node name="RegionButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/Selectors" unique_id=76559312]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 34)
 layout_mode = 2
 text = "지역 · 폐허 도시"
 
-[node name="DifficultyButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/Selectors"]
+[node name="DifficultyButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/Selectors" unique_id=2121222783]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 34)
 layout_mode = 2
 text = "난이도 · 표준"
 
-[node name="PenaltyButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/Selectors"]
+[node name="PenaltyButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/Selectors" unique_id=1160826221]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 34)
 layout_mode = 2
 text = "페널티 · 없음"
 
-[node name="MetaActions" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection"]
+[node name="MetaActions" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection" unique_id=108378716]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="ShopButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/MetaActions"]
+[node name="ShopButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/MetaActions" unique_id=1079087582]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 text = "상점"
 
-[node name="CraftButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/MetaActions"]
+[node name="CraftButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/MetaActions" unique_id=192003294]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 text = "도면 제작"
 
-[node name="LoadoutButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/MetaActions"]
+[node name="LoadoutButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection/MetaActions" unique_id=1802731652]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 32)
 layout_mode = 2
 text = "소모품 · 비어 있음"
 
-[node name="ContractSummary" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection"]
+[node name="ContractSummary" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/ContractSection" unique_id=788469000]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.88, 0.8, 1)
 text = "선택 계약 · 투입 100 C · 회수 보정 ×1.00"
 horizontal_alignment = 1
-theme_override_colors/font_color = Color(0.42, 0.88, 0.8, 1)
 
-[node name="BalanceModeSection" type="VBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content"]
+[node name="BalanceModeSection" type="VBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content" unique_id=1399773672]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Title" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection"]
+[node name="Title" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection" unique_id=820075942]
 layout_mode = 2
-text = "밸런스 데이터 모드"
-horizontal_alignment = 1
 theme_override_colors/font_color = Color(0.72, 0.86, 0.9, 1)
 theme_override_font_sizes/font_size = 14
+text = "밸런스 데이터 모드"
+horizontal_alignment = 1
 
-[node name="Buttons" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection"]
+[node name="Buttons" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection" unique_id=2046165216]
 layout_mode = 2
 theme_override_constants/separation = 12
 alignment = 1
 
-[node name="LockedBalanceButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/Buttons"]
+[node name="LockedBalanceButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/Buttons" unique_id=765365831]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 38)
 layout_mode = 2
+theme_override_font_sizes/font_size = 15
 toggle_mode = true
 button_pressed = true
 text = "확정 CSV"
-theme_override_font_sizes/font_size = 15
 
-[node name="LiveBalanceButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/Buttons"]
+[node name="LiveBalanceButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection/Buttons" unique_id=704568335]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 38)
 layout_mode = 2
+theme_override_font_sizes/font_size = 15
 toggle_mode = true
 text = "실시간 테스트"
-theme_override_font_sizes/font_size = 15
 
-[node name="BalanceModeDescription" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection"]
+[node name="BalanceModeDescription" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/BalanceModeSection" unique_id=1169996197]
 unique_name_in_owner = true
 layout_mode = 2
-text = "저장소에 확정된 CSV를 사용합니다. 배포와 일반 플레이에 권장됩니다."
-horizontal_alignment = 1
 theme_override_colors/font_color = Color(0.56, 0.68, 0.72, 1)
 theme_override_font_sizes/font_size = 12
+text = "저장소에 확정된 CSV를 사용합니다. 배포와 일반 플레이에 권장됩니다."
+horizontal_alignment = 1
 
-[node name="TierButtons" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content"]
+[node name="TierButtons" type="HBoxContainer" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content" unique_id=986962932]
 layout_mode = 2
 theme_override_constants/separation = 12
 alignment = 1
 
-[node name="SmallMapButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons"]
+[node name="SmallMapButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons" unique_id=175768446]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(292, 88)
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
 text = "소형 작전"
-theme_override_font_sizes/font_size = 17
 
-[node name="MediumMapButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons"]
+[node name="MediumMapButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons" unique_id=2076110819]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(292, 88)
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
 text = "중형 작전"
-theme_override_font_sizes/font_size = 17
 
-[node name="LargeMapButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons"]
+[node name="LargeMapButton" type="Button" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content/TierButtons" unique_id=245546001]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(292, 88)
 layout_mode = 2
-text = "대형 작전"
 theme_override_font_sizes/font_size = 17
+text = "대형 작전"
 
-[node name="Footer" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content"]
+[node name="Footer" type="Label" parent="UI/RunSetupOverlay/Center/Panel/Margin/Content" unique_id=1093883907]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.58, 0.62, 1)
 text = "ESC로 전초기지 복귀 · 출격 시 투입 비용과 소모품이 실제 차감됩니다"
 horizontal_alignment = 1
-theme_override_colors/font_color = Color(0.5, 0.58, 0.62, 1)
 
-[node name="SetupCloseButton" type="Button" parent="UI/RunSetupOverlay"]
+[node name="SetupCloseButton" type="Button" parent="UI/RunSetupOverlay" unique_id=816497911]
 unique_name_in_owner = true
-anchors_preset = 1
+layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -90.0
@@ -505,10 +522,10 @@ offset_top = 26.0
 offset_right = -30.0
 offset_bottom = 78.0
 grow_horizontal = 0
-text = "ESC"
 theme_override_font_sizes/font_size = 16
+text = "ESC"
 
-[node name="GameOverOverlay" type="Control" parent="UI"]
+[node name="GameOverOverlay" type="Control" parent="UI" unique_id=454647214]
 unique_name_in_owner = true
 visible = false
 layout_mode = 3
@@ -518,7 +535,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Shade" type="ColorRect" parent="UI/GameOverOverlay"]
+[node name="Shade" type="ColorRect" parent="UI/GameOverOverlay" unique_id=2123464003]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -527,7 +544,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.02, 0.025, 0.04, 0.82)
 
-[node name="Center" type="CenterContainer" parent="UI/GameOverOverlay"]
+[node name="Center" type="CenterContainer" parent="UI/GameOverOverlay" unique_id=1024958812]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -535,36 +552,36 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="PanelContainer" parent="UI/GameOverOverlay/Center"]
+[node name="Panel" type="PanelContainer" parent="UI/GameOverOverlay/Center" unique_id=875608920]
 custom_minimum_size = Vector2(420, 220)
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="UI/GameOverOverlay/Center/Panel"]
+[node name="Margin" type="MarginContainer" parent="UI/GameOverOverlay/Center/Panel" unique_id=1014440462]
 layout_mode = 2
 theme_override_constants/margin_left = 36
 theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 36
 theme_override_constants/margin_bottom = 30
 
-[node name="Content" type="VBoxContainer" parent="UI/GameOverOverlay/Center/Panel/Margin"]
+[node name="Content" type="VBoxContainer" parent="UI/GameOverOverlay/Center/Panel/Margin" unique_id=1389897690]
 layout_mode = 2
 theme_override_constants/separation = 18
 alignment = 1
 
-[node name="EndTitle" type="Label" parent="UI/GameOverOverlay/Center/Panel/Margin/Content"]
+[node name="EndTitle" type="Label" parent="UI/GameOverOverlay/Center/Panel/Margin/Content" unique_id=833301159]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 34
 text = "작전 종료"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 34
 
-[node name="GameOverSummary" type="Label" parent="UI/GameOverOverlay/Center/Panel/Margin/Content"]
+[node name="GameOverSummary" type="Label" parent="UI/GameOverOverlay/Center/Panel/Margin/Content" unique_id=1379317150]
 unique_name_in_owner = true
 layout_mode = 2
 text = "생존 00:00 · 처치 0"
 horizontal_alignment = 1
 
-[node name="RestartButton" type="Button" parent="UI/GameOverOverlay/Center/Panel/Margin/Content"]
+[node name="RestartButton" type="Button" parent="UI/GameOverOverlay/Center/Panel/Margin/Content" unique_id=820943251]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
