@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 2 · CHANGE 4 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 5 · IMPROVE 5 · CHANGE 8 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>2</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>품질 시스템 모듈화 강화 · 저장과 CI 안전망</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기존 상점→가방→장착 성능은 유지하면서 품질 규칙을 데이터로 교체하고, 재시작·모듈 제거·실패 보상까지 자동 검증합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>교체 가능한 품질 Resource, 공용 품질 payload 계약, 실물 지급 단독 제거 E2E를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>장비·모듈·UI의 품질 해석을 하나로 통합하고 Windows 별도 프로세스 저장 검사를 품질까지 확장했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>품질/제거성 테스트와 코드 노드맵 최신성 검사를 GitHub 필수 CI 흐름에 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>노드맵이 소스보다 뒤처지는 문제, 교체 공급자 롤백 실패 때 지급품과 환불액을 함께 얻을 수 있는 경로, 저장 품질 미검증을 차단했습니다.</p></div>
+        <p>가격·성능 배율 CSV와 플레이 결과는 유지합니다. 옵션·소켓은 임시 Resource이며 결제 상품·Cloudflare 과금 설정은 변경하지 않았습니다.</p>
+        <p><a href="features/p5-hub-progression/#quality-module-contract">모듈 계약 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">품질 E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>P7-01B · 품질 장비 실물 지급과 실제 성능</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 상점에서 산 물건이 I 가방에 들어오고 U/E 장착 뒤 품질 배율로 실제 수치가 달라집니다.</strong></div>

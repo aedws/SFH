@@ -17,6 +17,7 @@ extends Resource
 @export var utility_csv_payload: Resource
 @export var operation_preset_csv_payload: Resource
 @export var shop_offer_csv_payload: Resource
+@export var shop_quality_catalog: Resource
 @export var recipe_csv_payload: Resource
 @export var training_scenario_csv_payload: Resource
 @export var codex_csv_payload: Resource
@@ -28,6 +29,15 @@ extends Resource
 
 
 func is_valid() -> bool:
+	if (
+		rotating_shop_enabled
+		and (
+			shop_quality_catalog == null
+			or not shop_quality_catalog.has_method(&"is_valid")
+			or not bool(shop_quality_catalog.call(&"is_valid"))
+		)
+	):
+		return false
 	var csv_contracts := [
 		[utility_enabled, utility_csv_path, utility_csv_payload],
 		[bankruptcy_preset_enabled, operation_preset_csv_path, operation_preset_csv_payload],

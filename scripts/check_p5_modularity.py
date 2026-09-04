@@ -33,6 +33,8 @@ required_files = (
     "workshop_service.gd", "training_service.gd", "codex_service.gd",
     "p5_hub_action_presenter.gd", "p5_hub_progression_service.gd",
     "p5_hub_progression_config.gd", "p5_catalog_table.gd",
+    "item_quality_definition.gd", "item_quality_catalog.gd",
+    "shop_item_quality_policy.gd", "shop_inventory_delivery_service.gd",
 )
 for name in required_files:
     if not (FEATURE_ROOT / name).is_file():
@@ -50,6 +52,10 @@ if "if not bool(contract[0])" not in config or "continue" not in config:
 for stem in ("utility", "operation_preset", "shop_offer", "recipe", "training_scenario", "codex"):
     if f"{stem}_csv_payload" not in config:
         ERRORS.append(f"Missing Web-safe P5 payload boundary: {stem}_csv_payload")
+if "shop_quality_catalog" not in config:
+    ERRORS.append("P5 config does not expose the replaceable item-quality catalogue.")
+if not (FEATURE_ROOT / "configs" / "default_item_quality_catalog.tres").is_file():
+    ERRORS.append("Missing default item-quality Resource catalogue.")
 
 sync_script = ROOT / "scripts" / "sync_p5_catalogs.py"
 if not sync_script.is_file():
@@ -86,6 +92,37 @@ for forbidden in ('&"assault_blueprint_recipe"', '&"single_target"', 'call(&"pur
         ERRORS.append(f"Game assembly owns a P5 domain decision: {forbidden}")
 if 'enemy.has_signal(&"damaged")' not in game or "record_training_hit" not in game:
     ERRORS.append("Real enemy damage is not bridged to training telemetry.")
+
+quality_policy = (FEATURE_ROOT / "shop_item_quality_policy.gd").read_text(encoding="utf-8")
+for forbidden in ("QUALITY_LABELS", "QUALITY_OPTIONS", "QUALITY_SOCKETS"):
+    if forbidden in quality_policy:
+        ERRORS.append(f"Quality tuning remains hardcoded in policy: {forbidden}")
+descriptor_path = ROOT / "game" / "core" / "item_quality_descriptor.gd"
+if not descriptor_path.is_file():
+    ERRORS.append("Missing canonical item-quality payload descriptor.")
+for relative in (
+    "game/features/equipment/equipment_item_state.gd",
+    "game/features/equipment/equipment_module_instance.gd",
+    "game/features/equipment/equipment_system.gd",
+    "game/features/equipment/equipment_module_ui_presenter.gd",
+):
+    if "item_quality_descriptor.gd" not in (ROOT / relative).read_text(encoding="utf-8"):
+        ERRORS.append(f"Equipment quality consumer bypasses canonical descriptor: {relative}")
+
+quality_test = ROOT / "game" / "tests" / "shop_quality_inventory_contract_test.gd"
+removal_test = ROOT / "game" / "tests" / "shop_delivery_modularity_contract_test.gd"
+workflow = (ROOT / ".github" / "workflows" / "deploy-wiki.yml").read_text(encoding="utf-8")
+if not quality_test.is_file() or "rollback_consistency" not in quality_test.read_text(encoding="utf-8"):
+    ERRORS.append("Quality contract lacks rollback consistency coverage.")
+if not removal_test.is_file() or "delivery_off" not in removal_test.read_text(encoding="utf-8"):
+    ERRORS.append("Shop delivery lacks a standalone removal contract.")
+for required_gate in (
+    "shop_quality_inventory_contract_test.gd",
+    "shop_delivery_modularity_contract_test.gd",
+    "check-code-module-map.ps1",
+):
+    if required_gate not in workflow:
+        ERRORS.append(f"Required quality/wiki CI gate missing: {required_gate}")
 
 read_rows(DATA_ROOT / "utility.csv", {"utility_id", "display_name", "utility_type", "run_price", "runtime_enabled"}, "utility_id")
 presets = read_rows(DATA_ROOT / "operation_preset.csv", {"preset_id", "character_id", "main_weapon_id", "secondary_weapon_id", "skill_ids", "tier_id", "region_id", "difficulty_id", "runtime_enabled"}, "preset_id")
@@ -124,4 +161,4 @@ for preset in presets:
 if ERRORS:
     raise SystemExit("\n".join(ERRORS))
 
-print("P5_MODULARITY_OK lazy_submodules conditional_paths web_payloads facade_only schema_unique_fk canonical_ids presenter_boundary real_training_bridge transaction_guards")
+print("P5_MODULARITY_OK lazy_submodules conditional_paths web_payloads facade_only schema_unique_fk canonical_ids presenter_boundary real_training_bridge transaction_guards item_quality_resource payload_descriptor ci_quality_gate delivery_removal_gate rollback_compensation")

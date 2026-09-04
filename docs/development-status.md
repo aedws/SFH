@@ -98,9 +98,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 2 · CHANGE 4 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 5 · IMPROVE 5 · CHANGE 8 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>2</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -113,7 +113,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="design/master-gdd-alignment/">94% 산정 근거 →</a> · <a href="design/current-milestone-workline/">현행 작업 순서 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>P7-01B · 품질 장비 실물 지급과 실제 성능</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 상점 구매가 창고 숫자에서 끝나지 않고 I 가방 실물, U/E 장착, 실제 품질 수치까지 이어집니다.</strong></div>
@@ -123,6 +123,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>구매품이 장비 편집과 분리되던 문제, 모듈 장착·해제 왕복에서 품질 payload가 유실되던 경로를 수정했습니다.</p></div>
         <p>`P7_SHOP_QUALITY_OK`는 고성능 모듈 구매→I→U→실제 1.25배→해제 보존을 판정합니다. 현행 품질 수치는 임시이며 Sheet 목록과 과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/hub-economy/#shop-browser">P7-01A/B 규칙 →</a> · <a href="architecture/module-audit/#p7-01b-2026-09-04">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>P7-01B 후속 · 품질 모듈/저장/CI 엄밀화</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 모듈 감사에서 발견한 CI 누락, 하드코딩 품질, 암묵적 payload, 롤백·저장·선택 제거 검증 공백을 모두 닫았습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p><code>ItemQualityCatalog</code> Resource, <code>ItemQualityDescriptor</code> 공용 계약, 실물 지급 OFF 전용 Game E2E를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>표시명·옵션·소켓을 코드 밖에서 교체하고 장비·모듈·UI가 동일 배율 함수를 사용하며 Windows 품질 재시작 보존을 검사합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>품질·제거성 계약과 코드 노드맵 검사를 PR 필수 CI 경로에 추가하고 모듈 정적 검사도 새 계약을 강제합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>노드맵 최신성 누락, 품질 키/계산 중복, 공급자 롤백 실패의 이중 획득 위험, 데스크톱 저장 품질 미검증을 해결했습니다.</p></div>
+        <p>기존 플레이 수치와 확정 ShopOffer CSV는 유지합니다. 옵션·소켓 Resource는 임시값이며 과금 모델·Cloudflare 플랜은 변경하지 않았습니다.</p>
+        <p><a href="features/p5-hub-progression/#quality-module-contract">P5 모듈 계약 →</a> · <a href="architecture/module-audit/#p7-01b-2026-09-04">감사 결과 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">E2E →</a></p>
       </div>
     </details>
   </div>

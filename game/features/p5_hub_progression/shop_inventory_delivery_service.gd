@@ -7,9 +7,14 @@ const QUALITY_POLICY := preload(
 )
 
 var inventory: Node
+var quality_catalog: Resource
 
 
-func configure(inventory_provider: Node) -> bool:
+func get_delivery_contract() -> Dictionary:
+	return {&"version": 1, &"compensating_rollback": true}
+
+
+func configure(inventory_provider: Node, configured_quality_catalog: Resource = null) -> bool:
 	if not is_instance_valid(inventory_provider):
 		return false
 	for method_name in [
@@ -19,7 +24,15 @@ func configure(inventory_provider: Node) -> bool:
 		if not inventory_provider.has_method(method_name):
 			return false
 	inventory = inventory_provider
-	return true
+	quality_catalog = (
+		configured_quality_catalog
+		if configured_quality_catalog != null else QUALITY_POLICY.default_catalog()
+	)
+	return (
+		quality_catalog != null
+		and quality_catalog.has_method(&"is_valid")
+		and bool(quality_catalog.call(&"is_valid"))
+	)
 
 
 func preview(offer: Dictionary) -> Dictionary:
@@ -48,7 +61,7 @@ func deliver(offer: Dictionary, transaction_id: StringName) -> Dictionary:
 	var check := preview(offer)
 	if not bool(check.get(&"can_deliver", false)):
 		return {&"success": false, &"reason": check.get(&"reason", "지급 불가")}
-	var payload := QUALITY_POLICY.build_payload(offer, transaction_id)
+	var payload := QUALITY_POLICY.build_payload(offer, transaction_id, quality_catalog)
 	if payload.is_empty():
 		return {&"success": false, &"reason": "품질 데이터 오류"}
 	var target_id := StringName(offer.get(&"target_id", &""))
@@ -58,8 +71,16 @@ func deliver(offer: Dictionary, transaction_id: StringName) -> Dictionary:
 			&"add_catalog_item", target_id, payload
 		))
 		if instance_id == &"":
-			rollback({&"instance_ids": instance_ids})
-			return {&"success": false, &"reason": "가방 지급 중 공간 변경 감지"}
+			var compensated := rollback({&"instance_ids": instance_ids})
+			return {
+				&"success": false,
+				&"reason": (
+					"가방 지급 중 공간 변경 감지"
+					if compensated else "가방 지급 롤백 실패 · 결제 보류"
+				),
+				&"compensated": compensated,
+				&"consistency_error": not compensated,
+			}
 		instance_ids.append(instance_id)
 	return {
 		&"success": true,

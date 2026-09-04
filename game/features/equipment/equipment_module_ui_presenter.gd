@@ -1,6 +1,8 @@
 class_name EquipmentModuleUIPresenter
 extends RefCounted
 
+const ITEM_QUALITY := preload("res://game/core/item_quality_descriptor.gd")
+
 ## 모듈 상태를 카드·적용 수치용 문자열로 바꾸는 표현 전용 어댑터입니다.
 ## 장착 가능 여부와 코스트 계산은 EquipmentItemState의 결과만 소비합니다.
 
@@ -33,8 +35,8 @@ func inventory_card_text(entry: Dictionary, compatible: bool) -> String:
 		var module_definition := definition as EquipmentModuleDefinition
 		var payload: Dictionary = entry.get(&"runtime_payload", {})
 		var quality := ""
-		if payload.has(&"quality_id"):
-			quality = " | Q×%.2f" % float(payload.get(&"performance_multiplier", 1.0))
+		if payload.has(ITEM_QUALITY.KEY_ID):
+			quality = " | Q×%.2f" % ITEM_QUALITY.multiplier(payload)
 		return "MOD | COST %d%s\n%s\n%s\n%s" % [
 			module_definition.cost_at_level(1),
 			quality,
@@ -62,16 +64,19 @@ func applied_effects_text(state) -> String:
 	var features := PackedStringArray()
 	for module_instance in state.installed_modules:
 		var definition = module_instance.definition
-		var quality_multiplier: float = float(module_instance.quality_multiplier())
 		for modifier in definition.stat_modifiers:
 			var entry: Dictionary = totals.get(
 				modifier.stat_id, {&"add": 0.0, &"multiply": 1.0}
 			)
 			if modifier.operation == EquipmentStatModifier.Operation.ADD:
-				entry[&"add"] = float(entry[&"add"]) + modifier.amount * quality_multiplier
+				entry[&"add"] = float(entry[&"add"]) + ITEM_QUALITY.scale_additive(
+					modifier.amount, module_instance.item_quality_payload
+				)
 			else:
 				entry[&"multiply"] = float(entry[&"multiply"]) * (
-					1.0 + (modifier.amount - 1.0) * quality_multiplier
+					ITEM_QUALITY.scale_multiplicative(
+						modifier.amount, module_instance.item_quality_payload
+					)
 				)
 			totals[modifier.stat_id] = entry
 		for feature_id in definition.special_feature_ids:

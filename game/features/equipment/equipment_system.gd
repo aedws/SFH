@@ -1,6 +1,8 @@
 class_name CharacterEquipmentSystem
 extends Node
 
+const ITEM_QUALITY := preload("res://game/core/item_quality_descriptor.gd")
+
 signal equipment_changed(summary: Dictionary)
 signal skill_activation_changed(active_skill_ids: PackedStringArray, inactive_skill_ids: PackedStringArray)
 signal stat_modifiers_changed(modifiers: Dictionary)
@@ -597,35 +599,32 @@ func _accumulate_modifier_dictionary(
 	modifiers: Dictionary,
 	quality_payload: Dictionary = {}
 ) -> void:
-	var quality_multiplier := float(quality_payload.get(&"performance_multiplier", 1.0))
-	if not is_finite(quality_multiplier) or quality_multiplier <= 0.0:
-		quality_multiplier = 1.0
 	for stat_id in modifiers:
 		var source: Dictionary = modifiers[stat_id]
 		var entry: Dictionary = aggregated_stat_modifiers.get(
 			stat_id, {&"add": 0.0, &"multiply": 1.0}
 		)
 		entry[&"add"] = (
-			float(entry[&"add"]) + float(source.get(&"add", 0.0)) * quality_multiplier
+			float(entry[&"add"])
+			+ ITEM_QUALITY.scale_additive(float(source.get(&"add", 0.0)), quality_payload)
 		)
 		entry[&"multiply"] = (
 			float(entry[&"multiply"])
-			* (1.0 + (float(source.get(&"multiply", 1.0)) - 1.0) * quality_multiplier)
+			* ITEM_QUALITY.scale_multiplicative(
+				float(source.get(&"multiply", 1.0)), quality_payload
+			)
 		)
 		aggregated_stat_modifiers[stat_id] = entry
 
 
 func _scaled_modifier_dictionary(modifiers: Dictionary, quality_payload: Dictionary) -> Dictionary:
-	var quality_multiplier := float(quality_payload.get(&"performance_multiplier", 1.0))
-	if not is_finite(quality_multiplier) or quality_multiplier <= 0.0:
-		quality_multiplier = 1.0
 	var result: Dictionary = {}
 	for modifier_id in modifiers:
 		var value := float(modifiers[modifier_id])
 		result[modifier_id] = (
-			value * quality_multiplier
+			ITEM_QUALITY.scale_additive(value, quality_payload)
 			if modifier_id == &"damage_add"
-			else 1.0 + (value - 1.0) * quality_multiplier
+			else ITEM_QUALITY.scale_multiplicative(value, quality_payload)
 		)
 	return result
 
