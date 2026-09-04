@@ -100,6 +100,12 @@ const P5_HUB_PROGRESSION_SCENE_PATH := (
 const TRAINING_GROUND_SCENE_PATH := (
 	"res://game/features/training_ground/training_ground_service.tscn"
 )
+const TRAINING_TELEMETRY_PRESENTER_SCRIPT := preload(
+	"res://game/features/training_ground/training_telemetry_presenter.gd"
+)
+const TRAINING_LOADOUT_PRESENTER_SCRIPT := preload(
+	"res://game/features/training_ground/training_loadout_presenter.gd"
+)
 const HUB_ECONOMY_SCENE_PATH := "res://game/features/hub_economy/hub_economy_system.tscn"
 const CRAFTING_SCENE_PATH := "res://game/features/crafting/crafting_system.tscn"
 const PENALTY_SCENE_PATH := "res://game/features/penalty_modifiers/penalty_system.tscn"
@@ -356,6 +362,7 @@ const LOADOUT_INVESTMENT_METHODS := [
 	&"configure", &"request_live_catalog", &"load_catalog_text",
 	&"cycle_weapon", &"cycle_skill", &"select_weapon", &"select_skill",
 	&"preserve_equipped_weapons",
+	&"get_skill_catalog_resources",
 	&"can_launch", &"get_selection_errors", &"get_investment_context",
 	&"get_operation_setting_contribution", &"commit_run_purchase", &"finish_run", &"get_snapshot",
 ]
@@ -373,6 +380,8 @@ const P5_HUB_PROGRESSION_METHODS := [
 const TRAINING_GROUND_METHODS := [
 	&"configure", &"activate_scenario", &"activate_next_scenario",
 	&"reset_active_scenario", &"stop", &"get_active_targets", &"get_snapshot",
+	&"record_hit", &"record_resource_use", &"get_telemetry_snapshot",
+	&"get_loadout_snapshot", &"configure_combat_runtime", &"cycle_training_skill",
 ]
 const HUB_ECONOMY_METHODS := [
 	&"configure", &"quote", &"purchase", &"set_consumable_loadout",
@@ -506,6 +515,11 @@ var character_selection_service
 var loadout_investment_service
 var p5_hub_progression_service
 var training_ground_service
+var training_telemetry_presenter
+var training_loadout_presenter
+var training_combat_resource_system
+var training_combat_skill_system
+var training_combat_skill_hud
 var shop_browser_panel
 var hub_preparation_panel
 var hub_service_stations
@@ -1677,7 +1691,7 @@ func _install_start_hub() -> bool:
 	interaction_label.visible = false
 	status_label.text = "로비 보급 상점 / 출격 준비 · F 상호작용 · I/U/E 장비 저장 → 우측 작전 게이트"
 	if is_instance_valid(mobile_control_pad):
-		mobile_control_pad.call(&"configure_runtime", null, player)
+		mobile_control_pad.call(&"configure_runtime", training_combat_skill_system, player)
 	return true
 
 
@@ -1705,7 +1719,7 @@ func _install_training_ground() -> bool:
 		or not bool(training_ground_service.call(
 			&"configure", player, enemies_container,
 			p5_hub_progression_service.call(&"get_training_scenarios"),
-			load(features.training_ground_config_path)
+			load(features.training_ground_config_path), equipment_system, inventory_system
 		))
 	):
 		_report_configuration_error("훈련장 시나리오·더미 생성 계약을 구성하지 못했습니다.")
@@ -1713,6 +1727,16 @@ func _install_training_ground() -> bool:
 		training_ground_service = null
 		return false
 	training_ground_service.connect(&"dummy_spawned", _on_training_dummy_spawned)
+	training_telemetry_presenter = TRAINING_TELEMETRY_PRESENTER_SCRIPT.new()
+	ui_layer.add_child(training_telemetry_presenter)
+	if not bool(training_telemetry_presenter.call(&"configure", training_ground_service)):
+		_report_configuration_error("훈련 계측 HUD를 구성하지 못했습니다.")
+		return false
+	training_loadout_presenter = TRAINING_LOADOUT_PRESENTER_SCRIPT.new()
+	ui_layer.add_child(training_loadout_presenter)
+	if not bool(training_loadout_presenter.call(&"configure", training_ground_service)):
+		_report_configuration_error("훈련 무료 세팅 안내를 구성하지 못했습니다.")
+		return false
 	if features.weapons_enabled:
 		auto_weapon = _instantiate_feature(WEAPON_SCENE_PATH, player, &"TrainingWeapon")
 		if auto_weapon == null or not auto_weapon.has_method(&"set_target_provider"):
@@ -1732,6 +1756,75 @@ func _install_training_ground() -> bool:
 			auto_weapon = null
 			training_ground_service = null
 			return false
+	if features.combat_resources_enabled and features.combat_skills_enabled:
+		if not _install_training_combat_runtime():
+			return false
+	return true
+
+
+func _install_training_combat_runtime() -> bool:
+	if (
+		not ResourceLoader.exists(features.combat_skill_loadout_path)
+		or not ResourceLoader.exists(features.combat_resource_config_path)
+	):
+		return false
+	var training_loadout: Resource = load(features.combat_skill_loadout_path).duplicate(true)
+	training_combat_resource_system = _instantiate_feature(
+		COMBAT_RESOURCE_SCENE_PATH, training_ground_service, &"TrainingCombatResources"
+	)
+	if (
+		not _supports_methods(training_combat_resource_system, COMBAT_RESOURCE_METHODS)
+		or not training_combat_resource_system.call(
+			&"configure", player, pickups_container, training_loadout,
+			load(features.combat_resource_config_path), features.map_seed
+		)
+	):
+		_report_configuration_error("훈련 AP·충전 자원 런타임을 구성하지 못했습니다.")
+		return false
+	training_combat_skill_system = _instantiate_feature(
+		COMBAT_SKILL_SYSTEM_SCENE_PATH, training_ground_service, &"TrainingCombatSkills"
+	)
+	if (
+		not _supports_methods(training_combat_skill_system, COMBAT_SKILL_METHODS)
+		or not training_combat_skill_system.call(
+			&"configure", player, enemies_container, world_container, training_loadout,
+			features.damage_enabled, training_combat_resource_system,
+			load(features.smart_targeting_policy_path) if features.smart_targeting_enabled else null,
+			equipment_system, skill_binding_service
+		)
+	):
+		_report_configuration_error("훈련 스킬 런타임을 구성하지 못했습니다.")
+		return false
+	training_combat_skill_system.connect(
+		&"skill_activated", Callable(self, &"_on_training_skill_activated")
+	)
+	var candidates: Array[Resource] = loadout_investment_service.call(
+		&"get_skill_catalog_resources"
+	) if is_instance_valid(loadout_investment_service) else []
+	if candidates.is_empty():
+		for skill in training_loadout.get("skills"):
+			candidates.append(skill)
+	if not training_ground_service.call(
+		&"configure_combat_runtime", training_combat_skill_system, candidates
+	):
+		_report_configuration_error("훈련 자유 스킬 카탈로그를 구성하지 못했습니다.")
+		return false
+	training_combat_skill_hud = _instantiate_feature(
+		COMBAT_SKILL_HUD_SCENE_PATH, ui_layer, &"TrainingCombatSkillHud"
+	)
+	if (
+		not _supports_methods(training_combat_skill_hud, COMBAT_SKILL_HUD_METHODS)
+		or not training_combat_skill_hud.call(&"configure", training_combat_skill_system)
+	):
+		_report_configuration_error("훈련 AP·쿨타임 HUD를 구성하지 못했습니다.")
+		return false
+	training_combat_skill_hud.visible = false
+	training_ground_service.connect(&"scenario_activated", func(_snapshot):
+		if is_instance_valid(training_combat_skill_hud):
+			training_combat_skill_hud.visible = true)
+	training_ground_service.connect(&"scenario_stopped", func(_snapshot):
+		if is_instance_valid(training_combat_skill_hud):
+			training_combat_skill_hud.visible = false)
 	return true
 
 
@@ -1787,6 +1880,12 @@ func _install_hub_loadout_views() -> bool:
 func _open_run_setup() -> void:
 	if run_started or start_hub == null:
 		return
+	if p5_hub_progression_service != null:
+		var training: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"training", {})
+		if not (training.get(&"active", {}) as Dictionary).is_empty():
+			p5_hub_progression_service.call(&"finish_training")
+	if is_instance_valid(training_telemetry_presenter):
+		training_telemetry_presenter.visible = false
 	for other in get_tree().get_nodes_in_group(&"game_modal_panel"):
 		if not other.visible: continue
 		if other.has_method(&"request_leave"):
@@ -1841,7 +1940,9 @@ func _clear_start_hub() -> void:
 	if is_instance_valid(training_ground_service):
 		training_ground_service.call(&"stop")
 	for node in [
-		auto_weapon, training_ground_service, inventory_window, equipment_workbench,
+		auto_weapon, training_combat_skill_hud,
+		training_telemetry_presenter, training_loadout_presenter,
+		training_ground_service, inventory_window, equipment_workbench,
 		equipment_system, inventory_system,
 	]:
 		_free_feature_node(node)
@@ -1849,6 +1950,11 @@ func _clear_start_hub() -> void:
 		_free_feature_node(projectile)
 	auto_weapon = null
 	training_ground_service = null
+	training_telemetry_presenter = null
+	training_loadout_presenter = null
+	training_combat_resource_system = null
+	training_combat_skill_system = null
+	training_combat_skill_hud = null
 	inventory_window = null
 	equipment_workbench = null
 	equipment_system = null
@@ -2848,7 +2954,11 @@ func _open_inventory_destination(action: StringName) -> void:
 
 func _on_inventory_settings_saved() -> void:
 	# Combat edits remain run-owned; death/settlement retain their existing authority.
-	if not run_started:
+	var training_active := (
+		is_instance_valid(training_ground_service)
+		and bool(training_ground_service.call(&"get_loadout_snapshot").get(&"active", false))
+	)
+	if not run_started and not training_active:
 		_capture_prepared_loadout()
 
 
@@ -3734,6 +3844,11 @@ func _on_enemy_training_damage(
 	context: Dictionary
 ) -> void:
 	var total_damage := maxf(0.0, health_damage + armor_damage)
+	if is_instance_valid(training_ground_service):
+		training_ground_service.call(
+			&"record_hit", total_damage,
+			float(context.get(&"armor_penetration", 0.0))
+		)
 	if p5_hub_progression_service != null:
 		p5_hub_progression_service.call(
 			&"record_training_hit",
@@ -3752,10 +3867,36 @@ func _on_combat_skill_activated(
 	_skill_id: StringName,
 	result: Dictionary
 ) -> void:
+	if is_instance_valid(training_ground_service) and is_instance_valid(combat_skill_system):
+		var states: Array = combat_skill_system.call(&"get_skill_states")
+		if slot_index >= 0 and slot_index < states.size():
+			var state: Dictionary = states[slot_index]
+			training_ground_service.call(
+				&"record_resource_use",
+				float(state.get(&"energy_cost", 0.0)),
+				float(state.get(&"cooldown_seconds", 0.0))
+			)
 	status_label.text = "%d 스킬 · %s" % [
 		slot_index + 1,
 		result.get(&"status", "발동"),
 	]
+
+
+func _on_training_skill_activated(
+	slot_index: int,
+	_skill_id: StringName,
+	result: Dictionary
+) -> void:
+	if is_instance_valid(training_ground_service) and is_instance_valid(training_combat_skill_system):
+		var states: Array = training_combat_skill_system.call(&"get_skill_states")
+		if slot_index >= 0 and slot_index < states.size():
+			var state: Dictionary = states[slot_index]
+			training_ground_service.call(
+				&"record_resource_use",
+				float(state.get(&"energy_cost", 0.0)),
+				float(state.get(&"cooldown_seconds", 0.0))
+			)
+	status_label.text = "훈련 스킬 %d · %s" % [slot_index + 1, result.get(&"status", "발동")]
 
 
 func _on_map_generated(

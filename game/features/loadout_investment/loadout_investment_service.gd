@@ -247,6 +247,16 @@ func get_snapshot() -> Dictionary:
 	}
 
 
+func get_skill_catalog_resources() -> Array[Resource]:
+	var result: Array[Resource] = []
+	for entry in skill_entries:
+		if ResourceLoader.exists(entry.definition_path):
+			var definition := load(entry.definition_path)
+			if definition != null and definition.has_method(&"is_valid") and bool(definition.call(&"is_valid")):
+				result.append(definition)
+	return result
+
+
 func _load_locked_csv() -> bool:
 	var weapon_text := _read_csv(config.weapon_csv_path, config.weapon_csv_payload)
 	var skill_text := _read_csv(config.skill_csv_path, config.skill_csv_payload)

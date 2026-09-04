@@ -27,10 +27,10 @@ tags:
     <b>96%</b>
   </div>
   <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-  <p>2026-09-04 마지막 동기화된 공개 Master GDD v1005·77블록·해시 614a0b8ddee4를 기준으로 봅니다. P7-04 원자적 제작과 P8-01 실제 단일·밀집 훈련 런타임까지 반영했으며, 더미·경제 운영값은 임시이므로 기능 가중 추정치 96%를 유지합니다. 이번 실행에서는 공개 Notion 원문 재수집이 되지 않아 새 기획 변경을 추정하지 않았습니다.</p>
+  <p>저장소에 고정된 마지막 공개 Master GDD v1005·77블록·해시 614a0b8ddee4를 기준으로 봅니다. P8-01~03 실제 더미·계측·무비용 세팅 복원까지 반영했으며, 더미·경제 운영값은 임시이므로 기능 가중 추정치 96%를 유지합니다. 이번 실행에서는 공개 Notion 원문이 404로 재수집되지 않아 새 기획 변경을 추정하지 않았습니다.</p>
 </div>
 
-권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-04 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
+권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 이번 실행에서는 원문이 404를 반환해 새 변경을 추정하지 않고, 저장소에 고정된 마지막 성공 수집본 77블록·root v1005·`614a0b8ddee4`를 사용했습니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
 P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분합니다. P7-01B~04는 로컬 플레이 흐름을 완료했지만 임시 품질·리롤·제작 운영 수치의 기획 확정과 서버 운영을 완료로 오인하지 않습니다.
 
@@ -43,7 +43,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 | 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
 | 로비→준비→인게임 3단계 루프 | ×2 | 100% | 유틸리티·불변 작전 초안·원자적 확정·파산 무료 프리셋까지 허브→작전→허브에 연결 |
 | 상점 vs 제작소 경제 | ×1 | 90% | P7-01A/B 비교·구매→I 실물→U/E 장착→실제 품질 배율·옵션·소켓 보존. 운영 가격/성능 규칙 확정 잔여 |
-| 훈련 연습장 | ×1 | 100% | P8-01 거점 F→실제 단일 보스·밀집 8기→좌클릭·자동 초기화·스폰 격리. 기존 계측/원복 계약 유지, P8-02 전용 HUD 분리 예정 |
+| 훈련 연습장 | ×1 | 100% | P8-01~03 거점 F→실제 단일·밀집 더미→고정 시간 DPS/AP/쿨타임→무비용 세팅→작전 준비/퇴장 원복 |
 | 전리품 2대 분류·현장 파밍 | ×2 | 100% | 생명 주기·지역 테이블·현장 비교·획득·교체·소켓과 탈출 환전·영구 해금·창고/사망 소실·중복 방지 구현 |
 | 가변 태그·등급 확장 | ×1 | 85% | 동적 태그·등급·불일치 비활성·메커니즘 변형과 제작 옵션 풀 구현. 무기별 독립 스킬 프리셋이 남음 |
 | 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
@@ -94,17 +94,17 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 | 완료 | 내부 P7-02 | 런 복귀 회전·골드 리롤 | 정책·상태·차감 분리, 취소/중복 방지와 UI 영수증 E2E 완료 |
 | 완료 | 내부 P7-03 | 반출 설계도 영구 등록 | 등록·Recipe 공급·해금 규칙 분리, 재접속 보존과 후보 상태 E2E 완료 |
 | 완료 | 내부 P7-04 | 원자적 맞춤 제작 | 비용·재료·범위 선공개, 실제 옵션/소켓, 단일 저장과 실패 무변경 E2E 완료 |
-| 진행 | 내부 P8 | P8-01 실제 훈련 더미 구현·수치 확정 대기 | P8-02 전용 계측 HUD→P8-03 무비용 자유 세팅 순서 |
-| 예정 | 내부 P9~P10 | 도감→출시 후보 | P8 완료 뒤 도감·프리셋과 전체 산출물 회귀 |
+| 완료 | 내부 P8 | 실제 더미·전용 계측·격리 스킬·무비용 세팅 복원 | 운영 수치는 기획 확정 뒤 CSV만 교체 |
+| 다음 | 내부 P9~P10 | 도감→프리셋→출시 후보 | P9-01 해금률·지역 힌트부터 진행 |
 | 착수 보류 | 위변조 감지·거래 원장·백업 | 사용자 지시로 문서만 등록 | 운영 정책과 별도 구현 승인 전 서비스·과금 변경 없음 |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 19 · IMPROVE 23 · CHANGE 30 · FIX 19</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 25 · IMPROVE 28 · CHANGE 36 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>19</b><small>BUILD</small></span><span><b>23</b><small>IMPROVE</small></span><span><b>30</b><small>CHANGE</small></span><span><b>19</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>25</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>36</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -189,7 +189,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="features/training-ground/">P8-01 플레이와 구조 →</a> · <a href="architecture/module-audit/#p8-01-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p8-training-ground-e2e">실제 플레이 E2E →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 8</small><b>플레이 감각 회귀 · 스폰 안전·상호작용·첫 레이아웃 수정</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 방에 들어가자마자 포위되어 사망하거나, F 안내가 보이는데 실행되지 않고, 가방 첫 화면이 겹쳐 보이던 체감 오류를 실제 플레이 기준으로 고쳤습니다.</strong></div>
@@ -199,6 +199,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 6</h3><p>게이트·거점 시설·보상함의 프롬프트/실행 범위 불일치, 첫 가방 압축, 즉사형 근접 생성, 훈련 단말 겹침을 회귀 테스트로 차단했습니다.</p></div>
         <p>방당 12~34기와 경제·과금 데이터는 변경하지 않았습니다. 전체 E2E와 대형 전장 60fps CPU 예산을 통과했습니다.</p>
         <p><a href="features/room-encounters/#spawn-safety">방 스폰 안전 계약 →</a> · <a href="quality/e2e-play-session/#player-perception-regression-2026-09-04">플레이어 인식 회귀 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 9</small><b>P8 마감 · 계측 HUD·무비용 세팅 복원·산출물 정리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 훈련에서 실제 DPS·AP·쿨타임을 읽고 장비·스킬을 비용 없이 시험한 뒤, 작전 준비로 나가면 원래 세팅으로 안전하게 돌아옵니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 6</h3><p>타격 수집기, 시간창 서비스, 계측 HUD, 로드아웃 스냅샷·복원 서비스·자유 세팅 UI를 독립 모듈로 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>DPS·최대 타격·누적 피해·AP/s·평균 쿨타임을 압축하고, 격리된 실제 스킬 런타임과 종료 결과 고정을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 6</h3><p>P8 로드맵·기획자/개발자 화면·검색·E2E·모듈 감사를 P8 완료와 P9-01 다음 순서로 현행화하고 Actions 산출물 최신 1세트 유지 정책을 CI에 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>훈련 종료 중복 final 신호, 작전 준비 화면 위에 남던 계측 결과, 이동한 적을 생성 위치로 오판해 간헐 실패하던 스폰 안전 판정을 차단했습니다.</p></div>
+        <p>GitHub Actions 산출물 430개 약 7.15GB를 정리해 최신 성공 런의 Web·Windows·위키 3개만 유지합니다. 새 목록이 없어 Sheet/CSV와 과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/training-ground/">P8 완료 흐름 →</a> · <a href="architecture/module-audit/#p8-complete-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p8-training-ground-e2e">P8 E2E →</a></p>
       </div>
     </details>
   </div>

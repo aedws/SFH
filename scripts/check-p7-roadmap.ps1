@@ -39,8 +39,8 @@ foreach ($lane in $roadmap.lanes) {
         if ([string]$packet.id -notmatch ('^' + [regex]::Escape([string]$lane.id) + '-\d{2}$') -or -not $packetIds.Add([string]$packet.id)) {
             $errors.Add("Invalid or duplicate packet id: $($packet.id)")
         }
-        if ($packet.state -notin @("planned", "in_progress")) {
-            $errors.Add("P7+ must not claim unverified completion: $($packet.id)")
+        if ($packet.state -notin @("planned", "in_progress", "complete")) {
+            $errors.Add("P7+ packet has an unknown state: $($packet.id)")
         }
         if ($packet.state -eq "in_progress") {
             if (-not $packet.completed_scope -or -not $packet.remaining_scope -or -not $packet.evidence) {
@@ -49,6 +49,16 @@ foreach ($lane in $roadmap.lanes) {
             foreach ($evidence in $packet.evidence) {
                 if (-not (Test-Path -LiteralPath (Join-Path $repositoryRoot $evidence) -PathType Leaf)) {
                     $errors.Add("Missing packet evidence: $evidence")
+                }
+            }
+        }
+        if ($packet.state -eq "complete") {
+            if (-not $packet.completed_scope -or -not $packet.evidence) {
+                $errors.Add("Complete packet needs completed scope and evidence: $($packet.id)")
+            }
+            foreach ($evidence in $packet.evidence) {
+                if (-not (Test-Path -LiteralPath (Join-Path $repositoryRoot $evidence) -PathType Leaf)) {
+                    $errors.Add("Missing complete packet evidence: $evidence")
                 }
             }
         }

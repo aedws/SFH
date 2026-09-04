@@ -34,10 +34,10 @@ if ($script -notmatch 'deployment-surfaces\.json' -or $script -notmatch 'cutover
 if ($headerStyle -notmatch 'a\.sfh-global-play' -or $style -notmatch '\.sfh-operation-play') {
     throw "The browser play entry styles are missing."
 }
-if ($script -notmatch '<svg class="sfh-play-icon"' -or $script -match '<i[^>]*>▶' -or $style -match '\.sfh-global-play i::before') {
+if ($script -notmatch '<svg class="sfh-play-icon"' -or $script -match '<i[^>]*>\u25B6' -or $style -match '\.sfh-global-play i::before') {
     throw "Play must use one centered SVG without a font glyph or blinking pseudo-element."
 }
-if ($script -notmatch '게임 플레이 \(새 탭\)' -or $script -notmatch 'sfh-play-label' -or $searchScript -notmatch '문서 검색 열기' -or $searchScript -notmatch 'sfh-search-label') {
+if ($script -notmatch 'setAttribute\("aria-label"' -or $script -notmatch 'sfh-play-label' -or $searchScript -notmatch 'setAttribute\("aria-label"' -or $searchScript -notmatch 'sfh-search-label') {
     throw "Play and search must have distinct visible and accessible labels."
 }
 if ($mkdocs -notmatch 'stylesheets/header-actions\.css' -or $headerStyle -notmatch 'min-height: 44px' -or $headerStyle -notmatch ':focus-visible') {

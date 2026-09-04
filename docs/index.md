@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 19 · IMPROVE 23 · CHANGE 30 · FIX 19</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 25 · IMPROVE 28 · CHANGE 36 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>19</b><small>BUILD</small></span><span><b>23</b><small>IMPROVE</small></span><span><b>30</b><small>CHANGE</small></span><span><b>19</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>25</b><small>BUILD</small></span><span><b>28</b><small>IMPROVE</small></span><span><b>36</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 9</small><b>P8 마감 · 계측 HUD·무비용 세팅 복원·산출물 정리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 훈련에서 실제 DPS·AP·쿨타임을 읽고 장비·스킬을 비용 없이 시험한 뒤, 작전 준비로 나가면 원래 세팅으로 안전하게 돌아옵니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 6</h3><p>타격 수집기, 시간창 서비스, 계측 HUD, 로드아웃 스냅샷·복원 서비스·자유 세팅 UI를 독립 모듈로 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>DPS·최대 타격·누적 피해·AP/s·평균 쿨타임을 압축하고, 격리된 실제 스킬 런타임과 종료 결과 고정을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 6</h3><p>P8 로드맵·기획자/개발자 화면·검색·E2E·모듈 감사를 P8 완료와 P9-01 다음 순서로 현행화하고 Actions 산출물 최신 1세트 유지 정책을 CI에 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>훈련 종료 중복 final 신호, 작전 준비 화면 위에 남던 계측 결과, 이동한 적을 생성 위치로 오판해 간헐 실패하던 스폰 안전 판정을 차단했습니다.</p></div>
+        <p>GitHub Actions 산출물 430개 약 7.15GB를 정리해 최신 성공 런의 Web·Windows·위키 3개만 유지합니다. 새 목록이 없어 Sheet/CSV와 과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/training-ground/">P8 완료 흐름 →</a> · <a href="architecture/module-audit/#p8-complete-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p8-training-ground-e2e">P8 E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 8</small><b>플레이 감각 회귀 · 스폰 안전·상호작용·첫 레이아웃 수정</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 방에 들어가자마자 포위되어 사망하거나, F 안내가 보이는데 실행되지 않고, 가방 첫 화면이 겹쳐 보이던 체감 오류를 실제 플레이 기준으로 고쳤습니다.</strong></div>

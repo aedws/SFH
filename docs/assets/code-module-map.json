@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "0b09c600b7d631ad1a415758e7deb651e9e5c78e138338fb123f7dc8e0c9a230",
+  "source_sha256": "6206dfbec48493d95f129b89dcf2022079ea22db0861be1571d8b2461bcf66de",
   "layers": [
     {
       "id": "contract",
@@ -25,8 +25,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 266,
-    "named_classes": 219,
+    "scripts": 272,
+    "named_classes": 225,
     "relationships": 185,
     "project_inheritance": 7,
     "enabled_toggles": 70
@@ -1031,14 +1031,20 @@
       "path": "game/features/training_ground",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 5,
-      "class_count": 5,
+      "file_count": 11,
+      "class_count": 11,
       "classes": [
+        "CombatTelemetryCollector",
         "TrainingDummySpawner",
         "TrainingGroundConfig",
         "TrainingGroundService",
+        "TrainingLoadoutPresenter",
+        "TrainingLoadoutService",
+        "TrainingLoadoutSnapshot",
         "TrainingScenarioDefinition",
-        "TrainingScenarioResetService"
+        "TrainingScenarioResetService",
+        "TrainingTelemetryPresenter",
+        "TrainingTelemetryService"
       ],
       "incoming_count": 3,
       "outgoing_count": 0
@@ -2973,6 +2979,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:CombatTelemetryCollector",
+      "name": "CombatTelemetryCollector",
+      "module": "training_ground",
+      "path": "game/features/training_ground/combat_telemetry_collector.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:TrainingDummySpawner",
       "name": "TrainingDummySpawner",
       "module": "training_ground",
@@ -3000,6 +3015,33 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:TrainingLoadoutPresenter",
+      "name": "TrainingLoadoutPresenter",
+      "module": "training_ground",
+      "path": "game/features/training_ground/training_loadout_presenter.gd",
+      "extends": "PanelContainer",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:TrainingLoadoutService",
+      "name": "TrainingLoadoutService",
+      "module": "training_ground",
+      "path": "game/features/training_ground/training_loadout_service.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:TrainingLoadoutSnapshot",
+      "name": "TrainingLoadoutSnapshot",
+      "module": "training_ground",
+      "path": "game/features/training_ground/training_loadout_snapshot.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:TrainingScenarioDefinition",
       "name": "TrainingScenarioDefinition",
       "module": "training_ground",
@@ -3014,6 +3056,24 @@
       "module": "training_ground",
       "path": "game/features/training_ground/training_scenario_reset_service.gd",
       "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:TrainingTelemetryPresenter",
+      "name": "TrainingTelemetryPresenter",
+      "module": "training_ground",
+      "path": "game/features/training_ground/training_telemetry_presenter.gd",
+      "extends": "MarginContainer",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:TrainingTelemetryService",
+      "name": "TrainingTelemetryService",
+      "module": "training_ground",
+      "path": "game/features/training_ground/training_telemetry_service.gd",
+      "extends": "Node",
       "base_id": "",
       "inheritance": "engine"
     },

@@ -57,6 +57,17 @@ func _run() -> void:
 	var densest: Dictionary = policy.call(&"resolve", &"densest", target.global_position, dense_targets, 1200.0)
 	_check(is_instance_valid(densest.get(&"target")) and densest.get(&"target_point") != target.global_position, "광역 밀집 타게팅")
 	_check(int(service.call(&"get_snapshot").get(&"general_spawn_budget_impact", -1)) == 0, "일반 스폰 예산 비간섭")
+	_check(service.call(&"record_hit", 120.0, 0.25), "계측 타격 기록")
+	_check(service.call(&"record_resource_use", 20.0, 5.0), "AP·쿨타임 기록")
+	await create_timer(0.12).timeout
+	var telemetry: Dictionary = service.call(&"get_telemetry_snapshot")
+	_check(float(telemetry.get(&"dps", 0.0)) > 0.0, "실시간 DPS")
+	_check(float(telemetry.get(&"ap_per_second", 0.0)) > 0.0, "실시간 AP 소모율")
+	_check(is_equal_approx(float(telemetry.get(&"average_cooldown", 0.0)), 5.0), "평균 쿨타임")
+	service.get("telemetry_service").call(&"advance", 20.0)
+	var finalized: Dictionary = service.call(&"get_telemetry_snapshot")
+	_check(bool(finalized.get(&"finalized", false)), "측정 시간 종료 스냅샷 고정")
+	_check(not bool(service.call(&"record_hit", 999.0, 1.0)), "고정 결과 추가 타격 차단")
 
 	var reset_before := int(service.call(&"get_snapshot").get(&"reset_revision", 0))
 	for dummy in dense_targets:
@@ -78,7 +89,7 @@ func _run() -> void:
 	_check((disabled_manifest.call(&"validation_errors") as PackedStringArray).is_empty(), "훈련장 물리 제거 가능")
 
 	if failures.is_empty():
-		print("P8_TRAINING_GROUND_OK scenario_resource single_boss dense_8 no_overlap smart_targeting reset_service auto_reset spawn_budget_isolated optional_module")
+		print("P8_TRAINING_GROUND_OK scenario_resource single_boss dense_8 no_overlap smart_targeting reset_service auto_reset telemetry_window final_snapshot ap_rate cooldown_cycle spawn_budget_isolated optional_module")
 		quit(0)
 	else:
 		print("P8_TRAINING_GROUND_FAILED: %s" % " / ".join(failures))
