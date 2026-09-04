@@ -334,7 +334,9 @@ func _on_projectile_hit_confirmed(
 	target: Node, world_position: Vector2, context: Dictionary
 ) -> void:
 	var fired_identity: Dictionary = context.get(&"weapon_identity", {})
-	innate_skill_system.resolve_confirmed_hit(target, world_position, fired_identity)
+	innate_skill_system.resolve_confirmed_hit(
+		target, world_position, fired_identity, _target_candidates()
+	)
 
 
 func _impact_profile(weapon_id: StringName) -> Dictionary:

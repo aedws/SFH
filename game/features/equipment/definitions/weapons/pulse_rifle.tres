@@ -18,11 +18,14 @@ minor_label = "소총"
 script = ExtResource("3_innate")
 skill_id = &"pulse_overflow"
 display_name = "펄스 오버플로"
-trigger_every_hits = 4
-fixed_damage = 3.0
+trigger_every_hits = 1
+fixed_damage = 1.0
+effect_kind = 1
+effect_radius = 144.0
+maximum_targets = 8
 impact_strength = 1.25
 effect_color = Color(0.00784314, 0.898039, 0.882353, 1)
-description = "네 번째 명중마다 고정 펄스 피해를 방출합니다."
+description = "탄환이 명중할 때마다 타격 지점 반경 144 안의 최대 8명에게 고정 전기 피해를 방출합니다."
 
 [sub_resource type="Resource" id="FixedOption"]
 script = ExtResource("4_option")

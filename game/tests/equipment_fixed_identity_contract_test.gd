@@ -19,7 +19,7 @@ class DummyStats extends Node:
 		runtime_sources[source_id] = modifiers.duplicate(true)
 
 
-class DummyTarget extends Node:
+class DummyTarget extends Node2D:
 	var received_damage: float = 0.0
 	var contexts: Array[Dictionary] = []
 
@@ -53,6 +53,9 @@ func _run() -> void:
 		var weapon := load(weapon_path) as EquipmentWeaponDefinition
 		var locked_weapon: Dictionary = identity_table.get_record(&"weapon", weapon.weapon_id)
 		_assert(locked_weapon.get(&"innate_skill_id") == String(weapon.innate_skill.skill_id), "CSV와 무기 고유 스킬 정의가 다릅니다: %s" % weapon.weapon_id)
+		_assert(locked_weapon.get(&"innate_effect_kind") == String(weapon.innate_skill.effect_kind_name()), "CSV와 무기 고유 효과 종류가 다릅니다: %s" % weapon.weapon_id)
+		_assert(is_equal_approx(float(locked_weapon.get(&"innate_effect_radius", -1.0)), weapon.innate_skill.effect_radius), "CSV와 무기 고유 효과 반경이 다릅니다: %s" % weapon.weapon_id)
+		_assert(int(locked_weapon.get(&"innate_maximum_targets", 0)) == weapon.innate_skill.maximum_targets, "CSV와 무기 고유 효과 대상 상한이 다릅니다: %s" % weapon.weapon_id)
 		_assert(locked_weapon.get(&"fixed_option_id") == String(weapon.fixed_options[0].option_id), "CSV와 무기 고정 옵션 ID가 다릅니다: %s" % weapon.weapon_id)
 		_assert(is_equal_approx(float(locked_weapon.get(&"fixed_option_value", 0.0)), weapon.fixed_options[0].amount), "CSV와 무기 고정 옵션 값이 다릅니다: %s" % weapon.weapon_id)
 	for armor_path in [
@@ -166,7 +169,60 @@ func _run() -> void:
 	_assert(is_equal_approx(target.received_damage, 1.5), "고유 스킬의 고정 피해가 정의값과 다릅니다.")
 	_assert(target.contexts[0].get(&"fixed_identity_effect", false), "고유 스킬 피해 출처가 구분되지 않습니다.")
 
-	print("EQUIPMENT_FIXED_IDENTITY_OK locked_csv weapon_options armor_options assigned_affix persistence same_weapon_same_skill run_level_invariant meta_level_invariant module_source_separate fixed_skill_damage impact_profile")
+	var pulse_definition := load(
+		"res://game/features/equipment/definitions/weapons/pulse_rifle.tres"
+	) as EquipmentWeaponDefinition
+	var pulse_state := EquipmentItemState.new()
+	pulse_state.configure(&"pulse_instance", pulse_definition)
+	var pulse_identity := pulse_state.get_fixed_identity_snapshot()
+	var pulse_target := DummyTarget.new()
+	pulse_target.global_position = Vector2.ZERO
+	root.add_child(pulse_target)
+	var nearby_target := DummyTarget.new()
+	nearby_target.global_position = Vector2(96.0, 0.0)
+	root.add_child(nearby_target)
+	var distant_target := DummyTarget.new()
+	distant_target.global_position = Vector2(180.0, 0.0)
+	root.add_child(distant_target)
+	var pulse_candidates: Array = [pulse_target, nearby_target, distant_target]
+	_assert(
+		innate.resolve_confirmed_hit(
+			pulse_target, pulse_target.global_position, pulse_identity, pulse_candidates
+		),
+		"펄스 소총 명중에 전기 광역 효과가 발동하지 않았습니다."
+	)
+	_assert(is_equal_approx(pulse_target.received_damage, 1.0), "전기 광역 피해가 주 대상에 적용되지 않았습니다.")
+	_assert(is_equal_approx(nearby_target.received_damage, 1.0), "전기 광역 피해가 반경 안의 주변 대상에 적용되지 않았습니다.")
+	_assert(is_zero_approx(distant_target.received_damage), "전기 광역 피해가 반경 밖 대상에 적용됐습니다.")
+	_assert(
+		nearby_target.contexts[0].get(&"source_kind") == &"weapon_innate_electric_area"
+		and is_equal_approx(float(nearby_target.contexts[0].get(&"area_radius", 0.0)), 144.0),
+		"전기 광역 피해 문맥이 일반 타격과 구분되지 않습니다."
+	)
+	var pulse_trigger: Dictionary = innate.get_snapshot().get(&"last_trigger", {})
+	_assert(int(pulse_trigger.get(&"affected_targets", 0)) == 2, "전기 광역 피격 대상 집계가 다릅니다.")
+	_assert(pulse_trigger.get(&"effect_kind") == &"electric_area", "전기 광역 발동 스냅샷이 누락됐습니다.")
+	var budget_innate := WeaponInnateSkillSystem.new()
+	root.add_child(budget_innate)
+	var budget_targets: Array = []
+	for target_index in range(10):
+		var budget_target := DummyTarget.new()
+		budget_target.global_position = Vector2(float(target_index * 8), 24.0)
+		root.add_child(budget_target)
+		budget_targets.append(budget_target)
+	_assert(
+		budget_innate.resolve_confirmed_hit(
+			budget_targets[0], Vector2(0.0, 24.0), pulse_identity, budget_targets
+		),
+		"전기 광역 대상 상한 검증에서 효과가 발동하지 않았습니다."
+	)
+	var damaged_budget_targets := 0
+	for budget_target in budget_targets:
+		if (budget_target as DummyTarget).received_damage > 0.0:
+			damaged_budget_targets += 1
+	_assert(damaged_budget_targets == 8, "전기 광역 효과가 최대 8명 대상 예산을 지키지 않았습니다.")
+
+	print("EQUIPMENT_FIXED_IDENTITY_OK locked_csv weapon_options armor_options assigned_affix persistence same_weapon_same_skill run_level_invariant meta_level_invariant module_source_separate fixed_skill_damage electric_area_on_confirmed_hit radius_filter target_budget impact_profile")
 	quit(0)
 
 

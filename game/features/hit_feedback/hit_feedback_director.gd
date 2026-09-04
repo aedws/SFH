@@ -90,6 +90,13 @@ func _draw() -> void:
 		color.a *= 1.0 - ratio
 		var position: Vector2 = impact[&"position"]
 		draw_arc(position, radius, 0.0, TAU, 20, color, 2.0)
+		if bool(impact.get(&"electric_area_primary", false)):
+			_draw_electric_area(
+				position,
+				float(impact.get(&"area_radius", radius)),
+				ratio,
+				color
+			)
 		var base_direction: Vector2 = impact[&"direction"]
 		var ray_count := maxi(3, roundi(
 			float(profile.impact_ray_count) * float(impact.get(&"ray_multiplier", 1.0))
@@ -130,10 +137,15 @@ func _on_actor_damaged(
 		&"remaining": float(profile.impact_lifetime_seconds),
 		&"lifetime": float(profile.impact_lifetime_seconds),
 		&"intensity": intensity,
-		&"color": color,
-		&"radius_multiplier": float(context.get(&"impact_radius_multiplier", 1.0)),
-		&"ray_multiplier": float(context.get(&"impact_ray_multiplier", 1.0)),
-	})
+			&"color": color,
+			&"radius_multiplier": float(context.get(&"impact_radius_multiplier", 1.0)),
+			&"ray_multiplier": float(context.get(&"impact_ray_multiplier", 1.0)),
+			&"electric_area_primary": (
+				StringName(context.get(&"source_kind", &"")) == &"weapon_innate_electric_area"
+				and bool(context.get(&"area_primary_target", false))
+			),
+			&"area_radius": float(context.get(&"area_radius", 0.0)),
+		})
 	total_hits += 1
 	if is_player:
 		total_player_hits += 1
@@ -149,6 +161,26 @@ func _on_actor_damaged(
 	)
 	peak_active_impacts = maxi(peak_active_impacts, impacts.size())
 	queue_redraw()
+
+
+func _draw_electric_area(
+	position: Vector2, area_radius: float, lifetime_ratio: float, source_color: Color
+) -> void:
+	var pulse_radius := maxf(8.0, area_radius) * lerpf(0.72, 1.0, lifetime_ratio)
+	var electric_color := source_color
+	electric_color.a *= 0.72 * (1.0 - lifetime_ratio)
+	draw_arc(position, pulse_radius, 0.0, TAU, 32, electric_color, 2.5)
+	for arc_index in range(10):
+		var direction := Vector2.from_angle(TAU * float(arc_index) / 10.0)
+		var tangent := direction.orthogonal()
+		var start := position + direction * pulse_radius * 0.12
+		var middle := (
+			position + direction * pulse_radius * 0.56
+			+ tangent * (7.0 if arc_index % 2 == 0 else -7.0)
+		)
+		var end := position + direction * pulse_radius
+		draw_line(start, middle, electric_color, 2.0)
+		draw_line(middle, end, electric_color, 2.0)
 
 
 func _impact_color(

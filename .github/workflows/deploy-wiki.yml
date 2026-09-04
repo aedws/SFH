@@ -198,7 +198,7 @@ jobs:
           grep -q "LOOT_LIFECYCLE_OK items_15 families_2 session_convertible_3 policy_validation presenter" /tmp/sfh-smoke.log
           grep -q "SESSION_SOCKET_OK runasset_csv rune_2 core_1 artifact_1 duplicate_limit runtime_effects hud_unsocket run_clear optional_module" /tmp/sfh-smoke.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/equipment_fixed_identity_contract_test.gd" | tee /tmp/sfh-fixed-identity.log
-          grep -q "EQUIPMENT_FIXED_IDENTITY_OK locked_csv weapon_options armor_options assigned_affix persistence same_weapon_same_skill run_level_invariant meta_level_invariant module_source_separate fixed_skill_damage impact_profile" /tmp/sfh-fixed-identity.log
+          grep -q "EQUIPMENT_FIXED_IDENTITY_OK locked_csv weapon_options armor_options assigned_affix persistence same_weapon_same_skill run_level_invariant meta_level_invariant module_source_separate fixed_skill_damage electric_area_on_confirmed_hit radius_filter target_budget impact_profile" /tmp/sfh-fixed-identity.log
           python3 scripts/sync_equipment_identity.py --check
 
       - name: Verify native progress across separate processes
