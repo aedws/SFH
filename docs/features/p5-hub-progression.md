@@ -22,14 +22,14 @@ P5-03~10을 완료해 작전 전 준비와 작전 후 영구 성장이 하나의
 | 유틸리티 | 가방·구급키트·공격 전지·비상 신호기의 가격·수량·사용 조건 | 총 투입액에 합산되고 런에서만 사용, 사망·종료 시 잔량 소실 |
 | 작전 확정 | 캐릭터·무기·스킬·유틸리티·지역·난이도·페널티·총비용 | 편집 중 무과금, 불변 초안을 한 번 확정할 때만 원자적 차감 |
 | 파산 보호 | 재화 0일 때 무료 생존 프리셋 | 무료 캐릭터·무기·소형 기본 지역으로 반복 출격 가능 |
-| 회전 상점 | 3품질 설정, 가격·수량·견적·명시 구매 | P7-01A/B 완료. 개별 품질 실물이 I 가방에 들어오고 U/E 장착 시 실제 수치에 반영 |
+| 회전 상점 | 3품질 설정, 가격·수량·견적·명시 구매·리롤 비용 | P7-01A/B·P7-02 완료. 품질 실물의 I/U/E 실제 수치와 런 복귀 1회 회전·유료 리롤 결과 반영 |
 | 제작소 | 영구 등록 도면·재료·비용·옵션/소켓 범위 | 탈출 도면 등록→재접속 유지→맞춤 제작→보관함 추가 |
 | 훈련장 | 단일·밀집 더미, DPS·최대 타격·AP·쿨타임 | 비용 없는 측정 세션, 종료 시 준비 로드아웃 원복 |
 | 도감 | 완료 수·누적 수량·미해금 지역 힌트 | 탈출 성공 때만 누적하고 재접속 후 유지 |
 
 ## 모듈 경계 {#quality-module-contract}
 
-`P5HubProgressionService`는 공개 façade와 조립만 담당합니다. 실제 정책은 `UtilityInvestmentService`, `OperationDraftService`, `BankruptcyProtectionPolicy`, `RotatingShopService`, `ShopItemQualityPolicy`, `ShopInventoryDeliveryService`, `WorkshopService`, `TrainingService`, `CodexService`가 각각 소유하고, 버튼 행동·표시 문구는 `P5HubActionPresenter`가 소유합니다. 각 하위 서비스는 설정의 `*_enabled`로 독립 제거할 수 있고 월드 Scene 내부 Node를 참조하지 않습니다. 품질 표시명·옵션·소켓은 `ItemQualityCatalog` Resource에 있으며 다른 카탈로그를 주입해 코드 수정 없이 교체합니다. 인스턴스 payload 키와 수치 배율은 공용 `ItemQualityDescriptor`만 해석합니다.
+`P5HubProgressionService`는 공개 façade와 조립만 담당합니다. 실제 정책은 `UtilityInvestmentService`, `OperationDraftService`, `BankruptcyProtectionPolicy`, `RotatingShopService`, `ShopItemQualityPolicy`, `ShopInventoryDeliveryService`, `WorkshopService`, `TrainingService`, `CodexService`가 각각 소유하고, 버튼 행동·표시 문구는 `P5HubActionPresenter`가 소유합니다. 각 하위 서비스는 설정의 `*_enabled`로 독립 제거할 수 있고 월드 Scene 내부 Node를 참조하지 않습니다. 품질 표시명·옵션·소켓은 `ItemQualityCatalog` Resource에 있으며 다른 카탈로그를 주입해 코드 수정 없이 교체합니다. 인스턴스 payload 키와 수치 배율은 공용 `ItemQualityDescriptor`만 해석합니다. 회전 상점 내부에서도 매물 계산은 `ShopRotationPolicy`, 런/회전 상태는 `ShopRotationState`, 리롤 견적·차감·거래 기록은 `ShopRerollTransactionService`로 분리합니다.
 
 하위 스크립트는 집계기에서 정적 `preload`하지 않습니다. 활성 플래그일 때만 문자열 경로로 지연 로드하므로 상점이나 훈련장을 끈 빌드는 해당 스크립트와 CSV가 물리적으로 없어도 구성됩니다. 비활성 경로를 존재 검사하지 않는 계약과 `res://removed/` 경로 회귀 테스트가 이 제거성을 고정합니다.
 
@@ -45,7 +45,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\check-p5-modularity.ps1
 powershell -ExecutionPolicy Bypass -File .\scripts\test-e2e.ps1
 ```
 
-`P5_HUB_PROGRESSION_OK`는 유틸 사용·단일 확정·무료 반복 출격·3품질 회전·구매/재굴림 중복 차감 방지·도면/도감 재접속·실제 훈련 façade·하위 모듈 제거·잘못된 CSV 거부·강제 거래 실패 롤백을 판정합니다. `P7_SHOP_QUALITY_OK`는 고성능 모듈 구매→가방 실물→U 장착→실제 1.25배 수치→해제 후 품질 보존, 카탈로그 교체와 롤백 실패 중복 보상 차단을 판정합니다. `P7_SHOP_DELIVERY_MODULE_OK`는 P5·상점을 켠 채 실물 지급만 제거했을 때 가방 불변·레거시 창고 지급을 판정합니다. `P5_MODULARITY_OK`는 품질 Resource·공용 payload 계약·필수 CI 게이트까지 정적으로 차단합니다.
+`P5_HUB_PROGRESSION_OK`는 유틸 사용·단일 확정·무료 반복 출격·3품질 회전·런 복귀 1회 갱신·취소 보존·구매/재굴림 중복 차감 방지·도면/도감 재접속·실제 훈련 façade·하위 모듈 제거·잘못된 CSV 거부·강제 거래 실패 롤백을 판정합니다. `P7_SHOP_BROWSER_OK`는 실제 로비 단말에서 리롤 견적→1회 차감→교체 수 영수증과 4화면 배치를 판정합니다. `P7_SHOP_QUALITY_OK`는 고성능 모듈 구매→가방 실물→U 장착→실제 1.25배 수치→해제 후 품질 보존, 카탈로그 교체와 롤백 실패 중복 보상 차단을 판정합니다. `P7_SHOP_DELIVERY_MODULE_OK`는 P5·상점을 켠 채 실물 지급만 제거했을 때 가방 불변·레거시 창고 지급을 판정합니다. `P5_MODULARITY_OK`는 품질·회전 Resource, 상태·차감 서비스, 공용 payload 계약과 필수 CI 게이트를 정적으로 차단합니다.
 
 ## 데이터·과금 경계
 
@@ -57,6 +57,6 @@ powershell -ExecutionPolicy Bypass -File .\scripts\test-e2e.ps1
 
 ## 검색 별칭
 
-후속 진행: [P7-01A/B 상점 비교·품질 실물](hub-economy.md#shop-browser), [위변조·백업 구현 예정](../design/p7-plus-preimplementation.md#economy-integrity-plan). 실제 운영 수치 확정과 로컬 구현 완료 범위를 구분합니다.
+후속 진행: [P7-01A/B·P7-02 상점 비교·품질·회전](hub-economy.md#shop-browser), [위변조·백업 구현 예정](../design/p7-plus-preimplementation.md#economy-integrity-plan). 실제 운영 수치 확정과 로컬 구현 완료 범위를 구분합니다.
 
 P5 완료, 거점 서비스, 유틸리티 투자, 작전 초안, BEP, 파산 보호, 회전 상점, 리롤, 제작소, 훈련장, 작전 도감

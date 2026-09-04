@@ -46,11 +46,30 @@ func _run() -> void:
 	_check(before_confirm - int(profile.call(&"get_snapshot").get(&"banked_credits", 0)) == int(confirmed.get(&"entry_cost", 0)), "원자적 단일 차감")
 	var duplicate: Dictionary = p5.call(&"confirm_operation_draft", draft.get(&"draft_id", &""), tier, {}, utility_context)
 	_check(not bool(duplicate.get(&"success", false)), "작전 중복 확정 차단")
+	var rotation_before_run := int(p5.call(&"get_shop_snapshot").get(&"rotation_index", -1))
+	var offers_before_run: Array = p5.call(&"get_shop_snapshot").get(&"offers", [])
 	_check(p5.call(&"begin_run", &"p5-run-1"), "런 유틸리티 시작")
 	_check(not bool(p5.call(&"use_utility", &"field_medkit", &"enemies_nearby").get(&"success", false)), "유틸 사용 조건 차단")
 	_check(bool(p5.call(&"use_utility", &"field_medkit", &"health_below_max").get(&"success", false)), "유틸 런 사용")
 	var utility_settlement: Dictionary = p5.call(&"settle_run", false, {})
 	_check((utility_settlement.get(&"utility", {}).get(&"persistent_grant", {}) as Dictionary).is_empty(), "사망 유틸 영구 지급 없음")
+	var rotation_after_run: Dictionary = p5.call(&"get_shop_snapshot")
+	_check(
+		int(rotation_after_run.get(&"rotation_index", -1)) == rotation_before_run + 1
+		and rotation_after_run.get(&"last_refresh_reason", &"") == &"run_return",
+		"런 종료 복귀 회전"
+	)
+	_check(
+		int(rotation_after_run.get(&"last_changed_count", 0)) > 0
+		and rotation_after_run.get(&"offers", []) != offers_before_run,
+		"복귀 매물 체감 교체"
+	)
+	p5.call(&"refresh_hub")
+	_check(int(p5.call(&"get_shop_snapshot").get(&"rotation_index", -1)) == rotation_before_run + 1, "복귀 신호 중복 회전 없음")
+	_check(p5.call(&"begin_run", &"p5-run-cancel"), "취소 런 시작")
+	_check(p5.call(&"cancel_run"), "조립 실패 런 취소")
+	p5.call(&"refresh_hub")
+	_check(int(p5.call(&"get_shop_snapshot").get(&"rotation_index", -1)) == rotation_before_run + 1, "취소 런 상점 유지")
 	contract.call(&"clear_active_contract")
 
 	var shop_snapshot: Dictionary = p5.call(&"get_snapshot").get(&"shop", {})
@@ -150,7 +169,7 @@ func _run() -> void:
 	if FileAccess.file_exists(PROFILE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE_PATH))
 	if failures.is_empty():
-		print("P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback")
+		print("P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit run_return_rotation_cancel_guard workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback")
 		quit(0)
 	else:
 		print("P5_HUB_PROGRESSION_FAILED: %s" % " / ".join(failures))

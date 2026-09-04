@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="P5HubProgressionConfig" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="P5HubProgressionConfig" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://game/features/p5_hub_progression/p5_hub_progression_config.gd" id="1"]
 [ext_resource type="Resource" path="res://game/features/p5_hub_progression/data/utility_payload.tres" id="2_utility"]
@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://game/features/p5_hub_progression/data/training_scenario_payload.tres" id="6_training"]
 [ext_resource type="Resource" path="res://game/features/p5_hub_progression/data/codex_payload.tres" id="7_codex"]
 [ext_resource type="Resource" path="res://game/features/p5_hub_progression/configs/default_item_quality_catalog.tres" id="8_quality"]
+[ext_resource type="Resource" path="res://game/features/p5_hub_progression/configs/default_shop_rotation_policy.tres" id="9_rotation"]
 
 [resource]
 script = ExtResource("1")
@@ -15,6 +16,7 @@ utility_csv_payload = ExtResource("2_utility")
 operation_preset_csv_payload = ExtResource("3_preset")
 shop_offer_csv_payload = ExtResource("4_shop")
 shop_quality_catalog = ExtResource("8_quality")
+shop_rotation_policy = ExtResource("9_rotation")
 recipe_csv_payload = ExtResource("5_recipe")
 training_scenario_csv_payload = ExtResource("6_training")
 codex_csv_payload = ExtResource("7_codex")

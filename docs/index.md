@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 5 · IMPROVE 5 · CHANGE 8 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 8 · IMPROVE 8 · CHANGE 13 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>8</b><small>BUILD</small></span><span><b>8</b><small>IMPROVE</small></span><span><b>13</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>개발자 코드맵 우선 · P7-02 상점 회전/리롤</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 개발자는 로그인 직후 실제 코드 관계망부터 보고, 플레이어는 작전 복귀 갱신과 가격이 보이는 리롤을 사용할 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>런 종료 1회 자동 회전, 25 C 유료 리롤 영수증, 실제 소스 기반 코드 모듈 노드맵의 개발자 첫 화면 배치를 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>회전 정책·런 상태·차감 서비스를 분리하고 이전 매물을 우선 회피하며 품질군 가시성을 유지합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>P7 작업선·기획 요청·검색·E2E·모듈 감사를 P7-02 완료와 P7-03 다음 순서로 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>거점 복귀 신호의 중복 회전, 조립 취소 뒤 매물 변경, 리롤 중복 차감과 오래된 선택 구매를 차단했습니다.</p></div>
+        <p>현행 가격·슬롯·회전 규칙은 임시 Resource입니다. Sheet 목록·결제 상품·Cloudflare 과금 설정은 변경하지 않았습니다.</p>
+        <p><a href="features/hub-economy/#p7-02">상점 회전 규칙 →</a> · <a href="architecture/code-module-map/">코드 관계 웹 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>품질 시스템 모듈화 강화 · 저장과 CI 안전망</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기존 상점→가방→장착 성능은 유지하면서 품질 규칙을 데이터로 교체하고, 재시작·모듈 제거·실패 보상까지 자동 검증합니다.</strong></div>

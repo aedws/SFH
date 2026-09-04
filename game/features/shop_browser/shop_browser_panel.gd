@@ -18,6 +18,7 @@ var balance_label: Label
 var detail_label: Label
 var status_label: Label
 var buy_button: Button
+var reroll_button: Button
 var close_button: Button
 
 
@@ -33,7 +34,7 @@ func _ready() -> void:
 
 func configure(new_provider: Node) -> bool:
 	if not is_instance_valid(new_provider): return false
-	for method in [&"get_shop_snapshot", &"quote_shop_offer", &"purchase_shop_offer"]:
+	for method in [&"get_shop_snapshot", &"quote_shop_offer", &"purchase_shop_offer", &"reroll_shop"]:
 		if not new_provider.has_method(method): return false
 	if is_instance_valid(provider) and provider.has_signal(&"snapshot_changed") \
 			and provider.is_connected(&"snapshot_changed", _on_snapshot_changed):
@@ -95,6 +96,13 @@ func refresh() -> void:
 		selected_quote.clear()
 		status_label.text = "매물이 갱신됐습니다 · 상품을 다시 선택하세요."
 	balance_label.text = "보유 %d C · 회전 #%d" % [int(snapshot.get(&"credits", 0)), revision]
+	var reroll_quote: Dictionary = snapshot.get(&"reroll_quote", {})
+	reroll_button.text = "매물 리롤 · %d C" % int(reroll_quote.get(&"price", 0))
+	reroll_button.disabled = busy or not bool(reroll_quote.get(&"affordable", false))
+	reroll_button.tooltip_text = (
+		"현재 매물을 새 조합으로 바꿉니다. 선택만으로는 차감되지 않습니다."
+		if not reroll_button.disabled else String(reroll_quote.get(&"reason", "리롤 불가"))
+	)
 	for child in cards.get_children():
 		cards.remove_child(child)
 		child.queue_free()
@@ -153,10 +161,32 @@ func purchase_selected() -> void:
 		status_label.text = "구매 실패 · %s" % result.get(&"reason", "상태 확인 필요")
 
 
+func reroll_offers() -> void:
+	if busy or not visible or reroll_button.disabled:
+		return
+	busy = true
+	reroll_button.disabled = true
+	var transaction_id := StringName("shop_reroll_ui_%d_%d" % [Time.get_ticks_usec(), get_instance_id()])
+	var result: Dictionary = provider.call(&"reroll_shop", transaction_id)
+	busy = false
+	selected_id = &""
+	selected_quote.clear()
+	selected_rotation = -1
+	refresh()
+	if bool(result.get(&"success", false)):
+		var snapshot: Dictionary = result.get(&"snapshot", {})
+		status_label.text = "리롤 완료 · 매물 %d개가 교체됐습니다. 잔액과 새 가격을 확인하세요." % int(
+			snapshot.get(&"last_changed_count", 0)
+		)
+	else:
+		status_label.text = "리롤 실패 · %s" % result.get(&"reason", "상태 확인 필요")
+
+
 func get_snapshot() -> Dictionary:
 	return {&"visible": visible, &"selected_id": selected_id, &"selected_rotation": selected_rotation,
 		&"selected_quote": selected_quote.duplicate(true), &"offer_count": offer_buttons.size(),
 		&"columns": cards.columns, &"purchase_enabled": not buy_button.disabled,
+		&"reroll_enabled": not reroll_button.disabled, &"reroll_text": reroll_button.text,
 		&"status_text": status_label.text, &"panel_rect": panel.get_global_rect()}
 
 
@@ -186,8 +216,15 @@ func _build_ui() -> void:
 	close_button.custom_minimum_size.y = 40
 	close_button.pressed.connect(close_panel)
 	header.add_child(close_button)
+	var economy_row := HBoxContainer.new()
+	economy_row.add_theme_constant_override("separation", 10)
+	column.add_child(economy_row)
 	balance_label = _label("", 15)
-	column.add_child(balance_label)
+	economy_row.add_child(balance_label)
+	reroll_button = Button.new()
+	reroll_button.custom_minimum_size = Vector2(180, 40)
+	reroll_button.pressed.connect(reroll_offers)
+	economy_row.add_child(reroll_button)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
