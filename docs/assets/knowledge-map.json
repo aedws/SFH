@@ -221,7 +221,7 @@
               {"label": "P5-01 캐릭터 선택", "source": "features/character-selection.md", "route": "features/character-selection/", "summary": "캐릭터 가격·패시브·작전 견적과 실전 적용"},
               {"label": "캐릭터 장비와 로드아웃", "source": "features/character-equipment.md", "route": "features/character-equipment/", "summary": "무기·방어구·스킬 슬롯"},
               {"label": "무기 고유 스킬과 장비 고정 옵션", "source": "features/equipment-fixed-identity.md", "route": "features/equipment-fixed-identity/", "summary": "같은 무기 고유 효과·성장 비적용 장비 옵션·Sheet/CSV"},
-              {"label": "격자 가방 인벤토리", "source": "features/grid-inventory.md", "route": "features/grid-inventory/", "summary": "크기가 다른 아이템 배치"},
+              {"label": "격자 가방 인벤토리", "source": "features/grid-inventory.md", "route": "features/grid-inventory/", "summary": "가변 크기 배치·클릭 후 R 회전·방향 저장"},
               {"label": "장비 파츠·모듈 개조", "source": "features/equipment-customization.md", "route": "features/equipment-customization/", "summary": "호환 파츠·모듈 코스트·태그"},
               {"label": "모듈·고유 파츠 강화 경제", "source": "features/equipment-upgrade-economy.md", "route": "features/equipment-upgrade-economy/", "summary": "재료·크레딧·강화 단계"},
               {"label": "P5-02 무기·스킬 런 투자", "source": "features/loadout-investment.md", "route": "features/loadout-investment/", "summary": "주·보조무기·스킬 가격·해금·태그·런 구매와 복원"},

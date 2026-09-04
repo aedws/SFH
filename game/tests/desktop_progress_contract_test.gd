@@ -49,6 +49,7 @@ func _run() -> void:
 		game.add_child(editor)
 		editor.configure(bag, gear)
 		_check(editor.begin(), "begin hub edit")
+		var rotated_item := false
 		for entry in editor.inventory.get_snapshot().items:
 			if entry.instance_id == quality_module_id:
 				_check(editor.install_item(entry.instance_id, &"main"), "install module")
@@ -56,6 +57,23 @@ func _run() -> void:
 				_check(editor.install_item(entry.instance_id, &"main"), "install part")
 			if entry.item_id == &"field_medkit":
 				_check(editor.move_item(entry.instance_id, Vector2i(8, 6)), "move bag item")
+			if not rotated_item and bool(entry.get(&"can_rotate", false)) and editor.inventory.items.has(entry.instance_id):
+				var base_size: Vector2i = entry.grid_size
+				var rotated_size := Vector2i(base_size.y, base_size.x)
+				for y in editor.inventory.grid_size.y:
+					for x in editor.inventory.grid_size.x:
+						var position := Vector2i(x, y)
+						if (
+							editor.inventory.can_place(base_size, position, entry.instance_id)
+							and editor.inventory.can_place(rotated_size, position, entry.instance_id)
+						):
+							_check(editor.move_item(entry.instance_id, position), "move persistent rotation item")
+							_check(editor.rotate_item(entry.instance_id), "rotate persistent bag item")
+							rotated_item = true
+							break
+					if rotated_item:
+						break
+		_check(rotated_item, "rotatable bag item persisted")
 		_check(editor.commit(), "commit hub editor")
 		editor.free()
 		var state: Resource = gear.get_equipment_state(&"main")
@@ -110,9 +128,14 @@ func _run() -> void:
 		_check(state.part_upgrade_levels.get(&"rifle_scope", 0) == 2, "part upgrade persisted")
 		_check(gear.active_weapon_slot == &"secondary", "active weapon persisted")
 		var moved := false
+		var restored_rotation := false
 		for entry in bag.get_snapshot().items:
 			if entry.item_id == &"field_medkit": moved = entry.position == Vector2i(8, 6)
+			if bool(entry.get(&"rotated", false)):
+				var base_size: Vector2i = entry.get(&"base_grid_size", Vector2i.ZERO)
+				restored_rotation = entry.grid_size == Vector2i(base_size.y, base_size.x)
 		_check(moved, "bag position persisted")
+		_check(restored_rotation, "bag rotation persisted")
 		_check(profile.get_snapshot().banked_credits == 5137, "banked credits persisted")
 		for item_id in [&"assault_rifle", &"tactical_vest", &"ballistic_core", &"rifle_scope"]:
 			_check(profile.has_warehouse_item(item_id, 2), "warehouse item: %s" % item_id)
@@ -203,5 +226,5 @@ func _check(ok: bool, label: String) -> void:
 
 func _finish() -> void:
 	if failures.is_empty():
-		print("DESKTOP_PROGRESS_OK phase=%s hub_bag module_part_levels item_quality profile_warehouse_unlocks meta ranking history process_restart atomic_backup corrupt_recovery legacy_migration optional_module" % phase)
+		print("DESKTOP_PROGRESS_OK phase=%s hub_bag bag_rotation module_part_levels item_quality profile_warehouse_unlocks meta ranking history process_restart atomic_backup corrupt_recovery legacy_migration optional_module" % phase)
 	quit(0 if failures.is_empty() else 1)

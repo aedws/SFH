@@ -53,6 +53,14 @@ func move_item(instance_id: StringName, position: Vector2i) -> bool:
 	return _changed()
 
 
+func rotate_item(instance_id: StringName) -> bool:
+	if not inventory.can_rotate_item(instance_id):
+		return _reject("회전 불가 · 가로와 세로 크기가 같은 아이템입니다.")
+	if not inventory.rotate_item(instance_id):
+		return _reject("회전 불가 · 다른 아이템과 겹치거나 가방 밖입니다.")
+	return _changed()
+
+
 func equip_item(instance_id: StringName, slot_id: StringName) -> bool:
 	var entry := get_item_entry(instance_id)
 	var definition: Resource = entry.get(&"linked_resource")

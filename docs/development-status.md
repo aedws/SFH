@@ -102,10 +102,10 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 2 · IMPROVE 4 · CHANGE 6 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 4 · IMPROVE 7 · CHANGE 9 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>4</b><small>IMPROVE</small></span><span><b>6</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
-    <details class="sfh-bundle" open>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>9</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>단일 작업 폴더 · Git 커밋 기반 복구</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 바탕화면 폴더 복사를 백업으로 쓰지 않고, 원격 커밋·PR·검증된 main을 유일한 복구 기준으로 고정했습니다.</strong></div>
@@ -115,6 +115,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>오래된 완료 worktree 혼선, Windows PowerShell의 UTF-8 한글 검사 파싱, 신규 clone의 클래스 캐시·폰트 import 부재로 첫 스모크가 실패하는 문제를 차단했습니다.</p></div>
         <p>완료 worktree 10개를 Git 등록에서 제거했습니다. 기본 폴더의 Godot 에디터 재저장 상태는 <code>codex/backup-desktop-pre-cleanup-20260905</code> 커밋 <code>5e57fde</code>로 원격 보존한 뒤 최신 <code>main</code>으로 정리했습니다. 게임 코드·Sheet/CSV·과금 모델은 변경하지 않았습니다.</p>
         <p><a href="getting-started/source-control-and-cleanup/">형상 관리·복구 운영안 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>가방 아이템 R 회전 · 방향 저장</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · I 가방에서 아이템을 한 번 선택하고 R을 누르면 3×2↔2×3처럼 점유 방향을 바꾸고, 저장한 방향이 다음 실행에도 유지됩니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p><code>GridInventory</code> 인스턴스별 회전 상태와 <code>GridInventoryWindow</code> 선택 회전 입력·버튼을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>현재 점유 크기·기본/회전 방향을 표시하고, K에서 재설정한 현장 장착 키가 가방 안에서는 회전으로 동작하도록 문맥을 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>현재 방향 기준 이동·충돌·경계와 저장 검증, 구 저장 기본 방향 호환, 실제 클릭→R→저장·재실행 E2E를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기존 결함 수정이 아니라 가방 편집 기능 확장입니다.</p></div>
+        <p>회전할 공간이 없으면 원래 위치와 방향을 보존합니다. 새 아이템·밸런스 목록이 없어 Google Sheet·확정 CSV·과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/grid-inventory/">플레이 규칙 →</a> · <a href="architecture/module-audit/">모듈 감사 →</a> · <a href="quality/e2e-play-session/#desktop-save-e2e">E2E →</a></p>
       </div>
     </details>
   </div>

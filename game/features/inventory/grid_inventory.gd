@@ -6,6 +6,7 @@ signal inventory_changed(snapshot: Dictionary)
 var grid_size := Vector2i.ZERO
 var items: Dictionary = {}
 var placements: Dictionary = {}
+var rotations: Dictionary = {}
 var serials: Dictionary = {}
 var runtime_payloads: Dictionary = {}
 var item_definitions_by_resource: Dictionary = {}
@@ -19,6 +20,7 @@ func configure(catalog: InventoryCatalog) -> bool:
 	grid_size = catalog.grid_size
 	items.clear()
 	placements.clear()
+	rotations.clear()
 	serials.clear()
 	runtime_payloads.clear()
 	item_definitions_by_resource.clear()
@@ -57,6 +59,7 @@ func add_item_with_payload(
 	var instance_id := _next_instance_id(definition.item_id)
 	items[instance_id] = definition
 	placements[instance_id] = position
+	rotations[instance_id] = false
 	runtime_payloads[instance_id] = runtime_payload.duplicate(true)
 	inventory_changed.emit(get_snapshot())
 	return instance_id
@@ -73,7 +76,10 @@ func can_add_catalog_items(item_id: StringName, quantity: int) -> bool:
 	var occupied: Array[Rect2i] = []
 	for instance_id in placements:
 		var current := items[instance_id] as InventoryItemDefinition
-		occupied.append(Rect2i(placements[instance_id], current.grid_size))
+		occupied.append(Rect2i(
+			placements[instance_id],
+			_oriented_size(current.grid_size, bool(rotations.get(instance_id, false)))
+		))
 	var bounds := Rect2i(Vector2i.ZERO, grid_size)
 	for _index in quantity:
 		var placement := Vector2i(-1, -1)
@@ -116,6 +122,7 @@ func remove_item_instances(instance_ids: Array) -> bool:
 			continue
 		items.erase(instance_id)
 		placements.erase(instance_id)
+		rotations.erase(instance_id)
 		runtime_payloads.erase(instance_id)
 		removed_any = true
 	if removed_any:
@@ -160,8 +167,7 @@ func can_place(
 	for instance_id in placements:
 		if instance_id == ignore_instance_id:
 			continue
-		var definition := items[instance_id] as InventoryItemDefinition
-		var occupied := Rect2i(placements[instance_id], definition.grid_size)
+		var occupied := Rect2i(placements[instance_id], get_item_grid_size(instance_id))
 		if candidate.intersects(occupied):
 			return false
 	return true
@@ -179,12 +185,38 @@ func find_first_space(item_size: Vector2i) -> Vector2i:
 func move_item(instance_id: StringName, new_position: Vector2i) -> bool:
 	if not items.has(instance_id):
 		return false
-	var definition := items[instance_id] as InventoryItemDefinition
-	if not can_place(definition.grid_size, new_position, instance_id):
+	if not can_place(get_item_grid_size(instance_id), new_position, instance_id):
 		return false
 	placements[instance_id] = new_position
 	inventory_changed.emit(get_snapshot())
 	return true
+
+
+func can_rotate_item(instance_id: StringName) -> bool:
+	if not items.has(instance_id):
+		return false
+	var definition := items[instance_id] as InventoryItemDefinition
+	return definition.grid_size.x != definition.grid_size.y
+
+
+func rotate_item(instance_id: StringName) -> bool:
+	if not can_rotate_item(instance_id):
+		return false
+	var definition := items[instance_id] as InventoryItemDefinition
+	var next_rotation := not bool(rotations.get(instance_id, false))
+	var next_size := _oriented_size(definition.grid_size, next_rotation)
+	if not can_place(next_size, placements[instance_id], instance_id):
+		return false
+	rotations[instance_id] = next_rotation
+	inventory_changed.emit(get_snapshot())
+	return true
+
+
+func get_item_grid_size(instance_id: StringName) -> Vector2i:
+	if not items.has(instance_id):
+		return Vector2i.ZERO
+	var definition := items[instance_id] as InventoryItemDefinition
+	return _oriented_size(definition.grid_size, bool(rotations.get(instance_id, false)))
 
 
 func take_item(instance_id: StringName) -> InventoryItemDefinition:
@@ -199,9 +231,11 @@ func take_item_entry(instance_id: StringName) -> Dictionary:
 	var result := {
 		&"definition": definition,
 		&"runtime_payload": (runtime_payloads.get(instance_id, {}) as Dictionary).duplicate(true),
+		&"rotated": bool(rotations.get(instance_id, false)),
 	}
 	items.erase(instance_id)
 	placements.erase(instance_id)
+	rotations.erase(instance_id)
 	runtime_payloads.erase(instance_id)
 	inventory_changed.emit(get_snapshot())
 	return result
@@ -245,13 +279,17 @@ func get_snapshot() -> Dictionary:
 	var item_snapshots: Array[Dictionary] = []
 	for instance_id in items:
 		var definition := items[instance_id] as InventoryItemDefinition
+		var oriented_size := get_item_grid_size(instance_id)
 		item_snapshots.append({
 			&"instance_id": instance_id,
 			&"item_id": definition.item_id,
 			&"display_name": definition.display_name,
 			&"item_type": definition.item_type,
-			&"grid_size": definition.grid_size,
+			&"grid_size": oriented_size,
+			&"base_grid_size": definition.grid_size,
 			&"position": placements[instance_id],
+			&"rotated": bool(rotations.get(instance_id, false)),
+			&"can_rotate": definition.grid_size.x != definition.grid_size.y,
 			&"panel_color": definition.panel_color,
 			&"description": definition.description,
 			&"linked_resource": definition.linked_resource,
@@ -265,6 +303,7 @@ func export_runtime_state() -> Dictionary:
 		&"grid_size": grid_size,
 		&"items": items.duplicate(true),
 		&"placements": placements.duplicate(true),
+		&"rotations": rotations.duplicate(true),
 		&"serials": serials.duplicate(true),
 		&"runtime_payloads": runtime_payloads.duplicate(true),
 	}
@@ -277,12 +316,16 @@ func validate_runtime_state(saved: Dictionary) -> PackedStringArray:
 	var saved_size: Vector2i = saved.get(&"grid_size", Vector2i.ZERO)
 	var saved_items: Dictionary = saved.get(&"items", {})
 	var saved_placements: Dictionary = saved.get(&"placements", {})
+	var saved_rotations: Dictionary = saved.get(&"rotations", {})
 	if saved_size.x <= 0 or saved_size.y <= 0:
 		errors.append("가방 격자 크기가 유효하지 않습니다.")
 		return errors
 	if saved_items.size() != saved_placements.size():
 		errors.append("가방 아이템과 배치 정보 수가 다릅니다.")
 		return errors
+	for rotated_id in saved_rotations:
+		if not saved_items.has(rotated_id):
+			errors.append("가방 회전 정보에 존재하지 않는 아이템이 포함됐습니다: %s" % rotated_id)
 	var occupied: Array[Rect2i] = []
 	var bounds := Rect2i(Vector2i.ZERO, saved_size)
 	for instance_id in saved_items:
@@ -290,7 +333,13 @@ func validate_runtime_state(saved: Dictionary) -> PackedStringArray:
 		if definition == null or not definition.is_valid() or not saved_placements.has(instance_id):
 			errors.append("가방 아이템 정의 또는 위치가 유효하지 않습니다: %s" % instance_id)
 			continue
-		var rect := Rect2i(saved_placements[instance_id], definition.grid_size)
+		if saved_rotations.has(instance_id) and typeof(saved_rotations[instance_id]) != TYPE_BOOL:
+			errors.append("가방 아이템 회전 정보가 유효하지 않습니다: %s" % instance_id)
+			continue
+		var rect := Rect2i(
+			saved_placements[instance_id],
+			_oriented_size(definition.grid_size, bool(saved_rotations.get(instance_id, false)))
+		)
 		if not bounds.encloses(rect):
 			errors.append("가방 아이템이 격자 밖에 배치됐습니다: %s" % instance_id)
 		for other in occupied:
@@ -311,11 +360,15 @@ func restore_runtime_state(saved: Dictionary) -> bool:
 	var saved_size: Vector2i = saved.get(&"grid_size", Vector2i.ZERO)
 	var saved_items: Dictionary = saved.get(&"items", {})
 	var saved_placements: Dictionary = saved.get(&"placements", {})
+	var saved_rotations: Dictionary = saved.get(&"rotations", {})
 	if saved_size.x <= 0 or saved_size.y <= 0 or saved_items.size() != saved_placements.size():
 		return false
 	grid_size = saved_size
 	items = saved_items.duplicate(true)
 	placements = saved_placements.duplicate(true)
+	rotations.clear()
+	for instance_id in items:
+		rotations[instance_id] = bool(saved_rotations.get(instance_id, false))
 	serials = (saved.get(&"serials", {}) as Dictionary).duplicate(true)
 	runtime_payloads = (saved.get(&"runtime_payloads", {}) as Dictionary).duplicate(true)
 	for instance_id in items:
@@ -329,6 +382,10 @@ func _next_instance_id(item_id: StringName) -> StringName:
 	var next_serial := int(serials.get(item_id, 0)) + 1
 	serials[item_id] = next_serial
 	return StringName("%s_%d" % [item_id, next_serial])
+
+
+func _oriented_size(base_size: Vector2i, rotated: bool) -> Vector2i:
+	return Vector2i(base_size.y, base_size.x) if rotated else base_size
 
 
 func _find_first_space_ignoring(

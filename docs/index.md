@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 2 · IMPROVE 4 · CHANGE 6 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 4 · IMPROVE 7 · CHANGE 9 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>4</b><small>IMPROVE</small></span><span><b>6</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>9</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>가방 아이템 R 회전 · 방향 저장</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · I 가방에서 아이템을 한 번 선택하고 R을 누르면 3×2↔2×3처럼 점유 방향을 바꾸고, 저장한 방향이 다음 실행에도 유지됩니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>아이템 인스턴스별 회전 상태와 선택 아이템 회전 입력·버튼을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>현재 점유 크기·방향을 상세 정보에 표시하고 K에서 바꾼 현장 장착 키를 가방 회전에도 문맥별로 재사용합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>회전 방향 기준 충돌·경계 검사, 구 저장 호환, 실제 클릭→R→저장과 별도 프로세스 복원 E2E를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기존 결함 수정이 아니라 가방 편집 기능 확장입니다.</p></div>
+        <p>불가능한 회전은 위치와 방향을 바꾸지 않습니다. 새 아이템 목록·Sheet/CSV·과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/grid-inventory/">가방 회전 규칙 →</a> · <a href="architecture/module-audit/">모듈 경계 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>단일 작업 폴더 · Git 커밋 기반 복구</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 바탕화면 복제 폴더 대신 커밋·PR·검증 백업을 복구 기준으로 삼고, 완료된 임시 작업 폴더를 정리했습니다.</strong></div>

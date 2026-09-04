@@ -33,6 +33,7 @@ var status_label: Label
 var capacity_label: Label
 var action_button: Button
 var unequip_button: Button
+var rotate_button: Button
 var selected_entry: Dictionary = {}
 var selected_slot: StringName = &"main"
 var current_tab := 0
@@ -90,6 +91,10 @@ func _input(event: InputEvent) -> void:
 		if event is InputEventKey or event is InputEventAction or event is InputEventJoypadButton:
 			get_viewport().set_input_as_handled()
 		return
+	if event.is_action_pressed(&"equip_field_loot"):
+		_rotate_selected_item()
+		get_viewport().set_input_as_handled()
+		return
 	for action in [&"toggle_inventory", &"toggle_equipment", &"toggle_modification", &"toggle_key_mapping", &"toggle_map"]:
 		if InputMap.has_action(action) and event.is_action_pressed(action):
 			if action == &"toggle_inventory":
@@ -101,7 +106,7 @@ func _input(event: InputEvent) -> void:
 				)
 			get_viewport().set_input_as_handled()
 			return
-	for action in [&"switch_weapon", &"interact", &"equip_field_loot"]:
+	for action in [&"switch_weapon", &"interact"]:
 		if event.is_action_pressed(action):
 			get_viewport().set_input_as_handled()
 			return
@@ -251,7 +256,7 @@ func _build_ui() -> void:
 	var bag_column := _column(columns, 0)
 	bag_column.size_flags_horizontal = SIZE_EXPAND_FILL
 	_label(bag_column, "작전 가방 · 이동 가능", 17)
-	_label(bag_column, "드래그 / 선택 후 빈 칸 클릭", 12)
+	_label(bag_column, "드래그 / 선택 후 빈 칸 클릭 / 선택 후 R 회전", 12)
 	bag_scroll = ScrollContainer.new()
 	bag_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	bag_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_ALWAYS
@@ -267,6 +272,7 @@ func _build_ui() -> void:
 	_label(detail_column, "SELECTED ITEM", 12)
 	selected_name = _label(detail_column, "아이템 선택", 18)
 	selected_description = _label(detail_column, "아이템을 선택하면 상세 정보가 표시됩니다.", 13)
+	rotate_button = _button(detail_column, "선택 아이템 회전 / R", _rotate_selected_item)
 	action_button = _button(detail_column, "선택 슬롯에 장착", _apply_selection)
 	unequip_button = _button(detail_column, "선택 장비 해제", _unequip_selection)
 	_label(detail_column, "장비 관리\nU 장비 · E 모듈/파츠\nESC 닫기 · 변경 시 저장 확인", 12)
@@ -376,7 +382,16 @@ func _refresh() -> void:
 		slot_buttons[slot].disabled = (current_tab == 1 and not weapon_slot) or (current_tab == 2 and weapon_slot)
 		slot_buttons[slot].tooltip_text = "%s · %s\n선택 후 장착 / 아이템을 여기로 드래그" % [label, item_name]
 	_refresh_stats()
-	status_label.text = session.error_message if not session.error_message.is_empty() else "세팅은 저장 시 적용 · 아이템 크기와 무관하게 태그에 맞춰 장착"
+	if not selected_entry.is_empty():
+		var current_entry: Dictionary = session.get_item_entry(selected_entry.get(&"instance_id", &""))
+		if current_entry.is_empty():
+			selected_entry.clear()
+		else:
+			selected_entry = current_entry
+			_show_selected_entry(current_entry)
+	status_label.text = session.error_message if not session.error_message.is_empty() else "선택 후 R 회전 · 세팅은 저장 시 적용 · 장비는 태그에 맞춰 장착"
+	rotate_button.text = "선택 아이템 회전 / %s" % _action_binding_label(&"equip_field_loot", "R")
+	rotate_button.disabled = selected_entry.is_empty() or not bool(selected_entry.get(&"can_rotate", false))
 	action_button.disabled = selected_entry.is_empty() or session.equipment == null or selected_entry.get(&"item_type") not in [&"weapon", &"armor", &"module", &"part"]
 	unequip_button.disabled = session.equipment == null
 	_layout()
@@ -430,12 +445,32 @@ func _select_slot(slot: StringName) -> void:
 
 func _on_item_selected(entry: Dictionary) -> void:
 	selected_entry = entry
+	_show_selected_entry(entry)
+
+
+func _show_selected_entry(entry: Dictionary) -> void:
 	selected_name.text = entry[&"display_name"]
 	var footprint: Vector2i = entry[&"grid_size"]
 	var kind_label: String = {&"weapon": "무기", &"armor": "방어구", &"module": "모듈", &"part": "고유 파츠", &"consumable": "소모품"}.get(entry[&"item_type"], "아이템")
-	selected_description.text = "%d×%d칸 · %s\n\n%s" % [footprint.x, footprint.y, kind_label, entry[&"description"]]
+	var orientation := "회전됨" if bool(entry.get(&"rotated", false)) else "기본 방향"
+	selected_description.text = "%d×%d칸 · %s · %s\n\n%s" % [footprint.x, footprint.y, kind_label, orientation, entry[&"description"]]
 	action_button.text = "모듈 / 파츠 장착" if entry[&"item_type"] in [&"module", &"part"] else "선택 슬롯에 장착"
 	action_button.disabled = session.equipment == null or entry[&"item_type"] not in [&"weapon", &"armor", &"module", &"part"]
+	rotate_button.disabled = not bool(entry.get(&"can_rotate", false))
+
+
+func _rotate_selected_item() -> void:
+	if selected_entry.is_empty():
+		status_label.text = "회전할 아이템을 먼저 한 번 선택하세요."
+		return
+	var instance_id: StringName = selected_entry.get(&"instance_id", &"")
+	if session.rotate_item(instance_id):
+		var current_entry: Dictionary = session.get_item_entry(instance_id)
+		if not current_entry.is_empty():
+			selected_entry = current_entry
+			grid_view.selected_instance_id = instance_id
+			_show_selected_entry(current_entry)
+			grid_view.queue_redraw()
 
 
 func _apply_selection() -> void:
@@ -536,3 +571,13 @@ func _style(accent: Color) -> StyleBoxFlat:
 	style.set_border_width_all(1)
 	style.set_content_margin_all(8)
 	return style
+
+
+func _action_binding_label(action_id: StringName, fallback: String) -> String:
+	for event: InputEvent in InputMap.action_get_events(action_id):
+		if event is InputEventKey:
+			var key_event := event as InputEventKey
+			var keycode := key_event.physical_keycode if key_event.physical_keycode != KEY_NONE else key_event.keycode
+			if keycode != KEY_NONE:
+				return OS.get_keycode_string(keycode)
+	return fallback

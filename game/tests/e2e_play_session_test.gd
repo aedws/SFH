@@ -86,7 +86,7 @@ func _run() -> void:
 		return
 	if not await _verify_inventory_edit_inputs():
 		return
-	print("E2E_INVENTORY_EDITOR_OK draft_atomic move_overlap_bounds equip_tags modules_unequip full_bag conflict_guard save_discard_cancel viewports_4 tabs_3")
+	print("E2E_INVENTORY_EDITOR_OK draft_atomic move_overlap_bounds select_r_rotate_persist_collision_bounds equip_tags modules_unequip full_bag conflict_guard save_discard_cancel viewports_4 tabs_3")
 	if not await _verify_operation_session():
 		return
 	if not await _verify_operation_combination_matrix(game_scene):
@@ -102,7 +102,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_hysteresis fog_wall_occlusion fog_exploration_memory skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input inventory_select_r_rotation key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_hysteresis fog_wall_occlusion fog_exploration_memory skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -116,7 +116,9 @@ func _verify_inventory_edit_inputs() -> bool:
 	var original: Dictionary = game.inventory_system.export_runtime_state()
 	var entry: Dictionary = window.session.inventory.get_snapshot()[&"items"][0]
 	var id: StringName = entry[&"instance_id"]
-	var destination := Vector2i(0, 6)
+	var destination := _dual_orientation_inventory_position(window.session.inventory, entry)
+	if destination.x < 0:
+		return _fail("실제 입력 회전을 검증할 빈 가방 위치가 없습니다.")
 	var grid: Control = window.grid_view
 	for _frame in 8:
 		await process_frame
@@ -128,6 +130,15 @@ func _verify_inventory_edit_inputs() -> bool:
 	await _click_inventory_position(grid.global_position + Vector2(destination) * grid.cell_pixel_size + Vector2(8, 8))
 	if not window.session.dirty or window.session.inventory.placements[id] != destination:
 		return _fail("실제 가방 선택→빈 칸 클릭 이동 실패: %s selected %s grid %s bag %s error %s" % [window.get_density_snapshot(), grid.selected_instance_id, grid.get_global_rect(), window.bag_scroll.get_global_rect(), window.session.error_message])
+	await _tap_key(KEY_R)
+	var rotated_entry: Dictionary = window.session.get_item_entry(id)
+	var original_size: Vector2i = entry[&"grid_size"]
+	if (
+		rotated_entry.get(&"grid_size", Vector2i.ZERO) != Vector2i(original_size.y, original_size.x)
+		or not bool(rotated_entry.get(&"rotated", false))
+		or not window.session.dirty
+	):
+		return _fail("아이템 선택 후 실제 R 입력이 가방 점유 크기를 회전하지 못했습니다: %s" % rotated_entry)
 	await _tap_key(KEY_ESCAPE)
 	if not window.visible or not window.confirmation_visible or not paused:
 		return _fail("ESC 미저장 이탈 방지 실패")
@@ -142,8 +153,13 @@ func _verify_inventory_edit_inputs() -> bool:
 		if root.gui_get_focus_owner() not in window.confirm_buttons:
 			return _fail("저장 확인 중 포커스가 배경으로 이탈함")
 	await _click_tutorial_button(window.confirm_buttons[0])
-	if window.current_tab != 1 or game.inventory_system.placements[id] != destination:
+	if (
+		window.current_tab != 1
+		or game.inventory_system.placements[id] != destination
+		or not bool(game.inventory_system.rotations.get(id, false))
+	):
 		return _fail("저장 후 무기 모듈 탭 전환 실패")
+	window.session.rotate_item(id)
 	window.session.move_item(id, entry[&"position"])
 	await _tap_key(KEY_U)
 	if not window.confirmation_visible or game.equipment_workbench.visible:
@@ -193,6 +209,22 @@ func _click_inventory_position(position: Vector2) -> void:
 		root.push_input(event, true)
 		await process_frame
 	await process_frame
+
+
+func _dual_orientation_inventory_position(inventory: Node, entry: Dictionary) -> Vector2i:
+	var original_size: Vector2i = entry[&"grid_size"]
+	var rotated_size := Vector2i(original_size.y, original_size.x)
+	for y in inventory.grid_size.y:
+		for x in inventory.grid_size.x:
+			var cell := Vector2i(x, y)
+			if cell == entry[&"position"]:
+				continue
+			if (
+				inventory.can_place(original_size, cell, entry[&"instance_id"])
+				and inventory.can_place(rotated_size, cell, entry[&"instance_id"])
+			):
+				return cell
+	return Vector2i(-1, -1)
 
 
 func _drag_inventory_item(start: Vector2, finish: Vector2) -> void:
