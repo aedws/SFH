@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 8 · IMPROVE 8 · CHANGE 13 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 11 · IMPROVE 11 · CHANGE 17 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>8</b><small>BUILD</small></span><span><b>8</b><small>IMPROVE</small></span><span><b>13</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>11</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>17</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 5</small><b>P7-03 · 반출 설계도 영구 등록과 제작 후보</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 작전에서 반출한 설계도가 재접속 뒤에도 남고, 제작소에서 제작 가능 여부를 바로 확인할 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>영구 도면 등록, Recipe 조회, 반출 해금 규칙을 독립 모듈로 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>제작소 버튼의 도면 X/Y와 후보별 가능/잠김 상태, 잘못된 도면·중복 등록 차단을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>P5 계약·CI와 P7 로드맵·검색·기획 요청·E2E·모듈 감사를 P7-04 다음 순서로 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기존 기능 결함 수정이 아닌 제작 해금 구조 확장입니다.</p></div>
+        <p>Google Sheet Recipe는 현행 CSV와 동일했습니다. Item에 중복된 Utility 4행은 반영하지 않고 정리 요청으로 분리했으며 과금 모델은 건드리지 않았습니다.</p>
+        <p><a href="features/blueprint-crafting/#p7-03">설계도 제작 →</a> · <a href="development-status/">전체 상태 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>개발자 코드맵 우선 · P7-02 상점 회전/리롤</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 개발자는 로그인 직후 실제 코드 관계망부터 보고, 플레이어는 작전 복귀 갱신과 가격이 보이는 리롤을 사용할 수 있습니다.</strong></div>

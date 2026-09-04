@@ -23,8 +23,13 @@ func perform(action_id: StringName) -> Dictionary:
 
 func _craft_default() -> Dictionary:
 	var result: Dictionary = service.call(&"craft_recipe", config.get("default_recipe_id"), _transaction_id(&"craft"))
-	var text := "워크숍 제작 완료 · 옵션 %d · 소켓 %d" % [int(result.get(&"item", {}).get(&"affix_count", 0)), int(result.get(&"item", {}).get(&"socket_count", 0))]
-	if not bool(result.get(&"success", false)): text = "워크숍 제작 대기 · %s" % result.get(&"reason", "도면 확인")
+	var workshop: Dictionary = service.call(&"get_snapshot").get(&"workshop", {})
+	var progress := "%d/%d" % [
+		int(workshop.get(&"registered_count", 0)),
+		int(workshop.get(&"candidate_count", 0)),
+	]
+	var text := "워크숍 제작 완료 · 영구 도면 %s · 옵션 %d · 소켓 %d" % [progress, int(result.get(&"item", {}).get(&"affix_count", 0)), int(result.get(&"item", {}).get(&"socket_count", 0))]
+	if not bool(result.get(&"success", false)): text = "워크숍 제작 대기 · 영구 도면 %s · %s" % [progress, result.get(&"reason", "도면 확인")]
 	return _presentation(bool(result.get(&"success", false)), text, result)
 
 

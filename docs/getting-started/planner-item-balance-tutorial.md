@@ -46,6 +46,10 @@ tags: [기획자, 아이템 추가, 밸런싱, Google Sheets, CSV, 튜토리얼]
 
 Weapon의 기존 `run_investment_price` 열은 남아 있지만 **현재 로비에 장착한 무기를 출격 때 다시 구매·청구하지 않습니다.** 상점 가격과 혼동하지 마세요.
 
+!!! warning "현재 Item 탭 정리 요청"
+
+    2026-09-04 점검에서 `Item!A18:P21`에 `standard_field_pack`, `expanded_field_pack`, `shock_cell`, `emergency_extraction_beacon`이 중복 입력된 것을 확인했습니다. 이 4개는 이미 `Utility` 탭이 소유하므로 **Item에서 삭제하고 Utility 행만 유지**해야 합니다. 검증기는 `loot_family=utility`를 Item 스키마 오류로 차단하며, 정리 전 값은 CSV와 게임에 자동 반영하지 않습니다. 근거와 완료 조건은 기획 요청 `DATA-SHEET-ITEM-UTILITY-01`에 기록했습니다.
+
 ## 3. 연습 A · 기존 무기 수치 바꾸기 {#balance}
 
 1. `Weapon` 탭에서 A열 `weapon_id`가 `assault_rifle`인 행을 찾습니다. 행 번호는 정렬하면 달라지므로 ID로 찾으세요.

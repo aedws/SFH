@@ -37,6 +37,8 @@ required_files = (
     "shop_item_quality_policy.gd", "shop_inventory_delivery_service.gd",
     "shop_rotation_policy.gd", "shop_rotation_state.gd",
     "shop_reroll_transaction_service.gd",
+    "blueprint_registry.gd", "workshop_recipe_provider.gd",
+    "workshop_unlock_service.gd",
 )
 for name in required_files:
     if not (FEATURE_ROOT / name).is_file():
@@ -73,7 +75,7 @@ for stem in ("utility", "operation_preset", "shop_offer", "recipe", "training_sc
 aggregator = (FEATURE_ROOT / "p5_hub_progression_service.gd").read_text(encoding="utf-8")
 if "preload(" in aggregator:
     ERRORS.append("P5 aggregator statically preloads removable submodules.")
-for public_method in ("set_utility_quantity", "use_utility", "record_training_hit", "get_codex_entry", "perform_hub_action"):
+for public_method in ("set_utility_quantity", "use_utility", "record_training_hit", "get_codex_entry", "perform_hub_action", "get_workshop_candidates"):
     if f"func {public_method}" not in aggregator:
         ERRORS.append(f"P5 facade missing public method: {public_method}")
 
@@ -122,9 +124,13 @@ if not quality_test.is_file() or "rollback_consistency" not in quality_test.read
     ERRORS.append("Quality contract lacks rollback consistency coverage.")
 if not removal_test.is_file() or "delivery_off" not in removal_test.read_text(encoding="utf-8"):
     ERRORS.append("Shop delivery lacks a standalone removal contract.")
+blueprint_test = ROOT / "game" / "tests" / "workshop_blueprint_registry_contract_test.gd"
+if not blueprint_test.is_file() or "reconnect recipe_candidates" not in blueprint_test.read_text(encoding="utf-8"):
+    ERRORS.append("P7 blueprint registry lacks extraction-to-reconnect coverage.")
 for required_gate in (
     "shop_quality_inventory_contract_test.gd",
     "shop_delivery_modularity_contract_test.gd",
+    "workshop_blueprint_registry_contract_test.gd",
     "check-code-module-map.ps1",
 ):
     if required_gate not in workflow:
@@ -167,4 +173,4 @@ for preset in presets:
 if ERRORS:
     raise SystemExit("\n".join(ERRORS))
 
-print("P5_MODULARITY_OK lazy_submodules conditional_paths web_payloads facade_only schema_unique_fk canonical_ids presenter_boundary real_training_bridge transaction_guards item_quality_resource payload_descriptor rotation_policy_state_debit ci_quality_gate delivery_removal_gate rollback_compensation")
+print("P5_MODULARITY_OK lazy_submodules conditional_paths web_payloads facade_only schema_unique_fk canonical_ids presenter_boundary real_training_bridge transaction_guards item_quality_resource payload_descriptor rotation_policy_state_debit blueprint_registry_recipe_provider_unlock_service ci_quality_gate delivery_removal_gate rollback_compensation")

@@ -19,3 +19,5 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/shop_delivery_modularity_contract_test.gd"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/workshop_blueprint_registry_contract_test.gd"
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

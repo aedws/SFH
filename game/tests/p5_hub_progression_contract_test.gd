@@ -32,6 +32,7 @@ func _run() -> void:
 	_check(int(initial.get(&"shop", {}).get(&"quality_count", 0)) == 3, "상점 3품질")
 	_check(int(initial.get(&"training", {}).get(&"scenario_count", 0)) == 2, "훈련 2종")
 	_check(int(initial.get(&"codex", {}).get(&"entry_count", 0)) == 6, "도감 6종")
+	_check(int(initial.get(&"workshop", {}).get(&"candidate_count", 0)) == 3, "제작 후보 3종")
 	_check(_verify_web_payload_fallback(profile, contract, sandbox), "Web 내장 P5 CSV 6종 폴백")
 
 	_check(p5.call(&"set_utility_quantity", &"field_medkit", 1), "회복 유틸 선택")
@@ -89,6 +90,7 @@ func _run() -> void:
 
 	var registered: PackedStringArray = p5.call(&"register_extracted_blueprints", {&"assault_rifle_blueprint": 1})
 	_check(registered.has("assault_rifle_blueprint"), "탈출 도면 영구 등록")
+	_check(int(p5.call(&"get_snapshot").get(&"workshop", {}).get(&"registered_count", 0)) == 1, "등록 도면 후보 표시")
 	var craft: Dictionary = p5.call(&"craft_recipe", &"assault_blueprint_recipe", &"craft-1")
 	_check(bool(craft.get(&"success", false)), "등록 도면 제작")
 	_check(int(craft.get(&"item", {}).get(&"affix_count", 0)) >= 1, "랜덤 옵션 생성")
@@ -169,7 +171,7 @@ func _run() -> void:
 	if FileAccess.file_exists(PROFILE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE_PATH))
 	if failures.is_empty():
-		print("P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit run_return_rotation_cancel_guard workshop_blueprint_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback")
+		print("P5_HUB_PROGRESSION_OK web_payload_fallback_6 utility_draft_atomic bankruptcy_repeat shop_quality_rotation_no_double_debit run_return_rotation_cancel_guard workshop_blueprint_registry_provider_unlock_persistence_affix_socket training_telemetry_restore codex_progress_hint_persistence optional_submodules shop_transaction_persistence schema_rejection transaction_rollback")
 		quit(0)
 	else:
 		print("P5_HUB_PROGRESSION_FAILED: %s" % " / ".join(failures))

@@ -1336,6 +1336,18 @@ func _refresh_contract_setup_ui() -> void:
 		)
 		var p5_shop: Dictionary = p5_snapshot.get(&"shop", {})
 		shop_button.text = "회전 상점 · %d품질 비교" % int(p5_shop.get(&"quality_count", 0))
+		var p5_workshop: Dictionary = p5_snapshot.get(&"workshop", {})
+		craft_button.text = "제작소 · 도면 %d/%d" % [
+			int(p5_workshop.get(&"registered_count", 0)),
+			int(p5_workshop.get(&"candidate_count", 0)),
+		]
+		var candidate_lines := PackedStringArray()
+		for candidate in p5_workshop.get(&"candidates", []):
+			candidate_lines.append("%s · %s" % [
+				candidate.get(&"display_name", "제작 항목"),
+				candidate.get(&"status_label", "도면 확인"),
+			])
+		craft_button.tooltip_text = "\n".join(candidate_lines)
 		var p5_training: Dictionary = p5_snapshot.get(&"training", {})
 		training_button.text = "훈련장 · %s" % (
 			"측정 종료" if not (p5_training.get(&"active", {}) as Dictionary).is_empty() else "단일/밀집"

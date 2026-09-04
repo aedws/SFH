@@ -1,41 +1,45 @@
 class_name WorkshopService
 extends RefCounted
 
+const BLUEPRINT_REGISTRY := preload("res://game/features/p5_hub_progression/blueprint_registry.gd")
+const RECIPE_PROVIDER := preload("res://game/features/p5_hub_progression/workshop_recipe_provider.gd")
+const UNLOCK_SERVICE := preload("res://game/features/p5_hub_progression/workshop_unlock_service.gd")
+
 var profile: Node
-var recipes: Array[Dictionary] = []
 var random := RandomNumberGenerator.new()
+var blueprint_registry = BLUEPRINT_REGISTRY.new()
+var recipe_provider = RECIPE_PROVIDER.new()
+var unlock_service = UNLOCK_SERVICE.new()
 
 
 func configure(profile_provider: Node, rows: Array[Dictionary], seed: int) -> bool:
 	profile = profile_provider
-	recipes = rows.duplicate(true)
+	blueprint_registry = BLUEPRINT_REGISTRY.new()
+	recipe_provider = RECIPE_PROVIDER.new()
+	unlock_service = UNLOCK_SERVICE.new()
 	random.seed = seed if seed != 0 else 50808
-	return is_instance_valid(profile) and not recipes.is_empty()
+	return (
+		is_instance_valid(profile)
+		and bool(blueprint_registry.call(&"configure", profile))
+		and bool(recipe_provider.call(&"configure", rows))
+		and bool(unlock_service.call(&"configure", blueprint_registry, recipe_provider))
+	)
 
 
 func register_extracted_blueprints(acquired: Dictionary) -> PackedStringArray:
-	var registered := PackedStringArray()
-	for recipe in recipes:
-		var blueprint_id := StringName(recipe.get(&"blueprint_id", &""))
-		if _quantity_of(acquired.get(blueprint_id, 0)) > 0 and bool(profile.call(&"register_blueprint", blueprint_id)):
-			registered.append(String(blueprint_id))
-	return registered
+	return unlock_service.call(&"register_extracted_blueprints", acquired)
 
 
-func _quantity_of(value: Variant) -> int:
-	if value is Dictionary:
-		return maxi(0, int((value as Dictionary).get(&"quantity", 0)))
-	if value is int or value is float:
-		return maxi(0, int(value))
-	return 0
+func get_candidates() -> Array[Dictionary]:
+	return unlock_service.call(&"get_candidates")
 
 
 func quote(recipe_id: StringName) -> Dictionary:
-	var recipe := _find(recipe_id)
+	var recipe: Dictionary = recipe_provider.call(&"get_recipe", recipe_id)
 	if recipe.is_empty():
 		return {&"craftable": false, &"reason": "제작법 없음"}
 	var blueprint_id := StringName(recipe.get(&"blueprint_id", &""))
-	if bool(recipe.get(&"required_registration", true)) and not bool(profile.call(&"is_blueprint_registered", blueprint_id)):
+	if bool(recipe.get(&"required_registration", true)) and not bool(blueprint_registry.call(&"is_registered", blueprint_id)):
 		return {&"craftable": false, &"reason": "영구 등록 도면 필요", &"recipe": recipe}
 	var materials := _parse_pairs(String(recipe.get(&"materials", "")))
 	var craftable := bool(profile.call(&"can_spend", int(recipe.get(&"credit_cost", 0))))
@@ -90,14 +94,9 @@ func _rollback_consumption(consumed: Dictionary, cost: int) -> void:
 
 
 func get_snapshot() -> Dictionary:
-	return {&"recipe_count": recipes.size(), &"registered_blueprints": profile.call(&"get_snapshot").get(&"registered_blueprint_ids", [])}
-
-
-func _find(recipe_id: StringName) -> Dictionary:
-	for recipe in recipes:
-		if StringName(recipe.get(&"recipe_id", &"")) == recipe_id:
-			return recipe
-	return {}
+	var result: Dictionary = unlock_service.call(&"get_snapshot")
+	result.merge(recipe_provider.call(&"get_snapshot"), true)
+	return result
 
 
 func _parse_pairs(text: String) -> Dictionary:

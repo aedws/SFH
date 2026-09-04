@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "updated": "2026-09-04",
   "notion_url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
   "instruction": "기획자는 요청 ID를 Notion 결정 제목에 포함하고, AI 개발자는 수락 기준과 검증 근거를 같은 카드에 연결합니다.",
@@ -13,6 +13,17 @@
     "warning": "Notion 변경은 스냅샷 해시로 감지하며, 사람이 PR에서 확인한 뒤만 요구·완료 상태로 승격합니다."
   },
   "items": [
+    {
+      "id": "DATA-SHEET-ITEM-UTILITY-01", "status": "data", "state": "needs_planner", "state_label": "Sheet 중복 정리 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
+      "tag": "데이터 정리", "title": "Item 탭의 Utility 중복 4행 분리",
+      "decision_id": "DEC-SHEET-ITEM-UTILITY-PENDING", "source_anchor": "3ce5b728-0040-810d-8ae1-c4792cb5072a", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "summary": "2026-09-04 전체 동기화 검사에서 Item!A18:P21의 standard_field_pack·expanded_field_pack·shock_cell·emergency_extraction_beacon이 loot_family=utility로 들어 있어 Item 생명주기 검증이 중단됐습니다. 동일 항목은 Utility 탭에 이미 존재하므로 이번 빌드에는 반영하지 않았습니다.",
+      "basis": "Item은 아이템·크레딧 생명주기, Utility는 런 유틸리티 가격·효과의 단일 원본이라는 기존 탭 분리 규칙",
+      "notion_prompt": "DATA-SHEET-ITEM-UTILITY-01 제목으로 Item!A18:P21의 Utility 4행을 제거하고 Utility 탭만 원본으로 유지할지 확인해 주세요.",
+      "sheet_target": "Item!A18:P21 정리 · Utility!A3:M7 유지",
+      "acceptance": ["Item 동기화가 ITEM_LIFECYCLE_OK로 통과", "Utility 5종은 Utility 탭에서 유지", "아이템·유틸리티 ID 중복 원본 없음"],
+      "evidence": [{"label": "P7-03 도면 제작", "href": "features/blueprint-crafting/"}, {"label": "기획자 밸런싱 튜토리얼", "href": "getting-started/planner-item-balance-tutorial/"}]
+    },
     {
       "id": "DATA-P5-03-10-01", "status": "data", "state": "provisional_implemented", "state_label": "P5 임시값 구현·확정 대기", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "밸런스 데이터", "title": "P5 유틸리티·상점·제작·훈련·도감 확정",
