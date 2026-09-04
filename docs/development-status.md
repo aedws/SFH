@@ -27,10 +27,10 @@ tags:
     <b>96%</b>
   </div>
   <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-  <p>저장소에 고정된 마지막 공개 Master GDD v1005·77블록·해시 614a0b8ddee4를 기준으로 봅니다. P8-01~03 실제 더미·계측·무비용 세팅 복원까지 반영했으며, 더미·경제 운영값은 임시이므로 기능 가중 추정치 96%를 유지합니다. 이번 실행에서는 공개 Notion 원문이 404로 재수집되지 않아 새 기획 변경을 추정하지 않았습니다.</p>
+  <p>사용자가 지정한 2026-09-02 04:14 Master GDD 백업본 v153·77블록·해시 f06bd08f2159를 기준으로 봅니다. 공개 스냅샷 수집과 체크 0/6 판독에 성공했고, 기존 77개 기획 블록과 내용이 같음을 확인했습니다. P8-01~03 실제 더미·계측·무비용 세팅 복원까지 반영했으며, 더미·경제 운영값은 임시이므로 기능 가중 추정치 96%를 유지합니다.</p>
 </div>
 
-권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 이번 실행에서는 원문이 404를 반환해 새 변경을 추정하지 않고, 저장소에 고정된 마지막 성공 수집본 77블록·root v1005·`614a0b8ddee4`를 사용했습니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
+권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/Master-GDD-2026-09-02-04-14-00-3ce5b728004081bfa94fe42e4ed48767)입니다. 새 기준 페이지를 공개 Notion 스냅샷 수집기로 직접 읽어 77블록·root v153·`f06bd08f2159`를 고정했습니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
 P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분합니다. P7-01B~04는 로컬 플레이 흐름을 완료했지만 임시 품질·리롤·제작 운영 수치의 기획 확정과 서버 운영을 완료로 오인하지 않습니다.
 
@@ -64,7 +64,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 | Phase 5 · 로비 허브·준비 세션 | 연결 완료 · 운영 수치 잔여 | 유틸리티·단일 초안·파산 보호·훈련장·도감과 상점 품질 실물·I/U 장착·실제 수치 E2E 완료 |
 | Phase 6 · 비동기 랭킹·시즌 보상 | P6-01~04 로컬 완료 | 마감·칭호/오라 1회 지급·저장·장착 연결. 실서비스 계정·서버 확정 지급은 미완료 |
 
-### 2026-09-02 Master GDD v1005 재대조
+### 2026-09-02 Master GDD 백업본 v153 재대조
 
 - **새 확정:** 로비 허브는 창고·회전 상점·제작소·훈련장·도감/랭킹으로 구성됩니다.
 - **새 확정:** 상점은 손상·표준·고성능 3대 매물과 런 종료 갱신·골드 리롤을 사용합니다.
@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 31 · IMPROVE 41 · CHANGE 51 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 31 · IMPROVE 42 · CHANGE 57 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>31</b><small>BUILD</small></span><span><b>41</b><small>IMPROVE</small></span><span><b>51</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>31</b><small>BUILD</small></span><span><b>42</b><small>IMPROVE</small></span><span><b>57</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -237,7 +237,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="quality/player-perception-audit/#p8-perception-audit-2026-09-04">체감 감사 →</a> · <a href="architecture/module-audit/#p8-perception-audit-2026-09-04">모듈 감사 →</a> · <a href="features/training-ground/">훈련장 계약 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 12</small><b>무기 고정 정체성 · 고유 스킬·옵션·타격 인지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 무기마다 명중 누적 고유 효과와 구분되는 타격 표현이 생기고, 무기·방어구 옵션은 내부/외부 성장과 모듈에 흔들리지 않는 장비 고유값으로 유지됩니다.</strong></div>
@@ -247,6 +247,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 4</h3><p>발사 후 Q 교체 시 탄환 정체성 혼선, 성장 배율의 고유 효과 침범, 획득 옵션의 장착 계산 단절, 새 정체성 Resource가 다운로드판 저장 코덱에서 거부되던 문제를 차단했습니다.</p></div>
         <p>전체 구조는 기능 57·클래스 231·의존 26·순환 0·Scene 침범 0입니다. 신규 수치는 임시값이며 과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/equipment-fixed-identity/">장비 고정 정체성 →</a> · <a href="architecture/module-audit/#equipment-fixed-identity-2026-09-04">모듈 감사 →</a> · <a href="quality/player-perception-audit/#equipment-fixed-identity-perception-2026-09-04">인식 검사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 13</small><b>기획 기준 전환 · Master GDD 백업본 고정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 앞으로 기획 변경과 진행도를 확인할 공개 Notion 기준이 사용자가 지정한 2026-09-02 04:14 Master GDD 백업본으로 통일됐습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>게임 기능과 플레이 수치는 변경하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>진행도 점검·기획 요청·후속 로드맵이 하나의 공개 기준 페이지를 사용합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 6</h3><p>수집기, 고정 스냅샷, 기획 요청, P7+ 로드맵, 기획 대조, 기획자 안내의 주소와 검증값을 함께 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>복제 페이지에서 바뀐 블록 ID 때문에 근거 앵커 검증이 끊기는 문제를 제목·종류 일대일 대응으로 이관했습니다.</p></div>
+        <p>새 기준은 root v153·77블록·해시 f06bd08f2159이며 Phase 체크는 0/6입니다. 기존 77개 기획 블록의 내용은 동일하고 과금·게임 데이터는 변경하지 않았습니다.</p>
+        <p><a href="design/master-gdd-alignment/">새 Master GDD 대조 기준 →</a></p>
       </div>
     </details>
   </div>
@@ -1891,7 +1903,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
               <details class="sfh-entry"><summary><i class="sfh-badge is-improve">개선</i><span class="sfh-entry-title">전초기지 로드아웃 조회</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>I·U/E·Q 입력과 현재 활성 무기 표시를 거점에 연결했습니다.</p><a href="../features/start-hub/">거점 흐름 →</a></div></details>
             </div>
             <div class="sfh-group"><h3>🧩 수정 · 1</h3>
-              <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">공개 기획 원본 고정</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>게시된 Notion 본문을 직접 대조하고 향후 진행도 점검의 권위 있는 주소로 지정했습니다.</p><a href="https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9">공개 기획 원본 ↗</a></div></details>
+              <details class="sfh-entry"><summary><i class="sfh-badge is-change">수정</i><span class="sfh-entry-title">공개 기획 원본 고정</span><b class="sfh-chevron">⌄</b></summary><div class="sfh-entry-body"><p>게시된 Notion 본문을 직접 대조하고 향후 진행도 점검의 권위 있는 주소로 지정했습니다.</p><a href="https://wobbly-pawpaw-1ff.notion.site/Master-GDD-2026-09-02-04-14-00-3ce5b728004081bfa94fe42e4ed48767">공개 기획 원본 ↗</a></div></details>
             </div>
           </div>
         </details>
