@@ -10,8 +10,8 @@ import pathlib
 import sys
 import urllib.request
 
-PAGE_ID = "6b45b728-0040-82af-8a4a-811ef0a1c5e9"
-PAGE_URL = "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9"
+PAGE_ID = "3ce5b728-0040-81bf-a94f-e42e4ed48767"
+PAGE_URL = "https://wobbly-pawpaw-1ff.notion.site/Master-GDD-2026-09-02-04-14-00-3ce5b728004081bfa94fe42e4ed48767"
 ENDPOINT = "https://www.notion.so/api/v3/loadCachedPageChunk"
 
 
@@ -96,6 +96,8 @@ def validate(snapshot: dict) -> None:
     if missing:
         raise ValueError("missing fields: " + ", ".join(missing))
     blocks = snapshot["blocks"]
+    if snapshot["source_url"] != PAGE_URL:
+        raise ValueError("source URL mismatch")
     if snapshot["page_id"] != PAGE_ID or not isinstance(blocks, list) or len(blocks) != snapshot["block_count"]:
         raise ValueError("page or block count mismatch")
     canonical = json.dumps(blocks, ensure_ascii=False, sort_keys=True, separators=(",", ":"))

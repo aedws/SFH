@@ -36,7 +36,7 @@ tags:
 3. 수치가 필요하면 단위, 최소·기본·최대, 등급 또는 난이도별 변화 기준을 적습니다.
 4. 개발자는 공개 Notion 근거와 저장소 구현을 대조한 뒤 카드 상태를 `완료 안내`로 바꿉니다.
 
-권위 있는 원문은 [게시된 SFH Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다.
+권위 있는 원문은 [게시된 SFH Master GDD](https://wobbly-pawpaw-1ff.notion.site/Master-GDD-2026-09-02-04-14-00-3ce5b728004081bfa94fe42e4ed48767)입니다.
 
 ## Google Sheet 상시 확장 허용
 

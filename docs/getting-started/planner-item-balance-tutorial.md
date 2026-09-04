@@ -8,7 +8,7 @@ tags: [기획자, 아이템 추가, 밸런싱, Google Sheets, CSV, 튜토리얼]
 
 **코드를 몰라도 수치와 기획 의도를 작성할 수 있습니다.** 다만 시트에 이름을 적었다고 새로운 총이나 특수 효과가 저절로 생기지는 않습니다. 기획자는 **무엇을 바꿀지**, 개발자는 **게임에 연결·검증·배포**하는 일을 맡습니다.
 
-[기획자 작업실로 돌아가기](../access/planner.md) · [공용 밸런스 시트 열기](https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/edit) · [Notion에 결정 남기기](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)
+[기획자 작업실로 돌아가기](../access/planner.md) · [공용 밸런스 시트 열기](https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/edit) · [Notion에 결정 남기기](https://wobbly-pawpaw-1ff.notion.site/Master-GDD-2026-09-02-04-14-00-3ce5b728004081bfa94fe42e4ed48767)
 
 2026-09-04에 실제 시트의 탭과 1·2행을 읽어 코드와 대조했습니다. Weapon의 고유 스킬/고정 옵션 열과 Armor의 고정 옵션 열은 이번 작업에서 추가했으며, 아래 전투 수치 예시는 설명용입니다.
 

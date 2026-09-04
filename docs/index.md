@@ -44,10 +44,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 31 · IMPROVE 41 · CHANGE 51 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 31 · IMPROVE 42 · CHANGE 57 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>31</b><small>BUILD</small></span><span><b>41</b><small>IMPROVE</small></span><span><b>51</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>31</b><small>BUILD</small></span><span><b>42</b><small>IMPROVE</small></span><span><b>57</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 13</small><b>기획 기준 전환 · Master GDD 백업본 고정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 앞으로 기획 변경과 진행도를 확인할 공개 Notion 기준이 사용자가 지정한 2026-09-02 04:14 Master GDD 백업본으로 통일됐습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>게임 기능과 플레이 수치는 변경하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>진행도 점검·기획 요청·후속 로드맵이 하나의 공개 기준 페이지를 사용합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 6</h3><p>수집기, 고정 스냅샷, 기획 요청, P7+ 로드맵, 기획 대조, 기획자 안내의 주소와 검증값을 함께 갱신했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>복제 페이지에서 바뀐 블록 ID 때문에 근거 앵커 검증이 끊기는 문제를 제목·종류 일대일 대응으로 이관했습니다.</p></div>
+        <p>새 기준은 root v153·77블록·해시 f06bd08f2159이며 Phase 체크는 0/6입니다. 기존 77개 기획 블록의 내용은 동일하고 과금·게임 데이터는 변경하지 않았습니다.</p>
+        <p><a href="design/master-gdd-alignment/">새 Master GDD 대조 기준 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 12</small><b>무기 고정 정체성 · 고유 스킬·옵션·타격 인지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 무기마다 명중 누적 고유 효과와 구분되는 타격 표현이 생기고, 무기·방어구 옵션은 내부/외부 성장과 모듈에 흔들리지 않는 장비 고유값으로 유지됩니다.</strong></div>

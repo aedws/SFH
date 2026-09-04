@@ -189,7 +189,7 @@
     {
       "query": "개발 진행도",
       "label": "개발 진행도",
-      "description": "Master GDD v1005 체크 판독 정정, P6-01~04 로컬 완료와 실제 서버 운영 승인 대기 근거",
+      "description": "2026-09-02 Master GDD 백업본 v153 체크 판독, P6-01~04 로컬 완료와 실제 서버 운영 승인 대기 근거",
       "category": "기획",
       "priority": 100
     },

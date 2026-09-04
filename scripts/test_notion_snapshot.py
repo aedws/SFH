@@ -49,6 +49,12 @@ class CheckboxTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "checkbox"):
             source.validate(snapshot)
 
+    def test_snapshot_rejects_a_different_source_url(self):
+        snapshot = self.snapshot("No")
+        snapshot["source_url"] = "https://example.invalid/obsolete-gdd"
+        with self.assertRaisesRegex(ValueError, "source URL mismatch"):
+            source.validate(snapshot)
+
 
 if __name__ == "__main__":
     unittest.main()

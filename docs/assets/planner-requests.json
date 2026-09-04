@@ -1,22 +1,22 @@
 {
   "version": 10,
   "updated": "2026-09-04",
-  "notion_url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
+  "notion_url": "https://wobbly-pawpaw-1ff.notion.site/Master-GDD-2026-09-02-04-14-00-3ce5b728004081bfa94fe42e4ed48767",
   "instruction": "기획자는 요청 ID를 Notion 결정 제목에 포함하고, AI 개발자는 수락 기준과 검증 근거를 같은 카드에 연결합니다.",
   "source": {
     "sync_mode": "ci_verified_public_snapshot",
     "sync_mode_label": "공개 Notion 결정론 CI 검증 스냅샷",
-    "last_checked_at": "2026-09-03 KST · v1005/77블록/해시 동일",
+    "last_checked_at": "2026-09-04 KST · v153/77블록/해시 고정",
     "snapshot_href": "assets/notion-source-snapshot.json",
-    "root_version": 1005,
-    "content_sha256": "614a0b8ddee42640d0df21d17bf11d170e0243c85724fa16ae8f0d9e7b899461",
+    "root_version": 153,
+    "content_sha256": "f06bd08f21592abb6c8638eb4bb9f73540fbae20e67ce2478625346ddf507716",
     "warning": "Notion 변경은 스냅샷 해시로 감지하며, 사람이 PR에서 확인한 뒤만 요구·완료 상태로 승격합니다."
   },
   "items": [
     {
       "id": "DATA-SHEET-ITEM-UTILITY-01", "status": "data", "state": "needs_planner", "state_label": "Sheet 중복 정리 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "데이터 정리", "title": "Item 탭의 Utility 중복 4행 분리",
-      "decision_id": "DEC-SHEET-ITEM-UTILITY-PENDING", "source_anchor": "3ce5b728-0040-810d-8ae1-c4792cb5072a", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-SHEET-ITEM-UTILITY-PENDING", "source_anchor": "3ce5b728-0040-81a1-9a4a-feb8e9fd0421", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "2026-09-04 전체 동기화 검사에서 Item!A18:P21의 standard_field_pack·expanded_field_pack·shock_cell·emergency_extraction_beacon이 loot_family=utility로 들어 있어 Item 생명주기 검증이 중단됐습니다. 동일 항목은 Utility 탭에 이미 존재하므로 이번 빌드에는 반영하지 않았습니다.",
       "basis": "Item은 아이템·크레딧 생명주기, Utility는 런 유틸리티 가격·효과의 단일 원본이라는 기존 탭 분리 규칙",
       "notion_prompt": "DATA-SHEET-ITEM-UTILITY-01 제목으로 Item!A18:P21의 Utility 4행을 제거하고 Utility 탭만 원본으로 유지할지 확인해 주세요.",
@@ -27,7 +27,7 @@
     {
       "id": "DATA-P5-03-10-01", "status": "data", "state": "provisional_implemented", "state_label": "P5 임시값 구현·확정 대기", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "밸런스 데이터", "title": "P5 유틸리티·상점·제작·훈련·도감 확정",
-      "decision_id": "DEC-P5-HUB-PENDING", "source_anchor": "3ce5b728-0040-810d-8ae1-c4792cb5072a", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P5-HUB-PENDING", "source_anchor": "3ce5b728-0040-81a1-9a4a-feb8e9fd0421", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "진행 차단을 피하기 위해 Utility·OperationPreset·ShopOffer·Recipe·TrainingScenario·Codex 6개 탭과 확정 CSV에 임시값을 넣어 P5-03~10을 모듈형으로 완료했습니다. 기획 확정 시 데이터만 교체합니다.",
       "basis": "Master GDD Phase 5 로비 허브·준비 세션과 3대 상점·제작소·훈련장·도감 요구",
       "notion_prompt": "DATA-P5-03-10-01 제목으로 유틸리티 가격·효과, 작전 프리셋, 세 품질 상점 가격/성능, 제작 레시피/옵션/소켓, 훈련 계측, 도감 해금량/지역 힌트를 확정해 주세요.",
@@ -38,7 +38,7 @@
     {
       "id": "DATA-P7-01-01", "status": "data", "state": "needs_planner", "state_label": "상점 데이터 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "후속 데이터", "title": "3대 상점 매물·리롤 수치",
-      "decision_id": "DEC-P7-SHOP-PENDING", "source_anchor": "3ce5b728-0040-817a-9f6e-f0bac2007561", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P7-SHOP-PENDING", "source_anchor": "3ce5b728-0040-81db-b9cf-eed89736efa6", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "P7-01A/B의 품질 실물·실제 성능과 P7-02의 런 복귀 1회 회전·유료 리롤을 구현했습니다. 현행 25 C·3슬롯·품질 보장·이전 매물 회피를 운영값으로 교체하려면 품질별 가격·옵션·소켓과 리롤 규칙 확정이 필요합니다.",
       "basis": "Master GDD 4장 상점 3대 매물과 상점 리롤",
       "notion_prompt": "DATA-P7-01-01 제목으로 품질군별 가격·성능·할인·옵션/소켓 범위와 리롤 시작 가격·증가·상한을 작성해 주세요.",
@@ -49,7 +49,7 @@
     {
       "id": "PLAN-P7-03-01", "status": "request", "state": "needs_planner", "state_label": "제작 정책 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "후속 정책", "title": "설계도 제작·옵션·소켓 고점",
-      "decision_id": "DEC-P7-WORKSHOP-PENDING", "source_anchor": "3ce5b728-0040-8131-9a1b-f4c6bc08b083", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P7-WORKSHOP-PENDING", "source_anchor": "3ce5b728-0040-818f-bc79-d8ebe2a272d9", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "설계도 영구 등록과 원자적 제작 거래는 임시값으로 구현했습니다. Recipe 비용·재료, 4개 옵션 풀·수치 범위, 소켓 수와 재제작 결과를 운영값으로 확정해야 합니다.",
       "basis": "Master GDD 4장 장비 제작소와 맞춤형 고점 제작",
       "notion_prompt": "PLAN-P7-03-01 제목으로 설계도별 레시피·비용·옵션 풀·소켓 최소/최대·중복·재제작 규칙을 작성해 주세요.",
@@ -60,7 +60,7 @@
     {
       "id": "DATA-P8-01-01", "status": "data", "state": "needs_planner", "state_label": "훈련 시나리오 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "후속 데이터", "title": "훈련 더미·계측 규격",
-      "decision_id": "DEC-P8-TRAINING-PENDING", "source_anchor": "3ce5b728-0040-81b7-90dd-e5d94f4153dd", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P8-TRAINING-PENDING", "source_anchor": "3ce5b728-0040-8187-9b3c-f33431810de6", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "단일 보스·밀집 잡몹 더미의 방어·수량·배치와 DPS/AP/쿨타임 측정 시간창 규칙이 필요합니다.",
       "basis": "Master GDD 5장 훈련 연습장",
       "notion_prompt": "DATA-P8-01-01 제목으로 더미 유형·체력·방어·수량·초기화와 DPS/AP/쿨타임 측정 시작·종료·시간창을 작성해 주세요.",
@@ -72,7 +72,7 @@
       "id": "PLAN-P4-04-01", "status": "request", "state": "needs_planner", "state_label": "기획 확정 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": true,
       "tag": "작업 요청", "title": "현장 교체 뒤 기존 장비·스킬 처리",
       "summary": "P4-04A 무기와 P4-04B 스킬은 안전한 런 임시 복구 정책으로 구현했습니다. 무기·방어구·스킬별 최종 소실·보관·재교체 처리는 확정이 필요합니다.",
-      "decision_id": "DEC-P4-04", "source_anchor": "3ce5b728-0040-8110-8ab2-d3faba6f3065", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P4-04", "source_anchor": "3ce5b728-0040-81f3-9133-e006cc30a9ec", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "basis": "Master GDD Phase 4 현장 교체 요구와 P4-04A 임시 정책 경계",
       "notion_prompt": "PLAN-P4-04-01 제목으로 무기·방어구·스킬별 기존 항목 처리표, 재교체, 사망, 탈출 예외를 작성해 주세요.",
       "acceptance": ["교체 대상 종류별 기존 항목 목적지가 정의됨", "재교체·사망·탈출 예외가 정의됨", "임시 런 보관 정책을 유지할지 명시됨"],
@@ -81,7 +81,7 @@
     {
       "id": "DATA-P4-05-01", "status": "data", "state": "provisional_implemented", "state_label": "임시값 구현·교체 대기", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "밸런스 데이터", "title": "룬·코어·유물 소켓 수와 효과 상한",
-      "decision_id": "DEC-P4-05-PENDING", "source_anchor": "3ce5b728-0040-8110-8ab2-d3faba6f3065", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P4-05-PENDING", "source_anchor": "3ce5b728-0040-81f3-9133-e006cc30a9ec", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "진행 차단을 피하기 위해 룬 2·코어 1·유물 1, 동일 아이템 1개, 오래된 항목 교체와 3종 임시 효과를 RunAsset에 구현했습니다. 기획 확정 시 데이터만 교체합니다.",
       "basis": "Master GDD Phase 4 런 전용 자산 순환과 현재 Item 생명 주기 3종",
       "notion_prompt": "DATA-P4-05-01 제목으로 소켓 종류별 수량·중복 규칙·효과 범위·환전 배율을 작성해 주세요.",
@@ -92,7 +92,7 @@
     {
       "id": "DATA-P5-01-01", "status": "data", "state": "provisional_implemented", "state_label": "캐릭터 임시값 구현·교체 대기", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "밸런스 데이터", "title": "캐릭터 투자 카탈로그 확정",
-      "decision_id": "DEC-P5-LOADOUT-PENDING", "source_anchor": "3ce5b728-0040-810d-8ae1-c4792cb5072a", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P5-LOADOUT-PENDING", "source_anchor": "3ce5b728-0040-81a1-9a4a-feb8e9fd0421", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "진행 차단을 피하기 위해 Character Sheet에 선봉대·질주자·방벽병 3종 임시 가격·패시브를 구현했습니다. 기획 확정 시 데이터만 교체합니다. 유틸리티 목록은 P5-03에서 별도 요청합니다.",
       "basis": "Master GDD Phase 5 로비 4대 세팅과 손익분기점 경제",
       "notion_prompt": "DATA-P5-01-01 제목으로 캐릭터별 ID·표시명·가격·기본 능력·패시브·해금 규칙을 작성해 주세요. 유틸리티는 P5-03 요청에서 분리합니다.",
@@ -103,7 +103,7 @@
     {
       "id": "DATA-P5-02-01", "status": "data", "state": "provisional_implemented", "state_label": "무기·스킬 임시값 구현·교체 대기", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "밸런스 데이터", "title": "무기·스킬 런 투자 가격·해금 확정",
-      "decision_id": "DEC-P5-LOADOUT-PENDING", "source_anchor": "3ce5b728-0040-810d-8ae1-c4792cb5072a", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P5-LOADOUT-PENDING", "source_anchor": "3ce5b728-0040-81a1-9a4a-feb8e9fd0421", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "진행 차단을 피하기 위해 기본 돌격소총·권총·3스킬은 무료 소유, 펄스 소총 80C와 아크 대시 60C는 이번 런 구매로 임시 구현했습니다. 기획 확정 시 Sheet와 CSV만 교체합니다.",
       "basis": "Master GDD Phase 5 주·보조무기·스킬 투자와 태그 기반 스킬 장착 규칙",
       "notion_prompt": "DATA-P5-02-01 제목으로 무기·스킬별 런 가격, 기본 소유, 해금 ID, 허용 슬롯, 무기 태그와 스킬 요구 태그를 확정해 주세요.",
@@ -114,7 +114,7 @@
     {
       "id": "PLAN-P6-02-01", "status": "request", "state": "needs_planner", "state_label": "운영 정책 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "후속 정책", "title": "P6 실서비스 신원·시즌 운영 경계",
-      "decision_id": "DEC-P6-ONLINE-PENDING", "source_anchor": "3ce5b728-0040-81c9-978c-d33f6138f3aa", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P6-ONLINE-PENDING", "source_anchor": "3ce5b728-0040-8163-bfed-c9e11387bf36", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "P6-03 로컬 시즌은 7일·최소 페널티 10·최근 12시즌 보관, 학살자는 총 처치→보스 격파 동점 정렬로 구현했습니다. 임시 정책이므로 서버 구현 전 공식 기준·시즌 마감 경계·보상 범위를 확정해야 합니다.",
       "basis": "Master GDD Phase 6 비동기 3대 보드와 주간 명예 보상",
       "notion_prompt": "PLAN-P6-02-01 제목으로 로그인 제공자·서버 승인 주체·시즌 UTC 기준·참가 규격·종료를 넘긴 런·보스 동점·이력 보관 수·제재·보상 지급 규칙을 작성해 주세요. 로컬 시즌·마감 기록과 P6-04 칭호/오라는 구현됐습니다. SeasonReward 시트의 상위 3명 칭호·1명 오라는 임시값입니다. 실제 서버 순위·지급 기준과 기간/자격/운영 승인 범위를 확정해 주세요.",
@@ -124,7 +124,7 @@
     {
       "id": "DONE-P4-06-01", "status": "complete", "state": "implemented_verified", "state_label": "구현·검증 완료", "owner_role": "ai_developer", "owner_label": "AI 개발자", "blocking": false,
       "tag": "완료 안내", "title": "전리품 성공·사망 정산과 9개 작전 조합 복구",
-      "decision_id": "DEC-P4-06-RUNTIME", "source_anchor": "3ce5b728-0040-8110-8ab2-d3faba6f3065", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P4-06-RUNTIME", "source_anchor": "3ce5b728-0040-81f3-9133-e006cc30a9ec", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "Item 생명 주기를 자동 환전·영구 해금·창고 보관·사망 소실로 적용하고, 같은 run_id의 중복 지급을 차단했습니다. 소·중·대형×3난이도 9조합도 실제 UI 경로로 복구했습니다.",
       "basis": "Master GDD Phase 4 전리품 순환과 P4-01~05 생명 주기·획득·교체·소켓 계약",
       "notion_prompt": "P4-06 구현은 완료됐습니다. 새 아이템 정책이 필요하면 Item 생명 주기 행과 Notion 결정 ID를 함께 추가해 주세요.",
@@ -134,7 +134,7 @@
     {
       "id": "DEV-P4-04B-01", "status": "complete", "state": "implemented_verified", "state_label": "구현·검증 완료", "owner_role": "ai_developer", "owner_label": "AI 개발자", "blocking": false,
       "tag": "완료 안내", "title": "현장 스킬 즉시 교체 계약 분리",
-      "decision_id": "DEC-P4-04", "source_anchor": "3ce5b728-0040-8110-8ab2-d3faba6f3065", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P4-04", "source_anchor": "3ce5b728-0040-81f3-9133-e006cc30a9ec", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "무기와 다른 스킬 슬롯·자원·키 바인딩 계약을 별도 모듈로 연결하고, 기획 미확정 처리 정책은 런 복구 가능한 기본값으로 제한합니다.",
       "basis": "P4-04A 무기 교체 완료 뒤 남은 Master GDD Phase 4 범위",
       "notion_prompt": "PLAN-P4-04-01 답변 전에는 영구 소유·소실을 확정하지 않습니다.",
@@ -144,7 +144,7 @@
     {
       "id": "DONE-P4-04A-01", "status": "complete", "state": "implemented_verified", "state_label": "구현·검증 완료", "owner_role": "ai_developer", "owner_label": "AI 개발자", "blocking": false,
       "tag": "완료 안내", "title": "현장 무기 즉시 교체·안전 복구",
-      "decision_id": "DEC-P4-04", "source_anchor": "3ce5b728-0040-8110-8ab2-d3faba6f3065", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P4-04", "source_anchor": "3ce5b728-0040-81f3-9133-e006cc30a9ec", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "R로 전격 펄스 소총을 주무기에 즉시 장착하고, 기존 장비는 런 임시 보관 후 거점 복귀 전에 복구합니다.",
       "basis": "Weapon·LootTable Sheet, 모듈 계약 테스트와 플레이어 인식 E2E",
       "notion_prompt": "현재 기존 장비 목적지는 임시 정책입니다. PLAN-P4-04-01 확정 시 정책 Resource만 교체합니다.",
@@ -155,7 +155,7 @@
     {
       "id": "DONE-P4-03-01", "status": "complete", "state": "implemented_verified", "state_label": "구현·검증 완료", "owner_role": "ai_developer", "owner_label": "AI 개발자", "blocking": false,
       "tag": "완료 안내", "title": "현장 전리품 비교·보류·획득 계약",
-      "decision_id": "DEC-P4-03", "source_anchor": "3ce5b728-0040-8110-8ab2-d3faba6f3065", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P4-03", "source_anchor": "3ce5b728-0040-81f3-9133-e006cc30a9ec", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "방 클리어 드랍에 접근하면 현재 장비·보유 수량·탈출/사망 결과를 보고 ESC 보류 또는 F 획득할 수 있습니다.",
       "basis": "P4-03 플레이어 완료 조건과 실제 입력 E2E", "notion_prompt": "완료 범위는 비교와 런 임시 보관입니다.",
       "acceptance": ["접근 시 비교 UI", "ESC 보류 시 드랍 유지", "F 획득 시 런 임시 보관"],
@@ -164,7 +164,7 @@
     {
       "id": "DONE-P4-02-01", "status": "complete", "state": "implemented_verified", "state_label": "구현·검증 완료", "owner_role": "ai_developer", "owner_label": "AI 개발자", "blocking": false,
       "tag": "완료 안내", "title": "지역·난이도 타겟 파밍 데이터",
-      "decision_id": "DEC-P4-02", "source_anchor": "3ce5b728-0040-8110-8ab2-d3faba6f3065", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
+      "decision_id": "DEC-P4-02", "source_anchor": "3ce5b728-0040-81f3-9133-e006cc30a9ec", "source_revision": 153, "supersedes": [], "conflicts_with": [],
       "summary": "LootTable 29행과 Item·Weapon·Skill 정의를 교차 검증하고 작전 브리핑에 대표 전리품을 연결했습니다.",
       "basis": "Master GDD 로비 인베스트먼트·타겟 파밍 요구", "notion_prompt": "확정 CSV 구성은 위키 전리품 테이블 문서에서 확인할 수 있습니다.",
       "acceptance": ["지역 격리", "난이도 가중치", "결정적 추첨"],

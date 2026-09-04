@@ -2,9 +2,9 @@
   "version": 7,
   "updated": "2026-09-04",
   "source": {
-    "url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
-    "root_version": 1005,
-    "content_sha256": "614a0b8ddee42640d0df21d17bf11d170e0243c85724fa16ae8f0d9e7b899461",
+    "url": "https://wobbly-pawpaw-1ff.notion.site/Master-GDD-2026-09-02-04-14-00-3ce5b728004081bfa94fe42e4ed48767",
+    "root_version": 153,
+    "content_sha256": "f06bd08f21592abb6c8638eb4bb9f73540fbae20e67ce2478625346ddf507716",
     "notion_phase_max": 6,
     "numbering_note": "P7 이후 번호는 Notion의 공식 Phase가 아니라 Phase 1~6 완료 뒤 사용하는 저장소 내부 후속 작업선이다."
   },
@@ -16,10 +16,10 @@
       "title": "로비 경제 심화",
       "goal": "런마다 바뀌는 상점과 설계도 기반 제작소를 서로 다른 획득 경로로 완결한다.",
       "source_anchors": [
-        "3ce5b728-0040-8130-9884-dc31d2eddbfa",
-        "3ce5b728-0040-817a-9f6e-f0bac2007561",
-        "3ce5b728-0040-8131-9a1b-f4c6bc08b083",
-        "3ce5b728-0040-8163-b593-f42f58908688"
+        "3ce5b728-0040-8195-9f08-f08bc10ffffb",
+        "3ce5b728-0040-81db-b9cf-eed89736efa6",
+        "3ce5b728-0040-818f-bc79-d8ebe2a272d9",
+        "3ce5b728-0040-81a0-bb83-ea3570ef61e0"
       ],
       "packets": [
         {
@@ -81,10 +81,10 @@
       "title": "훈련 연습장",
       "goal": "실제 자산을 소모하지 않고 단일·광역 빌드와 자원 순환을 재현한다.",
       "source_anchors": [
-        "3ce5b728-0040-81b7-90dd-e5d94f4153dd",
-        "3ce5b728-0040-81c1-ae4b-e969f7401e85",
-        "3ce5b728-0040-817c-902f-de5a501d708b",
-        "3ce5b728-0040-818b-acd5-db9981f0211d"
+        "3ce5b728-0040-8187-9b3c-f33431810de6",
+        "3ce5b728-0040-81c6-92ec-e162e7551bcd",
+        "3ce5b728-0040-8170-a780-d932300d3afb",
+        "3ce5b728-0040-81e7-9b16-c8a7afe60261"
       ],
       "packets": [
         {
@@ -133,9 +133,9 @@
       "title": "도감·빌드 프리셋",
       "goal": "해금 진행률과 미해금 획득 힌트를 보여 주고 무기별 스킬 구성을 안전하게 저장한다.",
       "source_anchors": [
-        "3ce5b728-0040-8153-8f60-cda88eb5c03d",
-        "3ce5b728-0040-81ea-8d86-ff0a4eee4969",
-        "3ce5b728-0040-815e-921e-cbedf205f945"
+        "3ce5b728-0040-81b2-88bd-d8f06bab06aa",
+        "3ce5b728-0040-81da-84f0-fac9b420d6d9",
+        "3ce5b728-0040-81fb-bc94-c527ad519da6"
       ],
       "packets": [
         {
@@ -164,7 +164,7 @@
       "id": "P10",
       "title": "출시 후보 운영 검증",
       "goal": "공식 GDD Phase 1~6과 P7~9의 전체 인과를 동일 산출물에서 재검증한다.",
-      "source_anchors": ["3ce5b728-0040-816e-8744-f4d00783ae48"],
+      "source_anchors": ["3ce5b728-0040-81c0-be5c-f03ab0308f91"],
       "packets": [
         {
           "id": "P10-01",
