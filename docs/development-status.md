@@ -113,7 +113,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>개선 · 4</h3><p>기본 <code>Newgame</code> 하나만 상시 유지하고 임시 폴더는 PR 병합·배포 뒤 제거하며, 불확실한 변경은 WIP 원격 커밋으로 먼저 보존하고 GDScript UID는 소스와 함께 추적합니다.</p></div>
         <div class="sfh-group"><h3>수정 · 6</h3><p>직접·squash 병합 판정, 4단계 복구, worktree 제거, 92개 UID 추적, 실행·위키 안내와 검색·노드맵을 같은 계약으로 갱신했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>오래된 완료 worktree 혼선, Windows PowerShell의 UTF-8 한글 검사 파싱, 신규 clone의 클래스 캐시·폰트 import 부재로 첫 스모크가 실패하는 문제를 차단했습니다.</p></div>
-        <p>완료 worktree 9개를 Git 등록에서 제거했습니다. 기본 폴더의 Godot 에디터 재저장 상태는 <code>codex/backup-desktop-pre-cleanup-20260905</code> 커밋 <code>5e57fde</code>로 원격 보존한 뒤 최신 <code>main</code>으로 정리했습니다. 게임 코드·Sheet/CSV·과금 모델은 변경하지 않았습니다.</p>
+        <p>완료 worktree 10개를 Git 등록에서 제거했습니다. 기본 폴더의 Godot 에디터 재저장 상태는 <code>codex/backup-desktop-pre-cleanup-20260905</code> 커밋 <code>5e57fde</code>로 원격 보존한 뒤 최신 <code>main</code>으로 정리했습니다. 게임 코드·Sheet/CSV·과금 모델은 변경하지 않았습니다.</p>
         <p><a href="getting-started/source-control-and-cleanup/">형상 관리·복구 운영안 →</a></p>
       </div>
     </details>
