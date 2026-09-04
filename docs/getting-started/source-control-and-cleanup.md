@@ -99,7 +99,7 @@ Desktop/
 
 ## 이번 정리 기록 · 2026-09-05
 
-- 완료된 임시 worktree 9개를 등록 해제했고 실제 변경은 모두 병합 커밋 또는 patch-equivalent 커밋으로 `main`에서 확인했습니다.
+- 완료된 임시 worktree 10개를 등록 해제했고 실제 변경은 모두 병합 커밋 또는 patch-equivalent 커밋으로 `main`에서 확인했습니다.
 - 기본 폴더에 남아 있던 Godot 에디터 재저장 상태는 `codex/backup-desktop-pre-cleanup-20260905`의 `5e57fde`로 원격 보존한 뒤 기본 폴더를 최신 `main`으로 맞췄습니다.
 - 최신 기능에서 빠져 있던 GDScript UID를 재수집·추적해 새 clone의 첫 headless 스모크도 전역 클래스를 바로 찾도록 복구했습니다.
 - 기존 `backup/pre-main/*`, `backup/verified-main/*`, Release·Actions·R2 최신 산출물 정책은 유지했습니다.
