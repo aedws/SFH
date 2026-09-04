@@ -243,6 +243,13 @@
       "priority": 99
     },
     {
+      "query": "무기 방어구 드랍",
+      "label": "무기·방어구 획득 흐름",
+      "description": "일반 적·방 확보·보스별 장비 후보, 직접 장비와 도면, F 가방·R 교체·탈출 정산을 기획자 언어로 확인",
+      "category": "파밍",
+      "priority": 99
+    },
+    {
       "query": "확정 사항",
       "label": "최신 기획 대조",
       "description": "공개 Notion 요구의 구현 전→후 변화와 남은 차이",

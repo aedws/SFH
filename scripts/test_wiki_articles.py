@@ -141,6 +141,15 @@ for anchor in ["balance", "new-item"]:
     link = f"../../{route(tutorial_source)}#{anchor}"
     assert link in planner_text, f"Planner tutorial entry missing: {anchor}"
     target(link, "access/planner.md")
+for phrase in [
+    "작전에서 무기·방어구를 얻는 방식",
+    "일반 적 처치 시 현장 전리품은 12% 확률",
+    "무기→방어구→모듈→파츠",
+    "보스 처치 시 전리품 2개",
+    "전투 단검은 장비 정의와 장착 규칙은 있지만 현재 실제 드랍 후보에는 없습니다",
+    "살아서 탈출하면 주운 장비가 영구 창고로 이동",
+]:
+    assert phrase in planner_text, f"Planner loot guide boundary missing: {phrase}"
 search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-8"))
 assert any(d.get("location", "").startswith(route(tutorial_source)) for d in search["docs"]), "Tutorial not searchable"
 for phrase in ["직접 실시간 로더 없음", "CSV 확정", "고유 스킬/고정 옵션 열", "P7-01B"]:
@@ -152,6 +161,6 @@ assert module_map_position >= 0, "Developer room must embed the live code-module
 assert developer_console_position >= 0 and module_map_position < developer_console_position, (
     "Code-module map must be the first developer workspace block"
 )
-print("PLANNER_TUTORIAL_OK anchors_8 planner_entries search_index support_boundaries")
+print("PLANNER_TUTORIAL_OK anchors_8 planner_entries loot_flow search_index support_boundaries")
 print("DEVELOPER_ROOM_OK code_module_map_first")
 print(f"WIKI_ARTICLES_OK pages={len(sources)} breadcrumbs={count} reachable={len(visited)} no_js=true")

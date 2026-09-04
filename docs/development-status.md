@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 36 · IMPROVE 49 · CHANGE 66 · FIX 35</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 36 · IMPROVE 52 · CHANGE 70 · FIX 35</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>36</b><small>BUILD</small></span><span><b>49</b><small>IMPROVE</small></span><span><b>66</b><small>CHANGE</small></span><span><b>35</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>36</b><small>BUILD</small></span><span><b>52</b><small>IMPROVE</small></span><span><b>70</b><small>CHANGE</small></span><span><b>35</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -273,7 +273,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="features/fog-of-war/">새 안개 동작 →</a> · <a href="quality/player-perception-audit/#fog-perception-2026-09-04">인식 검사 →</a> · <a href="architecture/module-audit/#fog-perception-2026-09-04">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 15</small><b>펄스 오버플로 · 명중 지점 전기 광역 피해</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 펄스 소총 탄환이 적에게 명중할 때마다 타격 지점 주변에 청록색 전기 충격을 방출해 밀집된 적을 함께 공격합니다.</strong></div>
@@ -283,6 +283,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>광역 효과가 반경 밖 적이나 무제한 대상에게 적용될 수 있는 경로를 거리 필터와 대상 예산으로 차단했습니다.</p></div>
         <p>명중마다 피해 1·반경 144·최대 8명은 기획 확정 전 임시값입니다. 성장·모듈·과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/equipment-fixed-identity/#펄스-오버플로-예시">고유 기능 규칙 →</a> · <a href="architecture/module-audit/#전기-광역-무기-고유-기능--2026-09-04">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 16</small><b>기획자 장비 드랍 안내 · 획득처와 정산 경계</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자 전용 문서에서 무기·방어구가 어느 보상에서 나오고, 도면과 무엇이 다르며, 주운 뒤 탈출·사망에 따라 어떻게 처리되는지 한 흐름으로 확인할 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>게임 코드와 드랍 데이터는 변경하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>보상 출처 비교, 획득부터 영구 창고까지의 생명 주기, 기획자가 확정할 목록을 쉬운 말로 정리했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>기획자 페이지, 검색 우선순위, 반응형 위키 E2E 계약, 생성 문서 검증을 장비 드랍 안내 기준으로 확장했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>런타임 동작 변경 없이 문서에서 혼동되던 직접 장비·도면·재료 보상의 경계를 명확히 했습니다.</p></div>
+        <p>일반 적은 현재 재료 중심이고, 방 클리어는 무기→방어구→모듈→파츠 순환, 보스는 후보 중 2개 무작위입니다. 목록과 확률은 기획 확정 전 임시값이며 Sheet/CSV·경제·과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="../access/planner/#equipment-drop-flow">기획자용 장비 드랍 안내 →</a></p>
       </div>
     </details>
   </div>
