@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import worker, { __test } from "../cloudflare/wiki-auth/_worker.js";
 
 class MemoryBody {
@@ -136,6 +137,22 @@ for (const publicPath of [
 
 response = await worker.fetch(request("/%61ccess//planner/index.html"), env);
 assert.equal(response.status, 302, "encoded and repeated slashes must not bypass protected routing");
+
+const knowledgeMap = JSON.parse(await readFile(new URL("../docs/assets/knowledge-map.json", import.meta.url), "utf8"));
+function collectDocuments(value, result = []) {
+  if (Array.isArray(value)) value.forEach((item) => collectDocuments(item, result));
+  else if (value && typeof value === "object") {
+    if (Array.isArray(value.documents)) value.documents.forEach((item) => result.push(item));
+    Object.entries(value).filter(([key]) => key !== "documents").forEach(([, item]) => collectDocuments(item, result));
+  }
+  return result;
+}
+const internalDocuments = collectDocuments(knowledgeMap.root).filter((item) => !["index.md", "access/login.md"].includes(item.source));
+for (const document of internalDocuments) {
+  response = await worker.fetch(request(`/${document.route}`), env);
+  assert.equal(response.status, 302, `every document route must require a session: ${document.route}`);
+  assert.equal(await response.text(), "", `protected document must not leak a body: ${document.route}`);
+}
 
 response = await worker.fetch(request("/api/auth/login", {
   method: "POST",

@@ -55,6 +55,11 @@ def generate() -> dict:
 
     authority = dict(registry["authority"])
     contributors = [dict(item) for item in registry.get("contributors", [])]
+    object_types = [dict(item) for item in registry.get("object_types", [])]
+    interfaces = [dict(item) for item in registry.get("interfaces", [])]
+    source_systems = [dict(item) for item in registry.get("source_systems", [])]
+    action_types = [dict(item) for item in registry.get("action_types", [])]
+    lifecycle = [dict(item) for item in registry.get("lifecycle", [])]
     objects = [
         {
             **authority,
@@ -64,6 +69,20 @@ def generate() -> dict:
             "summary": authority["description"],
         }
     ]
+    objects.extend({
+        **item,
+        "type": "contributor",
+        "status": "active",
+        "certainty": "confirmed",
+        "summary": item["responsibility"],
+        "kind": "governance",
+    } for item in contributors)
+    objects.extend({
+        **item,
+        "type": "source",
+        "certainty": "confirmed",
+        "kind": "evidence",
+    } for item in source_systems)
     objects.extend({**item, "kind": "governance"} for item in registry.get("objects", []))
 
     documents = collect_documents(knowledge_map.get("root", {}))
@@ -127,6 +146,17 @@ def generate() -> dict:
 
     statuses = {item["id"] for item in registry.get("statuses", [])}
     governed_types = {"principle", "decision", "risk", "work_item"}
+    object_type_ids = {item["id"] for item in object_types}
+    unknown_object_types = sorted({item.get("type") for item in all_objects} - object_type_ids)
+    if unknown_object_types:
+        raise ValueError(f"Unknown ontology object types: {', '.join(unknown_object_types)}")
+    interface_by_id = {item["id"]: item for item in interfaces}
+    required_interfaces = {"owner_decidable", "traceable", "verifiable"}
+    missing_interfaces = sorted(required_interfaces - set(interface_by_id))
+    if missing_interfaces:
+        raise ValueError(
+            f"Project ontology is missing interfaces: {', '.join(missing_interfaces)}"
+        )
     explicit_relations: list[dict] = []
     for item in registry.get("objects", []):
         if item.get("type") in governed_types:
@@ -134,6 +164,9 @@ def generate() -> dict:
                 raise ValueError(f"Missing project-owner authority: {item.get('id')}")
             if item.get("status") not in statuses:
                 raise ValueError(f"Unknown status for {item.get('id')}: {item.get('status')}")
+            for field in interface_by_id["owner_decidable"]["required"]:
+                if field not in item:
+                    raise ValueError(f"Missing owner_decidable field for {item.get('id')}: {field}")
             explicit_relations.append({
                 "from": authority["id"],
                 "to": item["id"],
@@ -147,6 +180,14 @@ def generate() -> dict:
                 "type": relation["type"],
                 "origin": "registry",
             })
+        if item.get("type") == "work_item":
+            if not item.get("acceptance"):
+                raise ValueError(f"Missing verifiable acceptance for {item.get('id')}")
+            if not any(
+                relation.get("type") == "verified_by"
+                for relation in item.get("relations", [])
+            ):
+                raise ValueError(f"Missing verifiable evidence for {item.get('id')}")
 
     relations = explicit_relations + derived_relations
     for relation in relations:
@@ -155,22 +196,39 @@ def generate() -> dict:
                 f"Broken ontology relation: {relation['from']} -> {relation['to']}"
             )
 
+    action_ids = {item["id"] for item in action_types}
+    source_ids = {item["id"] for item in source_systems}
+    for stage in lifecycle:
+        if stage.get("action") not in action_ids:
+            raise ValueError(f"Unknown lifecycle action: {stage.get('action')}")
+        for evidence in stage.get("evidence", []):
+            if evidence not in source_ids:
+                raise ValueError(f"Unknown lifecycle evidence: {evidence}")
+    for action in action_types:
+        if action.get("actor") not in object_ids:
+            raise ValueError(f"Unknown action actor: {action.get('actor')}")
+
     for item in document_objects:
         source_path = ROOT / item["source"]
         if not source_path.exists():
             raise ValueError(f"Missing ontology document source: {item['source']}")
 
-    tracked = [item for item in objects if item["type"] != "authority"]
+    tracked = [item for item in objects if item["type"] in governed_types]
     status_counts = {
         status["id"]: sum(1 for item in tracked if item.get("status") == status["id"])
         for status in registry.get("statuses", [])
     }
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "updated": registry["updated"],
         "source_sha256": digest_sources(REGISTRY, CODE_MAP, KNOWLEDGE_MAP),
         "authority": authority,
         "contributors": contributors,
+        "object_types": object_types,
+        "interfaces": interfaces,
+        "source_systems": source_systems,
+        "action_types": action_types,
+        "lifecycle": lifecycle,
         "statuses": registry.get("statuses", []),
         "views": [
             {
@@ -178,6 +236,27 @@ def generate() -> dict:
                 "label": "오너 판단",
                 "audience": "developer",
                 "object_types": ["decision", "risk", "work_item", "principle"],
+                "read_only": True,
+            },
+            {
+                "id": "object-explorer",
+                "label": "객체 탐색",
+                "audience": "developer",
+                "object_types": [item["id"] for item in object_types],
+                "read_only": True,
+            },
+            {
+                "id": "lineage",
+                "label": "관계·계보",
+                "audience": "developer",
+                "object_types": ["decision", "risk", "work_item", "module", "document", "source"],
+                "read_only": True,
+            },
+            {
+                "id": "operations",
+                "label": "행동·관측",
+                "audience": "developer",
+                "object_types": ["source"],
                 "read_only": True,
             }
         ],
@@ -189,7 +268,11 @@ def generate() -> dict:
             "implemented": status_counts.get("implemented", 0),
             "modules": len(module_objects),
             "documents": len(document_objects),
+            "sources": len(source_systems),
+            "actions": len(action_types),
             "relations": len(relations),
+            "broken_relations": 0,
+            "ownerless_governed_objects": 0,
         },
         "objects": all_objects,
         "relations": relations,

@@ -36,7 +36,7 @@ $stylesheet = Get-Content -LiteralPath $stylesheetPath -Raw -Encoding UTF8
 $mkdocs = Get-Content -LiteralPath $mkdocsPath -Raw -Encoding UTF8
 $errors = [System.Collections.Generic.List[string]]::new()
 
-if ($ontology.schema_version -ne 1 -or $ontology.summary.tracked -lt 5) {
+if ($ontology.schema_version -ne 2 -or $ontology.summary.tracked -lt 7) {
     $errors.Add("Project ontology schema or initial decision coverage is missing.")
 }
 if ($ontology.authority.id -ne "authority:project-owner" -or $ontology.authority.label -ne "프로젝트 오너") {
@@ -60,6 +60,24 @@ foreach ($item in $registry.objects) {
         $errors.Add("Tracked object must explain current meaning and next action: $($item.id)")
     }
 }
+foreach ($requiredType in @("principle", "decision", "risk", "work_item", "module", "document", "source", "authority", "contributor")) {
+    if ($requiredType -notin @($ontology.object_types | ForEach-Object { $_.id })) {
+        $errors.Add("Operational ontology object type is missing: $requiredType")
+    }
+}
+foreach ($requiredInterface in @("owner_decidable", "traceable", "verifiable")) {
+    if ($requiredInterface -notin @($ontology.interfaces | ForEach-Object { $_.id })) {
+        $errors.Add("Operational ontology interface is missing: $requiredInterface")
+    }
+}
+if ($ontology.summary.sources -lt 6 -or $ontology.summary.actions -lt 5 -or $ontology.lifecycle.Count -ne 5) {
+    $errors.Add("Operational source, action, or lifecycle coverage is incomplete.")
+}
+foreach ($action in $ontology.action_types) {
+    if ([string]::IsNullOrWhiteSpace($action.actor) -or [string]::IsNullOrWhiteSpace($action.input) -or [string]::IsNullOrWhiteSpace($action.output) -or [string]::IsNullOrWhiteSpace($action.guard)) {
+        $errors.Add("Action contract must declare actor, input, output, and guard: $($action.id)")
+    }
+}
 foreach ($relation in $ontology.relations) {
     if ($relation.from -notin $ids -or $relation.to -notin $ids) {
         $errors.Add("Broken project ontology relation: $($relation.from) -> $($relation.to)")
@@ -78,19 +96,23 @@ if ($ownerPosition -lt 0 -or $codePosition -lt 0 -or $ownerPosition -gt $codePos
 }
 foreach ($required in @(
     'assets/project-ontology.json',
-    'OWNER DECISION ONTOLOGY // READ ONLY',
+    'SFH OPERATIONAL ONTOLOGY // READ ONLY',
     'aria-pressed',
     '프로젝트 오너',
-    'credentials: "same-origin"'
+    'credentials: "same-origin"',
+    '판단 대기열',
+    '객체 탐색',
+    '관계·계보',
+    '행동·관측'
 )) {
     if ($javascript -notmatch [regex]::Escape($required)) {
         $errors.Add("Owner decision console client contract is missing: $required")
     }
 }
-if ($stylesheet -notmatch '\.sfh-owner-console__workspace' -or $stylesheet -notmatch 'max-width:\s*24em') {
+if ($stylesheet -notmatch '\.sfh-owner-console__workspace' -or $stylesheet -notmatch '\.sfh-owner-lineage' -or $stylesheet -notmatch '\.sfh-owner-action-grid') {
     $errors.Add("Owner decision console responsive CSS contract is missing.")
 }
-if ($page -notmatch '최종 판단 주체는 기획자나 AI 개발자가 아니라 프로젝트 오너' -or $page -notmatch '읽기 전용') {
+if ($page -notmatch '최종 판단 주체는 기획자나 AI 개발자가 아니라 프로젝트 오너' -or $page -notmatch '읽기 전용' -or $page -notmatch '판단 폐루프') {
     $errors.Add("Project ontology authority or read-only boundary is undocumented.")
 }
 if ($mkdocs -notmatch 'javascripts/owner-decision-console\.js' -or $mkdocs -notmatch 'architecture/project-ontology\.md') {

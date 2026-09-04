@@ -142,6 +142,12 @@ for anchor in ["balance", "new-item"]:
     assert link in planner_text, f"Planner tutorial entry missing: {anchor}"
     target(link, "access/planner.md")
 for phrase in [
+    "팔란티어식 구조를 기획에 어떻게 쓰나요?",
+    "OBJECT · 무엇",
+    "LINK · 어떤 관계",
+    "ACTION · 무슨 변화",
+    "EVIDENCE · 왜 맞는가",
+    "기획 제출 전 6문항",
     "작전에서 무기·방어구를 얻는 방식",
     "일반 적 처치 시 현장 전리품은 12% 확률",
     "무기→방어구→모듈→파츠",
@@ -165,12 +171,14 @@ for phrase in ["직접 실시간 로더 없음", "CSV 확정", "고유 스킬/�
 developer_text = (SITE / "access/developer/index.html").read_text(encoding="utf-8")
 owner_console_position = developer_text.find("data-sfh-owner-decision-console-host")
 module_map_position = developer_text.find("data-sfh-code-module-map-host")
-developer_console_position = developer_text.find("sfh-role-console is-developer")
+developer_console_position = developer_text.find("SFH 운영 온톨로지 읽는 순서", module_map_position)
 assert owner_console_position >= 0, "Developer room must embed the owner decision console"
 assert module_map_position >= 0, "Developer room must embed the live code-module map"
 assert developer_console_position >= 0 and owner_console_position < module_map_position < developer_console_position, (
-    "Owner decisions must precede implementation evidence and the developer work queue"
+    "Owner decisions must precede implementation evidence and the developer operating guide"
 )
+for phrase in ["SFH 운영 온톨로지 읽는 순서", "판단 폐루프", "객체 탐색", "관계·계보", "행동·관측"]:
+    assert phrase in developer_text, f"Developer operational ontology guidance missing: {phrase}"
 assert (SITE / "assets/project-ontology.json").is_file(), "Generated project ontology missing"
 assert (SITE / "javascripts/owner-decision-console.js").is_file(), "Owner decision console runtime missing"
 print("PLANNER_TUTORIAL_OK anchors_8 planner_entries loot_flow notion_authoring search_index support_boundaries")

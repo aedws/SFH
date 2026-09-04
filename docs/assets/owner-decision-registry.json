@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "updated": "2026-09-05",
   "authority": {
     "id": "authority:project-owner",
@@ -33,6 +33,44 @@
     {"id": "implemented", "label": "구현·검증됨", "rank": 4},
     {"id": "deferred", "label": "명시적 보류", "rank": 5}
   ],
+  "object_types": [
+    {"id": "principle", "label": "원칙", "layer": "governance", "description": "모든 변경에 적용되는 불변 규칙"},
+    {"id": "decision", "label": "결정", "layer": "governance", "description": "프로젝트 오너의 선택이 필요한 범위·수치·출시 판단"},
+    {"id": "risk", "label": "위험", "layer": "operations", "description": "진행을 막거나 회귀 가능성을 높이는 조건"},
+    {"id": "work_item", "label": "작업", "layer": "operations", "description": "수락 조건과 검증 결과를 가진 실행 단위"},
+    {"id": "module", "label": "코드 모듈", "layer": "implementation", "description": "기능을 구현하는 교체 가능한 코드 경계"},
+    {"id": "document", "label": "근거 문서", "layer": "evidence", "description": "규칙·결과·검증 방법을 설명하는 내부 문서"},
+    {"id": "source", "label": "원본 시스템", "layer": "evidence", "description": "Notion·Sheet·CSV·Git·E2E·CI 단일 원본"},
+    {"id": "authority", "label": "판단 주체", "layer": "governance", "description": "최종 수락 권한을 가진 프로젝트 오너"},
+    {"id": "contributor", "label": "근거 제공자", "layer": "governance", "description": "기획 또는 구현 근거를 제출하지만 확정하지 않는 역할"}
+  ],
+  "interfaces": [
+    {"id": "owner_decidable", "label": "오너 판단 가능", "applies_to": ["decision", "risk", "work_item", "principle"], "required": ["decision_owner", "status", "summary", "next_action"]},
+    {"id": "traceable", "label": "원본 추적 가능", "applies_to": ["decision", "risk", "work_item", "module", "document"], "required": ["id", "relations"]},
+    {"id": "verifiable", "label": "검증 가능", "applies_to": ["work_item"], "required": ["acceptance", "verified_by"]}
+  ],
+  "source_systems": [
+    {"id": "source:notion", "label": "Notion 기획 원본", "system": "Notion", "status": "manual", "summary": "플레이 의도와 확정·임시·보류 상태의 원본", "route": "design/master-gdd-alignment/"},
+    {"id": "source:google-sheet", "label": "Google Sheet 후보 데이터", "system": "Google Sheets", "status": "manual", "summary": "목록형 밸런스 후보와 설명의 협업 원본", "route": "getting-started/planner-item-balance-tutorial/"},
+    {"id": "source:locked-csv", "label": "확정 CSV", "system": "Repository CSV", "status": "validated", "summary": "빌드에서 사용하는 잠긴 런타임 데이터", "route": "features/weapon-balance/"},
+    {"id": "source:git", "label": "Git 구현 원본", "system": "Git", "status": "validated", "summary": "코드·문서·결정 레지스트리의 변경 이력", "route": "getting-started/source-control-and-cleanup/"},
+    {"id": "source:e2e", "label": "플레이어 인식 E2E", "system": "Test Suite", "status": "validated", "summary": "입력부터 결과까지 플레이어가 인식하는 완료 근거", "route": "quality/e2e-play-session/"},
+    {"id": "source:ci", "label": "CI·배포 증거", "system": "GitHub Actions / Cloudflare", "status": "validated", "summary": "PR 검사·동등 산출물·배포 상태의 운영 근거", "route": "quality/wiki-responsive-e2e/"}
+  ],
+  "action_types": [
+    {"id": "action:submit-proposal", "label": "기획 근거 제출", "actor": "contributor:planner", "input": "Notion 상태·대상·플레이 결과·미정값", "output": "오너 판단 후보", "guard": "제안은 자동 확정되지 않음", "route": "access/planner/"},
+    {"id": "action:decide", "label": "범위·우선순위·수락 판단", "actor": "authority:project-owner", "input": "기획 근거·구현 영향·검증 결과", "output": "확정·수정·보류·폐기", "guard": "프로젝트 오너만 최종 판단", "route": "architecture/project-ontology/"},
+    {"id": "action:implement", "label": "모듈 구현", "actor": "contributor:developer", "input": "오너가 승인한 수락 조건", "output": "교체 가능한 코드·문서·데이터", "guard": "모듈 경계와 원본 계약 통과", "route": "architecture/module-rules/"},
+    {"id": "action:verify", "label": "플레이어 인식 검증", "actor": "contributor:developer", "input": "구현 산출물·수락 조건", "output": "E2E·회귀·성능 근거", "guard": "실패 시 수락·병합 금지", "route": "quality/e2e-play-session/"},
+    {"id": "action:release", "label": "병합·배포", "actor": "authority:project-owner", "input": "승인된 PR·필수 검사", "output": "main·Web·Windows 동등 산출물", "guard": "필수 검사가 모두 성공해야 실행", "route": "getting-started/source-control-and-cleanup/"}
+  ],
+  "lifecycle": [
+    {"id": "capture", "label": "포착", "action": "action:submit-proposal", "evidence": ["source:notion", "source:google-sheet"]},
+    {"id": "decide", "label": "판단", "action": "action:decide", "evidence": ["source:notion", "source:git"]},
+    {"id": "implement", "label": "구현", "action": "action:implement", "evidence": ["source:locked-csv", "source:git"]},
+    {"id": "verify", "label": "검증", "action": "action:verify", "evidence": ["source:e2e", "source:ci"]},
+    {"id": "release", "label": "배포", "action": "action:release", "evidence": ["source:ci"]}
+  ],
   "objects": [
     {
       "id": "principle:owner-authority",
@@ -45,7 +83,9 @@
       "next_action": "모든 신규 판단 객체에 오너, 근거, 수락 조건을 기록합니다.",
       "relations": [
         {"to": "document:architecture/project-ontology", "type": "documented_by"},
-        {"to": "document:design/wiki-collaboration-workflow", "type": "governs"}
+        {"to": "document:design/wiki-collaboration-workflow", "type": "governs"},
+        {"to": "source:notion", "type": "informed_by"},
+        {"to": "source:git", "type": "verified_by"}
       ]
     },
     {
@@ -62,7 +102,28 @@
         {"to": "principle:owner-authority", "type": "governed_by"},
         {"to": "module:verification", "type": "verified_by"},
         {"to": "document:quality/wiki-responsive-e2e", "type": "verified_by"},
-        {"to": "document:architecture/code-module-map", "type": "extends"}
+        {"to": "document:architecture/code-module-map", "type": "extends"},
+        {"to": "source:e2e", "type": "verified_by"},
+        {"to": "source:ci", "type": "verified_by"}
+      ]
+    },
+    {
+      "id": "work:role-workspace-rebalance",
+      "type": "work_item",
+      "label": "권한별 위키·온톨로지 전면 재배치",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "개발자는 폐루프 운영 콘솔, 기획자는 작성 가이드, 공개 화면은 플레이 특징만 보도록 역할별 정보 구조를 분리합니다.",
+      "acceptance": "공개 사용자는 홍보·플레이 정보만 보고, 로그인한 기획자와 개발자만 전체 문서에 접근하며, 개발자 콘솔에서 객체·관계·행동·원본·검증 계보를 탐색할 수 있습니다.",
+      "next_action": "실사용 중 누락된 판단 객체와 관계만 레지스트리에 추가하고 공개 범위를 자동 확대하지 않습니다.",
+      "relations": [
+        {"to": "principle:owner-authority", "type": "governed_by"},
+        {"to": "document:architecture/project-ontology", "type": "documented_by"},
+        {"to": "document:architecture/wiki-role-auth", "type": "governed_by"},
+        {"to": "source:git", "type": "implemented_by"},
+        {"to": "source:e2e", "type": "verified_by"},
+        {"to": "source:ci", "type": "verified_by"}
       ]
     },
     {
@@ -80,7 +141,9 @@
         {"to": "document:getting-started/planner-item-balance-tutorial", "type": "informed_by"},
         {"to": "module:shop_browser", "type": "affects"},
         {"to": "module:crafting", "type": "affects"},
-        {"to": "module:balance_data", "type": "configured_by"}
+        {"to": "module:balance_data", "type": "configured_by"},
+        {"to": "source:google-sheet", "type": "informed_by"},
+        {"to": "source:locked-csv", "type": "configured_by"}
       ]
     },
     {
@@ -96,7 +159,8 @@
       "relations": [
         {"to": "document:getting-started/planner-item-balance-tutorial", "type": "informed_by"},
         {"to": "module:balance_data", "type": "blocks"},
-        {"to": "module:loot_tables", "type": "affects"}
+        {"to": "module:loot_tables", "type": "affects"},
+        {"to": "source:google-sheet", "type": "informed_by"}
       ]
     },
     {
@@ -113,7 +177,9 @@
         {"to": "document:design/current-milestone-workline", "type": "informed_by"},
         {"to": "module:p5_hub_progression", "type": "implemented_by"},
         {"to": "module:persistent_profile", "type": "requires"},
-        {"to": "module:verification", "type": "verified_by"}
+        {"to": "module:verification", "type": "verified_by"},
+        {"to": "source:notion", "type": "informed_by"},
+        {"to": "source:e2e", "type": "verified_by"}
       ]
     },
     {
