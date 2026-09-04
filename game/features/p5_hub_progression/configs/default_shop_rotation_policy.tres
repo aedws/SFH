@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ShopRotationPolicy" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/p5_hub_progression/shop_rotation_policy.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+revision_seed_stride = 7919
+guarantee_quality_coverage = true
+avoid_previous_offers = true
+reroll_price_step = 0
+reroll_price_cap = 0
+reset_reroll_price_on_run_return = true

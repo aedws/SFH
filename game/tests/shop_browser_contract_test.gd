@@ -17,7 +17,7 @@ func _run() -> void:
 	await _verify_game_flow()
 	paused = false
 	if failures.is_empty():
-		print("P7_SHOP_BROWSER_OK quote_no_mutation unit_price_compare quality_instance_delivery selected_purchase no_double_click stale_rotation locked_insufficient invalid_data snapshot_copy esc_restore viewports_4 optional isolated_saves")
+		print("P7_SHOP_BROWSER_OK quote_no_mutation unit_price_compare quality_instance_delivery selected_purchase no_double_click paid_reroll_visible reroll_price_policy run_rotation_contract stale_rotation locked_insufficient invalid_data snapshot_copy esc_restore viewports_4 optional isolated_saves")
 		quit(0)
 	else:
 		printerr("P7_SHOP_BROWSER_FAILED: %s" % " / ".join(failures))
@@ -57,6 +57,21 @@ func _verify_quotes() -> void:
 		var bad: Dictionary = catalog[0].duplicate(true)
 		bad.merge(invalid, true)
 		_check(not QUOTE.quote(bad, catalog, before, 1).purchasable, "invalid quote rejected %s" % invalid)
+	var price_profile := PROFILE.new()
+	root.add_child(price_profile)
+	price_profile.configure("", false)
+	var price_policy: Resource = load(
+		"res://game/features/p5_hub_progression/configs/default_shop_rotation_policy.tres"
+	).duplicate(true)
+	price_policy.set("reroll_price_step", 10)
+	price_policy.set("reroll_price_cap", 40)
+	var priced_shop := SHOP.new()
+	_check(priced_shop.configure(price_profile, catalog, 77102, 25, 3, null, price_policy), "price policy configure")
+	_check(int(priced_shop.quote_reroll().price) == 25, "initial reroll price")
+	_check(priced_shop.refresh(true, &"price-step-1").success and int(priced_shop.quote_reroll().price) == 35, "configurable reroll step")
+	_check(priced_shop.refresh(true, &"price-step-2").success and priced_shop.refresh(true, &"price-step-3").success and int(priced_shop.quote_reroll().price) == 40, "configurable reroll cap")
+	_check(priced_shop.begin_run(&"price-reset-run") and priced_shop.refresh_after_run().changed and int(priced_shop.quote_reroll().price) == 25, "run return resets reroll price")
+	price_profile.free()
 	profile.free()
 
 
@@ -113,8 +128,19 @@ func _verify_game_flow() -> void:
 	await _click(panel.buy_button)
 	_check(profile.get_snapshot() == after and not panel.get_snapshot().purchase_enabled, "double click no extra grant")
 	_check("구매 완료" in panel.status_label.text, "success receipt visible")
+	var reroll_before: Dictionary = profile.get_snapshot()
+	var reroll_revision := int(game.p5_hub_progression_service.call(&"get_shop_snapshot").get(&"rotation_index", -1))
+	_check(panel.get_snapshot().reroll_enabled and "25 C" in panel.get_snapshot().reroll_text, "reroll quote visible before debit")
+	await _click(panel.reroll_button)
+	var reroll_after: Dictionary = profile.get_snapshot()
+	_check(
+		int(reroll_before.banked_credits) - int(reroll_after.banked_credits) == 25
+		and int(game.p5_hub_progression_service.call(&"get_shop_snapshot").get(&"rotation_index", -1)) == reroll_revision + 1,
+		"paid reroll exact debit and revision"
+	)
+	_check("리롤 완료" in panel.status_label.text and panel.get_snapshot().selected_id == &"", "reroll receipt and stale selection cleared")
 	# A balance change after viewing a quote must also be visible and non-destructive.
-	var remaining_credits := int(after.banked_credits)
+	var remaining_credits := int(reroll_after.banked_credits)
 	profile.spend(remaining_credits)
 	panel.refresh()
 	for id in panel.offer_buttons.keys():
@@ -133,8 +159,14 @@ func _verify_game_flow() -> void:
 		for _frame in 7: await process_frame
 		var bounds := root.get_visible_rect().grow(1.0)
 		_check(bounds.encloses(panel.panel.get_global_rect()), "viewport panel %s / %s" % [dimensions, panel.panel.get_global_rect()])
-		_check(bounds.encloses(panel.buy_button.get_global_rect()) and bounds.encloses(panel.close_button.get_global_rect()), "visible actions %s" % dimensions)
+		_check(
+			bounds.encloses(panel.buy_button.get_global_rect())
+			and bounds.encloses(panel.reroll_button.get_global_rect())
+			and bounds.encloses(panel.close_button.get_global_rect()),
+			"visible actions %s" % dimensions
+		)
 		_check(not panel.buy_button.get_global_rect().intersects(panel.close_button.get_global_rect()), "actions not overlapping")
+		_check(not panel.reroll_button.get_global_rect().intersects(panel.close_button.get_global_rect()), "reroll and close not overlapping")
 		_check(panel.cards.columns == (1 if dimensions.x < 764 else 3), "responsive columns")
 		await _tap(KEY_ESCAPE)
 		_check(not paused and not panel.visible, "hub pause restored %s" % dimensions)

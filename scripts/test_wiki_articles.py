@@ -145,5 +145,13 @@ search = json.loads((SITE / "search/search_index.json").read_text(encoding="utf-
 assert any(d.get("location", "").startswith(route(tutorial_source)) for d in search["docs"]), "Tutorial not searchable"
 for phrase in ["직접 실시간 로더 없음", "CSV 확정", "시트 값을 바꾸지 않았습니다", "P7-01B"]:
     assert phrase in tutorial_text, f"Tutorial boundary missing: {phrase}"
+developer_text = (SITE / "access/developer/index.html").read_text(encoding="utf-8")
+module_map_position = developer_text.find("data-sfh-code-module-map-host")
+developer_console_position = developer_text.find("sfh-role-console is-developer")
+assert module_map_position >= 0, "Developer room must embed the live code-module map"
+assert developer_console_position >= 0 and module_map_position < developer_console_position, (
+    "Code-module map must be the first developer workspace block"
+)
 print("PLANNER_TUTORIAL_OK anchors_8 planner_entries search_index support_boundaries")
+print("DEVELOPER_ROOM_OK code_module_map_first")
 print(f"WIKI_ARTICLES_OK pages={len(sources)} breadcrumbs={count} reachable={len(visited)} no_js=true")

@@ -41,7 +41,7 @@ tags: [기획자, 아이템 추가, 밸런싱, Google Sheets, CSV, 튜토리얼]
 | LootTable | 어디에서 무엇이 얼마나 나오는가 | 기존 정의 ID를 참조. 가중치는 확률 %가 아님 |
 | RunBuff / Upgrade | 판 안의 강화 / 장비·모듈 레벨 효과 | [아래 성장 설명](#growth) 참고 |
 | Skill / Character / Utility / OperationPreset | 스킬 / 요원 / 소모품 준비 / 추천 작전 | 이미 지원하는 ID·태그·정책 범위에서 작성 |
-| ShopOffer / Recipe / TrainingScenario / Codex | 상점 / 제작 / 훈련 / 도감 | P7-01B로 품질 실물·실제 수치 연결 완료. 가격·배율·옵션·소켓 운영값은 기획 확정 필요 |
+| ShopOffer / Recipe / TrainingScenario / Codex | 상점 / 제작 / 훈련 / 도감 | P7-01B 품질 실물·실제 수치와 P7-02 회전·리롤 연결 완료. 가격·배율·옵션·소켓·리롤 운영값은 기획 확정 필요 |
 | SeasonReward | 칭호·오라 | 로컬 시즌의 외형 보상만. 다음 시즌부터 적용 |
 
 Weapon의 기존 `run_investment_price` 열은 남아 있지만 **현재 로비에 장착한 무기를 출격 때 다시 구매·청구하지 않습니다.** 상점 가격과 혼동하지 마세요.

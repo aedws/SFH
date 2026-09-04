@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "updated": "2026-09-04",
   "notion_url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
   "instruction": "기획자는 요청 ID를 Notion 결정 제목에 포함하고, AI 개발자는 수락 기준과 검증 근거를 같은 카드에 연결합니다.",
@@ -28,10 +28,10 @@
       "id": "DATA-P7-01-01", "status": "data", "state": "needs_planner", "state_label": "상점 데이터 필요", "owner_role": "planner", "owner_label": "기획자", "blocking": false,
       "tag": "후속 데이터", "title": "3대 상점 매물·리롤 수치",
       "decision_id": "DEC-P7-SHOP-PENDING", "source_anchor": "3ce5b728-0040-817a-9f6e-f0bac2007561", "source_revision": 1005, "supersedes": [], "conflicts_with": [],
-      "summary": "P7-01A/B에서 선택·비교·명시 구매→I 가방 실물→U/E 실제 성능과 품질·옵션·소켓 보존을 구현했습니다. 현행 임시 정책을 운영값으로 교체하고 P7-02 리롤을 진행하려면 품질별 가격·옵션·소켓과 리롤 규칙 확정이 필요합니다.",
+      "summary": "P7-01A/B의 품질 실물·실제 성능과 P7-02의 런 복귀 1회 회전·유료 리롤을 구현했습니다. 현행 25 C·3슬롯·품질 보장·이전 매물 회피를 운영값으로 교체하려면 품질별 가격·옵션·소켓과 리롤 규칙 확정이 필요합니다.",
       "basis": "Master GDD 4장 상점 3대 매물과 상점 리롤",
       "notion_prompt": "DATA-P7-01-01 제목으로 품질군별 가격·성능·할인·옵션/소켓 범위와 리롤 시작 가격·증가·상한을 작성해 주세요.",
-      "sheet_target": "ShopOffer 탭 임시값·실물 적용 완료 · P7-02에서 필요한 회전·리롤 열만 확장",
+      "sheet_target": "ShopOffer 탭 임시값·실물 적용 완료 · 회전 가중치는 기존 열 사용, 가격 증가 정책은 Resource로 격리",
       "acceptance": ["세 품질군의 가격·성능 범위", "옵션·소켓·할인 생성 규칙", "리롤 가격·증가·초기화·중복 입력 규칙"],
       "evidence": [{"label": "P7+ 사전 설계", "href": "design/p7-plus-preimplementation/"}, {"label": "로비 경제", "href": "features/hub-economy/"}]
     },

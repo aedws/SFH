@@ -27,14 +27,14 @@ tags:
     <b>96%</b>
   </div>
   <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-  <p>2026-09-04 공개 Master GDD v1005·77블록·해시 614a0b8ddee4는 동일합니다. P7-01B의 품질 실물 지급과 실제 장비 수치 연결을 반영해 기능 가중 추정치를 96%로 갱신했습니다. 보안·백업은 계획만 등록했습니다.</p>
+  <p>2026-09-04 공개 Master GDD v1005·77블록·해시 614a0b8ddee4는 동일합니다. P7-01B 품질 실물과 P7-02 복귀 회전·리롤 구현까지 반영했으며, 임시 운영값은 완료로 더하지 않아 기능 가중 추정치 96%를 유지합니다. 보안·백업은 계획만 등록했습니다.</p>
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-04 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
-P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분합니다. P7-01B는 로컬 플레이 흐름을 완료했지만 임시 품질 수치의 기획 확정과 서버 운영을 완료로 오인하지 않습니다.
+P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분합니다. P7-01B와 P7-02는 로컬 플레이 흐름을 완료했지만 임시 품질·리롤 수치의 기획 확정과 서버 운영을 완료로 오인하지 않습니다.
 
-**정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스와 코드 완료는 별개입니다. 경제는 P7-01B의 실제 품질·가방·장착 연결로 90%이며, 손상품/고성능 규칙의 기획 확정과 서버 운영·검증 지급은 미구현입니다.
+**정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스와 코드 완료는 별개입니다. 경제는 P7-01B의 실제 품질·가방·장착과 P7-02 회전·리롤 연결 뒤에도 90%를 유지하며, 품질·리롤 운영 규칙의 기획 확정과 서버 운영·검증 지급은 미구현입니다.
 
 | 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
 |---|---:|---:|---|
@@ -90,17 +90,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 | 완료 | Phase 6 P6-02 제출·검증 | 익명 신원·무결성·멱등·영구 재시도·거부 이유 | 중복/단절/변조/시간초과/저장 복원 E2E 완료 |
 | 완료 | Phase 6 P6-03 시즌 규칙 | 로컬 임시 주간 정책과 마감 기록 | 시즌 경계·조건 불일치·마감 불변·저장 복원 E2E 완료 |
 | 완료 | Phase 6 P6-04 로컬 칭호·오라 | SeasonReward 6종·마감 지급·저장·장착 | 1회 지급·다른 신원 거부·재시작·표현·손상 보존 테스트 |
-| 기획 확정 대기 | 내부 P7-01 | A/B 구현 완료, 손상품 가격/성능과 고성능 옵션·소켓 운영값은 임시 | 기획 확정 뒤 P7-01 종료, 구현은 P7-02 회전/리롤 심화로 이동 |
-| 예정 | 내부 P7-02~P10 | 경제→훈련→도감→출시 후보 | 선행 패킷 완료 후 순서대로 착수 |
+| 기획 확정 대기 | 내부 P7-01 | A/B 구현 완료, 손상품 가격/성능과 고성능 옵션·소켓 운영값은 임시 | 기획 확정 뒤 P7-01 종료, 구현은 P7-03 제작 심화로 이동 |
+| 완료 | 내부 P7-02 | 런 복귀 회전·골드 리롤 | 정책·상태·차감 분리, 취소/중복 방지와 UI 영수증 E2E 완료 |
+| 예정 | 내부 P7-03~P10 | 제작→훈련→도감→출시 후보 | 선행 패킷 완료 후 순서대로 착수 |
 | 착수 보류 | 위변조 감지·거래 원장·백업 | 사용자 지시로 문서만 등록 | 운영 정책과 별도 구현 승인 전 서비스·과금 변경 없음 |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 5 · IMPROVE 5 · CHANGE 8 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 8 · IMPROVE 8 · CHANGE 13 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>8</b><small>BUILD</small></span><span><b>8</b><small>IMPROVE</small></span><span><b>13</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -125,7 +126,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="features/hub-economy/#shop-browser">P7-01A/B 규칙 →</a> · <a href="architecture/module-audit/#p7-01b-2026-09-04">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>P7-01B 후속 · 품질 모듈/저장/CI 엄밀화</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 모듈 감사에서 발견한 CI 누락, 하드코딩 품질, 암묵적 payload, 롤백·저장·선택 제거 검증 공백을 모두 닫았습니다.</strong></div>
@@ -135,6 +136,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 4</h3><p>노드맵 최신성 누락, 품질 키/계산 중복, 공급자 롤백 실패의 이중 획득 위험, 데스크톱 저장 품질 미검증을 해결했습니다.</p></div>
         <p>기존 플레이 수치와 확정 ShopOffer CSV는 유지합니다. 옵션·소켓 Resource는 임시값이며 과금 모델·Cloudflare 플랜은 변경하지 않았습니다.</p>
         <p><a href="features/p5-hub-progression/#quality-module-contract">P5 모듈 계약 →</a> · <a href="architecture/module-audit/#p7-01b-2026-09-04">감사 결과 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>개발자 코드맵 우선 · P7-02 상점 회전/리롤</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 개발자 작업실의 첫 정보가 실제 코드 모듈 관계망이 됐고, 상점은 작전 복귀와 유료 리롤을 서로 다른 원인으로 안전하게 갱신합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p><code>ShopRotationPolicy</code>, <code>ShopRotationState</code>, <code>ShopRerollTransactionService</code>와 실제 리롤 버튼·영수증을 구현했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>개발자 로그인 첫 화면에서 코드 관계·상속·검증 노드를 바로 탐색하고 P7-03 큐로 이동할 수 있게 했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>서비스 façade, 작전 취소 경계, P7 로드맵, 기획 요청 카드, 검색 우선순위와 플레이어 인식 E2E를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>정산·거점 복귀 중복 갱신, 작전 조립 실패의 잘못된 회전, 동일 리롤 거래의 재차감 경로를 제거했습니다.</p></div>
+        <p>가격 25 C·3슬롯·품질 보장·이전 매물 회피는 기획 확정 전 임시 Resource입니다. 새 Sheet 목록이나 외부 과금 구성은 만들지 않았습니다.</p>
+        <p><a href="features/hub-economy/#p7-02">P7-02 플레이 규칙 →</a> · <a href="architecture/module-audit/#p7-02-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">E2E →</a></p>
       </div>
     </details>
   </div>

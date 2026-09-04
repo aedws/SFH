@@ -35,6 +35,8 @@ required_files = (
     "p5_hub_progression_config.gd", "p5_catalog_table.gd",
     "item_quality_definition.gd", "item_quality_catalog.gd",
     "shop_item_quality_policy.gd", "shop_inventory_delivery_service.gd",
+    "shop_rotation_policy.gd", "shop_rotation_state.gd",
+    "shop_reroll_transaction_service.gd",
 )
 for name in required_files:
     if not (FEATURE_ROOT / name).is_file():
@@ -54,8 +56,12 @@ for stem in ("utility", "operation_preset", "shop_offer", "recipe", "training_sc
         ERRORS.append(f"Missing Web-safe P5 payload boundary: {stem}_csv_payload")
 if "shop_quality_catalog" not in config:
     ERRORS.append("P5 config does not expose the replaceable item-quality catalogue.")
+if "shop_rotation_policy" not in config:
+    ERRORS.append("P5 config does not expose the replaceable shop-rotation policy.")
 if not (FEATURE_ROOT / "configs" / "default_item_quality_catalog.tres").is_file():
     ERRORS.append("Missing default item-quality Resource catalogue.")
+if not (FEATURE_ROOT / "configs" / "default_shop_rotation_policy.tres").is_file():
+    ERRORS.append("Missing default shop-rotation Resource policy.")
 
 sync_script = ROOT / "scripts" / "sync_p5_catalogs.py"
 if not sync_script.is_file():
@@ -161,4 +167,4 @@ for preset in presets:
 if ERRORS:
     raise SystemExit("\n".join(ERRORS))
 
-print("P5_MODULARITY_OK lazy_submodules conditional_paths web_payloads facade_only schema_unique_fk canonical_ids presenter_boundary real_training_bridge transaction_guards item_quality_resource payload_descriptor ci_quality_gate delivery_removal_gate rollback_compensation")
+print("P5_MODULARITY_OK lazy_submodules conditional_paths web_payloads facade_only schema_unique_fk canonical_ids presenter_boundary real_training_bridge transaction_guards item_quality_resource payload_descriptor rotation_policy_state_debit ci_quality_gate delivery_removal_gate rollback_compensation")

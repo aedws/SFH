@@ -9,12 +9,14 @@ hide:
 
 # 개발자 작업실
 
+<div data-sfh-code-module-map-host></div>
+
 <a class="sfh-article-entry" href="../../features/"><strong>SFH 종합 문서부터 읽기 →</strong><small>주제별 게임 규칙과 개발 구조를 찾는 공통 문서 대문입니다.</small></a>
 
 <section class="sfh-role-console is-developer sfh-role-workspace">
   <header><span class="sfh-kicker">DEVELOPER ROOM · EXECUTION FIRST</span><h2>다음 변경과 회귀 위험을 먼저 봅니다</h2><p>완료 이력은 기준선으로 압축하고, 현재 오류·다음 작업·모듈 경계·검증 원칙을 구현 순서대로 배치합니다.</p></header>
   <div class="sfh-dev-focus">
-    <span><small>NEXT</small><b>P7-02</b><em>회전·리롤 심화 · P7-01A/B 구현 완료</em></span>
+    <span><small>NEXT</small><b>P7-03</b><em>설계도 영구 제작 등록 · P7-02 구현 완료</em></span>
     <span><small>BASELINE</small><b>P1·P4·P5</b><em>완료·회귀 금지</em></span>
     <span><small>KNOWN GAP</small><b>P6</b><em>실서비스 신원·서버 운영·보상</em></span>
   </div>
@@ -29,8 +31,8 @@ hide:
 | 완료 | P7-01A 비교·명시 구매 | 견적 정책·제공자·문구·패널 분리 | 열기/선택 무차감, 선택 상품 구매, 4화면·ESC 복귀 |
 | 완료 | 로비 준비 동선 | 배치 단말·준비 패널·장착 보존 정책 | 상점/요원/장비 로비 세팅 → 확인 전용 브리핑 → 실물 상태 출격 |
 | 완료 | P7-01B 품질·실물 연결 | 품질 정책·가방 지급 어댑터·장비 계산 분리 | 구매→I 실물→U/E 실제 수치→해제 보존 |
-| 1 | P7-02 회전·리롤 심화 | 회전 정책·상태·차감 서비스 분리 | 런 복귀 갱신·리롤 견적·1회 차감·중복 방지 |
-| 2 | P7-03~P10 | 제작→훈련→도감→출시 후보 | 선행 패킷 완료 후 각 흐름 E2E와 산출물 동등성 |
+| 완료 | P7-02 회전·리롤 심화 | 회전 정책·상태·차감 서비스 분리 | 런 복귀 갱신·리롤 견적·1회 차감·중복 방지 |
+| 1 | P7-03~P10 | 제작→훈련→도감→출시 후보 | 선행 패킷 완료 후 각 흐름 E2E와 산출물 동등성 |
 | 보류 | 서버 위변조·거래 원장·백업 | [구현 예정만 등록](../design/p7-plus-preimplementation.md#economy-integrity-plan) | 별도 승인 전 코드·DB·과금 설정 변경 없음 |
 
 ## 이미 진행한 기준선
@@ -65,7 +67,7 @@ hide:
 
 <nav class="sfh-role-console__grid" aria-label="개발자 핵심 문서">
   <a href="../../design/current-milestone-workline/"><b>실행 작업선</b><span>다음 ID·중단 조건·E2E 게이트</span></a>
-  <a href="../../architecture/code-module-map/"><b>코드 관계 웹</b><span>상속·의존·사용처 현행 상태</span></a>
+  <a href="../../architecture/code-module-map/"><b>코드 관계 웹 전체 문서</b><span>읽는 법·자동 현행화·접근성 계약</span></a>
   <a href="../../architecture/module-audit/"><b>모듈 감사</b><span>제거성·교체성·경계 위반 기록</span></a>
   <a href="../../quality/e2e-play-session/"><b>실제 플레이 E2E</b><span>입력·상태 전이·회귀 검사</span></a>
 </nav>

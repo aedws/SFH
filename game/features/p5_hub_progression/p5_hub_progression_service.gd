@@ -46,7 +46,7 @@ func configure(profile_provider: Node, contract_service: Node, progression_confi
 	if not _install_csv_module(
 		&"shop", bool(config.get("rotating_shop_enabled")), "shop_offer_csv_path", [profile],
 		[seed, int(config.get("shop_reroll_price")), int(config.get("shop_rotation_slots")),
-		config.get("shop_quality_catalog")]
+		config.get("shop_quality_catalog"), config.get("shop_rotation_policy")]
 	): return false
 	if not _install_csv_module(&"workshop", bool(config.get("workshop_enabled")), "recipe_csv_path", [profile], [seed]): return false
 	if not _install_csv_module(&"training", bool(config.get("training_enabled")), "training_scenario_csv_path", []): return false
@@ -191,6 +191,13 @@ func reroll_shop(transaction_id: StringName) -> Dictionary:
 	return result
 
 
+func quote_shop_reroll() -> Dictionary:
+	var shop = _module(&"shop")
+	return shop.call(&"quote_reroll") if shop != null else {
+		&"price": 0, &"credits": 0, &"affordable": false, &"reason": "상점 모듈 꺼짐"
+	}
+
+
 func register_extracted_blueprints(acquired: Dictionary) -> PackedStringArray:
 	var workshop = _module(&"workshop")
 	return workshop.call(&"register_extracted_blueprints", acquired) if workshop != null else PackedStringArray()
@@ -241,14 +248,37 @@ func confirm_operation_draft(draft_id: StringName, tier: Resource, penalty: Dict
 
 func begin_run(run_id: StringName) -> bool:
 	var utility = _module(&"utility")
-	return utility == null or bool(utility.call(&"begin_run", run_id))
+	var shop = _module(&"shop")
+	if utility != null and not bool(utility.call(&"begin_run", run_id)):
+		return false
+	if shop != null and not bool(shop.call(&"begin_run", run_id)):
+		if utility != null:
+			utility.call(&"settle_run", false)
+		return false
+	return true
+
+
+func cancel_run() -> bool:
+	var utility = _module(&"utility")
+	var shop = _module(&"shop")
+	var changed := false
+	if utility != null and StringName(utility.call(&"get_snapshot").get(&"active_run_id", &"")) != &"":
+		utility.call(&"settle_run", false)
+		changed = true
+	if shop != null:
+		changed = bool(shop.call(&"cancel_run")) or changed
+	if changed:
+		snapshot_changed.emit(get_snapshot())
+	return changed
 
 
 func settle_run(extracted: bool, acquired: Dictionary = {}) -> Dictionary:
 	var utility = _module(&"utility")
+	var shop = _module(&"shop")
 	var workshop = _module(&"workshop")
 	var codex = _module(&"codex")
 	var result := {&"utility": utility.call(&"settle_run", extracted) if utility != null else {}}
+	result[&"shop_rotation"] = shop.call(&"refresh_after_run") if shop != null else {}
 	if extracted:
 		result[&"registered_blueprints"] = workshop.call(&"register_extracted_blueprints", acquired) if workshop != null else PackedStringArray()
 		result[&"codex_completed"] = codex.call(&"record_extraction", acquired) if codex != null else PackedStringArray()
@@ -258,7 +288,7 @@ func settle_run(extracted: bool, acquired: Dictionary = {}) -> Dictionary:
 
 func refresh_hub() -> Dictionary:
 	var shop = _module(&"shop")
-	var result: Dictionary = shop.call(&"refresh", false) if shop != null else {&"success": true}
+	var result: Dictionary = shop.call(&"refresh_after_run") if shop != null else {&"success": true, &"changed": false}
 	snapshot_changed.emit(get_snapshot())
 	return result
 

@@ -359,7 +359,7 @@ const LOADOUT_INVESTMENT_METHODS := [
 const P5_HUB_PROGRESSION_METHODS := [
 	&"configure", &"get_investment_context", &"get_operation_setting_contribution",
 	&"create_operation_draft",
-	&"confirm_operation_draft", &"begin_run", &"settle_run", &"refresh_hub",
+	&"confirm_operation_draft", &"begin_run", &"cancel_run", &"settle_run", &"refresh_hub",
 	&"toggle_utility", &"purchase_shop_offer", &"get_shop_snapshot", &"quote_shop_offer",
 	&"set_shop_inventory_provider",
 	&"reroll_shop", &"craft_recipe",
@@ -1565,7 +1565,7 @@ func _rollback_operation_investment() -> void:
 		desktop_progress.call(&"cancel_run")
 	_restore_run_skill_bindings()
 	if p5_hub_progression_service != null:
-		p5_hub_progression_service.call(&"settle_run", false, {})
+		p5_hub_progression_service.call(&"cancel_run")
 	if loadout_investment_service != null:
 		loadout_investment_service.call(&"finish_run")
 	if persistent_profile != null and not active_contract.is_empty():

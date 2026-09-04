@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "83b55c39ff07271934ed1881ccacbe8309d94483c9b0e628fc0ed4cf3a6c72bc",
+  "source_sha256": "ca334b9e6eaee12339fb4c5b2090b00077c1891ceddf083e3bab2eab52add365",
   "layers": [
     {
       "id": "contract",
@@ -25,8 +25,8 @@
   ],
   "summary": {
     "modules": 59,
-    "scripts": 248,
-    "named_classes": 205,
+    "scripts": 251,
+    "named_classes": 208,
     "relationships": 182,
     "project_inheritance": 7,
     "enabled_toggles": 69
@@ -733,8 +733,8 @@
       "path": "game/features/p5_hub_progression",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 16,
-      "class_count": 16,
+      "file_count": 19,
+      "class_count": 19,
       "classes": [
         "BankruptcyProtectionPolicy",
         "CodexService",
@@ -749,6 +749,9 @@
         "ShopInventoryDeliveryService",
         "ShopItemQualityPolicy",
         "ShopQuotePolicy",
+        "ShopRerollTransactionService",
+        "ShopRotationPolicy",
+        "ShopRotationState",
         "TrainingService",
         "UtilityInvestmentService",
         "WorkshopService"
@@ -2517,6 +2520,33 @@
       "name": "ShopQuotePolicy",
       "module": "p5_hub_progression",
       "path": "game/features/p5_hub_progression/shop_quote_policy.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:ShopRerollTransactionService",
+      "name": "ShopRerollTransactionService",
+      "module": "p5_hub_progression",
+      "path": "game/features/p5_hub_progression/shop_reroll_transaction_service.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:ShopRotationPolicy",
+      "name": "ShopRotationPolicy",
+      "module": "p5_hub_progression",
+      "path": "game/features/p5_hub_progression/shop_rotation_policy.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:ShopRotationState",
+      "name": "ShopRotationState",
+      "module": "p5_hub_progression",
+      "path": "game/features/p5_hub_progression/shop_rotation_state.gd",
       "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"

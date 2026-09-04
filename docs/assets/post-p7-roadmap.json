@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "updated": "2026-09-04",
   "source": {
     "url": "https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9",
@@ -38,10 +38,13 @@
         {
           "id": "P7-02",
           "title": "런 종료 회전과 유료 리롤",
-          "state": "planned",
+          "state": "in_progress",
+          "completed_scope": ["런 정상 종료 시 1회 자동 회전", "골드 리롤 견적·차감·영수증", "취소 런·중복 복귀·중복 거래 방지"],
+          "remaining_scope": ["리롤 시작 가격·증가·상한과 품질 보장/이전 매물 회피 정책의 기획 확정"],
           "dependencies": ["P7-01"],
           "data_gate": "planner_decision",
-          "modules": ["ShopRotationPolicy", "ShopRotationService", "ShopStateProvider"],
+          "modules": ["ShopRotationPolicy", "ShopRotationState", "ShopRerollTransactionService", "RotatingShopService"],
+          "evidence": ["game/tests/p5_hub_progression_contract_test.gd", "game/tests/shop_browser_contract_test.gd", "docs/features/hub-economy.md"],
           "player_outcome": "런 복귀 때 매물이 바뀌고 리롤 가격·결과·잔액을 즉시 이해한다.",
           "e2e": "런 종료→결정적 회전→리롤 견적→1회 차감→중복 입력 방지"
         },
