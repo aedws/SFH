@@ -12,9 +12,10 @@ description: 출격 전에 요원과 무기·방어구를 고르고, 가방을 �
 ## 1. 처음 읽는 순서
 
 1. [요원 선택](character-selection.md)과 [캐릭터 장비](character-equipment.md)에서 착용 대상을 확인합니다.
-2. [격자 가방](grid-inventory.md)에서 아이템 이동·장착과 편집 후 저장을 확인합니다.
-3. [파츠·모듈 개조](equipment-customization.md)에서 호환 조건과 장착 코스트를 읽습니다.
-4. 비용은 [런 투자](loadout-investment.md), 강화 재료는 [장비 강화 경제](equipment-upgrade-economy.md)에서 확인합니다.
+2. [무기 고유 스킬과 장비 고정 옵션](equipment-fixed-identity.md)에서 성장해도 바뀌지 않는 장비 정체성을 확인합니다.
+3. [격자 가방](grid-inventory.md)에서 아이템 이동·장착과 편집 후 저장을 확인합니다.
+4. [파츠·모듈 개조](equipment-customization.md)에서 호환 조건과 장착 코스트를 읽습니다.
+5. 비용은 [런 투자](loadout-investment.md), 강화 재료는 [장비 강화 경제](equipment-upgrade-economy.md)에서 확인합니다.
 
 ## 2. 하위 문서
 

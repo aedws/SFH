@@ -21,4 +21,12 @@ if (-not $godotExecutable) {
 }
 
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/basic_loop_smoke_test.gd"
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+& $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/equipment_fixed_identity_contract_test.gd"
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+python (Join-Path $PSScriptRoot "sync_equipment_identity.py") --check
 exit $LASTEXITCODE

@@ -1,13 +1,24 @@
-[gd_resource type="Resource" script_class="EquipmentArmorDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="EquipmentArmorDefinition" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://game/features/equipment/armor_definition.gd" id="1_armor"]
 [ext_resource type="Script" path="res://game/features/equipment/stat_modifier.gd" id="2_modifier"]
+[ext_resource type="Script" path="res://game/features/equipment/equipment_fixed_option.gd" id="3_option"]
 
 [sub_resource type="Resource" id="MovementSpeed"]
 script = ExtResource("2_modifier")
 stat_id = &"movement_speed"
 operation = 0
 amount = 20.0
+
+[sub_resource type="Resource" id="FixedOption"]
+script = ExtResource("3_option")
+option_id = &"responsive_sole"
+display_name = "반응형 전술 밑창"
+target_kind = 0
+modifier_id = &"movement_speed"
+operation = 0
+amount = 12.0
+description = "성장과 분리된 고정 이동 속도 옵션입니다."
 
 [resource]
 script = ExtResource("1_armor")
@@ -18,4 +29,5 @@ maximum_level = 3
 module_slot_limit = 2
 module_cost_limit = 5
 stat_modifiers = [SubResource("MovementSpeed")]
+fixed_options = [SubResource("FixedOption")]
 description = "이동 속도를 올리는 범용 스탯 수정 예시입니다."

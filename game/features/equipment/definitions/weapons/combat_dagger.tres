@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="EquipmentWeaponDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="EquipmentWeaponDefinition" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://game/features/equipment/weapon_definition.gd" id="1_weapon"]
 [ext_resource type="Script" path="res://game/features/equipment/weapon_tag_profile.gd" id="2_tags"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_innate_skill_definition.gd" id="3_innate"]
+[ext_resource type="Script" path="res://game/features/equipment/equipment_fixed_option.gd" id="4_option"]
 
 [sub_resource type="Resource" id="TagProfile"]
 script = ExtResource("2_tags")
@@ -12,6 +14,26 @@ major_label = "근접"
 middle_label = "냉병기"
 minor_label = "단검"
 
+[sub_resource type="Resource" id="InnateSkill"]
+script = ExtResource("3_innate")
+skill_id = &"bleeding_edge"
+display_name = "잔상 절단"
+trigger_every_hits = 2
+fixed_damage = 1.0
+impact_strength = 0.8
+effect_color = Color(0.929412, 0.211765, 0.470588, 1)
+description = "두 번째 명중마다 고정 절단 피해를 추가합니다."
+
+[sub_resource type="Resource" id="FixedOption"]
+script = ExtResource("4_option")
+option_id = &"balanced_tang"
+display_name = "균형형 탱"
+target_kind = 1
+modifier_id = &"damage_multiply"
+operation = 1
+amount = 1.04
+description = "고정 피해 보정입니다."
+
 [resource]
 script = ExtResource("1_weapon")
 weapon_id = &"combat_dagger"
@@ -20,6 +42,8 @@ tags = SubResource("TagProfile")
 combat_tags = [&"slash", &"melee"]
 grade = 1
 skill_mechanic_overrides = {}
+innate_skill = SubResource("InnateSkill")
+fixed_options = [SubResource("FixedOption")]
 maximum_level = 3
 module_slot_limit = 2
 module_cost_limit = 5

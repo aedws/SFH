@@ -82,15 +82,21 @@ func _draw() -> void:
 		var lifetime: float = maxf(0.001, float(impact[&"lifetime"]))
 		var ratio: float = 1.0 - float(impact[&"remaining"]) / lifetime
 		var intensity: float = float(impact[&"intensity"])
-		var radius: float = float(profile.impact_radius) * intensity * (0.35 + ratio * 0.85)
+		var radius: float = (
+			float(profile.impact_radius) * intensity
+			* float(impact.get(&"radius_multiplier", 1.0)) * (0.35 + ratio * 0.85)
+		)
 		var color: Color = impact[&"color"]
 		color.a *= 1.0 - ratio
 		var position: Vector2 = impact[&"position"]
 		draw_arc(position, radius, 0.0, TAU, 20, color, 2.0)
 		var base_direction: Vector2 = impact[&"direction"]
-		for ray_index in int(profile.impact_ray_count):
+		var ray_count := maxi(3, roundi(
+			float(profile.impact_ray_count) * float(impact.get(&"ray_multiplier", 1.0))
+		))
+		for ray_index in ray_count:
 			var direction: Vector2 = base_direction.rotated(
-				TAU * float(ray_index) / float(profile.impact_ray_count)
+				TAU * float(ray_index) / float(ray_count)
 			)
 			var inner: Vector2 = position + direction * radius * 0.28
 			var outer: Vector2 = position + direction * radius * (0.72 + 0.2 * (ray_index % 2))
@@ -125,6 +131,8 @@ func _on_actor_damaged(
 		&"lifetime": float(profile.impact_lifetime_seconds),
 		&"intensity": intensity,
 		&"color": color,
+		&"radius_multiplier": float(context.get(&"impact_radius_multiplier", 1.0)),
+		&"ray_multiplier": float(context.get(&"impact_ray_multiplier", 1.0)),
 	})
 	total_hits += 1
 	if is_player:
@@ -133,7 +141,8 @@ func _on_actor_damaged(
 		total_lethal_hits += 1
 	trauma = clampf(
 		trauma
-		+ float(profile.player_hit_trauma if is_player else profile.enemy_hit_trauma) * intensity
+		+ float(profile.player_hit_trauma if is_player else profile.enemy_hit_trauma)
+			* intensity * float(context.get(&"camera_trauma_multiplier", 1.0))
 		+ float(profile.lethal_bonus_trauma if lethal else 0.0),
 		0.0,
 		1.0
@@ -151,6 +160,9 @@ func _impact_color(
 	if is_player:
 		return Color(1.0, 0.26, 0.22, 0.95)
 	var source_kind: StringName = StringName(context.get(&"source_kind", &""))
+	if context.has(&"impact_color"):
+		var custom_color: Color = context[&"impact_color"]
+		return custom_color
 	if source_kind in [&"magnetic_field", &"blink_path"]:
 		return Color(0.24, 0.9, 1.0, 0.95)
 	if armor_damage > health_damage:

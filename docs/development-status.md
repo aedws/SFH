@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-04</span><span>SEARCH COMMAND</span><span>7 DAYS · 88 TOPICS</span><span>92 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-04</span><span>SEARCH COMMAND</span><span>7 DAYS · 89 TOPICS</span><span>93 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 26 · IMPROVE 37 · CHANGE 45 · FIX 25</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 31 · IMPROVE 41 · CHANGE 51 · FIX 28</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>26</b><small>BUILD</small></span><span><b>37</b><small>IMPROVE</small></span><span><b>45</b><small>CHANGE</small></span><span><b>25</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>31</b><small>BUILD</small></span><span><b>41</b><small>IMPROVE</small></span><span><b>51</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -225,7 +225,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="architecture/code-module-map/">직관형 코드 모듈 지도 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 11</small><b>P8 체감 전수 감사 · 보이지 않던 계측과 반복 측정 복구</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 구현돼도 화면 밖이라 알 수 없던 훈련 계측과 무료 세팅이 화면 안에 배치되고, 큰 빈 패널이 사라지며, 더미 재생성 뒤에도 새 측정이 즉시 시작됩니다.</strong></div>
@@ -235,6 +235,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 3</h3><p>계측/세팅 패널의 음수 X 화면 이탈, 내용 없는 240px 중앙 가림, 자동 reset 뒤 고정 결과만 남던 생명주기 불일치를 제거했습니다.</p></div>
         <p>전체 구조는 기능 57·클래스 226·의존 26·순환 0·Scene 침범 0입니다. Sheet/CSV·밸런스·과금 모델은 변경하지 않았습니다.</p>
         <p><a href="quality/player-perception-audit/#p8-perception-audit-2026-09-04">체감 감사 →</a> · <a href="architecture/module-audit/#p8-perception-audit-2026-09-04">모듈 감사 →</a> · <a href="features/training-ground/">훈련장 계약 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>무기 고정 정체성 · 고유 스킬·옵션·타격 인지</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 무기마다 명중 누적 고유 효과와 구분되는 타격 표현이 생기고, 무기·방어구 옵션은 내부/외부 성장과 모듈에 흔들리지 않는 장비 고유값으로 유지됩니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 5</h3><p>고정 옵션 Resource·payload 어댑터·고유 스킬 정의/발동기·잠금 CSV 조회기를 독립 모듈로 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>5개 무기의 총구 섬광, 투사체 glow, 충격 색·크기·카메라 반응과 명중 누적 전기 효과를 구분했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 6</h3><p>Weapon/Armor Sheet, 7행 확정 CSV, 장비 UI, 검색, 모듈 감사와 E2E 계약을 고정 정체성 기준으로 확장했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>발사 후 Q 교체 시 탄환 정체성 혼선, 성장 배율의 고유 효과 침범, 획득 옵션이 실제 장착 계산으로 이어지지 않던 단절을 차단했습니다.</p></div>
+        <p>전체 구조는 기능 57·클래스 231·의존 26·순환 0·Scene 침범 0입니다. 신규 수치는 임시값이며 과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/equipment-fixed-identity/">장비 고정 정체성 →</a> · <a href="architecture/module-audit/#equipment-fixed-identity-2026-09-04">모듈 감사 →</a> · <a href="quality/player-perception-audit/#equipment-fixed-identity-perception-2026-09-04">인식 검사 →</a></p>
       </div>
     </details>
   </div>

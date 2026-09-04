@@ -1509,3 +1509,20 @@ P8-01~03 구현은 완료했으나 더미 HP·방어·수량·측정 시간은 �
 | 전체 구조 | 통과 | 57개 feature, 226개 `class_name`, 26개 명시 의존, 순환 0, 서비스/정책의 Scene 침범 0, P8 경계 11개 |
 
 이번 전수 검사는 “클래스와 테스트가 존재한다”를 완료로 보지 않고 실제 화면에서 **보이는가, 공간을 과점하지 않는가, 반복 행동의 결과가 다시 갱신되는가**까지 판정했습니다. 새 목록이 없어 Google Sheet/CSV를 확장하지 않았고 수치·과금 모델은 변경하지 않았습니다.
+
+## 장비 고정 정체성과 무기 타격 인지 감사 (2026-09-04) {#equipment-fixed-identity-2026-09-04}
+
+| 검사 항목 | 결과 | 근거 |
+|---|---|---|
+| 고유 스킬 정의 분리 | 통과 | `WeaponInnateSkillDefinition`은 발동 횟수·고정 피해·표현만 소유하고 성장·모듈을 참조하지 않음 |
+| 명중 발동 분리 | 통과 | `WeaponInnateSkillSystem`이 발사 시점 identity snapshot별 카운트와 추가 피해만 담당 |
+| 정의/인스턴스 옵션 | 통과 | Resource 기본 옵션과 제작·드랍 payload 옵션을 `EquipmentItemState`가 함께 보존하고 ID로 중복 제거 |
+| 옵션 어댑터 | 통과 | `EquipmentFixedOptionFactory`만 기존 affix payload 형식을 알고 계산 계층은 정규화된 옵션만 소비 |
+| 성장 불변성 | 통과 | 무기 레벨·외부 방어구 레벨·런 버프 뒤 고유 스킬/고정 옵션 snapshot 동일성을 계약 테스트로 고정 |
+| source 격리 | 통과 | `equipment_fixed_identity`, 장비/모듈 upgrade, `run_buff`를 별도 런타임 source로 계산 |
+| 발사 후 Q 교체 안전 | 통과 | Projectile이 발사한 무기 정체성과 impact profile을 보존하므로 비행 중 활성 슬롯 변경에 영향받지 않음 |
+| 타격 표현 예산 | 통과 | 총구 섬광은 기존 AutoWeapon draw, 투사체 glow는 기존 노드, impact 변화는 Director의 32개 상한을 재사용 |
+| 데이터 확장성 | 통과 | Weapon/Armor Sheet의 신규 열과 7행 잠금 CSV를 `EquipmentIdentityTable`·동기화 스크립트가 검증 |
+| 전체 구조 | 통과 | 기능 57개·`class_name` 231개·명시 의존 26개·순환 0·서비스 Scene 침범 0 |
+
+고유 스킬과 고정 옵션은 장비의 정체성이고, 내부/외부 레벨과 모듈은 성장 원천입니다. 양쪽의 데이터·Signal·테스트를 분리했기 때문에 신규 무기·옵션을 추가해도 성장 공식을 수정하지 않습니다. Google Sheet의 신규 데이터는 기획 확정 전 `provisional`이며 과금 모델은 변경하지 않았습니다.

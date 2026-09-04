@@ -25,12 +25,14 @@ tags:
 | 스킬 | 소총 점사 | 메인 소총과 완전 일치해 활성 |
 | 스킬 | 권총 속사 | 보조 권총과 완전 일치해 활성 |
 | 스킬 | 단검 쇄도 | 맞는 단검이 없어 비활성 |
-| 몸 방어구 | 전술 방탄복 | 최대 체력 +25, 방어 +3 |
-| 발 방어구 | 기동 전투화 | 이동 속도 +20 |
+| 몸 방어구 | 전술 방탄복 | 기본 최대 체력 +25·방어 +3, 고정 옵션 최대 체력 +10 |
+| 발 방어구 | 기동 전투화 | 기본 이동 속도 +20, 고정 옵션 이동 속도 +12 |
 
 HUD에는 메인·보조 무기의 세 단계 분류, 현재 활성 슬롯, 활성 스킬 수, 방어구 수와 방어력이 표시됩니다. 작전 중 `Q`로 활성 무기를 교체합니다.
 
 거점의 U/E 화면에서는 무기·방어구를 직접 장착·교체·해제합니다. `EquipmentItemState`를 장비 정의와 함께 가방에 반환하므로 장비 레벨, 개조 태그, 장착 모듈·파츠가 교체 과정에서 사라지지 않습니다. 준비 상태는 전투 세션 진입과 거점 귀환 사이에 유지됩니다.
+
+무기 고유 스킬과 무기·방어구 고정 옵션도 같은 상태에 보존됩니다. 이 값은 내부 런 레벨, 외부 영구 레벨, 품질, 모듈 강화와 분리되며 상세 규칙은 [무기 고유 스킬과 장비 고정 옵션](equipment-fixed-identity.md)에서 확인합니다.
 
 가방 점유 크기와 I 화면은 [격자 가방 인벤토리](grid-inventory.md), U 화면의 슬롯 태그·고유 파츠·모듈 강화·최고 레벨 개조는 [장비 파츠·모듈 개조](equipment-customization.md)에서 이어서 설명합니다.
 
@@ -123,10 +125,12 @@ game/features/equipment/definitions/weapons/
 - `export_runtime_state()`, `restore_runtime_state(...)`
 - `level_up_equipment(...)`, `grant_module_tag(...)`
 - `get_active_weapon_slot()`, `get_active_weapon()`
+- `get_active_weapon_fixed_modifiers()`, `get_active_weapon_identity_snapshot()`
 - `switch_active_weapon()`, `set_active_weapon_slot(slot_id)`
 - `equipment_changed(summary)` Signal
 - `customization_changed(snapshot)` Signal
 - `active_weapon_changed(slot_id, weapon_definition)` Signal
+- `weapon_fixed_identity_changed(snapshot)` Signal
 
 방어구 적용 대상은 구체 플레이어 클래스를 요구하지 않고 `apply_equipment_modifiers(modifiers)` 메서드만 제공하면 됩니다.
 

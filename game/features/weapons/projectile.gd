@@ -1,6 +1,8 @@
 class_name WeaponProjectile
 extends Area2D
 
+signal hit_confirmed(target: Node, world_position: Vector2, context: Dictionary)
+
 @export_range(1.0, 3000.0, 10.0) var speed: float = 640.0
 @export_range(0.1, 10.0, 0.1) var lifetime: float = 1.8
 
@@ -10,8 +12,10 @@ var remaining_lifetime: float
 var remaining_pierces: int = 0
 var pierce_damage_retention: float = 1.0
 var hit_body_ids: Dictionary = {}
+var hit_context: Dictionary = {}
 
 @onready var body_shape: Polygon2D = $Body
+@onready var glow_shape: Polygon2D = get_node_or_null("Glow") as Polygon2D
 
 
 func _ready() -> void:
@@ -25,7 +29,8 @@ func launch(
 	new_lifetime: float = 1.8,
 	new_pierce_count: int = 0,
 	new_pierce_damage_retention: float = 1.0,
-	new_color: Color = Color(1.0, 0.875, 0.302, 1.0)
+	new_color: Color = Color(1.0, 0.875, 0.302, 1.0),
+	new_hit_context: Dictionary = {}
 ) -> void:
 	direction = new_direction.normalized()
 	damage = new_damage
@@ -35,6 +40,9 @@ func launch(
 	remaining_pierces = new_pierce_count
 	pierce_damage_retention = new_pierce_damage_retention
 	body_shape.color = new_color
+	if glow_shape != null:
+		glow_shape.color = Color(new_color.r, new_color.g, new_color.b, 0.24)
+	hit_context = new_hit_context.duplicate(true)
 	rotation = direction.angle()
 
 
@@ -53,12 +61,16 @@ func _on_body_entered(body: Node) -> void:
 	if not body.has_method(&"take_damage"):
 		queue_free()
 		return
-	body.call(&"take_damage", damage, {
+	var context := hit_context.duplicate(true)
+	context.merge({
 		&"source_kind": &"weapon_projectile",
 		&"source_position": global_position - direction * 10.0,
 		&"impact_direction": direction,
-		&"impact_strength": clampf(damage / 10.0, 0.45, 1.5),
-	})
+		&"impact_strength": clampf(damage / 10.0, 0.45, 1.5)
+			* float(context.get(&"impact_strength_multiplier", 1.0)),
+	}, true)
+	body.call(&"take_damage", damage, context)
+	hit_confirmed.emit(body, global_position, context.duplicate(true))
 	if remaining_pierces > 0:
 		remaining_pierces -= 1
 		damage *= pierce_damage_retention

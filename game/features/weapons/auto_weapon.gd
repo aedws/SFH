@@ -24,6 +24,11 @@ var runtime_modifier_sources: Dictionary = {}
 var total_trigger_pulls: int = 0
 var total_projectiles_fired: int = 0
 var last_target_instance_id: int = 0
+var active_weapon_identity: Dictionary = {}
+var muzzle_flash_remaining: float = 0.0
+var muzzle_flash_direction := Vector2.RIGHT
+
+@onready var innate_skill_system: WeaponInnateSkillSystem = $InnateSkillSystem
 
 
 func configure(
@@ -45,6 +50,18 @@ func configure(
 		var weapon = equipment_provider.call(&"get_active_weapon")
 		if weapon != null:
 			active_weapon_id = weapon.weapon_id
+	if (
+		equipment_provider != null
+		and equipment_provider.has_signal(&"weapon_fixed_identity_changed")
+		and equipment_provider.has_method(&"get_active_weapon_identity_snapshot")
+	):
+		equipment_provider.connect(
+			&"weapon_fixed_identity_changed",
+			Callable(self, &"_on_weapon_fixed_identity_changed")
+		)
+		_on_weapon_fixed_identity_changed(
+			equipment_provider.call(&"get_active_weapon_identity_snapshot")
+		)
 	if (
 		equipment_provider != null
 		and equipment_provider.has_signal(&"weapon_upgrade_modifiers_changed")
@@ -99,6 +116,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	muzzle_flash_remaining = maxf(0.0, muzzle_flash_remaining - delta)
+	queue_redraw()
 	cooldown -= delta
 	if requires_primary_attack and not Input.is_action_pressed(primary_attack_action):
 		burst_remaining = 0
@@ -184,6 +203,8 @@ func get_runtime_snapshot() -> Dictionary:
 	result[&"total_trigger_pulls"] = total_trigger_pulls
 	result[&"total_projectiles_fired"] = total_projectiles_fired
 	result[&"last_target_instance_id"] = last_target_instance_id
+	result[&"fixed_identity"] = active_weapon_identity.duplicate(true)
+	result[&"innate_skill_runtime"] = innate_skill_system.get_snapshot()
 	result[&"targeting_policy"] = (
 		targeting_policy.call(&"get_snapshot") if targeting_policy != null else {}
 	)
@@ -250,6 +271,8 @@ func _spawn_projectile(direction: Vector2) -> void:
 		damage *= float(current_balance.get(&"critical_multiplier", 1.0))
 	projectile_parent.add_child(projectile)
 	projectile.global_position = global_position
+	projectile.connect(&"hit_confirmed", Callable(self, &"_on_projectile_hit_confirmed"))
+	var impact_profile := _impact_profile(active_weapon_id)
 	projectile.call(
 		&"launch",
 		direction,
@@ -258,8 +281,19 @@ func _spawn_projectile(direction: Vector2) -> void:
 		float(current_balance.get(&"projectile_lifetime_sec", 1.8)),
 		int(current_balance.get(&"pierce_count", 0)),
 		float(current_balance.get(&"pierce_damage_retention", 1.0)),
-		current_balance.get(&"projectile_color", Color.WHITE)
+		current_balance.get(&"projectile_color", Color.WHITE),
+		{
+			&"source_weapon_id": active_weapon_id,
+			&"weapon_identity": active_weapon_identity.duplicate(true),
+			&"impact_color": impact_profile[&"color"],
+			&"impact_radius_multiplier": impact_profile[&"radius_multiplier"],
+			&"impact_ray_multiplier": impact_profile[&"ray_multiplier"],
+			&"camera_trauma_multiplier": impact_profile[&"trauma_multiplier"],
+			&"impact_strength_multiplier": impact_profile[&"strength_multiplier"],
+		}
 	)
+	muzzle_flash_direction = direction.normalized()
+	muzzle_flash_remaining = 0.075
 	total_projectiles_fired += 1
 
 
@@ -271,6 +305,10 @@ func _on_active_weapon_changed(
 		return
 	active_weapon_slot = slot_id
 	active_weapon_id = weapon_definition.weapon_id
+	if equipment_provider.has_method(&"get_active_weapon_identity_snapshot"):
+		_on_weapon_fixed_identity_changed(
+			equipment_provider.call(&"get_active_weapon_identity_snapshot")
+		)
 	burst_remaining = 0
 	cooldown = 0.08
 	_refresh_balance()
@@ -282,6 +320,41 @@ func _on_balance_updated(_snapshot: Dictionary, _source_label: String) -> void:
 
 func _on_weapon_upgrade_modifiers_changed(modifiers: Dictionary) -> void:
 	set_runtime_modifiers(&"equipment_upgrade", modifiers)
+
+
+func _on_weapon_fixed_identity_changed(snapshot: Dictionary) -> void:
+	active_weapon_identity = snapshot.duplicate(true)
+	set_runtime_modifiers(
+		&"equipment_fixed_identity",
+		active_weapon_identity.get(&"fixed_modifiers", {})
+	)
+
+
+func _on_projectile_hit_confirmed(
+	target: Node, world_position: Vector2, context: Dictionary
+) -> void:
+	var fired_identity: Dictionary = context.get(&"weapon_identity", {})
+	innate_skill_system.resolve_confirmed_hit(target, world_position, fired_identity)
+
+
+func _impact_profile(weapon_id: StringName) -> Dictionary:
+	match weapon_id:
+		&"service_pistol":
+			return {&"color": Color("f6b94b"), &"radius_multiplier": 1.3, &"ray_multiplier": 0.75, &"trauma_multiplier": 1.3, &"strength_multiplier": 1.35}
+		&"pulse_rifle":
+			return {&"color": Color("02e5e1"), &"radius_multiplier": 1.15, &"ray_multiplier": 1.5, &"trauma_multiplier": 0.9, &"strength_multiplier": 0.9}
+		_:
+			return {&"color": Color("47d7d0"), &"radius_multiplier": 1.0, &"ray_multiplier": 1.0, &"trauma_multiplier": 1.0, &"strength_multiplier": 1.0}
+
+
+func _draw() -> void:
+	if muzzle_flash_remaining <= 0.0:
+		return
+	var ratio := muzzle_flash_remaining / 0.075
+	var color: Color = _impact_profile(active_weapon_id)[&"color"]
+	color.a = clampf(ratio, 0.0, 1.0)
+	draw_line(Vector2.ZERO, muzzle_flash_direction * (24.0 + 12.0 * ratio), color, 4.0)
+	draw_circle(muzzle_flash_direction * 18.0, 5.0 + ratio * 5.0, Color(color.r, color.g, color.b, color.a * 0.35))
 
 
 func _refresh_balance() -> void:

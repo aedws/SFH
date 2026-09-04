@@ -212,6 +212,8 @@ const EQUIPMENT_METHODS := [
 	&"set_external_armor_level",
 	&"set_upgrade_balance_provider",
 	&"get_active_weapon_upgrade_modifiers",
+	&"get_active_weapon_fixed_modifiers",
+	&"get_active_weapon_identity_snapshot",
 	&"active_weapon_has_combat_tags",
 	&"get_active_skill_mechanic_override",
 	&"export_runtime_state",

@@ -37,6 +37,7 @@ hide:
 | 완료 | P8-01 실제 훈련 더미 | 시나리오·생성·초기화·façade 분리 | 거점 F→실제 좌클릭→밀집 전환→이탈 정리 |
 | 완료 | P8-02~03 계측·자유 세팅 | Collector/Service/Presenter와 Snapshot/Service/Presenter 분리 | DPS/AP/쿨타임 결과 고정·격리 스킬·퇴장 원복 |
 | 완료 | P8 체감 전수 감사 | `TrainingHudLayout` 배치 책임 분리·자동 reset 계측 재시작 | 실제 화면 내부·비겹침·84px 스킬 HUD·반복 타격 수치 갱신 |
+| 완료 | 장비 고정 정체성 | 정의/인스턴스 옵션·고유 스킬·명중 발동·CSV 계약 분리 | 같은 무기 같은 효과·성장 불변·무기별 타격 표현 |
 | 1 | P9-01~P10 | 도감→프리셋→출시 후보 | 선행 패킷 완료 후 각 흐름 E2E와 산출물 동등성 |
 | 보류 | 서버 위변조·거래 원장·백업 | [구현 예정만 등록](../design/p7-plus-preimplementation.md#economy-integrity-plan) | 별도 승인 전 코드·DB·과금 설정 변경 없음 |
 
@@ -70,6 +71,7 @@ hide:
 7. 완료 판정은 파일 존재가 아니라 단서→입력→상태 변화→결과→다음 행동의 플레이어 인식 E2E로 합니다.
 8. 병합은 빌드·Web/Windows export·E2E·위키 계약이 모두 성공한 PR만 허용합니다.
 9. 장비 제공자의 실물 상태가 출격 원본입니다. 작전 카탈로그에서 무기/모듈/파츠를 덮어쓰거나 무기 비용을 재청구하지 않습니다.
+10. 장비 고유 스킬과 고정 옵션은 `fixed_identity` 원천이며 내부/외부 성장과 모듈 modifier가 값을 변경하지 못합니다.
 
 <nav class="sfh-role-console__grid" aria-label="개발자 핵심 문서">
   <a href="../../design/current-milestone-workline/"><b>실행 작업선</b><span>다음 ID·중단 조건·E2E 게이트</span></a>

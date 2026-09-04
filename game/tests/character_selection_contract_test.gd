@@ -88,7 +88,9 @@ func _verify_player_visible_flow() -> bool:
 	await process_frame
 	var player = game.get("player")
 	var stats: Dictionary = player.call(&"get_runtime_stats") if player != null else {}
-	if player == null or not is_equal_approx(float(stats.get(&"movement_speed", 0.0)), 330.0):
+	# 장비 고정 옵션(+12)은 캐릭터 패시브와 별도 원천으로 먼저 합성되고,
+	# 질주자 배율(×1.10)은 합성된 이동 속도에 적용됩니다: (300 + 12) × 1.10.
+	if player == null or not is_equal_approx(float(stats.get(&"movement_speed", 0.0)), 343.2):
 		return _fail("선택 캐릭터 패시브가 런타임 플레이어에 적용되지 않았습니다: %s" % stats)
 	game.call(&"_return_to_start_hub")
 	root.remove_child(game)
