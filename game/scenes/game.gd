@@ -1343,8 +1343,18 @@ func _refresh_contract_setup_ui() -> void:
 		]
 		var candidate_lines := PackedStringArray()
 		for candidate in p5_workshop.get(&"candidates", []):
-			candidate_lines.append("%s · %s" % [
+			var material_parts := PackedStringArray()
+			for item_id in candidate.get(&"materials", {}):
+				material_parts.append("%s %d" % [item_id, int(candidate.get(&"materials", {})[item_id])])
+			var roll_preview: Dictionary = candidate.get(&"roll_preview", {})
+			candidate_lines.append("%s · %d C · %s · 옵션 %d~%d · 소켓 %d~%d · %s" % [
 				candidate.get(&"display_name", "제작 항목"),
+				int(candidate.get(&"credit_cost", 0)),
+				" + ".join(material_parts),
+				int(roll_preview.get(&"minimum_affixes", 0)),
+				int(roll_preview.get(&"maximum_affixes", 0)),
+				int(roll_preview.get(&"minimum_sockets", 0)),
+				int(roll_preview.get(&"maximum_sockets", 0)),
 				candidate.get(&"status_label", "도면 확인"),
 			])
 		craft_button.tooltip_text = "\n".join(candidate_lines)

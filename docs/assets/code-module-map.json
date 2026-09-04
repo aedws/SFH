@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "9d2edd3c57f522eaa6d33ec63cd6ee72058855fe4d8f787b9a72f2c175d53c15",
+  "source_sha256": "654005fe70759d9905b6533bb9ce2c5f7f6f34180610c507be72791b033d9c70",
   "layers": [
     {
       "id": "contract",
@@ -25,8 +25,8 @@
   ],
   "summary": {
     "modules": 59,
-    "scripts": 255,
-    "named_classes": 211,
+    "scripts": 258,
+    "named_classes": 213,
     "relationships": 182,
     "project_inheritance": 7,
     "enabled_toggles": 69
@@ -733,8 +733,8 @@
       "path": "game/features/p5_hub_progression",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 22,
-      "class_count": 22,
+      "file_count": 24,
+      "class_count": 24,
       "classes": [
         "BankruptcyProtectionPolicy",
         "BlueprintRegistry",
@@ -755,7 +755,9 @@
         "ShopRotationState",
         "TrainingService",
         "UtilityInvestmentService",
+        "WorkshopCraftTransactionService",
         "WorkshopRecipeProvider",
+        "WorkshopRollPolicy",
         "WorkshopService",
         "WorkshopUnlockService"
       ],
@@ -1061,7 +1063,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 34,
+      "file_count": 35,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -2582,11 +2584,29 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:WorkshopCraftTransactionService",
+      "name": "WorkshopCraftTransactionService",
+      "module": "p5_hub_progression",
+      "path": "game/features/p5_hub_progression/workshop_craft_transaction_service.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:WorkshopRecipeProvider",
       "name": "WorkshopRecipeProvider",
       "module": "p5_hub_progression",
       "path": "game/features/p5_hub_progression/workshop_recipe_provider.gd",
       "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:WorkshopRollPolicy",
+      "name": "WorkshopRollPolicy",
+      "module": "p5_hub_progression",
+      "path": "game/features/p5_hub_progression/workshop_roll_policy.gd",
+      "extends": "Resource",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -3934,7 +3954,7 @@
       "from": "verification",
       "to": "operation_contract",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "verification",
@@ -3958,7 +3978,7 @@
       "from": "verification",
       "to": "p5_hub_progression",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "verification",
@@ -3970,7 +3990,7 @@
       "from": "verification",
       "to": "persistent_profile",
       "type": "verifies",
-      "evidence_count": 10
+      "evidence_count": 11
     },
     {
       "from": "verification",

@@ -38,7 +38,8 @@ required_files = (
     "shop_rotation_policy.gd", "shop_rotation_state.gd",
     "shop_reroll_transaction_service.gd",
     "blueprint_registry.gd", "workshop_recipe_provider.gd",
-    "workshop_unlock_service.gd",
+    "workshop_unlock_service.gd", "workshop_roll_policy.gd",
+    "workshop_craft_transaction_service.gd",
 )
 for name in required_files:
     if not (FEATURE_ROOT / name).is_file():
@@ -60,10 +61,14 @@ if "shop_quality_catalog" not in config:
     ERRORS.append("P5 config does not expose the replaceable item-quality catalogue.")
 if "shop_rotation_policy" not in config:
     ERRORS.append("P5 config does not expose the replaceable shop-rotation policy.")
+if "workshop_roll_policy" not in config:
+    ERRORS.append("P5 config does not expose the replaceable workshop-roll policy.")
 if not (FEATURE_ROOT / "configs" / "default_item_quality_catalog.tres").is_file():
     ERRORS.append("Missing default item-quality Resource catalogue.")
 if not (FEATURE_ROOT / "configs" / "default_shop_rotation_policy.tres").is_file():
     ERRORS.append("Missing default shop-rotation Resource policy.")
+if not (FEATURE_ROOT / "configs" / "default_workshop_roll_policy.tres").is_file():
+    ERRORS.append("Missing default workshop-roll Resource policy.")
 
 sync_script = ROOT / "scripts" / "sync_p5_catalogs.py"
 if not sync_script.is_file():
@@ -75,7 +80,7 @@ for stem in ("utility", "operation_preset", "shop_offer", "recipe", "training_sc
 aggregator = (FEATURE_ROOT / "p5_hub_progression_service.gd").read_text(encoding="utf-8")
 if "preload(" in aggregator:
     ERRORS.append("P5 aggregator statically preloads removable submodules.")
-for public_method in ("set_utility_quantity", "use_utility", "record_training_hit", "get_codex_entry", "perform_hub_action", "get_workshop_candidates"):
+for public_method in ("set_utility_quantity", "use_utility", "record_training_hit", "get_codex_entry", "perform_hub_action", "get_workshop_candidates", "quote_workshop_recipe"):
     if f"func {public_method}" not in aggregator:
         ERRORS.append(f"P5 facade missing public method: {public_method}")
 
@@ -127,10 +132,21 @@ if not removal_test.is_file() or "delivery_off" not in removal_test.read_text(en
 blueprint_test = ROOT / "game" / "tests" / "workshop_blueprint_registry_contract_test.gd"
 if not blueprint_test.is_file() or "reconnect recipe_candidates" not in blueprint_test.read_text(encoding="utf-8"):
     ERRORS.append("P7 blueprint registry lacks extraction-to-reconnect coverage.")
+workshop_transaction_test = ROOT / "game" / "tests" / "workshop_craft_transaction_contract_test.gd"
+if not workshop_transaction_test.is_file() or "atomic_single_commit" not in workshop_transaction_test.read_text(encoding="utf-8"):
+    ERRORS.append("P7 workshop transaction lacks atomic debit/delivery coverage.")
+workshop_service = (FEATURE_ROOT / "workshop_service.gd").read_text(encoding="utf-8")
+for forbidden in ('call(&"spend"', 'call(&"take_warehouse_item"', "RandomNumberGenerator.new()", "Time.get_ticks"):
+    if forbidden in workshop_service:
+        ERRORS.append(f"Workshop assembly still owns transaction or roll details: {forbidden}")
+profile = (ROOT / "game" / "features" / "persistent_profile" / "persistent_profile.gd").read_text(encoding="utf-8")
+if "func apply_economy_transaction" not in profile or "warehouse = next_warehouse" not in profile:
+    ERRORS.append("Persistent profile lacks the single-commit economy transaction boundary.")
 for required_gate in (
     "shop_quality_inventory_contract_test.gd",
     "shop_delivery_modularity_contract_test.gd",
     "workshop_blueprint_registry_contract_test.gd",
+    "workshop_craft_transaction_contract_test.gd",
     "check-code-module-map.ps1",
 ):
     if required_gate not in workflow:
@@ -173,4 +189,4 @@ for preset in presets:
 if ERRORS:
     raise SystemExit("\n".join(ERRORS))
 
-print("P5_MODULARITY_OK lazy_submodules conditional_paths web_payloads facade_only schema_unique_fk canonical_ids presenter_boundary real_training_bridge transaction_guards item_quality_resource payload_descriptor rotation_policy_state_debit blueprint_registry_recipe_provider_unlock_service ci_quality_gate delivery_removal_gate rollback_compensation")
+print("P5_MODULARITY_OK lazy_submodules conditional_paths web_payloads facade_only schema_unique_fk canonical_ids presenter_boundary real_training_bridge transaction_guards item_quality_resource payload_descriptor rotation_policy_state_debit blueprint_registry_recipe_provider_unlock_service workshop_roll_policy_atomic_transaction ci_quality_gate delivery_removal_gate rollback_compensation")

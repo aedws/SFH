@@ -113,6 +113,23 @@ tags:
 
 성공 마커는 `P7_BLUEPRINT_REGISTRY_OK extraction permanent_registration unknown_guard idempotent reconnect recipe_candidates facade_status`입니다. `Recipe` 운영 비용·옵션·소켓 확정은 P7-04의 별도 완료 조건입니다.
 
+## P7-04 · 원자적 제작과 실제 Roll {#p7-workshop-e2e}
+
+`game/tests/workshop_craft_transaction_contract_test.gd`는 격리된 실제 프로필 파일과 교체 가능한 Roll 정책을 사용합니다.
+
+| 플레이어 인식/실패 상황 | 판정 근거 |
+|---|---|
+| 제작 전 판단 | 견적만 열면 자산은 바뀌지 않고 비용·잔액·재료 보유/필요·옵션/소켓 범위가 보임 |
+| 정상 제작 | 80 C와 고철 2개, 실제 옵션·소켓 완제품, 거래 ID가 한 번의 프로필 저장으로 함께 반영 |
+| 실제 결과 | Recipe 범위 안에서 중복 없는 옵션 배열과 실제 빈 소켓 배열, Roll 시드를 생성 |
+| 중복 입력 | 같은 거래 ID 재호출은 잔액·재료·완제품을 더 바꾸지 않음 |
+| 잘못된 거래 | 잔액 부족·재료 부족·중복 인스턴스는 모든 자산을 그대로 보존 |
+| 재접속 | 새 프로필 인스턴스에서 잔액·재료·완제품·거래 ID와 옵션·소켓 복원 |
+| 정책 교체 | 테스트 Resource의 인스턴스 접두어를 바꾸면 거래 코드를 수정하지 않고 결과에 반영 |
+| 공급자·영구 저장 실패 | 실패 공급자와 강제 저장 오류 모두 크레딧·재료·완제품의 메모리 부분 반영까지 원복 |
+
+성공 마커는 `P7_WORKSHOP_TRANSACTION_OK quote_no_mutation visible_cost_material_roll atomic_single_commit duplicate_guard invalid_no_mutation actual_affixes_sockets reconnect replaceable_policy provider_failure storage_failure_rollback`입니다. 전체 구조 게이트 `SYSTEM_MODULARITY_OK`는 기능 경계·순환 의존·서비스의 Scene 침범·69개 Manifest 플래그를 함께 검사합니다. 현행 Roll 값은 기획 확정 전 임시값이며 브라우저/Windows 육안 검수나 서버 거래 검증을 대신하지 않습니다.
+
 <a id="desktop-save-e2e"></a>
 ## 2026-09-03 추가 · 다운로드판 종료와 재실행
 

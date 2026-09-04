@@ -19,6 +19,7 @@ extends Resource
 @export var shop_offer_csv_payload: Resource
 @export var shop_quality_catalog: Resource
 @export var shop_rotation_policy: Resource
+@export var workshop_roll_policy: Resource
 @export var recipe_csv_payload: Resource
 @export var training_scenario_csv_payload: Resource
 @export var codex_csv_payload: Resource
@@ -39,6 +40,15 @@ func is_valid() -> bool:
 			or shop_rotation_policy == null
 			or not shop_rotation_policy.has_method(&"is_valid")
 			or not bool(shop_rotation_policy.call(&"is_valid"))
+		)
+	):
+		return false
+	if (
+		workshop_enabled
+		and (
+			workshop_roll_policy == null
+			or not workshop_roll_policy.has_method(&"is_valid")
+			or not bool(workshop_roll_policy.call(&"is_valid"))
 		)
 	):
 		return false

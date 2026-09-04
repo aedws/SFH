@@ -183,6 +183,65 @@ func mark_transaction_processed(transaction_id: StringName) -> bool:
 	return true
 
 
+func apply_economy_transaction(transaction_id: StringName, credit_delta: int,
+		warehouse_deltas: Dictionary, crafted_item: Dictionary = {}) -> Dictionary:
+	if transaction_id == &"" or has_processed_transaction(transaction_id):
+		return {&"success": false, &"reason": "중복 거래"}
+	var next_credits := banked_credits + credit_delta
+	if next_credits < 0:
+		return {&"success": false, &"reason": "크레딧 부족"}
+	var next_warehouse := warehouse.duplicate(true)
+	for raw_id in warehouse_deltas:
+		var item_id := StringName(raw_id)
+		var delta: Variant = warehouse_deltas[raw_id]
+		if (
+			item_id == &""
+			or not (delta is int or delta is float)
+			or (delta is float and not is_equal_approx(float(delta), roundf(float(delta))))
+		):
+			return {&"success": false, &"reason": "창고 거래 데이터 오류"}
+		var next_quantity := int(next_warehouse.get(item_id, 0)) + int(delta)
+		if next_quantity < 0:
+			return {&"success": false, &"reason": "재료 부족"}
+		if next_quantity == 0:
+			next_warehouse.erase(item_id)
+		else:
+			next_warehouse[item_id] = next_quantity
+	var next_crafted_items := crafted_items.duplicate(true)
+	if not crafted_item.is_empty():
+		var instance_id := StringName(crafted_item.get(&"instance_id", &""))
+		if instance_id == &"":
+			return {&"success": false, &"reason": "지급 아이템 데이터 오류"}
+		for existing in next_crafted_items:
+			if StringName(existing.get(&"instance_id", &"")) == instance_id:
+				return {&"success": false, &"reason": "지급 인스턴스 중복"}
+		next_crafted_items.append(crafted_item.duplicate(true))
+	var next_transactions := processed_transaction_ids.duplicate()
+	next_transactions.append(transaction_id)
+	if next_transactions.size() > 128:
+		next_transactions.pop_front()
+	var previous_credits := banked_credits
+	var previous_warehouse := warehouse
+	var previous_crafted_items := crafted_items
+	var previous_transactions := processed_transaction_ids
+	banked_credits = next_credits
+	warehouse = next_warehouse
+	crafted_items = next_crafted_items
+	processed_transaction_ids = next_transactions
+	if not _commit():
+		banked_credits = previous_credits
+		warehouse = previous_warehouse
+		crafted_items = previous_crafted_items
+		processed_transaction_ids = previous_transactions
+		return {&"success": false, &"reason": "영구 저장 실패"}
+	return {
+		&"success": true,
+		&"transaction_id": transaction_id,
+		&"balance_after": banked_credits,
+		&"crafted_index": crafted_items.size() - 1 if not crafted_item.is_empty() else -1,
+	}
+
+
 func set_consumable_loadout(item_ids: Array[StringName], maximum_slots: int = 3) -> bool:
 	if item_ids.size() > maximum_slots:
 		return false
@@ -244,22 +303,24 @@ func _reset_defaults() -> void:
 	processed_transaction_ids = []
 
 
-func _commit() -> void:
-	if persistence_enabled:
-		_save()
+func _commit() -> bool:
+	if persistence_enabled and not _save():
+		return false
 	profile_changed.emit(get_snapshot())
+	return true
 
 
-func _save() -> void:
+func _save() -> bool:
 	if safe_persistence:
-		if not storage_error.is_empty(): return
+		if not storage_error.is_empty(): return false
 		if not save_store.write(storage_path, get_snapshot(), true):
 			storage_error = save_store.last_error
-		return
+			return false
+		return true
 	var file := FileAccess.open(storage_path, FileAccess.WRITE)
 	if file == null:
 		push_warning("영구 프로필 저장 파일을 열 수 없습니다: %s" % storage_path)
-		return
+		return false
 	file.store_string(JSON.stringify({
 		"banked_credits": banked_credits,
 		"unlock_ids": Array(unlock_ids).map(func(value): return String(value)),
@@ -273,6 +334,10 @@ func _save() -> void:
 		"codex_progress": _string_key_dictionary(codex_progress),
 		"processed_transaction_ids": Array(processed_transaction_ids).map(func(value): return String(value)),
 	}))
+	file.flush()
+	var error := file.get_error()
+	file.close()
+	return error == OK
 
 
 func _load() -> void:

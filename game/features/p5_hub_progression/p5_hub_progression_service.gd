@@ -48,7 +48,10 @@ func configure(profile_provider: Node, contract_service: Node, progression_confi
 		[seed, int(config.get("shop_reroll_price")), int(config.get("shop_rotation_slots")),
 		config.get("shop_quality_catalog"), config.get("shop_rotation_policy")]
 	): return false
-	if not _install_csv_module(&"workshop", bool(config.get("workshop_enabled")), "recipe_csv_path", [profile], [seed]): return false
+	if not _install_csv_module(
+		&"workshop", bool(config.get("workshop_enabled")), "recipe_csv_path", [profile],
+		[seed, config.get("workshop_roll_policy")]
+	): return false
 	if not _install_csv_module(&"training", bool(config.get("training_enabled")), "training_scenario_csv_path", []): return false
 	if not _install_csv_module(&"codex", bool(config.get("codex_enabled")), "codex_csv_path", [profile]): return false
 	_presenter = _new_script_instance(&"presenter")
@@ -206,6 +209,13 @@ func register_extracted_blueprints(acquired: Dictionary) -> PackedStringArray:
 func get_workshop_candidates() -> Array[Dictionary]:
 	var workshop = _module(&"workshop")
 	return workshop.call(&"get_candidates") if workshop != null else []
+
+
+func quote_workshop_recipe(recipe_id: StringName) -> Dictionary:
+	var workshop = _module(&"workshop")
+	return workshop.call(&"quote", recipe_id) if workshop != null else {
+		&"craftable": false, &"reason": "제작 모듈 꺼짐"
+	}
 
 
 func craft_recipe(recipe_id: StringName, transaction_id: StringName) -> Dictionary:

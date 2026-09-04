@@ -44,6 +44,16 @@ func has_blueprint(blueprint_id: StringName) -> bool:
 	return blueprint_id != &"" and _by_blueprint_id.has(blueprint_id)
 
 
+func get_materials(recipe_id: StringName) -> Dictionary:
+	var recipe := get_recipe(recipe_id)
+	var result := {}
+	for pair in String(recipe.get(&"materials", "")).split("|", false):
+		var parts := pair.split(":", false, 1)
+		if parts.size() == 2:
+			result[StringName(parts[0].strip_edges())] = maxi(0, parts[1].to_int())
+	return result
+
+
 func get_snapshot() -> Dictionary:
 	return {
 		&"recipe_count": recipes.size(),

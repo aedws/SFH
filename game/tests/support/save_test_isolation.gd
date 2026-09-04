@@ -1,6 +1,10 @@
 extends RefCounted
 ## Replace only default player paths before Game._ready(). Explicit fixture paths stay intact.
-var root_path := OS.get_cache_dir().path_join("sfh-contract-%d" % Time.get_ticks_usec())
+var root_path := OS.get_cache_dir().path_join(
+	"sfh-contract-%d-%d-%d" % [
+		int(Time.get_unix_time_from_system()), OS.get_process_id(), Time.get_ticks_usec()
+	]
+)
 var sequence := 0
 
 

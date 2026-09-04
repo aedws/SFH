@@ -27,12 +27,12 @@ tags:
     <b>96%</b>
   </div>
   <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-  <p>2026-09-04 공개 Master GDD v1005·77블록·해시 614a0b8ddee4는 동일합니다. P7-01B 품질 실물, P7-02 복귀 회전·리롤, P7-03 반출 설계도 영구 등록까지 반영했으며, 임시 운영값은 완료로 더하지 않아 기능 가중 추정치 96%를 유지합니다. 보안·백업은 계획만 등록했습니다.</p>
+  <p>2026-09-04 공개 Master GDD v1005·77블록·해시 614a0b8ddee4는 동일합니다. P7-01B 품질 실물, P7-02 회전·리롤, P7-03 영구 도면, P7-04 원자적 제작 거래까지 반영했으며, 임시 운영값은 완료로 더하지 않아 기능 가중 추정치 96%를 유지합니다. 보안·백업은 계획만 등록했습니다.</p>
 </div>
 
 권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/SFH-6b45b728004082af8a4a811ef0a1c5e9)입니다. 2026-09-04 공개 본문 77블록·root v1005를 다시 읽고 `614a0b8ddee4`로 검증했습니다. 본문에 명시된 기능을 기준으로 핵심 플레이 흐름 ×2, 기반·확장 서비스 ×1을 적용합니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
-P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분합니다. P7-01B~03은 로컬 플레이 흐름을 완료했지만 임시 품질·리롤·제작 운영 수치의 기획 확정과 서버 운영을 완료로 오인하지 않습니다.
+P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분합니다. P7-01B~04는 로컬 플레이 흐름을 완료했지만 임시 품질·리롤·제작 운영 수치의 기획 확정과 서버 운영을 완료로 오인하지 않습니다.
 
 **정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스와 코드 완료는 별개입니다. 경제는 P7-01B의 실제 품질·가방·장착과 P7-02 회전·리롤 연결 뒤에도 90%를 유지하며, 품질·리롤 운영 규칙의 기획 확정과 서버 운영·검증 지급은 미구현입니다.
 
@@ -93,16 +93,17 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 | 기획 확정 대기 | 내부 P7-01 | A/B 구현 완료, 손상품 가격/성능과 고성능 옵션·소켓 운영값은 임시 | 기획 확정 뒤 P7-01 종료, 구현은 P7-04 제작 거래로 이동 |
 | 완료 | 내부 P7-02 | 런 복귀 회전·골드 리롤 | 정책·상태·차감 분리, 취소/중복 방지와 UI 영수증 E2E 완료 |
 | 완료 | 내부 P7-03 | 반출 설계도 영구 등록 | 등록·Recipe 공급·해금 규칙 분리, 재접속 보존과 후보 상태 E2E 완료 |
-| 예정 | 내부 P7-04~P10 | 제작 거래→훈련→도감→출시 후보 | 선행 패킷 완료 후 순서대로 착수 |
+| 완료 | 내부 P7-04 | 원자적 맞춤 제작 | 비용·재료·범위 선공개, 실제 옵션/소켓, 단일 저장과 실패 무변경 E2E 완료 |
+| 예정 | 내부 P8~P10 | 훈련→도감→출시 후보 | P8-01 보스·밀집 더미부터 순서대로 착수 |
 | 착수 보류 | 위변조 감지·거래 원장·백업 | 사용자 지시로 문서만 등록 | 운영 정책과 별도 구현 승인 전 서비스·과금 변경 없음 |
 
 세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 11 · IMPROVE 11 · CHANGE 17 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-04</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 14 · IMPROVE 15 · CHANGE 22 · FIX 12</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>11</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>17</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>15</b><small>IMPROVE</small></span><span><b>22</b><small>CHANGE</small></span><span><b>12</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>잔여 작업 재대조 · P7-01B 다음 순서 유지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -151,7 +152,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="features/hub-economy/#p7-02">P7-02 플레이 규칙 →</a> · <a href="architecture/module-audit/#p7-02-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p7-shop-e2e">E2E →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>P7-03 · 반출 설계도 영구 등록과 제작 후보</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 작전에서 반출한 설계도가 영구 등록되고, 재접속 뒤에도 제작소에서 어떤 장비를 만들 수 있는지 바로 구분됩니다.</strong></div>
@@ -161,6 +162,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기존 플레이 결함 수정이 아니라 제작 해금 구조를 확장한 작업입니다.</p></div>
         <p>실시간 Google Sheet의 Recipe 3행은 CSV와 같았습니다. Item 탭에 잘못 중복된 Utility 4행은 검증에서 차단해 반영하지 않았고, 기획 요청 <code>DATA-SHEET-ITEM-UTILITY-01</code>로 분리했습니다. 과금 모델은 변경하지 않았습니다.</p>
         <p><a href="features/blueprint-crafting/#p7-03">설계도 흐름 →</a> · <a href="architecture/module-audit/#p7-03-2026-09-04">모듈 감사 →</a> · <a href="quality/e2e-play-session/#p7-blueprint-e2e">E2E →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>P7-04 · 원자적 맞춤 제작과 전체 모듈 감사</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 제작 전에 비용·재료·옵션/소켓 범위를 확인하고, 실제 결과와 거래 기록이 한 번에 저장됩니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p><code>WorkshopRollPolicy</code>, <code>WorkshopCraftTransactionService</code>, 전체 시스템 모듈 검사기를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>후보 견적 선공개, 중복 없는 실제 옵션, 실제 소켓 배열, 게임 재접속 보존을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 5</h3><p>프로필 단일 경제 거래, P5 façade/config, 69개 Manifest 플래그, CI와 P7→P8 작업선·문서를 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>제작 저장 실패의 부분 차감, 세부 표현 모듈 실행 목록 누락, 별도 Godot 프로세스가 같은 테스트 저장 폴더를 재사용하던 간헐 회귀를 차단했습니다.</p></div>
+        <p>전체 감사 결과는 기능 경계 56개·클래스 213개·의존 25개·순환 0·서비스 Scene 침범 0입니다. 새 목록이 필요하지 않아 Sheet/CSV와 과금 모델은 변경하지 않았습니다.</p>
+        <p><a href="features/blueprint-crafting/#p7-04">P7-04 제작 →</a> · <a href="architecture/module-audit/#p7-04-2026-09-04">전체 감사 →</a> · <a href="quality/e2e-play-session/#p7-workshop-e2e">E2E →</a></p>
       </div>
     </details>
   </div>

@@ -1425,3 +1425,26 @@ Web payload는 CSV의 별도 수동 사본이 아니라 생성 스크립트가 �
 ## 검색 별칭
 
 모듈 감사, 의존성 검사, 플러그인 구조, 기능 제거, 기능 교체, 맵 인터페이스, 선택 모듈, 결합도, 인벤토리 계약, 장비 개조 계약, 설계도 영구 등록, 제작소 모듈, BlueprintRegistry, WorkshopRecipeProvider, WorkshopUnlockService
+
+## P7-04 제작 거래·전체 시스템 감사 (2026-09-04) {#p7-04-2026-09-04}
+
+| 검사 항목 | 결과 | 근거 |
+|---|---|---|
+| 제작 Roll 정책 분리 | 통과 | `WorkshopRollPolicy` Resource만 옵션 풀·가중치·수치 범위·소켓 상한·결정 시드를 소유 |
+| 거래 책임 분리 | 통과 | `WorkshopCraftTransactionService`가 견적·도면/재료/잔액/중복 검증과 단일 프로필 명령을 담당 |
+| 원자적 영구 저장 | 통과 | `PersistentProfile.apply_economy_transaction`이 크레딧·재료·완제품·거래 ID 최종 상태를 검증한 뒤 한 번만 커밋 |
+| UI 경계 | 통과 | `Game`은 P5 façade의 읽기 전용 후보/견적만 툴팁에 표현하며 Roll·저장 내부를 모름 |
+| 실제 결과·재접속 | 통과 | 옵션 배열·소켓 배열·시드·출처를 저장하고 독립 프로필 재구성 뒤 동일 값 복원 |
+| 오류 무변경 | 통과 | 중복 거래, 부족 자산, 중복 인스턴스, 공급자 실패에서 크레딧·재료·완제품 모두 불변 |
+| 테스트 격리 | 통과 | 캐시 폴더 이름에 Unix 시각·프로세스 ID·틱을 함께 사용해 별도 Godot 프로세스 사이 저장 충돌 차단 |
+| 전체 기능 경계 | 통과 | 56개 feature, 213개 `class_name`, 25개 명시 의존, 순환 0, 서비스/정책의 Scene 침범 0 |
+| Manifest 완전성 | 통과 | 69개 `*_enabled`를 모두 실행 목록에 연결. 누락됐던 cyberpunk motion/noise를 독립 ID로 표시하고 부모 OFF에서는 조건부 UI가 자동 제외되는 기존 폴백 유지 |
+| CI 강제 | 통과 | P7 전용 계약, P5 모듈 검사, 전체 시스템 모듈 검사를 `export-game` 필수 흐름에 포함 |
+
+이번 감사에서 발견한 문제는 기능이 켜져도 세부 표현 토글 일부가 `enabled_module_ids()`에 나타나지 않던 점입니다. 이를 보완하되 부모 모듈을 끄면 하위 UI가 자동 제외되는 기존 선택 제거 계약은 유지했습니다. 새 아이템 목록은 필요하지 않아 Google Sheet와 확정 CSV는 변경하지 않았고 과금 모델도 건드리지 않았습니다.
+
+```powershell
+.\scripts\check-system-modularity.ps1
+.\scripts\check-p5-modularity.ps1
+.\scripts\test-p5.ps1
+```
