@@ -55,8 +55,12 @@ func finish() -> Dictionary:
 
 
 func get_snapshot() -> Dictionary:
+	var total_damage := 0.0
+	for hit in hits:
+		total_damage += float(hit.get(&"damage", 0.0))
 	return {&"scenario_count": scenarios.size(), &"active": active.duplicate(true),
-		&"hit_count": hits.size(), &"metrics": [&"dps", &"hit_damage", &"armor_penetration", &"cooldown"]}
+		&"hit_count": hits.size(), &"total_damage": total_damage,
+		&"metrics": [&"dps", &"hit_damage", &"armor_penetration", &"cooldown"]}
 
 
 func get_scenarios() -> Array[Dictionary]:

@@ -42,6 +42,7 @@ func _run() -> void:
 	_check(bool(single.get(&"success", false)) and int(single.get(&"dummy_count", 0)) == 1, "단일 보스 더미 생성")
 	var single_targets: Array = service.call(&"get_active_targets")
 	_check(single_targets.size() == 1 and bool(single_targets[0].get_meta(&"training_dummy", false)), "훈련 대상 태그")
+	_check(single_targets[0].global_position.distance_to(Vector2(95.0, -300.0)) >= 280.0, "훈련 단말과 더미 배치 분리")
 	_check(single_targets[0].call(&"get_combat_identity").get(&"is_boss", false), "단일 보스 역할")
 	var health: Node = single_targets[0].get_node("HealthComponent")
 	var armor: Node = single_targets[0].get_node("ArmorComponent")

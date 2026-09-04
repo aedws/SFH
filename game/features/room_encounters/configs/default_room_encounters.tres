@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="RoomEncounterConfig" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="RoomEncounterConfig" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://game/features/room_encounters/room_encounter_config.gd" id="1_config"]
+[ext_resource type="Resource" path="res://game/features/room_encounters/configs/default_room_spawn_safety.tres" id="2_safety"]
 
 [resource]
 script = ExtResource("1_config")
+spawn_safety_policy = ExtResource("2_safety")
 small_minimum_enemies = 12
 small_maximum_enemies = 18
 small_maximum_encounters = 12

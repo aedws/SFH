@@ -59,6 +59,8 @@ func _verify_manifest_boundaries() -> bool:
 
 
 func _verify_presentation_and_mobile() -> bool:
+	root.content_scale_size = Vector2i.ZERO
+	root.size = Vector2i(1280, 720)
 	var settings = SETTINGS_SCENE.instantiate()
 	var pad = MOBILE_SCENE.instantiate()
 	root.add_child(settings)
@@ -81,8 +83,9 @@ func _verify_presentation_and_mobile() -> bool:
 		or int(snapshot.get(&"action_count", 0)) != 16
 		or not bool(snapshot.get(&"semantic_actions", false))
 		or not bool(snapshot.get(&"multi_touch_ready", false))
+		or float(snapshot.get(&"viewport_coverage_ratio", 1.0)) > 0.14
 	):
-		return _fail("모바일 키패드가 16개 semantic Action을 터치 표면으로 제공하지 않습니다: %s" % snapshot)
+		return _fail("모바일 키패드가 화면을 과도하게 가리지 않는 16개 semantic Action을 제공하지 않습니다: %s" % snapshot)
 	pad.call(&"simulate_action", &"move_right", true)
 	if not Input.is_action_pressed(&"move_right"):
 		return _fail("모바일 이동 버튼이 기존 InputMap Action을 누르지 못했습니다.")

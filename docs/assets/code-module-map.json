@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_sha256": "36ebab90f43fa8c517eefee66cdd172d81eedf2f2bb04cc4017203a1bbba079e",
+  "source_sha256": "0b09c600b7d631ad1a415758e7deb651e9e5c78e138338fb123f7dc8e0c9a230",
   "layers": [
     {
       "id": "contract",
@@ -25,8 +25,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 265,
-    "named_classes": 218,
+    "scripts": 266,
+    "named_classes": 219,
     "relationships": 185,
     "project_inheritance": 7,
     "enabled_toggles": 70
@@ -850,12 +850,13 @@
       "path": "game/features/room_encounters",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 4,
-      "class_count": 4,
+      "file_count": 5,
+      "class_count": 5,
       "classes": [
         "RoomCreditRewardBox",
         "RoomDoorBarrier",
         "RoomEncounterConfig",
+        "RoomEncounterSpawnSafetyPolicy",
         "RoomEncounterSystem"
       ],
       "incoming_count": 3,
@@ -2751,6 +2752,15 @@
       "name": "RoomEncounterConfig",
       "module": "room_encounters",
       "path": "game/features/room_encounters/room_encounter_config.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:RoomEncounterSpawnSafetyPolicy",
+      "name": "RoomEncounterSpawnSafetyPolicy",
+      "module": "room_encounters",
+      "path": "game/features/room_encounters/room_encounter_spawn_safety_policy.gd",
       "extends": "Resource",
       "base_id": "",
       "inheritance": "engine"

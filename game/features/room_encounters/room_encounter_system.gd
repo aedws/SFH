@@ -45,6 +45,7 @@ var completion_announced: bool = false
 var last_reward_box_count: int = 0
 var last_reward_total_credits: int = 0
 var last_reward_size_ratio: float = 0.0
+var contact_grace_remaining := 0.0
 var random := RandomNumberGenerator.new()
 
 
@@ -90,13 +91,15 @@ func configure(
 	last_reward_box_count = 0
 	last_reward_total_credits = 0
 	last_reward_size_ratio = 0.0
+	contact_grace_remaining = 0.0
 	_clear_doors()
 	random.randomize()
 	enemy_spawner.call(&"set_reinforcement_paused", &"room_encounters", true)
 	return not room_definitions.is_empty()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_update_contact_grace(delta)
 	if active_room_index >= 0:
 		_prune_active_enemies()
 		if active_enemies.is_empty():
@@ -108,6 +111,14 @@ func _process(_delta: float) -> void:
 func get_snapshot() -> Dictionary:
 	_prune_active_rewards()
 	var required_count := _required_encounter_count()
+	var safety := _spawn_safety_snapshot()
+	var observed_distance := INF
+	if is_instance_valid(player):
+		for enemy in active_enemies:
+			if enemy is Node2D and is_instance_valid(enemy):
+				observed_distance = minf(observed_distance, (enemy as Node2D).global_position.distance_to(player.global_position))
+	if observed_distance == INF:
+		observed_distance = 0.0
 	return {
 		&"tier_id": tier_id,
 		&"room_count": room_definitions.size(),
@@ -137,6 +148,14 @@ func get_snapshot() -> Dictionary:
 			or active_enemies.size() >= int(tier_values.get(&"minimum_enemies", 0))
 		),
 		&"reinforcement_mode": &"room_triggered",
+		&"spawn_safety": safety,
+		&"minimum_spawn_distance_observed": observed_distance,
+		&"spawn_safety_satisfied": (
+			active_enemies.is_empty()
+			or observed_distance + 0.01 >= float(safety.get(&"minimum_player_distance", 0.0))
+		),
+		&"contact_grace_remaining": contact_grace_remaining,
+		&"contact_grace_active": contact_grace_remaining > 0.0,
 	}
 
 
@@ -166,8 +185,10 @@ func try_start_room(room_index: int, trigger_source: StringName = &"external") -
 		int(tier_values[&"maximum_enemies"])
 	)
 	requested_count = mini(requested_count, remaining_budget)
+	var safety := _spawn_safety_snapshot()
 	var positions: PackedVector2Array = map_provider.call(
-		&"get_room_spawn_positions", room_index, requested_count
+		&"get_room_spawn_positions", room_index, requested_count,
+		player.global_position, float(safety.get(&"minimum_player_distance", 0.0))
 	)
 	if positions.size() < minimum_horde_size:
 		return false
@@ -175,6 +196,7 @@ func try_start_room(room_index: int, trigger_source: StringName = &"external") -
 	for world_position in positions:
 		var enemy: Node2D = enemy_spawner.call(&"spawn_enemy_at", world_position, encounter_id)
 		if is_instance_valid(enemy):
+			_apply_contact_grace(enemy, safety)
 			active_enemies.append(enemy)
 			enemy.tree_exited.connect(_on_active_enemy_tree_exited.bind(enemy), CONNECT_ONE_SHOT)
 	if active_enemies.size() < minimum_horde_size:
@@ -184,6 +206,7 @@ func try_start_room(room_index: int, trigger_source: StringName = &"external") -
 		active_enemies.clear()
 		return false
 	active_room_index = room_index
+	contact_grace_remaining = float(safety.get(&"contact_damage_grace_seconds", 0.0))
 	last_requested_enemy_count = requested_count
 	last_spawned_enemy_count = active_enemies.size()
 	last_trigger_source = trigger_source
@@ -227,6 +250,7 @@ func _complete_active_encounter() -> void:
 	completed_rooms[cleared_room] = true
 	last_cleared_room_index = cleared_room
 	active_room_index = -1
+	_end_contact_grace()
 	_clear_doors()
 	encounter_cleared.emit(cleared_room)
 	_spawn_reward(cleared_room)
@@ -361,6 +385,41 @@ func _clear_doors() -> void:
 		if is_instance_valid(door):
 			door.queue_free()
 	active_doors.clear()
+
+
+func _spawn_safety_snapshot() -> Dictionary:
+	if config == null:
+		return {}
+	var policy: Resource = config.get("spawn_safety_policy")
+	return policy.call(&"get_snapshot") if policy != null and policy.has_method(&"get_snapshot") else {}
+
+
+func _apply_contact_grace(enemy: Node, safety: Dictionary) -> void:
+	if not enemy.get_property_list().any(func(property): return property.get(&"name", &"") == &"damage_enabled"):
+		return
+	enemy.set_meta(&"room_contact_damage_enabled", bool(enemy.get("damage_enabled")))
+	enemy.set("damage_enabled", false)
+	if enemy is CanvasItem:
+		(enemy as CanvasItem).modulate.a = float(safety.get(&"telegraph_alpha", 0.55))
+
+
+func _update_contact_grace(delta: float) -> void:
+	if contact_grace_remaining <= 0.0:
+		return
+	contact_grace_remaining = maxf(0.0, contact_grace_remaining - maxf(0.0, delta))
+	if contact_grace_remaining <= 0.0:
+		_end_contact_grace()
+
+
+func _end_contact_grace() -> void:
+	contact_grace_remaining = 0.0
+	for enemy in active_enemies:
+		if not is_instance_valid(enemy) or not enemy.has_meta(&"room_contact_damage_enabled"):
+			continue
+		enemy.set("damage_enabled", bool(enemy.get_meta(&"room_contact_damage_enabled", true)))
+		enemy.remove_meta(&"room_contact_damage_enabled")
+		if enemy is CanvasItem:
+			(enemy as CanvasItem).modulate.a = 1.0
 
 
 func _room_is_excluded(room: Dictionary) -> bool:

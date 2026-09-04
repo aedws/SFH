@@ -41,6 +41,14 @@ func _run() -> void:
 	await _click(prep.inventory_button)
 	var window: Control = game.inventory_window
 	_check(window.visible and not prep.visible and paused, "preparation to inventory")
+	for _frame in 3: await process_frame
+	var inventory_density: Dictionary = window.call(&"get_density_snapshot")
+	_check(
+		bool(inventory_density.get(&"open_layout_ready", false))
+		and float(inventory_density.get(&"bag_viewport_width", 0.0)) > 240.0
+		and (inventory_density.get(&"grid_minimum_size", Vector2.ZERO) as Vector2).x >= 480.0,
+		"inventory first-open stable grid layout"
+	)
 	var editor: Node = window.session
 	var weapon_id: StringName
 	for entry: Dictionary in editor.inventory.get_items_by_type(&"weapon"):
@@ -76,6 +84,7 @@ func _run() -> void:
 	await _tap(KEY_F)
 	await _click(game.operation_setup_presenter.next_button)
 	_check(game.operation_setup_presenter.equipped_summary.is_visible_in_tree(), "operation step 2 read-only actual equipment")
+	_check("READY" in game.operation_setup_presenter.equipped_summary.text, "operation step 2 readiness summary")
 	_check(not game.character_selection_button.is_visible_in_tree() and not game.shop_button.is_visible_in_tree(), "no preparation edits in operation steps")
 	await _click(game.operation_setup_presenter.next_button)
 	await _click(game.operation_setup_presenter.launch_button)

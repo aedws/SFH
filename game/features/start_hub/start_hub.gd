@@ -48,7 +48,8 @@ func get_snapshot() -> Dictionary:
 func request_operation(actor: Node2D) -> bool:
 	if not is_instance_valid(actor) or not actor.is_in_group(&"player"):
 		return false
-	if actor.global_position.distance_to(operation_gate.global_position) > interaction_radius:
+	# 프롬프트를 보여 준 Area 중첩을 실제 요청에서도 같은 판정으로 사용합니다.
+	if actor != nearby_player and actor.global_position.distance_to(operation_gate.global_position) > interaction_radius:
 		return false
 	operation_requested.emit()
 	return true

@@ -43,7 +43,7 @@ func _ready() -> void:
 func request_service(player: Node2D) -> bool:
 	if not is_instance_valid(player) or not player.is_in_group(&"player"):
 		return false
-	if player.global_position.distance_to(global_position) > interaction_radius:
+	if player != actor and player.global_position.distance_to(global_position) > interaction_radius:
 		return false
 	service_requested.emit(service_id)
 	return true
@@ -60,4 +60,3 @@ func _draw() -> void:
 	draw_rect(Rect2(-58, -42, 116, 84), accent, false, 3)
 	draw_rect(Rect2(-36, -24, 72, 40), Color(accent, 0.18))
 	draw_line(Vector2(-28, 30), Vector2(28, 30), accent, 4)
-
