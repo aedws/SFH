@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 3 · IMPROVE 6 · CHANGE 4 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 3 · IMPROVE 7 · CHANGE 5 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>0</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>브라우저·다운로드 응답 안정화</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 브라우저 플레이와 Windows 파일 전체 요청이 일부 파일처럼 표시될 수 있던 배포 응답을 바로잡았습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>새 게임 기능 추가 없이 배포 호환성을 검수했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>전체 다운로드와 이어받기 요청을 서로 다른 상태로 명확히 응답합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>브라우저·다운로드 관리자·CDN이 파일 크기와 응답 종류를 정확히 판독하도록 했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>범위 요청이 없는데도 전체 파일이 `206 Partial Content`로 반환되던 문제를 수정했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>배포 런타임 안정화</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 테스트 빌드 전달에 사용하는 공식 자동화 구성요소를 최신 지원 런타임으로 선제 갱신했습니다.</strong></div>

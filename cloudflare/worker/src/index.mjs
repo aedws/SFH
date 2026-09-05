@@ -86,6 +86,13 @@ function applyRangeHeaders(headers, object) {
   return true;
 }
 
+function applyFullObjectHeaders(headers, object) {
+  headers.set("accept-ranges", "bytes");
+  if (typeof object.size === "number" && Number.isFinite(object.size)) {
+    headers.set("content-length", String(object.size));
+  }
+}
+
 export default {
   async fetch(request, env) {
     if (request.method !== "GET" && request.method !== "HEAD") {
@@ -120,9 +127,11 @@ export default {
     const isDownload = path.startsWith(downloadPrefix);
     const key = isDownload ? path : `${env.RELEASE_PREFIX}/${path}`;
     const rangeRequested = request.headers.has("range");
-    const object = request.method === "HEAD"
-      ? await env.ASSETS.head(key)
-      : await env.ASSETS.get(key, rangeRequested ? { range: request.headers } : undefined);
+    const object = rangeRequested
+      ? await env.ASSETS.get(key, { range: request.headers })
+      : request.method === "HEAD"
+        ? await env.ASSETS.head(key)
+        : await env.ASSETS.get(key);
     if (object === null) {
       return jsonResponse({ error: "not_found", path: url.pathname }, 404);
     }
@@ -134,7 +143,10 @@ export default {
     } else {
       gameHeaders(headers, key);
     }
-    const partial = applyRangeHeaders(headers, object);
+    const partial = rangeRequested && applyRangeHeaders(headers, object);
+    if (!partial) {
+      applyFullObjectHeaders(headers, object);
+    }
     const body = request.method === "HEAD" ? null : object.body;
     return new Response(body, { status: partial ? 206 : 200, headers });
   },

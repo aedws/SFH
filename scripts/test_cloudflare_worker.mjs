@@ -27,13 +27,14 @@ class FakeBucket {
     if (options?.range) {
       return new FakeObject(key, body.slice(0, 4), { offset: 0, length: 4 }, body.byteLength);
     }
-    return new FakeObject(key, body);
+    // Real R2 full reads can still expose a full-object range descriptor.
+    return new FakeObject(key, body, { offset: 0, length: body.byteLength }, body.byteLength);
   }
 
   async head(key) {
     this.lastKey = key;
     if (key.includes("missing")) return null;
-    return new FakeObject(key, new Uint8Array(16));
+    return new FakeObject(key, new Uint8Array(16), { offset: 0, length: 16 }, 16);
   }
 }
 
@@ -52,6 +53,14 @@ assert.equal(bucket.lastKey, "game/releases/test-commit/index.html");
 assert.equal(response.headers.get("cross-origin-opener-policy"), "same-origin");
 assert.equal(response.headers.get("cross-origin-embedder-policy"), "require-corp");
 assert.equal(response.headers.get("x-sfh-surface"), "gameplay");
+assert.equal(response.headers.get("content-range"), null);
+assert.equal(response.headers.get("content-length"), "16");
+assert.equal(response.headers.get("accept-ranges"), "bytes");
+
+response = await worker.fetch(new Request("https://sfh-game.example/", { method: "HEAD" }), env);
+assert.equal(response.status, 200);
+assert.equal(response.headers.get("content-range"), null);
+assert.equal(response.headers.get("content-length"), "16");
 
 response = await worker.fetch(
   new Request("https://sfh-game.example/index.wasm", { headers: { range: "bytes=0-3" } }),
@@ -65,6 +74,8 @@ response = await worker.fetch(
   env,
 );
 assert.equal(bucket.lastKey, "downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip");
+assert.equal(response.status, 200);
+assert.equal(response.headers.get("content-range"), null);
 assert.match(response.headers.get("content-disposition"), /attachment/);
 assert.equal(response.headers.get("x-sfh-surface"), "windows-download");
 
@@ -82,4 +93,4 @@ assert.equal(response.status, 404);
 response = await worker.fetch(new Request("https://sfh-game.example/%2e%2e%2fsecret"), env);
 assert.equal(response.status, 400);
 
-console.log("CLOUDFLARE_WORKER_OK routing range headers downloads health traversal");
+console.log("CLOUDFLARE_WORKER_OK routing full_200 range_206 head_200 headers downloads health traversal");
