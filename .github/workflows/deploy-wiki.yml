@@ -662,7 +662,10 @@ jobs:
             fi
             sleep 5
           done
-          curl --silent --show-error --fail --dump-header /tmp/game.headers "$CLOUDFLARE_GAME_URL/" --output /tmp/game.html
+          game_status=$(curl --silent --show-error --dump-header /tmp/game.headers \
+            --output /tmp/game.html --write-out '%{http_code}' "$CLOUDFLARE_GAME_URL/")
+          test "$game_status" = "200"
+          ! grep -qi '^content-range:' /tmp/game.headers
           for attempt in $(seq 1 24); do
             if SFH_WIKI_AUTH_E2E_BOOTSTRAP_ROLES="${{ steps.wiki_auth_migration.outputs.migrated_roles }}" \
               node scripts/test_wiki_auth_deployment.mjs "$CLOUDFLARE_WIKI_URL"; then
@@ -683,7 +686,9 @@ jobs:
           test "$(wc -c < /tmp/wasm.range)" -eq 32
           archive="SFH-Windows-x64-${RELEASE_VERSION}.zip"
           download_base="$CLOUDFLARE_GAME_URL/downloads/${RELEASE_VERSION}"
-          curl --silent --show-error --fail "$download_base/$archive" --output "/tmp/$archive"
+          download_status=$(curl --silent --show-error --output "/tmp/$archive" \
+            --write-out '%{http_code}' "$download_base/$archive")
+          test "$download_status" = "200"
           curl --silent --show-error --fail "$download_base/$archive.sha256" --output "/tmp/$archive.sha256"
           (cd /tmp && sha256sum --check "$archive.sha256")
           echo "CLOUDFLARE_E2E_OK wiki game range download commit=$GITHUB_SHA"

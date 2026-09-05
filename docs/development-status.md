@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 14 · IMPROVE 23 · CHANGE 30 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 15 · IMPROVE 26 · CHANGE 33 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>23</b><small>IMPROVE</small></span><span><b>30</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>15</b><small>BUILD</small></span><span><b>26</b><small>IMPROVE</small></span><span><b>33</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>단일 작업 폴더 · Git 커밋 기반 복구</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -165,7 +165,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p>새 게임 목록이 없어 Google Sheet/확정 CSV를 확장하지 않았고 게임 코드·과금 모델·배포 주소는 변경하지 않았습니다.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>Actions artifact Node 24 선제 전환</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · GitHub의 Node 20 사용 중단 경고가 실제 장애로 바뀌기 전에 Web·Windows·위키 산출물 전달 액션을 공식 Node 24 릴리스로 교체했습니다.</strong></div>
@@ -175,6 +175,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>실행 결함 수정이 아니라 예정된 런타임 중단 위험의 선제 제거입니다.</p></div>
         <p><a href="getting-started/source-control-and-cleanup/#actions-2026-09-05">Actions 공급망 기준 →</a> · <a href="architecture/module-audit/#actions-artifact-node24-2026-09-05">감사 결과 →</a></p>
         <p>산출물 내용·보존 기간·R2 전환·게임 코드·Sheet/CSV·과금 모델은 변경하지 않았습니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>QA 1차 · 전체 다운로드의 잘못된 206 응답 수정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · Range를 요청하지 않은 브라우저 게임과 Windows 다운로드가 부분 응답처럼 보이던 배포 경계를 정상적인 전체 200 응답으로 바로잡았습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>실제 R2가 전체 객체에도 범위 메타데이터를 주는 상황을 재현하는 Worker 계약을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>전체 응답 길이·범위 지원을 명시하고, main 배포 E2E가 홈·ZIP 200과 실제 Range 206을 구분해 검사합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>부분 응답 판정을 객체 메타데이터에서 요청 헤더로 옮기고 Range HEAD도 동일한 R2 읽기 계약을 사용하도록 정리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>전체 게임 HTML·Windows ZIP에 `206`과 전체 범위 `Content-Range`가 붙던 프로토콜 오판을 제거했습니다.</p></div>
+        <p><a href="quality/e2e-play-session/#deployment-full-response-qa-2026-09-05">QA 결과 →</a> · <a href="architecture/module-audit/#r2-full-partial-response-2026-09-05">경계 감사 →</a></p>
+        <p>게임 Scene·저장·밸런스·Sheet/CSV·R2 데이터·과금 모델은 변경하지 않았습니다.</p>
       </div>
     </details>
   </div>
