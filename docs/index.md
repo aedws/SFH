@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 5 · CHANGE 3 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 3 · IMPROVE 6 · CHANGE 4 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>3</b><small>CHANGE</small></span><span><b>0</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>0</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>배포 런타임 안정화</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 테스트 빌드 전달에 사용하는 공식 자동화 구성요소를 최신 지원 런타임으로 선제 갱신했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>오래된 자동화 버전이 다시 들어오면 배포 전에 차단하는 검사를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>브라우저·Windows·위키 산출물 전달 안정성을 높였습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>공식 지원 런타임과 불변 버전 참조로 배포 구성을 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>게임 플레이와 기존 저장 데이터 동작은 변경하지 않았습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>팀 문서 탐색 안정화</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 팀 작업 공간의 문서와 작업 순서가 빠짐없이 연결되도록 내부 탐색과 검증을 보강했습니다.</strong></div>

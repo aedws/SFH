@@ -81,6 +81,26 @@ foreach ($workflowFile in $workflowFiles) {
         }
     }
 }
+$artifactActionPins = @{
+    'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a' = 3
+    'actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c' = 3
+    'actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9' = 1
+}
+foreach ($entry in $artifactActionPins.GetEnumerator()) {
+    $actualCount = ([regex]::Matches($workflow, [regex]::Escape($entry.Key))).Count
+    if ($actualCount -ne $entry.Value) {
+        throw "Node 24 artifact action pin coverage is stale: $($entry.Key) expected=$($entry.Value) actual=$actualCount"
+    }
+}
+foreach ($deprecatedPin in @(
+    'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02',
+    'actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0',
+    'actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b'
+)) {
+    if ($workflow -match [regex]::Escape($deprecatedPin)) {
+        throw "Deprecated Node 20 artifact action pin is not allowed: $deprecatedPin"
+    }
+}
 if ($workflow -notmatch 'CLOUDFLARE_API_TOKEN:\s*\$\{\{\s*secrets\.CLOUDFLARE_API_TOKEN\s*\}\}') {
     throw "Cloudflare credentials must be provided only through GitHub Secrets."
 }
@@ -99,4 +119,4 @@ if (
     throw "Latest-only Actions artifact retention guard is missing."
 }
 
-Write-Host "DEPLOYMENT_BOUNDARIES_OK wiki=$($wikiOrigin.Host) game=$($gameOrigin.Host) desired=$($desiredGameOrigin.Host) cutover=$($surface.game.cutover_status) billing_untouched=true r2=private prefixes=2 actions=sha-pinned artifacts=latest-verified-only"
+Write-Host "DEPLOYMENT_BOUNDARIES_OK wiki=$($wikiOrigin.Host) game=$($gameOrigin.Host) desired=$($desiredGameOrigin.Host) cutover=$($surface.game.cutover_status) billing_untouched=true r2=private prefixes=2 actions=node24-sha-pinned artifacts=latest-verified-only"

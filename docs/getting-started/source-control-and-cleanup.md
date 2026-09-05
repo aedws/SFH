@@ -104,3 +104,18 @@ Desktop/
 - 최신 기능에서 빠져 있던 GDScript UID를 재수집·추적해 새 clone의 첫 headless 스모크도 전역 클래스를 바로 찾도록 복구했습니다.
 - 기존 `backup/pre-main/*`, `backup/verified-main/*`, Release·Actions·R2 최신 산출물 정책은 유지했습니다.
 - 게임 기능, Sheet/CSV, 사용자 저장, Cloudflare 배포·과금 설정은 변경하지 않았습니다.
+
+## Actions 런타임 공급망 기준 · 2026-09-05
+
+Web·Windows·위키 산출물 전달은 공식 `actions/upload-artifact` v7.0.1과 `actions/download-artifact` v8.0.1을 사용합니다. 비활성 GitHub Pages 호환 경로도 `upload-pages-artifact` v5.0.0으로 맞췄습니다. artifact 실행부는 Node.js 24 런타임이며 이동 태그가 아니라 각 정식 릴리스의 40자리 커밋 SHA로 고정합니다.
+
+저장소의 **선택된 Actions 허용 목록**도 같은 SHA와 Pages 합성 액션이 내부에서 호출하는 `upload-artifact` v7.0.0 SHA로 갱신했습니다. `github_owned_allowed=false`, `verified_allowed=false`, `sha_pinning_required=true` 경계는 유지되어 목록 밖 액션이나 이동 태그는 작업이 시작되기 전에 차단됩니다.
+
+배포 경계 검사는 다음을 병합 전에 강제합니다.
+
+- 모든 `uses:` 참조가 40자리 SHA임
+- upload 3곳, download 3곳, Pages 호환 업로드 1곳이 승인된 SHA와 정확히 일치함
+- 기존 Node 20 artifact SHA가 다시 들어오지 않음
+- 산출물 이름, 1일 보존, 최신 검증 런 한 세트만 유지하는 정책이 그대로임
+
+GitHub Pages 관련 공식 액션은 현재 배포 경로에서 건너뛰며, 최신 정식 릴리스가 아직 Node 20인 액션을 미출시 브랜치 커밋으로 임의 교체하지 않습니다. 게임·위키 산출물 내용, Cloudflare/R2 권한과 과금 모델은 이 갱신으로 바뀌지 않습니다.

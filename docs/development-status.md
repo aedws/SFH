@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 13 · IMPROVE 21 · CHANGE 27 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 14 · IMPROVE 23 · CHANGE 30 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>13</b><small>BUILD</small></span><span><b>21</b><small>IMPROVE</small></span><span><b>27</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>23</b><small>IMPROVE</small></span><span><b>30</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>단일 작업 폴더 · Git 커밋 기반 복구</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -153,7 +153,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p>게임 코드·밸런스 Sheet/CSV·과금·서버 설정은 변경하지 않았습니다.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>문서·마일스톤 자동 계보 · 원본 최신성 경고</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 개발자 콘솔이 수동으로 적은 일부 객체만 보여주지 않고, 전체 문서와 현행 작업선을 자동 연결하며 외부 원본을 언제 다시 확인해야 하는지 표시합니다.</strong></div>
@@ -163,6 +163,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기존 게임 결함 수정이 아니라 운영 정보 누락 방지와 자동화 범위 확장입니다.</p></div>
         <p><a href="architecture/project-ontology/">자동 계보 계약 →</a> · <a href="access/developer/?view=operations">원본 건강도 →</a> · <a href="quality/wiki-responsive-e2e/">E2E 기준 →</a></p>
         <p>새 게임 목록이 없어 Google Sheet/확정 CSV를 확장하지 않았고 게임 코드·과금 모델·배포 주소는 변경하지 않았습니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>Actions artifact Node 24 선제 전환</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · GitHub의 Node 20 사용 중단 경고가 실제 장애로 바뀌기 전에 Web·Windows·위키 산출물 전달 액션을 공식 Node 24 릴리스로 교체했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>배포 경계 검사에 승인된 Node 24 artifact 액션 SHA와 적용 개수, 구 SHA 재유입 차단 계약을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p><code>upload-artifact</code> v7.0.1과 <code>download-artifact</code> v8.0.1을 정식 릴리스 전체 SHA로 고정했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>Web·Windows·위키 업로드 3곳과 Cloudflare 배포 다운로드 3곳을 같은 Node 24 공급망 기준으로 현행화했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>실행 결함 수정이 아니라 예정된 런타임 중단 위험의 선제 제거입니다.</p></div>
+        <p><a href="getting-started/source-control-and-cleanup/#actions-2026-09-05">Actions 공급망 기준 →</a> · <a href="architecture/module-audit/#actions-artifact-node24-2026-09-05">감사 결과 →</a></p>
+        <p>산출물 내용·보존 기간·R2 전환·게임 코드·Sheet/CSV·과금 모델은 변경하지 않았습니다.</p>
       </div>
     </details>
   </div>

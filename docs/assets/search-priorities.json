@@ -1,5 +1,5 @@
 {
-  "version": 46,
+  "version": 47,
   "updated": "2026-09-05",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
@@ -301,7 +301,7 @@
     {
       "query": "배포 표면 보안",
       "label": "배포 표면·보안 모듈 감사",
-      "description": "문서·플레이·원본 보관 주소 분리, R2 비공개 prefix, Actions SHA·Secret·백업 복구 자동 검사",
+      "description": "문서·플레이·원본 보관 주소 분리, R2 비공개 prefix, artifact Node 24·Actions SHA·Secret·백업 복구 자동 검사",
       "category": "배포",
       "priority": 97
     },
