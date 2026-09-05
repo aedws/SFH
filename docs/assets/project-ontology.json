@@ -1,7 +1,7 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "updated": "2026-09-05",
-  "source_sha256": "579e0ab99ec28403a5010892eed379c18000729cfa6ddc2750c109466532d439",
+  "source_sha256": "6219d1c3b08dff3a3341c32c2c1a6728e46ff42462206e10df9cdf4ed190d180",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -65,6 +65,12 @@
       "description": "규칙·결과·검증 방법을 설명하는 내부 문서"
     },
     {
+      "id": "collection",
+      "label": "문서 묶음",
+      "layer": "evidence",
+      "description": "전체 위키의 대분류·중분류와 문서 소속 관계"
+    },
+    {
       "id": "source",
       "label": "원본 시스템",
       "layer": "evidence",
@@ -108,7 +114,8 @@
         "risk",
         "work_item",
         "module",
-        "document"
+        "document",
+        "collection"
       ],
       "required": [
         "id",
@@ -134,7 +141,15 @@
       "system": "Notion",
       "status": "manual",
       "summary": "플레이 의도와 확정·임시·보류 상태의 원본",
-      "route": "design/master-gdd-alignment/"
+      "route": "design/master-gdd-alignment/",
+      "freshness": {
+        "state": "snapshot",
+        "observed_at": "2026-09-01T19:14:02.376000Z",
+        "revision": "153",
+        "content_sha256": "f06bd08f21592abb6c8638eb4bb9f73540fbae20e67ce2478625346ddf507716",
+        "max_age_days": 7,
+        "check": "작업 시작 전 공개 Master GDD를 다시 읽고 스냅샷을 검증합니다."
+      }
     },
     {
       "id": "source:google-sheet",
@@ -142,7 +157,14 @@
       "system": "Google Sheets",
       "status": "manual",
       "summary": "목록형 밸런스 후보와 설명의 협업 원본",
-      "route": "getting-started/planner-item-balance-tutorial/"
+      "route": "getting-started/planner-item-balance-tutorial/",
+      "freshness": {
+        "state": "unverified",
+        "observed_at": null,
+        "revision": null,
+        "max_age_days": 1,
+        "check": "목록·밸런스 작업 전 대상 탭을 실시간 검증하고 확정 CSV 해시와 함께 기록합니다."
+      }
     },
     {
       "id": "source:locked-csv",
@@ -321,6 +343,7 @@
         "work_item",
         "module",
         "document",
+        "collection",
         "source",
         "authority",
         "contributor"
@@ -337,6 +360,7 @@
         "work_item",
         "module",
         "document",
+        "collection",
         "source"
       ],
       "read_only": true
@@ -352,18 +376,22 @@
     }
   ],
   "summary": {
-    "tracked": 7,
+    "tracked": 35,
     "owner_decisions": 1,
     "blocked": 1,
     "ready": 1,
-    "implemented": 3,
+    "implemented": 31,
     "modules": 60,
     "documents": 95,
+    "collections": 27,
+    "generated_milestones": 28,
     "sources": 6,
     "actions": 5,
-    "relations": 103,
+    "relations": 362,
     "broken_relations": 0,
-    "ownerless_governed_objects": 0
+    "ownerless_governed_objects": 0,
+    "isolated_documents": 0,
+    "source_warnings": 1
   },
   "objects": [
     {
@@ -410,6 +438,14 @@
       "status": "manual",
       "summary": "플레이 의도와 확정·임시·보류 상태의 원본",
       "route": "design/master-gdd-alignment/",
+      "freshness": {
+        "state": "snapshot",
+        "observed_at": "2026-09-01T19:14:02.376000Z",
+        "revision": "153",
+        "content_sha256": "f06bd08f21592abb6c8638eb4bb9f73540fbae20e67ce2478625346ddf507716",
+        "max_age_days": 7,
+        "check": "작업 시작 전 공개 Master GDD를 다시 읽고 스냅샷을 검증합니다."
+      },
       "type": "source",
       "certainty": "confirmed",
       "kind": "evidence"
@@ -421,6 +457,13 @@
       "status": "manual",
       "summary": "목록형 밸런스 후보와 설명의 협업 원본",
       "route": "getting-started/planner-item-balance-tutorial/",
+      "freshness": {
+        "state": "unverified",
+        "observed_at": null,
+        "revision": null,
+        "max_age_days": 1,
+        "check": "목록·밸런스 작업 전 대상 탭을 실시간 검증하고 확정 CSV 해시와 함께 기록합니다."
+      },
       "type": "source",
       "certainty": "confirmed",
       "kind": "evidence"
@@ -709,6 +752,1248 @@
         }
       ],
       "kind": "governance"
+    },
+    {
+      "id": "work:milestone:base-01",
+      "type": "work_item",
+      "label": "BASE-01 · 현재 메인 빌드의 계약·실제 입력 E2E 기준값 저장",
+      "milestone_id": "BASE-01",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "Phase 2·3, 방 전투, 탈출, 정산, HUD, 중·대형 성능 기준표",
+      "acceptance": "Godot smoke·실제 입력 E2E·위키 게이트로 회귀선 고정 · E2E: Godot smoke·실제 입력 E2E·위키 게이트로 회귀선 고정",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:base-02",
+      "type": "work_item",
+      "label": "BASE-02 · 신규 모듈 의존 방향 고정",
+      "milestone_id": "BASE-02",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "Definition/Policy/Service/Presenter/Provider 경계표",
+      "acceptance": "Profile→Service→System/HUD 단방향 의존 확인 · E2E: Profile→Service→System/HUD 단방향 의존 확인",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p1-01",
+      "type": "work_item",
+      "label": "P1-01 · 스킬↔Action 배치 데이터 계약",
+      "milestone_id": "P1-01",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "SkillBindingProfile은 skill_id → action_id만 소유",
+      "acceptance": "장착 스킬마다 현재 입력 위치가 보임 · E2E: 저장 전·후 매핑 스냅샷 일치",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p1-02",
+      "type": "work_item",
+      "label": "P1-02 · 충돌·교환 정책",
+      "milestone_id": "P1-02",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "SkillBindingService가 중복 교환, 기존 장비 시스템이 태그 적합성을 담당",
+      "acceptance": "이미 사용 중인 칸에 놓으면 두 스킬 교환 피드백 · E2E: 교환·거부·허용 Action 검증",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p1-03",
+      "type": "work_item",
+      "label": "P1-03 · K 화면의 두 단계 편집",
+      "milestone_id": "P1-03",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "UI는 서비스 명령과 읽기 전용 상태만 사용",
+      "acceptance": "키 배치와 스킬 배치를 구분해 편집 · E2E: 실제 K/ESC, 22개 키와 3개 장착 스킬 행",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p1-04",
+      "type": "work_item",
+      "label": "P1-04 · 전투·HUD 실시간 반영",
+      "milestone_id": "P1-04",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "CombatSkillSystem과 HUD는 배치 제공자만 조회",
+      "acceptance": "배치 직후 키 표시와 실제 Action 발동 위치가 동기화 · E2E: 배치 Signal→상태 재방출→HUD 갱신",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p1-05",
+      "type": "work_item",
+      "label": "P1-05 · 영구 저장·초기화",
+      "milestone_id": "P1-05",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "JSON 저장을 서비스 내부 어댑터로 격리",
+      "acceptance": "재시작 뒤 유지되며 기본값 복구 가능 · E2E: 저장→재구성→복구→초기화",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p4-01",
+      "type": "work_item",
+      "label": "P4-01 · 전리품 2대 분류",
+      "milestone_id": "P4-01",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "영구 자산형과 세션 증폭·환금형의 획득·장착·탈출·사망 정책을 Resource로 정의",
+      "acceptance": "아이템 상세 데이터에서 이번 런/영구/환전 결과를 진입 전에 이해 · E2E: 15개 정의·두 분류·잘못된 생명주기 조합 거부",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p4-02",
+      "type": "work_item",
+      "label": "P4-02 · 지역·난이도별 드랍 테이블 확장",
+      "milestone_id": "P4-02",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "LootTableProvider는 작전 context에 맞는 후보·추첨·브리핑만 제공하고 아이템 생명 주기는 기존 서비스를 조회",
+      "acceptance": "지역·난이도를 바꾸면 대표 전리품과 최고 등급이 진입 전에 달라짐 · E2E: 77행·3지역, 동일 시드 결정성, 고난이도 등급 가중치, Item·Weapon·Skill 교차 검증, 성능 예산",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p4-03",
+      "type": "work_item",
+      "label": "P4-03 · 현장 비교·획득 계약",
+      "milestone_id": "P4-03",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "비교 서비스는 현재 장비와 후보 수치만 계산, 표시와 입력은 별도",
+      "acceptance": "드랍 접근 시 교체 이득·손실·보존 결과가 보임 · E2E: 드랍→접근→비교 패널→ESC 보류→재접근→F 획득",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p4-04a",
+      "type": "work_item",
+      "label": "P4-04A · 현장 무기 즉시 교체",
+      "milestone_id": "P4-04A",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "전리품 명령을 독립 장착 서비스로 전달하고 임시 정책을 Resource로 격리",
+      "acceptance": "R로 새 무기를 즉시 사용하고 기존 무기의 런 임시 보관·복구를 확인 · E2E: 드랍→R 교체→활성 무기 변화→거점 복귀 전 복구",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p4-04b",
+      "type": "work_item",
+      "label": "P4-04B · 현장 스킬 즉시 교체",
+      "milestone_id": "P4-04B",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "FieldLootSkillEquipService가 슬롯·태그·자원·키 교체를 무기 장착과 분리",
+      "acceptance": "아크 질주의 슬롯·키·ENERGY·CD·충전을 보고 R로 교체 · E2E: 드랍→태그 검증→R 교체→3번 키 유지→상태 복구",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p4-05",
+      "type": "work_item",
+      "label": "P4-05 · 런 전용 룬·코어·유물 소켓",
+      "milestone_id": "P4-05",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "영구 장비 모듈과 별도인 SessionSocketService가 무기·스킬·플레이어 런 효과만 소유",
+      "acceptance": "F 장착 즉시 전투 수치가 변하고 RUN ONLY HUD에서 해제 · E2E: 드랍→F 소켓→피해 변화→HUD 해제→원복",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p4-06",
+      "type": "work_item",
+      "label": "P4-06 · 탈출 자동 환전·영구 해금·사망 소실",
+      "milestone_id": "P4-06",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "RunSettlementService가 정책 결과를 만들고 프로필·상점·재화 저장소는 결과만 적용",
+      "acceptance": "정산 화면에서 해금, 환전액, 창고, 소실 항목이 분리되어 보임 · E2E: 성공 시 도면 등록·자동 환전, 사망 시 런 전리품 소실, 중복 정산 방지",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p5-01",
+      "type": "work_item",
+      "label": "P5-01 · 캐릭터 선택",
+      "milestone_id": "P5-01",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "캐릭터 정의·패시브·가격과 표현을 분리",
+      "acceptance": "선택 전후 능력·비용 차이를 브리핑에서 확인 · E2E: 캐릭터 변경→견적→작전 내 패시브 확인",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p5-02",
+      "type": "work_item",
+      "label": "P5-02 · 로비 실물 장비 보존·스킬 투자",
+      "milestone_id": "P5-02",
+      "milestone_status": "현행화",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "사용자 09/03 결정: 작전 무기 재선택 폐기",
+      "acceptance": "로비 장착 그대로 출격, 스킬 비용 별도 · E2E: I/U/E 저장→게이트→장비 값 일치→스킬 태그→복귀",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p5-03",
+      "type": "work_item",
+      "label": "P5-03 · 유틸리티 투자",
+      "milestone_id": "P5-03",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "가방·회복/공격 소모품·비상 탈출을 독립 카탈로그로 제공",
+      "acceptance": "수량·사용 조건·소실 조건을 진입 전에 확인 · E2E: 선택→실전 사용→잔량/정산",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p5-04",
+      "type": "work_item",
+      "label": "P5-04 · 단일 작전 초안과 BEP 미리보기",
+      "milestone_id": "P5-04",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "선택 UI는 불변 초안만 편집하고 거래는 확정 시 한 번 수행",
+      "acceptance": "전체 선택·총비용·기대 보상을 한 화면에서 확인 · E2E: 변경 견적·확정 원자성·중복 차단",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p5-05",
+      "type": "work_item",
+      "label": "P5-05 · 파산 방지 프리셋",
+      "milestone_id": "P5-05",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "무료 기본 세팅을 경제 정책으로 격리",
+      "acceptance": "재화 0에서도 무료 무장·기본 맵으로 출격 가능 · E2E: 0 재화→무료 투입→결말→재투입",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p5-06",
+      "type": "work_item",
+      "label": "P5-06 · 3대 상점 매물 최소 연결",
+      "milestone_id": "P5-06",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "품질·가격·카탈로그 제공자를 분리",
+      "acceptance": "손상·표준·고성능 차이를 구매 전에 확인 · E2E: 세 품질군→구매→보관함",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p5-07",
+      "type": "work_item",
+      "label": "P5-07 · 상점 회전·리롤 최소 연결",
+      "milestone_id": "P5-07",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "회전 시드·상태·크레딧 차감을 분리",
+      "acceptance": "런 복귀 갱신과 골드 리롤 결과·잔액 확인 · E2E: 복귀 회전→리롤→중복 차단",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p5-08",
+      "type": "work_item",
+      "label": "P5-08 · 제작소 최소 연결",
+      "milestone_id": "P5-08",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "설계도 등록·레시피·제작 Roll을 분리",
+      "acceptance": "반출 설계도를 재접속 뒤 재제작 · E2E: 반출→등록→재접속→제작→보관함",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p5-09",
+      "type": "work_item",
+      "label": "P5-09 · 훈련장 최소 연결",
+      "milestone_id": "P5-09",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "더미 시나리오·계측·세팅 복구를 분리",
+      "acceptance": "단일·밀집 시험과 DPS/AP/쿨타임 확인 · E2E: 시나리오→공격→계측→세팅 복구",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p5-10",
+      "type": "work_item",
+      "label": "P5-10 · 도감·허브 동선 통합",
+      "milestone_id": "P5-10",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "도감 진행·힌트와 화면 표현 분리",
+      "acceptance": "로비에서 해금률·미해금 지역 확인 · E2E: 반출 해금→도감 증가→힌트→재접속",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p6-01",
+      "type": "work_item",
+      "label": "P6-01 · 랭킹 제공자 인터페이스",
+      "milestone_id": "P6-01",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "기존 로컬 제공자를 유지하고 온라인 구현을 어댑터로 추가",
+      "acceptance": "오프라인 기록은 보존되고 온라인 상태가 명확히 표시 · E2E: 로컬/온라인 제공자 교체와 오프라인 폴백",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p6-02",
+      "type": "work_item",
+      "label": "P6-02 · 신원·제출·검증·재시도",
+      "milestone_id": "P6-02",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "익명 신원, 무결성 다이제스트, 멱등 키, 서버 판정과 영구 큐를 분리",
+      "acceptance": "성공·재시도·거부 이유를 결과에서 확인 · E2E: 중복 제출, 네트워크 단절, 변조·영구 거부, 저장 복원",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p6-03",
+      "type": "work_item",
+      "label": "P6-03 · 로컬 시즌 규칙",
+      "milestone_id": "P6-03",
+      "milestone_status": "완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "Policy·Service·Provider·Presenter 분리",
+      "acceptance": "종료 UTC·참가 조건·읽기 전용 마감 기록·정산 안내 · E2E: 경계 런, 조건 미달, 마감 불변, 앱 재시작·선택 제거",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:milestone:p6-04",
+      "type": "work_item",
+      "label": "P6-04 · 주간 칭호·오라 보상",
+      "milestone_id": "P6-04",
+      "milestone_status": "로컬 완료",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "SeasonRewardService는 지급만, 장착·표현은 프로필/프레젠테이션 담당",
+      "acceptance": "획득 근거를 보고 칭호·오라를 장착 · E2E: 순위 확정→1회 지급→재로그인 유지→시각 적용",
+      "next_action": "후속 변경에서 수락 조건과 E2E 회귀를 유지합니다.",
+      "route": "design/current-milestone-workline/",
+      "source": "docs/design/current-milestone-workline.md",
+      "kind": "milestone",
+      "origin": "generated_milestone_table",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "collection:root:sfh",
+      "type": "collection",
+      "label": "SFH 개발 위키",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "기획·구현·검증을 하나의 문서 그래프로 연결합니다.",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:category:project",
+      "type": "collection",
+      "label": "프로젝트 허브",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "현재 빌드와 진행 상황",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:project/current-build",
+      "type": "collection",
+      "label": "현재 빌드",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "첫 진입과 최신 개발 상태",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:project/role-workspaces",
+      "type": "collection",
+      "label": "역할 작업 공간",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "고정 역할 로그인·비밀번호 변경과 역할별 압축 화면",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:category:getting-started",
+      "type": "collection",
+      "label": "시작하기",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "설치부터 협업까지",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:getting-started/onboarding",
+      "type": "collection",
+      "label": "환경·실행",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "처음 접하는 개발자의 실행 순서",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:getting-started/collaboration",
+      "type": "collection",
+      "label": "협업·탐색",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "문서를 찾고 웹에서 수정",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:category:design",
+      "type": "collection",
+      "label": "게임 설계",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "게임의 목적과 시각 노선",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:design/core-design",
+      "type": "collection",
+      "label": "핵심 기획",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "무엇을 만들고 어디까지 구현하는가",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:design/visual-direction",
+      "type": "collection",
+      "label": "비주얼 방향",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "SFH 공통 표현 언어",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:category:architecture",
+      "type": "collection",
+      "label": "아키텍처",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "모듈 경계와 조립 규칙",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:architecture/module-contracts",
+      "type": "collection",
+      "label": "모듈 계약",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "기능을 넣고 뺄 수 있는 기준",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:architecture/scene-signals",
+      "type": "collection",
+      "label": "장면·신호",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "Godot 조립과 통신 구조",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:architecture/asset-governance",
+      "type": "collection",
+      "label": "에셋 거버넌스",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "외부 자산의 상업 이용 근거",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:category:quality",
+      "type": "collection",
+      "label": "품질·성능",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "플레이어 경험과 실행 예산",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:quality/performance-budget",
+      "type": "collection",
+      "label": "성능 예산",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "평균 PC 목표와 측정 기준",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:quality/player-qa",
+      "type": "collection",
+      "label": "E2E·UX",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "기능이 아니라 플레이어 인식으로 검증",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:category:features",
+      "type": "collection",
+      "label": "게임 기능",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "실제 플레이 시스템 전체",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:features/feature-hub",
+      "type": "collection",
+      "label": "SFH 종합 문서",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "모든 주제의 읽기 시작점",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:features/world-operations",
+      "type": "collection",
+      "label": "작전과 맵",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "작전 준비부터 탐험·탈출까지",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:features/combat-controls",
+      "type": "collection",
+      "label": "전투와 조작",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "이동·공격·스킬·적과 싸우는 규칙",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:features/equipment",
+      "type": "collection",
+      "label": "장비와 인벤토리",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "요원·무기·방어구·가방을 준비하는 방법",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:features/loot",
+      "type": "collection",
+      "label": "전리품과 회수",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "발견한 자원이 내 것이 되기까지",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:features/growth",
+      "type": "collection",
+      "label": "성장과 거점 경제",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "이번 판의 강화와 다음 판에 남는 성장",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:category:support",
+      "type": "collection",
+      "label": "지원·결정",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "문제 해결과 기술 선택 근거",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:support/troubleshooting",
+      "type": "collection",
+      "label": "문제 해결",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "자주 발생하는 실행·개발 문제",
+      "kind": "navigation",
+      "origin": "knowledge_map"
+    },
+    {
+      "id": "collection:group:support/decisions",
+      "type": "collection",
+      "label": "결정 기록",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "왜 이 기술과 구조를 선택했는가",
+      "kind": "navigation",
+      "origin": "knowledge_map"
     },
     {
       "id": "module:scene_assembly",
@@ -2093,7 +3378,7 @@
       "label": "프로젝트 오너 운영 온톨로지",
       "status": "reference",
       "certainty": "derived",
-      "summary": "객체·관계·행동·인터페이스·원본·권한으로 판단부터 배포까지 연결하는 읽기 전용 운영 계층",
+      "summary": "문서·마일스톤 자동 계보와 원본 최신성까지 판단부터 배포에 연결하는 읽기 전용 운영 계층",
       "route": "architecture/project-ontology/",
       "source": "docs/architecture/project-ontology.md",
       "kind": "evidence"
@@ -3094,6 +4379,1560 @@
       "to": "module:conditional_ranking",
       "type": "affects",
       "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:base-01",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:base-01",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:base-01",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:base-01",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:base-02",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:base-02",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:base-02",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:base-02",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p1-01",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-01",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-01",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-01",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-01",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p1-02",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-02",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-02",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-02",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-02",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p1-03",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-03",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-03",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-03",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-03",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p1-04",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-04",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-04",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-04",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-04",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p1-05",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-05",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-05",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-05",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p1-05",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p4-01",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-01",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-01",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-01",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-01",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p4-02",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-02",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-02",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-02",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-02",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p4-03",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-03",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-03",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-03",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-03",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p4-04a",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-04a",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-04a",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-04a",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-04a",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p4-04b",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-04b",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-04b",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-04b",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-04b",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p4-05",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-05",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-05",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-05",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-05",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p4-06",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-06",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-06",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-06",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p4-06",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p5-01",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-01",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-01",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-01",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-01",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p5-02",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-02",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-02",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-02",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-02",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p5-03",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-03",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-03",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-03",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-03",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p5-04",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-04",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-04",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-04",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-04",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p5-05",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-05",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-05",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-05",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-05",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p5-06",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-06",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-06",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-06",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-06",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p5-07",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-07",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-07",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-07",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-07",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p5-08",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-08",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-08",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-08",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-08",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p5-09",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-09",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-09",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-09",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-09",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p5-10",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-10",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-10",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-10",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p5-10",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p6-01",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-01",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-01",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-01",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-01",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p6-02",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-02",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-02",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-02",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-02",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p6-03",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-03",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-03",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-03",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-03",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:milestone:p6-04",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-04",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-04",
+      "to": "source:git",
+      "type": "implemented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-04",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:milestone:p6-04",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "collection:category:project",
+      "to": "collection:root:sfh",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:project/current-build",
+      "to": "collection:category:project",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:index",
+      "to": "collection:group:project/current-build",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:development-status",
+      "to": "collection:group:project/current-build",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:project/role-workspaces",
+      "to": "collection:category:project",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:access/login",
+      "to": "collection:group:project/role-workspaces",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:access/account",
+      "to": "collection:group:project/role-workspaces",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:access/planner",
+      "to": "collection:group:project/role-workspaces",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:access/developer",
+      "to": "collection:group:project/role-workspaces",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:category:getting-started",
+      "to": "collection:root:sfh",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:getting-started/onboarding",
+      "to": "collection:category:getting-started",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:getting-started/index",
+      "to": "collection:group:getting-started/onboarding",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:getting-started/install",
+      "to": "collection:group:getting-started/onboarding",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:getting-started/editor-basics",
+      "to": "collection:group:getting-started/onboarding",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:getting-started/run-project",
+      "to": "collection:group:getting-started/onboarding",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:getting-started/source-control-and-cleanup",
+      "to": "collection:group:getting-started/onboarding",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:getting-started/collaboration",
+      "to": "collection:category:getting-started",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:getting-started/edit-wiki-online",
+      "to": "collection:group:getting-started/collaboration",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:getting-started/planner-item-balance-tutorial",
+      "to": "collection:group:getting-started/collaboration",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:getting-started/search-wiki",
+      "to": "collection:group:getting-started/collaboration",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:category:design",
+      "to": "collection:root:sfh",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:design/core-design",
+      "to": "collection:category:design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:design/index",
+      "to": "collection:group:design/core-design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:design/master-gdd-alignment",
+      "to": "collection:group:design/core-design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:design/current-milestone-workline",
+      "to": "collection:group:design/core-design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:design/p5-p6-preimplementation",
+      "to": "collection:group:design/core-design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:design/p7-plus-preimplementation",
+      "to": "collection:group:design/core-design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:design/planner-request-workflow",
+      "to": "collection:group:design/core-design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:design/wiki-collaboration-workflow",
+      "to": "collection:group:design/core-design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:design/game-overview",
+      "to": "collection:group:design/core-design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:design/mvp-scope",
+      "to": "collection:group:design/core-design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:design/visual-direction",
+      "to": "collection:category:design",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:design/cyberpunk-visual-theme",
+      "to": "collection:group:design/visual-direction",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:category:architecture",
+      "to": "collection:root:sfh",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:architecture/module-contracts",
+      "to": "collection:category:architecture",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:architecture/index",
+      "to": "collection:group:architecture/module-contracts",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:architecture/module-rules",
+      "to": "collection:group:architecture/module-contracts",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:architecture/code-module-map",
+      "to": "collection:group:architecture/module-contracts",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:architecture/project-ontology",
+      "to": "collection:group:architecture/module-contracts",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:architecture/module-audit",
+      "to": "collection:group:architecture/module-contracts",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:architecture/wiki-role-auth",
+      "to": "collection:group:architecture/module-contracts",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:architecture/scene-signals",
+      "to": "collection:category:architecture",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:architecture/scene-tree",
+      "to": "collection:group:architecture/scene-signals",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:architecture/signals",
+      "to": "collection:group:architecture/scene-signals",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:architecture/asset-governance",
+      "to": "collection:category:architecture",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:architecture/third-party-assets",
+      "to": "collection:group:architecture/asset-governance",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:category:quality",
+      "to": "collection:root:sfh",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:quality/performance-budget",
+      "to": "collection:category:quality",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:quality/index",
+      "to": "collection:group:quality/performance-budget",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:performance/minimum-requirements",
+      "to": "collection:group:quality/performance-budget",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:quality/player-qa",
+      "to": "collection:category:quality",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:quality/e2e-play-session",
+      "to": "collection:group:quality/player-qa",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:quality/player-perception-audit",
+      "to": "collection:group:quality/player-qa",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:quality/wiki-responsive-e2e",
+      "to": "collection:group:quality/player-qa",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:category:features",
+      "to": "collection:root:sfh",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:features/feature-hub",
+      "to": "collection:category:features",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/index",
+      "to": "collection:group:features/feature-hub",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:features/world-operations",
+      "to": "collection:category:features",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/operations",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/start-hub",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/operation-entry-wizard",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/operation-contracts",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/raid-setup-extraction",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/map-generation",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/fog-of-war",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/minimap",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/extraction-defense-results",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/game-loop",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/operation-launch-preflight",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:features/combat-controls",
+      "to": "collection:category:features",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/combat",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/player",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/key-mapping",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/mobile-hud-settings",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/weapons",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/smart-targeting",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/combat-skills",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/combat-resources",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/health-recovery",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/hit-feedback",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/enemies",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/enemy-defense",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/elite-pursuit",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/room-encounters",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:features/equipment",
+      "to": "collection:category:features",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/equipment",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/character-selection",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/character-equipment",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/equipment-fixed-identity",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/grid-inventory",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/equipment-customization",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/equipment-upgrade-economy",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/loadout-investment",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/weapon-balance",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:features/loot",
+      "to": "collection:category:features",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/loot",
+      "to": "collection:group:features/loot",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/credit-loot",
+      "to": "collection:group:features/loot",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/loot-tables",
+      "to": "collection:group:features/loot",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/loot-lifecycle",
+      "to": "collection:group:features/loot",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/field-loot-acquisition",
+      "to": "collection:group:features/loot",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/field-loot-immediate-equip",
+      "to": "collection:group:features/loot",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/field-loot-skill-swap",
+      "to": "collection:group:features/loot",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/session-sockets",
+      "to": "collection:group:features/loot",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/run-settlement",
+      "to": "collection:group:features/loot",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:features/growth",
+      "to": "collection:category:features",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/growth",
+      "to": "collection:group:features/growth",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/progression",
+      "to": "collection:group:features/growth",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/growth-balance",
+      "to": "collection:group:features/growth",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/hub-economy",
+      "to": "collection:group:features/growth",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/p5-hub-progression",
+      "to": "collection:group:features/growth",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/training-ground",
+      "to": "collection:group:features/growth",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/blueprint-crafting",
+      "to": "collection:group:features/growth",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/penalty-ranking",
+      "to": "collection:group:features/growth",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/ranking-provider",
+      "to": "collection:group:features/growth",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:category:support",
+      "to": "collection:root:sfh",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:support/troubleshooting",
+      "to": "collection:category:support",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:troubleshooting/index",
+      "to": "collection:group:support/troubleshooting",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "collection:group:support/decisions",
+      "to": "collection:category:support",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:decisions/index",
+      "to": "collection:group:support/decisions",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:decisions/0001-technology-stack",
+      "to": "collection:group:support/decisions",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:decisions/DEC-P4-04-field-replacement-policy",
+      "to": "collection:group:support/decisions",
+      "type": "part_of",
+      "origin": "knowledge_map"
     },
     {
       "from": "module:scene_assembly",

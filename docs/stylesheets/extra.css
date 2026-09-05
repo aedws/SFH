@@ -3949,6 +3949,14 @@ button.sfh-owner-relation { cursor: pointer; }
 .sfh-owner-source-grid small { color: var(--sfh-green); font-size: 0.42rem; }
 .sfh-owner-source-grid b { color: var(--sfh-text); font-size: 0.56rem; }
 .sfh-owner-source-grid span { color: var(--sfh-muted); font-size: 0.46rem; }
+.sfh-owner-source-grid em { margin-top: auto; padding-top: 0.35rem; border-top: 1px solid rgba(2, 229, 225, 0.15); color: var(--sfh-text-soft); font-size: 0.42rem; font-style: normal; line-height: 1.55; }
+.md-typeset .sfh-owner-source-grid a.is-current { box-shadow: inset 0 -2px 0 var(--sfh-green); }
+.md-typeset .sfh-owner-source-grid a.is-warning,
+.md-typeset .sfh-owner-source-grid a.is-stale { box-shadow: inset 0 -2px 0 var(--sfh-amber); }
+.sfh-owner-source-grid a.is-warning small,
+.sfh-owner-source-grid a.is-stale small,
+.sfh-owner-source-grid a.is-warning em,
+.sfh-owner-source-grid a.is-stale em { color: var(--sfh-amber); }
 
 /* Planner ontology literacy and public feature showcase */
 .sfh-planner-ontology, .sfh-planner-gates, .sfh-public-showcase { display: grid; gap: 1px; margin: 0.8rem 0; background: rgba(2, 229, 225, 0.16); }

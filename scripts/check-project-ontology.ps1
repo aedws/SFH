@@ -36,7 +36,7 @@ $stylesheet = Get-Content -LiteralPath $stylesheetPath -Raw -Encoding UTF8
 $mkdocs = Get-Content -LiteralPath $mkdocsPath -Raw -Encoding UTF8
 $errors = [System.Collections.Generic.List[string]]::new()
 
-if ($ontology.schema_version -ne 2 -or $ontology.summary.tracked -lt 7) {
+if ($ontology.schema_version -ne 3 -or $ontology.summary.tracked -lt 30) {
     $errors.Add("Project ontology schema or initial decision coverage is missing.")
 }
 if ($ontology.authority.id -ne "authority:project-owner" -or $ontology.authority.label -ne "프로젝트 오너") {
@@ -60,7 +60,7 @@ foreach ($item in $registry.objects) {
         $errors.Add("Tracked object must explain current meaning and next action: $($item.id)")
     }
 }
-foreach ($requiredType in @("principle", "decision", "risk", "work_item", "module", "document", "source", "authority", "contributor")) {
+foreach ($requiredType in @("principle", "decision", "risk", "work_item", "module", "document", "collection", "source", "authority", "contributor")) {
     if ($requiredType -notin @($ontology.object_types | ForEach-Object { $_.id })) {
         $errors.Add("Operational ontology object type is missing: $requiredType")
     }
@@ -83,8 +83,28 @@ foreach ($relation in $ontology.relations) {
         $errors.Add("Broken project ontology relation: $($relation.from) -> $($relation.to)")
     }
 }
-if ($ontology.summary.modules -lt 50 -or $ontology.summary.documents -lt 80 -or $ontology.summary.relations -lt 20) {
+if ($ontology.summary.modules -lt 50 -or $ontology.summary.documents -lt 80 -or $ontology.summary.collections -lt 20 -or $ontology.summary.generated_milestones -lt 25 -or $ontology.summary.relations -lt 250) {
     $errors.Add("Generated implementation or evidence coverage is unexpectedly small.")
+}
+if ($ontology.summary.isolated_documents -ne 0) {
+    $errors.Add("Every knowledge-map document must be connected to an ontology collection.")
+}
+$generatedMilestones = @($ontology.objects | Where-Object { $_.origin -eq "generated_milestone_table" })
+foreach ($milestone in $generatedMilestones) {
+    if ($milestone.decision_owner -ne "authority:project-owner" -or [string]::IsNullOrWhiteSpace($milestone.acceptance)) {
+        $errors.Add("Generated milestone is missing owner or acceptance: $($milestone.id)")
+    }
+    if (-not @($ontology.relations | Where-Object { $_.from -eq $milestone.id -and $_.type -eq "verified_by" })) {
+        $errors.Add("Generated milestone is missing E2E lineage: $($milestone.id)")
+    }
+}
+$notionSource = $ontology.source_systems | Where-Object { $_.id -eq "source:notion" }
+$sheetSource = $ontology.source_systems | Where-Object { $_.id -eq "source:google-sheet" }
+if ([string]::IsNullOrWhiteSpace($notionSource.freshness.observed_at) -or [string]::IsNullOrWhiteSpace($notionSource.freshness.revision)) {
+    $errors.Add("Notion freshness evidence must include observation time and revision.")
+}
+if ($sheetSource.freshness.state -ne "unverified" -or [string]::IsNullOrWhiteSpace($sheetSource.freshness.check)) {
+    $errors.Add("Google Sheet must expose a visible live-verification warning.")
 }
 if ($developer -notmatch 'data-sfh-owner-decision-console-host') {
     $errors.Add("Developer workspace does not expose the owner decision console.")
@@ -103,7 +123,10 @@ foreach ($required in @(
     '판단 대기열',
     '객체 탐색',
     '관계·계보',
-    '행동·관측'
+    '행동·관측',
+    '원본 확인 필요',
+    'part_of',
+    'freshness'
 )) {
     if ($javascript -notmatch [regex]::Escape($required)) {
         $errors.Add("Owner decision console client contract is missing: $required")

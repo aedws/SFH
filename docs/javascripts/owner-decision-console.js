@@ -28,11 +28,24 @@
   }
 
   function typeLabel(type) {
-    return ({ principle: "원칙", decision: "결정", risk: "위험", work_item: "작업", module: "코드 모듈", document: "근거 문서", source: "원본 시스템", authority: "판단 주체", contributor: "근거 제공자" })[type] || type;
+    return ({ principle: "원칙", decision: "결정", risk: "위험", work_item: "작업", module: "코드 모듈", document: "근거 문서", collection: "문서 묶음", source: "원본 시스템", authority: "판단 주체", contributor: "근거 제공자" })[type] || type;
   }
 
   function relationLabel(type) {
-    return ({ decides: "최종 판단", documented_by: "문서 근거", informed_by: "판단 근거", governs: "적용 원칙", governed_by: "원칙 적용", implemented_by: "구현", verified_by: "검증", configured_by: "데이터 설정", affects: "영향", blocks: "진행 차단", requires: "선행 의존", extends: "확장 기반" })[type] || type;
+    return ({ decides: "최종 판단", documented_by: "문서 근거", informed_by: "판단 근거", governs: "적용 원칙", governed_by: "원칙 적용", implemented_by: "구현", verified_by: "검증", configured_by: "데이터 설정", affects: "영향", blocks: "진행 차단", requires: "선행 의존", extends: "확장 기반", part_of: "소속" })[type] || type;
+  }
+
+  function sourceFreshness(source) {
+    var freshness = source.freshness;
+    if (!freshness) return { state: "validated", label: "저장소 검증", detail: "CI가 현재 저장소 산출물을 검증합니다." };
+    if (!freshness.observed_at) return { state: "warning", label: "원본 확인 필요", detail: freshness.check || "실시간 원본을 확인해야 합니다." };
+    var observed = Date.parse(freshness.observed_at);
+    var ageDays = Number.isFinite(observed) ? Math.max(0, Math.floor((Date.now() - observed) / 86400000)) : Infinity;
+    var maxAge = Number(freshness.max_age_days || 0);
+    if (!Number.isFinite(ageDays) || ageDays > maxAge) {
+      return { state: "stale", label: "갱신 확인 필요", detail: ageDays === Infinity ? freshness.check : ageDays + "일 전 관측 · " + freshness.check };
+    }
+    return { state: "current", label: "스냅샷 확인", detail: ageDays + "일 전 관측 · REV " + (freshness.revision || "-") };
   }
 
   function buildConsole(data) {
@@ -41,9 +54,12 @@
     var actionById = new Map(data.action_types.map(function (item) { return [item.id, item]; }));
     var trackedTypes = new Set(["principle", "decision", "risk", "work_item"]);
     var tracked = data.objects.filter(function (item) { return trackedTypes.has(item.type); });
-    var requested = new URL(location.href).searchParams.get("decision");
+    var pageUrl = new URL(location.href);
+    var requested = pageUrl.searchParams.get("decision");
+    var requestedView = pageUrl.searchParams.get("view");
+    var validViews = new Set(["decisions", "objects", "lineage", "operations"]);
     var fallback = tracked.find(function (item) { return item.status === "needs_decision"; }) || tracked[0];
-    var state = { selected: requested && objectById.has(requested) ? requested : fallback.id, view: "decisions" };
+    var state = { selected: requested && objectById.has(requested) ? requested : fallback.id, view: validViews.has(requestedView) ? requestedView : "decisions" };
 
     var wrapper = element("section", "sfh-owner-console");
     wrapper.setAttribute("data-sfh-owner-decision-console", "");
@@ -84,7 +100,13 @@
       button.setAttribute("role", "tab");
       button.dataset.view = definition[0];
       button.append(element("b", "", definition[1]), element("small", "", definition[2]));
-      button.addEventListener("click", function () { state.view = definition[0]; renderTabs(); renderView(); });
+      button.addEventListener("click", function () {
+        state.view = definition[0];
+        var url = new URL(location.href);
+        url.searchParams.set("view", state.view);
+        history.replaceState({}, "", url);
+        renderTabs(); renderView();
+      });
       tabs.append(button);
     });
 
@@ -256,8 +278,10 @@
 
     function renderOperationsView() {
       viewport.replaceChildren();
+      var sourceStates = data.source_systems.map(function (source) { return sourceFreshness(source); });
+      var sourceWarnings = sourceStates.filter(function (item) { return item.state === "warning" || item.state === "stale"; }).length;
       var health = element("div", "sfh-owner-health");
-      [[data.summary.broken_relations, "깨진 관계", "0이어야 통과"], [data.summary.ownerless_governed_objects, "오너 없는 판단", "0이어야 통과"], [data.summary.sources, "원본 시스템", "권한·상태 표시"], [data.summary.actions, "행동 계약", "입력·출력·가드"]].forEach(function (item) {
+      [[data.summary.broken_relations, "깨진 관계", "0이어야 통과"], [data.summary.isolated_documents, "고립 문서", "0이어야 통과"], [sourceWarnings, "원본 확인 필요", "Notion·Sheet 최신성"], [data.summary.generated_milestones, "자동 작업 객체", "마일스톤 표 연동"]].forEach(function (item) {
         var card = element("article"); card.append(element("b", "", String(item[0])), element("span", "", item[1]), element("small", "", item[2])); health.append(card);
       });
       var actions = element("div", "sfh-owner-action-grid");
@@ -267,10 +291,11 @@
       });
       var sources = element("div", "sfh-owner-source-grid");
       data.source_systems.forEach(function (source) {
-        var link = element("a"); link.href = new URL(source.route, siteRoot()).href;
-        link.append(element("small", "", source.system + " · " + source.status), element("b", "", source.label), element("span", "", source.summary)); sources.append(link);
+        var freshness = sourceFreshness(source);
+        var link = element("a", "is-" + freshness.state); link.href = new URL(source.route, siteRoot()).href;
+        link.append(element("small", "", source.system + " · " + freshness.label), element("b", "", source.label), element("span", "", source.summary), element("em", "", freshness.detail)); sources.append(link);
       });
-      viewport.append(health, element("h3", "sfh-owner-section-title", "행동 계약 · 자동 실행 없음"), actions, element("h3", "sfh-owner-section-title", "원본 시스템과 계보"), sources);
+      viewport.append(health, element("h3", "sfh-owner-section-title", "행동 계약 · 자동 실행 없음"), actions, element("h3", "sfh-owner-section-title", "원본 시스템 " + data.summary.sources + "개 · 확인 필요 " + sourceWarnings + "개"), sources);
     }
 
     function renderTabs() {

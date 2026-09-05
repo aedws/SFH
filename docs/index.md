@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 1 · IMPROVE 3 · CHANGE 2 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 5 · CHANGE 3 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>1</b><small>BUILD</small></span><span><b>3</b><small>IMPROVE</small></span><span><b>2</b><small>CHANGE</small></span><span><b>0</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>3</b><small>CHANGE</small></span><span><b>0</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>팀 문서 탐색 안정화</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 팀 작업 공간의 문서와 작업 순서가 빠짐없이 연결되도록 내부 탐색과 검증을 보강했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>팀 문서와 작업 상태를 자동으로 연결하는 내부 색인을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>외부 기획·데이터 원본을 다시 확인해야 하는 시점을 팀 화면에서 분명하게 안내합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>내부 문서가 탐색 관계에서 누락되면 배포 전에 검사가 실패하도록 했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>공개 게임 플레이와 기존 기능 동작은 변경하지 않았습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>공개 플레이 테스트 안내 재구성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 처음 방문해도 SFH의 핵심 플레이와 테스트 방법을 바로 이해하도록 공개 화면을 정리했습니다.</strong></div>
