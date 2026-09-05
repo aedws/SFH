@@ -53,17 +53,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 2 · IMPROVE 6 · CHANGE 4 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 3 · IMPROVE 6 · CHANGE 4 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>4</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 1</small><b>FUN QA · 조작 피드백과 진입 가독성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 모바일 스킬 글자 겹침, 잘못된 대시 키 표시, 대상 없는 공격의 무반응, 거점 게이트 혼선과 과밀한 최종 투입 화면을 플레이어 인식 기준으로 바로잡았습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>대상 없음 피드백과 거점 게이트 방향·거리 안내를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>대상 없음 피드백과 거점 게이트 방향·거리 안내를 추가하고, 온톨로지 입력 해시를 운영체제와 무관하게 고정했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 6</h3><p>모바일 버튼 압축, 이동 시각 반응 강화, 작전 카드 축약, 테스트·시즌 상세 접기, 로드아웃 단말 명칭, 완료형 닫기 문구를 적용했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 4</h3><p>대시 HUD가 현재 키 설정을 따라가고, 전체 이름은 툴팁에 보존하며, 일반 출격과 개발 정보를 분리했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>SHIFT/Space 불일치, 모바일 스킬명 침범, 좌클릭 무반응 오인을 재발 테스트로 고정했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>SHIFT/Space 불일치, 모바일 스킬명 침범, 좌클릭 무반응 오인과 CI 줄바꿈 해시 오판정을 재발 테스트로 고정했습니다.</p></div>
       </div>
     </details>
   </div>

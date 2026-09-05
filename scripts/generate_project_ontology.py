@@ -211,7 +211,11 @@ def digest_sources(*paths: Path) -> str:
     for path in paths:
         digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
         digest.update(b"\0")
-        digest.update(path.read_bytes())
+        # Git checks out text with platform-specific line endings. Hash the
+        # logical UTF-8 content so Windows and Linux produce the same result.
+        content = path.read_text(encoding="utf-8-sig")
+        normalized = content.replace("\r\n", "\n").replace("\r", "\n")
+        digest.update(normalized.encode("utf-8"))
     return digest.hexdigest()
 
 

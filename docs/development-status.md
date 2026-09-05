@@ -102,17 +102,17 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 2 · IMPROVE 6 · CHANGE 4 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 3 · IMPROVE 6 · CHANGE 4 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>4</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 1</small><b>FUN QA · 조작 피드백과 진입 가독성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기능은 작동하지만 잘못 보이거나 반응이 없다고 느껴지던 입력·이동·거점·작전 화면을 플레이어 인식 계약에 맞췄습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>대상이 없을 때 자동 타게팅 대기 문구와 주변 레티클을 표시하고, 거점 시작점부터 작전 게이트 방향·거리를 계속 안내합니다.</p></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>대상이 없을 때 자동 타게팅 대기 문구와 주변 레티클을 표시하고, 거점 시작점부터 작전 게이트 방향·거리를 계속 안내하며, 온톨로지 입력 해시를 운영체제와 무관하게 고정합니다.</p></div>
         <div class="sfh-group"><h3>개선 · 6</h3><p>모바일 스킬을 번호+상태로 압축하고, 이동 리드·스트레치·속도선 지속을 강화하며, 작전 규모 카드를 세 줄로 정돈하고 테스트·시즌 상세는 기본 접음으로 분리했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 4</h3><p>대시 HUD가 KeyMapping의 현재 바인딩을 즉시 표시하고, 로비 세팅 단말과 실제 작전 게이트의 이름·종료 문구·목적을 구분합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>기본 Space와 SHIFT 표기 불일치, 좁은 모바일 버튼의 한글 침범, 대상 없는 좌클릭의 무반응 오인을 자동 회귀로 고정했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>기본 Space와 SHIFT 표기 불일치, 좁은 모바일 버튼의 한글 침범, 대상 없는 좌클릭의 무반응 오인, Windows와 Linux 간 줄바꿈 차이로 발생한 CI 온톨로지 오판정을 자동 회귀로 고정했습니다.</p></div>
         <p>게임 스모크, 모바일 5해상도×3배율, 실제 입력 E2E 23상태·31인식·15인과 흐름을 통과했습니다. 신규 목록 데이터와 과금 모델은 변경하지 않았습니다.</p>
         <p><a href="quality/player-perception-audit/#fun-qa-2026-09-06">FUN QA 결과 →</a> · <a href="architecture/module-audit/#fun-qa-modularity-2026-09-06">모듈 감사 →</a></p>
       </div>
