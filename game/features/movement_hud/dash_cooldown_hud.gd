@@ -14,15 +14,17 @@ var refresh_accumulator: float = 0.0
 @onready var status_label: Label = %StatusLabel
 @onready var cooldown_bar: ProgressBar = %CooldownBar
 @onready var time_label: Label = %TimeLabel
+@onready var input_label: Label = %InputLabel
 
 
-func configure(new_movement_provider: Node) -> bool:
+func configure(new_movement_provider: Node, binding_text: String = "DASH") -> bool:
 	if (
 		not is_instance_valid(new_movement_provider)
 		or not new_movement_provider.has_method(&"get_movement_snapshot")
 	):
 		return false
 	movement_provider = new_movement_provider
+	set_input_label(binding_text)
 	_refresh_state()
 	set_process(true)
 	return true
@@ -34,9 +36,16 @@ func get_snapshot() -> Dictionary:
 		&"refresh_hz": refresh_hz,
 		&"movement": latest_snapshot.duplicate(true),
 		&"status": status_label.text,
+		&"input_label": input_label.text,
 		&"bar_value": cooldown_bar.value,
 		&"icon_mode": get_node_or_null("Panel/Margin/Content/DashIcon") != null,
 	}
+
+
+func set_input_label(binding_text: String) -> void:
+	var resolved := binding_text.strip_edges()
+	input_label.text = resolved if not resolved.is_empty() else "DASH"
+	input_label.tooltip_text = "%s · 대시/회피" % input_label.text
 
 
 func _ready() -> void:

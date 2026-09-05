@@ -4,6 +4,9 @@ extends Node2D
 
 const PLAYER_SCENE_PATH := "res://game/features/player/player.tscn"
 const START_HUB_SCENE_PATH := "res://game/features/start_hub/start_hub.tscn"
+const HUB_WAYFINDING_POLICY_SCRIPT := preload(
+	"res://game/features/start_hub/hub_wayfinding_policy.gd"
+)
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
 const FOG_OF_WAR_SCENE_PATH := "res://game/features/fog_of_war/fog_of_war.tscn"
@@ -330,7 +333,7 @@ const COMBAT_SKILL_METHODS := [
 	&"remove_runtime_modifiers",
 ]
 const COMBAT_SKILL_HUD_METHODS := [&"configure", &"get_snapshot"]
-const DASH_COOLDOWN_HUD_METHODS := [&"configure", &"get_snapshot"]
+const DASH_COOLDOWN_HUD_METHODS := [&"configure", &"get_snapshot", &"set_input_label"]
 const HIT_FEEDBACK_METHODS := [&"configure", &"register_actor", &"get_snapshot"]
 const COMBAT_RESOURCE_METHODS := [
 	&"configure", &"can_activate", &"consume_for_skill", &"restore_energy",
@@ -444,6 +447,7 @@ const MAP_TIER_IDS := ["small", "medium", "large"]
 @onready var weapon_runtime_label: Label = %WeaponRuntimeLabel
 @onready var control_hint_label: Label = $UI/HUDMargin/Panel/Margin/Content/FooterRow/Hint
 @onready var hub_control_hint_label: Label = $UI/StartHubHUD/Panel/Margin/Content/Controls
+@onready var hub_objective_label: Label = $UI/StartHubHUD/Panel/Margin/Content/Objective
 @onready var interaction_label: Label = %InteractionLabel
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var health_label: Label = %HealthLabel
@@ -529,6 +533,8 @@ var training_combat_skill_hud
 var shop_browser_panel
 var hub_preparation_panel
 var hub_service_stations
+var hub_wayfinding_policy := HUB_WAYFINDING_POLICY_SCRIPT.new()
+var hub_wayfinding_refresh_remaining := 0.0
 var hub_economy_system
 var crafting_system
 var penalty_system
@@ -1122,6 +1128,8 @@ func _refresh_control_hints() -> void:
 		],
 		&"key_mapping": _binding_label(&"toggle_key_mapping"),
 	})
+	if is_instance_valid(dash_cooldown_hud):
+		dash_cooldown_hud.call(&"set_input_label", _binding_label(&"dash"))
 	var move_keys := "%s/%s/%s/%s" % [
 		_binding_label(&"move_up"),
 		_binding_label(&"move_left"),
@@ -1695,7 +1703,8 @@ func _install_start_hub() -> bool:
 	hud_margin.visible = false
 	start_hub_hud.visible = true
 	interaction_label.visible = false
-	status_label.text = "로비 보급 상점 / 출격 준비 · F 상호작용 · I/U/E 장비 저장 → 우측 작전 게이트"
+	status_label.text = "로비 단말은 세팅용 · 실제 출격은 동쪽 작전 게이트에서 F"
+	_update_hub_wayfinding(1.0)
 	if is_instance_valid(mobile_control_pad):
 		mobile_control_pad.call(&"configure_runtime", training_combat_skill_system, player)
 	return true
@@ -2267,6 +2276,7 @@ func _assemble_game() -> bool:
 			auto_weapon.connect(
 				&"weapon_runtime_changed", Callable(self, &"_on_weapon_runtime_changed")
 			)
+			auto_weapon.connect(&"attack_feedback", Callable(self, &"_on_weapon_attack_feedback"))
 			auto_weapon.call(
 				&"configure", projectiles_container, equipment_system, weapon_balance_service
 			)
@@ -2460,7 +2470,7 @@ func _install_dash_cooldown_hud() -> bool:
 	)
 	if (
 		not _supports_methods(dash_cooldown_hud, DASH_COOLDOWN_HUD_METHODS)
-		or not dash_cooldown_hud.call(&"configure", player)
+		or not dash_cooldown_hud.call(&"configure", player, _binding_label(&"dash"))
 	):
 		_report_configuration_error("대시 쿨타임 HUD를 구성하지 못했습니다.")
 		return false
@@ -3501,14 +3511,18 @@ func _configure_tier_button(button: Button, tier_id: String) -> void:
 		reward_multiplier = float(quote.get(&"reward_multiplier", 1.0))
 		if persistent_profile != null and not persistent_profile.call(&"can_spend", quoted_entry_cost):
 			button.disabled = true
-	button.text = "%s · %d분\n투입 %d C · 회수 ×%.2f\n방 %d~%d%s" % [
+	button.text = "%s · %d분\n%d C · ×%.2f · 방 %d~%d\n%s" % [
 		config.get("display_name"),
 		roundi(float(config.get("target_run_duration_seconds")) / 60.0),
 		quoted_entry_cost,
 		reward_multiplier,
 		config.get("minimum_rooms"),
 		config.get("maximum_rooms"),
-		enemy_range,
+		enemy_range.trim_prefix(" · "),
+	]
+	button.tooltip_text = "%s · 투입 %d C · 회수 배율 ×%.2f · 방 %d~%d%s" % [
+		config.get("display_name"), quoted_entry_cost, reward_multiplier,
+		config.get("minimum_rooms"), config.get("maximum_rooms"), enemy_range,
 	]
 
 
@@ -3548,7 +3562,21 @@ func _tier_resources_are_available(tier_id: String) -> bool:
 
 
 func _process(delta: float) -> void:
+	_update_hub_wayfinding(delta)
 	advance_run_clock(delta)
+
+
+func _update_hub_wayfinding(delta: float) -> void:
+	if run_started or not is_instance_valid(start_hub) or not is_instance_valid(player):
+		return
+	hub_wayfinding_refresh_remaining -= maxf(0.0, delta)
+	if hub_wayfinding_refresh_remaining > 0.0:
+		return
+	hub_wayfinding_refresh_remaining = 0.2
+	var guide: Dictionary = hub_wayfinding_policy.snapshot(
+		player.global_position, start_hub.to_global(start_hub.call(&"get_operation_position"))
+	)
+	hub_objective_label.text = String(guide.get(&"text", "동쪽 작전 게이트로 이동하세요."))
 
 
 func advance_run_clock(delta: float) -> void:
@@ -3997,6 +4025,15 @@ func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:
 	]
 	if run_started:
 		combat_hud_presenter.call(&"reveal_detail", &"weapon")
+
+
+func _on_weapon_attack_feedback(message: String, reason: StringName) -> void:
+	if not run_started or run_ended:
+		return
+	status_label.text = message
+	status_label.add_theme_color_override(
+		"font_color", Color("9fc7cf") if reason == &"no_target" else Color("ffd579")
+	)
 
 
 func _on_weapon_balance_error(message: String) -> void:

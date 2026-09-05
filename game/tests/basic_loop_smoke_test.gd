@@ -1,6 +1,11 @@
 extends SceneTree
 var save_test_isolation: RefCounted
 
+class EmptyTargetProvider:
+	extends Node
+	func get_active_targets() -> Array:
+		return []
+
 const GAME_SCENE_PATH := "res://game/scenes/game.tscn"
 const MAP_GENERATOR_SCENE_PATH := "res://game/features/map_generation/map_generator.tscn"
 const MAP_CONFIG_PATH_PATTERN := "res://game/features/map_generation/configs/%s.tres"
@@ -3723,6 +3728,25 @@ func _process(_delta: float) -> bool:
 			or int(combat_skill_hud.call(&"get_snapshot").get(&"slot_count", 0)) != 3
 		):
 			return _fail("전투 세션에 세 개 스킬과 쿨타임 HUD가 연결되지 않았습니다.")
+		var dash_snapshot: Dictionary = dash_cooldown_hud.call(&"get_snapshot")
+		if String(dash_snapshot.get(&"input_label", "")) != "Space":
+			return _fail("대시 HUD가 실제 기본 바인딩 Space를 표시하지 않습니다: %s" % dash_snapshot)
+		dash_cooldown_hud.call(&"set_input_label", "E2E")
+		if String(dash_cooldown_hud.call(&"get_snapshot").get(&"input_label", "")) != "E2E":
+			return _fail("대시 HUD가 런타임 키 변경 표시를 갱신하지 못했습니다.")
+		dash_cooldown_hud.call(&"set_input_label", "Space")
+		var empty_targets := EmptyTargetProvider.new()
+		root.add_child(empty_targets)
+		var feedback_events: Array[StringName] = []
+		weapon.connect(&"attack_feedback", func(_message: String, reason: StringName): feedback_events.append(reason), CONNECT_ONE_SHOT)
+		weapon.call(&"set_target_provider", empty_targets)
+		weapon.set("cooldown", 0.0)
+		if bool(weapon.call(&"try_fire_once")) or feedback_events != [&"no_target"]:
+			return _fail("대상 없는 공격이 조용히 무시되거나 투사체를 생성했습니다: %s" % feedback_events)
+		if not bool(weapon.call(&"get_runtime_snapshot").get(&"no_target_feedback_active", false)):
+			return _fail("대상 없는 공격의 시각 피드백 상태가 노출되지 않습니다.")
+		weapon.call(&"set_target_provider", game_instance.get("enemy_spawner"))
+		empty_targets.queue_free()
 		var small_config = load(MAP_CONFIG_PATH_PATTERN % "small")
 		if map_generator.get("rooms").size() < int(small_config.get("minimum_rooms")):
 			return _fail("소형 맵의 최소 방 수를 생성하지 못했습니다.")

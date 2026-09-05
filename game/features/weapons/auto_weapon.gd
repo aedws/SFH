@@ -2,6 +2,7 @@ class_name AutoWeapon
 extends Node2D
 
 signal weapon_runtime_changed(snapshot: Dictionary)
+signal attack_feedback(message: String, reason: StringName)
 
 @export var projectile_scene: PackedScene
 @export var fallback_target_group: StringName = &"enemies"
@@ -27,6 +28,9 @@ var last_target_instance_id: int = 0
 var active_weapon_identity: Dictionary = {}
 var muzzle_flash_remaining: float = 0.0
 var muzzle_flash_direction := Vector2.RIGHT
+var no_target_cue_remaining: float = 0.0
+var no_target_feedback_lockout: float = 0.0
+var primary_attack_was_pressed := false
 
 @onready var innate_skill_system: WeaponInnateSkillSystem = $InnateSkillSystem
 
@@ -117,10 +121,14 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	muzzle_flash_remaining = maxf(0.0, muzzle_flash_remaining - delta)
+	no_target_cue_remaining = maxf(0.0, no_target_cue_remaining - delta)
+	no_target_feedback_lockout = maxf(0.0, no_target_feedback_lockout - delta)
 	queue_redraw()
 	cooldown -= delta
-	if requires_primary_attack and not Input.is_action_pressed(primary_attack_action):
+	var attack_pressed := Input.is_action_pressed(primary_attack_action)
+	if requires_primary_attack and not attack_pressed:
 		burst_remaining = 0
+		primary_attack_was_pressed = false
 		return
 	if cooldown > 0.0:
 		return
@@ -135,7 +143,11 @@ func _process(delta: float) -> void:
 		return
 	var target := _find_nearest_enemy()
 	if target == null:
+		if not primary_attack_was_pressed or no_target_feedback_lockout <= 0.0:
+			_show_no_target_feedback()
+		primary_attack_was_pressed = true
 		return
+	primary_attack_was_pressed = true
 	last_target_instance_id = target.get_instance_id()
 	burst_direction = global_position.direction_to(target.global_position)
 	_fire_pattern(burst_direction)
@@ -152,6 +164,7 @@ func try_fire_once() -> bool:
 		return false
 	var target := _find_nearest_enemy()
 	if target == null:
+		_show_no_target_feedback()
 		return false
 	last_target_instance_id = target.get_instance_id()
 	burst_direction = global_position.direction_to(target.global_position)
@@ -205,6 +218,8 @@ func get_runtime_snapshot() -> Dictionary:
 	result[&"last_target_instance_id"] = last_target_instance_id
 	result[&"fixed_identity"] = active_weapon_identity.duplicate(true)
 	result[&"innate_skill_runtime"] = innate_skill_system.get_snapshot()
+	result[&"no_target_feedback_active"] = no_target_cue_remaining > 0.0
+	result[&"last_feedback_reason"] = &"no_target" if no_target_feedback_lockout > 0.0 else &""
 	result[&"targeting_policy"] = (
 		targeting_policy.call(&"get_snapshot") if targeting_policy != null else {}
 	)
@@ -350,13 +365,25 @@ func _impact_profile(weapon_id: StringName) -> Dictionary:
 
 
 func _draw() -> void:
-	if muzzle_flash_remaining <= 0.0:
-		return
-	var ratio := muzzle_flash_remaining / 0.075
-	var color: Color = _impact_profile(active_weapon_id)[&"color"]
-	color.a = clampf(ratio, 0.0, 1.0)
-	draw_line(Vector2.ZERO, muzzle_flash_direction * (24.0 + 12.0 * ratio), color, 4.0)
-	draw_circle(muzzle_flash_direction * 18.0, 5.0 + ratio * 5.0, Color(color.r, color.g, color.b, color.a * 0.35))
+	if muzzle_flash_remaining > 0.0:
+		var ratio := muzzle_flash_remaining / 0.075
+		var color: Color = _impact_profile(active_weapon_id)[&"color"]
+		color.a = clampf(ratio, 0.0, 1.0)
+		draw_line(Vector2.ZERO, muzzle_flash_direction * (24.0 + 12.0 * ratio), color, 4.0)
+		draw_circle(muzzle_flash_direction * 18.0, 5.0 + ratio * 5.0, Color(color.r, color.g, color.b, color.a * 0.35))
+	if no_target_cue_remaining > 0.0:
+		var cue_ratio := no_target_cue_remaining / 0.22
+		var cue_color := Color(0.48, 0.72, 0.76, clampf(cue_ratio * 0.8, 0.0, 0.8))
+		for angle in [0.0, TAU / 3.0, TAU * 2.0 / 3.0]:
+			var direction := Vector2.RIGHT.rotated(angle)
+			draw_line(direction * 22.0, direction * 31.0, cue_color, 2.0)
+
+
+func _show_no_target_feedback() -> void:
+	no_target_cue_remaining = 0.22
+	no_target_feedback_lockout = 0.65
+	attack_feedback.emit("사거리 내 대상 없음 · 자동 타게팅 대기", &"no_target")
+	queue_redraw()
 
 
 func _refresh_balance() -> void:

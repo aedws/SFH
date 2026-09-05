@@ -1618,3 +1618,15 @@ P8-01~03 구현은 완료했으나 더미 HP·방어·수량·측정 시간은 �
 | 회귀 게이트 | 통과 | 실제 R2형 전체 range descriptor 단위 테스트와 Cloudflare 전체 200/부분 206 E2E를 동시에 요구 |
 
 게임 Scene·저장·밸런스·Sheet/CSV·R2 객체와 과금 모델은 변경하지 않았습니다.
+## FUN QA 표현 계약 재감사 · 2026-09-06 {#fun-qa-modularity-2026-09-06}
+
+| 경계 | 판정 | 근거 |
+|---|---|---|
+| 대시 입력→표시 | 통과 | `Game`이 `KeyMappingService`의 표시값만 `DashCooldownHud.set_input_label()`에 주입하며 HUD는 InputMap을 직접 읽지 않음 |
+| 모바일 축약 | 통과 | `MobileControlPad`는 기존 semantic Action과 스킬 공개 스냅샷만 사용하고 스킬 정의·쿨타임 계산을 복제하지 않음 |
+| 대상 없음 공격 | 통과 | `AutoWeapon`이 발사 거부 이유와 0.22초 표현 상태만 소유하며 타게팅 정책·피해·발사 쿨타임을 변경하지 않음 |
+| 거점 길찾기 | 통과 | `HubWayfindingPolicy`는 두 좌표를 문구로 변환하는 순수 정책이고 `StartHub`와 HUD Node를 소유하지 않음 |
+| 작전 고급 정보 | 통과 | `OperationSetupPresenter`가 접힘 상태만 소유하고 밸런스 서비스·시즌 서비스의 원본 상태와 계산은 변경하지 않음 |
+| 이동 표현 | 통과 | `PlayerMovementFeedback`은 공개 velocity와 스냅샷으로 시각값만 보강하며 물리 가속·제동·대시 규칙을 수정하지 않음 |
+
+게임 스모크, 모바일 계약, 실제 입력 E2E를 함께 통과했습니다. 신규 순환 의존·목록 데이터·경제 또는 과금 변경은 없습니다.

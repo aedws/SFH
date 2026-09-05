@@ -10,7 +10,7 @@ script = ExtResource("1")
 position = Vector2(-580, 245)
 script = ExtResource("1")
 service_id = &"preparation"
-display_name = "출격 준비 · 장비는 I/U"
+display_name = "로드아웃 단말 · 요원/스킬/소모품"
 
 [node name="TrainingStation" type="Node2D" parent="." groups=["hub_service_station"]]
 position = Vector2(95, -300)

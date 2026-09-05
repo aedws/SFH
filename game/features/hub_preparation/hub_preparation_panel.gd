@@ -30,7 +30,7 @@ func _ready() -> void:
 	column.add_theme_constant_override("separation", 10)
 	panel.add_child(column)
 	var title := Label.new()
-	title.text = "HUB // 출격 준비"
+	title.text = "HUB // 로드아웃 준비"
 	column.add_child(title)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -48,7 +48,7 @@ func _ready() -> void:
 		inventory_requested.emit())
 	column.add_child(inventory_button)
 	close_button = Button.new()
-	close_button.text = "ESC · 세팅 유지하고 로비로"
+	close_button.text = "세팅 완료 · 로비로 돌아가기 (ESC)"
 	close_button.custom_minimum_size.y = 44
 	close_button.pressed.connect(close_panel)
 	column.add_child(close_button)
@@ -101,4 +101,3 @@ func _layout() -> void:
 	var target := Vector2(minf(760, size.x - 24), minf(640, size.y - 24))
 	panel.position = (size - target) * 0.5
 	panel.size = target
-
