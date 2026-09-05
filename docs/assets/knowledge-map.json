@@ -1,5 +1,5 @@
 {
-  "version": 26,
+  "version": 27,
   "updated": "2026-09-05",
   "root": {
     "id": "sfh",
@@ -111,7 +111,7 @@
               {"label": "아키텍처", "source": "architecture/index.md", "route": "architecture/", "summary": "구조 문서 진입점"},
               {"label": "모듈 규칙", "source": "architecture/module-rules.md", "route": "architecture/module-rules/", "summary": "의존성과 공개 계약 원칙"},
               {"label": "현재 코드 모듈 노드맵", "source": "architecture/code-module-map.md", "route": "architecture/code-module-map/", "summary": "실제 코드에서 산출한 모듈·클래스·상속·참조 관계"},
-              {"label": "프로젝트 오너 운영 온톨로지", "source": "architecture/project-ontology.md", "route": "architecture/project-ontology/", "summary": "객체·관계·행동·인터페이스·원본·권한으로 판단부터 배포까지 연결하는 읽기 전용 운영 계층"},
+              {"label": "프로젝트 오너 운영 온톨로지", "source": "architecture/project-ontology.md", "route": "architecture/project-ontology/", "summary": "문서·마일스톤 자동 계보와 원본 최신성까지 판단부터 배포에 연결하는 읽기 전용 운영 계층"},
               {"label": "모듈화 점검 기록", "source": "architecture/module-audit.md", "route": "architecture/module-audit/", "summary": "기능별 교체성 검증 근거"},
               {"label": "위키 역할 인증과 권한 경계", "source": "architecture/wiki-role-auth.md", "route": "architecture/wiki-role-auth/", "summary": "공개 홈 최소화·내부 문서 인증·고정 역할 계정"}
             ]

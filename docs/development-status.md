@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 10 · IMPROVE 16 · CHANGE 21 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 13 · IMPROVE 21 · CHANGE 27 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>16</b><small>IMPROVE</small></span><span><b>21</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>13</b><small>BUILD</small></span><span><b>21</b><small>IMPROVE</small></span><span><b>27</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>단일 작업 폴더 · Git 커밋 기반 복구</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -141,7 +141,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p>게임 코드·밸런스 Sheet/CSV·과금·서버 설정은 변경하지 않았습니다.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>권한별 위키 재배치 · 운영 온톨로지 폐루프</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 개발자는 객체·관계·행동·원본·검증을 한 콘솔에서 추적하고, 기획자는 게임 대상을 기획 가능한 형식으로 작성하며, 공개 사용자는 플레이 가치와 테스트 진입만 보도록 역할별 화면을 전면 재배치했습니다.</strong></div>
@@ -151,6 +151,18 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기능 결함 수정이 아니라 정보 구조와 운영 계약 확장입니다.</p></div>
         <p><a href="architecture/project-ontology/">운영 온톨로지 계약 →</a> · <a href="access/developer/">개발자 운영 콘솔 →</a> · <a href="access/planner/">기획 작성 가이드 →</a></p>
         <p>게임 코드·밸런스 Sheet/CSV·과금·서버 설정은 변경하지 않았습니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 5</small><b>문서·마일스톤 자동 계보 · 원본 최신성 경고</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 개발자 콘솔이 수동으로 적은 일부 객체만 보여주지 않고, 전체 문서와 현행 작업선을 자동 연결하며 외부 원본을 언제 다시 확인해야 하는지 표시합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>문서 묶음 27개·문서 소속 관계, 마일스톤 작업 28개, Notion 스냅샷과 Google Sheet 최신성 상태를 생성합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 5</h3><p>95개 문서가 모두 관계망에 포함되고, 행동·관측 화면에서 고립 문서·자동 작업·원본 확인 경고와 직접 진입 주소를 확인합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 6</h3><p>스키마 v3와 CI가 고립 문서, 마일스톤 오너·수락·E2E 계보, Notion revision·관측 시각, Sheet 미검증 상태를 강제합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기존 게임 결함 수정이 아니라 운영 정보 누락 방지와 자동화 범위 확장입니다.</p></div>
+        <p><a href="architecture/project-ontology/">자동 계보 계약 →</a> · <a href="access/developer/?view=operations">원본 건강도 →</a> · <a href="quality/wiki-responsive-e2e/">E2E 기준 →</a></p>
+        <p>새 게임 목록이 없어 Google Sheet/확정 CSV를 확장하지 않았고 게임 코드·과금 모델·배포 주소는 변경하지 않았습니다.</p>
       </div>
     </details>
   </div>

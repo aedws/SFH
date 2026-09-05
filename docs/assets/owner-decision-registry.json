@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "updated": "2026-09-05",
   "authority": {
     "id": "authority:project-owner",
@@ -40,13 +40,14 @@
     {"id": "work_item", "label": "작업", "layer": "operations", "description": "수락 조건과 검증 결과를 가진 실행 단위"},
     {"id": "module", "label": "코드 모듈", "layer": "implementation", "description": "기능을 구현하는 교체 가능한 코드 경계"},
     {"id": "document", "label": "근거 문서", "layer": "evidence", "description": "규칙·결과·검증 방법을 설명하는 내부 문서"},
+    {"id": "collection", "label": "문서 묶음", "layer": "evidence", "description": "전체 위키의 대분류·중분류와 문서 소속 관계"},
     {"id": "source", "label": "원본 시스템", "layer": "evidence", "description": "Notion·Sheet·CSV·Git·E2E·CI 단일 원본"},
     {"id": "authority", "label": "판단 주체", "layer": "governance", "description": "최종 수락 권한을 가진 프로젝트 오너"},
     {"id": "contributor", "label": "근거 제공자", "layer": "governance", "description": "기획 또는 구현 근거를 제출하지만 확정하지 않는 역할"}
   ],
   "interfaces": [
     {"id": "owner_decidable", "label": "오너 판단 가능", "applies_to": ["decision", "risk", "work_item", "principle"], "required": ["decision_owner", "status", "summary", "next_action"]},
-    {"id": "traceable", "label": "원본 추적 가능", "applies_to": ["decision", "risk", "work_item", "module", "document"], "required": ["id", "relations"]},
+    {"id": "traceable", "label": "원본 추적 가능", "applies_to": ["decision", "risk", "work_item", "module", "document", "collection"], "required": ["id", "relations"]},
     {"id": "verifiable", "label": "검증 가능", "applies_to": ["work_item"], "required": ["acceptance", "verified_by"]}
   ],
   "source_systems": [
