@@ -109,6 +109,8 @@ Desktop/
 
 Web·Windows·위키 산출물 전달은 공식 `actions/upload-artifact` v7.0.1과 `actions/download-artifact` v8.0.1을 사용합니다. 두 액션 모두 Node.js 24 런타임이며 이동 태그가 아니라 각 정식 릴리스의 40자리 커밋 SHA로 고정합니다.
 
+저장소의 **선택된 Actions 허용 목록**도 같은 두 SHA로 갱신했습니다. `github_owned_allowed=false`, `verified_allowed=false`, `sha_pinning_required=true` 경계는 유지되어 목록 밖 액션이나 이동 태그는 작업이 시작되기 전에 차단됩니다.
+
 배포 경계 검사는 다음을 병합 전에 강제합니다.
 
 - 모든 `uses:` 참조가 40자리 SHA임
