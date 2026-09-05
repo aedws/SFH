@@ -44,6 +44,8 @@ var main_columns: HBoxContainer
 var outer_margin: MarginContainer
 var responsive_mode := &"wide"
 var equipped_summary: Label
+var advanced_details_button: Button
+var advanced_details: VBoxContainer
 
 
 func take_hub_preparation_content() -> Control:
@@ -273,9 +275,7 @@ func install(overlay: Control) -> Dictionary:
 			_fit_button(button as Button)
 			tier_buttons[_tier_id_from_button(button)] = button
 
-	confirm_step.add_child(_section_title("밸런스 데이터"))
 	var balance := content.get_node("BalanceModeSection") as VBoxContainer
-	_move(balance, confirm_step)
 	(balance.get_node("Title") as Label).horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	(balance.get_node("Buttons") as HBoxContainer).alignment = BoxContainer.ALIGNMENT_BEGIN
 	for button in balance.get_node("Buttons").get_children():
@@ -292,20 +292,33 @@ func install(overlay: Control) -> Dictionary:
 	selection_summary = _label("계약 선택 대기", 12, Color("02e5e1"))
 	_wrap_label(selection_summary)
 	confirm_step.add_child(selection_summary)
+	advanced_details_button = Button.new()
+	advanced_details_button.name = "AdvancedDetailsButton"
+	advanced_details_button.text = "테스트·시즌 세부 정보 펼치기  +"
+	advanced_details_button.custom_minimum_size.y = 34.0
+	advanced_details_button.tooltip_text = "밸런스 데이터 소스와 조건부 랭킹 기록을 확인합니다. 일반 출격에는 변경이 필요하지 않습니다."
+	advanced_details_button.pressed.connect(_toggle_advanced_details)
+	confirm_step.add_child(advanced_details_button)
+	advanced_details = VBoxContainer.new()
+	advanced_details.name = "AdvancedDetails"
+	advanced_details.add_theme_constant_override("separation", 5)
+	confirm_step.add_child(advanced_details)
+	advanced_details.add_child(_section_title("고급 테스트·시즌 정보"))
+	_move(balance, advanced_details)
 	season_summary = _label("", 11, Color("b6d8dd"))
 	season_summary.name = "SeasonSummary"
 	_wrap_label(season_summary)
-	confirm_step.add_child(season_summary)
+	advanced_details.add_child(season_summary)
 	season_history_button = Button.new()
 	season_history_button.text = "시즌 기록 · 읽기 전용"
 	season_history_button.custom_minimum_size.y = 28
 	_fit_button(season_history_button)
-	confirm_step.add_child(season_history_button)
+	advanced_details.add_child(season_history_button)
 	season_honor_button = Button.new()
 	season_honor_button.text = "시즌 보상 · 칭호 / 오라"
 	_fit_button(season_honor_button)
 	season_honor_button.pressed.connect(func(): honor_requested.emit())
-	confirm_step.add_child(season_honor_button)
+	advanced_details.add_child(season_honor_button)
 	season_history_dialog = AcceptDialog.new()
 	season_history_dialog.title = "시즌 기록 · 로컬 테스트"
 	season_history_dialog.dialog_hide_on_ok = true
@@ -320,6 +333,7 @@ func install(overlay: Control) -> Dictionary:
 	season_history_content.offset_bottom = -52
 	season_history_dialog.add_child(season_history_content)
 	season_history_button.pressed.connect(func(): season_history_dialog.popup_centered(Vector2i(mini(640, int(overlay.size.x) - 32), mini(440, int(overlay.size.y) - 48))))
+	_set_advanced_details_visible(false)
 	var launch_spacer := Control.new()
 	launch_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	confirm_step.add_child(launch_spacer)
@@ -480,6 +494,7 @@ func get_snapshot() -> Dictionary:
 		&"selection_summary": selection_summary.text if selection_summary != null else "",
 		&"season_summary": season_summary.text if season_summary != null else "",
 		&"season_history_visible": season_history_dialog.visible if season_history_dialog != null else false,
+		&"advanced_details_visible": advanced_details.visible if advanced_details != null else false,
 		&"target_farming_summary": target_farming_summary.text if target_farming_summary != null else "",
 		&"character_summary": character_summary.text if character_summary != null else "",
 		&"loadout_investment_summary": (
@@ -508,6 +523,20 @@ func get_snapshot() -> Dictionary:
 			if previous_button != null and next_button != null else 0.0
 		),
 	}
+
+
+func _toggle_advanced_details() -> void:
+	_set_advanced_details_visible(not advanced_details.visible)
+
+
+func _set_advanced_details_visible(is_visible: bool) -> void:
+	if advanced_details == null or advanced_details_button == null:
+		return
+	advanced_details.visible = is_visible
+	advanced_details_button.text = (
+		"테스트·시즌 세부 정보 접기  −"
+		if is_visible else "테스트·시즌 세부 정보 펼치기  +"
+	)
 
 
 func _update_loadout_investment(snapshot: Dictionary) -> void:

@@ -6,11 +6,11 @@ extends Node2D
 const ACCENT := Color("02e5e1")
 
 @export var enabled: bool = true
-@export_range(0.0, 12.0, 0.5) var body_lead_pixels: float = 5.0
-@export_range(0.0, 0.3, 0.01) var body_stretch: float = 0.12
-@export_range(0.0, 80.0, 1.0) var camera_lead_pixels: float = 30.0
+@export_range(0.0, 12.0, 0.5) var body_lead_pixels: float = 7.0
+@export_range(0.0, 0.3, 0.01) var body_stretch: float = 0.17
+@export_range(0.0, 80.0, 1.0) var camera_lead_pixels: float = 38.0
 @export_range(1.0, 40.0, 1.0) var camera_response: float = 18.0
-@export_range(0.05, 0.5, 0.01) var cue_duration: float = 0.18
+@export_range(0.05, 0.5, 0.01) var cue_duration: float = 0.24
 @export_range(2, 16, 1) var maximum_trail_points: int = 10
 @export_range(1.0, 16.0, 0.5) var dash_trail_width: float = 9.0
 
@@ -229,11 +229,11 @@ func _draw() -> void:
 		return
 	var side := Vector2(-last_direction.y, last_direction.x)
 	var backward := -last_direction
-	var streak_count := 3 if dash_cue > 0.25 else 2
+	var streak_count := 4 if dash_cue > 0.25 else 3
 	for index in streak_count:
 		var distance := 24.0 + index * 11.0
 		var half_gap := 11.0 + index * 3.0
-		var alpha := (0.18 + visual_intensity * 0.46) * (1.0 - index * 0.18)
+		var alpha := (0.24 + visual_intensity * 0.52) * (1.0 - index * 0.16)
 		var start := backward * distance + side * half_gap
 		var finish := start + backward * (9.0 + visual_intensity * 13.0)
 		var mirrored_start := backward * distance - side * half_gap

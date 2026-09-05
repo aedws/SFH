@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "8f2feb556fb85870b7ae5556b5bebd681b944a540b2446e0db13b39642ca9c43",
+  "source_sha256": "3ae04963c927bdd743b9d89c3c9c9f0e6f380c24a381db2b42223be19b96d762",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 279,
-    "named_classes": 231,
+    "scripts": 280,
+    "named_classes": 232,
     "relationships": 185,
     "project_inheritance": 7,
     "enabled_toggles": 70
@@ -1170,9 +1170,10 @@
       "path": "game/features/start_hub",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 1,
-      "class_count": 1,
+      "file_count": 2,
+      "class_count": 2,
       "classes": [
+        "HubWayfindingPolicy",
         "StartHub"
       ],
       "incoming_count": 1,
@@ -3166,6 +3167,15 @@
       "module": "spawning",
       "path": "game/features/spawning/enemy_spawner.gd",
       "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:HubWayfindingPolicy",
+      "name": "HubWayfindingPolicy",
+      "module": "start_hub",
+      "path": "game/features/start_hub/hub_wayfinding_policy.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },

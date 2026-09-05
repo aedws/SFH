@@ -104,6 +104,13 @@ func set_context_enabled(enabled: bool) -> void:
 
 
 func get_snapshot() -> Dictionary:
+	var combat_button_rects: Dictionary = {}
+	var combat_button_texts: Dictionary = {}
+	for action_id in [&"primary_attack", &"dash", &"combat_skill_1", &"combat_skill_2", &"combat_skill_3", &"interact"]:
+		var button := action_buttons.get(action_id) as Button
+		if button != null:
+			combat_button_rects[action_id] = button.get_global_rect()
+			combat_button_texts[action_id] = button.text
 	return {
 		&"configured": settings_provider != null,
 		&"visible": visible,
@@ -122,6 +129,9 @@ func get_snapshot() -> Dictionary:
 		&"joystick_direction": joystick.direction,
 		&"touch_count": touch_actions.size() + int(joystick.finger >= 0),
 		&"viewport_coverage_ratio": _viewport_coverage_ratio(),
+		&"combat_button_rects": combat_button_rects,
+		&"combat_button_texts": combat_button_texts,
+		&"compact_skill_labels": true,
 	}
 
 
@@ -224,13 +234,13 @@ func _refresh_status() -> void:
 			continue
 		var state: Dictionary = states[index]
 		var remaining := float(state.get(&"cooldown_remaining", 0))
-		var label := "READY" if bool(state.get(&"ready", false)) else ("%.1fs" % remaining if remaining > 0 else "WAIT")
+		var label := "RDY" if bool(state.get(&"ready", false)) else ("%.1f" % remaining if remaining > 0 else "WAIT")
 		if remaining <= 0 and not bool(state.get(&"resource_ready", true)):
 			var recovery := float(state.get(&"charge_recovery_remaining", 0))
-			label = "%.1fs" % recovery if int(state.get(&"current_charges", -1)) == 0 else "EN 부족"
+			label = "%.1f" % recovery if int(state.get(&"current_charges", -1)) == 0 else "EN"
 		if not bool(state.get(&"weapon_tags_ready", true)):
-			label = "LOCK"
-		button.text = "%s\n%s" % [String(state.get(&"display_name", str(index + 1))).left(4), label]
+			label = "LCK"
+		button.text = "[%d]\n%s" % [index + 1, label]
 		button.tooltip_text = "스킬 %d · %s · EN %d · 충전 %d/%d" % [index + 1, state.get(&"display_name", ""), state.get(&"energy_cost", 0), state.get(&"current_charges", 0), state.get(&"maximum_charges", 0)]
 		energy_label.text = "EN %d / %d" % [state.get(&"energy_current", 0), state.get(&"energy_maximum", 0)]
 	if OrientationPolicy.is_portrait(size):
@@ -301,6 +311,7 @@ func _build_ui() -> void:
 		button.name = String(action_id).to_pascal_case()
 		button.text = entry[1]
 		button.tooltip_text = entry[2]
+		button.clip_text = true
 		button.focus_mode = Control.FOCUS_NONE
 		button.mouse_filter = Control.MOUSE_FILTER_STOP
 		button.modulate = Color(1, 1, 1, 0.78)
@@ -343,7 +354,7 @@ func _apply_layout() -> void:
 	energy_label.add_theme_font_size_override("font_size", roundi(16 * effective_ui_scale))
 	for child: Control in combat_group.get_children():
 		if child is Button:
-			child.add_theme_font_size_override("font_size", roundi(14 * effective_ui_scale))
+			child.add_theme_font_size_override("font_size", roundi(11 * effective_ui_scale))
 			child.modulate.a = 0.84
 	for index in range(3):
 		_place_combat_button(StringName("combat_skill_%d" % (index + 1)), index * (button_size + gap), energy_height, button_size)

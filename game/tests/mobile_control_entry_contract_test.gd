@@ -141,6 +141,10 @@ func _mobile_play() -> void:
 			_check(bounds.encloses(state.movement_rect) and bounds.encloses(state.combat_rect) and bounds.encloses(state.menu_rect), "pad bounds %s scale %s: %s" % [dimensions, scale_value, state])
 			_check(not state.movement_rect.intersects(state.combat_rect), "two hand areas disjoint %s scale %s" % [dimensions, scale_value])
 			_check(state.combat_rect.size.x > previous_width, "scale selection visibly enlarges controls")
+			_check(bool(state.compact_skill_labels), "mobile skill buttons use compact semantic labels")
+			for action_id in [&"combat_skill_1", &"combat_skill_2", &"combat_skill_3"]:
+				var compact_text := String((state.combat_button_texts as Dictionary).get(action_id, ""))
+				_check(compact_text.begins_with("[") and compact_text.length() <= 9, "skill label stays inside button: %s" % compact_text)
 			previous_width = state.combat_rect.size.x
 			for button: Button in pad.action_buttons.values():
 				if button.visible: _check(button.size.x >= 44 and button.size.y >= 44, "touch target >=44")

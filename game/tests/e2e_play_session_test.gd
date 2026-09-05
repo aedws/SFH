@@ -275,6 +275,7 @@ func _verify_hub_input_session() -> bool:
 	var equipment = game.get("equipment_system")
 	var hub_hud := game.get_node("UI/StartHubHUD") as Control
 	var hub_hint := game.get_node("UI/StartHubHUD/Panel/Margin/Content/Controls") as Label
+	var hub_objective := game.get_node("UI/StartHubHUD/Panel/Margin/Content/Objective") as Label
 	var setup := game.get_node("UI/RunSetupOverlay") as Control
 	if hub == null or player == null or inventory == null or workbench == null or equipment == null:
 		return _fail("거점·플레이어·가방·장비 모듈이 함께 준비되지 않았습니다.")
@@ -288,6 +289,8 @@ func _verify_hub_input_session() -> bool:
 		return _fail("거점 조작 안내가 U와 E의 서로 다른 역할을 설명하지 않습니다.")
 	if "K 키 설정" not in hub_hint.text:
 		return _fail("거점 조작 안내가 K 키 설정 진입을 설명하지 않습니다.")
+	if "작전 게이트" not in hub_objective.text or "로드아웃 단말과 별도" not in hub_objective.text:
+		return _fail("거점 시작 위치에서 실제 작전 게이트의 방향·거리·단말 구분을 안내하지 않습니다: %s" % hub_objective.text)
 
 	await _tap_key(KEY_K)
 	var key_panel = game.get("key_mapping_panel") as Control
@@ -526,11 +529,16 @@ func _verify_operation_session() -> bool:
 		or not (confirmation_step.get(&"overflow_nodes", PackedStringArray()) as PackedStringArray).is_empty()
 	):
 		return _fail("최종 검토 단계에서만 작전 투입 결정을 제공하지 않습니다.")
+	if bool(confirmation_step.get(&"advanced_details_visible", true)):
+		return _fail("일반 출격 시 테스트·시즌 상세 정보가 기본 화면을 과밀하게 만듭니다.")
 	if not _judge_player_perception(&"operation_decision", "최종 작전 위험·비용 결정 이해"):
 		return false
 	if "UTC" not in String(confirmation_step.get(&"season_summary", "")) or "시즌 참가 규모 불일치" not in String(confirmation_step.get(&"season_summary", "")):
 		return _fail("최종 투입 전에 시즌 종료 시각·참가 조건이 보이지 않음")
 	var season_presenter = game.get("operation_setup_presenter")
+	await _click_tutorial_button(season_presenter.advanced_details_button)
+	if not bool(season_presenter.get_snapshot().get(&"advanced_details_visible", false)):
+		return _fail("고급 테스트·시즌 정보를 필요할 때 펼칠 수 없습니다.")
 	await _click_tutorial_button(season_presenter.season_history_button)
 	if not season_presenter.season_history_dialog.visible or "읽기 전용" not in season_presenter.season_history_content.text:
 		return _fail("시즌 기록 클릭 후 읽기 전용 조회가 열리지 않음")

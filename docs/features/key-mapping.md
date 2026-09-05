@@ -62,6 +62,8 @@ SkillBindingService
 
 플레이어 이동은 더 이상 `WASD` 물리 키를 직접 읽지 않습니다. `move_up/down/left/right`와 `dash` Action만 읽으므로 저장된 설정이 실제 이동과 대시에 그대로 적용됩니다. I/U/E 같은 기존 화면도 각각의 Action을 사용해 같은 저장 계약을 공유합니다.
 
+대시 HUD도 고정 문자열을 쓰지 않습니다. 기본값은 `Space`이며 K에서 바꾸면 `bindings_changed` 뒤 현재 물리 키 이름으로 즉시 갱신됩니다. 첫 작전 튜토리얼과 하단 대시 쿨타임은 같은 바인딩 공급자를 사용합니다.
+
 ## 기본값
 
 | 분류 | Action | 기본값 |

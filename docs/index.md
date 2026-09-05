@@ -53,47 +53,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-05</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 3 · IMPROVE 7 · CHANGE 5 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 2 · IMPROVE 6 · CHANGE 4 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>1</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>3</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 4</small><b>브라우저·다운로드 응답 안정화</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 1</small><b>FUN QA · 조작 피드백과 진입 가독성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 브라우저 플레이와 Windows 파일 전체 요청이 일부 파일처럼 표시될 수 있던 배포 응답을 바로잡았습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 0</h3><p>새 게임 기능 추가 없이 배포 호환성을 검수했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>전체 다운로드와 이어받기 요청을 서로 다른 상태로 명확히 응답합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>브라우저·다운로드 관리자·CDN이 파일 크기와 응답 종류를 정확히 판독하도록 했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>범위 요청이 없는데도 전체 파일이 `206 Partial Content`로 반환되던 문제를 수정했습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>배포 런타임 안정화</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 테스트 빌드 전달에 사용하는 공식 자동화 구성요소를 최신 지원 런타임으로 선제 갱신했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>오래된 자동화 버전이 다시 들어오면 배포 전에 차단하는 검사를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>브라우저·Windows·위키 산출물 전달 안정성을 높였습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>공식 지원 런타임과 불변 버전 참조로 배포 구성을 현행화했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>게임 플레이와 기존 저장 데이터 동작은 변경하지 않았습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>팀 문서 탐색 안정화</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 팀 작업 공간의 문서와 작업 순서가 빠짐없이 연결되도록 내부 탐색과 검증을 보강했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>팀 문서와 작업 상태를 자동으로 연결하는 내부 색인을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>외부 기획·데이터 원본을 다시 확인해야 하는 시점을 팀 화면에서 분명하게 안내합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>내부 문서가 탐색 관계에서 누락되면 배포 전에 검사가 실패하도록 했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>공개 게임 플레이와 기존 기능 동작은 변경하지 않았습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>공개 플레이 테스트 안내 재구성</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 처음 방문해도 SFH의 핵심 플레이와 테스트 방법을 바로 이해하도록 공개 화면을 정리했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>브라우저 플레이와 Windows 다운로드를 분리해 제공합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>자동 전투, 방 봉쇄, 위험·보상, 전리품, 전술 시야, PC·모바일 특징을 플레이어 관점으로 압축했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>상세 기획·코드·일정·검증 정보는 팀 로그인 안으로 이동하고 공개 홈은 홍보와 테스트에 집중합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>기능 결함 수정이 아닌 정보 구조 변경입니다.</p></div>
+        <div class="sfh-summary"><strong>무엇이 변했나 · 모바일 스킬 글자 겹침, 잘못된 대시 키 표시, 대상 없는 공격의 무반응, 거점 게이트 혼선과 과밀한 최종 투입 화면을 플레이어 인식 기준으로 바로잡았습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>대상 없음 피드백과 거점 게이트 방향·거리 안내를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 6</h3><p>모바일 버튼 압축, 이동 시각 반응 강화, 작전 카드 축약, 테스트·시즌 상세 접기, 로드아웃 단말 명칭, 완료형 닫기 문구를 적용했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 4</h3><p>대시 HUD가 현재 키 설정을 따라가고, 전체 이름은 툴팁에 보존하며, 일반 출격과 개발 정보를 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>SHIFT/Space 불일치, 모바일 스킬명 침범, 좌클릭 무반응 오인을 재발 테스트로 고정했습니다.</p></div>
       </div>
     </details>
   </div>

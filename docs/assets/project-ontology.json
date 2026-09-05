@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-05",
-  "source_sha256": "6219d1c3b08dff3a3341c32c2c1a6728e46ff42462206e10df9cdf4ed190d180",
+  "source_sha256": "d4b1bbb990b75707d60c0de9a533ade7af2a45ed9b06cbeb56d49e9b3da80ba0",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -2991,14 +2991,14 @@
       "label": "시작 거점",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "월드·탐색 · feature · 파일 1개",
+      "summary": "월드·탐색 · feature · 파일 2개",
       "route": "architecture/code-module-map/?module=start_hub",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/start_hub",
       "kind": "implementation",
       "metrics": {
-        "files": 1,
-        "classes": 1,
+        "files": 2,
+        "classes": 2,
         "incoming": 1,
         "outgoing": 1
       }
