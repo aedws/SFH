@@ -2,89 +2,9 @@ name: Deploy developer wiki
 
 on:
   pull_request:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/**"
-      - "cloudflare/**"
-      - "docs/**"
-      - "game/**"
-      - "project.godot"
-      - "export_presets.cfg"
-      - ".release-version"
-      - "mkdocs.yml"
-      - "requirements-docs.txt"
-      - "scripts/package_release.py"
-      - "scripts/prune_windows_releases.py"
-      - "scripts/test_windows_release_retention.py"
-      - "scripts/sync_item_lifecycle.py"
-      - "scripts/sync_loot_table.py"
-      - "scripts/sync_season_rewards.py"
-      - "scripts/sync_skill_catalog.py"
-      - "scripts/sync_session_socket_rules.py"
-      - "scripts/sync_character_catalog.py"
-      - "scripts/sync_loadout_investment.py"
-      - "scripts/snapshot_notion_source.py"
-      - "scripts/test_notion_snapshot.py"
-      - "scripts/loot-table.ps1"
-      - "scripts/wiki.ps1"
-      - "scripts/wiki_articles.py"
-      - "scripts/test_wiki_articles.py"
-      - "scripts/compress-wiki-release-days.ps1"
-      - "scripts/check-wiki-no-github-backlinks.ps1"
-      - "scripts/deploy_cloudflare_assets.py"
-      - "scripts/test_cloudflare_worker.mjs"
-      - "scripts/test_mobile_orientation_policy.mjs"
-      - "scripts/check-backup-workflows.ps1"
-      - "scripts/check-deployment-boundaries.ps1"
-      - "scripts/check-game-domain-cutover.ps1"
-      - "scripts/check-wiki-planner-requests.ps1"
-      - "scripts/check-p7-roadmap.ps1"
-      - "scripts/generate_project_ontology.py"
-      - "scripts/check-project-ontology.ps1"
-      - "scripts/test-p6.ps1"
+    branches: [main]
   push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/**"
-      - "cloudflare/**"
-      - "docs/**"
-      - "game/**"
-      - "project.godot"
-      - "export_presets.cfg"
-      - ".release-version"
-      - "mkdocs.yml"
-      - "requirements-docs.txt"
-      - "scripts/package_release.py"
-      - "scripts/prune_windows_releases.py"
-      - "scripts/test_windows_release_retention.py"
-      - "scripts/sync_item_lifecycle.py"
-      - "scripts/sync_loot_table.py"
-      - "scripts/sync_season_rewards.py"
-      - "scripts/sync_skill_catalog.py"
-      - "scripts/sync_session_socket_rules.py"
-      - "scripts/sync_character_catalog.py"
-      - "scripts/sync_loadout_investment.py"
-      - "scripts/snapshot_notion_source.py"
-      - "scripts/test_notion_snapshot.py"
-      - "scripts/loot-table.ps1"
-      - "scripts/wiki.ps1"
-      - "scripts/wiki_articles.py"
-      - "scripts/test_wiki_articles.py"
-      - "scripts/compress-wiki-release-days.ps1"
-      - "scripts/check-wiki-no-github-backlinks.ps1"
-      - "scripts/deploy_cloudflare_assets.py"
-      - "scripts/test_cloudflare_worker.mjs"
-      - "scripts/test_mobile_orientation_policy.mjs"
-      - "scripts/check-backup-workflows.ps1"
-      - "scripts/check-deployment-boundaries.ps1"
-      - "scripts/check-game-domain-cutover.ps1"
-      - "scripts/check-wiki-planner-requests.ps1"
-      - "scripts/check-p7-roadmap.ps1"
-      - "scripts/generate_project_ontology.py"
-      - "scripts/check-project-ontology.ps1"
-      - "scripts/test-p6.ps1"
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -93,12 +13,69 @@ permissions:
   id-token: write
 
 concurrency:
-  group: github-pages
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  export-game:
+  plan:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+      pull-requests: read
+    outputs:
+      game: ${{ steps.route.outputs.game }}
+      reuse_run: ${{ steps.route.outputs.reuse_run }}
+      web_run: ${{ steps.route.outputs.web_run }}
+      runner: ${{ steps.route.outputs.runner }}
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - name: Snapshot the commit that main replaced
+        if: github.event_name == 'push'
+        env:
+          PREVIOUS_MAIN_SHA: ${{ github.event.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$PREVIOUS_MAIN_SHA" =~ ^[0-9a-f]{40}$ ]] || [[ "$PREVIOUS_MAIN_SHA" =~ ^0+$ ]]; then
+            echo "No previous main commit to snapshot."
+            exit 0
+          fi
+          git cat-file -e "$PREVIOUS_MAIN_SHA^{commit}"
+          backup_branch="backup/pre-main/$PREVIOUS_MAIN_SHA"
+          backup_ref="refs/heads/$backup_branch"
+          git check-ref-format "$backup_ref"
+          existing_sha=$(git ls-remote --heads origin "$backup_ref" | awk '{print $1}')
+          if [ -n "$existing_sha" ]; then
+            test "$existing_sha" = "$PREVIOUS_MAIN_SHA"
+            echo "PRE_MAIN_BACKUP_EXISTS branch=$backup_branch commit=$PREVIOUS_MAIN_SHA"
+            exit 0
+          fi
+          git push origin "$PREVIOUS_MAIN_SHA:$backup_ref"
+          echo "PRE_MAIN_BACKUP_CREATED branch=$backup_branch commit=$PREVIOUS_MAIN_SHA"
+
+      - name: Classify changes and find verified source artifact
+        id: route
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SFH_SELF_HOSTED_ENABLED: ${{ vars.SFH_SELF_HOSTED_ENABLED }}
+          SFH_SELF_HOSTED_READY_UNTIL: ${{ vars.SFH_SELF_HOSTED_READY_UNTIL }}
+        run: python3 scripts/ci_budget.py plan
+
+      - name: Check CI routing and wiki inputs before expensive game work
+        run: |
+          python3 scripts/test_ci_budget.py
+          python3 scripts/generate_code_module_map.py --check
+          python3 scripts/generate_project_ontology.py --check
+
+  export-game:
+    needs: plan
+    if: needs.plan.outputs.game == 'true' && needs.plan.outputs.reuse_run == ''
+    runs-on: ${{ fromJSON(needs.plan.outputs.runner) }}
+    timeout-minutes: 15
     container:
       image: barichello/godot-ci:4.7.2
     steps:
@@ -223,6 +200,9 @@ jobs:
           test -s "$GITHUB_WORKSPACE/game-web/index.wasm"
           test -s "$GITHUB_WORKSPACE/game-web/index.pck"
 
+      - name: Record source tree and payload hashes
+        run: python3 scripts/ci_budget.py attest --directory game-web
+
       - name: Upload browser game
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -232,7 +212,10 @@ jobs:
           retention-days: 1
 
   e2e:
-    runs-on: ubuntu-24.04
+    needs: plan
+    if: needs.plan.outputs.game == 'true' && needs.plan.outputs.reuse_run == ''
+    runs-on: ${{ fromJSON(needs.plan.outputs.runner) }}
+    timeout-minutes: 15
     container:
       image: barichello/godot-ci:4.7.2
     steps:
@@ -294,10 +277,13 @@ jobs:
           grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_31 units_9" /tmp/sfh-e2e.log
 
   package-windows:
-    runs-on: ubuntu-24.04
+    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.plan.result == 'success' && needs.plan.outputs.game == 'true' && (needs.plan.outputs.reuse_run != '' || (needs.export-game.result == 'success' && needs.e2e.result == 'success')) }}
+    runs-on: ${{ fromJSON(needs.plan.outputs.runner) }}
+    timeout-minutes: 15
     outputs:
       release-version: ${{ steps.release.outputs.version }}
     needs:
+      - plan
       - export-game
       - e2e
     container:
@@ -378,12 +364,21 @@ jobs:
           retention-days: 1
 
   build:
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     needs:
+      - plan
       - export-game
       - e2e
       - package-windows
     steps:
+      - name: Require successful relevant checks or verified reuse
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python3 -c 'import json, os; n=json.loads(os.environ["NEEDS_JSON"]); assert n["plan"]["result"] == "success"; p=n["plan"]["outputs"]; assert p["game"] == "false" or p["reuse_run"] or all(n[j]["result"] == "success" for j in ("export-game", "e2e")); assert os.environ["EVENT_NAME"] == "pull_request" or p["game"] == "false" or n["package-windows"]["result"] == "success"'
+
       - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
@@ -479,9 +474,13 @@ jobs:
           path: .wiki-site
 
   cloudflare-deploy:
-    if: github.event_name != 'pull_request'
+    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.build.result == 'success' }}
     runs-on: ubuntu-24.04
+    permissions:
+      actions: write
+      contents: write
     needs:
+      - plan
       - build
       - package-windows
     outputs:
@@ -499,6 +498,9 @@ jobs:
       WIKI_AUTH_BOOTSTRAP_REVISION: "3"
       R2_RUNTIME_PREFIX: game/releases
       R2_DOWNLOAD_PREFIX: downloads
+      GAME_CHANGED: ${{ needs.plan.outputs.game }}
+      GAME_BUILD_COMMIT: ${{ github.sha }}
+      WEB_ARTIFACT_RUN: ${{ needs.plan.outputs.web_run }}
       RELEASE_VERSION: ${{ needs.package-windows.outputs.release-version }}
       WRANGLER_VERSION: 4.127.1
     steps:
@@ -527,25 +529,37 @@ jobs:
           path: .cloudflare-wiki
 
       - name: Download verified browser game
-        if: steps.cloudflare_config.outputs.ready == 'true'
+        if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: game-web
           path: .cloudflare-game
+          run-id: ${{ needs.plan.outputs.web_run }}
+          github-token: ${{ github.token }}
 
       - name: Download verified Windows release
-        if: steps.cloudflare_config.outputs.ready == 'true'
+        if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: SFH-Windows-x64-${{ env.RELEASE_VERSION }}
           path: .cloudflare-windows
+
+      - name: Verify Web provenance or preserve active game release
+        if: steps.cloudflare_config.outputs.ready == 'true'
+        run: |
+          if [ "$GAME_CHANGED" = "true" ]; then
+            python3 scripts/ci_budget.py verify --directory .cloudflare-game --run-id "$WEB_ARTIFACT_RUN"
+          else
+            curl --silent --show-error --fail "$CLOUDFLARE_GAME_URL/healthz" -o /tmp/active-game.json
+            python3 -c 'import json, os, re; d=json.load(open("/tmp/active-game.json")); assert re.fullmatch("[0-9a-f]{40}", d["build_commit"]); assert re.fullmatch("[A-Za-z0-9._-]+", d["release_version"]); f=open(os.environ["GITHUB_ENV"], "a"); f.write("GAME_BUILD_COMMIT="+d["build_commit"]+"\nRELEASE_VERSION="+d["release_version"]+"\n")'
+          fi
 
       - name: Install pinned Wrangler
         if: steps.cloudflare_config.outputs.ready == 'true'
         run: npm install --global "wrangler@${WRANGLER_VERSION}"
 
       - name: Upload immutable R2 release objects
-        if: steps.cloudflare_config.outputs.ready == 'true'
+        if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
         run: |
           python3 scripts/deploy_cloudflare_assets.py \
             --bucket "$CLOUDFLARE_R2_BUCKET" \
@@ -626,7 +640,7 @@ jobs:
             | wrangler pages secret put AUTH_PEPPER --project-name=sfh-dev-wiki
 
       - name: Switch game Worker to verified commit
-        if: steps.cloudflare_config.outputs.ready == 'true'
+        if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
         run: |
           wrangler deploy --config cloudflare/wrangler.jsonc \
             --var "RELEASE_PREFIX:game/releases/$GITHUB_SHA" \
@@ -653,7 +667,7 @@ jobs:
             if curl --silent --show-error --fail "$CLOUDFLARE_WIKI_URL/" --output /tmp/wiki.html \
               && grep -q 'SFH' /tmp/wiki.html \
               && curl --silent --show-error --fail "$CLOUDFLARE_GAME_URL/healthz" --output /tmp/health.json \
-              && grep -q "$GITHUB_SHA" /tmp/health.json; then
+              && grep -q "$GAME_BUILD_COMMIT" /tmp/health.json; then
               break
             fi
             if [ "$attempt" -eq 24 ]; then
@@ -691,10 +705,10 @@ jobs:
           test "$download_status" = "200"
           curl --silent --show-error --fail "$download_base/$archive.sha256" --output "/tmp/$archive.sha256"
           (cd /tmp && sha256sum --check "$archive.sha256")
-          echo "CLOUDFLARE_E2E_OK wiki game range download commit=$GITHUB_SHA"
+          echo "CLOUDFLARE_E2E_OK wiki game range download commit=$GAME_BUILD_COMMIT wiki_commit=$GITHUB_SHA"
 
       - name: Remove superseded Windows downloads from R2
-        if: steps.cloudflare_config.outputs.ready == 'true'
+        if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
         run: |
           python3 scripts/prune_windows_releases.py \
             --r2 \
@@ -702,20 +716,8 @@ jobs:
             --prefix "$R2_DOWNLOAD_PREFIX/" \
             --keep-version "$RELEASE_VERSION"
 
-  backup-verified-main:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.cloudflare-deploy.outputs.deployed == 'true'
-    runs-on: ubuntu-24.04
-    needs:
-      - cloudflare-deploy
-    permissions:
-      contents: write
-    steps:
-      - name: Check out verified main commit
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          fetch-depth: 0
-
       - name: Create immutable-name verified backup branch
+        if: steps.cloudflare_config.outputs.ready == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -731,17 +733,8 @@ jobs:
           git push origin "$GITHUB_SHA:$backup_ref"
           echo "VERIFIED_MAIN_BACKUP_CREATED branch=$backup_branch commit=$GITHUB_SHA"
 
-  prune-actions-artifacts:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.cloudflare-deploy.outputs.deployed == 'true'
-    runs-on: ubuntu-24.04
-    needs:
-      - cloudflare-deploy
-      - backup-verified-main
-    permissions:
-      actions: write
-      contents: read
-    steps:
       - name: Keep only artifacts from the latest verified main run
+        if: steps.cloudflare_config.outputs.ready == 'true'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -751,7 +744,7 @@ jobs:
           trap 'rm -f -- "$artifact_rows"' EXIT
           gh api --paginate "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100" \
             --jq '.artifacts[] | [.id, .workflow_run.id, .name] | @tsv' > "$artifact_rows"
-          for required_name in game-web wiki-site "SFH-Windows-x64-${{ needs.cloudflare-deploy.outputs.release-version }}"; do
+          for required_name in wiki-site; do
             awk -F '\t' -v run="$GITHUB_RUN_ID" -v name="$required_name" \
               '$2 == run && $3 == name { found = 1 } END { exit !found }' "$artifact_rows"
           done
@@ -760,6 +753,10 @@ jobs:
             if [ "$artifact_run_id" = "$GITHUB_RUN_ID" ]; then
               continue
             fi
+            if [ "$artifact_run_id" = "$WEB_ARTIFACT_RUN" ]; then continue; fi
+            event=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$artifact_run_id" --jq '.event')
+            if [ "$event" != "push" ]; then continue; fi
+            if [ "$GAME_CHANGED" != "true" ] && [ "$artifact_name" != "wiki-site" ]; then continue; fi
             gh api --method DELETE "repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact_id"
             deleted=$((deleted + 1))
           done < "$artifact_rows"
