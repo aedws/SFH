@@ -13,6 +13,7 @@ description: 실제 플레이·위키 사용성·성능 예산·오류 복구 �
 
 - 게임에서 입력해도 반응이 없거나 흐름이 막힘 → [실제 플레이 E2E](e2e-play-session.md)
 - 기능은 동작하지만 무엇을 해야 할지 모르겠음 → [플레이어 인식 검사](player-perception-audit.md)
+- 정상 작동해도 재미가 전달되는지 판단하고 싶음 → [한 판의 다섯 순간 제안서](five-moment-fun-proposal.md) — 미승인 개선안·인간 검수 계획
 - 휴대폰 위키에서 문서 이동이나 검색이 어려움 → [위키 반응형 검사](wiki-responsive-e2e.md)
 - 실행 환경과 프레임 예산이 궁금함 → [성능 예산](../performance/minimum-requirements.md)
 - 설치·실행 오류를 직접 해결하고 싶음 → [문제 해결](../troubleshooting/index.md)

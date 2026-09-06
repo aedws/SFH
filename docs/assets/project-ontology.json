@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-05",
-  "source_sha256": "38a67d46614559915bf9bd630c3a19a84fcf016cb7d31a77851d6c6805049629",
+  "source_sha256": "0a07b992ca234506c65817b4c2cb02495f42a28348bf3b25dfca050b982985c0",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -382,12 +382,12 @@
     "ready": 1,
     "implemented": 31,
     "modules": 60,
-    "documents": 95,
+    "documents": 96,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 6,
     "actions": 5,
-    "relations": 362,
+    "relations": 363,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -3483,6 +3483,17 @@
       "kind": "evidence"
     },
     {
+      "id": "document:quality/five-moment-fun-proposal",
+      "type": "document",
+      "label": "한 판의 다섯 순간 — 재미 제안서",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "승인 전 제안·교전·획득·강화·탈출·재도전과 인간 검수",
+      "route": "quality/five-moment-fun-proposal/",
+      "source": "docs/quality/five-moment-fun-proposal.md",
+      "kind": "evidence"
+    },
+    {
       "id": "document:quality/wiki-responsive-e2e",
       "type": "document",
       "label": "모바일 위키 반응형 E2E",
@@ -5522,6 +5533,12 @@
     },
     {
       "from": "document:quality/player-perception-audit",
+      "to": "collection:group:quality/player-qa",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:quality/five-moment-fun-proposal",
       "to": "collection:group:quality/player-qa",
       "type": "part_of",
       "origin": "knowledge_map"

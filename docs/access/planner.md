@@ -225,7 +225,7 @@ hide:
   <a href="../../design/planner-request-workflow/"><small>후보 제안</small><b>실서비스 랭킹 신원</b><span>현재 익명 기기 ID를 어떤 로그인 계정으로 교체하고, 어떤 서버가 최종 기록을 승인할지 후보와 영향을 작성합니다.</span><em>P6 LIVE</em></a>
   <a href="../../features/ranking-provider/#p6-closeout"><small>운영값 제안</small><b>시즌과 명예 보상</b><span>대형 조건·마감·로컬 1회 지급은 구현됐습니다. 기간·최소 점수·동점·상위 인원과 실서버 지급 정책 후보를 제출합니다.</span><em>P6 LOCAL</em></a>
   <a href="../../design/planner-request-workflow/"><small>수치 확정</small><b>상점·제작·훈련 데이터</b><span>현재 교체 가능한 임시값을 실제 가격·효과·회전 주기·레시피·계측 기준으로 확정해야 합니다.</span><em>SHEET</em></a>
-  <a href="../../quality/player-perception-audit/"><small>플레이 판단</small><b>재미와 이해 가능성</b><span>처음 플레이한 사람이 준비→전투→회수→성장을 설명 없이 이해하는지 수락 여부를 남겨야 합니다.</span><em>PLAYTEST</em></a>
+  <a href="../../quality/five-moment-fun-proposal/"><small>승인 전 제안</small><b>한 판의 다섯 순간</b><span>교전·장비·강화·탈출·재도전의 의도와 인간 검수 계획을 보완합니다. 최종 채택은 오너가 판단합니다.</span><em>PROPOSAL</em></a>
 </div>
 
 <details class="sfh-home-drawer sfh-planner-requests" data-sfh-planner-requests>
