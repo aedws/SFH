@@ -110,7 +110,7 @@ foreach ($artifactName in @("game-web", "wiki-site", "SFH-Windows-x64-")) {
     }
 }
 if (
-    $workflow -notmatch 'prune-actions-artifacts:' -or
+    $workflow -notmatch 'Keep only artifacts from the latest verified main run' -or
     $workflow -notmatch 'actions:\s*write' -or
     $workflow -notmatch 'workflow_run\.id' -or
     $workflow -notmatch 'ACTIONS_ARTIFACT_RETENTION_OK' -or

@@ -19,7 +19,7 @@ SFH의 원본은 바탕화면 복제 폴더가 아니라 **Private GitHub 저장
 | 상황 | 사용할 것 | 사용하지 않을 것 |
 |---|---|---|
 | 기능 개발 | `codex/<작업명>` 브랜치와 작은 커밋 | `Newgame-복사본`, `최종`, `진짜최종` 폴더 |
-| 검증·병합 | PR과 필수 `export-game`·`e2e`·`package-windows`·`build` 검사 | `main` 직접 푸시, 강제 푸시 |
+| 검증·병합 | PR의 변경 분류와 `export-game`·`e2e`·`build` 판정, 게임 변경의 Windows 패키징은 병합 후 수행 | `main` 직접 푸시, 강제 푸시 |
 | 진행 중 보존 | 원격 작업 브랜치의 WIP 커밋 | 로컬 폴더만 남기는 백업 |
 | 배포 완료 보존 | `backup/pre-main/<SHA>`, `backup/verified-main/<SHA>` | 같은 이름의 ZIP을 여러 폴더에 복제 |
 | 문제 복구 | 이전 트리를 복원하는 새 PR | `main` reset·이력 재작성 |
@@ -32,11 +32,47 @@ SFH의 원본은 바탕화면 복제 폴더가 아니라 **Private GitHub 저장
 2. `origin/main`에서 `codex/<작업명>` 브랜치 또는 임시 worktree를 만듭니다.
 3. 기능과 문서를 작은 단위로 커밋하고 같은 브랜치를 GitHub에 푸시합니다.
 4. PR에서 필수 검사를 통과한 뒤 `main`에 병합합니다.
-5. Cloudflare 배포와 실행 산출물이 같은 병합 커밋인지 확인합니다.
+5. Cloudflare 배포와 실행 산출물의 근거를 확인합니다. 게임 변경은 병합 커밋의 트리·파일 해시를 검증하고, 문서 전용 배포는 기존 게임·Windows 빌드 커밋을 유지합니다.
 6. 작업 worktree가 깨끗하고 그 변경이 `origin/main`에 포함됐을 때만 제거합니다.
 7. 기본 `Newgame`을 최신 `main`으로 맞추고 `git worktree prune`으로 끊어진 등록만 정리합니다.
 
 새 목록이 필요한 기능은 기존 규칙대로 Google Sheet를 확장하고 확정 CSV를 같은 PR에 포함합니다. 작업 폴더 정리는 게임 데이터·배포 주소·Cloudflare 과금 설정을 변경하지 않습니다.
+
+## Actions 사용량 절감 {#actions-budget}
+
+2026-09-06 점검에서 최근 배포 워크플로 19회는 작업별 분 올림으로 약 228분을 소비했습니다. 이는 청구 API의 계정 합계가 아닌 실행 이력의 추정치입니다. 아티팩트는 약 55MB로 정리되어 있었고, PR과 main의 동일 게임 검증·패키징 반복이 주된 개선 대상이었습니다.
+
+| 변경 | 실행 방식 | 배포 결과 |
+|---|---|---|
+| 문서·위키 CSS·MkDocs 설정만 변경 | 명시적 문서 허용 목록에 한해 Godot 검사를 생략하고 위키 검증 실행 | 위키만 갱신, 현재 게임과 Windows 다운로드 유지 |
+| 게임·CSV·내보내기·워크플로·알 수 없는 새 파일 변경 | PR에서 계약 검사·E2E·Web 내보내기 | 실패하면 병합 보류 |
+| 게임 PR 병합 | 성공한 동일 저장소 PR의 전체 Git 트리와 Web 파일 SHA-256을 검증해 재사용 | Windows는 main에서 생성, Web/Windows는 동일 소스 트리 |
+| 증거 없음·만료·API 오류·트리 불일치 | 전체 게임 검사와 Web 내보내기 재실행 | 실패하면 배포 보류 |
+| 수동 실행 | 전체 게임 변경으로 취급 | 재빌드·복구 경로 유지 |
+
+PR은 새 커밋이 오면 이전 실행을 취소합니다. main 배포는 실행 도중 취소하지 않습니다. 워크플로 전체를 경로로 생략하지 않으므로 필수 검사가 영구 대기 상태에 남지 않습니다. `build`는 필요한 선행 검사 실패를 확인하고 실패로 끝납니다. Godot 작업의 최대 실행 시간은 15분입니다.
+
+변경 전 백업은 `plan` 작업에, 배포 검증 후 백업과 아티팩트 정리는 Cloudflare 작업에 통합했습니다. 기존 `backup/pre-main/<SHA>`와 `backup/verified-main/<SHA>` 복구 경로는 유지합니다. Actions 아티팩트는 1일 보존하며 현재 배포·재사용 원본·PR 후보를 보호합니다. 문서 전용 배포에서는 게임 아티팩트를 지우지 않습니다. R2 Windows 다운로드는 새 게임 배포가 검증된 경우에만 정리합니다.
+
+### 현재 PC의 전용 Linux 러너
+
+WSL2의 `Ubuntu-24.04`에 Docker와 `sfh-wsl-build` 러너(`sfh-build` 라벨)를 설치했습니다. Godot 계약 검사·E2E·Web/Windows 내보내기를 담당하며, Cloudflare 비밀키를 쓰는 배포와 위키 검증은 GitHub-hosted에 남깁니다. 등록 토큰은 설치에만 사용하며 저장소에 기록하지 않습니다.
+
+- PC 자원: WSL 메모리 4GB, CPU 4개, swap 2GB. 다른 WSL 배포판을 추가하면 이 제한을 함께 사용합니다.
+- 접근 범위: 별도 `sfh-runner` 계정, Windows 드라이브 자동 연결·Windows 프로그램 호출 해제. Docker 권한은 Linux 관리자 수준이므로 완전한 보안 격리는 아닙니다. 저장소 소유자가 보낸 동일 저장소 PR과 main만 실행하고, 다른 기여자의 PR은 hosted로 보냅니다.
+- 자동 실행: Windows 로그인 상태에서 `SFH Linux Runner Host`가 Linux 전경 프로세스를 유지해 WSL 유휴 종료로 빌드가 끊기는 것을 방지합니다. `SFH Linux Runner Heartbeat` 예약 작업이 1분마다 Docker·러너를 확인합니다. 기존 로컬 `gh` 인증으로 온라인 상태를 확인한 경우에만 `SFH_SELF_HOSTED_READY_UNTIL`을 3분 연장합니다. GitHub 등록 토큰을 장기 보관하는 방식이 아닙니다.
+- 선택 조건: `SFH_SELF_HOSTED_ENABLED=true`와 유효한 최근 확인이 모두 있어야 자체 러너를 사용합니다. PC 종료·인증 실패·확인 만료 상태에서 **새로 분류하는** 작업은 hosted로 실행합니다.
+- 예외: 배정 직후 PC가 꺼지면 GitHub는 이미 배정한 작업을 hosted로 이동하지 않습니다. 해당 실행을 취소하고, 아래 명령으로 자체 러너를 끈 뒤 다시 실행합니다. PC 사용 중 과부하가 느껴져도 같은 방법을 씁니다.
+
+```powershell
+gh variable set SFH_SELF_HOSTED_ENABLED --repo aedws/SFH --body false
+# PC 복구와 온라인 상태 확인 후 다시 사용
+gh variable set SFH_SELF_HOSTED_ENABLED --repo aedws/SFH --body true
+```
+
+설치 재현 시 `scripts/setup-sfh-runner.sh`는 전용 Ubuntu에서 root로 실행하며, 공식 러너 압축파일의 SHA-256을 검증합니다. PowerShell 파이프로 전달한다면 CR 문자를 제거해 실행합니다. Windows 소유자 계정에서 `scripts/install-sfh-runner-heartbeat.ps1`을 실행하면 `scripts/sfh-runner-heartbeat.ps1`의 안정 복사본을 `%USERPROFILE%\SFHRunner\heartbeat.ps1`에 두고 예약 작업을 등록합니다. 작업 브랜치 변경에 영향받지 않으며, 원본 수정 후에는 검토하고 설치 스크립트를 다시 실행합니다.
+
+GitHub 요금제·예산·Private 설정은 변경하지 않습니다. 서버 측 Ruleset 사용 가능 여부는 계정 요금제와 별개로 확인해야 하며, 워크플로의 검사 성공이 Ruleset 강제 적용을 뜻하지 않습니다.
 
 ## 삭제 전에 반드시 확인할 네 가지
 

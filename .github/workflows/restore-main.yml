@@ -65,7 +65,7 @@ jobs:
             --base main \
             --head "$RECOVERY_BRANCH" \
             --title "Restore main from verified backup ${BACKUP_SHA:0:12}" \
-            --body "Restores the repository tree to backup commit \`$BACKUP_SHA\`. Merge only after export-game, e2e, package-windows, and build pass."
+            --body "Restores the repository tree to backup commit \`$BACKUP_SHA\`. Merge only after change routing, export-game, e2e, and build accept the change. Windows packaging is verified on main before deployment."
 
       - name: Report recovery pull request path
         if: always() && steps.recovery.outcome == 'success'

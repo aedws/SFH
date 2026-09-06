@@ -12,16 +12,15 @@ function Require-Pattern {
     }
 }
 
-$preMain = Get-Content -Raw -LiteralPath (Join-Path $repositoryRoot ".github\workflows\backup-main.yml")
+$preMain = Get-Content -Raw -LiteralPath (Join-Path $repositoryRoot ".github\workflows\deploy-wiki.yml")
 $restore = Get-Content -Raw -LiteralPath (Join-Path $repositoryRoot ".github\workflows\restore-main.yml")
 $deploy = Get-Content -Raw -LiteralPath (Join-Path $repositoryRoot ".github\workflows\deploy-wiki.yml")
 
 Require-Pattern $preMain 'github\.event\.before' "Previous-main snapshot must use the pre-push commit."
 Require-Pattern $preMain 'backup/pre-main/\$PREVIOUS_MAIN_SHA' "Previous-main snapshot must use a commit-addressed branch."
 Require-Pattern $preMain 'contents:\s*write' "Previous-main snapshot requires scoped contents write permission."
-Require-Pattern $deploy 'backup-verified-main:' "Verified deployment must create a post-E2E backup."
-Require-Pattern $deploy 'needs:\s*\r?\n\s*- cloudflare-deploy' "Verified backup must wait for Cloudflare E2E."
-Require-Pattern $deploy "needs\.cloudflare-deploy\.outputs\.deployed == 'true'" "Verified backup must not run when Cloudflare deployment credentials are absent."
+Require-Pattern $deploy '(?s)Verify Cloudflare wiki, game, range, and download.*Create immutable-name verified backup branch' "Verified backup must follow Cloudflare E2E in the same job."
+Require-Pattern $deploy "(?s)Create immutable-name verified backup branch\s+if: steps\.cloudflare_config\.outputs\.ready == 'true'" "Verified backup requires an actual deployment."
 Require-Pattern $deploy 'backup/verified-main/\$GITHUB_SHA' "Verified backup must use the exact main commit."
 Require-Pattern $restore 'backup/\(pre-main\|verified-main\)/\[0-9a-f\]\{40\}' "Recovery input must restrict backup namespaces and full SHA."
 Require-Pattern $restore 'git restore --source="\$expected_sha" --staged --worktree -- \.' "Recovery must create a tree-restoring commit instead of resetting main."

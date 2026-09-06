@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-06</span><span>SEARCH COMMAND</span><span>9 DAYS · 93 TOPICS</span><span>95 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-06</span><span>SEARCH COMMAND</span><span>9 DAYS · 94 TOPICS</span><span>95 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -102,10 +102,10 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 3 · IMPROVE 6 · CHANGE 4 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 5 · IMPROVE 9 · CHANGE 7 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>6</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>4</b><small>FIX</small></span></div>
-    <details class="sfh-bundle" open>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>9</b><small>IMPROVE</small></span><span><b>7</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>FUN QA · 조작 피드백과 진입 가독성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기능은 작동하지만 잘못 보이거나 반응이 없다고 느껴지던 입력·이동·거점·작전 화면을 플레이어 인식 계약에 맞췄습니다.</strong></div>
@@ -115,6 +115,16 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>버그픽스 · 4</h3><p>기본 Space와 SHIFT 표기 불일치, 좁은 모바일 버튼의 한글 침범, 대상 없는 좌클릭의 무반응 오인, Windows와 Linux 간 줄바꿈 차이로 발생한 CI 온톨로지 오판정을 자동 회귀로 고정했습니다.</p></div>
         <p>게임 스모크, 모바일 5해상도×3배율, 실제 입력 E2E 23상태·31인식·15인과 흐름을 통과했습니다. 신규 목록 데이터와 과금 모델은 변경하지 않았습니다.</p>
         <p><a href="quality/player-perception-audit/#fun-qa-2026-09-06">FUN QA 결과 →</a> · <a href="architecture/module-audit/#fun-qa-modularity-2026-09-06">모듈 감사 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>배포 효율 · 필요한 검사와 검증된 산출물 재사용</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 문서 수정 때 게임을 다시 배포하지 않고, 게임 변경은 동일 소스와 파일 해시가 검증된 Web 산출물을 재사용합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>변경 파일 분류와 소스 트리·파일 SHA-256 기반 재사용 검증을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>오래된 PR 실행 취소, 문서 전용 게임 빌드 생략, 위키 데이터 사전 검증을 적용했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>Windows 패키징은 main에서 실행하고, 백업·산출물 정리를 배포 작업에 통합했습니다. 전용 WSL2 Linux 러너와 온라인 상태 자동 확인을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>선행 검사 실패가 생략된 성공으로 보이지 않도록 최종 build 판정을 유지합니다.</p></div>
       </div>
     </details>
   </div>
