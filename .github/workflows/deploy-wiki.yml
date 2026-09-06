@@ -78,14 +78,15 @@ jobs:
     timeout-minutes: 15
     container:
       image: barichello/godot-ci:4.7.2
+      options: --ulimit core=0
     steps:
       - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Configure Godot export templates
         run: |
-          mkdir -p ~/.local/share/godot/export_templates
-          mv /root/.local/share/godot/export_templates/4.7.2.stable ~/.local/share/godot/export_templates/4.7.2.stable
+          mkdir -p ~/.local/share/godot/export_templates/4.7.2.stable
+          cp -a /root/.local/share/godot/export_templates/4.7.2.stable/. ~/.local/share/godot/export_templates/4.7.2.stable/
 
       - name: Install font import runtime
         run: |
@@ -218,14 +219,15 @@ jobs:
     timeout-minutes: 15
     container:
       image: barichello/godot-ci:4.7.2
+      options: --ulimit core=0
     steps:
       - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Configure Godot export templates
         run: |
-          mkdir -p ~/.local/share/godot/export_templates
-          mv /root/.local/share/godot/export_templates/4.7.2.stable ~/.local/share/godot/export_templates/4.7.2.stable
+          mkdir -p ~/.local/share/godot/export_templates/4.7.2.stable
+          cp -a /root/.local/share/godot/export_templates/4.7.2.stable/. ~/.local/share/godot/export_templates/4.7.2.stable/
 
       - name: Install font import runtime
         run: |
@@ -288,14 +290,15 @@ jobs:
       - e2e
     container:
       image: barichello/godot-ci:4.7.2
+      options: --ulimit core=0
     steps:
       - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Configure Godot export templates
         run: |
-          mkdir -p ~/.local/share/godot/export_templates
-          mv /root/.local/share/godot/export_templates/4.7.2.stable ~/.local/share/godot/export_templates/4.7.2.stable
+          mkdir -p ~/.local/share/godot/export_templates/4.7.2.stable
+          cp -a /root/.local/share/godot/export_templates/4.7.2.stable/. ~/.local/share/godot/export_templates/4.7.2.stable/
 
       - name: Install packaging runtime
         run: |
