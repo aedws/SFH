@@ -60,17 +60,25 @@ WSL2의 `Ubuntu-24.04`에 Docker와 `sfh-wsl-build` 러너(`sfh-build` 라벨)�
 
 - PC 자원: WSL 메모리 4GB, CPU 4개, swap 2GB. 다른 WSL 배포판을 추가하면 이 제한을 함께 사용합니다.
 - 접근 범위: 별도 `sfh-runner` 계정, Windows 드라이브 자동 연결·Windows 프로그램 호출 해제. Docker 권한은 Linux 관리자 수준이므로 완전한 보안 격리는 아닙니다. 저장소 소유자가 보낸 동일 저장소 PR과 main만 실행하고, 다른 기여자의 PR은 hosted로 보냅니다.
-- 자동 실행: Windows 로그인 상태에서 `SFH Linux Runner Host`가 Linux 전경 프로세스를 유지해 WSL 유휴 종료로 빌드가 끊기는 것을 방지합니다. `SFH Linux Runner Heartbeat` 예약 작업이 1분마다 Docker·러너를 확인합니다. 기존 로컬 `gh` 인증으로 온라인 상태를 확인한 경우에만 `SFH_SELF_HOSTED_READY_UNTIL`을 3분 연장합니다. GitHub 등록 토큰을 장기 보관하는 방식이 아닙니다.
+- 수동 실행: `SFH Linux Runner Host`와 `SFH Linux Runner Heartbeat`에는 시간·부팅·로그인 트리거가 없습니다. 사용자가 `start`를 실행한 세션에서만 WSL을 유지하고 1분마다 온라인 상태를 확인해 3분짜리 준비 유효기간을 갱신합니다. 재부팅·로그아웃 뒤 자동 재시작하지 않습니다. 단순 화면 잠금·절전은 개발 종료가 아니므로 종료할 때는 `stop`을 사용합니다.
 - 선택 조건: `SFH_SELF_HOSTED_ENABLED=true`와 유효한 최근 확인이 모두 있어야 자체 러너를 사용합니다. PC 종료·인증 실패·확인 만료 상태에서 **새로 분류하는** 작업은 hosted로 실행합니다.
 - 예외: 배정 직후 PC가 꺼지면 GitHub는 이미 배정한 작업을 hosted로 이동하지 않습니다. 해당 실행을 취소하고, 아래 명령으로 자체 러너를 끈 뒤 다시 실행합니다. PC 사용 중 과부하가 느껴져도 같은 방법을 씁니다.
 
 ```powershell
-gh variable set SFH_SELF_HOSTED_ENABLED --repo aedws/SFH --body false
-# PC 복구와 온라인 상태 확인 후 다시 사용
-gh variable set SFH_SELF_HOSTED_ENABLED --repo aedws/SFH --body true
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\SFHRunner\sfh-runner.ps1" start
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\SFHRunner\sfh-runner.ps1" stop
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\SFHRunner\sfh-runner.ps1" status
 ```
 
-설치 재현 시 `scripts/setup-sfh-runner.sh`는 전용 Ubuntu에서 root로 실행하며, 공식 러너 압축파일의 SHA-256을 검증합니다. PowerShell 파이프로 전달한다면 CR 문자를 제거해 실행합니다. Windows 소유자 계정에서 `scripts/install-sfh-runner-heartbeat.ps1`을 실행하면 `scripts/sfh-runner-heartbeat.ps1`의 안정 복사본을 `%USERPROFILE%\SFHRunner\heartbeat.ps1`에 두고 예약 작업을 등록합니다. 작업 브랜치 변경에 영향받지 않으며, 원본 수정 후에는 검토하고 설치 스크립트를 다시 실행합니다.
+**쉬운 실행:** 사용자 폴더의 `SFHRunner`에서 `SFH Runner start`, `SFH Runner stop`, `SFH Runner status` 바로가기를 더블클릭합니다. 설치 파일과 게임은 WSL을 끈 상태에서도 사용할 수 있습니다. 러너는 GitHub 빌드가 필요할 때만 켭니다.
+
+`stop`은 새 자체 러너 배정을 차단하고 실행 중 빌드가 없는지 확인한 후 유지 작업과 `Ubuntu-24.04`만 종료합니다. Linux 파일·Docker 이미지·러너 등록은 삭제하지 않습니다. 다른 WSL 배포판은 종료하지 않으므로 다른 배포판이 실행 중이면 `vmmemWSL`이 남을 수 있습니다. `status`는 Linux 명령을 실행하지 않아 WSL을 깨우지 않습니다. GitHub 변수를 false로 바꾸는 것만으로는 PC 메모리가 반환되지 않습니다.
+
+빌드가 실행 중이거나 GitHub 인증·네트워크 오류로 상태를 확인할 수 없으면 안전을 위해 종료를 거부합니다. 빌드 종료 또는 연결 복구 후 `stop`을 다시 실행합니다. 이미 배정된 대기 작업은 자체 러너 종료 후 자동으로 hosted로 이동하지 않으므로 취소·재실행이 필요할 수 있습니다. WSL을 다른 프로그램에서 직접 시작하는 동작까지 차단하지는 않습니다.
+
+설치 재현 시 `scripts/setup-sfh-runner.sh`는 전용 Ubuntu에서 root로 실행하며, 공식 러너 압축파일의 SHA-256을 검증합니다. PowerShell 파이프로 전달한다면 CR 문자를 제거해 실행합니다. Windows 소유자 계정에서 러너를 정지한 뒤 `scripts/install-sfh-runner-heartbeat.ps1`을 실행하면 안정 복사본과 바로가기를 `%USERPROFILE%\SFHRunner`에 두고 **트리거 없는 수동 예약 작업만 등록**합니다. 설치 자체는 WSL을 켜지 않습니다. 작업 브랜치 변경에 영향받지 않으며, 원본 수정 후에는 검토하고 다시 설치합니다.
+
+회귀 검사는 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-sfh-runner-controls.ps1`입니다. 실제 서비스 대신 대역을 사용해 상태 조회의 비기동, 수동 시작·종료 순서, 빌드 중·API 오류 시 종료 거부, 구형 자동 트리거 거부와 설치 시 자동 실행 부재를 검사합니다.
 
 GitHub 요금제·예산·Private 설정은 변경하지 않습니다. 서버 측 Ruleset 사용 가능 여부는 계정 요금제와 별개로 확인해야 하며, 워크플로의 검사 성공이 Ruleset 강제 적용을 뜻하지 않습니다.
 
