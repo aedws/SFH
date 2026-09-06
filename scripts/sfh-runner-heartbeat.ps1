@@ -1,4 +1,4 @@
-# Executed as the Windows owner on login and periodically while logged in.
+# Executed only during an explicitly started Windows owner session.
 # Only the existing local gh credential can update the short-lived readiness lease.
 param([switch]$Once)
 $ErrorActionPreference = 'Stop'

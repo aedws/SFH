@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 5 · IMPROVE 10 · CHANGE 8 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 6 · IMPROVE 11 · CHANGE 9 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>10</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>6</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>9</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>개발 환경 · WSL 수동 켜기와 끄기</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 개발하지 않을 때 WSL이 계속 메모리를 점유하던 자동 실행을 없애고, 필요한 때만 켜는 방식으로 변경했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>러너 켜기·끄기·상태 조회 명령과 사용자 폴더 바로가기를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>빌드 중에는 종료를 거부하고, 상태 조회는 WSL을 깨우지 않습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>재설치·부팅·로그인 때 자동 시작하지 않도록 수동 작업만 등록합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>WSL을 종료해도 매분 다시 켜지던 유지 작업의 자동 트리거를 제거했습니다. 과금 설정과 게임 규칙은 변경하지 않습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>재미 검수 · 한 판의 다섯 순간 제안</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 첫 교전·장비·강화·탈출·재도전의 개선 제안과 인간 플레이 검수 계획을 문서화했습니다. 게임 변경은 아직 적용하지 않았습니다.</strong></div>
