@@ -11,6 +11,12 @@ import ci_budget as ci
 
 
 class RoutingTests(unittest.TestCase):
+    def test_git_trust_is_limited_to_current_checkout(self):
+        with patch.object(ci.subprocess, "check_output", return_value="tree\n") as command:
+            self.assertEqual(ci.git("rev-parse", "HEAD^{tree}"), "tree")
+            command.assert_called_once_with(
+                ["git", "-c", f"safe.directory={Path.cwd().as_posix()}", "rev-parse", "HEAD^{tree}"], text=True)
+
     def test_gate_handles_omitted_empty_outputs_and_fails_closed(self):
         def needs(game="true", reuse=None, export="success", e2e="success", windows="skipped", plan="success"):
             outputs = {"game": game}

@@ -72,6 +72,8 @@ jobs:
           python3 scripts/generate_project_ontology.py --check
 
   export-game:
+    permissions:
+      contents: read
     needs: plan
     if: needs.plan.outputs.game == 'true' && needs.plan.outputs.reuse_run == ''
     runs-on: ${{ fromJSON(needs.plan.outputs.runner) }}
@@ -213,6 +215,8 @@ jobs:
           retention-days: 1
 
   e2e:
+    permissions:
+      contents: read
     needs: plan
     if: needs.plan.outputs.game == 'true' && needs.plan.outputs.reuse_run == ''
     runs-on: ${{ fromJSON(needs.plan.outputs.runner) }}
@@ -279,6 +283,8 @@ jobs:
           grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_31 units_9" /tmp/sfh-e2e.log
 
   package-windows:
+    permissions:
+      contents: read
     if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.plan.result == 'success' && needs.plan.outputs.game == 'true' && (needs.plan.outputs.reuse_run != '' || (needs.export-game.result == 'success' && needs.e2e.result == 'success')) }}
     runs-on: ${{ fromJSON(needs.plan.outputs.runner) }}
     timeout-minutes: 15

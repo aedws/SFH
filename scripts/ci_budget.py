@@ -31,7 +31,11 @@ class SafeRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def git(*args: str) -> str:
-    return subprocess.check_output(["git", *args], text=True).strip()
+    # A container runs as root over a runner-owned checkout. Trust this exact
+    # working directory for this invocation, never every repository globally.
+    return subprocess.check_output(
+        ["git", "-c", f"safe.directory={Path.cwd().as_posix()}", *args], text=True
+    ).strip()
 
 
 def api(path: str, raw: bool = False):
