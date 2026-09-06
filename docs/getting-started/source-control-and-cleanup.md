@@ -60,7 +60,7 @@ WSL2의 `Ubuntu-24.04`에 Docker와 `sfh-wsl-build` 러너(`sfh-build` 라벨)�
 
 - PC 자원: WSL 메모리 4GB, CPU 4개, swap 2GB. 다른 WSL 배포판을 추가하면 이 제한을 함께 사용합니다.
 - 접근 범위: 별도 `sfh-runner` 계정, Windows 드라이브 자동 연결·Windows 프로그램 호출 해제. Docker 권한은 Linux 관리자 수준이므로 완전한 보안 격리는 아닙니다. 저장소 소유자가 보낸 동일 저장소 PR과 main만 실행하고, 다른 기여자의 PR은 hosted로 보냅니다.
-- 자동 실행: Windows 로그인 상태에서 `SFH Linux Runner Heartbeat` 예약 작업이 1분마다 Docker·러너를 확인합니다. 기존 로컬 `gh` 인증으로 온라인 상태를 확인한 경우에만 `SFH_SELF_HOSTED_READY_UNTIL`을 3분 연장합니다. GitHub 등록 토큰을 장기 보관하는 방식이 아닙니다.
+- 자동 실행: Windows 로그인 상태에서 `SFH Linux Runner Host`가 Linux 전경 프로세스를 유지해 WSL 유휴 종료로 빌드가 끊기는 것을 방지합니다. `SFH Linux Runner Heartbeat` 예약 작업이 1분마다 Docker·러너를 확인합니다. 기존 로컬 `gh` 인증으로 온라인 상태를 확인한 경우에만 `SFH_SELF_HOSTED_READY_UNTIL`을 3분 연장합니다. GitHub 등록 토큰을 장기 보관하는 방식이 아닙니다.
 - 선택 조건: `SFH_SELF_HOSTED_ENABLED=true`와 유효한 최근 확인이 모두 있어야 자체 러너를 사용합니다. PC 종료·인증 실패·확인 만료 상태에서 **새로 분류하는** 작업은 hosted로 실행합니다.
 - 예외: 배정 직후 PC가 꺼지면 GitHub는 이미 배정한 작업을 hosted로 이동하지 않습니다. 해당 실행을 취소하고, 아래 명령으로 자체 러너를 끈 뒤 다시 실행합니다. PC 사용 중 과부하가 느껴져도 같은 방법을 씁니다.
 
