@@ -64,6 +64,7 @@ search:
         <div class="sfh-group"><h3>개선 · 3</h3><p>오래된 PR 실행 취소, 문서 전용 게임 빌드 생략, 위키 데이터 사전 검증을 적용했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 3</h3><p>Windows 패키징은 main에서 실행하고, 백업·산출물 정리를 배포 작업에 통합했습니다. 전용 WSL2 Linux 러너와 온라인 상태 자동 확인을 연결했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>선행 검사 실패가 생략된 성공으로 보이지 않도록 최종 build 판정을 유지합니다.</p></div>
+        <p class="sfh-intent"><b>검증</b><span>게임·E2E·위키·다운로드 검증을 유지하면서 정상 PR+배포의 hosted 사용 분 추정이 24분에서 6분으로 줄었습니다. 과금 설정은 변경하지 않았습니다.</span></p>
       </div>
     </details>
     <details class="sfh-bundle">
