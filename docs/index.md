@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 5 · IMPROVE 9 · CHANGE 7 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 5 · IMPROVE 10 · CHANGE 8 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>9</b><small>IMPROVE</small></span><span><b>7</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>10</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>재미 검수 · 한 판의 다섯 순간 제안</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 첫 교전·장비·강화·탈출·재도전의 개선 제안과 인간 플레이 검수 계획을 문서화했습니다. 게임 변경은 아직 적용하지 않았습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>제안서 작성만 진행했습니다. 게임 기능 구현은 포함하지 않습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>기능 검사와 재미 판단을 분리하고 순간별 목표·관찰 기준·승인 순서를 정리했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>역할 작업실·검색·문서 노드맵에서 제안서를 찾도록 연결했습니다. 수치·보상 변경은 별도 승인 대상입니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>현재 게임과 확정 CSV를 유지합니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>배포 효율 · 필요한 검사와 검증된 산출물 재사용</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 문서 수정 때 게임을 다시 배포하지 않고, 게임 변경은 동일 소스와 파일 해시가 검증된 Web 산출물을 재사용합니다.</strong></div>

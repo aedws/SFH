@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-06</span><span>SEARCH COMMAND</span><span>9 DAYS · 94 TOPICS</span><span>95 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-06</span><span>SEARCH COMMAND</span><span>9 DAYS · 95 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 기획 기준 진행도
 
@@ -102,9 +102,9 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
 
 <div class="sfh-notes">
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 5 · IMPROVE 9 · CHANGE 7 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 5 · IMPROVE 10 · CHANGE 8 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>9</b><small>IMPROVE</small></span><span><b>7</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>5</b><small>BUILD</small></span><span><b>10</b><small>IMPROVE</small></span><span><b>8</b><small>CHANGE</small></span><span><b>5</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>FUN QA · 조작 피드백과 진입 가독성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -117,7 +117,7 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <p><a href="quality/player-perception-audit/#fun-qa-2026-09-06">FUN QA 결과 →</a> · <a href="architecture/module-audit/#fun-qa-modularity-2026-09-06">모듈 감사 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>배포 효율 · 필요한 검사와 검증된 산출물 재사용</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 문서 수정 때 게임을 다시 배포하지 않고, 게임 변경은 동일 소스와 파일 해시가 검증된 Web 산출물을 재사용합니다.</strong></div>
@@ -126,6 +126,17 @@ P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로�
         <div class="sfh-group"><h3>수정 · 3</h3><p>Windows 패키징은 main에서 실행하고, 백업·산출물 정리를 배포 작업에 통합했습니다. 전용 WSL2 Linux 러너와 온라인 상태 자동 확인을 연결했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>선행 검사 실패가 생략된 성공으로 보이지 않도록 최종 build 판정을 유지합니다.</p></div>
         <p class="sfh-intent"><b>검증</b><span>게임·E2E·위키·다운로드 검증을 유지하면서 정상 PR+배포의 hosted 사용 분 추정이 24분에서 6분으로 줄었습니다. 과금 설정은 변경하지 않았습니다.</span></p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>재미 검수 · 한 판의 다섯 순간 제안</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 첫 교전·장비·강화·탈출·재도전의 개선 제안과 인간 플레이 검수 계획을 문서화했습니다. 게임 변경은 아직 적용하지 않았습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>제안서 작성만 진행했습니다. 게임 기능 구현은 포함하지 않습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>기능 검사와 재미 판단을 분리하고 순간별 목표·관찰 기준·승인 순서를 정리했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>역할 작업실·검색·문서 노드맵에서 제안서를 찾도록 연결했습니다. 수치·보상 변경은 별도 승인 대상입니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>현재 게임과 확정 CSV를 유지합니다.</p></div>
+        <p><a href="quality/five-moment-fun-proposal/">제안서 · 오너 판단표 →</a></p>
       </div>
     </details>
   </div>

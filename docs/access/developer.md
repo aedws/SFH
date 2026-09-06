@@ -71,6 +71,8 @@ Notion·Sheet 후보
 
 ## 내부 문서 진입점
 
+**오너 검토 제안:** [한 판의 다섯 순간 — 재미 선명화](../quality/five-moment-fun-proposal.md#owner-decision). 현행 관찰→교전 표현부터 시작하는 안이며, 게임 변경·수치·보상은 아직 승인하지 않은 상태입니다.
+
 <nav class="sfh-role-console__grid" aria-label="개발자 핵심 문서">
   <a href="../../architecture/project-ontology/"><b>운영 온톨로지 계약</b><span>객체·관계·행동·인터페이스·원본·권한</span></a>
   <a href="../../design/current-milestone-workline/"><b>현행 실행 작업선</b><span>다음 작업 ID·중단 조건·E2E 게이트</span></a>
