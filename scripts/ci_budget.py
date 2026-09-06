@@ -162,14 +162,34 @@ def attest(directory: Path) -> None:
     (directory / PROOF).write_text(json.dumps(proof, indent=2) + "\n", encoding="utf-8")
 
 
+def require_checks(needs: dict, event: str) -> None:
+    if needs["plan"]["result"] != "success":
+        raise ValueError("Change classification failed")
+    outputs = needs["plan"]["outputs"]
+    if outputs["game"] == "false":
+        return
+    if outputs["game"] != "true":
+        raise ValueError("Unknown change classification")
+    # GitHub omits empty outputs in toJSON(needs); absence means NO reuse.
+    if not outputs.get("reuse_run") and not all(
+        needs[j]["result"] == "success" for j in ("export-game", "e2e")
+    ):
+        raise ValueError("Required gameplay checks did not succeed")
+    if event != "pull_request" and needs["package-windows"]["result"] != "success":
+        raise ValueError("Required Windows packaging did not succeed")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["plan", "attest", "verify"])
+    parser.add_argument("command", choices=["plan", "attest", "verify", "gate"])
     parser.add_argument("--directory", type=Path, default=Path("game-web"))
     parser.add_argument("--run-id")
     args = parser.parse_args()
     if args.command == "plan":
         plan()
+    elif args.command == "gate":
+        require_checks(json.loads(os.environ["NEEDS_JSON"]), os.environ["GITHUB_EVENT_NAME"])
+        print("CI_GATE_OK required checks or independently verified reuse")
     elif args.command == "attest":
         attest(args.directory)
     else:

@@ -372,15 +372,13 @@ jobs:
       - e2e
       - package-windows
     steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
       - name: Require successful relevant checks or verified reuse
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}
-          EVENT_NAME: ${{ github.event_name }}
-        run: |
-          python3 -c 'import json, os; n=json.loads(os.environ["NEEDS_JSON"]); assert n["plan"]["result"] == "success"; p=n["plan"]["outputs"]; assert p["game"] == "false" or p["reuse_run"] or all(n[j]["result"] == "success" for j in ("export-game", "e2e")); assert os.environ["EVENT_NAME"] == "pull_request" or p["game"] == "false" or n["package-windows"]["result"] == "success"'
-
-      - name: Check out repository
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        run: python3 scripts/ci_budget.py gate
 
       - name: Set up Python
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6

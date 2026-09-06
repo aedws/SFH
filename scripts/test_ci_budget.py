@@ -11,6 +11,25 @@ import ci_budget as ci
 
 
 class RoutingTests(unittest.TestCase):
+    def test_gate_handles_omitted_empty_outputs_and_fails_closed(self):
+        def needs(game="true", reuse=None, export="success", e2e="success", windows="skipped", plan="success"):
+            outputs = {"game": game}
+            if reuse is not None:
+                outputs["reuse_run"] = reuse
+            return {"plan": {"result": plan, "outputs": outputs},
+                    "export-game": {"result": export}, "e2e": {"result": e2e},
+                    "package-windows": {"result": windows}}
+        ci.require_checks(needs(), "pull_request")
+        ci.require_checks(needs(windows="success"), "push")
+        ci.require_checks(needs(game="false", export="skipped", e2e="skipped"), "push")
+        ci.require_checks(needs(reuse="123", export="skipped", e2e="skipped", windows="success"), "push")
+        for state, event in ((needs(export="failure"), "pull_request"),
+                             (needs(e2e="cancelled"), "pull_request"),
+                             (needs(), "push"), (needs(plan="failure"), "pull_request"),
+                             (needs(game="unknown"), "push")):
+            with self.assertRaises(ValueError):
+                ci.require_checks(state, event)
+
     def test_docs_skip_but_unknown_deleted_and_build_inputs_do_not(self):
         self.assertTrue(ci.documentation_only(["docs/index.md", "docs/stylesheets/extra.css"]))
         for paths in ([], ["game/foo.gd"], [".godot-version"], ["export_presets.cfg"],
