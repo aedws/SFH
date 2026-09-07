@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "updated": "2026-09-05",
+  "updated": "2026-09-07",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -27,50 +27,289 @@
     }
   ],
   "statuses": [
-    {"id": "needs_decision", "label": "오너 판단 필요", "rank": 1},
-    {"id": "blocked", "label": "선행 조건 대기", "rank": 2},
-    {"id": "ready", "label": "구현 준비", "rank": 3},
-    {"id": "implemented", "label": "구현·검증됨", "rank": 4},
-    {"id": "deferred", "label": "명시적 보류", "rank": 5}
+    {
+      "id": "needs_decision",
+      "label": "오너 판단 필요",
+      "rank": 1
+    },
+    {
+      "id": "blocked",
+      "label": "선행 조건 대기",
+      "rank": 2
+    },
+    {
+      "id": "ready",
+      "label": "구현 준비",
+      "rank": 3
+    },
+    {
+      "id": "implemented",
+      "label": "구현·검증됨",
+      "rank": 4
+    },
+    {
+      "id": "deferred",
+      "label": "명시적 보류",
+      "rank": 5
+    }
   ],
   "object_types": [
-    {"id": "principle", "label": "원칙", "layer": "governance", "description": "모든 변경에 적용되는 불변 규칙"},
-    {"id": "decision", "label": "결정", "layer": "governance", "description": "프로젝트 오너의 선택이 필요한 범위·수치·출시 판단"},
-    {"id": "risk", "label": "위험", "layer": "operations", "description": "진행을 막거나 회귀 가능성을 높이는 조건"},
-    {"id": "work_item", "label": "작업", "layer": "operations", "description": "수락 조건과 검증 결과를 가진 실행 단위"},
-    {"id": "module", "label": "코드 모듈", "layer": "implementation", "description": "기능을 구현하는 교체 가능한 코드 경계"},
-    {"id": "document", "label": "근거 문서", "layer": "evidence", "description": "규칙·결과·검증 방법을 설명하는 내부 문서"},
-    {"id": "collection", "label": "문서 묶음", "layer": "evidence", "description": "전체 위키의 대분류·중분류와 문서 소속 관계"},
-    {"id": "source", "label": "원본 시스템", "layer": "evidence", "description": "Notion·Sheet·CSV·Git·E2E·CI 단일 원본"},
-    {"id": "authority", "label": "판단 주체", "layer": "governance", "description": "최종 수락 권한을 가진 프로젝트 오너"},
-    {"id": "contributor", "label": "근거 제공자", "layer": "governance", "description": "기획 또는 구현 근거를 제출하지만 확정하지 않는 역할"}
+    {
+      "id": "principle",
+      "label": "원칙",
+      "layer": "governance",
+      "description": "모든 변경에 적용되는 불변 규칙"
+    },
+    {
+      "id": "decision",
+      "label": "결정",
+      "layer": "governance",
+      "description": "프로젝트 오너의 선택이 필요한 범위·수치·출시 판단"
+    },
+    {
+      "id": "risk",
+      "label": "위험",
+      "layer": "operations",
+      "description": "진행을 막거나 회귀 가능성을 높이는 조건"
+    },
+    {
+      "id": "work_item",
+      "label": "작업",
+      "layer": "operations",
+      "description": "수락 조건과 검증 결과를 가진 실행 단위"
+    },
+    {
+      "id": "module",
+      "label": "코드 모듈",
+      "layer": "implementation",
+      "description": "기능을 구현하는 교체 가능한 코드 경계"
+    },
+    {
+      "id": "document",
+      "label": "근거 문서",
+      "layer": "evidence",
+      "description": "규칙·결과·검증 방법을 설명하는 내부 문서"
+    },
+    {
+      "id": "collection",
+      "label": "문서 묶음",
+      "layer": "evidence",
+      "description": "전체 위키의 대분류·중분류와 문서 소속 관계"
+    },
+    {
+      "id": "source",
+      "label": "원본 시스템",
+      "layer": "evidence",
+      "description": "Notion·Sheet·CSV·Git·E2E·CI 단일 원본"
+    },
+    {
+      "id": "authority",
+      "label": "판단 주체",
+      "layer": "governance",
+      "description": "최종 수락 권한을 가진 프로젝트 오너"
+    },
+    {
+      "id": "contributor",
+      "label": "근거 제공자",
+      "layer": "governance",
+      "description": "기획 또는 구현 근거를 제출하지만 확정하지 않는 역할"
+    }
   ],
   "interfaces": [
-    {"id": "owner_decidable", "label": "오너 판단 가능", "applies_to": ["decision", "risk", "work_item", "principle"], "required": ["decision_owner", "status", "summary", "next_action"]},
-    {"id": "traceable", "label": "원본 추적 가능", "applies_to": ["decision", "risk", "work_item", "module", "document", "collection"], "required": ["id", "relations"]},
-    {"id": "verifiable", "label": "검증 가능", "applies_to": ["work_item"], "required": ["acceptance", "verified_by"]}
+    {
+      "id": "owner_decidable",
+      "label": "오너 판단 가능",
+      "applies_to": [
+        "decision",
+        "risk",
+        "work_item",
+        "principle"
+      ],
+      "required": [
+        "decision_owner",
+        "status",
+        "summary",
+        "next_action"
+      ]
+    },
+    {
+      "id": "traceable",
+      "label": "원본 추적 가능",
+      "applies_to": [
+        "decision",
+        "risk",
+        "work_item",
+        "module",
+        "document",
+        "collection"
+      ],
+      "required": [
+        "id",
+        "relations"
+      ]
+    },
+    {
+      "id": "verifiable",
+      "label": "검증 가능",
+      "applies_to": [
+        "work_item"
+      ],
+      "required": [
+        "acceptance",
+        "verified_by"
+      ]
+    }
   ],
   "source_systems": [
-    {"id": "source:notion", "label": "Notion 기획 원본", "system": "Notion", "status": "manual", "summary": "플레이 의도와 확정·임시·보류 상태의 원본", "route": "design/master-gdd-alignment/"},
-    {"id": "source:google-sheet", "label": "Google Sheet 후보 데이터", "system": "Google Sheets", "status": "manual", "summary": "목록형 밸런스 후보와 설명의 협업 원본", "route": "getting-started/planner-item-balance-tutorial/"},
-    {"id": "source:locked-csv", "label": "확정 CSV", "system": "Repository CSV", "status": "validated", "summary": "빌드에서 사용하는 잠긴 런타임 데이터", "route": "features/weapon-balance/"},
-    {"id": "source:git", "label": "Git 구현 원본", "system": "Git", "status": "validated", "summary": "코드·문서·결정 레지스트리의 변경 이력", "route": "getting-started/source-control-and-cleanup/"},
-    {"id": "source:e2e", "label": "플레이어 인식 E2E", "system": "Test Suite", "status": "validated", "summary": "입력부터 결과까지 플레이어가 인식하는 완료 근거", "route": "quality/e2e-play-session/"},
-    {"id": "source:ci", "label": "CI·배포 증거", "system": "GitHub Actions / Cloudflare", "status": "validated", "summary": "PR 검사·동등 산출물·배포 상태의 운영 근거", "route": "quality/wiki-responsive-e2e/"}
+    {
+      "id": "source:notion",
+      "label": "Notion 기획 원본",
+      "system": "Notion",
+      "status": "manual",
+      "summary": "플레이 의도와 확정·임시·보류 상태의 원본",
+      "route": "design/master-gdd-alignment/"
+    },
+    {
+      "id": "source:notion-tracker",
+      "label": "Notion 기능·상태 트래커",
+      "system": "Notion",
+      "status": "manual",
+      "summary": "최신 GDD와 별개로 기획자가 작성하는 작업 상태·수락 기준. 코드 완료와 구분",
+      "route": "design/master-gdd-alignment/"
+    },
+    {
+      "id": "source:google-sheet",
+      "label": "Google Sheet 후보 데이터",
+      "system": "Google Sheets",
+      "status": "manual",
+      "summary": "목록형 밸런스 후보와 설명의 협업 원본",
+      "route": "getting-started/planner-item-balance-tutorial/"
+    },
+    {
+      "id": "source:locked-csv",
+      "label": "확정 CSV",
+      "system": "Repository CSV",
+      "status": "validated",
+      "summary": "빌드에서 사용하는 잠긴 런타임 데이터",
+      "route": "features/weapon-balance/"
+    },
+    {
+      "id": "source:git",
+      "label": "Git 구현 원본",
+      "system": "Git",
+      "status": "validated",
+      "summary": "코드·문서·결정 레지스트리의 변경 이력",
+      "route": "getting-started/source-control-and-cleanup/"
+    },
+    {
+      "id": "source:e2e",
+      "label": "플레이어 인식 E2E",
+      "system": "Test Suite",
+      "status": "validated",
+      "summary": "입력부터 결과까지 플레이어가 인식하는 완료 근거",
+      "route": "quality/e2e-play-session/"
+    },
+    {
+      "id": "source:ci",
+      "label": "CI·배포 증거",
+      "system": "GitHub Actions / Cloudflare",
+      "status": "validated",
+      "summary": "PR 검사·동등 산출물·배포 상태의 운영 근거",
+      "route": "quality/wiki-responsive-e2e/"
+    }
   ],
   "action_types": [
-    {"id": "action:submit-proposal", "label": "기획 근거 제출", "actor": "contributor:planner", "input": "Notion 상태·대상·플레이 결과·미정값", "output": "오너 판단 후보", "guard": "제안은 자동 확정되지 않음", "route": "access/planner/"},
-    {"id": "action:decide", "label": "범위·우선순위·수락 판단", "actor": "authority:project-owner", "input": "기획 근거·구현 영향·검증 결과", "output": "확정·수정·보류·폐기", "guard": "프로젝트 오너만 최종 판단", "route": "architecture/project-ontology/"},
-    {"id": "action:implement", "label": "모듈 구현", "actor": "contributor:developer", "input": "오너가 승인한 수락 조건", "output": "교체 가능한 코드·문서·데이터", "guard": "모듈 경계와 원본 계약 통과", "route": "architecture/module-rules/"},
-    {"id": "action:verify", "label": "플레이어 인식 검증", "actor": "contributor:developer", "input": "구현 산출물·수락 조건", "output": "E2E·회귀·성능 근거", "guard": "실패 시 수락·병합 금지", "route": "quality/e2e-play-session/"},
-    {"id": "action:release", "label": "병합·배포", "actor": "authority:project-owner", "input": "승인된 PR·필수 검사", "output": "main·Web·Windows 동등 산출물", "guard": "필수 검사가 모두 성공해야 실행", "route": "getting-started/source-control-and-cleanup/"}
+    {
+      "id": "action:submit-proposal",
+      "label": "기획 근거 제출",
+      "actor": "contributor:planner",
+      "input": "Notion 상태·대상·플레이 결과·미정값",
+      "output": "오너 판단 후보",
+      "guard": "제안은 자동 확정되지 않음",
+      "route": "access/planner/"
+    },
+    {
+      "id": "action:decide",
+      "label": "범위·우선순위·수락 판단",
+      "actor": "authority:project-owner",
+      "input": "기획 근거·구현 영향·검증 결과",
+      "output": "확정·수정·보류·폐기",
+      "guard": "프로젝트 오너만 최종 판단",
+      "route": "architecture/project-ontology/"
+    },
+    {
+      "id": "action:implement",
+      "label": "모듈 구현",
+      "actor": "contributor:developer",
+      "input": "오너가 승인한 수락 조건",
+      "output": "교체 가능한 코드·문서·데이터",
+      "guard": "모듈 경계와 원본 계약 통과",
+      "route": "architecture/module-rules/"
+    },
+    {
+      "id": "action:verify",
+      "label": "플레이어 인식 검증",
+      "actor": "contributor:developer",
+      "input": "구현 산출물·수락 조건",
+      "output": "E2E·회귀·성능 근거",
+      "guard": "실패 시 수락·병합 금지",
+      "route": "quality/e2e-play-session/"
+    },
+    {
+      "id": "action:release",
+      "label": "병합·배포",
+      "actor": "authority:project-owner",
+      "input": "승인된 PR·필수 검사",
+      "output": "main·Web·Windows 동등 산출물",
+      "guard": "필수 검사가 모두 성공해야 실행",
+      "route": "getting-started/source-control-and-cleanup/"
+    }
   ],
   "lifecycle": [
-    {"id": "capture", "label": "포착", "action": "action:submit-proposal", "evidence": ["source:notion", "source:google-sheet"]},
-    {"id": "decide", "label": "판단", "action": "action:decide", "evidence": ["source:notion", "source:git"]},
-    {"id": "implement", "label": "구현", "action": "action:implement", "evidence": ["source:locked-csv", "source:git"]},
-    {"id": "verify", "label": "검증", "action": "action:verify", "evidence": ["source:e2e", "source:ci"]},
-    {"id": "release", "label": "배포", "action": "action:release", "evidence": ["source:ci"]}
+    {
+      "id": "capture",
+      "label": "포착",
+      "action": "action:submit-proposal",
+      "evidence": [
+        "source:notion",
+        "source:google-sheet"
+      ]
+    },
+    {
+      "id": "decide",
+      "label": "판단",
+      "action": "action:decide",
+      "evidence": [
+        "source:notion",
+        "source:git"
+      ]
+    },
+    {
+      "id": "implement",
+      "label": "구현",
+      "action": "action:implement",
+      "evidence": [
+        "source:locked-csv",
+        "source:git"
+      ]
+    },
+    {
+      "id": "verify",
+      "label": "검증",
+      "action": "action:verify",
+      "evidence": [
+        "source:e2e",
+        "source:ci"
+      ]
+    },
+    {
+      "id": "release",
+      "label": "배포",
+      "action": "action:release",
+      "evidence": [
+        "source:ci"
+      ]
+    }
   ],
   "objects": [
     {
@@ -83,10 +322,22 @@
       "summary": "기획자는 의도와 후보를, 개발자는 구현·검증 근거를 제공하며 최종 확정과 수락은 프로젝트 오너가 수행합니다.",
       "next_action": "모든 신규 판단 객체에 오너, 근거, 수락 조건을 기록합니다.",
       "relations": [
-        {"to": "document:architecture/project-ontology", "type": "documented_by"},
-        {"to": "document:design/wiki-collaboration-workflow", "type": "governs"},
-        {"to": "source:notion", "type": "informed_by"},
-        {"to": "source:git", "type": "verified_by"}
+        {
+          "to": "document:architecture/project-ontology",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:design/wiki-collaboration-workflow",
+          "type": "governs"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "source:git",
+          "type": "verified_by"
+        }
       ]
     },
     {
@@ -100,12 +351,30 @@
       "acceptance": "개발자 작업실에서 판단 주체, 판단 대기, 구현 준비, 위험과 직접 관계를 검색·필터·키보드로 확인할 수 있습니다.",
       "next_action": "실사용 후 객체 유형과 자동 수집 범위를 늘릴지 오너가 판단합니다.",
       "relations": [
-        {"to": "principle:owner-authority", "type": "governed_by"},
-        {"to": "module:verification", "type": "verified_by"},
-        {"to": "document:quality/wiki-responsive-e2e", "type": "verified_by"},
-        {"to": "document:architecture/code-module-map", "type": "extends"},
-        {"to": "source:e2e", "type": "verified_by"},
-        {"to": "source:ci", "type": "verified_by"}
+        {
+          "to": "principle:owner-authority",
+          "type": "governed_by"
+        },
+        {
+          "to": "module:verification",
+          "type": "verified_by"
+        },
+        {
+          "to": "document:quality/wiki-responsive-e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "document:architecture/code-module-map",
+          "type": "extends"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:ci",
+          "type": "verified_by"
+        }
       ]
     },
     {
@@ -119,12 +388,30 @@
       "acceptance": "공개 사용자는 홍보·플레이 정보만 보고, 로그인한 기획자와 개발자만 전체 문서에 접근하며, 개발자 콘솔에서 객체·관계·행동·원본·검증 계보를 탐색할 수 있습니다.",
       "next_action": "실사용 중 누락된 판단 객체와 관계만 레지스트리에 추가하고 공개 범위를 자동 확대하지 않습니다.",
       "relations": [
-        {"to": "principle:owner-authority", "type": "governed_by"},
-        {"to": "document:architecture/project-ontology", "type": "documented_by"},
-        {"to": "document:architecture/wiki-role-auth", "type": "governed_by"},
-        {"to": "source:git", "type": "implemented_by"},
-        {"to": "source:e2e", "type": "verified_by"},
-        {"to": "source:ci", "type": "verified_by"}
+        {
+          "to": "principle:owner-authority",
+          "type": "governed_by"
+        },
+        {
+          "to": "document:architecture/project-ontology",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:architecture/wiki-role-auth",
+          "type": "governed_by"
+        },
+        {
+          "to": "source:git",
+          "type": "implemented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:ci",
+          "type": "verified_by"
+        }
       ]
     },
     {
@@ -138,13 +425,34 @@
       "acceptance": "오너가 가격, 성능 배율, 옵션·소켓 범위와 재화 소모를 승인하고 확정 CSV로 잠급니다.",
       "next_action": "기획 후보와 실제 플레이 계측을 비교해 확정·수정·보류 중 하나를 선택합니다.",
       "relations": [
-        {"to": "document:design/current-milestone-workline", "type": "informed_by"},
-        {"to": "document:getting-started/planner-item-balance-tutorial", "type": "informed_by"},
-        {"to": "module:shop_browser", "type": "affects"},
-        {"to": "module:crafting", "type": "affects"},
-        {"to": "module:balance_data", "type": "configured_by"},
-        {"to": "source:google-sheet", "type": "informed_by"},
-        {"to": "source:locked-csv", "type": "configured_by"}
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:getting-started/planner-item-balance-tutorial",
+          "type": "informed_by"
+        },
+        {
+          "to": "module:shop_browser",
+          "type": "affects"
+        },
+        {
+          "to": "module:crafting",
+          "type": "affects"
+        },
+        {
+          "to": "module:balance_data",
+          "type": "configured_by"
+        },
+        {
+          "to": "source:google-sheet",
+          "type": "informed_by"
+        },
+        {
+          "to": "source:locked-csv",
+          "type": "configured_by"
+        }
       ]
     },
     {
@@ -158,10 +466,22 @@
       "acceptance": "Utility 데이터의 단일 원본을 지정하고 중복 행을 제거한 뒤 동기화 검증이 성공합니다.",
       "next_action": "오너가 단일 원본 탭을 확인한 뒤 데이터 정리를 승인합니다.",
       "relations": [
-        {"to": "document:getting-started/planner-item-balance-tutorial", "type": "informed_by"},
-        {"to": "module:balance_data", "type": "blocks"},
-        {"to": "module:loot_tables", "type": "affects"},
-        {"to": "source:google-sheet", "type": "informed_by"}
+        {
+          "to": "document:getting-started/planner-item-balance-tutorial",
+          "type": "informed_by"
+        },
+        {
+          "to": "module:balance_data",
+          "type": "blocks"
+        },
+        {
+          "to": "module:loot_tables",
+          "type": "affects"
+        },
+        {
+          "to": "source:google-sheet",
+          "type": "informed_by"
+        }
       ]
     },
     {
@@ -175,12 +495,30 @@
       "acceptance": "잠금·해금 상태, 전체 해금률, 지역 힌트가 저장·복원되고 플레이어 인식 E2E를 통과합니다.",
       "next_action": "오너가 착수를 선택하면 P9-01 구현과 검증을 시작합니다.",
       "relations": [
-        {"to": "document:design/current-milestone-workline", "type": "informed_by"},
-        {"to": "module:p5_hub_progression", "type": "implemented_by"},
-        {"to": "module:persistent_profile", "type": "requires"},
-        {"to": "module:verification", "type": "verified_by"},
-        {"to": "source:notion", "type": "informed_by"},
-        {"to": "source:e2e", "type": "verified_by"}
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "informed_by"
+        },
+        {
+          "to": "module:p5_hub_progression",
+          "type": "implemented_by"
+        },
+        {
+          "to": "module:persistent_profile",
+          "type": "requires"
+        },
+        {
+          "to": "module:verification",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        }
       ]
     },
     {
@@ -194,9 +532,562 @@
       "acceptance": "운영 공급자, 보존 기간, 비용 한도, 복구 권한과 제재 기준을 오너가 별도로 승인합니다.",
       "next_action": "별도 착수 지시 전에는 설계와 위험 기록만 유지합니다.",
       "relations": [
-        {"to": "document:design/p7-plus-preimplementation", "type": "documented_by"},
-        {"to": "module:persistent_profile", "type": "affects"},
-        {"to": "module:conditional_ranking", "type": "affects"}
+        {
+          "to": "document:design/p7-plus-preimplementation",
+          "type": "documented_by"
+        },
+        {
+          "to": "module:persistent_profile",
+          "type": "affects"
+        },
+        {
+          "to": "module:conditional_ranking",
+          "type": "affects"
+        }
+      ]
+    },
+    {
+      "id": "decision:n26-health",
+      "type": "decision",
+      "label": "DEC-N26-HEALTH · 회복 원인별 허용표",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "키트 한정 회복과 현행 자연·드랍·레벨업·버프 회복 충돌. 이전 사용자 지시 대체 범위를 먼저 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "decision:n26-ap",
+      "type": "decision",
+      "label": "DEC-N26-AP · AP 자연 회복",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "에너지 드랍과 스킬 충전은 있음. 미사용 AP 자연량·지연·드랍 병행을 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "decision:n26-pouch",
+      "type": "decision",
+      "label": "DEC-N26-POUCH · 사망 보존 우선순위",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "파우치 허용품·칸수·입출금·중단·사망 후 해금/환전 순서 및 원형 보존 여부 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "decision:n26-depth",
+      "type": "decision",
+      "label": "DEC-N26-DEPTH · 심층 접근·수문장",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "입장 자격과 오염 면역 차이, 수문장 보장 드랍 및 키카드 소비·재입장 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "decision:n26-blood",
+      "type": "decision",
+      "label": "DEC-N26-BLOOD · HP 비용·흡혈",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "HP 최소치·자해 사망·AP 병행·DOT/다중 타격 흡혈 상한·키트 반감을 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "decision:n26-sockets",
+      "type": "decision",
+      "label": "DEC-N26-SOCKETS · 공용/개별 소켓",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "현재 공용 세션 슬롯을 유지할지 무기·스킬 소켓별 귀속을 추가할지 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "decision:n26-tech",
+      "type": "decision",
+      "label": "DEC-N26-TECH · 지정 노드와 대체 구현",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "탈출은 실제 Area2D로 충족. TileMapLayer 맵·Area2D 타게팅 지정과 현행 자체 맵·거리 정책의 기술 수락 범위를 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "decision:n26-status",
+      "type": "decision",
+      "label": "DEC-N26-STATUS · 기획/코드 상태 분리",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "트래커 미구현 태그로 기존 구현을 초기화하지 않으며 오너가 근거 수락 후 상태 갱신.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:n26-01",
+      "type": "work_item",
+      "label": "N26-01 · 오너 충돌 결정·14개 미정 데이터 분리",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "회복/AP·파우치·심층·혈전·소켓·기술 8개 판단을 명시. 기획 태그를 코드 완료로 사용하지 않음",
+      "acceptance": "결정별 유지/변경/보류, 범위·수치·대체 대상·수락 기준을 기록",
+      "next_action": "오너가 8개 충돌의 유지/변경/보류와 14개 미정 데이터의 담당·수락 기준을 결정",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-health",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-ap",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-pouch",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-depth",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-blood",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-sockets",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-tech",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-status",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:n26-03",
+      "type": "work_item",
+      "label": "N26-03 · 광역 밀집 중심·스킬 반경 전달",
+      "status": "ready",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "SmartTargetingPolicy + SkillDefinition 반경 전달. UI/개별 스킬에 대상 선택 중복 금지",
+      "acceptance": "서로 떨어진 3기 중심점, 적 좌표와 불일치 확인, 동률·빈 후보·사거리·스킬 반경 변화 검사",
+      "next_action": "독립 착수 가능 · 이번에는 수정하지 않음",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:n26-02",
+      "type": "work_item",
+      "label": "N26-02 · 표준 생존 회복·AP 정책",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "RecoveryPolicy / SkillCostPolicy / Service / HUD 원인별 분리. 기존 회복 프로필 복구 가능",
+      "acceptance": "자연/드랍/레벨업/버프/키트/훈련별 승인표, AP와 충전 별도, 생존 10분 비교",
+      "next_action": "DEC-N26-HEALTH·AP",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-health",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-ap",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:n26-04",
+      "type": "work_item",
+      "label": "N26-04 · 파우치 소유권·슬롯·허용 목록",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "ContainerDefinition / PouchPolicy / InventoryTransferService / Presenter. 인스턴스 단일 소유",
+      "acceptance": "가방↔파우치 이동·금지품 거부·용량·회전·전체 가방·저장 취소 후 중복 없음",
+      "next_action": "DEC-N26-POUCH",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-pouch",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:n26-05",
+      "type": "work_item",
+      "label": "N26-05 · 파우치 사망 보존·저장·정산",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "SettlementPolicy / ProfileTransaction / DesktopSaveProvider. 보호 판정 후 해금/환전 순서 고정",
+      "acceptance": "성공·사망·중단·재접속·구버전 세이브·동일 run_id 재정산에서 자산 증식 없음",
+      "next_action": "N26-04 및 파우치 정산 우선순위 확정",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-pouch",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-04",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:n26-06",
+      "type": "work_item",
+      "label": "N26-06 · 심층 3중 진입·수문장·키카드",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "DepthDefinition / AccessPolicy / HazardService / GuardianDropPolicy / DoorPresenter. 추격 보스 독립",
+      "acceptance": "소·중·대×지역×난이도 생성 연결성, 저항 면역/차단, 100% 드랍 회수, 키카드 1회 소비·문 개폐",
+      "next_action": "DEC-N26-DEPTH 및 N26-05 보존 경계",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-depth",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-05",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:n26-07",
+      "type": "work_item",
+      "label": "N26-07 · 혈전 버서커 프로필",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "CostPolicy + HitRecoveryPolicy + ConsumableEffectPolicy 조합. 기본 전투와 기능 플래그 분리",
+      "acceptance": "HP 부족·자해 경계·AP 혼합·DOT/다중 적중 상한·중복 처치·물약50%·해제 복원",
+      "next_action": "DEC-N26-BLOOD 및 N26-02",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-blood",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-02",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ]
+    },
+    {
+      "id": "work:n26-08",
+      "type": "work_item",
+      "label": "N26-08 · 66항목 수락·데이터·플레이 회귀",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "게임 상태·저장·HUD·접근성·성능·기능 제거 계약 통합. 잔여 소켓/훈련 차이와 기술 대안 재대조",
+      "acceptance": "AP 자연량·스킬 수·타겟 반경/주기·UI·리롤·손상품·환전·탈출·시즌의 임시/확정 분리 및 Web/Windows E2E",
+      "next_action": "각 신규 모듈 완료 + 잔여 오너 결정",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-sockets",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-tech",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-01",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-02",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-03",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-04",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-05",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-06",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-07",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
       ]
     }
   ]

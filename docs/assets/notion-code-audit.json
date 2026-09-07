@@ -1,0 +1,1015 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-09-07",
+  "reviewed_commit": "c16bd24827c596f419d224365b9724f6455b7b22",
+  "method": "static_code_and_existing_test_source_review; no new human-play acceptance; planner status != implementation status",
+  "gdd_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
+  "tracker_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
+  "scoring": {
+    "weights": {
+      "결정 (미구현)": 3,
+      "미정 (검토필요)": 1
+    },
+    "scores": {
+      "code_supported": 1,
+      "partial": 0.5,
+      "conflict": 0,
+      "missing": 0,
+      "decision_pending": 0
+    },
+    "label": "확정도 가중 코드 대응도(출시율/재실행 E2E 합격률 아님)"
+  },
+  "rows": [
+    {
+      "notion_id": "3d35b728-0040-8100-8288-f8c33727429f",
+      "title": "타겟 록온 갱신 주기 (초당 30회 vs 60회)",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/smart_targeting/smart_targeting_policy.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 성능 및 타겟 전환 반응속도 튜닝 필요",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-8102-b0c9-db415bca981e",
+      "title": "스킬별 개별 쿨타임(Cooldown) 카운트다운",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/combat_skills/combat_skill_system.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "스킬별 쿨타임과 자원 가드 존재.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8103-a93c-d48292d9f86b",
+      "title": "허수아비 속성 저항 및 방어력 설정 옵션 지원",
+      "request_id": "PLAN-05-TRAIN",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/training_ground/training_ground_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/training_ground_gameplay_e2e_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 연습장 옵션 패널에서 더미 방어력 조절 기능 여부",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-8106-ad61-d91cfe0c6f1b",
+      "title": "타이머 0초 도달 시 탈출 성공 및 정산창 진입",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/extraction/extraction_zone.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "신호기 활성·체류 카운트다운·이탈 일시정지·재개·성공 정산 구현. 방어 시간/배율 승인 별도.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8109-99ed-d6fb80fbe7f5",
+      "title": "영구 자산형 장비 R키 현장 즉시 장착/스왑",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/field_loot/field_loot_equip_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/field_loot_acquisition_contract_test.gd"
+      ],
+      "finding": "현장 장비 교체 경로가 있음. 인벤토리 R 회전과 컨텍스트 분리 회귀를 유지.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-810b-b4e6-fd07961bb518",
+      "title": "보유 장비/스킬/룬 무상 자유 세팅 콘솔",
+      "request_id": "PLAN-05-TRAIN",
+      "planner_status": "결정 (미구현)",
+      "assessment": "partial",
+      "code": [
+        "game/features/training_ground/training_loadout_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/training_ground_gameplay_e2e_test.gd"
+      ],
+      "finding": "장비 무비용 편집·복원과 스킬 런타임 계측은 있음. 룬 전체 자유 편집/복원의 동등 근거는 부족.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-810f-83b7-fb7f6ebb80a9",
+      "title": "제작소: 추가 재화 소모를 통한 추가 옵션/소켓 고점 부여",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/p5_hub_progression/workshop_craft_transaction_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/workshop_craft_transaction_contract_test.gd"
+      ],
+      "finding": "비용·재료·옵션/소켓·실물·거래 ID 원자 적용. 옵션 범위 임시 승인은 별도.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-810f-b02c-fd14fa4b714c",
+      "title": "상점: 인게임 세션 복귀 시 자동 품목 갱신(로테이션)",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/p5_hub_progression/rotating_shop_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/shop_browser_contract_test.gd"
+      ],
+      "finding": "회전 상점·리롤·품질 매물 경로 구현. 운영 수치는 임시이며 확정 승인과 구분.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8113-b892-e6ce524b1f43",
+      "title": "자발적 페널티 모디파이어 선택 시 보상 배율(Multiplier) 증가",
+      "request_id": "PLAN-07-LEADER",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/operation_contract/operation_contract_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/operation_combination_contract_test.gd"
+      ],
+      "finding": "원정 계약·페널티 보상 배율 견적·확정 연결.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8115-9b5c-c24724367086",
+      "title": "시즌 명예 보상(칭호, 오라 이펙트) 지급",
+      "request_id": "PLAN-07-LEADER",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/conditional_ranking/season_reward_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/season_reward_contract_test.gd"
+      ],
+      "finding": "로컬 지급·칭호/오라 장착 구현. 실서버 보상 지급으로 간주하지 않음.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8118-9dee-e5b4e70508fb",
+      "title": "파산 방지: 무료 기본 무장 및 기본 맵 상시 제공",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/p5_hub_progression/bankruptcy_protection_policy.gd",
+        "game/features/p5_hub_progression/p5_hub_progression_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/p5_hub_progression_contract_test.gd"
+      ],
+      "finding": "BankruptcyProtectionPolicy가 잔액 조건과 entry_cost=0인 반복 무료 출격 프리셋을 제공. 기본 무장·무료 진입은 P5 계약 검사로 확인하며 탈출 타이머와 별개.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-811d-b001-d577cf80a660",
+      "title": "상점: 성능 -10%~-30% 손상된 하자품 헐값(20~30%) 판매",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "assessment": "partial",
+      "code": [
+        "game/features/p5_hub_progression/shop_quote_policy.gd"
+      ],
+      "existing_tests": [
+        "game/tests/shop_quality_inventory_contract_test.gd"
+      ],
+      "finding": "손상 품질 실물·성능 적용은 있음. -10~-30% 성능 및 정가20~30% 가격 전체 범위 보장은 운영 데이터 재대조 필요.",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-811e-ba68-f8adf646f3ac",
+      "title": "단일 고체력 보스 허수아비 더미 배치",
+      "request_id": "PLAN-05-TRAIN",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/training_ground/training_ground_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/training_ground_gameplay_e2e_test.gd"
+      ],
+      "finding": "단일 1기·밀집 8기 더미, 실제 공격·계측·무비용 장비 편집·퇴장 원복의 기존 E2E 근거.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8122-81c4-e91a314d0451",
+      "title": "영구 자산형 장비 탈출 성공 시 로비 상점 영구 해금",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/run_settlement/run_settlement_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/run_settlement_contract_test.gd"
+      ],
+      "finding": "성공 시 환전·영구 등록·창고 / 사망 시 소실을 생명 주기별 처리. 보안 파우치 예외는 없음.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8127-b2fe-e3b3ce1920c1",
+      "title": "완전 자유 스킬 바인딩 (Any Skill to Any Key)",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/skill_binding/skill_binding_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "스킬→Action 매핑과 물리 키→Action 매핑은 별도 서비스. 충돌 교환·저장 계약 유지.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8128-b071-df1c2bf344ce",
+      "title": "타일셋 그래픽 스타일 및 픽셀 뷰포트 해상도 규격",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/core/feature_manifest.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 해상도(예: 640x360 픽셀아트 vs 1920x1080) 확정 필요",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-8128-baaf-d108e1f9602f",
+      "title": "상점 리롤 1회당 비용 증가 곡선 (점진 증가 vs 고정)",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/p5_hub_progression/rotating_shop_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/shop_browser_contract_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 리롤 비용(예: 100G ➔ 200G ➔ 400G 등) 확정 필요",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-812e-8dcf-d3df7845372a",
+      "title": "세션 증폭 룬/코어 인게임 실시간 소켓 장착",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "partial",
+      "code": [
+        "game/features/session_sockets/session_socket_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "세션 공용 룬2·코어1·유물1 슬롯은 있음. 요구한 무기/스킬 개별 소켓 귀속과 동일한지는 미확정.",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-8134-bf81-d6d748487eb2",
+      "title": "실시간 DPS, 단일 타격 수치, AP 소모율 모니터링 UI",
+      "request_id": "PLAN-05-TRAIN",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/training_ground/training_telemetry_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/training_ground_gameplay_e2e_test.gd"
+      ],
+      "finding": "타격·DPS·AP 소모율·쿨타임 계측과 HUD 연결의 기존 검사 근거.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8137-8239-cf2fd6b253e8",
+      "title": "탈출 활성화 시 몰려오는 몬스터 웨이브 스폰 배율",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/extraction/extraction_zone.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 일반 대비 스폰 밀도 가중치 수치",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-8138-93c2-fc6eddfae751",
+      "title": "TileMapLayer 기반 2D 던전 맵 렌더링 파이프라인",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "assessment": "partial",
+      "code": [
+        "game/features/map_generation/map_generator.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "맵 기능은 있으나 game 코드에서 TileMapLayer 사용 근거 없음. 동일 결과의 현재 방식 유지 vs 지정 기술 이행을 오너 판단.",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-813c-8525-fceeaed2654f",
+      "title": "단일기: 특정 옵션 시 최고체력/엘리트(Highest HP) 동적 전환",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/smart_targeting/smart_targeting_policy.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "대상 선택 정책의 nearest/highest_health/elite/direction 분기와 기존 검사 근거.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8145-bf92-e84e1e0a0f01",
+      "title": "보안 파우치 거점 성장 업그레이드 (최대 3~4칸 확장)",
+      "request_id": "DATA-02-POUCH",
+      "planner_status": "결정 (미구현)",
+      "assessment": "missing",
+      "code": [
+        "game/features/run_settlement/run_settlement_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/run_settlement_contract_test.gd"
+      ],
+      "finding": "파우치와 확장·사망 보존 정책 미구현. 일반 가방 크기 확장만으로 대체 불가.",
+      "next_packet": "N26-04"
+    },
+    {
+      "notion_id": "3d35b728-0040-8147-a809-d56ce5ef98cc",
+      "title": "광역기: 스킬 반경 내 최대 적 밀집 클러스터 중심점 자동 투하",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "결정 (미구현)",
+      "assessment": "partial",
+      "code": [
+        "game/features/smart_targeting/smart_targeting_policy.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "select_densest_point로 평균 중심을 계산하지만 resolve의 공통 target 분기에서 적 좌표로 덮어씀. 고정 density_radius도 스킬별 피격 반경과 별도. 중심점·반경 전달 회귀 필요.",
+      "next_packet": "N26-03"
+    },
+    {
+      "notion_id": "3d35b728-0040-814c-99d0-c971098fd15c",
+      "title": "제작소: 파밍한 설계도 영구 등록 기반 확정 타겟 제작",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/p5_hub_progression/workshop_unlock_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/workshop_blueprint_registry_contract_test.gd"
+      ],
+      "finding": "도면 영구 등록 기반 제작 자격과 중복 등록/재접속 보존 구현.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8159-819a-f0dc9eb951b5",
+      "title": "표준 자원 마모형 체력 모델 (자연회복 불가, 소모품 한정 관리)",
+      "request_id": "PLAN-08-SURVIVAL",
+      "planner_status": "결정 (미구현)",
+      "assessment": "conflict",
+      "code": [
+        "game/features/health_recovery/health_recovery_system.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "기본 자연 회복 true(4초 후 초당3,65%상한), HP 드랍과 레벨업12회복이 소모품 한정 요구와 충돌. 승인 전 유지.",
+      "next_packet": "N26-02"
+    },
+    {
+      "notion_id": "3d35b728-0040-815a-b0ae-ef36ba2b2e92",
+      "title": "세션 증폭 룬/코어 탈출 시 대량 골드 자동 환전",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/run_settlement/run_settlement_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/run_settlement_contract_test.gd"
+      ],
+      "finding": "성공 시 환전·영구 등록·창고 / 사망 시 소실을 생명 주기별 처리. 보안 파우치 예외는 없음.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-815f-b78d-e820fa8127de",
+      "title": "원정 맵 크기(소/중/대) 및 Biome 계약 선택",
+      "request_id": "PLAN-07-LEADER",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/operation_contract/operation_contract_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/operation_combination_contract_test.gd"
+      ],
+      "finding": "규모·지역 계약 및 조합 검증 구현.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8165-8cff-cd45118d9084",
+      "title": "혈전/버서커 특화 빌드 (HP 소모 스킬 + 흡혈 + 회복약 효과 반감)",
+      "request_id": "PLAN-08-SURVIVAL",
+      "planner_status": "결정 (미구현)",
+      "assessment": "missing",
+      "code": [
+        "game/features/combat_resources/combat_resource_system.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "AP 비용 계약만 있음. HP 지불·타격/처치 흡혈·물약50%를 결합한 별도 빌드 정책은 미구현.",
+      "next_packet": "N26-07"
+    },
+    {
+      "notion_id": "3d35b728-0040-8169-834b-c9955f1af304",
+      "title": "1단계 로비 허브 상시 공간 인터페이스 구축",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/scenes/game.gd"
+      ],
+      "existing_tests": [
+        "game/tests/operation_combination_contract_test.gd"
+      ],
+      "finding": "거점→준비→확정 투입→정산 복귀 연결과 조합별 기존 계약 검사. 새로운 UI 정책 수락은 별도.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-816b-b578-f9cc78ce74a2",
+      "title": "F 키 입력 시 맵 내 오브젝트 상호작용",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/skill_binding/skill_binding_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "물리 Action·스킬 배치·쿨타임·상호작용 구현 근거. 실제 키는 K 설정 값을 사용.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-816d-aecb-dc8652d0d8de",
+      "title": "인게임 최대 동시 장착 스킬 슬롯 수 확정",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/skill_binding/skill_binding_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. UI 상 4개, 5개, 6개 중 최종 규격 확정 필요",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-8173-9ff3-e8871dc690f7",
+      "title": "맵 내 탈출 신호기(Beacon) 접근 후 F키 상호작용 가동",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/extraction/extraction_zone.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "신호기 활성·체류 카운트다운·이탈 일시정지·재개·성공 정산 구현. 방어 시간/배율 승인 별도.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8176-8deb-c7f5a868a5ff",
+      "title": "광역기 클러스터 탐색 반경 기본값 수치",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/smart_targeting/smart_targeting_policy.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 클러스터링 밀집도 판정 반경(px) 확정 필요",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-817b-bd84-efe3ea8a93e7",
+      "title": "Custom Resource 기반 데이터 관리 아키텍처 셋업",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/core/feature_manifest.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "기존 Godot 프로젝트·선택 모듈과 기본 루프 검사 근거. 지정 기술/성능의 완전 일치는 별도 확인.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-817c-a4e2-f02aff23ace5",
+      "title": "Space 키 입력 시 이동 방향 회피(대쉬) 발동",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/player/player_movement.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "Input.get_vector 및 현재 dash Action 기반 가속·대시. 실제 기본 키/재매핑은 KeyMapping과 연동.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8180-a869-d144728e8907",
+      "title": "보안 파우치 (사망 시 100% 보존되는 안전 금고 기본 1~2칸)",
+      "request_id": "DATA-02-POUCH",
+      "planner_status": "결정 (미구현)",
+      "assessment": "missing",
+      "code": [
+        "game/features/run_settlement/run_settlement_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/run_settlement_contract_test.gd"
+      ],
+      "finding": "파우치와 확장·사망 보존 정책 미구현. 일반 가방 크기 확장만으로 대체 불가.",
+      "next_packet": "N26-04"
+    },
+    {
+      "notion_id": "3d35b728-0040-8183-a83e-ff9dc784a5ef",
+      "title": "Q 키 입력 시 주무기 ↔ 보조무기 실시간 스왑",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/equipment/equipment_system.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "주·보조 무기 전환과 태그 적합성 갱신의 기존 구현 근거.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-8185-ae76-d5cd6a8c0355",
+      "title": "실서비스 계정 서버 및 무결성 검증 연동",
+      "request_id": "PLAN-07-LEADER",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/conditional_ranking/conditional_ranking_system.gd"
+      ],
+      "existing_tests": [
+        "game/tests/ranking_season_contract_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 실서버 랭킹 API 연동 (현재 P6 로컬 마일스톤 상태)",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-8186-98d7-e0ee28c35434",
+      "title": "룬 1개당 골드 환전 가치 산정 공식 및 배율",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/run_settlement/run_settlement_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/run_settlement_contract_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 룬 티어별 환전 기본 골드(예: 100/300/1000G) 확정 필요",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-8188-83ae-cd19e9ee4a43",
+      "title": "출격 준비 세션 UI 상세 레이아웃 및 UX",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/scenes/game.gd"
+      ],
+      "existing_tests": [
+        "game/tests/operation_combination_contract_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 단일 화면 모달 vs 탭 분할 화면 UI 확정 필요",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-8188-aaf0-cf37578f63be",
+      "title": "CharacterBody2D 기반 플레이어 이동 물리 셋업",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/player/player.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "플레이어가 CharacterBody2D이며 이동 컴포넌트와 충돌을 분리.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-818d-8fa2-cedb610d6633",
+      "title": "3단계 인게임 던전 세션 로딩 및 결과 복귀",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/scenes/game.gd"
+      ],
+      "existing_tests": [
+        "game/tests/operation_combination_contract_test.gd"
+      ],
+      "finding": "거점→준비→확정 투입→정산 복귀 연결과 조합별 기존 계약 검사. 새로운 UI 정책 수락은 별도.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81a2-bd08-e8bcb4537422",
+      "title": "상점: 기본 순정품 및 고성능 꿀매물 무작위 스폰",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/p5_hub_progression/rotating_shop_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/shop_browser_contract_test.gd"
+      ],
+      "finding": "회전 상점·리롤·품질 매물 경로 구현. 운영 수치는 임시이며 확정 승인과 구분.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81a6-9988-e39812a2e2f6",
+      "title": "심층 코어 정규 진입로 (환경 저항 장비 착용자 통과)",
+      "request_id": "PLAN-09-DEPTH",
+      "planner_status": "결정 (미구현)",
+      "assessment": "missing",
+      "code": [
+        "game/features/map_generation/map_generator.gd"
+      ],
+      "existing_tests": [
+        "game/tests/operation_combination_contract_test.gd"
+      ],
+      "finding": "저항 자격/오염 피해·수문장 보장 드랍·키카드 금고 정책은 미구현. 기존 추격 보스와 수문장은 별도 역할.",
+      "next_packet": "N26-06"
+    },
+    {
+      "notion_id": "3d35b728-0040-81a9-b8c9-f6677ca3970c",
+      "title": "이동기: 현재 입력된 이동 방향 벡터로 즉시 발동",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/smart_targeting/smart_targeting_policy.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "대상 선택 정책의 nearest/highest_health/elite/direction 분기와 기존 검사 근거.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81aa-8a0f-d4dac4b38604",
+      "title": "구역 이탈 시 타이머 일시정지(Pause) 및 재진입 재개(Resume)",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/extraction/extraction_zone.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "신호기 활성·체류 카운트다운·이탈 일시정지·재개·성공 정산 구현. 방어 시간/배율 승인 별도.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81c1-a28d-fe60b47f8cf9",
+      "title": "심층 코어 우회 돌파로 (수문장 처치 시 저항 장비 100% 드랍)",
+      "request_id": "PLAN-09-DEPTH",
+      "planner_status": "결정 (미구현)",
+      "assessment": "missing",
+      "code": [
+        "game/features/map_generation/map_generator.gd"
+      ],
+      "existing_tests": [
+        "game/tests/operation_combination_contract_test.gd"
+      ],
+      "finding": "저항 자격/오염 피해·수문장 보장 드랍·키카드 금고 정책은 미구현. 기존 추격 보스와 수문장은 별도 역할.",
+      "next_packet": "N26-06"
+    },
+    {
+      "notion_id": "3d35b728-0040-81c6-9ad2-d96b2d2305c1",
+      "title": "기본 AP 최대치 및 초당 자연 회복량 기본 수치",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/skill_binding/skill_binding_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 기본 AP(예: 100) 및 초당 회복량(예: 20) 확정 필요",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-81c6-b32e-fda2ccb10389",
+      "title": "원형 탈출 구역(Area2D) 내 N초 생존 카운트다운",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/extraction/extraction_zone.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "ExtractionZone은 Area2D를 상속하고 원형 CollisionShape2D를 구성. 반경 내 방어 카운트다운·이탈 일시정지·재진입 재개·완료 신호 연결. N초 운영값 확정은 별도.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81c8-8a80-fd7b8c71b99d",
+      "title": "동일 규격(대형 맵+페널티) 내 비동기 3대 래더 집계",
+      "request_id": "PLAN-07-LEADER",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/conditional_ranking/conditional_ranking_system.gd"
+      ],
+      "existing_tests": [
+        "game/tests/ranking_season_contract_test.gd"
+      ],
+      "finding": "대형/페널티 규격의 로컬 3대 보드·시즌 경로. 실제 계정/서버 검증과 로컬 기록은 별도.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81ca-b26a-f5ed495e7156",
+      "title": "기본 탈출 방어 카운트다운 시간 기본값 (15초 vs 20초)",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/extraction/extraction_zone.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 맵 크기별 탈출 방어 시간 확정 필요",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-81cd-bb32-c02a13bc9624",
+      "title": "영구 자산형 장비(무기/스킬/도면) F키 가방 획득",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/field_loot/field_loot_inventory_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/field_loot_acquisition_contract_test.gd"
+      ],
+      "finding": "현장 획득 요청과 가방 수납·실패 피드백 경로의 기존 근거.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81d3-b102-c4b1eda1ef98",
+      "title": "밀집 잡몹 허수아비 더미군 배치",
+      "request_id": "PLAN-05-TRAIN",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/training_ground/training_ground_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/training_ground_gameplay_e2e_test.gd"
+      ],
+      "finding": "단일 1기·밀집 8기 더미, 실제 공격·계측·무비용 장비 편집·퇴장 원복의 기존 E2E 근거.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81d4-a174-d2cb05748c11",
+      "title": "인게임 진입/복귀 시 씬 전환 로딩 연출",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/scenes/game.gd"
+      ],
+      "existing_tests": [
+        "game/tests/operation_combination_contract_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 페이드 인/아웃 또는 암전 연출 규격",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-81d8-bd12-f016a1a7a63e",
+      "title": "상점: 골드 소모 수동 리롤(Reroll) 기능",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/p5_hub_progression/rotating_shop_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/shop_browser_contract_test.gd"
+      ],
+      "finding": "회전 상점·리롤·품질 매물 경로 구현. 운영 수치는 임시이며 확정 승인과 구분.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81dc-a9bc-d63057e33c1b",
+      "title": "단일기: 사거리 내 최단거리(Closest) 적 기본 록온",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/smart_targeting/smart_targeting_policy.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "대상 선택 정책의 nearest/highest_health/elite/direction 분기와 기존 검사 근거.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81e4-bfad-e202866c131b",
+      "title": "손상 장비에 붙는 세부 페널티 목록 풀",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "미정 (검토필요)",
+      "assessment": "decision_pending",
+      "code": [
+        "game/features/p5_hub_progression/rotating_shop_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/shop_browser_contract_test.gd"
+      ],
+      "finding": "기획 확정 대기. 현재 유사 기능/임시 설정이 있어도 이 항목의 최종 규격 수락을 의미하지 않음. 공격력 저하, 공속 저하, AP 소모 증가 등 풀 확정 필요",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-81e5-84ff-d1cd87160366",
+      "title": "심층 코어 최상위 보안 금고 (특수 키카드 소지자 전용 개방)",
+      "request_id": "PLAN-09-DEPTH",
+      "planner_status": "결정 (미구현)",
+      "assessment": "missing",
+      "code": [
+        "game/features/map_generation/map_generator.gd"
+      ],
+      "existing_tests": [
+        "game/tests/operation_combination_contract_test.gd"
+      ],
+      "finding": "저항 자격/오염 피해·수문장 보장 드랍·키카드 금고 정책은 미구현. 기존 추격 보스와 수문장은 별도 역할.",
+      "next_packet": "N26-06"
+    },
+    {
+      "notion_id": "3d35b728-0040-81e5-89a4-dca71f46ec3f",
+      "title": "마우스 좌클릭 등 기본 스킬 홀드(Hold) 연속 시전",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/weapons/auto_weapon.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "기본 공격 홀드 연사 경로 구현. 모든 액티브 스킬의 자동 반복을 확정한 것으로 확대하지 않음.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81e6-b05f-f5697a9bfd26",
+      "title": "2단계 출격 준비 세션 (로드아웃 + 맵 계약 + 페널티)",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/scenes/game.gd"
+      ],
+      "existing_tests": [
+        "game/tests/operation_combination_contract_test.gd"
+      ],
+      "finding": "거점→준비→확정 투입→정산 복귀 연결과 조합별 기존 계약 검사. 새로운 UI 정책 수락은 별도.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81ef-93ac-ed46ee9dcd7e",
+      "title": "WASD 키보드 8방향/360도 평면 이동 벡터 제어",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/player/player_movement.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "Input.get_vector 및 현재 dash Action 기반 가속·대시. 실제 기본 키/재매핑은 KeyMapping과 연동.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81f1-9fd2-cad6784a8d28",
+      "title": "사망 실패 시 런 획득물 및 지참 로드아웃 소실",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "assessment": "code_supported",
+      "code": [
+        "game/features/run_settlement/run_settlement_service.gd"
+      ],
+      "existing_tests": [
+        "game/tests/run_settlement_contract_test.gd"
+      ],
+      "finding": "성공 시 환전·영구 등록·창고 / 사망 시 소실을 생명 주기별 처리. 보안 파우치 예외는 없음.",
+      "next_packet": "N26-08"
+    },
+    {
+      "notion_id": "3d35b728-0040-81f9-b4eb-cbb242aa37ab",
+      "title": "공용 자원(AP/스태미나) 소모 및 회복 사이클",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "assessment": "partial",
+      "code": [
+        "game/features/combat_resources/combat_resource_system.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "AP 차감과 드랍 복원은 있음. advance는 충전 횟수만 복구하며 미사용 초당 AP 자연 회복은 없음. 충전=에너지로 오판하지 않음.",
+      "next_packet": "N26-02"
+    },
+    {
+      "notion_id": "3d35b728-0040-81fa-8aa8-ee14acbebda3",
+      "title": "Area2D 기반 타겟팅 및 탈출 구역 콜리전 구조 셋업",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "assessment": "partial",
+      "code": [
+        "game/features/extraction/extraction_zone.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
+      "finding": "ExtractionZone은 실제 Area2D이며 body_entered/body_exited와 원형 충돌을 사용. 타게팅은 Area2D 후보 수집이 아닌 거리·스냅샷 정책이므로 지정 구조 전체는 부분 대응.",
+      "next_packet": "N26-01"
+    },
+    {
+      "notion_id": "3d35b728-0040-81fd-8f66-dbb618b30881",
+      "title": "Godot 4.x 2D 탑다운 엔진 기본 프로젝트 및 씬 구축",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "assessment": "partial",
+      "code": [
+        "project.godot"
+      ],
+      "existing_tests": [
+        "game/tests/performance_budget_test.gd"
+      ],
+      "finding": "Godot 프로젝트 존재. 60FPS는 기기·해상도·부하 실측 수락이 필요하며 파일 존재만으로 달성 판정하지 않음.",
+      "next_packet": "N26-08"
+    }
+  ]
+}

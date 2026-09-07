@@ -52,7 +52,7 @@ tags:
 
 기획자가 바로 복사할 최소 형식과 부분 확정·수치 확정·변경 예시는 [기획자 작업실의 Notion 작성 가이드](../access/planner.md#notion-authoring)에 있습니다.
 
-권위 있는 원문은 [게시된 SFH Master GDD](https://wobbly-pawpaw-1ff.notion.site/Master-GDD-2026-09-02-04-14-00-3ce5b728004081bfa94fe42e4ed48767)입니다.
+권위 있는 원문은 [게시된 SFH Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed)입니다.
 
 ## Google Sheet 상시 확장 허용
 

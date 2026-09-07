@@ -9,6 +9,12 @@ hide:
 
 # 기획자 작업실
 
+## 최신 기획과 실제 구현 상태
+
+[최신 GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed)는 규칙을, [66개 작업 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2)는 요청 상태를 관리합니다. 노션에서 미구현이어도 게임에는 이미 있을 수 있습니다. [코드 대조와 오너 판단표](../design/master-gdd-alignment.md)를 먼저 확인하세요.
+
+새 회복·파우치·심층·버서커 정책은 아직 게임에 적용하지 않았습니다. 기획자는 허용/금지/예외와 수락 기준을 제안하고, 프로젝트 오너가 기존 규칙을 바꿀지 결정합니다.
+
 <a class="sfh-article-entry" href="#planner-start"><strong>기획 작성 가이드부터 시작하기 →</strong><small>객체를 고르고 관계와 플레이 결과를 적으면 개발 근거와 연결됩니다.</small></a>
 
 <section class="sfh-role-console is-planner sfh-role-workspace">

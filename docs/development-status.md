@@ -17,92 +17,67 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-06</span><span>SEARCH COMMAND</span><span>9 DAYS · 96 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 97 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
-## 기획 기준 진행도
+## 최신 기획 기준 코드 대응도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
-    <span><small>MASTER GDD ALIGNED · 2026-09-04</small><strong>현재 기획 진행도</strong></span>
-    <b>96%</b>
+    <span><small>GDD + TRACKER · 2026-09-07</small><strong>확정도 가중 코드 대응도</strong></span>
+    <b>72.4%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="SFH 기획 진행도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96"><i style="width: 96%"></i></div>
-  <p>사용자가 지정한 2026-09-02 04:14 Master GDD 백업본 v153·77블록·해시 f06bd08f2159를 기준으로 봅니다. 공개 스냅샷 수집과 체크 0/6 판독에 성공했고, 기존 77개 기획 블록과 내용이 같음을 확인했습니다. P8-01~03 실제 더미·계측·무비용 세팅 복원까지 반영했으며, 더미·경제 운영값은 임시이므로 기능 가중 추정치 96%를 유지합니다.</p>
+  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="72.4"><i style="width: 72.4%"></i></div>
+  <p>최신 GDD v128·62블록과 트래커 66행을 코드·기존 테스트 소스와 대조했습니다. 출시 준비율이나 이번 실제 플레이 통과율이 아닙니다. 기존 96%는 이전 백업 기준의 이력이며 현재 진행률로 사용하지 않습니다.</p>
 </div>
 
-권위 있는 기획 원본은 [게시된 SFH 프로젝트 Master GDD](https://wobbly-pawpaw-1ff.notion.site/Master-GDD-2026-09-02-04-14-00-3ce5b728004081bfa94fe42e4ed48767)입니다. 새 기준 페이지를 공개 Notion 스냅샷 수집기로 직접 읽어 77블록·root v153·`f06bd08f2159`를 고정했습니다. 승인되지 않은 운영 수치는 임시 정책으로 분리합니다. 전체 상세 대조는 [Master GDD 구현 대조](design/master-gdd-alignment.md)에 기록했습니다.
+원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
+코드 기준은 `c16bd24827c596f419d224365b9724f6455b7b22`입니다. 스냅샷과 전체 근거는 [66개 항목 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
-P6 마감 재검토에서도 같은 공개 원문임을 확인했습니다. 로컬 P6와 실서비스 미완료 경계는 [마감 기록](features/ranking-provider.md#p6-closeout)으로 구분합니다. P7-01B~04는 로컬 플레이 흐름을 완료했지만 임시 품질·리롤·제작 운영 수치의 기획 확정과 서버 운영을 완료로 오인하지 않습니다.
+| 코드 판정 | 항목 수 | 점수 |
+|---|---:|---:|
+| 구현 근거 있음 | 37 | 1 |
+| 부분 대응 | 8 | 0.5 |
+| 신규 미구현 | 6 | 0 |
+| 기존 규칙과 충돌 | 1 | 0 |
+| 기획 판단 대기 | 14 | 0 |
 
-**정정: Phase 1~6 체크박스는 0/6입니다.** `No`를 참으로 해석한 과거 6/6 안내는 오류입니다. 체크박스와 코드 완료는 별개입니다. 경제는 P7-01B의 실제 품질·가방·장착과 P7-02 회전·리롤 연결 뒤에도 90%를 유지하며, 품질·리롤 운영 규칙의 기획 확정과 서버 운영·검증 지급은 미구현입니다.
+노션의 **결정(미구현) 52개 ×3**, **미정(검토필요) 14개 ×1**로 가중합니다. `(37×3 + 8×0.5×3) ÷ (52×3 + 14×1) = 123/170 = 72.4%`. 기획 상태를 구현 완료로 치환하지 않습니다. 수치 하락은 게임 기능 삭제가 아니라 최신 요구 확대와 과대 판정 정정입니다.
 
-| 기획 묶음 | 가중치 | 구현률 | 현재 근거 |
-|---|---:|---:|---|
-| 기술 기반 | ×1 | 100% | Godot 4.x·GDScript·CharacterBody2D·Area2D·TileMapLayer·Camera2D와 기능별 Node/Scene 경계 구현 |
-| 입력·자유 스킬 바인딩 | ×2 | 100% | 물리 키와 스킬→Action 배치를 분리하고 충돌 교환·HUD 반영·JSON 저장·초기화를 구현 |
-| 스마트 자동 타게팅 | ×2 | 95% | 최근접·최대 HP·엘리트·밀집 중심·이동 벡터·자기 대상을 정의별로 선택하고 무기·스킬에 연결. 추가 콘텐츠 튜닝이 남음 |
-| 로비→준비→인게임 3단계 루프 | ×2 | 100% | 유틸리티·불변 작전 초안·원자적 확정·파산 무료 프리셋까지 허브→작전→허브에 연결 |
-| 상점 vs 제작소 경제 | ×1 | 90% | P7-01A/B 비교·구매→I 실물→U/E 장착→실제 품질 배율·옵션·소켓 보존. 운영 가격/성능 규칙 확정 잔여 |
-| 훈련 연습장 | ×1 | 100% | P8-01~03 거점 F→실제 단일·밀집 더미→고정 시간 DPS/AP/쿨타임→무비용 세팅→작전 준비/퇴장 원복 |
-| 전리품 2대 분류·현장 파밍 | ×2 | 100% | 생명 주기·지역 테이블·현장 비교·획득·교체·소켓과 탈출 환전·영구 해금·창고/사망 소실·중복 방지 구현 |
-| 가변 태그·등급 확장 | ×1 | 85% | 동적 태그·등급·불일치 비활성·메커니즘 변형과 제작 옵션 풀 구현. 무기별 독립 스킬 프리셋이 남음 |
-| 탈출·생환·파산 방지 | ×2 | 95% | F 방어전, 이탈 일시정지·재개, 성공·사망 정산, 무료 기본 진입 구현. 신규 룬 환전 연결이 남음 |
-| 비동기 랭킹·시즌 보상 | ×1 | 75% | 3대 로컬 랭킹·공급자·익명 신원·검증 봉투·멱등·영구 재시도·거부 상태 구현. 로컬 시즌·칭호/오라 추가, 실서비스 계정·검증 지급은 없음 |
+## 현재 빌드 상태
 
-계산식은 `Σ(기획 묶음 구현률 × 가중치) ÷ 15`입니다. `(100×1 + 100×2 + 95×2 + 100×2 + 90×1 + 100×1 + 100×2 + 85×1 + 95×2 + 75×1) ÷ 15 = 95.7% → 96%`입니다. 경제 10개 하위 항목 중 9개 구현·기획 확정 1개 잔여의 근거는 [상세 산정](design/master-gdd-alignment.md)에 기록했습니다. 보안 계획은 구현률에 포함하지 않습니다.
+거점 준비 → 작전 → 방 전투·파밍 → 탈출·정산의 기존 플레이는 유지합니다. 이번 작업은 원본 연결·대조·충돌 판단·작업 편성이며 게임 규칙, Sheet/CSV, 저장 데이터는 변경하지 않았습니다.
 
-`완료`는 클래스나 UI가 존재한다는 뜻이 아니라 최신 기획의 동작 조건까지 충족한 경우입니다. 현재 빌드는 거점→작전→파밍→탈출→정산을 플레이할 수 있지만, 아래 규격 차이가 남아 있습니다.
+최신 원본에서는 키트 중심 생존, 보안 파우치, 심층 진입과 혈전 프로필 요구가 추가되거나 구체화됐습니다. 기존 HP 자연 회복·드랍·레벨업 회복과의 충돌, AP와 충전의 차이, 광역 타게팅 중심 덮어쓰기를 별도 작업으로 분리했습니다.
 
-#### 기획 마일스톤 판정
+## 다음 작업과 판단
 
-| Phase | 판정 | 저장소 대조 |
-|---|---|---|
-| Phase 1 · 이동·타게팅·자유 바인딩 | 완료 | 키 배치와 스킬 배치를 분리하고 실제 발동·HUD·영구 저장까지 연결 |
-| Phase 2 · Q·태그·AP·쿨타임 | 완료 | 주·보조 교체, 태그 호환성, 에너지·충전·개별 쿨타임 구현 |
-| Phase 3 · 탈출 방어·정산 | 완료 | F 방어전, 이탈 일시정지·재개, 성공·사망 정산 자동 검증 |
-| Phase 4 · 현장 교체·룬 소켓·환전 | 완료 | 현장 교체·룬/코어/유물 소켓→탈출 환전·영구 해금·창고/사망 소실과 중복 방지 E2E 완료 |
-| Phase 5 · 로비 허브·준비 세션 | 연결 완료 · 운영 수치 잔여 | 유틸리티·단일 초안·파산 보호·훈련장·도감과 상점 품질 실물·I/U 장착·실제 수치 E2E 완료 |
-| Phase 6 · 비동기 랭킹·시즌 보상 | P6-01~04 로컬 완료 | 마감·칭호/오라 1회 지급·저장·장착 연결. 실서비스 계정·서버 확정 지급은 미완료 |
+[오너 판단표](design/master-gdd-alignment.md#owner-conflicts)에서 회복·AP·파우치·심층·혈전·소켓·기술·상태의 8개 결정을 확인합니다. 기존 사용자 지시를 대체하는 규칙은 승인 전에 적용하지 않습니다.
 
-### 2026-09-02 Master GDD 백업본 v153 재대조
-
-- **새 확정:** 로비 허브는 창고·회전 상점·제작소·훈련장·도감/랭킹으로 구성됩니다.
-- **새 확정:** 상점은 손상·표준·고성능 3대 매물과 런 종료 갱신·골드 리롤을 사용합니다.
-- **새 확정:** 제작소는 반출 설계도를 영구 등록하고 옵션·소켓 고점 장비를 맞춤 제작합니다.
-- **새 확정:** 훈련장은 단일·밀집 더미, DPS·타격·AP·쿨타임 계측, 무비용 자유 세팅을 제공합니다.
-- **번호 구분:** Notion 공식 마일스톤은 Phase 1~6이며 P7~P10은 저장소 내부 후속 작업 ID입니다.
-
-### 앞으로 해야 할 작업
-
-| 우선순위 | 작업 | 현재 차이 | 완료 조건 |
-|---:|---|---|---|
-| 완료 | Phase 1 자유 스킬 배치 | 물리 키와 스킬 위치의 두 단계 편집 구현 | 충돌 교환·HUD/발동·JSON 복구와 실제 K/ESC E2E 완료 |
-| 완료 | 배포·보안 작업선 | Pages·Worker·비공개 R2가 섞여 보일 수 있었음 | 문서·플레이·원본 보관 표면 분리, 이중 백업·복구 PR·정적 경계 검사 완료 |
-| 완료 | Phase 4 P4-01~03 기반 | 생명 주기·타겟 파밍·현장 획득 계약 필요 | Item/LootTable→드랍→비교→ESC 보류→F 런 임시 보관 E2E 완료 |
-| 완료 | Phase 4 P4-04A 현장 무기 교체 | 비교·런 임시 보관까지 존재 | R 즉시 장착·활성 무기 변화·거점 복구·임시 정책 표시 완료 |
-| 완료 | Phase 4 P4-04B 현장 스킬 교체 | 슬롯·태그·키·자원 교체 필요 | Skill Sheet→R 교체→3번 키→상태 복구 완료 |
-| 완료 | Phase 4 P4-05 세션 소켓 | 기획 수치 없이 진행 필요 | RunAsset 임시값→F 장착→효과→HUD 해제→원복 E2E 완료 |
-| 완료 | Phase 4 P4-06 순환 | 자동 환전·영구 해금·사망 소실 미연결 | 성공/사망 정산·중복 방지·9작전 조합 E2E 완료 |
-| 완료 | Phase 5 P5-01 캐릭터 선택 | Character 임시 목록·가격·패시브 | 선택→견적→작전 내 패시브 확인 E2E 완료 |
-| 완료 | Phase 5 P5-02 무기·스킬 투자 | 소유·미해금·이번 런 구매·태그 구분 | 선택→잠김 차단→1회 결제→실전 발동→복원 E2E 완료 |
-| 완료 | Phase 5 P5-03~10 | 유틸·초안·파산 보호·상점·제작·훈련·도감 | Sheet→UI→거래→런/영구 정산→재접속→모듈 제거 E2E 완료 |
-| 완료 | Phase 6 P6-01 랭킹 제공자 | 3대 로컬 랭킹만 존재 | 온라인/로컬 교체·오프라인 폴백·상태 표시 E2E 완료 |
-| 완료 | Phase 6 P6-02 제출·검증 | 익명 신원·무결성·멱등·영구 재시도·거부 이유 | 중복/단절/변조/시간초과/저장 복원 E2E 완료 |
-| 완료 | Phase 6 P6-03 시즌 규칙 | 로컬 임시 주간 정책과 마감 기록 | 시즌 경계·조건 불일치·마감 불변·저장 복원 E2E 완료 |
-| 완료 | Phase 6 P6-04 로컬 칭호·오라 | SeasonReward 6종·마감 지급·저장·장착 | 1회 지급·다른 신원 거부·재시작·표현·손상 보존 테스트 |
-| 기획 확정 대기 | 내부 P7-01 | A/B 구현 완료, 손상품 가격/성능과 고성능 옵션·소켓 운영값은 임시 | 기획 확정 뒤 P7-01 종료, 구현은 P7-04 제작 거래로 이동 |
-| 완료 | 내부 P7-02 | 런 복귀 회전·골드 리롤 | 정책·상태·차감 분리, 취소/중복 방지와 UI 영수증 E2E 완료 |
-| 완료 | 내부 P7-03 | 반출 설계도 영구 등록 | 등록·Recipe 공급·해금 규칙 분리, 재접속 보존과 후보 상태 E2E 완료 |
-| 완료 | 내부 P7-04 | 원자적 맞춤 제작 | 비용·재료·범위 선공개, 실제 옵션/소켓, 단일 저장과 실패 무변경 E2E 완료 |
-| 완료 | 내부 P8 | 실제 더미·전용 계측·격리 스킬·무비용 세팅 복원 | 운영 수치는 기획 확정 뒤 CSV만 교체 |
-| 다음 | 내부 P9~P10 | 도감→프리셋→출시 후보 | P9-01 해금률·지역 힌트부터 진행 |
-| 착수 보류 | 위변조 감지·거래 원장·백업 | 사용자 지시로 문서만 등록 | 운영 정책과 별도 구현 승인 전 서비스·과금 변경 없음 |
-
-세부 작업 ID와 중단 조건은 [현행 마일스톤 작업 라인](design/current-milestone-workline.md), 내부 후속선은 [P7 이후 사전 구현 설계](design/p7-plus-preimplementation.md)에서 추적합니다.
+[최신 N26 작업선](design/current-milestone-workline.md#notion-20260907):
+오너 판단(N26-01)과 독립 가능한 타게팅 수정(N26-03) → 생존/AP(N26-02) → 파우치 소유권·정산(N26-04/05) → 심층(N26-06)·혈전(N26-07) → 66항목 수락·플레이 회귀(N26-08).
+P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니다.
 
 <div class="sfh-notes">
+
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 6 · IMPROVE 11 · CHANGE 9 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 2 · IMPROVE 2 · CHANGE 2 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>2</b><small>IMPROVE</small></span><span><b>2</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 오래된 기획 백업 대신 최신 원본과 작업 목록을 연결하고, 이미 구현된 것과 새 요구의 차이를 분리했습니다. 게임 규칙은 변경하지 않았습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>기획 작업 스냅샷과 코드·검사 근거 대조표를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>기획 상태와 구현 상태를 분리하고, 충돌 판단과 의존성별 작업 순서를 개발자 작업실에 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>진행도 기준과 최신 원본 링크를 현행화했습니다. 상세 산정·수락 조건은 팀 로그인 후 확인합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>백업본을 최신 원본으로 읽던 연결과 상위 페이지 수정을 본문 변경으로 오판하던 수집 범위를 수정했습니다. 타게팅 등 게임 차이는 후속 작업으로 등록했습니다.</p></div>
+      </div>
+    </details>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-09-06</b><small>4 UPDATE BUNDLES · BUILD 6 · IMPROVE 11 · CHANGE 9 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>6</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>9</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
