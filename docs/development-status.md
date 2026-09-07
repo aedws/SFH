@@ -17,33 +17,35 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 136 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 137 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
-    <span><small>GDD + TRACKER · 2026-09-07</small><strong>확정도 가중 코드 대응도</strong></span>
-    <b>78.5%</b>
+    <span><small>GDD + TRACKER · 2026-09-08</small><strong>확정도 가중 코드 대응도</strong></span>
+    <b>80.3%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="78.5"><i style="width: 78.5%"></i></div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80.3"><i style="width: 80.3%"></i></div>
   <p>최신 GDD v128·62블록과 트래커 66행을 코드·기존 테스트 소스와 대조했습니다. 출시 준비율이나 이번 실제 플레이 통과율이 아닙니다. 기존 96%는 이전 백업 기준의 이력이며 현재 진행률로 사용하지 않습니다.</p>
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-**2026-09-07 마감 재대조 코드: `48c12bf`.** 최신 GDD·트래커를 공개 읽기로 다시 수집했고 내용 해시는 동일합니다. 오늘의 파츠/모듈 UI·슬롯 소켓과 CSV 패키징 수정은 기존 구현 근거를 보강하므로 **78.5%를 유지**합니다. [마감 결과·배포 근거](design/master-gdd-alignment.md#day-close)와 [66행 계산 근거](design/master-gdd-alignment.md#current-classification)를 확인하세요.
+**2026-09-08 대조 코드: `21851a1`.** 공개 GDD·트래커 해시는 동일합니다. 오너 승인으로 HP 충돌을 키트 전용 정책으로 해결해 **80.3%**입니다. [승인·구현·부분 검수 잔여](design/master-gdd-alignment.md#health-20260908)를 확인하세요.
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
-| 구현 근거 있음 | 44 | 1 |
+| 구현 근거 있음 | 45 | 1 |
 | 부분 대응 | 1 | 0.5 |
 | 신규 미구현 | 6 | 0 |
-| 기존 규칙과 충돌 | 1 | 0 |
+| 기존 규칙과 충돌 | 0 | 0 |
 | 기획 판단 대기 | 14 | 0 |
 
-노션 결정 52개×3·미정14개×1로 가중합니다. `(44×3 + 1×0.5×3) ÷ (52×3 + 14) = 133.5/170 = 78.5%`. 손상 매물·바닥 TileMapLayer·타겟 Area2D 3행을 추가 검증했습니다. [노션 외 구현 9묶음](design/master-gdd-alignment.md#implemented-outside-notion)은 가산하지 않습니다. 확정 요구만의 참고 대응도는 85.6%이며 출시율·사람 수락률이 아닙니다.
+노션 결정52개×3·미정14개×1로 가중합니다. `(45×3 + 1×0.5×3) ÷ (52×3 + 14) = 136.5/170 = 80.3%`. [노션 외 구현9묶음](design/master-gdd-alignment.md#implemented-outside-notion)은 가산하지 않습니다. 확정 요구만의 참고값은87.5%이며 출시율·사람 수락률이 아닙니다.
 
 ## 현재 빌드 상태
+
+2026-09-08: 표준 HP는 키트 전용이며 KIT 버튼에서 지참 수량을 사용합니다. 자연·HP 드랍·레벨업·버프 회복은 차단하고 AP는 유지합니다. 아래 기존 마일스톤 설명 중 HP 충돌 대기는 이번 승인으로 대체됩니다. N26-08B의 첫 GPU 프레임·배포 양 플랫폼10분 일반 플레이 수락은 계속 진행 중입니다.
 
 거점 → 작전 → 방 전투·파밍 → 탈출·정산을 유지합니다. 임시 AP·소켓·훈련에 손상 매물 가격 범위와 실제 바닥/타겟 어댑터를 추가했습니다. ShopOffer의 2개 가격만 Sheet·CSV·Web payload에 동기화했으며 HP 규칙·영구 저장 스키마는 유지합니다.
 
@@ -58,6 +60,23 @@ N26-03A/B·훈련 복원·승인 임시 AP/소켓과 손상 매물·TileMapLayer
 P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니다.
 
 <div class="sfh-notes">
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLE · BUILD 1 · IMPROVE 1 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>소모품 전용 HP · 지참 키트 사용</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · HP는 지참 키트로만 회복합니다. 체력 옆 KIT 버튼에서 남은 수량을 보고 사용합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>회복 원인 정책과 실제 키트 사용·수량 차감을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>최대 HP·사망·수량 부족은 미소모, 증강의 HP 회복 미적용을 안내합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>오너 승인으로 자연·드랍·레벨업·버프 HP 회복을 중단합니다. AP는 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>부상 중 최대 HP 장비 변경으로 현재 HP가 늘어나는 우회를 차단했습니다.</p></div>
+        <p><a href="features/health-recovery/">사용법 →</a> · <a href="design/master-gdd-alignment/#health-20260908">노션 대조 80.3%·부분 검수 잔여 →</a> · 양 플랫폼10분 일반 플레이·첫 GPU 프레임 수락은 미완료.</p>
+      </div>
+    </details>
+  </div>
+</details>
 
 <details class="sfh-day" open>
   <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 19 · IMPROVE 34 · CHANGE 24 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>

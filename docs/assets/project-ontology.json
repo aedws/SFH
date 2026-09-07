@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
-  "updated": "2026-09-07",
-  "source_sha256": "d8d7a662024a96dc90d6317bb858141beaeb063935611e8e57cf1ec3918d210b",
+  "updated": "2026-09-08",
+  "source_sha256": "0324f4b8c8ab7d9c24b02de88334310fc3b4b729a52c95f1a6373149e44f4a25",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -393,10 +393,10 @@
   ],
   "summary": {
     "tracked": 51,
-    "owner_decisions": 7,
+    "owner_decisions": 6,
     "blocked": 8,
     "ready": 1,
-    "implemented": 34,
+    "implemented": 35,
     "modules": 60,
     "documents": 96,
     "collections": 27,
@@ -792,11 +792,11 @@
       "id": "decision:n26-health",
       "type": "decision",
       "label": "DEC-N26-HEALTH · 회복 원인별 허용표",
-      "status": "needs_decision",
-      "certainty": "provisional",
+      "status": "implemented",
+      "certainty": "confirmed",
       "decision_owner": "authority:project-owner",
-      "summary": "키트 한정 회복과 현행 자연·드랍·레벨업·버프 회복 충돌. 이전 사용자 지시 대체 범위를 먼저 결정.",
-      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "summary": "2026-09-08 오너 승인: 충돌은 노션에 맞춤. 표준 HP 키트 전용 정책·지참 KIT 버튼 연결. 자연·드랍·레벨업·버프 회복 차단, AP·초기화/훈련 원복 독립 유지.",
+      "next_action": "계약·소/중/대 조립·버튼 검증 완료. 배포판10분 일반 플레이·첫 출격 지연 수락은 N26-08B에 유지.",
       "route": "design/master-gdd-alignment/#owner-conflicts",
       "relations": [
         {
@@ -3298,13 +3298,13 @@
       "label": "거점 성장 루프",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "성장 · feature · 파일 24개",
+      "summary": "성장 · feature · 파일 25개",
       "route": "architecture/code-module-map/?module=p5_hub_progression",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/p5_hub_progression",
       "kind": "implementation",
       "metrics": {
-        "files": 24,
+        "files": 25,
         "classes": 24,
         "incoming": 3,
         "outgoing": 1
@@ -3352,14 +3352,14 @@
       "label": "플레이어",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "전투 · feature · 파일 3개",
+      "summary": "전투 · feature · 파일 4개",
       "route": "architecture/code-module-map/?module=player",
       "documentation_route": "features/player/",
       "source": "game/features/player",
       "kind": "implementation",
       "metrics": {
-        "files": 3,
-        "classes": 3,
+        "files": 4,
+        "classes": 4,
         "incoming": 5,
         "outgoing": 0
       }
@@ -3658,13 +3658,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 50개",
+      "summary": "기반·검증 · verification · 파일 51개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 50,
+        "files": 51,
         "classes": 0,
         "incoming": 0,
         "outgoing": 52

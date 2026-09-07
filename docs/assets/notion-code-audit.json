@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-09-07",
-  "reviewed_commit": "48c12bf1045b990fc11345b280ac4f2fb01d2390",
-  "method": "2026-09-07 end-of-day: live GDD v128/62 blocks and complete tracker66 unchanged; reviewed cd25dfe..48c12bf implementation delta and all66 crosswalk rows. PR173 game/E2E/module contracts and main34122699735 Web/Windows/wiki artifact verification passed. UI/module/CSV export refinements strengthen existing evidence, not new Notion completion; full10-minute release parity and first-frame acceptance remain partial. No new human play session or Notion writes in this review.",
+  "reviewed_at": "2026-09-08",
+  "reviewed_commit": "21851a1d70661f7c6298c4b99f63157228481e91",
+  "method": "2026-09-08: live GDD/tracker hashes unchanged. Owner explicitly approved following Notion on HP conflict. Reviewed kit-only source policy, medkit runtime button/quantity and assembled small/medium/large launch contracts; game smoke and gameplay E2E passed. HP row now code_supported; first-frame and release Web/Windows ordinary ten-minute acceptance remain partial. CPU-only assembly samples are not GPU FPS or human acceptance. Notion planner statuses unchanged.",
   "gdd_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
   "tracker_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
   "scoring": {
@@ -475,14 +475,18 @@
       "title": "표준 자원 마모형 체력 모델 (자연회복 불가, 소모품 한정 관리)",
       "request_id": "PLAN-08-SURVIVAL",
       "planner_status": "결정 (미구현)",
-      "assessment": "conflict",
+      "assessment": "code_supported",
       "code": [
-        "game/features/health_recovery/health_recovery_system.gd"
+        "game/features/health_recovery/health_recovery_system.gd",
+        "game/features/player/health_recovery_policy.gd",
+        "game/features/p5_hub_progression/utility_investment_service.gd",
+        "game/features/p5_hub_progression/medkit_button.gd"
       ],
       "existing_tests": [
-        "game/tests/basic_loop_smoke_test.gd"
+        "game/tests/basic_loop_smoke_test.gd",
+        "game/tests/kit_only_health_contract_test.gd"
       ],
-      "finding": "기본 자연 회복 true(4초 후 초당3,65%상한), HP 드랍과 레벨업12회복이 소모품 한정 요구와 충돌. 승인 전 유지.",
+      "finding": "2026-09-08 오너 승인: 표준 HP 키트 전용. 자연·드랍·레벨업·버프 회복과 부상 최대치 교체 우회 차단. 지참 KIT 버튼·수량·회복 페널티 연결. 계약·소/중/대 조립/UI 검사 통과. AP·훈련 원복 독립, 배포10분 수락은 partial 유지.",
       "next_packet": "N26-02"
     },
     {

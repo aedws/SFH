@@ -152,8 +152,8 @@ class CodeCrosswalkTests(unittest.TestCase):
         audit_check.validate(self.audit, self.gdd, self.tasks)
         numerator, denominator, counts = audit_check.summary(self.audit)
         # Verified shop bands and actual tile/area adapters; normal-play QA stays partial.
-        self.assertEqual((numerator, denominator, len(self.audit["rows"])), (133.5, 170, 66))
-        self.assertEqual((counts["code_supported"], counts["partial"]), (44, 1))
+        self.assertEqual((numerator, denominator, len(self.audit["rows"])), (136.5, 170, 66))
+        self.assertEqual((counts["code_supported"], counts["partial"]), (45, 1))
         self.assertEqual(counts["decision_pending"], 14)
 
     def test_missing_or_duplicate_row_fails(self):

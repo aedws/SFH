@@ -54,170 +54,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 19 · IMPROVE 34 · CHANGE 24 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLE · BUILD 1 · IMPROVE 1 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>19</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>24</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 16</small><b>오늘 마감 · 노션 대비 코드 대응도 78.5%</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 1</small><b>소모품 전용 HP · 지참 키트 사용</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 홈에서 로그인 후 마감 근거로 이동하고, 개발 현황에서 기획 대응도와 잔여 범위를 확인할 수 있습니다.</strong></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>개발 현황의 현재 빌드 상태 위에서 78.5%를 확인합니다. 공개 홈은 플레이 소개를 유지하며 상세 계산은 팀 로그인 뒤에 제공합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>최신 공개 노션 재수집과 배포 코드 대조를 마쳤습니다. 오늘의 파츠·모듈 UI/소켓은 별도 추가 구현 근거로 갱신하고 진행률에 중복 가산하지 않습니다.</p></div>
-        <p><a href="design/master-gdd-alignment/#day-close">마감·계산 근거 →</a> · 2026-09-07 작업 종료. 새 게임 규칙·노션 원문·밸런스 목록 변경 없음.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 15</small><b>무기·방어구·캐릭터 모듈 카드 · 슬롯 소켓</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · E에서 세 대상의 모듈을 카드로 편집하고, 최대 레벨 슬롯에 소켓을 부여해 비용을 줄입니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>캐릭터 공용 모듈과 슬롯별 타입 소켓을 추가했습니다. 일치 비용은 강화 후 기본 비용의 절반을 올림합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>대상·적용 수치 / 장착·보유 카드 / 코스트·설정으로 나누고 검색·정렬·좁은 화면 세로 배치를 제공합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>E와 I 모듈 설정을 같은 초안 편집 화면으로 연결했습니다. 최대 레벨 전 잠금·이탈 저장 확인·기존 세이브를 보존합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>실제 강화 비용과 슬롯 할인으로 용량을 판정합니다. 캐릭터 상태가 없던 훈련 원본을 복원할 때 불필요한 상태 생성도 차단했습니다.</p></div>
-        <p><a href="features/equipment-customization/#module-sockets">사용 방법·원작과 차이 →</a> · <a href="quality/e2e-play-session/#module-sockets">입력·저장 검증 →</a> · 캐릭터 해금40은 임시 정책. 촉매 소모·레벨 초기화·새 Sheet 목록 추가 없음.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 14</small><b>두 무기 카드 · 그림 주변 파츠 슬롯</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · I 무기 탭에서 메인·보조를 위아래로 보고, 무기 주변 슬롯을 눌러 파츠를 장착합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>실제 무기 소켓에 연결된 카드형 파츠 UI와 보유 호환 파츠 선택을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>빈 슬롯·장착·선택 상태를 아이콘과 테두리로 구분하고, 클릭/Enter 선택·4폭 배치·저장 보호를 검사합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>파츠 교체는 분리 초안에서 이전 파츠/강화 상태를 가방으로 반환하며, 실패 시 복구합니다. 저장 확인과 U/E 고급 기능은 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>배포 전 패키지 검사에서 발견한 밸런스 CSV의 번역 리소스 오인식을 수정했습니다. CSV 18종 원본 보존과 패키지 거점·작전 부팅을 검사합니다.</p></div>
-        <p><a href="features/grid-inventory/#weapon-attachment-rack">사용 방법 →</a> · <a href="quality/e2e-play-session/#weapon-attachment-rack">입력·저장 검증 →</a> · 참고 이미지의 에셋을 복사하지 않은 SFH 코드 도식. 새 파츠 목록·밸런스 변경 없음.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 13</small><b>FUN QA · 출격 정보와 탈출 경계</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 규모 선택은 잘리지 않는 요약과 상세로 나뉘고, 탈출 원과 F 안내가 실제 작동 범위에 맞습니다.</strong></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>마우스를 올리지 않아도 선택 규모의 방·적 수를 읽을 수 있습니다. 실제 충돌/F·첫 브리핑·5폭 글자 너비를 필수 검사로 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>최신 기획 재대조 후 판단 없는 신규 미구현은 없음으로 분리했습니다. 오너 판단이 필요한 6건과 코드 대응도78.5%는 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>몸만 구역에 걸친 상태의 잘못된 F 시작 안내와 규모 카드 말줄임을 수정했습니다. 선택 상세 추가 시 초기 높이 회귀도 함께 차단했습니다.</p></div>
-        <p><a href="quality/player-perception-audit/#fun-qa-affordance">FUN QA 결과 →</a> · <a href="architecture/module-audit/#fun-qa-affordance">모듈 경계 →</a> · 일반 Web 입력으로 14처치·문 개방·레벨2·룬 장착·31크레딧 회수 확인. 양 플랫폼10분 완주·사람 재미 합격은 별도 수락입니다.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 12</small><b>손상품 가격 · 타일/타겟 어댑터 · 체감 QA</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 손상품은 실제로 저렴해지고, 바닥과 적 탐색은 독립 엔진 어댑터를 사용합니다. 무기 정보는 전투 중앙을 가리지 않습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>실제 바닥 TileMapLayer와 무기/스킬 공통 후보 Area2D를 연결하고 기존 충돌·길찾기·타겟 우선순위를 유지했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>첫 생성·사거리 변경·삭제·화면 중앙 가림을 별도 회귀 계약으로 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>3행 추가 검증으로 코드 대응도 78.5%(133.5/170). 배포판 일반 플레이·첫 진입 지연은 별도 검수로 남깁니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 6</h3><p>손상품 가격·중앙 정보 가림에 더해 릴리스 초기화 실패, 저프레임 카메라 이탈로 검게 보이는 전장, 작전 중 훈련 문구, Windows 거점 HUD의 과도한 빈 높이를 수정했습니다.</p></div>
-        <p><a href="quality/player-perception-audit/">플레이어 인식 QA →</a> · <a href="architecture/module-audit/#partial-adapters">모듈 경계 →</a> · 코드 cd25dfe. Web 일반 입력 전투·사망·거점 복귀 및 Windows 메뉴 검수. 10분 일반 플레이와 사람 재미 수락은 별도입니다.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 11</small><b>AP 재생 · 대상별 룬과 보유 훈련</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · AP는 잠시 쉬면 회복되고, 룬 효과는 장착한 대상에만 적용됩니다. 해제한 자산은 가방에서 다시 쓸 수 있습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 3</h3><p>1초 미사용 후 10 AP/s, 무기·스킬별 효과 귀속, 해제 가방 반환·재장착을 임시 정책으로 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>훈련은 보유품만 무료로 시험하고 종료 시 원복합니다. 모든 CI를 수동 기동 자체 러너로 전환해 hosted 비용 폴백을 없앴습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 3</h3><p>회복·귀속·입출금의 교체 경계를 분리하고 승인 임시/기획 확정을 구분했습니다. 66행 중 3행을 검증 근거로 갱신해 코드 대응도 75.9%, 부분 잔여 4행입니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>가방 부족·편집 취소 때 자산/효과 손실을 차단하고 컨테이너 파일 소유권으로 다음 CI가 막히던 문제를 수정했습니다.</p></div>
-        <p>원본·계산: 최신 GDD/트래커 해시 동일, 코드 dfe0f1f, 129/170. 정책 계약·전체 플레이 회귀 통과이며 사람 재미/모든 기기 수락과는 별도입니다.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 10</small><b>위키 문서 동선 · 큰 주제에서 세부 기능으로</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 홈에서 로그인 후 종합 문서로 들어가고, 주제 설명을 읽으며 세부 기능으로 내려가도록 정리했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>내부 주제 문서에 검토 원본과 연결된 구현 단계·남은 경계 안내를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>하위 문서마다 설명을 표시하고 공개 홈에서 문서 읽기와 게임 플레이의 진입을 구분했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>문서 정리와 게임 기능 완료를 분리합니다. 부분 구현은 정책 결정·코드·검증이 끝나기 전까지 그대로 표시합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>로그인된 사용자가 문서 링크를 열면 요청 문서 대신 역할 작업실로 이동하던 경로를 수정했습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 9</small><b>개발자 작업 공간 · 개요에서 근거로 좁히는 운영 화면</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 긴 대시보드를 한 번에 읽는 대신 현재 작업을 먼저 보고, 필요한 객체·관계·검증 근거만 펼쳐 확인합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>작업 개요를 기본 화면으로 추가하고 원본에 기록된 다음 행동과 선행 조건을 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>객체 목록을 6개씩 탐색하고, 선택한 정보는 별도 검사 패널에서 읽으며, 코드 지도와 긴 안내는 필요할 때 펼칩니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>등록 객체 집계와 게임 진행률을 구분합니다. 인증·원본 데이터·게임 규칙은 변경하지 않았습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>전체 객체에 도달하지 못하던 목록 제한과 선택·탭 전환 시 검색 조건이 초기화되던 문제를 수정했습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 8</small><b>기획·위키 재대조 · 구현 범위와 잔여 작업 구분</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 원문 요구와 실제 구현을 다시 대조해 완료 근거, 부분·미구현, 원문 외 기존 기능을 나눴습니다. 지난 작업을 다시 해야 하는 것처럼 보이던 안내도 바로잡았습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 0</h3><p>게임 규칙·아이템·밸런스 변경 없이 문서와 검증 도구를 최신화했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>팀 작업실에서 기획 요구의 남은 범위와 별도 구현 목록을 구분하고, 진행도 계산에 추가 기능이 섞이지 않도록 검사를 강화했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>공개 원문 재수집 시각과 현행 코드 근거를 갱신하고, 자동 검사와 일반 플레이 수락을 분리했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>오래된 다음 작업·저장 지원 안내의 문서 불일치를 바로잡았습니다. 게임 버그 수정 완료를 뜻하지 않습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 7</small><b>타격·속도감 강화 · 프레임 반복 작업 축소</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 단발 충격과 처치 표시를 구분하고 대시 표현을 강화했습니다. 화면을 불필요하게 다시 그리는 작업을 줄였으며, 첫 출격 순간 지연은 별도 검수 대상으로 남깁니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>지연 시점·교전 상태·CPU 지표와 화면 저장 비용을 기록하는 검사를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 4</h3><p>안개 임시 할당 감소, 효과 대기 중 갱신 축소, 방향성 타격·처치 링, 대시 카메라·속도선 표현을 개선했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>피해량·이동 속도·대시 쿨타임은 유지하며, 반복 작업 감소와 실제 프레임 지연 해결 여부를 구분합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>점멸·워프 뒤 잔상이 방을 가로질러 이어지는 표시 오류를 방지했습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 6</small><b>실시간 렌더링 검수 · 자동 검사와 실제 플레이 구분</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 화면을 실제로 그리는 상태에서 이동·교전·안개·프레임·메모리를 확인하는 장시간 검사 도구를 추가했습니다. 자동 검사를 사람의 플레이 수락으로 표시하지 않습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>별도 저장소에서 실행하는 렌더링 세션 검사와 결과·로그·화면 기록을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>실제 경과 시간과 방·통로·교전 범위를 확인하고, 검사기 경로 이탈이 빈 화면 대기만으로 통과되지 않도록 점검합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>Web 화면 확인, Windows 파일 검증, 소스 렌더링 계측, 사람 수락의 근거를 분리했습니다. 남은 플랫폼 검수는 별도로 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>게임 규칙과 수치는 유지합니다. 이번 경로 보정은 자동 검사기에만 적용되며 과금·자동 실행 설정 변경은 없습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 5</small><b>훈련 잔여 오류 수정 · 선택 기능과 출격 회귀</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 일부 기능을 끈 빌드에서도 훈련과 출격을 이어가며, 사용할 수 없는 교체 버튼과 같은 스킬 재선택에 따른 쿨타임 초기화를 방지합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>선택 기능을 제거한 5개 구성의 훈련→종료→중형 출격 자동 검사를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>시험 중 원본 복원 제공자 교체를 막고, 중·대형 성능 검사를 4개 조건과 실제 공격 입력으로 확장했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>성공 문구뿐 아니라 런타임 오류도 판정합니다. CPU 단기 검사와 실제 화면을 켠 10분 플레이의 검증 범위를 분리했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>선택 기능 제거 시 배열 타입 오류, 없는 스킬 교체 버튼, 동일 스킬 재선택 자원 초기화, 키 어댑터 재구성 중복 연결을 수정했습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 4</small><b>훈련 무료 세팅 · 종료 원복과 저장 보호</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 훈련에서 스킬과 공용 룬을 바꿔 비교하고 종료 버튼으로 원래 장비에 돌아옵니다. 시험 세팅이 다음 작전이나 자동 저장에 섞이지 않도록 보완했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>룬·코어·유물 시험 선택과 종료·원복 버튼을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>복원 대상에 스킬·자원·공용 소켓을 포함하고, 참여자 등록 방식으로 확장했습니다. 시험 스킬을 교체해도 해당 슬롯의 사용자 지정 키를 유지합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>3개 화면 크기의 버튼 배치와 복원·실패 재시도·상점 이동을 자동 검사에 추가했습니다. 새 밸런스 목록과 과금 변경은 없습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>반복 입장 시 훈련 목록이 사라지는 참조 공유, 시험 장비 자동 저장, 창 이탈 취소 전에 훈련부터 원복하던 순서를 수정했습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>범위 공격 · 최대 피격 위치와 계산 최적화</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 적 한 마리 주변만 보던 범위 타게팅을 개선해 적 사이에 공격을 놓을 수 있고, 중심 이동으로 가장자리 적을 놓치는 현상을 방지합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>원형 범위의 최대 포함 위치를 찾는 순수 좌표 계산기를 타게팅 정책에 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>피격 수를 유지하는 경우에만 평균 중심을 사용하고, 숫자 배열 정렬로 계산 시간과 임시 할당을 줄였습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>독립 계산 대조와 실제 효과 적중·72명 성능을 회귀 검사에 추가했습니다. 기존 반경·스킬·저장·밸런스 목록은 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>두 적 사이의 가능한 타격을 놓치는 경우와, 한쪽에 적이 몰리면 평균 중심이 반대편 적을 제외하는 경우를 수정했습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>타게팅 중심 보존 · 독립 구현 시작</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 지점형 스킬에 전달되던 군집 중심이 적 좌표로 바뀌는 오류를 수정했습니다. 현재 자기장·점멸의 사용 방식은 유지합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>스킬 효과 반경과 최종 배율을 타게팅에 전달하는 선택형 계약을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>동률 결과를 고정하고 기존 정책 호환 경로를 보존했으며, 별도 기획 판단 없이 이어갈 작업을 분리했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>부분 구현 상태와 잔여 범위를 명시하고 실제 스킬 실행 회귀를 추가했습니다. 새 밸런스 목록과 확정 수치는 추가하지 않았습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>중심점 덮어쓰기와 사거리 밖·삭제·중복 후보가 대표 대상에 섞이는 문제를 차단했습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 오래된 기획 백업 대신 최신 원본과 작업 목록을 연결하고, 이미 구현된 것과 새 요구의 차이를 분리했습니다. 게임 규칙은 변경하지 않았습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>기획 작업 스냅샷과 코드·검사 근거 대조표를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>기획 상태와 구현 상태를 분리하고, 충돌 판단과 의존성별 작업 순서를 개발자 작업실에 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 2</h3><p>진행도 기준과 최신 원본 링크를 현행화했습니다. 상세 산정·수락 조건은 팀 로그인 후 확인합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>백업본을 최신 원본으로 읽던 연결과 상위 페이지 수정을 본문 변경으로 오판하던 수집 범위를 수정했습니다. 타게팅 등 게임 차이는 후속 작업으로 등록했습니다.</p></div>
+        <div class="sfh-summary"><strong>무엇이 변했나 · HP는 지참 키트로만 회복합니다. 체력 옆 KIT 버튼에서 남은 수량을 보고 사용합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>회복 원인 정책과 실제 키트 사용·수량 차감을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>최대 HP·사망·수량 부족은 미소모, 증강의 HP 회복 미적용을 안내합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>오너 승인으로 자연·드랍·레벨업·버프 HP 회복을 중단합니다. AP는 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>부상 중 최대 HP 장비 변경으로 현재 HP가 늘어나는 우회를 차단했습니다.</p></div>
+        <p><a href="features/health-recovery/">사용법 →</a> · <a href="design/master-gdd-alignment/#health-20260908">노션 대조 80.3%·부분 검수 잔여 →</a> · 양 플랫폼10분 일반 플레이·첫 GPU 프레임 수락은 미완료.</p>
       </div>
     </details>
   </div>
