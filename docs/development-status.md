@@ -17,35 +17,35 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 105 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 107 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>GDD + TRACKER · 2026-09-07</small><strong>확정도 가중 코드 대응도</strong></span>
-    <b>73.2%</b>
+    <b>75.9%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="73.2"><i style="width: 73.2%"></i></div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75.9"><i style="width: 75.9%"></i></div>
   <p>최신 GDD v128·62블록과 트래커 66행을 코드·기존 테스트 소스와 대조했습니다. 출시 준비율이나 이번 실제 플레이 통과율이 아닙니다. 기존 96%는 이전 백업 기준의 이력이며 현재 진행률로 사용하지 않습니다.</p>
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-재대조 코드 기준은 `1bd3b12e61eea88c77af779cfa81078e309ce640`입니다. 2026-09-07 라이브 GDD·트래커 해시는 기존 기록과 같았습니다. N26-03A/B·훈련 원복·성능/타격 표현의 후속 근거를 갱신했습니다. [세 갈래 분류와 66개 항목 대조](design/master-gdd-alignment.md#current-classification)에서 구현·노션 외 구현·미구현을 구분합니다.
+재대조 코드 기준은 `dfe0f1f`입니다. 2026-09-07 라이브 GDD·트래커 해시는 동일합니다. 오너 승인 임시 AP·소켓·보유 훈련 정책의 계약/플레이 E2E 근거를 추가했습니다. [원본·행별 계산 근거](design/master-gdd-alignment.md#current-classification)에서 범위를 확인합니다.
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
-| 구현 근거 있음 | 38 | 1 |
-| 부분 대응 | 7 | 0.5 |
+| 구현 근거 있음 | 41 | 1 |
+| 부분 대응 | 4 | 0.5 |
 | 신규 미구현 | 6 | 0 |
 | 기존 규칙과 충돌 | 1 | 0 |
 | 기획 판단 대기 | 14 | 0 |
 
-노션의 **결정(미구현) 52개 ×3**, **미정(검토필요) 14개 ×1**로 가중합니다. `(38×3 + 7×0.5×3) ÷ (52×3 + 14×1) = 124.5/170 = 73.2% 유지`. 이번 검토에서는 분류 수를 변경하지 않았습니다. [노션에 세부 규격이 없는 기존 구현 9묶음](design/master-gdd-alignment.md#implemented-outside-notion)은 분자·분모에서 제외합니다. 확정 요구만의 참고 대응도는 79.8%이며 출시율이 아닙니다.
+노션 결정 52개×3·미정14개×1로 가중합니다. `(41×3 + 4×0.5×3) ÷ (52×3 + 14) = 129/170 = 75.9%`. AP·소켓·보유 훈련 3행만 승격했습니다. [노션 외 구현 9묶음](design/master-gdd-alignment.md#implemented-outside-notion)은 가산하지 않습니다. 확정 요구만의 참고 대응도는 82.7%이며 출시율·사람 수락률이 아닙니다.
 
 ## 현재 빌드 상태
 
-거점 준비 → 작전 → 방 전투·파밍 → 탈출·정산의 기존 플레이를 유지합니다. N26-03A/B 타게팅, N26-08A 훈련 무료 세팅·원복·저장 보호, 타격/대시 표현과 유휴 갱신 축소가 구현됐습니다. 이번 대조는 문서·검증 도구 최신화이며 게임 규칙·Sheet/CSV·저장 데이터를 바꾸지 않습니다.
+거점 → 작전 → 방 전투·파밍 → 탈출·정산을 유지합니다. AP 자연 회복, 무기/스킬별 소켓 효과, 보유품 무료 훈련·가방 반환을 임시 정책으로 구현하고 검증했습니다. HP 규칙·Sheet/CSV·영구 저장 스키마는 변경하지 않았습니다.
 
 최신 원본에서는 키트 중심 생존, 보안 파우치, 심층 진입과 혈전 프로필 요구가 추가되거나 구체화됐습니다. 기존 HP 자연 회복·드랍·레벨업 회복과의 충돌, AP와 충전의 차이, 광역 타게팅 중심 덮어쓰기를 별도 작업으로 분리했습니다.
 
@@ -54,15 +54,15 @@ tags:
 [오너 판단표](design/master-gdd-alignment.md#owner-conflicts)에서 회복·AP·파우치·심층·혈전·소켓·기술·상태의 8개 결정을 확인합니다. 기존 사용자 지시를 대체하는 규칙은 승인 전에 적용하지 않습니다.
 
 [최신 N26 작업선](design/current-milestone-workline.md#notion-20260907):
-N26-03A/B와 훈련 세팅·복원(N26-08A)은 구현·자동 회귀를 통과했습니다. 다음은 **N26-08B 첫 출격 지연 계측 → 탈출 F 단발 실패 재현 → 배포 Web/Windows 10분 일반 플레이 동등성**입니다. 자동 HP/입력 검사와 사람 수락은 구분합니다. 장비별 소켓·보유 룬 동등성은 남아 있으며 생존/AP(N26-02), 파우치(N26-04/05), 심층·혈전(N26-06/07)은 오너 판단(N26-01) 후 진행합니다.
+N26-03A/B·훈련 복원·승인 임시 AP/소켓 정책은 구현·자동 회귀를 통과했습니다. 남은 부분 구현은 손상 매물 운영값, TileMapLayer, Area2D 타게팅, 배포 Web/Windows 일반 플레이 동등성 4행입니다. HP 충돌·파우치·심층·혈전은 별도 결정으로 유지합니다.
 P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니다.
 
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 10 · IMPROVE 22 · CHANGE 15 · FIX 17</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 14 · IMPROVE 26 · CHANGE 19 · FIX 20</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>22</b><small>IMPROVE</small></span><span><b>15</b><small>CHANGE</small></span><span><b>17</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>26</b><small>IMPROVE</small></span><span><b>19</b><small>CHANGE</small></span><span><b>20</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -144,7 +144,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>오래된 다음 작업·저장 지원 안내의 문서 불일치를 바로잡았습니다. 게임 버그 수정 완료를 뜻하지 않습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>개발자 작업 공간 · 개요에서 근거로 좁히는 운영 화면</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 긴 대시보드를 한 번에 읽는 대신 현재 작업을 먼저 보고, 필요한 객체·관계·검증 근거만 펼쳐 확인합니다.</strong></div>
@@ -152,6 +152,27 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>개선 · 3</h3><p>객체 목록을 6개씩 탐색하고, 선택한 정보는 별도 검사 패널에서 읽으며, 코드 지도와 긴 안내는 필요할 때 펼칩니다.</p></div>
         <div class="sfh-group"><h3>수정 · 1</h3><p>등록 객체 집계와 게임 진행률을 구분합니다. 인증·원본 데이터·게임 규칙은 변경하지 않았습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>전체 객체에 도달하지 못하던 목록 제한과 선택·탭 전환 시 검색 조건이 초기화되던 문제를 수정했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 10</small><b>위키 문서 동선 · 큰 주제에서 세부 기능으로</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 홈에서 로그인 후 종합 문서로 들어가고, 주제 설명을 읽으며 세부 기능으로 내려가도록 정리했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>내부 주제 문서에 검토 원본과 연결된 구현 단계·남은 경계 안내를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>하위 문서마다 설명을 표시하고 공개 홈에서 문서 읽기와 게임 플레이의 진입을 구분했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>문서 정리와 게임 기능 완료를 분리합니다. 부분 구현은 정책 결정·코드·검증이 끝나기 전까지 그대로 표시합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>로그인된 사용자가 문서 링크를 열면 요청 문서 대신 역할 작업실로 이동하던 경로를 수정했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>AP 재생 · 대상별 룬과 보유 훈련</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · AP는 잠시 쉬면 회복되고, 룬 효과는 장착한 대상에만 적용됩니다. 해제한 자산은 가방에서 다시 쓸 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>1초 미사용 후 10 AP/s, 무기·스킬별 효과 귀속, 해제 가방 반환·재장착을 임시 정책으로 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>훈련은 보유품만 무료로 시험하고 종료 시 원복합니다. 모든 CI를 수동 기동 자체 러너로 전환해 hosted 비용 폴백을 없앴습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>회복·귀속·입출금의 교체 경계를 분리하고 승인 임시/기획 확정을 구분했습니다. 66행 중 3행을 검증 근거로 갱신해 코드 대응도 75.9%, 부분 잔여 4행입니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>가방 부족·편집 취소 때 자산/효과 손실을 차단하고 컨테이너 파일 소유권으로 다음 CI가 막히던 문제를 수정했습니다.</p></div>
+        <p>원본·계산: 최신 GDD/트래커 해시 동일, 코드 dfe0f1f, 129/170. 정책 계약·전체 플레이 회귀 통과이며 사람 재미/모든 기기 수락과는 별도입니다.</p>
       </div>
     </details>
   </div>

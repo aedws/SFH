@@ -1787,9 +1787,11 @@ func _install_training_ground() -> bool:
 			var training_sockets := _instantiate_feature(SESSION_SOCKET_SERVICE_SCENE_PATH, training_ground_service, &"TrainingSockets")
 			var socket_config := load(features.session_socket_config_path).duplicate(true) as SessionSocketConfig
 			socket_config.source_mode = selected_balance_source_mode
-			if training_sockets == null or not training_sockets.call(&"configure", socket_config, loot_lifecycle_service, auto_weapon, training_combat_skill_system, player):
+			if training_sockets == null or not training_sockets.call(&"configure", socket_config, loot_lifecycle_service, auto_weapon, training_combat_skill_system, player, inventory_system):
 				return false
 			if not training_ground_service.call(&"configure_socket_runtime", training_sockets):
+				return false
+			if not inventory_window.call(&"register_runtime_item_actions", training_ground_service):
 				return false
 	training_hud_layout = TRAINING_HUD_LAYOUT_SCRIPT.new()
 	module_container.add_child(training_hud_layout)
@@ -2475,9 +2477,11 @@ func _install_session_sockets() -> bool:
 		return false
 	if not session_socket_service.call(
 		&"configure", socket_config, loot_lifecycle_service,
-		auto_weapon, combat_skill_system, player
+		auto_weapon, combat_skill_system, player, inventory_system
 	):
 		_report_configuration_error("세션 소켓 데이터를 전투 런타임에 연결하지 못했습니다.")
+		return false
+	if not inventory_window.call(&"register_runtime_item_actions", session_socket_service):
 		return false
 	session_socket_service.connect(
 		&"socket_action", Callable(self, &"_on_session_socket_action")

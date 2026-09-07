@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-07",
-  "source_sha256": "3dbc9ccf49afa5a01ea6fc25f30cf5545c121a8c83e0e079f02dea33879e6b69",
+  "source_sha256": "7d28c23bc035c51e8a3401471be449151485b9df2980670452fd28c2b96e06ff",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -393,10 +393,10 @@
   ],
   "summary": {
     "tracked": 51,
-    "owner_decisions": 9,
+    "owner_decisions": 7,
     "blocked": 8,
     "ready": 1,
-    "implemented": 32,
+    "implemented": 34,
     "modules": 60,
     "documents": 96,
     "collections": 27,
@@ -818,11 +818,11 @@
       "id": "decision:n26-ap",
       "type": "decision",
       "label": "DEC-N26-AP · AP 자연 회복",
-      "status": "needs_decision",
+      "status": "implemented",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "에너지 드랍과 스킬 충전은 있음. 미사용 AP 자연량·지연·드랍 병행을 결정.",
-      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "summary": "2026-09-07 오너 승인 임시 정책 구현: AP 마지막 소모 후 1초·초당10, 최대치 제한·드랍/충전 병행. 정책 교체·프레임 경계·훈련 원복 자동 검증 통과.",
+      "next_action": "최종 수치와 사람 생존 난이도 수락은 별도. EnergyRegenerationPolicy를 교체하고 계약/E2E를 재실행합니다.",
       "route": "design/master-gdd-alignment/#owner-conflicts",
       "relations": [
         {
@@ -922,11 +922,11 @@
       "id": "decision:n26-sockets",
       "type": "decision",
       "label": "DEC-N26-SOCKETS · 공용/개별 소켓",
-      "status": "needs_decision",
+      "status": "implemented",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "현재 공용 세션 슬롯을 유지할지 무기·스킬 소켓별 귀속을 추가할지 결정.",
-      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "summary": "2026-09-07 오너 승인 임시 정책 구현: 총 용량 유지·무기 슬롯/정의 ID 및 스킬 ID 귀속·해제 가방 반환·환전·보유품 무료 훈련 원복.",
+      "next_action": "물리 인스턴스 귀속/대상 선택 UI는 후속 확장. 정책·가방 어댑터를 교체할 때 Q 누출·가방 부족·정산 회귀를 재실행합니다.",
       "route": "design/master-gdd-alignment/#owner-conflicts",
       "relations": [
         {
@@ -1097,9 +1097,9 @@
       "status": "blocked",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "RecoveryPolicy / SkillCostPolicy / Service / HUD 원인별 분리. 기존 회복 프로필 복구 가능",
+      "summary": "AP 자연 회복 임시 정책 구현·검증 완료. HP 원인별 회복 정책은 기존 지시와 충돌하여 별도 판단 대기",
       "acceptance": "자연/드랍/레벨업/버프/키트/훈련별 승인표, AP와 충전 별도, 생존 10분 비교",
-      "next_action": "DEC-N26-HEALTH·AP",
+      "next_action": "DEC-N26-HEALTH 판단 후 HP 생존 정책 진행. AP는 최종 수치/사람 수락 별도",
       "route": "design/current-milestone-workline/#notion-20260907",
       "relations": [
         {
@@ -1288,9 +1288,9 @@
       "status": "blocked",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "N26-08A 훈련 복원 후속 오류 수정. N26-08B 선택 제거 5개·출격 81조합·CPU 4조건 및 소스 GPU 중대형 실제 600초 자동 검사 통과. 배포 일반 플레이 동등성과 장비별 소켓/기술 대안 판단은 별도",
+      "summary": "훈련 복원·선택 제거·출격 조합 회귀 및 승인 임시 AP/소켓/보유 훈련 계약 통과. 배포 일반 플레이 동등성과 지정 기술 이행은 별도",
       "acceptance": "AP 자연량·스킬 수·타겟 반경/주기·UI·리롤·손상품·환전·탈출·시즌의 임시/확정 분리 및 Web/Windows E2E",
-      "next_action": "N26-08B 계속: 첫 출격 준비/초기 렌더링 프로파일링 → 배포판 탈출 F 단발 실패 재현 → Web/Windows 10분 일반 플레이 동등성. 타격/속도감·유휴 처리 개선과 캡처 비용 분리는 적용했으나 지속 성능 향상·사람 수락은 미완료. 전체 66항목은 잔여 모듈·오너 결정 이후",
+      "next_action": "잔여 부분 4행: 손상 매물 운영값 → TileMapLayer/Area2D 어댑터 → 첫 출격/탈출 입력 및 Web/Windows 일반 플레이 동등성. 자동 검사와 사람 수락은 분리",
       "route": "design/current-milestone-workline/#notion-20260907",
       "relations": [
         {
@@ -2614,15 +2614,15 @@
       "label": "공통 계약",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · contract · 파일 6개",
+      "summary": "기반·검증 · contract · 파일 7개",
       "route": "architecture/code-module-map/?module=core",
       "documentation_route": "architecture/module-rules/",
       "source": "game/core",
       "kind": "implementation",
       "metrics": {
-        "files": 6,
-        "classes": 6,
-        "incoming": 9,
+        "files": 7,
+        "classes": 7,
+        "incoming": 11,
         "outgoing": 30
       }
     },
@@ -2686,14 +2686,14 @@
       "label": "전투 자원",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "전투 · feature · 파일 3개",
+      "summary": "전투 · feature · 파일 4개",
       "route": "architecture/code-module-map/?module=combat_resources",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/combat_resources",
       "kind": "implementation",
       "metrics": {
-        "files": 3,
-        "classes": 3,
+        "files": 4,
+        "classes": 4,
         "incoming": 3,
         "outgoing": 0
       }
@@ -2713,7 +2713,7 @@
         "files": 13,
         "classes": 13,
         "incoming": 6,
-        "outgoing": 2
+        "outgoing": 3
       }
     },
     {
@@ -3496,14 +3496,14 @@
       "label": "세션 소켓",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 5개",
+      "summary": "장비·세팅 · feature · 파일 7개",
       "route": "architecture/code-module-map/?module=session_sockets",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/session_sockets",
       "kind": "implementation",
       "metrics": {
-        "files": 5,
-        "classes": 5,
+        "files": 7,
+        "classes": 7,
         "incoming": 3,
         "outgoing": 3
       }
@@ -3649,7 +3649,7 @@
         "files": 3,
         "classes": 3,
         "incoming": 5,
-        "outgoing": 1
+        "outgoing": 2
       }
     },
     {
@@ -3658,13 +3658,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 44개",
+      "summary": "기반·검증 · verification · 파일 45개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 44,
+        "files": 45,
         "classes": 0,
         "incoming": 0,
         "outgoing": 52

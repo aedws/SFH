@@ -20,6 +20,8 @@ description: 전장에서 물건을 발견하는 순간부터 획득·교체·�
 
 <!-- sfh:children -->
 
+<!-- sfh:implementation -->
+
 ## 3. 헷갈리기 쉬운 구분
 
 이번 판에서 사용하는 물건과 영구 보관되는 물건을 구분해야 합니다. 전체 상태 전이는 [전리품 생명 주기](loot-lifecycle.md), 룬·코어·유물은 [런 전용 소켓](session-sockets.md)이 설명합니다.

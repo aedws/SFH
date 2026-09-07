@@ -10,6 +10,7 @@ extends Resource
 @export var guarantee_one_drop: bool = true
 @export_range(16.0, 1000.0, 8.0) var pickup_magnet_radius: float = 150.0
 @export_range(1.0, 2000.0, 10.0) var pickup_magnet_speed: float = 320.0
+@export var regeneration_policy: Resource
 
 
 func is_valid() -> bool:
@@ -25,4 +26,9 @@ func is_valid() -> bool:
 		and health_drop_amount > 0.0
 		and pickup_magnet_radius > 0.0
 		and pickup_magnet_speed > 0.0
+		and (regeneration_policy == null or (
+			regeneration_policy.has_method(&"is_valid")
+			and regeneration_policy.has_method(&"recovered_amount")
+			and bool(regeneration_policy.call(&"is_valid"))
+		))
 	)

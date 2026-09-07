@@ -22,6 +22,7 @@ var cooldown: float = 0.2
 var burst_remaining: int = 0
 var burst_direction := Vector2.RIGHT
 var runtime_modifier_sources: Dictionary = {}
+var targeted_modifiers := preload("res://game/core/targeted_modifier_store.gd").new()
 var total_trigger_pulls: int = 0
 var total_projectiles_fired: int = 0
 var last_target_instance_id: int = 0
@@ -191,8 +192,24 @@ func set_runtime_modifiers(source_id: StringName, modifiers: Dictionary) -> void
 
 
 func remove_runtime_modifiers(source_id: StringName) -> void:
-	if runtime_modifier_sources.erase(source_id):
+	var changed := targeted_modifiers.remove(source_id)
+	changed = runtime_modifier_sources.erase(source_id) or changed
+	if changed and is_inside_tree():
 		_emit_runtime_snapshot()
+
+
+func set_targeted_runtime_modifiers(source_id: StringName, targets: Dictionary) -> void:
+	targeted_modifiers.replace(source_id, targets)
+	_emit_runtime_snapshot()
+
+
+func get_modifier_targets() -> Array[Dictionary]:
+	return [{&"target_id": _modifier_target_id(),
+		&"display_name": "%s · %s" % [active_weapon_slot, current_balance.get(&"display_name", active_weapon_id)]}]
+
+
+func _modifier_target_id() -> StringName:
+	return StringName("%s/%s" % [active_weapon_slot, active_weapon_id])
 
 
 func get_runtime_snapshot() -> Dictionary:
@@ -423,8 +440,7 @@ func _modified_target_range(base_value: float) -> float:
 
 func _modifier_total(modifier_id: StringName, default_value: float, additive: bool) -> float:
 	var result := default_value
-	for source_id in runtime_modifier_sources:
-		var source: Dictionary = runtime_modifier_sources[source_id]
+	for source: Dictionary in runtime_modifier_sources.values() + targeted_modifiers.values_for(_modifier_target_id()):
 		if not source.has(modifier_id):
 			continue
 		if additive:

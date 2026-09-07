@@ -25,7 +25,10 @@
 
   function safeReturnPath() {
     const value = new URLSearchParams(location.search).get("return") || "";
-    return value.startsWith("/") && !value.startsWith("//") ? value : "";
+    if (!value.startsWith("/") || value.startsWith("//") || /[\\\u0000-\u001f]/.test(value)) return "";
+    const target = new URL(value, location.origin);
+    if (target.origin !== location.origin || target.pathname.startsWith("/access/login")) return "";
+    return target.pathname + target.search + target.hash;
   }
 
   function safeRoleReturnPath(role) {
@@ -97,7 +100,7 @@
     const root = document.querySelector("[data-sfh-auth-login]");
     if (!root) return;
     if (currentSession.authenticated) {
-      location.replace(currentSession.must_change ? "/access/account/?required=1" : rolePath(currentSession.role));
+      location.replace(currentSession.must_change ? "/access/account/?required=1" : safeRoleReturnPath(currentSession.role) || rolePath(currentSession.role));
       return;
     }
     bindRoleTabs(root);

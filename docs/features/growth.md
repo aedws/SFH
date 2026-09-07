@@ -20,6 +20,8 @@ description: 한 판 안에서만 받는 강화와 판이 끝나도 남는 성�
 
 <!-- sfh:children -->
 
+<!-- sfh:implementation -->
+
 ## 3. 헷갈리기 쉬운 구분
 
 현재 구현된 흐름과 미확정 운영 정책은 다릅니다. 실제 시즌·보상·서비스 신원 등의 남은 결정은 [현행 작업 라인](../design/current-milestone-workline.md)에서 확인하세요. 이 탐색 문서를 추가했다고 미확정 항목이 완료된 것은 아닙니다.

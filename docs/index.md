@@ -32,7 +32,7 @@ search:
       <span><i>02</i><b>전투</b><small>자동 공격·스킬·봉쇄 방 확보</small></span>
       <span><i>03</i><b>회수</b><small>전리품 선택·탈출·영구 보관</small></span>
     </div>
-    <a class="sfh-public-login" href="access/login/"><span><b>팀 작업 공간 로그인</b><small>기획자 · 개발자 전용 전체 문서</small></span><em>→</em></a>
+    <a class="sfh-public-login" href="access/login/?return=%2Ffeatures%2F"><span><b>위키 종합 문서 열기</b><small>로그인 → 큰 주제 → 세부 기능 · 기획자/개발자 공통 문서</small></span><em>→</em></a>
   </aside>
 </section>
 
@@ -53,10 +53,31 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 10 · IMPROVE 22 · CHANGE 15 · FIX 17</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 14 · IMPROVE 26 · CHANGE 19 · FIX 20</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>22</b><small>IMPROVE</small></span><span><b>15</b><small>CHANGE</small></span><span><b>17</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>26</b><small>IMPROVE</small></span><span><b>19</b><small>CHANGE</small></span><span><b>20</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>AP 재생 · 대상별 룬과 보유 훈련</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · AP는 잠시 쉬면 회복되고, 룬 효과는 장착한 대상에만 적용됩니다. 해제한 자산은 가방에서 다시 쓸 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>1초 미사용 후 10 AP/s, 무기·스킬별 효과 귀속, 해제 가방 반환·재장착을 임시 정책으로 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>훈련은 보유품만 무료로 시험하고 종료 시 원복합니다. 모든 CI를 수동 기동 자체 러너로 전환해 hosted 비용 폴백을 없앴습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>회복·귀속·입출금의 교체 경계를 분리하고 승인 임시/기획 확정을 구분했습니다. 66행 중 3행을 검증 근거로 갱신해 코드 대응도 75.9%, 부분 잔여 4행입니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>가방 부족·편집 취소 때 자산/효과 손실을 차단하고 컨테이너 파일 소유권으로 다음 CI가 막히던 문제를 수정했습니다.</p></div>
+        <p>원본·계산: 최신 GDD/트래커 해시 동일, 코드 dfe0f1f, 129/170. 정책 계약·전체 플레이 회귀 통과이며 사람 재미/모든 기기 수락과는 별도입니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 10</small><b>위키 문서 동선 · 큰 주제에서 세부 기능으로</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 홈에서 로그인 후 종합 문서로 들어가고, 주제 설명을 읽으며 세부 기능으로 내려가도록 정리했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>내부 주제 문서에 검토 원본과 연결된 구현 단계·남은 경계 안내를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>하위 문서마다 설명을 표시하고 공개 홈에서 문서 읽기와 게임 플레이의 진입을 구분했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>문서 정리와 게임 기능 완료를 분리합니다. 부분 구현은 정책 결정·코드·검증이 끝나기 전까지 그대로 표시합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>로그인된 사용자가 문서 링크를 열면 요청 문서 대신 역할 작업실로 이동하던 경로를 수정했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>개발자 작업 공간 · 개요에서 근거로 좁히는 운영 화면</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 긴 대시보드를 한 번에 읽는 대신 현재 작업을 먼저 보고, 필요한 객체·관계·검증 근거만 펼쳐 확인합니다.</strong></div>

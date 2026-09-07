@@ -18,7 +18,9 @@ concurrency:
 
 jobs:
   plan:
-    runs-on: ubuntu-24.04
+    # Persistent private runner: never execute an unreviewed contributor's PR.
+    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor == github.repository_owner)
+    runs-on: [self-hosted, Linux, X64, sfh-build]
     permissions:
       contents: write
       actions: read
@@ -112,6 +114,10 @@ jobs:
 
       - name: Test game contracts
         run: |
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/provisional_policy_contract_test.gd" > /tmp/sfh-provisional-policy.log 2>&1
+          cat /tmp/sfh-provisional-policy.log
+          grep -q "PROVISIONAL_POLICY_OK" /tmp/sfh-provisional-policy.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-provisional-policy.log
           test -s "$GITHUB_WORKSPACE/game/assets/fonts/nanum-gothic/OFL.txt"
           test -s "$GITHUB_WORKSPACE/game/assets/fonts/galmuri/OFL.txt"
           test -s "$GITHUB_WORKSPACE/game/assets/fonts/galmuri/Galmuri11-Bold.ttf"
@@ -229,6 +235,10 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      - name: Return container files to the private runner owner
+        if: always()
+        run: chown -R "$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+
   e2e:
     permissions:
       contents: read
@@ -296,6 +306,10 @@ jobs:
           grep -q "E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe" /tmp/sfh-e2e.log
           grep -q "E2E_CYBERPUNK_THEME_OK viewport_safe input_passthrough accent_02e5e1" /tmp/sfh-e2e.log
           grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_31 units_9" /tmp/sfh-e2e.log
+
+      - name: Return container files to the private runner owner
+        if: always()
+        run: chown -R "$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
 
   package-windows:
     permissions:
@@ -387,9 +401,13 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      - name: Return container files to the private runner owner
+        if: always()
+        run: chown -R "$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+
   build:
-    if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
+    if: ${{ !cancelled() && needs.plan.result == 'success' }}
+    runs-on: [self-hosted, Linux, X64, sfh-build]
     needs:
       - plan
       - export-game
@@ -405,11 +423,9 @@ jobs:
         run: python3 scripts/ci_budget.py gate
 
       - name: Set up Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
-        with:
-          python-version: "3.13"
-          cache: pip
-          cache-dependency-path: requirements-docs.txt
+        run: |
+          python3 -m venv "$RUNNER_TEMP/wiki-python"
+          echo "$RUNNER_TEMP/wiki-python/bin" >> "$GITHUB_PATH"
 
       - name: Configure GitHub Pages
         if: vars.SFH_PAGES_FALLBACK != 'disabled'
@@ -503,7 +519,7 @@ jobs:
 
   cloudflare-deploy:
     if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.build.result == 'success' }}
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, Linux, X64, sfh-build]
     permissions:
       actions: write
       contents: write
@@ -584,7 +600,9 @@ jobs:
 
       - name: Install pinned Wrangler
         if: steps.cloudflare_config.outputs.ready == 'true'
-        run: npm install --global "wrangler@${WRANGLER_VERSION}"
+        run: |
+          npm install --prefix "$RUNNER_TEMP/sfh-wrangler" "wrangler@${WRANGLER_VERSION}"
+          echo "$RUNNER_TEMP/sfh-wrangler/node_modules/.bin" >> "$GITHUB_PATH"
 
       - name: Upload immutable R2 release objects
         if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
@@ -795,7 +813,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, sfh-build]
     needs: build
     steps:
       - name: Deploy to GitHub Pages

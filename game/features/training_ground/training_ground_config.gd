@@ -8,6 +8,8 @@ extends Resource
 @export var auto_reset_after_clear := true
 @export_range(0.05, 3.0, 0.05) var reset_delay_seconds := 0.35
 @export_range(0.05, 0.5, 0.05) var telemetry_refresh_seconds := 0.1
+## Provisional access policy; false permits a separate developer sandbox.
+@export var owned_sockets_only := true
 
 
 func is_valid() -> bool:

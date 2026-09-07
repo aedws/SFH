@@ -20,6 +20,7 @@ var targeting_policy: Resource
 var equipment_provider: Node
 var binding_provider: Node
 var runtime_modifier_sources: Dictionary = {}
+var targeted_modifiers := preload("res://game/core/targeted_modifier_store.gd").new()
 var owned_effects: Array[WeakRef] = []
 
 
@@ -143,6 +144,7 @@ func configure(
 	state_emission_count = 0
 	cooldowns.clear()
 	runtime_modifier_sources.clear()
+	targeted_modifiers.sources.clear()
 	for _skill in loadout.skills:
 		cooldowns.append(0.0)
 	_emit_states()
@@ -197,7 +199,7 @@ func try_activate(slot_index: int) -> bool:
 		and not bool(resource_provider.call(&"consume_for_skill", slot_index))
 	):
 		return false
-	cooldowns[slot_index] = _modified_cooldown(float(skill.get("cooldown_seconds")))
+	cooldowns[slot_index] = _modified_cooldown(float(skill.get("cooldown_seconds")), skill.get("skill_id"))
 	skill_activated.emit(slot_index, skill.get("skill_id"), result.duplicate(true))
 	_emit_states()
 	return true
@@ -243,8 +245,23 @@ func set_runtime_modifiers(source_id: StringName, modifiers: Dictionary) -> void
 
 
 func remove_runtime_modifiers(source_id: StringName) -> void:
-	if runtime_modifier_sources.erase(source_id):
+	var changed := targeted_modifiers.remove(source_id)
+	changed = runtime_modifier_sources.erase(source_id) or changed
+	if changed and is_inside_tree():
 		_emit_states()
+
+
+func set_targeted_runtime_modifiers(source_id: StringName, targets: Dictionary) -> void:
+	targeted_modifiers.replace(source_id, targets)
+	_emit_states()
+
+
+func get_modifier_targets() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if loadout != null:
+		for skill: Resource in loadout.skills:
+			result.append({&"target_id": skill.get("skill_id"), &"display_name": skill.get("display_name")})
+	return result
 
 
 func get_slot_bindings() -> Array[Dictionary]:
@@ -366,7 +383,7 @@ func get_skill_states() -> Array[Dictionary]:
 		var remaining := cooldowns[index] if index < cooldowns.size() else 0.0
 		state[&"cooldown_remaining"] = remaining
 		var base_cooldown := float(definition.get("cooldown_seconds"))
-		var effective_cooldown := _modified_cooldown(base_cooldown)
+		var effective_cooldown := _modified_cooldown(base_cooldown, definition.get("skill_id"))
 		state[&"base_cooldown_seconds"] = base_cooldown
 		state[&"cooldown_seconds"] = effective_cooldown
 		state[&"cooldown_ratio"] = clampf(remaining / effective_cooldown, 0.0, 1.0)
@@ -465,7 +482,7 @@ func _build_activation_context(skill: Resource) -> Dictionary:
 			&"get_active_skill_mechanic_override", skill.get("skill_id")
 		)
 	mechanic_override = mechanic_override.duplicate(true)
-	var runtime_modifiers := _aggregated_runtime_modifiers()
+	var runtime_modifiers := _aggregated_runtime_modifiers(skill.get("skill_id"))
 	for modifier_id in runtime_modifiers:
 		if modifier_id == &"cooldown_multiply":
 			continue
@@ -513,17 +530,16 @@ func _skill_matches_active_weapon(skill: Resource) -> bool:
 	)
 
 
-func _modified_cooldown(base_value: float) -> float:
+func _modified_cooldown(base_value: float, skill_id: StringName = &"") -> float:
 	return maxf(
 		0.05,
-		base_value * float(_aggregated_runtime_modifiers().get(&"cooldown_multiply", 1.0))
+		base_value * float(_aggregated_runtime_modifiers(skill_id).get(&"cooldown_multiply", 1.0))
 	)
 
 
-func _aggregated_runtime_modifiers() -> Dictionary:
+func _aggregated_runtime_modifiers(skill_id: StringName = &"") -> Dictionary:
 	var result: Dictionary = {}
-	for source_id in runtime_modifier_sources:
-		var source: Dictionary = runtime_modifier_sources[source_id]
+	for source: Dictionary in runtime_modifier_sources.values() + targeted_modifiers.values_for(skill_id):
 		for modifier_id in source:
 			if String(modifier_id).ends_with("_multiply"):
 				result[modifier_id] = float(result.get(modifier_id, 1.0)) * float(source[modifier_id])

@@ -102,6 +102,9 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 		socket_choice.add_item(("[ON] " if installed else "") + String(entry.display_name))
 	if not socket_catalog.is_empty():
 		socket_choice.select(clampi(selected, 0, socket_catalog.size() - 1))
+	else:
+		socket_choice.add_item("보유 중인 룬·코어·유물 없음")
+	socket_choice.tooltip_text = "보유 자산만 무료 시험 · 해제 시 가방 반환 · 종료 시 원복"
 	socket_choice.disabled = not editing or socket_catalog.is_empty()
 	socket_button.disabled = not editing or socket_catalog.is_empty()
 	var skills: Array = snapshot.get(&"skills", [])

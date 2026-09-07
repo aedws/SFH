@@ -54,6 +54,11 @@ func refresh(snapshot: Dictionary) -> void:
 				"%s\n클릭하여 런 소켓에서 해제" % slot.get(&"description", "작전 한정 효과")
 				if occupied else "%s 소켓 · 작전 중 전리품을 F로 장착" % TYPE_LABELS[socket_type]
 			)
+			if occupied:
+				var names := PackedStringArray()
+				for binding: Dictionary in slot.get(&"bindings", {}).values():
+					names.append(String(binding.get(&"display_name", "")))
+				button.tooltip_text += "\n귀속: %s · 다른 무기/스킬에는 미적용\n해제 시 가방 반환 · 공간 부족 시 장착 유지" % ", ".join(names)
 			button.disabled = not occupied
 			if occupied:
 				button.pressed.connect(_request_unsocket.bind(socket_type, int(slot[&"slot_index"])))

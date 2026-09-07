@@ -147,7 +147,7 @@ func apply_user_preferences(snapshot: Dictionary) -> bool:
 
 
 func reveal_detail(detail_id: StringName, duration_seconds: float = DETAIL_REVEAL_SECONDS) -> void:
-	if detail_id not in [&"equipment", &"weapon"]:
+	if not is_instance_valid(detail_reveal_timer) or not detail_reveal_timer.is_inside_tree() or detail_id not in [&"equipment", &"weapon"]:
 		return
 	revealed_detail = detail_id
 	_apply_detail_visibility()

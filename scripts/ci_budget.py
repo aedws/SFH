@@ -13,7 +13,6 @@ import json
 import os
 from pathlib import Path
 import subprocess
-import time
 import urllib.request
 import urllib.parse
 import zipfile
@@ -136,20 +135,15 @@ def plan() -> None:
             reuse = find_reuse(repository, sha, tree)
         except (KeyError, ValueError, OSError, zipfile.BadZipFile) as error:
             print(f"CI_REUSE_FALLBACK {type(error).__name__}: rebuilding with full tests")
-    runner = '"ubuntu-24.04"'
-    # The owner-side heartbeat issues a three-minute lease after checking online
-    # status. Expired leases select hosted; a host failure after assignment still
-    # requires cancellation and rerun (GitHub does not migrate queued jobs).
+    # Manual-only self-hosting. Offline hosts queue work; never buy hosted minutes.
+    # The workflow rejects untrusted PRs before checkout; repeat the boundary here.
     trusted = kind != "pull_request" or (
         event.get("pull_request", {}).get("head", {}).get("repo", {}).get("full_name") == repository
         and event.get("sender", {}).get("login") == repository.split("/")[0]
     )
-    try:
-        lease = int(os.environ.get("SFH_SELF_HOSTED_READY_UNTIL", "0"))
-    except ValueError:
-        lease = 0
-    if os.environ.get("SFH_SELF_HOSTED_ENABLED") == "true" and trusted and time.time() < lease <= time.time() + 300:
-        runner = '["self-hosted","Linux","X64","sfh-build"]'
+    if not trusted:
+        raise ValueError("Untrusted PR cannot run on the private self-hosted runner")
+    runner = '["self-hosted","Linux","X64","sfh-build"]'
     values = {"game": str(game).lower(), "reuse_run": reuse, "tree": tree,
               "web_run": reuse or os.environ["GITHUB_RUN_ID"], "runner": runner}
     with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as stream:
