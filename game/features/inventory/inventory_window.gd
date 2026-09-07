@@ -24,6 +24,7 @@ var detail_column: VBoxContainer
 var module_column: VBoxContainer
 var module_list: VBoxContainer
 var weapon_rack: Control
+var module_workspace: Control
 var socket_actions: VBoxContainer
 var selected_socket: StringName = &""
 var tabs: Array[Button] = []
@@ -117,7 +118,11 @@ func _input(event: InputEvent) -> void:
 	for action in [&"toggle_inventory", &"toggle_equipment", &"toggle_modification", &"toggle_key_mapping", &"toggle_map"]:
 		if InputMap.has_action(action) and event.is_action_pressed(action):
 			if action == &"toggle_inventory":
-				close_panel()
+				if current_tab != 0: request_tab(0)
+				else: close_panel()
+			elif action == &"toggle_modification":
+				if current_tab == 2: close_panel()
+				else: request_tab(2)
 			else:
 				request_leave(func():
 					_finish_close()
@@ -134,6 +139,7 @@ func _input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible and event.is_action_pressed(&"toggle_inventory") and not event.is_echo():
 		open_panel()
+		request_tab(0)
 		get_viewport().set_input_as_handled()
 
 
@@ -218,6 +224,12 @@ func request_tab(index: int) -> void:
 	)
 
 
+func open_modules(target: StringName = &"main") -> void:
+	open_panel()
+	request_tab(2)
+	if module_workspace != null: module_workspace.configure(session, target)
+
+
 func _bind_draft() -> void:
 	grid_view.configure(session.inventory)
 	grid_view.move_handler = session.move_item
@@ -250,7 +262,7 @@ func _build_ui() -> void:
 	header_summary.max_lines_visible = 1
 	var tab_row := HBoxContainer.new()
 	root_box.add_child(tab_row)
-	for title in ["작전 가방", "무기 · 파츠 / 모듈", "방어구 모듈"]:
+	for title in ["작전 가방", "무기 · 파츠", "모듈 설정"]:
 		var button := _button(tab_row, title, request_tab.bind(tabs.size()))
 		button.autowrap_mode = TextServer.AUTOWRAP_OFF
 		button.clip_text = true
@@ -415,11 +427,27 @@ func _refresh() -> void:
 			selected_entry = current_entry
 			_show_selected_entry(current_entry)
 	status_label.text = session.error_message if not session.error_message.is_empty() else "선택 후 R 회전 · 세팅은 저장 시 적용 · 장비는 태그에 맞춰 장착"
+	if current_tab == 2 and session.error_message.is_empty():
+		status_label.text = "대상 → 슬롯 → 모듈 선택 · 최대 레벨에서 소켓 개조 · 저장 시 적용"
 	rotate_button.text = "선택 아이템 회전 / %s" % _action_binding_label(&"equip_field_loot", "R")
 	rotate_button.disabled = selected_entry.is_empty() or not bool(selected_entry.get(&"can_rotate", false))
 	action_button.disabled = selected_entry.is_empty() or (_runtime_action_provider(selected_entry) == null and (session.equipment == null or selected_entry.get(&"item_type") not in [&"weapon", &"armor", &"module", &"part"]))
 	unequip_button.disabled = session.equipment == null
 	_layout()
+	if current_tab == 2 and session.equipment != null:
+		if module_workspace == null:
+			module_workspace = load("res://game/features/equipment/module_workspace.gd").new()
+			module_workspace.size_flags_horizontal = SIZE_EXPAND_FILL
+			columns.add_child(module_workspace)
+			module_workspace.advanced_requested.connect(func(): request_leave(func():
+				_finish_close()
+				external_panel_requested.emit(&"toggle_equipment")))
+		for column in columns.get_children(): column.visible = column == module_workspace
+		module_workspace.configure(session)
+	else:
+		bag_scroll.get_parent().show()
+		detail_column.show()
+		if module_workspace != null: module_workspace.hide()
 
 
 func _refresh_stats() -> void:
@@ -439,6 +467,7 @@ func _refresh_stats() -> void:
 
 
 func _refresh_modules() -> void:
+	if current_tab == 2: return
 	if weapon_rack == null and session.equipment != null:
 		weapon_rack = load("res://game/features/equipment/weapon_attachment_rack.gd").new()
 		module_column.add_child(weapon_rack)

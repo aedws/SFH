@@ -48,12 +48,11 @@ const STATE_RULES := {
 		&"equipment_tab": 0,
 	},
 	&"modification_hub": {
-		&"visible": [&"equipment"],
-		&"hidden": [&"hub_hud", &"run_setup", &"combat_hud", &"game_result", &"key_mapping", &"inventory", &"minimap", &"combat_skills", &"dash_cooldown"],
+		&"visible": [&"inventory"],
+		&"hidden": [&"hub_hud", &"run_setup", &"combat_hud", &"game_result", &"key_mapping", &"equipment", &"minimap", &"combat_skills", &"dash_cooldown"],
 		&"paused": true,
 		&"modal_count": 1,
-		&"inside_viewport": [&"equipment"],
-		&"equipment_tab": 1,
+		&"inside_viewport": [&"inventory"],
 	},
 	&"run_setup": {
 		&"visible": [&"run_setup"],
@@ -93,12 +92,11 @@ const STATE_RULES := {
 		&"equipment_tab": 0,
 	},
 	&"modification_combat": {
-		&"visible": [&"equipment"],
-		&"hidden": [&"hub_hud", &"run_setup", &"combat_hud", &"game_result", &"key_mapping", &"inventory", &"minimap", &"combat_skills", &"dash_cooldown"],
+		&"visible": [&"inventory"],
+		&"hidden": [&"hub_hud", &"run_setup", &"combat_hud", &"game_result", &"key_mapping", &"equipment", &"minimap", &"combat_skills", &"dash_cooldown"],
 		&"paused": true,
 		&"modal_count": 1,
-		&"inside_viewport": [&"equipment"],
-		&"equipment_tab": 1,
+		&"inside_viewport": [&"inventory"],
 	},
 	&"result": {
 		&"visible": [&"game_result"],

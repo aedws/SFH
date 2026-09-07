@@ -5,6 +5,8 @@ const TYPES := {
 	"item": "res://game/features/inventory/inventory_item_definition.gd",
 	"loadout": "res://game/features/equipment/equipment_loadout.gd",
 	"state": "res://game/features/equipment/equipment_item_state.gd",
+	"module_socket_policy": "res://game/features/equipment/module_socket_policy.gd",
+	"character_module_definition": "res://game/features/equipment/character_module_definition.gd",
 	"weapon": "res://game/features/equipment/weapon_definition.gd",
 	"armor": "res://game/features/equipment/armor_definition.gd",
 	"fixed_option": "res://game/features/equipment/equipment_fixed_option.gd",

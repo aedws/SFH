@@ -26,6 +26,28 @@ var equipment_states: Dictionary = {}
 var active_weapon_slot: StringName = &"main"
 var external_armor_level: int = 1
 var upgrade_balance_provider: Node
+var character_module_state: EquipmentItemState
+
+
+func _ensure_character_modules() -> void:
+	if character_module_state != null: return
+	character_module_state = EquipmentItemState.new()
+	character_module_state.configure(&"character", CharacterModuleDefinition.new())
+	character_module_state.set_upgrade_balance_provider(upgrade_balance_provider)
+
+
+func set_external_character_level(value: int) -> void:
+	_ensure_character_modules()
+	character_module_state.level = clampi(value, 1, character_module_state.maximum_level())
+	_refresh_after_customization()
+
+
+func get_module_target_descriptors() -> Array[Dictionary]:
+	var result := get_slot_descriptors()
+	if armor_enabled:
+		_ensure_character_modules()
+		result.append({&"slot_id": &"character", &"kind": "character"})
+	return result
 
 
 func configure(
@@ -160,6 +182,9 @@ func get_player_stat_preview(modifiers: Dictionary) -> Dictionary:
 
 
 func get_equipment_state(slot_id: StringName) -> EquipmentItemState:
+	if slot_id == &"character" and armor_enabled:
+		_ensure_character_modules()
+		return character_module_state
 	return equipment_states.get(slot_id) as EquipmentItemState
 
 
@@ -181,6 +206,7 @@ func set_upgrade_balance_provider(provider: Node) -> bool:
 	upgrade_balance_provider = provider
 	for state in equipment_states.values():
 		(state as EquipmentItemState).set_upgrade_balance_provider(provider)
+	if character_module_state != null: character_module_state.set_upgrade_balance_provider(provider)
 	_refresh_after_customization()
 	return true
 
@@ -267,6 +293,14 @@ func equip_definition(
 
 
 func equip_state(slot_id: StringName, saved_state: EquipmentItemState) -> bool:
+	if slot_id == &"character":
+		if not armor_enabled or saved_state == null or not saved_state.definition is CharacterModuleDefinition: return false
+		var checked_carrier := saved_state.duplicate(true) as EquipmentItemState
+		checked_carrier.set_upgrade_balance_provider(upgrade_balance_provider)
+		if not checked_carrier.validation_errors().is_empty(): return false
+		character_module_state = checked_carrier
+		_refresh_after_customization()
+		return true
 	if saved_state == null or not can_equip_definition(slot_id, saved_state.definition):
 		return false
 	var state := saved_state.duplicate(true) as EquipmentItemState
@@ -372,11 +406,20 @@ func export_runtime_state() -> Dictionary:
 		&"equipment_states": saved_states,
 		&"active_weapon_slot": active_weapon_slot,
 		&"external_armor_level": external_armor_level,
+		&"character_module_state": character_module_state.duplicate(true) if character_module_state != null else null,
 	}
 
 
 func validate_runtime_state(saved: Dictionary, weapon_paths: Dictionary = {}) -> PackedStringArray:
 	var errors := PackedStringArray()
+	var carrier: Resource = saved.get(&"character_module_state")
+	if carrier != null:
+		if not carrier is EquipmentItemState or not carrier.definition is CharacterModuleDefinition:
+			errors.append("캐릭터 모듈 상태가 유효하지 않습니다.")
+		else:
+			var checked_carrier := carrier.duplicate(true) as EquipmentItemState
+			checked_carrier.set_upgrade_balance_provider(upgrade_balance_provider)
+			for message in checked_carrier.validation_errors(): errors.append(message)
 	if saved.is_empty():
 		return errors
 	var saved_loadout := saved.get(&"loadout") as EquipmentLoadout
@@ -425,6 +468,8 @@ func restore_runtime_state(saved: Dictionary) -> bool:
 	if saved_loadout == null:
 		return false
 	loadout = saved_loadout.duplicate(true) as EquipmentLoadout
+	character_module_state = saved.get(&"character_module_state").duplicate(true) if saved.get(&"character_module_state") != null else null
+	if character_module_state != null: character_module_state.set_upgrade_balance_provider(upgrade_balance_provider)
 	equipment_states.clear()
 	for slot_id in saved_states:
 		var state := (saved_states[slot_id] as EquipmentItemState).duplicate(true) as EquipmentItemState
@@ -483,6 +528,7 @@ func set_external_armor_level(level: int) -> bool:
 
 
 func level_up_equipment(slot_id: StringName) -> bool:
+	if slot_id == &"character": return false # External XP, never a free UI level-up.
 	var state := get_equipment_state(slot_id)
 	if state == null or not state.level_up():
 		return false
@@ -588,8 +634,10 @@ func _resolve_stat_modifiers() -> void:
 		stat_modifiers_changed.emit(get_stat_modifiers())
 		return
 
-	for slot_id in equipment_states:
-		var state := equipment_states[slot_id] as EquipmentItemState
+	var module_targets := equipment_states.values()
+	if character_module_state != null: module_targets.append(character_module_state)
+	for target in module_targets:
+		var state := target as EquipmentItemState
 		for option in state.get_fixed_options():
 			if option.target_kind == EquipmentFixedOption.TargetKind.PLAYER:
 				_accumulate_fixed_player_option(option)

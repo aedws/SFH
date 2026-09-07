@@ -141,6 +141,30 @@ func replace_part(instance_id: StringName, slot_id: StringName) -> bool:
 	return _finish_operation(ok, before)
 
 
+func install_module_in_socket(id: StringName, target: StringName, index: int) -> bool:
+	var entry := get_item_entry(id)
+	var state: Resource = equipment.get_equipment_state(target) if equipment != null else null
+	if state == null or not entry.get(&"linked_resource") is EquipmentModuleDefinition: return _reject("모듈과 대상을 선택하세요.")
+	var preview: Resource = state.duplicate(true)
+	preview.set_upgrade_balance_provider(state.upgrade_balance_provider)
+	var payload: Dictionary = entry.get(&"runtime_payload", {})
+	if not preview.install_module(id, entry[&"linked_resource"], int(payload.get(&"upgrade_level", 1)), payload, index): return _reject("장착 불가 · 슬롯 점유, 중복 또는 코스트를 확인하세요.")
+	if not preview.validation_errors().is_empty(): return _reject("모듈 설정이 유효하지 않습니다.")
+	var before := _checkpoint()
+	inventory.take_item_entry(id)
+	return _finish_operation(equipment.equip_state(target, preview), before)
+
+
+func assign_module_socket(target: StringName, index: int, tag: StringName) -> bool:
+	var state: Resource = equipment.get_equipment_state(target) if equipment != null else null
+	if state == null: return _reject("대상이 없습니다.")
+	var preview: Resource = state.duplicate(true)
+	preview.set_upgrade_balance_provider(state.upgrade_balance_provider)
+	if not preview.assign_module_socket(index, tag): return _reject("최대 레벨이 필요하거나 변경 후 코스트를 초과합니다.")
+	var before := _checkpoint()
+	return _finish_operation(equipment.equip_state(target, preview), before)
+
+
 func remove_modification(slot_id: StringName, kind: StringName, item_id: StringName) -> bool:
 	var state: Resource = equipment.get_equipment_state(slot_id) if equipment != null else null
 	if state == null or kind not in [&"module", &"part"]:

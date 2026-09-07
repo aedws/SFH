@@ -11,6 +11,17 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-07 · 세 대상 공통 모듈 소켓 {#module-sockets}
+
+- `ModuleWorkspace`/`ModuleChipCard`는 레이아웃·선택·표시만 담당합니다. E와 I가 같은 편집 화면을 사용하며 별도의 장착 공식을 두지 않습니다.
+- `EquipmentItemState`가 슬롯 위치·중복/빈 슬롯·강화 후 비용·최대 레벨·용량·소켓 변경 롤백을 검증합니다. `ModuleSocketPolicy` Resource는 일치/불일치 배수를 독립 설정합니다.
+- `CharacterModuleDefinition`은 드랍 장비와 분리된 공용 캐릭터 장착 대상입니다. 외부 성장만 소켓 해금 레벨에 연결하며 기존 무기/방어구 슬롯 배열을 늘려 물리 장비 계약을 훼손하지 않습니다.
+- `InventoryEditSession` 초안에서 검증 후 장착/해제/소켓을 편집하고 저장 시 적용합니다. 등록된 `LoadoutValueCodec` Resource만 복원합니다. 이전 저장의 암묵적 슬롯과 전체 태그 할인도 유지합니다.
+- 캐릭터 상태가 없던 저장은 복원 시 불필요하게 생성하지 않습니다. 이 경계에서 발견한 훈련 전후 원본 동등성 회귀를 수정하고 훈련/전체 플레이 E2E를 재검증했습니다.
+- `module_socket_workspace_test.gd`를 로컬 및 자체 러너 필수 검사로 추가했습니다. 최대 레벨/올림/강화 비용/방어구 용량 초과 롤백/캐릭터 실제 능력치/안전 저장/초안 보호/4폭을 검사합니다. Game 조립부 변경·신규 Sheet 목록·CSV 스키마 변경은 없습니다.
+
+소켓 비용은 [현재 정책과 원작 차이](../features/equipment-customization.md#module-sockets)에 명시합니다. 촉매 소모·레벨 초기화·요원별 별도 성장 정책은 이번 구현에 포함하지 않습니다.
+
 ## 2026-09-07 · 무기 카드형 파츠 편집 {#weapon-attachment-rack}
 
 - `WeaponAttachmentRack`는 공개 슬롯 기술자/장비 상태로 카드 두 장을 구성하고 무기·소켓 선택 신호만 내보냅니다. `WeaponPartsBoard`의 기존 도식 모드를 재사용하며 인벤토리용 아이콘·키보드 버튼은 카드 모드에 한정합니다.
