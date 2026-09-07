@@ -102,7 +102,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_4_column_cards module_recommended_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input inventory_select_r_rotation key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_hysteresis fog_wall_occlusion fog_exploration_memory skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_socket_cards module_cost_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input inventory_select_r_rotation key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_hysteresis fog_wall_occlusion fog_exploration_memory skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -387,19 +387,11 @@ func _verify_hub_input_session() -> bool:
 		return _fail("장비 호환 수치가 실제 활성 스킬 수처럼 오해되는 문구로 표시됩니다.")
 
 	await _tap_key(KEY_E)
-	if not workbench.visible or int((workbench.get("tabs") as TabContainer).current_tab) != 1:
+	if workbench.visible or not inventory.visible or inventory.current_tab != 2:
 		return _fail("열린 U 화면에서 실제 E 입력이 창을 닫지 않고 모듈·파츠 탭으로 전환하지 못했습니다.")
-	var module_ui: Dictionary = workbench.call(&"get_density_snapshot")
-	if (
-		int(module_ui.get(&"modification_columns", 0)) != 4
-		or int(module_ui.get(&"module_inventory_metadata_card_count", 0)) < 1
-		or not bool(module_ui.get(&"module_effect_summary_visible", false))
-		or module_ui.get(&"modification_sort", &"") != &"compatibility"
-		or not bool(module_ui.get(&"weapon_parts_board_visible", false))
-		or int(module_ui.get(&"weapon_parts_socket_count", 0)) != 3
-		or module_ui.get(&"weapon_parts_minor_tag", &"") != &"rifle"
-	):
-		return _fail("E 모듈 화면이 적용 수치·4열 카드·추천 정렬·총기 소켓 도식을 함께 표시하지 못했습니다.")
+	var module_ui = inventory.module_workspace
+	if not module_ui.visible or module_ui.owned.get_child_count() < 1 or module_ui.targets.item_count != 5 or not module_ui.effects.is_visible_in_tree() or not module_ui.assign.disabled:
+		return _fail("E 모듈 화면의 3종 대상·보유 카드·효과·최대 레벨 잠금 표시 실패")
 	if not _judge_ui_state(&"modification_hub", "거점 E 모듈·파츠"):
 		return false
 	if not _judge_player_perception(&"modification_comprehension", "모듈·파츠 선택 이해"):
@@ -646,7 +638,7 @@ func _verify_operation_session() -> bool:
 	if not _judge_ui_state(&"equipment_combat", "전투 U 장비"):
 		return false
 	await _tap_key(KEY_E)
-	if not workbench.visible or int((workbench.get("tabs") as TabContainer).current_tab) != 1:
+	if workbench.visible or not inventory.visible or inventory.current_tab != 2:
 		return _fail("전투 세션에서도 E가 모듈·파츠 탭을 안정적으로 열지 못했습니다.")
 	if not _judge_ui_state(&"modification_combat", "전투 E 모듈·파츠"):
 		return false

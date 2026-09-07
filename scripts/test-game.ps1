@@ -44,6 +44,10 @@ $funOutput = & $godotExecutable --headless --path $repositoryRoot --script "res:
 $funStatus = $LASTEXITCODE
 $attachmentOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/weapon_attachment_rack_test.gd" 2>&1
 $attachmentStatus = $LASTEXITCODE
+$socketOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/module_socket_workspace_test.gd" 2>&1
+$socketStatus = $LASTEXITCODE
+$socketOutput | ForEach-Object { Write-Output $_ }
+if ($socketStatus -ne 0 -or ($socketOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($socketOutput -match 'MODULE_SOCKET_WORKSPACE_OK')) { exit 1 }
 $attachmentOutput | ForEach-Object { Write-Output $_ }
 if ($attachmentStatus -ne 0 -or ($attachmentOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($attachmentOutput -match 'WEAPON_ATTACHMENT_RACK_OK')) { exit 1 }
 $funOutput | ForEach-Object { Write-Output $_ }

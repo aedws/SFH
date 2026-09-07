@@ -10,6 +10,8 @@ const QUALITY := preload("res://game/core/item_quality_descriptor.gd")
 @export var part_upgrade_levels: Dictionary = {}
 @export var installed_modules: Array[EquipmentModuleInstance] = []
 @export var granted_module_tags: Array[StringName] = []
+@export var module_socket_tags: Dictionary = {}
+@export var socket_policy: ModuleSocketPolicy = ModuleSocketPolicy.new()
 @export var item_quality_payload: Dictionary = {}
 @export var assigned_fixed_options: Array[EquipmentFixedOption] = []
 var upgrade_balance_provider: Node
@@ -28,6 +30,7 @@ func configure(
 	part_upgrade_levels.clear()
 	installed_modules.clear()
 	granted_module_tags.clear()
+	module_socket_tags.clear()
 	item_quality_payload = quality_payload.duplicate(true)
 	assigned_fixed_options = new_fixed_options.duplicate(true)
 
@@ -79,6 +82,7 @@ func set_upgrade_balance_provider(provider: Node) -> void:
 
 
 func maximum_level() -> int:
+	if definition is CharacterModuleDefinition: return definition.maximum_level
 	var target_kind := &"weapon" if is_weapon() else &"armor" if is_armor() else &""
 	var target_id := definition_id()
 	var fallback := 1
@@ -98,6 +102,7 @@ func maximum_level() -> int:
 
 
 func definition_id() -> StringName:
+	if definition is CharacterModuleDefinition: return &"character"
 	if is_weapon():
 		return (definition as EquipmentWeaponDefinition).weapon_id
 	if is_armor():
@@ -106,6 +111,7 @@ func definition_id() -> StringName:
 
 
 func module_slot_limit() -> int:
+	if definition is CharacterModuleDefinition: return definition.module_slot_limit
 	if is_weapon():
 		return (definition as EquipmentWeaponDefinition).module_slot_limit
 	if is_armor():
@@ -114,6 +120,7 @@ func module_slot_limit() -> int:
 
 
 func module_cost_limit() -> int:
+	if definition is CharacterModuleDefinition: return definition.module_cost_limit
 	if is_weapon():
 		return (definition as EquipmentWeaponDefinition).module_cost_limit
 	if is_armor():
@@ -175,6 +182,8 @@ func effective_module_cost(module_instance: EquipmentModuleInstance) -> int:
 	if module_instance == null or module_instance.definition == null:
 		return 0
 	var cost := module_instance.base_cost(upgrade_balance_provider)
+	var socket: StringName = module_socket_tags.get(module_socket_index(module_instance), &"")
+	if socket != &"" and socket_policy != null: return socket_policy.cost(cost, socket, module_instance.definition.module_tags)
 	for module_tag in module_instance.definition.module_tags:
 		if module_tag in granted_module_tags:
 			return ceili(float(cost) * 0.5)
@@ -188,7 +197,7 @@ func used_module_cost() -> int:
 	return result
 
 
-func can_install_module(module_definition: EquipmentModuleDefinition) -> bool:
+func can_install_module(module_definition: EquipmentModuleDefinition, upgrade_level: int = 1, target_socket: int = -1) -> bool:
 	if module_definition == null or not module_definition.is_valid():
 		return false
 	if installed_modules.size() >= module_slot_limit():
@@ -198,6 +207,10 @@ func can_install_module(module_definition: EquipmentModuleDefinition) -> bool:
 			return false
 	var candidate := EquipmentModuleInstance.new()
 	candidate.configure(&"preview", module_definition)
+	candidate.upgrade_level = clampi(upgrade_level, 1, maximum_module_level(module_definition))
+	candidate.socket_index = first_empty_module_socket() if target_socket < 0 else target_socket
+	if candidate.socket_index < 0 or candidate.socket_index >= module_slot_limit() or module_at_socket(candidate.socket_index) != null:
+		return false
 	return used_module_cost() + effective_module_cost(candidate) <= module_cost_limit()
 
 
@@ -205,20 +218,31 @@ func install_module(
 	instance_id: StringName,
 	module_definition: EquipmentModuleDefinition,
 	upgrade_level: int = 1,
-	quality_payload: Dictionary = {}
+	quality_payload: Dictionary = {},
+	target_socket: int = -1
 ) -> bool:
-	if not can_install_module(module_definition):
+	if not can_install_module(module_definition, upgrade_level, target_socket):
 		return false
+	_normalize_module_sockets()
 	var module_instance := EquipmentModuleInstance.new()
 	module_instance.configure(instance_id, module_definition, quality_payload)
+	module_instance.socket_index = first_empty_module_socket() if target_socket < 0 else target_socket
 	module_instance.upgrade_level = clampi(
-		upgrade_level, 1, module_definition.maximum_upgrade_level()
+		upgrade_level, 1, maximum_module_level(module_definition)
 	)
 	installed_modules.append(module_instance)
 	return true
 
 
+func maximum_module_level(module_definition: EquipmentModuleDefinition) -> int:
+	var fallback := module_definition.maximum_upgrade_level()
+	if upgrade_balance_provider != null and upgrade_balance_provider.has_method(&"get_maximum_level"):
+		return int(upgrade_balance_provider.call(&"get_maximum_level", &"module", module_definition.module_id, fallback))
+	return fallback
+
+
 func remove_module(instance_id: StringName) -> Dictionary:
+	_normalize_module_sockets()
 	for index in range(installed_modules.size()):
 		var module_instance := installed_modules[index]
 		if module_instance.instance_id != instance_id:
@@ -310,9 +334,41 @@ func grant_module_tag(module_tag: StringName) -> bool:
 	return true
 
 
+func module_socket_index(instance: EquipmentModuleInstance) -> int:
+	return instance.socket_index if instance.socket_index >= 0 else installed_modules.find(instance)
+
+
+func _normalize_module_sockets() -> void:
+	for index in installed_modules.size():
+		if installed_modules[index].socket_index < 0: installed_modules[index].socket_index = index
+
+
+func module_at_socket(index: int) -> EquipmentModuleInstance:
+	for instance in installed_modules:
+		if module_socket_index(instance) == index: return instance
+	return null
+
+
+func first_empty_module_socket() -> int:
+	for index in module_slot_limit():
+		if module_at_socket(index) == null: return index
+	return -1
+
+
+func assign_module_socket(index: int, tag: StringName) -> bool:
+	if level < maximum_level() or index < 0 or index >= module_slot_limit() or tag == &"": return false
+	var previous := module_socket_tags.duplicate()
+	module_socket_tags[index] = tag
+	if used_module_cost() > module_cost_limit():
+		module_socket_tags = previous
+		return false
+	return true
+
+
 func validation_errors() -> PackedStringArray:
 	var errors := PackedStringArray()
-	if definition == null or not (is_weapon() or is_armor()) or not bool(definition.call(&"is_valid")):
+	if socket_policy == null or not socket_policy.is_valid(): errors.append("모듈 소켓 비용 정책이 유효하지 않습니다.")
+	if definition == null or not (is_weapon() or is_armor() or definition is CharacterModuleDefinition) or not bool(definition.call(&"is_valid")):
 		errors.append("장비 정의가 유효하지 않습니다.")
 		return errors
 	if level < 1 or level > maximum_level():
@@ -341,6 +397,10 @@ func validation_errors() -> PackedStringArray:
 		if not installed:
 			errors.append("장착되지 않은 파츠의 강화 상태가 남아 있습니다: %s" % part_id)
 	var instance_ids := PackedStringArray()
+	var occupied_sockets: Array[int] = []
+	for socket in module_socket_tags:
+		if not socket is int or socket < 0 or socket >= module_slot_limit() or String(module_socket_tags[socket]).is_empty():
+			errors.append("유효하지 않은 모듈 소켓입니다.")
 	var module_ids := PackedStringArray()
 	if installed_modules.size() > module_slot_limit():
 		errors.append("모듈 슬롯 제한을 초과했습니다.")
@@ -353,6 +413,10 @@ func validation_errors() -> PackedStringArray:
 		if String(module_instance.definition.module_id) in module_ids:
 			errors.append("동일한 모듈이 중복 장착됐습니다: %s" % module_instance.definition.display_name)
 		instance_ids.append(String(module_instance.instance_id))
+		var socket := module_socket_index(module_instance)
+		if socket < 0 or socket >= module_slot_limit() or socket in occupied_sockets:
+			errors.append("모듈 소켓이 중복되거나 범위를 벗어났습니다.")
+		occupied_sockets.append(socket)
 		module_ids.append(String(module_instance.definition.module_id))
 		var maximum_module_level := module_instance.definition.maximum_upgrade_level()
 		if upgrade_balance_provider != null and upgrade_balance_provider.has_method(&"get_maximum_level"):

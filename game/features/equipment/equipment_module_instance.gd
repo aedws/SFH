@@ -7,6 +7,7 @@ const QUALITY := preload("res://game/core/item_quality_descriptor.gd")
 @export var definition: EquipmentModuleDefinition
 @export_range(1, 100, 1) var upgrade_level: int = 1
 @export var item_quality_payload: Dictionary = {}
+@export var socket_index: int = -1
 
 
 func configure(

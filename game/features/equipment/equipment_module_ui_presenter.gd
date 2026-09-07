@@ -82,6 +82,16 @@ func applied_effects_text(state) -> String:
 		for feature_id in definition.special_feature_ids:
 			if not features.has(String(feature_id)):
 				features.append(String(feature_id))
+		if state.upgrade_balance_provider != null:
+			var upgraded: Dictionary = state.upgrade_balance_provider.call(
+				&"get_player_modifiers", &"module", definition.module_id, module_instance.upgrade_level
+			)
+			for stat_id in upgraded:
+				var source: Dictionary = upgraded[stat_id]
+				var entry: Dictionary = totals.get(stat_id, {&"add": 0.0, &"multiply": 1.0})
+				entry[&"add"] += ITEM_QUALITY.scale_additive(float(source.get(&"add", 0.0)), module_instance.item_quality_payload)
+				entry[&"multiply"] *= ITEM_QUALITY.scale_multiplicative(float(source.get(&"multiply", 1.0)), module_instance.item_quality_payload)
+				totals[stat_id] = entry
 	var lines := PackedStringArray(["적용 수치"])
 	for stat_id in totals:
 		var entry: Dictionary = totals[stat_id]

@@ -39,13 +39,15 @@ func verify(tree: SceneTree, game: Node) -> String:
 			var bounds := Rect2(Vector2.ZERO, Vector2(viewport_size))
 			if not bounds.encloses(window.get_global_rect()):
 				return "인벤토리 화면 경계 실패: %s tab %d rect %s" % [viewport_size, tab, window.get_global_rect()]
-			if window.bag_scroll.get_h_scroll_bar().visible:
+			if tab != 2 and window.bag_scroll.get_h_scroll_bar().visible:
 				return "가방에 불필요한 가로 스크롤 발생: %s" % viewport_size
-			if window.grid_view.custom_minimum_size.x > window.bag_scroll.size.x:
+			if tab != 2 and window.grid_view.custom_minimum_size.x > window.bag_scroll.size.x:
 				return "가방 마지막 열 잘림: %s / %s" % [viewport_size, window.get_density_snapshot()]
 			if not window.tabs[tab].button_pressed:
 				return "선택 탭 시각 상태 실패"
 		# Fill the bag vertically and verify scroll actually reaches its last row.
+		window.request_tab(0) # The module workspace deliberately hides the bag grid.
+		for _frame in 8: await tree.process_frame
 		window.bag_scroll.scroll_vertical = 10000
 		await tree.process_frame
 		var bottom: float = window.grid_view.get_global_rect().end.y

@@ -128,6 +128,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		requested_tab = 1
 	if requested_tab < 0:
 		return
+	if requested_tab == 1 and _open_module_workspace():
+		get_viewport().set_input_as_handled()
+		return
 	if visible and tabs.current_tab != requested_tab:
 		tabs.current_tab = requested_tab
 		get_viewport().set_input_as_handled()
@@ -188,8 +191,18 @@ func show_armor_tab() -> void:
 
 
 func show_modification_tab() -> void:
+	if _open_module_workspace(): return
 	tabs.current_tab = 1
 	open_panel()
+
+
+func _open_module_workspace() -> bool:
+	for panel in get_tree().get_nodes_in_group(&"game_modal_panel"):
+		if panel != self and panel.has_method(&"open_modules"):
+			close_panel()
+			panel.call(&"open_modules", selected_slot_id)
+			return true
+	return false
 
 
 func _select_slot(slot_id: StringName) -> void:

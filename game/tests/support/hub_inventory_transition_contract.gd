@@ -20,10 +20,12 @@ func verify(tree: SceneTree, game: Node, tap: Callable, click: Callable) -> Stri
 			else:
 				bag_window.tabs[0].grab_focus()
 			await tap.call(destination)
-			if bag_window.visible != (destination == KEY_I) or bench.visible != (destination != KEY_I) or not tree.paused:
+			if bag_window.visible != (destination != KEY_U) or bench.visible != (destination == KEY_U) or not tree.paused:
 				return "거점 I/U/E 직접 전환 또는 단일 창 표시 실패: %s→%s" % [source, destination]
 			if bench.visible and bench.tabs.current_tab != (0 if destination == KEY_U else 1):
 				return "U/E 직접 전환이 잘못된 탭을 표시함"
+			if bag_window.visible and bag_window.current_tab != (2 if destination == KEY_E else 0):
+				return "I/E 공통 작업 공간의 탭 전환 실패"
 			await tap.call(KEY_ESCAPE)
 			if bag_window.visible or bench.visible or tree.paused:
 				return "거점 창 종료 후 입력/일시정지 복원 실패"
@@ -64,8 +66,13 @@ func verify(tree: SceneTree, game: Node, tap: Callable, click: Callable) -> Stri
 		return "I→E 이탈 취소가 편집을 보존하지 못함"
 	await tap.call(KEY_E)
 	await click.call(bag_window.confirm_buttons[0])
-	if not bench.visible or bench.tabs.current_tab != 1 or bag.placements[entry[&"instance_id"]] != destination:
+	if not bag_window.visible or bag_window.current_tab != 2 or bag.placements[entry[&"instance_id"]] != destination:
 		return "I 저장 후 E 전환 실패"
+	# The original U advanced workbench API remains supported; the new E draft UI
+	# is exercised separately by module_socket_workspace_test and real E transitions above.
+	bag_window.close_panel()
+	bench.tabs.current_tab = 1
+	bench.open_panel()
 	# Install a compatible module and part via actual action buttons; reopen I after each change.
 	for kind in [&"module", &"part"]:
 		bench._select_slot(&"main")
@@ -83,6 +90,9 @@ func verify(tree: SceneTree, game: Node, tap: Callable, click: Callable) -> Stri
 		if (kind == &"module" and state.installed_modules.size() != 1) or (kind == &"part" and state.installed_parts.size() != 1):
 			return "E 장착 결과가 I 편집본에서 누락됨: %s" % kind
 		await tap.call(KEY_E)
+		bag_window.close_panel()
+		bench.tabs.current_tab = 1
+		bench.open_panel()
 		var installed_id: StringName = state.installed_modules[0].instance_id if kind == &"module" else state.installed_parts[0].part_id
 		bench._select_installed(kind, installed_id)
 		await click.call(bench.uninstall_selected_button)
@@ -91,6 +101,9 @@ func verify(tree: SceneTree, game: Node, tap: Callable, click: Callable) -> Stri
 		if not state.installed_modules.is_empty() or not state.installed_parts.is_empty():
 			return "E 해제 결과가 I 편집본에 반영되지 않음"
 		await tap.call(KEY_E)
+		bag_window.close_panel()
+		bench.tabs.current_tab = 1
+		bench.open_panel()
 	await tap.call(KEY_ESCAPE)
 	bag.restore_runtime_state(original_bag)
 	gear.restore_runtime_state(original_gear)

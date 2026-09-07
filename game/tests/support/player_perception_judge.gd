@@ -31,8 +31,8 @@ const CHECKPOINT_RULES := {
 	},
 	&"modification_comprehension": {
 		&"unit": &"choice",
-		&"surfaces": [&"equipment"],
-		&"phrases": ["모듈", "파츠", "코스트", "적용 수치", "추천"],
+		&"surfaces": [&"inventory"],
+		&"phrases": ["장착 모듈", "보유 모듈", "코스트", "적용 수치", "소켓", "최대 레벨"],
 	},
 	&"operation_decision": {
 		&"unit": &"decision",

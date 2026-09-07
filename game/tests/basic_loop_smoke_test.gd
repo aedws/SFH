@@ -822,8 +822,8 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 				modification_event.pressed = true
 				hub_workbench.call(&"_unhandled_input", modification_event)
 				if (
-					not hub_workbench.visible
-					or int((hub_workbench.get("tabs") as TabContainer).current_tab) != 1
+					not hub_game.inventory_window.visible
+					or hub_game.inventory_window.current_tab != 2
 				):
 					failure_message = "거점 E 입력이 모듈·파츠 탭을 직접 열지 못했습니다."
 				else:

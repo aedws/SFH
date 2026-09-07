@@ -60,9 +60,20 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 17 · IMPROVE 31 · CHANGE 22 · FIX 29</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 19 · IMPROVE 33 · CHANGE 23 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>17</b><small>BUILD</small></span><span><b>31</b><small>IMPROVE</small></span><span><b>22</b><small>CHANGE</small></span><span><b>29</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>19</b><small>BUILD</small></span><span><b>33</b><small>IMPROVE</small></span><span><b>23</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 15</small><b>무기·방어구·캐릭터 모듈 카드 · 슬롯 소켓</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · E에서 세 대상의 모듈을 카드로 편집하고, 최대 레벨 슬롯에 소켓을 부여해 비용을 줄입니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>캐릭터 공용 모듈과 슬롯별 타입 소켓을 추가했습니다. 일치 비용은 강화 후 기본 비용의 절반을 올림합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>대상·적용 수치 / 장착·보유 카드 / 코스트·설정으로 나누고 검색·정렬·좁은 화면 세로 배치를 제공합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>E와 I 모듈 설정을 같은 초안 편집 화면으로 연결했습니다. 최대 레벨 전 잠금·이탈 저장 확인·기존 세이브를 보존합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>실제 강화 비용과 슬롯 할인으로 용량을 판정합니다. 캐릭터 상태가 없던 훈련 원본을 복원할 때 불필요한 상태 생성도 차단했습니다.</p></div>
+        <p><a href="features/equipment-customization/#module-sockets">사용 방법·원작과 차이 →</a> · <a href="quality/e2e-play-session/#module-sockets">입력·저장 검증 →</a> · 캐릭터 해금40은 임시 정책. 촉매 소모·레벨 초기화·새 Sheet 목록 추가 없음.</p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 14</small><b>두 무기 카드 · 그림 주변 파츠 슬롯</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">

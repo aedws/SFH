@@ -61,6 +61,8 @@ func settle_run(meta_experience: Dictionary) -> Dictionary:
 
 func apply_to_targets(player_target: Node, weapon_target: Node, equipment_target: Node) -> void:
 	var character_level := int(levels[&"character"])
+	if equipment_target != null and equipment_target.has_method(&"set_external_character_level"):
+		equipment_target.call(&"set_external_character_level", character_level)
 	if player_target != null and player_target.has_method(PLAYER_MODIFIER_METHOD):
 		player_target.call(PLAYER_MODIFIER_METHOD, &"meta_character", {
 			&"max_health": {&"add": float(character_level - 1) * 5.0, &"multiply": 1.0},

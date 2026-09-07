@@ -135,6 +135,10 @@ jobs:
           fi
           grep -q "WEAPON_ATTACHMENT_RACK_OK" /tmp/sfh-attachments.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-attachments.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script res://game/tests/module_socket_workspace_test.gd > /tmp/sfh-module-sockets.log 2>&1
+          cat /tmp/sfh-module-sockets.log
+          grep -q "MODULE_SOCKET_WORKSPACE_OK" /tmp/sfh-module-sockets.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-module-sockets.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/provisional_policy_contract_test.gd" > /tmp/sfh-provisional-policy.log 2>&1
           cat /tmp/sfh-provisional-policy.log
           grep -q "PROVISIONAL_POLICY_OK" /tmp/sfh-provisional-policy.log
