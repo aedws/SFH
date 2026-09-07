@@ -502,6 +502,14 @@
   function initialize() {
     document.querySelectorAll("[data-sfh-code-module-map-host]").forEach(function (host) {
       if (initializedHosts.has(host)) return;
+      var disclosure = host.closest("[data-sfh-lazy-code]");
+      if (disclosure && !disclosure.open) {
+        if (!host.dataset.sfhLazyBound) {
+          host.dataset.sfhLazyBound = "true";
+          disclosure.addEventListener("toggle", function () { if (disclosure.open) initialize(); });
+        }
+        return;
+      }
       initializedHosts.add(host);
       loadData().then(function (data) {
         if (host.isConnected && !host.querySelector("[data-sfh-code-module-map]")) host.append(buildMap(data));
