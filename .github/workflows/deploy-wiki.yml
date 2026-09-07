@@ -171,6 +171,9 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/workshop_craft_transaction_contract_test.gd" | tee /tmp/sfh-p7-workshop.log
           grep -q "P7_WORKSHOP_TRANSACTION_OK quote_no_mutation visible_cost_material_roll atomic_single_commit duplicate_guard invalid_no_mutation actual_affixes_sockets reconnect replaceable_policy provider_failure storage_failure_rollback" /tmp/sfh-p7-workshop.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/training_ground_scenario_contract_test.gd" | tee /tmp/sfh-p8-training-contract.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/training_loadout_restore_contract_test.gd" 2>&1 | tee /tmp/sfh-training-restore.log
+          grep -q "TRAINING_LOADOUT_RESTORE_OK" /tmp/sfh-training-restore.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-training-restore.log
           grep -q "P8_TRAINING_GROUND_OK scenario_resource single_boss dense_8 no_overlap smart_targeting reset_service auto_reset telemetry_window final_snapshot reset_restarts_telemetry ap_rate cooldown_cycle spawn_budget_isolated optional_module" /tmp/sfh-p8-training-contract.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/ranking_provider_contract_test.gd" | tee /tmp/sfh-p6-ranking.log
           grep -q "P6_RANKING_SUBMISSION_OK identity envelope_digest idempotency local_preserved persistent_retry timeout_retry server_rejection visible_sync_state" /tmp/sfh-p6-ranking.log

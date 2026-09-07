@@ -1282,6 +1282,7 @@ func _show_codex_summary() -> void:
 
 func _perform_p5_hub_action(action_id: StringName) -> bool:
 	if p5_hub_progression_service == null: return false
+	if action_id != &"training_toggle" and not _finish_hub_training(): return false
 	var presentation: Dictionary = p5_hub_progression_service.call(&"perform_hub_action", action_id)
 	if not bool(presentation.get(&"handled", false)): return false
 	status_label.text = String(presentation.get(&"status_text", ""))
@@ -1520,6 +1521,8 @@ func start_run(map_size: String) -> bool:
 		_refresh_contract_setup_ui()
 		return false
 	var pending_config: Resource = load(MAP_CONFIG_PATH_PATTERN % map_size)
+	if not _finish_hub_training():
+		return false
 	_capture_prepared_loadout()
 	if desktop_progress != null and not bool(desktop_progress.call(&"flush")):
 		status_label.text = "출격 보류 · 로컬 저장 오류를 확인하세요. 기존 데이터는 유지됩니다."
@@ -1602,7 +1605,9 @@ func start_run(map_size: String) -> bool:
 		return false
 	last_loot_settlement.clear()
 	get_tree().paused = false
-	_clear_start_hub()
+	if not _clear_start_hub():
+		_rollback_operation_investment()
+		return false
 	active_launch_plan = launch_plan.duplicate(true)
 	run_started = true
 	run_setup_overlay.visible = false
@@ -1712,6 +1717,7 @@ func _install_start_hub() -> bool:
 
 func _on_hub_service_requested(service_id: StringName) -> void:
 	if run_started or not is_instance_valid(start_hub): return
+	if service_id != &"training" and not _finish_hub_training(): return
 	_refresh_contract_setup_ui()
 	if service_id == &"shop" and is_instance_valid(shop_browser_panel):
 		shop_browser_panel.call(&"open_panel")
@@ -1742,6 +1748,9 @@ func _install_training_ground() -> bool:
 		training_ground_service = null
 		return false
 	training_ground_service.connect(&"dummy_spawned", _on_training_dummy_spawned)
+	training_ground_service.connect(&"stop_requested", _finish_hub_training)
+	if desktop_progress != null and not training_ground_service.call(&"configure_checkpoint_provider", desktop_progress):
+		return false
 	training_telemetry_presenter = TRAINING_TELEMETRY_PRESENTER_SCRIPT.new()
 	ui_layer.add_child(training_telemetry_presenter)
 	if not bool(training_telemetry_presenter.call(&"configure", training_ground_service)):
@@ -1774,6 +1783,14 @@ func _install_training_ground() -> bool:
 	if features.combat_resources_enabled and features.combat_skills_enabled:
 		if not _install_training_combat_runtime():
 			return false
+		if features.session_sockets_enabled:
+			var training_sockets := _instantiate_feature(SESSION_SOCKET_SERVICE_SCENE_PATH, training_ground_service, &"TrainingSockets")
+			var socket_config := load(features.session_socket_config_path).duplicate(true) as SessionSocketConfig
+			socket_config.source_mode = selected_balance_source_mode
+			if training_sockets == null or not training_sockets.call(&"configure", socket_config, loot_lifecycle_service, auto_weapon, training_combat_skill_system, player):
+				return false
+			if not training_ground_service.call(&"configure_socket_runtime", training_sockets):
+				return false
 	training_hud_layout = TRAINING_HUD_LAYOUT_SCRIPT.new()
 	module_container.add_child(training_hud_layout)
 	if not bool(training_hud_layout.call(
@@ -1865,8 +1882,8 @@ func _cycle_hub_training() -> void:
 		if StringName((scenarios[index] as Dictionary).get(&"scenario_id", &"")) == current_id:
 			next_index = (index + 1) % scenarios.size()
 			break
-	if not active.is_empty():
-		p5_hub_progression_service.call(&"finish_training")
+	if not active.is_empty() and not _finish_hub_training():
+		return
 	var next_id := StringName((scenarios[next_index] as Dictionary).get(&"scenario_id", &""))
 	var started: Dictionary = p5_hub_progression_service.call(&"start_training", next_id)
 	if not bool(started.get(&"success", false)):
@@ -1903,12 +1920,6 @@ func _install_hub_loadout_views() -> bool:
 func _open_run_setup() -> void:
 	if run_started or start_hub == null:
 		return
-	if p5_hub_progression_service != null:
-		var training: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"training", {})
-		if not (training.get(&"active", {}) as Dictionary).is_empty():
-			p5_hub_progression_service.call(&"finish_training")
-	if is_instance_valid(training_telemetry_presenter):
-		training_telemetry_presenter.visible = false
 	for other in get_tree().get_nodes_in_group(&"game_modal_panel"):
 		if not other.visible: continue
 		if other.has_method(&"request_leave"):
@@ -1917,6 +1928,8 @@ func _open_run_setup() -> void:
 				_open_run_setup())
 			return
 		other.call(&"close_panel")
+	if not _finish_hub_training():
+		return
 	_capture_prepared_loadout()
 	run_setup_overlay.visible = true
 	start_hub_hud.visible = false
@@ -1948,7 +1961,9 @@ func _close_run_setup() -> void:
 		_on_interaction_availability_changed(is_near, "F · 작전 게이트 접속")
 
 
-func _clear_start_hub() -> void:
+func _clear_start_hub() -> bool:
+	if not _finish_hub_training():
+		return false
 	if desktop_progress != null:
 		desktop_progress.call(&"unbind_hub")
 	if operation_launch_preflight_service != null:
@@ -1956,12 +1971,6 @@ func _clear_start_hub() -> void:
 		operation_launch_preflight_service.call(&"unregister_validator", &"inventory")
 	start_hub_hud.visible = false
 	interaction_label.visible = false
-	if p5_hub_progression_service != null:
-		var training_active: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"training", {}).get(&"active", {})
-		if not training_active.is_empty():
-			p5_hub_progression_service.call(&"finish_training")
-	if is_instance_valid(training_ground_service):
-		training_ground_service.call(&"stop")
 	for node in [
 		auto_weapon, training_combat_skill_hud,
 		training_telemetry_presenter, training_loadout_presenter,
@@ -1987,6 +1996,7 @@ func _clear_start_hub() -> void:
 	start_hub = null
 	_free_feature_node(player)
 	player = null
+	return true
 
 
 func _on_training_started(scenario: Dictionary) -> void:
@@ -2002,7 +2012,27 @@ func _on_training_started(scenario: Dictionary) -> void:
 
 func _on_training_finished(_result: Dictionary) -> void:
 	if is_instance_valid(training_ground_service):
-		training_ground_service.call(&"stop")
+		var result: Dictionary = training_ground_service.call(&"stop")
+		if not result.get(&"success", false):
+			status_label.text = String(result.get(&"reason", "훈련 복원 실패"))
+
+
+func _finish_hub_training() -> bool:
+	if is_instance_valid(training_ground_service) and bool(training_ground_service.call(&"get_loadout_snapshot").get(&"active", false)):
+		for panel in get_tree().get_nodes_in_group(&"game_modal_panel"):
+			if panel.visible:
+				status_label.text = "세팅 창을 저장·닫은 뒤 훈련을 종료하세요."
+				return false
+	if is_instance_valid(training_ground_service):
+		var result: Dictionary = training_ground_service.call(&"stop")
+		if not result.get(&"success", false):
+			status_label.text = String(result.get(&"reason", "훈련 복원 실패"))
+			return false
+	if p5_hub_progression_service != null:
+		var training: Dictionary = p5_hub_progression_service.call(&"get_snapshot").get(&"training", {})
+		if not (training.get(&"active", {}) as Dictionary).is_empty():
+			p5_hub_progression_service.call(&"finish_training")
+	return true
 
 
 func _on_training_dummy_spawned(dummy: Node) -> void:

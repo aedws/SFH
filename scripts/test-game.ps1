@@ -32,6 +32,8 @@ if ($LASTEXITCODE -ne 0) {
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/circular_coverage_contract_test.gd"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/training_loadout_restore_contract_test.gd"
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/basic_loop_smoke_test.gd"
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE

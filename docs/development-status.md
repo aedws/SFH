@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 99 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 100 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -54,15 +54,15 @@ tags:
 [오너 판단표](design/master-gdd-alignment.md#owner-conflicts)에서 회복·AP·파우치·심층·혈전·소켓·기술·상태의 8개 결정을 확인합니다. 기존 사용자 지시를 대체하는 규칙은 승인 전에 적용하지 않습니다.
 
 [최신 N26 작업선](design/current-milestone-workline.md#notion-20260907):
-판단 없이 이어갈 순서는 N26-03 완료 → 훈련 세팅·복원(N26-08A) → 성능·선택 모듈·배포 동등성(N26-08B)입니다. 생존/AP(N26-02), 파우치(N26-04/05), 심층·혈전(N26-06/07)은 오너 판단(N26-01) 후 진행합니다.
+판단 없이 이어갈 순서는 N26-03 및 훈련 세팅·복원(N26-08A) 구현 → 성능·선택 모듈·배포 동등성(N26-08B)입니다. 훈련의 기존 공용 슬롯 범위는 보완했지만 장비별 소켓 귀속·보유 룬 동등성 수락이 남아 전체 기획 대응도 73.2%는 유지합니다. 생존/AP(N26-02), 파우치(N26-04/05), 심층·혈전(N26-06/07)은 오너 판단(N26-01) 후 진행합니다.
 P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니다.
 
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 4 · IMPROVE 7 · CHANGE 5 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 6 · IMPROVE 9 · CHANGE 7 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>6</b><small>BUILD</small></span><span><b>9</b><small>IMPROVE</small></span><span><b>7</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -83,7 +83,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>중심점 덮어쓰기와 사거리 밖·삭제·중복 후보가 대표 대상에 섞이는 문제를 차단했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>범위 공격 · 최대 피격 위치와 계산 최적화</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 적 한 마리 주변만 보던 범위 타게팅을 개선해 적 사이에 공격을 놓을 수 있고, 중심 이동으로 가장자리 적을 놓치는 현상을 방지합니다.</strong></div>
@@ -92,6 +92,16 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>수정 · 1</h3><p>독립 계산 대조와 실제 효과 적중·72명 성능을 회귀 검사에 추가했습니다. 기존 반경·스킬·저장·밸런스 목록은 유지합니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>두 적 사이의 가능한 타격을 놓치는 경우와, 한쪽에 적이 몰리면 평균 중심이 반대편 적을 제외하는 경우를 수정했습니다.</p></div>
         <p><a href="features/smart-targeting/#n26-03b">타게팅 계약·검증 근거 →</a> · 다음 작업은 훈련 세팅·복원입니다. 신규 기본 스킬 추가나 사람 재미 수락 완료를 뜻하지 않습니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>훈련 무료 세팅 · 종료 원복과 저장 보호</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 훈련에서 스킬과 공용 룬을 바꿔 비교하고 종료 버튼으로 원래 장비에 돌아옵니다. 시험 세팅이 다음 작전이나 자동 저장에 섞이지 않도록 보완했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>룬·코어·유물 시험 선택과 종료·원복 버튼을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>복원 대상에 스킬·자원·공용 소켓을 포함하고, 참여자 등록 방식으로 확장했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>3개 화면 크기의 버튼 배치와 복원·실패 재시도·상점 이동을 자동 검사에 추가했습니다. 새 밸런스 목록과 과금 변경은 없습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>반복 입장 시 훈련 목록이 사라지는 참조 공유, 시험 장비 자동 저장, 창 이탈 취소 전에 훈련부터 원복하던 순서를 수정했습니다.</p></div>
       </div>
     </details>
   </div>

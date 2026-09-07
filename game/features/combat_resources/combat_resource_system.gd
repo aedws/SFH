@@ -170,6 +170,31 @@ func capture_skill_slot_state(slot_index: int) -> Dictionary:
 	}
 
 
+func export_runtime_state() -> Dictionary:
+	return {&"energy": current_energy, &"charges": charges.duplicate(), &"recharge": recharge_remaining.duplicate()}
+
+
+func validate_runtime_state(state: Dictionary) -> PackedStringArray:
+	if config == null or not state.get(&"charges") is PackedInt32Array or not state.get(&"recharge") is PackedFloat32Array:
+		return PackedStringArray(["잘못된 스킬 자원 스냅샷"])
+	if state.charges.size() != charges.size() or state.recharge.size() != charges.size() or not is_finite(float(state.get(&"energy", NAN))):
+		return PackedStringArray(["스킬 자원 슬롯 불일치"])
+	for index in state.charges.size():
+		if state.charges[index] < 0 or not is_finite(state.recharge[index]) or state.recharge[index] < 0:
+			return PackedStringArray(["잘못된 스킬 자원 값"])
+	return PackedStringArray()
+
+
+func restore_runtime_state(state: Dictionary) -> bool:
+	if not validate_runtime_state(state).is_empty():
+		return false
+	current_energy = clampf(float(state.energy), 0, float(config.get("maximum_energy")))
+	charges = state.charges.duplicate()
+	recharge_remaining = state.recharge.duplicate()
+	_emit_changed()
+	return true
+
+
 func reset_skill_slot(slot_index: int) -> bool:
 	if not _valid_slot(slot_index):
 		return false

@@ -39,6 +39,9 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 		modifier.queue_free()
 		return {&"success": false, &"status": "이동 가속 적용에 실패했습니다."}
 	_spawn_electric_aura(context.get(&"effect_parent"), player)
+	var registrar: Callable = context.get(&"register_runtime_effect", Callable())
+	if registrar.is_valid():
+		registrar.call(modifier)
 	return {
 		&"success": true,
 		&"status": "이동 속도 %.0f%% · %.1f초" % [resolved_multiplier * 100.0, resolved_duration],

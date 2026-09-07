@@ -107,7 +107,7 @@
       "existing_tests": [
         "game/tests/training_ground_gameplay_e2e_test.gd"
       ],
-      "finding": "장비 무비용 편집·복원과 스킬 런타임 계측은 있음. 룬 전체 자유 편집/복원의 동등 근거는 부족.",
+        "finding": "N26-08A: 보유 장비·스킬·기존 공용 RunAsset 시험, 종료/전환/실패 복원·저장 격리 자동 계약 추가. 장비별 소켓 귀속과 보유 룬 영구 목록의 최신 기획 동등성은 미수락이므로 partial 유지. 근거: game/tests/training_loadout_restore_contract_test.gd",
       "next_packet": "N26-08"
     },
     {
