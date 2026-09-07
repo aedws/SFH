@@ -41,10 +41,12 @@ var hub_view: Control
 var hub_hint: Label
 var hub_objective: Label
 var hub_objective_text := ""
+var hub_size_refresh_queued := false
 
 
 func attach_hub(view: Control) -> void:
 	hub_view = view
+	hub_view.minimum_size_changed.connect(_queue_hub_size_refresh)
 	hub_hint = view.get_node_or_null("Panel/Margin/Content/Controls") as Label
 	hub_objective = view.get_node_or_null("Panel/Margin/Content/Objective") as Label
 	if hub_objective != null:
@@ -53,6 +55,21 @@ func attach_hub(view: Control) -> void:
 	if hub_hint != null:
 		hub_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_apply_responsive_layout()
+
+
+func _queue_hub_size_refresh() -> void:
+	if hub_size_refresh_queued:
+		return
+	hub_size_refresh_queued = true
+	_refresh_hub_size.call_deferred()
+
+
+func _refresh_hub_size() -> void:
+	hub_size_refresh_queued = false
+	if is_instance_valid(hub_view):
+		# Autowrap may temporarily grow during native save-status/font initialization.
+		# Container minimum sizes shrink later, but its allocated height does not.
+		hub_view.size.y = maxf(116.0, hub_view.get_combined_minimum_size().y)
 
 
 func attach_tutorial(overlay: Control) -> void:

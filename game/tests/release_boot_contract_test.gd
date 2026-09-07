@@ -23,6 +23,12 @@ func _run() -> void:
 	_check(is_instance_valid(game.start_hub), "default boot opens hub")
 	_check(is_instance_valid(game.player), "hub has controllable player")
 	_check(not game.run_started, "boot does not bypass hub")
+	var original_hint: String = game.hub_control_hint_label.text
+	game.hub_control_hint_label.text = "초기 저장 상태 확인 중 ".repeat(50)
+	for frame in 3: await process_frame
+	game.hub_control_hint_label.text = original_hint
+	for frame in 4: await process_frame
+	_check(game.start_hub_hud.size.y <= 180.0, "hub contracts after temporary wrapped status")
 	if failures.is_empty():
 		_check(game.start_run(&"medium"), "exported medium raid starts")
 		for frame in 6: await process_frame
