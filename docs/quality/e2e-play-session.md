@@ -535,6 +535,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-performance.p
 
 로컬 Worker 계약은 실제 R2처럼 전체 객체에도 range descriptor를 제공해 오판 회귀를 재현합니다. main 배포 E2E는 게임 홈과 ZIP의 `200`, Range 자산의 `206`, 체크섬과 배포 커밋을 함께 확인해야 통과합니다. 같은 QA 라운드에서 실제 입력 E2E 31개 인식 체크포인트·15개 인과 흐름, P5/P6 계약, 57개 기능·231개 클래스·순환 0개, 대형 전장 평균 6.88ms 성능 예산을 통과했습니다.
 
+### 배포 CSV 가져오기 회귀 · 2026-09-07
+
+PR 패키지 부팅 검사에서 `training_scenario.csv`와 `upgrade_balance.csv`가 Translation 의존성으로 처리되어 거점 초기화가 실패했습니다. 게임 데이터 18종의 `.csv.import`를 `importer="keep"`으로 형상 관리하고, 새 데이터도 같은 계약을 지키는지 `test_balance_csv_imports.py`로 가져오기 전에 검사합니다. 수치·Sheet·Web 내장 payload 계약은 변경하지 않습니다.
+
+완성된 Web/Windows PCK에서 `RELEASE_RAW_CSV_OK`와 `RELEASE_BOOT_OK`를 확인합니다. 에디터 실행 성공만으로 배포 합격 처리하지 않습니다. 설정의 근거는 [Godot 원본 파일 보존 문서](https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/import_process.html)입니다.
+
 ## 검색 별칭
 
 E2E, 실제 플레이, 플레이 테스트, 플레이어 인식, UX E2E, 행동 피드백, UI 상태 판정, UI 상태 계약, 모달 배타성, HUD 겹침, 화면 경계, QA 체크리스트, 거점 작전 탈출, 성공 정산, 실패 정산, K 키 설정, U E 입력, 브라우저 입력, 사이버펑크 테마, 오버레이 입력 통과
