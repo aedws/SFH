@@ -16,11 +16,11 @@ tags:
 - [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed): v128, 본문 62블록. 2026-09-06 18:09:49 KST 편집, 2026-09-07 재수집.
 - [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2): 66행 전체 수집, hasMore=false. 결정(미구현) 52 / 미정(검토필요) 14.
 - 스냅샷: `docs/assets/notion-source-snapshot.json`, `docs/assets/notion-tracker-snapshot.json`. 수동 판단표: `docs/assets/notion-code-audit.json`.
-- 재대조 코드 기준: `dda00af`(2026-09-07). 오너 승인 임시 AP·소켓 귀속·보유 훈련 정책을 계약/플레이 E2E로 검증했습니다. 새로운 66항목 사람 플레이 완료 선언이 아닙니다.
+- 재대조 코드 기준: `cd25dfe`(2026-09-07). 임시 정책·손상 매물·엔진 어댑터와 릴리스 초기화/표시 회귀를 검증했습니다. 새로운 66항목 사람 플레이 완료 선언이 아닙니다.
 - 이전 2026-09-02 GDD v153은 백업본입니다. **이전 96%를 최신 진행률로 사용하지 않습니다.** 완료 이력은 Git과 일별 업데이트에 보존합니다.
 - GDD 본문과 트래커는 독립 해시로 관리하며 상위 페이지 수정은 본문 변경으로 세지 않습니다. 체크박스·미구현 태그는 실제 코드 부재나 오너 승인을 대신하지 않습니다.
 
-**이번 라이브 확인에서 GDD·트래커 내용 변경은 없었습니다.** GDD `5702a448dd07…`, 트래커 `b1eb9834f867…`가 재수집 결과와 같습니다. 수집 시각은 각 스냅샷에 남깁니다. 확정도 가중 코드 대응도는 **133.5/170 = 78.5%**입니다. AP·소켓·보유 훈련 3행의 임시 정책 구현과 자동 검증으로 73.2%에서 상승했습니다. 노션 상태를 임의로 변경하거나 임시 수치를 기획 최종 확정으로 바꾸지는 않습니다.
+**이번 라이브 확인에서 GDD·트래커 내용 변경은 없었습니다.** GDD `5702a448dd07…`, 트래커 `b1eb9834f867…`가 재수집 결과와 같습니다. 수집 시각은 각 스냅샷에 남깁니다. 확정도 가중 코드 대응도는 **133.5/170 = 78.5%**입니다. 임시 AP·소켓·보유 훈련 및 손상 매물·TileMapLayer·Area2D를 검증한 결과입니다. 노션 상태를 임의로 변경하거나 임시 수치를 기획 최종 확정으로 바꾸지는 않습니다.
 
 ## 세 가지 질문으로 읽기 {#current-classification}
 
@@ -278,13 +278,13 @@ dda00af: 기존 탈출 Area2D에 더해 무기/스킬 후보를 TargetCandidateA
 
 노션: **결정 (미구현)** · 코드: **부분 대응** · 작업: **N26-08**
 
-기존 소스 GPU 중·대형 각 600초에서 평균59.91/59.88FPS·종료 잔류Node0, 최신 프레임/표현 계약 근거를 추가. 시험 HP·자동 입력·현재 PC 조건이며 배포 Web/Windows 일반 플레이 동등성·첫 출격 지연 수락은 남음. 120초 비교에서 지속 FPS 개선을 입증하지 못해 partial 유지.
+소스 중·대형600초 및 최신 중형120초 약59.8FPS 근거. 실제 Web 릴리스 QA에서 정책 복제 null 초기화 실패와 저프레임 카메라 이탈을 발견·수정하고 중형 일반 입력 12처치→사망→거점 복귀 확인. Windows 릴리스 거점·가방·회전 충돌 안내 확인. 내보낸 PCK 초기화 및 5FPS 렌더 픽셀 게이트 추가. 첫 프레임202ms·배포 양쪽10분 일반 플레이·간헐 탈출F 원인 수락은 미완료여서 partial 유지.
 
 수락 기준: 2D 뷰포트에서 기본 씬이 60FPS로 구동 확인
 
 코드 경계: `project.godot`
 
-기존 검사 근거: `game/tests/performance_budget_test.gd`, `game/tests/rendered_soak_test.gd`, `game/tests/frame_feedback_contract_test.gd`
+기존 검사 근거: `game/tests/performance_budget_test.gd`, `game/tests/rendered_soak_test.gd`, `game/tests/frame_feedback_contract_test.gd`, `game/tests/release_boot_contract_test.gd`
 
 ### [TileMapLayer 기반 2D 던전 맵 렌더링 파이프라인](https://wobbly-pawpaw-1ff.notion.site/3d35b7280040813893c2fc6eddfae751)
 

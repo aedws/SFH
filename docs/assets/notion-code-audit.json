@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "reviewed_at": "2026-09-07",
-  "reviewed_commit": "dda00af",
-  "method": "shop unit-price bands, real TileMapLayer floor and Area2D candidate adapters; executed contracts/gameplay E2E and 120s rendered source QA; deployment parity and first-frame acceptance remain separate",
+  "reviewed_commit": "cd25dfe",
+  "method": "shop bands and engine adapters; gameplay E2E, 120s GPU source QA, exported PCK boot and slow-frame pixel tests; ordinary Web battle/death/hub and Windows menus reviewed; full 10-minute release parity and first-frame acceptance remain separate",
   "gdd_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
   "tracker_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
   "scoring": {
@@ -1084,9 +1084,10 @@
       "existing_tests": [
         "game/tests/performance_budget_test.gd",
         "game/tests/rendered_soak_test.gd",
-        "game/tests/frame_feedback_contract_test.gd"
+        "game/tests/frame_feedback_contract_test.gd",
+        "game/tests/release_boot_contract_test.gd"
       ],
-      "finding": "기존 소스 GPU 중·대형 각 600초에서 평균59.91/59.88FPS·종료 잔류Node0, 최신 프레임/표현 계약 근거를 추가. 시험 HP·자동 입력·현재 PC 조건이며 배포 Web/Windows 일반 플레이 동등성·첫 출격 지연 수락은 남음. 120초 비교에서 지속 FPS 개선을 입증하지 못해 partial 유지.",
+      "finding": "소스 중·대형600초 및 최신 중형120초 약59.8FPS 근거. 실제 Web 릴리스 QA에서 정책 복제 null 초기화 실패와 저프레임 카메라 이탈을 발견·수정하고 중형 일반 입력 12처치→사망→거점 복귀 확인. Windows 릴리스 거점·가방·회전 충돌 안내 확인. 내보낸 PCK 초기화 및 5FPS 렌더 픽셀 게이트 추가. 첫 프레임202ms·배포 양쪽10분 일반 플레이·간헐 탈출F 원인 수락은 미완료여서 partial 유지.",
       "next_packet": "N26-08"
     }
   ]

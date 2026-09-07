@@ -31,7 +31,7 @@ tags:
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-재대조 코드 기준은 `dfe0f1f`입니다. 2026-09-07 라이브 GDD·트래커 해시는 동일합니다. 오너 승인 임시 AP·소켓·보유 훈련 정책의 계약/플레이 E2E 근거를 추가했습니다. [원본·행별 계산 근거](design/master-gdd-alignment.md#current-classification)에서 범위를 확인합니다.
+재대조 코드 기준은 `cd25dfe`입니다. 2026-09-07 라이브 GDD·트래커 해시는 동일합니다. 손상 매물·엔진 어댑터, 릴리스 초기화·저프레임 시야·훈련 문구·거점 HUD 회귀 근거를 추가했습니다. [원본·행별 계산 근거](design/master-gdd-alignment.md#current-classification)에서 범위를 확인합니다.
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
@@ -45,7 +45,7 @@ tags:
 
 ## 현재 빌드 상태
 
-거점 → 작전 → 방 전투·파밍 → 탈출·정산을 유지합니다. AP 자연 회복, 무기/스킬별 소켓 효과, 보유품 무료 훈련·가방 반환을 임시 정책으로 구현하고 검증했습니다. HP 규칙·Sheet/CSV·영구 저장 스키마는 변경하지 않았습니다.
+거점 → 작전 → 방 전투·파밍 → 탈출·정산을 유지합니다. 임시 AP·소켓·훈련에 손상 매물 가격 범위와 실제 바닥/타겟 어댑터를 추가했습니다. ShopOffer의 2개 가격만 Sheet·CSV·Web payload에 동기화했으며 HP 규칙·영구 저장 스키마는 유지합니다.
 
 최신 원본에서는 키트 중심 생존, 보안 파우치, 심층 진입과 혈전 프로필 요구가 추가되거나 구체화됐습니다. 기존 HP 자연 회복·드랍·레벨업 회복과의 충돌, AP와 충전의 차이, 광역 타게팅 중심 덮어쓰기를 별도 작업으로 분리했습니다.
 
@@ -60,9 +60,9 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 16 · IMPROVE 27 · CHANGE 20 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 16 · IMPROVE 27 · CHANGE 20 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>16</b><small>BUILD</small></span><span><b>27</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>16</b><small>BUILD</small></span><span><b>27</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 12</small><b>손상품 가격 · 타일/타겟 어댑터 · 체감 QA</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -70,8 +70,8 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>구현 · 2</h3><p>실제 바닥 TileMapLayer와 무기/스킬 공통 후보 Area2D를 연결하고 기존 충돌·길찾기·타겟 우선순위를 유지했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 1</h3><p>첫 생성·사거리 변경·삭제·화면 중앙 가림을 별도 회귀 계약으로 추가했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 1</h3><p>3행 추가 검증으로 코드 대응도 78.5%(133.5/170). 배포판 일반 플레이·첫 진입 지연은 별도 검수로 남깁니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>손상품 가격을 표준 단가20~30% 범위의 6C/23C로 Sheet·CSV에 반영하고, 반복 정보 팝업과 캐릭터 앞 가림을 줄였습니다.</p></div>
-        <p><a href="quality/player-perception-audit/">플레이어 인식 QA →</a> · <a href="architecture/module-audit/#partial-adapters">모듈 경계 →</a> · 코드 dda00af. 자동 통과와 사람 재미 수락은 구분합니다.</p>
+        <div class="sfh-group"><h3>버그픽스 · 6</h3><p>손상품 가격·중앙 정보 가림에 더해 릴리스 초기화 실패, 저프레임 카메라 이탈로 검게 보이는 전장, 작전 중 훈련 문구, Windows 거점 HUD의 과도한 빈 높이를 수정했습니다.</p></div>
+        <p><a href="quality/player-perception-audit/">플레이어 인식 QA →</a> · <a href="architecture/module-audit/#partial-adapters">모듈 경계 →</a> · 코드 cd25dfe. Web 일반 입력 전투·사망·거점 복귀 및 Windows 메뉴 검수. 10분 일반 플레이와 사람 재미 수락은 별도입니다.</p>
       </div>
     </details>
     <details class="sfh-bundle">
