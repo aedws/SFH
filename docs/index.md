@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 2 · IMPROVE 2 · CHANGE 2 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 3 · IMPROVE 5 · CHANGE 4 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>2</b><small>IMPROVE</small></span><span><b>2</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>4</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>타게팅 중심 보존 · 독립 구현 시작</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 지점형 스킬에 전달되던 군집 중심이 적 좌표로 바뀌는 오류를 수정했습니다. 현재 자기장·점멸의 사용 방식은 유지합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>스킬 효과 반경과 최종 배율을 타게팅에 전달하는 선택형 계약을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>동률 결과를 고정하고 기존 정책 호환 경로를 보존했으며, 별도 기획 판단 없이 이어갈 작업을 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>부분 구현 상태와 잔여 범위를 명시하고 실제 스킬 실행 회귀를 추가했습니다. 새 밸런스 목록과 확정 수치는 추가하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>중심점 덮어쓰기와 사거리 밖·삭제·중복 후보가 대표 대상에 섞이는 문제를 차단했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 오래된 기획 백업 대신 최신 원본과 작업 목록을 연결하고, 이미 구현된 것과 새 요구의 차이를 분리했습니다. 게임 규칙은 변경하지 않았습니다.</strong></div>

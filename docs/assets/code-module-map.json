@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "3ae04963c927bdd743b9d89c3c9c9f0e6f380c24a381db2b42223be19b96d762",
+  "source_sha256": "4d74efae149d68eae18b66a2f1f7d5e8f7291a9336e3b22ad7ac9ce70122c4ad",
   "domains": [
     {
       "id": "system",
@@ -63,7 +63,7 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 280,
+    "scripts": 281,
     "named_classes": 232,
     "relationships": 185,
     "project_inheritance": 7,
@@ -1254,7 +1254,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 38,
+      "file_count": 39,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -4172,7 +4172,7 @@
       "from": "verification",
       "to": "combat_skills",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
@@ -4424,7 +4424,7 @@
       "from": "verification",
       "to": "smart_targeting",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",

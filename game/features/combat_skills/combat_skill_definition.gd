@@ -30,6 +30,14 @@ func is_valid() -> bool:
 	)
 
 
+func get_targeting_radius(mechanic_override: Dictionary = {}) -> float:
+	if effect == null or not effect.has_method(&"get_parameters"):
+		return 0.0
+	var parameters: Dictionary = effect.call(&"get_parameters")
+	var radius := float(parameters.get(&"radius", 0.0)) * float(mechanic_override.get(&"radius_multiplier", 1.0))
+	return radius if is_finite(radius) and radius > 0.0 else 0.0
+
+
 func get_snapshot(slot_index: int) -> Dictionary:
 	return {
 		&"slot_index": slot_index,

@@ -400,13 +400,6 @@ func _build_activation_context(skill: Resource) -> Dictionary:
 	var target_point := player.global_position if is_instance_valid(player) else Vector2.ZERO
 	var mode := StringName(skill.get("targeting_mode"))
 	var maximum_range := float(skill.get("targeting_range"))
-	if targeting_policy != null and targeting_policy.has_method(&"resolve"):
-		var resolved: Dictionary = targeting_policy.call(
-			&"resolve", mode, player.global_position, candidates, maximum_range, direction
-		)
-		target = resolved.get(&"target") as Node2D
-		target_point = resolved.get(&"target_point", target_point)
-		direction = resolved.get(&"direction", direction)
 	var mechanic_override := {}
 	if (
 		is_instance_valid(equipment_provider)
@@ -430,6 +423,17 @@ func _build_activation_context(skill: Resource) -> Dictionary:
 			float(mechanic_override.get(&"tick_damage_multiplier", 1.0))
 			* float(runtime_modifiers[&"damage_multiply"])
 		)
+	if targeting_policy != null and targeting_policy.has_method(&"resolve"):
+		var resolved: Dictionary
+		if targeting_policy.has_method(&"resolve_for_skill") and skill.has_method(&"get_targeting_radius"):
+			resolved = targeting_policy.call(&"resolve_for_skill", mode, player.global_position,
+				candidates, maximum_range, direction, skill.call(&"get_targeting_radius", mechanic_override))
+		else:
+			# Legacy/custom policies keep the original five-argument contract.
+			resolved = targeting_policy.call(&"resolve", mode, player.global_position, candidates, maximum_range, direction)
+		target = resolved.get(&"target") as Node2D
+		target_point = resolved.get(&"target_point", target_point)
+		direction = resolved.get(&"direction", direction)
 	return {
 		&"target_container": target_container,
 		&"effect_parent": effect_parent,
