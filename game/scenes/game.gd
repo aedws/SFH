@@ -1750,6 +1750,7 @@ func _install_training_ground() -> bool:
 	training_ground_service.connect(&"dummy_spawned", _on_training_dummy_spawned)
 	training_ground_service.connect(&"stop_requested", _finish_hub_training)
 	if desktop_progress != null and not training_ground_service.call(&"configure_checkpoint_provider", desktop_progress):
+		_report_configuration_error("훈련 저장 체크포인트 제공자 연결 실패")
 		return false
 	training_telemetry_presenter = TRAINING_TELEMETRY_PRESENTER_SCRIPT.new()
 	ui_layer.add_child(training_telemetry_presenter)
@@ -1785,13 +1786,19 @@ func _install_training_ground() -> bool:
 			return false
 		if features.session_sockets_enabled:
 			var training_sockets := _instantiate_feature(SESSION_SOCKET_SERVICE_SCENE_PATH, training_ground_service, &"TrainingSockets")
+			if training_sockets != null:
+				training_sockets.connect(&"socket_error", _report_configuration_error)
 			var socket_config := load(features.session_socket_config_path).duplicate(true) as SessionSocketConfig
 			socket_config.source_mode = selected_balance_source_mode
 			if training_sockets == null or not training_sockets.call(&"configure", socket_config, loot_lifecycle_service, auto_weapon, training_combat_skill_system, player, inventory_system):
+				_report_configuration_error("훈련 소켓 구성 실패")
 				return false
+			training_sockets.disconnect(&"socket_error", _report_configuration_error)
 			if not training_ground_service.call(&"configure_socket_runtime", training_sockets):
+				_report_configuration_error("훈련 소켓 복원 제공자 등록 실패")
 				return false
 			if not inventory_window.call(&"register_runtime_item_actions", training_ground_service):
+				_report_configuration_error("훈련 가방 동작 제공자 등록 실패")
 				return false
 	training_hud_layout = TRAINING_HUD_LAYOUT_SCRIPT.new()
 	module_container.add_child(training_hud_layout)
@@ -2240,6 +2247,9 @@ func _assemble_game() -> bool:
 		return false
 
 	player.global_position = player_spawn_position
+	var spawn_camera := player.get_node_or_null("Camera2D") as Camera2D
+	if spawn_camera != null:
+		spawn_camera.reset_smoothing()
 	player.call(&"configure_damage", features.damage_enabled)
 	var character_context: Dictionary = active_contract.get(&"investment_context", {})
 	var character_modifiers: Dictionary = character_context.get(&"player_runtime_modifiers", {})
@@ -3913,8 +3923,6 @@ func _on_enemy_spawned(enemy: Node) -> void:
 		enemy_hit_reaction.set("enabled", features.hit_feedback_enabled)
 	if is_instance_valid(hit_feedback_director):
 		hit_feedback_director.call(&"register_actor", enemy)
-	if p5_hub_progression_service != null and enemy.has_signal(&"damaged"):
-		enemy.connect(&"damaged", Callable(self, &"_on_enemy_training_damage"))
 
 
 func _on_enemy_training_damage(
@@ -3923,6 +3931,9 @@ func _on_enemy_training_damage(
 	_world_position: Vector2,
 	context: Dictionary
 ) -> void:
+	# Only real hub dummies feed training telemetry; raid enemies never do.
+	if run_started or not is_instance_valid(training_ground_service):
+		return
 	var total_damage := maxf(0.0, health_damage + armor_damage)
 	if is_instance_valid(training_ground_service):
 		training_ground_service.call(
@@ -4044,6 +4055,7 @@ func _on_active_weapon_changed(slot_id: StringName, weapon_definition: Resource)
 
 
 func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:
+	var previous_text := weapon_runtime_label.text
 	var trait_labels := {
 		&"steady_burst": "안정 3점사",
 		&"heavy_piercing": "고위력 관통",
@@ -4060,7 +4072,7 @@ func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:
 		trait_labels.get(trait_id, String(trait_id)),
 		snapshot.get(&"source_label", "내장 기본값"),
 	]
-	if run_started:
+	if run_started and weapon_runtime_label.text != previous_text:
 		combat_hud_presenter.call(&"reveal_detail", &"weapon")
 
 

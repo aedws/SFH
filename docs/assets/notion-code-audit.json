@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "reviewed_at": "2026-09-07",
-  "reviewed_commit": "dfe0f1f",
-  "method": "owner-approved provisional AP/socket/training policies; executed contract + gameplay E2E; no new human-play acceptance; planner status unchanged",
+  "reviewed_commit": "cd25dfe",
+  "method": "shop bands and engine adapters; gameplay E2E, 120s GPU source QA, exported PCK boot and slow-frame pixel tests; ordinary Web battle/death/hub and Windows menus reviewed; full 10-minute release parity and first-frame acceptance remain separate",
   "gdd_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
   "tracker_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
   "scoring": {
@@ -260,14 +260,15 @@
       "title": "상점: 성능 -10%~-30% 손상된 하자품 헐값(20~30%) 판매",
       "request_id": "PLAN-04-SHOP",
       "planner_status": "결정 (미구현)",
-      "assessment": "partial",
+      "assessment": "code_supported",
       "code": [
         "game/features/p5_hub_progression/shop_quote_policy.gd"
       ],
       "existing_tests": [
-        "game/tests/shop_quality_inventory_contract_test.gd"
+        "game/tests/shop_quality_inventory_contract_test.gd",
+        "game/tests/partial_completion_contract_test.gd"
       ],
-      "finding": "손상 품질 실물·성능 적용은 있음. -10~-30% 성능 및 정가20~30% 가격 전체 범위 보장은 운영 데이터 재대조 필요.",
+      "finding": "dda00af: 품질 Resource의 성능0.7~0.9·표준 단가 비율0.2~0.3을 견적/구매에 강제. 표준 누락·모호한 단가·범위 밖 구매를 무차감 거부. Sheet ShopOffer G3=6/G6=23과 CSV/payload 일치, 표준 단가 대비26.67%/25.56%. 경계값·실물 지급·장착 계약 통과. 임시 개별 운영값은 최종 밸런스 수락과 구분.",
       "next_packet": "N26-01"
     },
     {
@@ -396,14 +397,14 @@
       "title": "TileMapLayer 기반 2D 던전 맵 렌더링 파이프라인",
       "request_id": "PLAN-00-ENV",
       "planner_status": "결정 (미구현)",
-      "assessment": "partial",
+      "assessment": "code_supported",
       "code": [
         "game/features/map_generation/map_generator.gd"
       ],
       "existing_tests": [
         "game/tests/basic_loop_smoke_test.gd"
       ],
-      "finding": "맵 기능은 있으나 game 코드에서 TileMapLayer 사용 근거 없음. 동일 결과의 현재 방식 유지 vs 지정 기술 이행을 오너 판단.",
+      "finding": "dda00af: DungeonFloorLayer가 실제 바닥 셀을 TileMapLayer에 배치. 음수 좌표·셀 크기 변경·재생성 초기화 계약 통과. 벽/기둥 표현과 기존 병합 충돌·AStar는 유지하고 타일의 충돌/내비게이션은 꺼 중복 물리를 방지. 실제 중형 렌더링·방/통로 이동 회귀 확인.",
       "next_packet": "N26-01"
     },
     {
@@ -1061,14 +1062,14 @@
       "title": "Area2D 기반 타겟팅 및 탈출 구역 콜리전 구조 셋업",
       "request_id": "PLAN-00-ENV",
       "planner_status": "결정 (미구현)",
-      "assessment": "partial",
+      "assessment": "code_supported",
       "code": [
         "game/features/extraction/extraction_zone.gd"
       ],
       "existing_tests": [
         "game/tests/basic_loop_smoke_test.gd"
       ],
-      "finding": "ExtractionZone은 실제 Area2D이며 body_entered/body_exited와 원형 충돌을 사용. 타게팅은 Area2D 후보 수집이 아닌 거리·스냅샷 정책이므로 지정 구조 전체는 부분 대응.",
+      "finding": "dda00af: 기존 탈출 Area2D에 더해 무기/스킬 후보를 TargetCandidateArea의 실제 겹침 목록으로 수집. 소유 공급자·중심 사거리·정렬은 유지. 초기/반경 변경/워프/신규 생성은 물리 갱신 전 제공자 폴백, 비물리 더미 호환, 삭제 대상 배제. 첫 공격·실제 겹침·반경 변경 및 전체 전투 E2E 통과.",
       "next_packet": "N26-01"
     },
     {
@@ -1083,9 +1084,10 @@
       "existing_tests": [
         "game/tests/performance_budget_test.gd",
         "game/tests/rendered_soak_test.gd",
-        "game/tests/frame_feedback_contract_test.gd"
+        "game/tests/frame_feedback_contract_test.gd",
+        "game/tests/release_boot_contract_test.gd"
       ],
-      "finding": "기존 소스 GPU 중·대형 각 600초에서 평균59.91/59.88FPS·종료 잔류Node0, 최신 프레임/표현 계약 근거를 추가. 시험 HP·자동 입력·현재 PC 조건이며 배포 Web/Windows 일반 플레이 동등성·첫 출격 지연 수락은 남음. 120초 비교에서 지속 FPS 개선을 입증하지 못해 partial 유지.",
+      "finding": "소스 중·대형600초 및 최신 중형120초 약59.8FPS 근거. 실제 Web 릴리스 QA에서 정책 복제 null 초기화 실패와 저프레임 카메라 이탈을 발견·수정하고 중형 일반 입력 12처치→사망→거점 복귀 확인. Windows 릴리스 거점·가방·회전 충돌 안내 확인. 내보낸 PCK 초기화 및 5FPS 렌더 픽셀 게이트 추가. 첫 프레임202ms·배포 양쪽10분 일반 플레이·간헐 탈출F 원인 수락은 미완료여서 partial 유지.",
       "next_packet": "N26-08"
     }
   ]

@@ -16,12 +16,19 @@ static func is_valid_offer(offer: Dictionary, catalog: Resource = null) -> bool:
 	var source := catalog if catalog != null else default_catalog()
 	var quality := StringName(offer.get(&"quality", &""))
 	var multiplier := float(offer.get(&"performance_multiplier", 1.0))
+	if source == null or not source.has_method(&"get_definition"):
+		return false
+	var definition: Resource = source.call(&"get_definition", quality)
+	if definition == null or not definition.call(&"is_valid"):
+		return false
 	return (
 		source != null
 		and source.has_method(&"get_definition")
 		and source.call(&"get_definition", quality) != null
 		and is_finite(multiplier)
 		and multiplier > 0.0
+		and multiplier >= float(definition.get("performance_minimum"))
+		and multiplier <= float(definition.get("performance_maximum"))
 	)
 
 

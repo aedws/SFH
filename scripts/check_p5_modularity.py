@@ -103,8 +103,22 @@ game = (ROOT / "game" / "scenes" / "game.gd").read_text(encoding="utf-8")
 for forbidden in ('&"assault_blueprint_recipe"', '&"single_target"', 'call(&"purchase_shop_offer"', 'call(&"craft_recipe"'):
     if forbidden in game:
         ERRORS.append(f"Game assembly owns a P5 domain decision: {forbidden}")
-if 'enemy.has_signal(&"damaged")' not in game or "record_training_hit" not in game:
-    ERRORS.append("Real enemy damage is not bridged to training telemetry.")
+def game_function(name: str) -> str:
+    match = re.search(rf"^func {re.escape(name)}\([\s\S]*?(?=^func |\Z)", game, re.MULTILINE)
+    return match.group(0) if match else ""
+
+
+dummy_spawn = game_function("_on_training_dummy_spawned")
+raid_spawn = game_function("_on_enemy_spawned")
+training_damage = game_function("_on_enemy_training_damage")
+if 'dummy.connect(&"damaged", Callable(self, &"_on_enemy_training_damage"))' not in dummy_spawn:
+    ERRORS.append("Hub dummy damage is not bridged to training telemetry.")
+if not raid_spawn or "_on_enemy_training_damage" in raid_spawn:
+    ERRORS.append("Raid enemies must not feed hub training telemetry or replace combat status.")
+if not re.search(r"if run_started or not is_instance_valid\(training_ground_service\):\s+return", training_damage):
+    ERRORS.append("Training damage bridge must ignore active raids and missing training modules.")
+if not re.search(r'call\(\s*&"record_training_hit"', training_damage):
+    ERRORS.append("Hub training damage bridge must preserve P5 telemetry recording.")
 
 quality_policy = (FEATURE_ROOT / "shop_item_quality_policy.gd").read_text(encoding="utf-8")
 for forbidden in ("QUALITY_LABELS", "QUALITY_OPTIONS", "QUALITY_SOCKETS"):

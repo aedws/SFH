@@ -39,6 +39,7 @@ var astar_grid := AStarGrid2D.new()
 var random := RandomNumberGenerator.new()
 var collision_body: StaticBody2D
 var collision_shape_count: int = 0
+var floor_layer: TileMapLayer
 
 
 func configure_obstacles(is_enabled: bool) -> void:
@@ -72,6 +73,10 @@ func generate(config: MapTierConfig, requested_seed: int = 0) -> void:
 		obstacle_cells.clear()
 		_build_pathfinding_grid()
 	_build_collision_bodies()
+	if not is_instance_valid(floor_layer):
+		floor_layer = preload("res://game/features/map_generation/dungeon_floor_layer.gd").new()
+		add_child(floor_layer)
+	floor_layer.call(&"rebuild", floor_cells, cell_size, floor_color, alternate_floor_color)
 	queue_redraw()
 
 	map_generated.emit(
@@ -276,6 +281,7 @@ func get_minimap_snapshot() -> Dictionary:
 
 func get_performance_snapshot() -> Dictionary:
 	return {
+		&"floor_renderer": floor_layer.call(&"get_snapshot") if is_instance_valid(floor_layer) else {},
 		&"floor_cell_count": floor_cells.size(),
 		&"wall_cell_count": wall_cells.size(),
 		&"obstacle_cell_count": obstacle_cells.size(),
@@ -764,10 +770,6 @@ func _world_to_cell(world_position: Vector2) -> Vector2i:
 
 
 func _draw() -> void:
-	for cell in floor_cells:
-		var color := floor_color if (cell.x + cell.y) % 2 == 0 else alternate_floor_color
-		draw_rect(Rect2(Vector2(cell) * cell_size, Vector2.ONE * cell_size), color)
-
 	for cell in wall_cells:
 		var wall_rect := Rect2(Vector2(cell) * cell_size, Vector2.ONE * cell_size)
 		wall_rect = wall_rect.grow(-tile_visual_inset)

@@ -250,6 +250,7 @@ func _find_nearest_enemy() -> Node2D:
 	)
 	var candidates := _target_candidates()
 	if targeting_policy != null:
+		candidates = _collect_target_area(candidates, target_range)
 		return targeting_policy.call(&"select_target_for_mode", _resolved_targeting_mode(), global_position, candidates, target_range)
 	var nearest: Node2D
 	var nearest_distance_squared := target_range * target_range
@@ -268,6 +269,16 @@ func _target_candidates() -> Array:
 	if is_instance_valid(target_provider):
 		return target_provider.call(&"get_active_targets")
 	return get_tree().get_nodes_in_group(fallback_target_group)
+
+
+var _candidate_area: Area2D
+
+
+func _collect_target_area(candidates: Array, radius: float) -> Array:
+	if not is_instance_valid(_candidate_area):
+		_candidate_area = load("res://game/features/smart_targeting/target_candidate_area.gd").new()
+		add_child(_candidate_area)
+	return _candidate_area.call(&"collect", candidates, global_position, radius)
 
 
 func _resolved_targeting_mode() -> StringName:

@@ -38,5 +38,6 @@ color = Color(0.914, 0.961, 0.969, 1)
 shape = SubResource("CircleShape2D_player")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 18.0

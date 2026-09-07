@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-07",
-  "source_sha256": "7d28c23bc035c51e8a3401471be449151485b9df2980670452fd28c2b96e06ff",
+  "source_sha256": "5ba0c1187fd87caa85795fd0d4fe569d4e8b1eaf8f085bb795e9d0e6b74ee82e",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -2713,7 +2713,7 @@
         "files": 13,
         "classes": 13,
         "incoming": 6,
-        "outgoing": 3
+        "outgoing": 4
       }
     },
     {
@@ -3136,14 +3136,14 @@
       "label": "맵 생성",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "월드·탐색 · feature · 파일 2개",
+      "summary": "월드·탐색 · feature · 파일 3개",
       "route": "architecture/code-module-map/?module=map_generation",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/map_generation",
       "kind": "implementation",
       "metrics": {
-        "files": 2,
-        "classes": 2,
+        "files": 3,
+        "classes": 3,
         "incoming": 7,
         "outgoing": 0
       }
@@ -3550,15 +3550,15 @@
       "label": "자동 타게팅",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "전투 · feature · 파일 2개",
+      "summary": "전투 · feature · 파일 3개",
       "route": "architecture/code-module-map/?module=smart_targeting",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/smart_targeting",
       "kind": "implementation",
       "metrics": {
-        "files": 2,
-        "classes": 2,
-        "incoming": 2,
+        "files": 3,
+        "classes": 3,
+        "incoming": 4,
         "outgoing": 1
       }
     },
@@ -3649,7 +3649,7 @@
         "files": 3,
         "classes": 3,
         "incoming": 5,
-        "outgoing": 2
+        "outgoing": 3
       }
     },
     {
@@ -3658,13 +3658,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 45개",
+      "summary": "기반·검증 · verification · 파일 47개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 45,
+        "files": 47,
         "classes": 0,
         "incoming": 0,
         "outgoing": 52

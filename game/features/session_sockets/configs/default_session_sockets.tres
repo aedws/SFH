@@ -1,10 +1,17 @@
-[gd_resource type="Resource" script_class="SessionSocketConfig" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="SessionSocketConfig" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://game/features/session_sockets/session_socket_config.gd" id="1_config"]
 [ext_resource type="Resource" path="res://game/features/session_sockets/data/session_socket_rules_payload.tres" id="2_payload"]
+[ext_resource type="Script" path="res://game/features/session_sockets/session_socket_binding_policy.gd" id="3_binding"]
+
+[sub_resource type="Resource" id="BindingPolicy"]
+script = ExtResource("3_binding")
+bind_to_target = true
+default_target_index = 0
 
 [resource]
 script = ExtResource("1_config")
+binding_policy = SubResource("BindingPolicy")
 source_mode = 0
 locked_csv_path = "res://game/features/session_sockets/data/session_socket_rules.csv"
 locked_csv_payload = ExtResource("2_payload")
