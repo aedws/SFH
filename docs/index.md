@@ -26,6 +26,12 @@ search:
   </div>
   <aside class="sfh-operation-card sfh-public-card">
     <span class="sfh-kicker">PLAYABLE LOOP</span>
+    <div class="sfh-progress-panel">
+      <div class="sfh-progress-heading"><span><small>2026-09-07 마감 대조</small><strong>기획 코드 대응도</strong></span><b>78.5%</b></div>
+      <div class="sfh-progress-track" role="progressbar" aria-label="기획 대비 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="78.5"><i style="width: 78.5%"></i></div>
+      <p>확정 요구 ×3 · 미정 ×1. 출시 완성도·재미 평가 점수는 아닙니다.</p>
+      <a href="access/login/?return=%2Fdesign%2Fmaster-gdd-alignment%2F%23day-close">팀 로그인 후 산정 근거 확인 →</a>
+    </div>
     <header><strong>현재 체험 가능</strong><b class="sfh-live">WEB · WINDOWS</b></header>
     <div class="sfh-public-features">
       <span><i>01</i><b>준비</b><small>거점에서 요원·장비·작전 설정</small></span>
@@ -53,9 +59,18 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 19 · IMPROVE 33 · CHANGE 23 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 19 · IMPROVE 34 · CHANGE 24 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>19</b><small>BUILD</small></span><span><b>33</b><small>IMPROVE</small></span><span><b>23</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>19</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>24</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 16</small><b>오늘 마감 · 노션 대비 코드 대응도 78.5%</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 홈에서 현재 기획 대응도를 바로 확인하고, 로그인 후 원본·계산·잔여 범위를 읽을 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>현재 체험 가능 블록 위에 78.5%를 표시했습니다. 확정 요구 가중치를 높이며 출시·재미 완성도와 구분합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>최신 공개 노션 재수집과 배포 코드 대조를 마쳤습니다. 오늘의 파츠·모듈 UI/소켓은 별도 추가 구현 근거로 갱신하고 진행률에 중복 가산하지 않습니다.</p></div>
+        <p><a href="design/master-gdd-alignment/#day-close">마감·계산 근거 →</a> · 2026-09-07 작업 종료. 새 게임 규칙·노션 원문·밸런스 목록 변경 없음.</p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 15</small><b>무기·방어구·캐릭터 모듈 카드 · 슬롯 소켓</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
