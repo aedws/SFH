@@ -231,6 +231,10 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      - name: Return container files to the private runner owner
+        if: always()
+        run: chown -R "$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+
   e2e:
     permissions:
       contents: read
@@ -298,6 +302,10 @@ jobs:
           grep -q "E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe" /tmp/sfh-e2e.log
           grep -q "E2E_CYBERPUNK_THEME_OK viewport_safe input_passthrough accent_02e5e1" /tmp/sfh-e2e.log
           grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_31 units_9" /tmp/sfh-e2e.log
+
+      - name: Return container files to the private runner owner
+        if: always()
+        run: chown -R "$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
 
   package-windows:
     permissions:
@@ -388,6 +396,10 @@ jobs:
             dist/SFH-Windows-x64-${{ steps.release.outputs.version }}.zip.sha256
           if-no-files-found: error
           retention-days: 1
+
+      - name: Return container files to the private runner owner
+        if: always()
+        run: chown -R "$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
 
   build:
     if: ${{ !cancelled() && needs.plan.result == 'success' }}
