@@ -107,7 +107,8 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 	var skills: Array = snapshot.get(&"skills", [])
 	for index in skill_buttons.size():
 		var name := String((skills[index] as Dictionary).get(&"display_name", "SKILL")) if index < skills.size() else "SKILL"
-		skill_buttons[index].text = "[%d] %s" % [index + 1, name]
+		var key := String((skills[index] as Dictionary).get(&"input_label", str(index + 1))) if index < skills.size() else str(index + 1)
+		skill_buttons[index].text = "[%s] %s" % [key, name]
 		skill_buttons[index].tooltip_text = skill_buttons[index].text
 		skill_buttons[index].disabled = not editing
 

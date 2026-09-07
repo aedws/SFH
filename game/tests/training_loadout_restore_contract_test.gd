@@ -67,6 +67,7 @@ func _run() -> void:
 	var game = load("res://game/scenes/game.tscn").instantiate()
 	var features: Resource = game.features.duplicate(true)
 	var test_root := OS.get_cache_dir().path_join("sfh-training-contract-%d" % Time.get_ticks_usec())
+	DirAccess.make_dir_recursive_absolute(test_root)
 	for field in ["persistent_profile", "conditional_ranking", "meta_progression", "key_mapping", "skill_binding", "presentation_settings", "desktop_progress"]:
 		features.set(field + "_storage_path", test_root.path_join(field + ".json"))
 	game.features = features
@@ -74,6 +75,8 @@ func _run() -> void:
 	for frame in 6: await process_frame
 	var service: Node = game.training_ground_service
 	var skills: Node = game.training_combat_skill_system
+	_check(game.skill_binding_service.assign_skill(&"blink", &"combat_skill_9").success, "user remapped key")
+	var original_bindings: Dictionary = game.skill_binding_service.get_snapshot()
 	var saved_gear: Variant = _encoded(game.equipment_system)
 	var saved_bag: Variant = _encoded(game.inventory_system)
 	var saved_skills := _skill_ids(skills)
@@ -102,6 +105,23 @@ func _run() -> void:
 		service.call(&"cycle_training_skill", index)
 		changed_skill = changed_skill or _skill_ids(skills) != saved_skills
 	_check(changed_skill, "compatible skill changed")
+	var assigned_actions: Array = []
+	for index in saved_skills.size():
+		var current_id := StringName(_skill_ids(skills)[index])
+		var action: StringName = skills.binding_provider.action_for_skill(current_id)
+		_check(action == game.skill_binding_service.action_for_skill(StringName(saved_skills[index])), "replacement inherits original remapped action")
+		_check(action not in assigned_actions, "no duplicate trial skill actions")
+		assigned_actions.append(action)
+	var fired: Array = []
+	skills.skill_activated.connect(func(index, id, _result): fired.append([index, id]))
+	var key_event := InputEventAction.new()
+	key_event.action = assigned_actions[0]
+	key_event.pressed = true
+	Input.parse_input_event(key_event)
+	await process_frame
+	key_event.pressed = false
+	Input.parse_input_event(key_event)
+	_check(not fired.is_empty() and fired[0][0] == 0 and fired[0][1] == StringName(_skill_ids(skills)[0]), "actual remapped input fires replacement")
 	var catalog: Array = service.call(&"get_loadout_snapshot").socket_catalog
 	_check(not catalog.is_empty(), "existing RunAsset catalog exposed")
 	for entry in catalog:
@@ -115,6 +135,7 @@ func _run() -> void:
 	_check(not service.call(&"get_loadout_snapshot").active, "finish UI closes training")
 	_check(_encoded(game.equipment_system) == saved_gear and _encoded(game.inventory_system) == saved_bag, "gear/bag exact value restore")
 	_check(_skill_ids(skills) == saved_skills, "skills restored without leaving hub")
+	_check(game.skill_binding_service.get_snapshot() == original_bindings, "permanent skill bindings untouched")
 	_check(service.call(&"get_loadout_snapshot").sockets.installed_count == 0, "all temporary sockets cleared")
 	_check(not game.desktop_progress.get_snapshot().temporary_loadout, "checkpoint resumed after restore")
 	_check(game.persistent_profile.call(&"get_snapshot").get(&"credits", -1) == saved_credits, "no credit charge")
@@ -157,7 +178,7 @@ func _run() -> void:
 	game.queue_free()
 	await process_frame
 	if failures.is_empty():
-		print("TRAINING_LOADOUT_RESTORE_OK participants rollback_retry checkpoint_retry skill_restore free_sockets checkpoint_guard repeat_entry ui_stop cancel_gate no_credit_charge hud_3_sizes effect_cleanup resources_restore shop_gate reset_failure")
+		print("TRAINING_LOADOUT_RESTORE_OK participants rollback_retry checkpoint_retry skill_restore free_sockets checkpoint_guard repeat_entry ui_stop cancel_gate no_credit_charge hud_3_sizes effect_cleanup resources_restore shop_gate reset_failure remapped_input binding_isolation")
 		quit(0)
 	else:
 		for failure in failures: push_error(failure)

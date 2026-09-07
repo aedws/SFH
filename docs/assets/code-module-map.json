@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "288a2c8bd091b3f44d570360edc2fbb4e8beda0d4e625d22798bd7538b70971d",
+  "source_sha256": "a7e75f14408ac57a460cc91e3464eb6458df9eb47a6c2cdc9eb295270196921b",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 284,
-    "named_classes": 233,
+    "scripts": 285,
+    "named_classes": 234,
     "relationships": 185,
     "project_inheritance": 7,
     "enabled_toggles": 70
@@ -1189,8 +1189,8 @@
       "path": "game/features/training_ground",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 12,
-      "class_count": 12,
+      "file_count": 13,
+      "class_count": 13,
       "classes": [
         "CombatTelemetryCollector",
         "TrainingDummySpawner",
@@ -1202,6 +1202,7 @@
         "TrainingLoadoutSnapshot",
         "TrainingScenarioDefinition",
         "TrainingScenarioResetService",
+        "TrainingSkillBindingAdapter",
         "TrainingTelemetryPresenter",
         "TrainingTelemetryService"
       ],
@@ -3285,6 +3286,15 @@
       "module": "training_ground",
       "path": "game/features/training_ground/training_scenario_reset_service.gd",
       "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:TrainingSkillBindingAdapter",
+      "name": "TrainingSkillBindingAdapter",
+      "module": "training_ground",
+      "path": "game/features/training_ground/training_skill_binding_adapter.gd",
+      "extends": "Node",
       "base_id": "",
       "inheritance": "engine"
     },

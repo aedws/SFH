@@ -1809,6 +1809,9 @@ func _install_training_combat_runtime() -> bool:
 	):
 		return false
 	var training_loadout: Resource = load(features.combat_skill_loadout_path).duplicate(true)
+	var training_bindings := preload("res://game/features/training_ground/training_skill_binding_adapter.gd").new()
+	training_ground_service.add_child(training_bindings)
+	training_bindings.configure(training_loadout, skill_binding_service)
 	training_combat_resource_system = _instantiate_feature(
 		COMBAT_RESOURCE_SCENE_PATH, training_ground_service, &"TrainingCombatResources"
 	)
@@ -1830,7 +1833,7 @@ func _install_training_combat_runtime() -> bool:
 			&"configure", player, enemies_container, world_container, training_loadout,
 			features.damage_enabled, training_combat_resource_system,
 			load(features.smart_targeting_policy_path) if features.smart_targeting_enabled else null,
-			equipment_system, skill_binding_service
+			equipment_system, training_bindings
 		)
 	):
 		_report_configuration_error("훈련 스킬 런타임을 구성하지 못했습니다.")
