@@ -54,7 +54,7 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLE · BUILD 1 · IMPROVE 1 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLE · BUILD 1 · IMPROVE 1 · CHANGE 1 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 1</small><b>소모품 전용 HP · 지참 키트 사용</b></span><em class="sfh-chevron">⌄</em></summary>
@@ -63,7 +63,7 @@ search:
         <div class="sfh-group"><h3>구현 · 1</h3><p>회복 원인 정책과 실제 키트 사용·수량 차감을 연결했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 1</h3><p>최대 HP·사망·수량 부족은 미소모, 증강의 HP 회복 미적용을 안내합니다.</p></div>
         <div class="sfh-group"><h3>수정 · 1</h3><p>오너 승인으로 자연·드랍·레벨업·버프 HP 회복을 중단합니다. AP는 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>부상 중 최대 HP 장비 변경으로 현재 HP가 늘어나는 우회를 차단했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>부상 중 최대 HP 장비 교체 회복을 차단하고, 키트를 지참해도 브리핑이 소모품 비어 있음으로 표시하던 오인을 수정했습니다.</p></div>
         <p><a href="features/health-recovery/">사용법 →</a> · <a href="design/master-gdd-alignment/#health-20260908">노션 대조 80.3%·부분 검수 잔여 →</a> · 양 플랫폼10분 일반 플레이·첫 GPU 프레임 수락은 미완료.</p>
       </div>
     </details>

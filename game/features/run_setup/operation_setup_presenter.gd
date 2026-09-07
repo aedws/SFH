@@ -415,7 +415,7 @@ func update(payload: Dictionary) -> void:
 			equipped.get(&"main_weapon_name", "비어 있음"),
 			equipped.get(&"secondary_weapon_name", "비어 있음"),
 			int(equipped.get(&"armor_count", 0)), equipped.get(&"active_weapon_name", "비어 있음"),
-			character.get(&"display_name", "기본 요원"), payload.get(&"loadout", "비어 있음"),
+			character.get(&"display_name", "기본 요원"), _consumable_summary(payload),
 			loadout_investment_summary.text]
 	mission_title.text = "%s  ·  %s" % [region_name, tier_name]
 	mission_code.text = "%s / %s / %s" % [String(region_id).to_upper(), String(difficulty_id).to_upper(), String(tier_id).to_upper()]
@@ -449,7 +449,7 @@ func update(payload: Dictionary) -> void:
 		"없음" if penalty_names.is_empty() else ", ".join(penalty_names),
 	]
 	selection_summary.text = "현재 계약  %s · %s · %s  |  소모품 %s" % [
-		region_name, difficulty_name, tier_name, String(payload.get(&"loadout", "비어 있음")),
+		region_name, difficulty_name, tier_name, _consumable_summary(payload),
 	]
 	season_summary.text = String(payload.get(&"season", {}).get(&"text", ""))
 	season_summary.visible = not season_summary.text.is_empty()
@@ -467,6 +467,17 @@ func update(payload: Dictionary) -> void:
 
 func reset_steps() -> Dictionary:
 	return step_flow.reset()
+
+
+func _consumable_summary(payload: Dictionary) -> String:
+	var labels := PackedStringArray()
+	var warehouse := String(payload.get(&"loadout", "비어 있음"))
+	if warehouse != "비어 있음" and not warehouse.is_empty(): labels.append(warehouse)
+	var utility: Dictionary = payload.get(&"p5_progression", {}).get(&"utility", {})
+	for item in utility.get(&"investment", {}).get(&"utilities", []):
+		if item.get(&"utility_type", &"") == &"bag": continue
+		labels.append("%s ×%d" % [item.get(&"display_name", "유틸리티"), int(item.get(&"quantity", 0))])
+	return " / ".join(labels) if not labels.is_empty() else "비어 있음"
 
 
 func step_relative(direction: int) -> Dictionary:

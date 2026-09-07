@@ -51,6 +51,8 @@ func _run() -> void:
 		root.add_child(game)
 		for frame in 5: await process_frame
 		check(game.p5_hub_progression_service.set_utility_quantity(&"field_medkit", 2), "kit selection " + tier)
+		var briefing: String = game.operation_setup_presenter._consumable_summary({&"loadout": "비어 있음", &"p5_progression": game.p5_hub_progression_service.get_snapshot()})
+		check(briefing.contains("×2") and not briefing.contains("비어 있음"), "briefing includes carried kit " + tier)
 		var started := Time.get_ticks_usec()
 		var launched: bool = game.start_run(tier)
 		var launch_ms := (Time.get_ticks_usec() - started) / 1000.0
