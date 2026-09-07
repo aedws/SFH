@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "97c820fa04495ea4c79380c2c489ce8bb5ce2a364b2e7033f7c32a79292faa79",
+  "source_sha256": "2e234ee44eb083e151aa2fec0441f2f81fc46799696fa664076f5d2bab7627e3",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 305,
-    "named_classes": 245,
+    "scripts": 308,
+    "named_classes": 246,
     "relationships": 192,
     "project_inheritance": 7,
     "enabled_toggles": 70
@@ -863,7 +863,7 @@
       "path": "game/features/p5_hub_progression",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 24,
+      "file_count": 25,
       "class_count": 24,
       "classes": [
         "BankruptcyProtectionPolicy",
@@ -938,10 +938,11 @@
       "path": "game/features/player",
       "wiki_route": "features/player/",
       "enabled": true,
-      "file_count": 3,
-      "class_count": 3,
+      "file_count": 4,
+      "class_count": 4,
       "classes": [
         "PlayerCharacter",
+        "PlayerHealthRecoveryPolicy",
         "PlayerMovement",
         "PlayerMovementFeedback"
       ],
@@ -1267,7 +1268,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 50,
+      "file_count": 51,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -2977,6 +2978,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:PlayerHealthRecoveryPolicy",
+      "name": "PlayerHealthRecoveryPolicy",
+      "module": "player",
+      "path": "game/features/player/health_recovery_policy.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:PlayerMovement",
       "name": "PlayerMovement",
       "module": "player",
@@ -4512,7 +4522,7 @@
       "from": "verification",
       "to": "p5_hub_progression",
       "type": "verifies",
-      "evidence_count": 6
+      "evidence_count": 7
     },
     {
       "from": "verification",
@@ -4530,7 +4540,7 @@
       "from": "verification",
       "to": "player",
       "type": "verifies",
-      "evidence_count": 6
+      "evidence_count": 7
     },
     {
       "from": "verification",
@@ -4566,7 +4576,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 22
+      "evidence_count": 23
     },
     {
       "from": "verification",

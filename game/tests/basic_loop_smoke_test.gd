@@ -1173,8 +1173,8 @@ func _verify_combat_resource_modules() -> bool:
 	if failure_message.is_empty():
 		player.call(&"take_damage", 30.0)
 		var health_before := float(player.call(&"get_health_snapshot").get(&"current", 0.0))
-		if int(resources.call(&"spawn_enemy_drops", Vector2(60.0, 0.0))) != 2:
-			failure_message = "확정 드랍 정책에서 에너지·체력 픽업 두 종류를 생성하지 못했습니다."
+		if int(resources.call(&"spawn_enemy_drops", Vector2(60.0, 0.0))) != 1:
+			failure_message = "키트 전용 HP 정책이 체력 드랍을 차단하지 못했습니다."
 		else:
 			for pickup in pickups.get_children():
 				if pickup.has_method(&"_on_body_entered"):
@@ -1182,9 +1182,9 @@ func _verify_combat_resource_modules() -> bool:
 			var recovered: Dictionary = resources.call(&"get_snapshot")
 			if (
 				int(recovered.get(&"energy_current", 0)) != 50
-				or float(player.call(&"get_health_snapshot").get(&"current", 0.0)) < health_before + 14.9
+				or not is_equal_approx(float(player.call(&"get_health_snapshot").get(&"current", 0.0)), health_before)
 				or int(recovered.get(&"spawned_pickups", {}).get(&"energy", 0)) != 1
-				or int(recovered.get(&"spawned_pickups", {}).get(&"health", 0)) != 1
+				or int(recovered.get(&"spawned_pickups", {}).get(&"health", 0)) != 0
 			):
 				failure_message = "에너지·체력 픽업 회수가 실제 자원에 반영되지 않았습니다."
 	if failure_message.is_empty():
@@ -1196,9 +1196,9 @@ func _verify_combat_resource_modules() -> bool:
 		progression.call(&"gain_experience", 5)
 		if not is_equal_approx(
 			float(player.call(&"get_health_snapshot").get(&"current", 0.0)),
-			health_before_level + 12.0
+			health_before_level
 		):
-			failure_message = "내부 레벨업 시 12 HP 회복이 복구되지 않았습니다."
+			failure_message = "내부 레벨업이 키트 전용 HP 정책을 우회했습니다."
 	if failure_message.is_empty():
 		var skill_system := (load(COMBAT_SKILL_SYSTEM_SCENE_PATH) as PackedScene).instantiate()
 		sandbox.add_child(skill_system)
@@ -1941,7 +1941,7 @@ func _verify_player_sustain_and_movement() -> bool:
 	recovery.call(&"advance", 2.0)
 	recovery.call(&"advance", 20.0)
 	var recovered_health := float(player.call(&"get_health_snapshot")[&"current"])
-	if recovered_health <= damaged_health or recovered_health > 65.01:
+	if not is_equal_approx(recovered_health, damaged_health):
 		_fail("부분 회복이 적용되지 않았거나 최대 체력 65% 제한을 넘었습니다.")
 		return false
 

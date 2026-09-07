@@ -13,6 +13,7 @@ signal died
 
 @export_range(1.0, 10000.0, 1.0) var max_health: float = 100.0
 @export_range(0.0, 10000.0, 0.1) var defense: float = 0.0
+@export var health_recovery_policy: Resource = preload("res://game/features/player/health_recovery_policy.gd").new()
 
 @onready var movement: PlayerMovement = $Movement
 @onready var body_visual: Polygon2D = $Body
@@ -21,6 +22,7 @@ signal died
 
 var current_health: float
 var damage_enabled: bool = true
+var has_taken_damage: bool = false
 var base_stats: Dictionary = {}
 var runtime_stats: Dictionary = {}
 var stat_modifier_sources: Dictionary = {}
@@ -89,7 +91,9 @@ func _rebuild_runtime_stats() -> void:
 	max_health = maxf(1.0, float(runtime_stats.get(&"max_health", max_health)))
 	defense = maxf(0.0, float(runtime_stats.get(&"defense", defense)))
 	movement.speed = maxf(0.0, float(runtime_stats.get(&"movement_speed", movement.speed)))
-	current_health = clampf(max_health * previous_health_ratio, 0.0, max_health)
+	# Initial full-health loadout may initialize its capacity; wounded players
+	# cannot obtain healing by changing max-HP equipment or selecting a buff.
+	current_health = max_health if not has_taken_damage and is_equal_approx(previous_health_ratio, 1.0) else clampf(current_health, 0.0, max_health)
 	health_changed.emit(current_health, max_health)
 	runtime_stats_changed.emit(get_runtime_stats())
 
@@ -152,6 +156,7 @@ func take_damage(amount: float, hit_context: Dictionary = {}) -> void:
 		return
 
 	var received_damage := maxf(1.0, amount - defense)
+	has_taken_damage = true
 	current_health = maxf(0.0, current_health - received_damage)
 	var context := hit_context.duplicate(true)
 	context[&"lethal"] = is_zero_approx(current_health)
@@ -164,8 +169,12 @@ func take_damage(amount: float, hit_context: Dictionary = {}) -> void:
 		died.emit()
 
 
-func heal(amount: float) -> void:
-	if current_health <= 0.0:
+func can_receive_healing(source: StringName) -> bool:
+	return health_recovery_policy != null and health_recovery_policy.has_method(&"allows") and bool(health_recovery_policy.call(&"allows", source))
+
+
+func heal(amount: float, source: StringName = &"") -> void:
+	if current_health <= 0.0 or not is_finite(amount) or amount <= 0.0 or not can_receive_healing(source):
 		return
 
 	current_health = minf(max_health, current_health + amount)

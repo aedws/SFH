@@ -135,6 +135,13 @@ func get_investment_context() -> Dictionary:
 	return utility.call(&"get_investment_context") if utility != null else {&"additional_entry_cost": 0, &"utilities": []}
 
 
+func use_healing_utility(utility_id: StringName, patient: Node, multiplier: float = 1.0) -> Dictionary:
+	var utility = _module(&"utility")
+	var result: Dictionary = utility.call(&"use_healing", utility_id, patient, multiplier) if utility != null else {&"success": false}
+	snapshot_changed.emit(get_snapshot())
+	return result
+
+
 func get_operation_setting_contribution() -> Dictionary:
 	var context := get_investment_context()
 	return {

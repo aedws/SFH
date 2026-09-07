@@ -34,6 +34,9 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+$healthOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/kit_only_health_contract_test.gd" 2>&1
+$healthOutput | Write-Output
+if ($LASTEXITCODE -ne 0 -or ($healthOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($healthOutput -join "`n") -notmatch 'KIT_ONLY_HEALTH_OK') { throw 'Kit-only health contract failed.' }
 $policyOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/provisional_policy_contract_test.gd" 2>&1
 $policyStatus = $LASTEXITCODE
 $partialOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/partial_completion_contract_test.gd" 2>&1

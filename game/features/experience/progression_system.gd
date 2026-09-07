@@ -57,7 +57,7 @@ func gain_experience(amount: int) -> void:
 			level += 1
 			required_experience = _required_for_level(level)
 			if is_instance_valid(recovery_target) and level_up_heal_amount > 0.0:
-				recovery_target.call(&"heal", level_up_heal_amount)
+				recovery_target.call(&"heal", level_up_heal_amount, &"level_up")
 			level_increased.emit(level)
 
 	progress_changed.emit(level, current_experience, required_experience)

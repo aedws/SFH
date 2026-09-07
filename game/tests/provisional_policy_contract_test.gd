@@ -6,7 +6,7 @@ var failures := PackedStringArray()
 var isolation: RefCounted
 
 class Actor extends Node2D:
-	func heal(_amount: float) -> void: pass
+	func heal(_amount: float, _source: StringName = &"") -> void: pass
 	func get_health_snapshot() -> Dictionary: return {&"current": 100.0}
 
 
