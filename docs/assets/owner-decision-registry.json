@@ -1033,7 +1033,7 @@
       "decision_owner": "authority:project-owner",
         "summary": "N26-08A 훈련 복원 후속 오류 수정. N26-08B 선택 제거 5개·출격 81조합·CPU 4조건 및 소스 GPU 중대형 실제 600초 자동 검사 통과. 배포 일반 플레이 동등성과 장비별 소켓/기술 대안 판단은 별도",
       "acceptance": "AP 자연량·스킬 수·타겟 반경/주기·UI·리롤·손상품·환전·탈출·시즌의 임시/확정 분리 및 Web/Windows E2E",
-        "next_action": "N26-08B 계속: 동일 배포 Web/Windows 중대형 10분 일반 플레이·입력 동등성, 순간 간격의 계측 비용 분리. 소스 자동 HP/입력 검사는 사람 수락이 아님. 전체 66항목 수락은 각 신규 모듈 완료 + 잔여 오너 결정 이후",
+        "next_action": "N26-08B 계속: 첫 출격 준비/초기 렌더링 프로파일링 → 배포판 탈출 F 단발 실패 재현 → Web/Windows 10분 일반 플레이 동등성. 타격/속도감·유휴 처리 개선과 캡처 비용 분리는 적용했으나 지속 성능 향상·사람 수락은 미완료. 전체 66항목은 잔여 모듈·오너 결정 이후",
       "route": "design/current-milestone-workline/#notion-20260907",
       "relations": [
         {

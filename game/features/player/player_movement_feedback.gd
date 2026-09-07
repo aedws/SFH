@@ -6,13 +6,14 @@ extends Node2D
 const ACCENT := Color("02e5e1")
 
 @export var enabled: bool = true
-@export_range(0.0, 12.0, 0.5) var body_lead_pixels: float = 7.0
-@export_range(0.0, 0.3, 0.01) var body_stretch: float = 0.17
-@export_range(0.0, 80.0, 1.0) var camera_lead_pixels: float = 38.0
-@export_range(1.0, 40.0, 1.0) var camera_response: float = 18.0
+@export_range(0.0, 12.0, 0.5) var body_lead_pixels: float = 4.0
+@export_range(0.0, 0.3, 0.01) var body_stretch: float = 0.23
+@export_range(0.0, 80.0, 1.0) var camera_lead_pixels: float = 42.0
+@export_range(1.0, 40.0, 1.0) var camera_response: float = 26.0
 @export_range(0.05, 0.5, 0.01) var cue_duration: float = 0.24
 @export_range(2, 16, 1) var maximum_trail_points: int = 10
 @export_range(1.0, 16.0, 0.5) var dash_trail_width: float = 9.0
+@export_range(32.0, 300.0, 1.0) var maximum_trail_gap: float = 96.0
 
 @onready var actor := get_parent() as CharacterBody2D
 @onready var body := actor.get_node_or_null("Body") as Polygon2D
@@ -70,6 +71,12 @@ func set_feedback_enabled(is_enabled: bool) -> void:
 	set_physics_process(enabled)
 	if not enabled:
 		trail_points.clear()
+		previous_velocity = Vector2.ZERO
+		launch_cue = 0.0
+		brake_cue = 0.0
+		turn_cue = 0.0
+		dash_cue = 0.0
+		visual_intensity = 0.0
 		_restore_visuals()
 	else:
 		queue_redraw()
@@ -184,22 +191,29 @@ func _update_trail(
 ) -> void:
 	if trail == null:
 		return
+	var changed := false
+	# Blink, warp and scene relocation must not draw a line through rooms or walls.
+	if not trail_points.is_empty() and trail_points[-1].distance_to(world_position) > maximum_trail_gap:
+		trail_points.clear()
+		changed = true
 	var moving := current_speed >= maximum_speed * 0.28
 	if moving and (trail_points.is_empty() or trail_points[-1].distance_to(world_position) >= 3.0):
 		trail_points.append(world_position)
+		changed = true
 	var point_limit := maximum_trail_points if dash_active else mini(5, maximum_trail_points)
 	while trail_points.size() > point_limit:
 		trail_points.pop_front()
+		changed = true
 	if not moving:
 		trail_decay_accumulator += delta
 		while trail_decay_accumulator >= 0.025 and not trail_points.is_empty():
 			trail_points.pop_front()
+			changed = true
 			trail_decay_accumulator -= 0.025
 	else:
 		trail_decay_accumulator = 0.0
-	trail.clear_points()
-	for point in trail_points:
-		trail.add_point(point)
+	if changed:
+		trail.points = PackedVector2Array(trail_points)
 	trail.width = lerpf(3.0, dash_trail_width, maxf(dash_cue, 1.0 if dash_active else 0.0))
 	trail.visible = trail_points.size() >= 2
 
@@ -235,9 +249,9 @@ func _draw() -> void:
 		var half_gap := 11.0 + index * 3.0
 		var alpha := (0.24 + visual_intensity * 0.52) * (1.0 - index * 0.16)
 		var start := backward * distance + side * half_gap
-		var finish := start + backward * (9.0 + visual_intensity * 13.0)
+		var finish := start + backward * (12.0 + visual_intensity * 18.0)
 		var mirrored_start := backward * distance - side * half_gap
-		var mirrored_finish := mirrored_start + backward * (9.0 + visual_intensity * 13.0)
+		var mirrored_finish := mirrored_start + backward * (12.0 + visual_intensity * 18.0)
 		draw_line(start, finish, Color(ACCENT.r, ACCENT.g, ACCENT.b, alpha), 2.0)
 		draw_line(mirrored_start, mirrored_finish, Color(ACCENT.r, ACCENT.g, ACCENT.b, alpha), 2.0)
 	if launch_cue > 0.05:

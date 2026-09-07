@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 102 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 103 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -60,9 +60,9 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 8 · IMPROVE 13 · CHANGE 11 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 9 · IMPROVE 17 · CHANGE 12 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>8</b><small>BUILD</small></span><span><b>13</b><small>IMPROVE</small></span><span><b>11</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>9</b><small>BUILD</small></span><span><b>17</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>14</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -114,7 +114,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>버그픽스 · 4</h3><p>선택 기능 제거 시 배열 타입 오류, 없는 스킬 교체 버튼, 동일 스킬 재선택 자원 초기화, 키 어댑터 재구성 중복 연결을 수정했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>실시간 렌더링 검수 · 자동 검사와 실제 플레이 구분</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 화면을 실제로 그리는 상태에서 이동·교전·안개·프레임·메모리를 확인하는 장시간 검사 도구를 추가했습니다. 자동 검사를 사람의 플레이 수락으로 표시하지 않습니다.</strong></div>
@@ -122,6 +122,16 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>개선 · 2</h3><p>중·대형 각각 실제 600초 렌더링 검사 통과(평균 59.91/59.88 FPS·종료 잔류 Node 0). 검사기 정체를 실패로 처리하며, 순간 프레임 간격과 자동 입력 조건은 <a href="../performance/minimum-requirements/#rendered-soak">상세 계측 기록</a>에서 구분합니다.</p></div>
         <div class="sfh-group"><h3>수정 · 2</h3><p>Web 화면 확인, Windows 파일 검증, 소스 렌더링 계측, 사람 수락의 근거를 분리했습니다. 남은 플랫폼 검수는 별도로 유지합니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>게임 규칙과 수치는 유지합니다. 이번 경로 보정은 자동 검사기에만 적용되며 과금·자동 실행 설정 변경은 없습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>타격·속도감 강화 · 프레임 반복 작업 축소</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 단발 충격과 처치 표시를 구분하고 대시 표현을 강화했습니다. 화면을 불필요하게 다시 그리는 작업을 줄였으며, 첫 출격 순간 지연은 별도 검수 대상으로 남깁니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>지연 시점·교전 상태·CPU 지표와 화면 저장 비용을 기록하는 검사를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>안개 임시 할당 감소, 효과 대기 중 갱신 축소, 방향성 타격·처치 링, 대시 카메라·속도선 표현을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>피해량·이동 속도·대시 쿨타임은 유지하며, 반복 작업 감소와 실제 프레임 지연 해결 여부를 구분합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>점멸·워프 뒤 잔상이 방을 가로질러 이어지는 표시 오류를 방지했습니다.</p></div>
       </div>
     </details>
   </div>

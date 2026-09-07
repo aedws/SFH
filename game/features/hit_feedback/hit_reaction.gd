@@ -17,6 +17,7 @@ var stagger_remaining: float = 0.0
 var flash_remaining: float = 0.0
 var knockback_velocity := Vector2.ZERO
 var reaction_count: int = 0
+var flash_active: bool = false
 
 
 func configure(new_actor: CharacterBody2D, new_visual_nodes: Array) -> bool:
@@ -82,6 +83,9 @@ func get_snapshot() -> Dictionary:
 
 
 func _set_flash(active: bool) -> void:
+	if active == flash_active:
+		return
+	flash_active = active
 	for index in visual_nodes.size():
 		visual_nodes[index].modulate = (
 			Color(1.8, 1.8, 1.8, base_modulates[index].a)

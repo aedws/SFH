@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 8 · IMPROVE 13 · CHANGE 11 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 9 · IMPROVE 17 · CHANGE 12 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>8</b><small>BUILD</small></span><span><b>13</b><small>IMPROVE</small></span><span><b>11</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>9</b><small>BUILD</small></span><span><b>17</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>14</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>타격·속도감 강화 · 프레임 반복 작업 축소</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 단발 충격과 처치 표시를 구분하고 대시 표현을 강화했습니다. 화면을 불필요하게 다시 그리는 작업을 줄였으며, 첫 출격 순간 지연은 별도 검수 대상으로 남깁니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>지연 시점·교전 상태·CPU 지표와 화면 저장 비용을 기록하는 검사를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 4</h3><p>안개 임시 할당 감소, 효과 대기 중 갱신 축소, 방향성 타격·처치 링, 대시 카메라·속도선 표현을 개선했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>피해량·이동 속도·대시 쿨타임은 유지하며, 반복 작업 감소와 실제 프레임 지연 해결 여부를 구분합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>점멸·워프 뒤 잔상이 방을 가로질러 이어지는 표시 오류를 방지했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>실시간 렌더링 검수 · 자동 검사와 실제 플레이 구분</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 화면을 실제로 그리는 상태에서 이동·교전·안개·프레임·메모리를 확인하는 장시간 검사 도구를 추가했습니다. 자동 검사를 사람의 플레이 수락으로 표시하지 않습니다.</strong></div>

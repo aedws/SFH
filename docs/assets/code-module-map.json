@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "5055e0a02656e1865a4334e7655feef598b763853f26053f2553010e1eb48fe5",
+  "source_sha256": "0cd6a4a8cb3ab8f4e2614c977e3b210e7108c71d4d6d3aed28b1b6dc08324d92",
   "domains": [
     {
       "id": "system",
@@ -63,9 +63,9 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 287,
+    "scripts": 288,
     "named_classes": 234,
-    "relationships": 185,
+    "relationships": 187,
     "project_inheritance": 7,
     "enabled_toggles": 70
   },
@@ -449,7 +449,7 @@
       "classes": [
         "BattlefieldFogOfWar"
       ],
-      "incoming_count": 1,
+      "incoming_count": 2,
       "outgoing_count": 1
     },
     {
@@ -505,7 +505,7 @@
         "HitFeedbackProfile",
         "HitReaction2D"
       ],
-      "incoming_count": 2,
+      "incoming_count": 3,
       "outgoing_count": 0
     },
     {
@@ -1256,11 +1256,11 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 43,
+      "file_count": 44,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
-      "outgoing_count": 50
+      "outgoing_count": 52
     }
   ],
   "classes": [
@@ -4262,6 +4262,12 @@
     },
     {
       "from": "verification",
+      "to": "fog_of_war",
+      "type": "verifies",
+      "evidence_count": 1
+    },
+    {
+      "from": "verification",
       "to": "growth_balance",
       "type": "verifies",
       "evidence_count": 1
@@ -4269,6 +4275,12 @@
     {
       "from": "verification",
       "to": "health_recovery",
+      "type": "verifies",
+      "evidence_count": 1
+    },
+    {
+      "from": "verification",
+      "to": "hit_feedback",
       "type": "verifies",
       "evidence_count": 1
     },
@@ -4390,7 +4402,7 @@
       "from": "verification",
       "to": "player",
       "type": "verifies",
-      "evidence_count": 5
+      "evidence_count": 6
     },
     {
       "from": "verification",

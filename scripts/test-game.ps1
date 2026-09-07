@@ -28,6 +28,10 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+$feedbackOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/frame_feedback_contract_test.gd" 2>&1
+$feedbackStatus = $LASTEXITCODE
+$feedbackOutput | ForEach-Object { Write-Output $_ }
+if ($feedbackStatus -ne 0 -or ($feedbackOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($feedbackOutput -match 'FRAME_FEEDBACK_OK')) { exit 1 }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/smart_targeting_center_contract_test.gd"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/circular_coverage_contract_test.gd"
