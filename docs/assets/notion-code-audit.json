@@ -371,16 +371,18 @@
       "title": "광역기: 스킬 반경 내 최대 적 밀집 클러스터 중심점 자동 투하",
       "request_id": "PLAN-02-TARGET",
       "planner_status": "결정 (미구현)",
-      "assessment": "partial",
+      "assessment": "code_supported",
       "code": [
-        "game/features/smart_targeting/smart_targeting_policy.gd"
+        "game/features/smart_targeting/smart_targeting_policy.gd",
+        "game/features/smart_targeting/circular_coverage_solver.gd"
       ],
       "existing_tests": [
         "game/tests/basic_loop_smoke_test.gd",
-        "game/tests/smart_targeting_center_contract_test.gd"
+        "game/tests/smart_targeting_center_contract_test.gd",
+        "game/tests/circular_coverage_contract_test.gd"
       ],
-      "finding": "N26-03A(d50fdb6): 중심 덮어쓰기 수정, 효과 반경·배율 전달, 후보 사거리·중복·삭제·동률·실제 실행 회귀 통과. 기존 평균 군집은 원형 범위의 전역 최대 피격을 보장하지 않아 부분 대응 유지; N26-03B에서 보완.",
-      "next_packet": "N26-03"
+      "finding": "N26-03A/B(d50fdb6, add3a33): 중심 보존·효과 반경/배율 전달, 원형 최대 포함 각도 스윕과 안전한 평균, 사거리·대표 적·기존 정책 호환. 240개 독립 교차점 대조, 36개 회전 배치, 실제 효과 2명/5명 적중·72명 요청 성능·입력 E2E 통과. 사거리 안 적 중심 기준 구현 근거이며 신규 기본 스킬/사람 재미 수락/Area2D 방식 결정은 아님.",
+      "next_packet": "N26-08"
     },
     {
       "notion_id": "3d35b728-0040-814c-99d0-c971098fd15c",
