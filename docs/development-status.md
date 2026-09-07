@@ -66,8 +66,8 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 16</small><b>오늘 마감 · 노션 대비 코드 대응도 78.5%</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 홈에서 현재 기획 대응도를 바로 확인하고, 로그인 후 원본·계산·잔여 범위를 읽을 수 있습니다.</strong></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>현재 체험 가능 블록 위에 78.5%를 표시했습니다. 확정 요구 가중치를 높이며 출시·재미 완성도와 구분합니다.</p></div>
+        <div class="sfh-summary"><strong>무엇이 변했나 · 홈에서 로그인 후 마감 근거로 이동하고, 개발 현황에서 기획 대응도와 잔여 범위를 확인할 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>개발 현황의 현재 빌드 상태 위에서 78.5%를 확인합니다. 공개 홈은 플레이 소개를 유지하며 상세 계산은 팀 로그인 뒤에 제공합니다.</p></div>
         <div class="sfh-group"><h3>수정 · 1</h3><p>최신 공개 노션 재수집과 배포 코드 대조를 마쳤습니다. 오늘의 파츠·모듈 UI/소켓은 별도 추가 구현 근거로 갱신하고 진행률에 중복 가산하지 않습니다.</p></div>
         <p><a href="design/master-gdd-alignment/#day-close">마감·계산 근거 →</a> · 2026-09-07 작업 종료. 새 게임 규칙·노션 원문·밸런스 목록 변경 없음.</p>
       </div>
