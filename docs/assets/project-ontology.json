@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-07",
-  "source_sha256": "a02a90909067d4537405f30847f5162820100cc462a452e14313d06e8b9cee13",
+  "source_sha256": "c40aa8c838997a45520efc0fed51f22b9ede3de4e5450f9dcf384e59c4372111",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -1062,13 +1062,13 @@
     {
       "id": "work:n26-03",
       "type": "work_item",
-      "label": "N26-03 · 광역 밀집 중심·스킬 반경 전달",
+      "label": "N26-03 · A 구현 완료 / B 최대 피격 보완",
       "status": "ready",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
       "summary": "SmartTargetingPolicy + SkillDefinition 반경 전달. UI/개별 스킬에 대상 선택 중복 금지",
       "acceptance": "서로 떨어진 3기 중심점, 적 좌표와 불일치 확인, 동률·빈 후보·사거리·스킬 반경 변화 검사",
-      "next_action": "독립 착수 가능 · 이번에는 수정하지 않음",
+      "next_action": "N26-03A 중심점·반경·기존 정책 호환 회귀 통과(d50fdb6). 다음은 N26-03B 원형 최대 피격 배치·성능 보완이며 별도 수치 확정은 하지 않음",
       "route": "design/current-milestone-workline/#notion-20260907",
       "relations": [
         {
@@ -3658,13 +3658,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 38개",
+      "summary": "기반·검증 · verification · 파일 39개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 38,
+        "files": 39,
         "classes": 0,
         "incoming": 0,
         "outgoing": 50

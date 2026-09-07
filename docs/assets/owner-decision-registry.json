@@ -811,13 +811,13 @@
     {
       "id": "work:n26-03",
       "type": "work_item",
-      "label": "N26-03 · 광역 밀집 중심·스킬 반경 전달",
+      "label": "N26-03 · A 구현 완료 / B 최대 피격 보완",
       "status": "ready",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
       "summary": "SmartTargetingPolicy + SkillDefinition 반경 전달. UI/개별 스킬에 대상 선택 중복 금지",
       "acceptance": "서로 떨어진 3기 중심점, 적 좌표와 불일치 확인, 동률·빈 후보·사거리·스킬 반경 변화 검사",
-      "next_action": "독립 착수 가능 · 이번에는 수정하지 않음",
+      "next_action": "N26-03A 중심점·반경·기존 정책 호환 회귀 통과(d50fdb6). 다음은 N26-03B 원형 최대 피격 배치·성능 보완이며 별도 수치 확정은 하지 않음",
       "route": "design/current-milestone-workline/#notion-20260907",
       "relations": [
         {

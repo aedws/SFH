@@ -376,9 +376,10 @@
         "game/features/smart_targeting/smart_targeting_policy.gd"
       ],
       "existing_tests": [
-        "game/tests/basic_loop_smoke_test.gd"
+        "game/tests/basic_loop_smoke_test.gd",
+        "game/tests/smart_targeting_center_contract_test.gd"
       ],
-      "finding": "select_densest_point로 평균 중심을 계산하지만 resolve의 공통 target 분기에서 적 좌표로 덮어씀. 고정 density_radius도 스킬별 피격 반경과 별도. 중심점·반경 전달 회귀 필요.",
+      "finding": "N26-03A(d50fdb6): 중심 덮어쓰기 수정, 효과 반경·배율 전달, 후보 사거리·중복·삭제·동률·실제 실행 회귀 통과. 기존 평균 군집은 원형 범위의 전역 최대 피격을 보장하지 않아 부분 대응 유지; N26-03B에서 보완.",
       "next_packet": "N26-03"
     },
     {
