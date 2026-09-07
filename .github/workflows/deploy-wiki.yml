@@ -95,7 +95,7 @@ jobs:
       - name: Install font import runtime
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends fontconfig python3 xvfb xauth libgl1-mesa-dri
+          apt-get install -y --no-install-recommends fontconfig python3 xvfb xauth libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libdbus-1-3
 
       - name: Import game resources
         run: |
@@ -230,15 +230,19 @@ jobs:
 
       - name: Verify exported resource boot (not editor source)
         run: |
-          timeout 90 godot --headless --main-pack "$GITHUB_WORKSPACE/game-web/index.pck" --script res://game/tests/release_boot_contract_test.gd > /tmp/sfh-release-boot.log 2>&1
+          status=0
+          timeout 90 godot --headless --main-pack "$GITHUB_WORKSPACE/game-web/index.pck" --script res://game/tests/release_boot_contract_test.gd > /tmp/sfh-release-boot.log 2>&1 || status=$?
           cat /tmp/sfh-release-boot.log
+          test "$status" -eq 0
           grep -q 'RELEASE_BOOT_OK' /tmp/sfh-release-boot.log
           if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-release-boot.log; then exit 1; fi
 
       - name: Verify rendered player visibility under slow frames
         run: |
-          timeout 90 xvfb-run -a godot --rendering-method gl_compatibility --max-fps 5 --main-pack "$GITHUB_WORKSPACE/game-web/index.pck" --script res://game/tests/release_boot_contract_test.gd > /tmp/sfh-release-view.log 2>&1
+          status=0
+          timeout 90 xvfb-run -a godot --audio-driver Dummy --rendering-method gl_compatibility --max-fps 5 --main-pack "$GITHUB_WORKSPACE/game-web/index.pck" --script res://game/tests/release_boot_contract_test.gd > /tmp/sfh-release-view.log 2>&1 || status=$?
           cat /tmp/sfh-release-view.log
+          test "$status" -eq 0
           grep -q 'RELEASE_BOOT_OK' /tmp/sfh-release-view.log
           grep -q 'RELEASE_PIXELS cyan=' /tmp/sfh-release-view.log
           if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-release-view.log; then exit 1; fi
@@ -382,8 +386,10 @@ jobs:
 
       - name: Verify Windows exported resource boot
         run: |
-          timeout 90 godot --headless --main-pack "$GITHUB_WORKSPACE/build/windows/SFH.pck" --script res://game/tests/release_boot_contract_test.gd > /tmp/sfh-windows-boot.log 2>&1
+          status=0
+          timeout 90 godot --headless --main-pack "$GITHUB_WORKSPACE/build/windows/SFH.pck" --script res://game/tests/release_boot_contract_test.gd > /tmp/sfh-windows-boot.log 2>&1 || status=$?
           cat /tmp/sfh-windows-boot.log
+          test "$status" -eq 0
           grep -q 'RELEASE_BOOT_OK' /tmp/sfh-windows-boot.log
           if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-windows-boot.log; then exit 1; fi
 
