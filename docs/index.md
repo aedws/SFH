@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 3 · IMPROVE 5 · CHANGE 4 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 4 · IMPROVE 7 · CHANGE 5 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>4</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>범위 공격 · 최대 피격 위치와 계산 최적화</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 적 한 마리 주변만 보던 범위 타게팅을 개선해 적 사이에 공격을 놓을 수 있고, 중심 이동으로 가장자리 적을 놓치는 현상을 방지합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>원형 범위의 최대 포함 위치를 찾는 순수 좌표 계산기를 타게팅 정책에 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>피격 수를 유지하는 경우에만 평균 중심을 사용하고, 숫자 배열 정렬로 계산 시간과 임시 할당을 줄였습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>독립 계산 대조와 실제 효과 적중·72명 성능을 회귀 검사에 추가했습니다. 기존 반경·스킬·저장·밸런스 목록은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>두 적 사이의 가능한 타격을 놓치는 경우와, 한쪽에 적이 몰리면 평균 중심이 반대편 적을 제외하는 경우를 수정했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>타게팅 중심 보존 · 독립 구현 시작</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 지점형 스킬에 전달되던 군집 중심이 적 좌표로 바뀌는 오류를 수정했습니다. 현재 자기장·점멸의 사용 방식은 유지합니다.</strong></div>

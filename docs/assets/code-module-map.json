@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "4d74efae149d68eae18b66a2f1f7d5e8f7291a9336e3b22ad7ac9ce70122c4ad",
+  "source_sha256": "432be1b9b970637ddd1c0cce80c1b4604bac4c54dc060155ee8ff19872fa6b2f",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 281,
-    "named_classes": 232,
+    "scripts": 283,
+    "named_classes": 233,
     "relationships": 185,
     "project_inheritance": 7,
     "enabled_toggles": 70
@@ -1135,9 +1135,10 @@
       "path": "game/features/smart_targeting",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 1,
-      "class_count": 1,
+      "file_count": 2,
+      "class_count": 2,
       "classes": [
+        "CircularCoverageSolver",
         "SmartTargetingPolicy"
       ],
       "incoming_count": 2,
@@ -1254,7 +1255,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 39,
+      "file_count": 40,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -3144,6 +3145,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:CircularCoverageSolver",
+      "name": "CircularCoverageSolver",
+      "module": "smart_targeting",
+      "path": "game/features/smart_targeting/circular_coverage_solver.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:SmartTargetingPolicy",
       "name": "SmartTargetingPolicy",
       "module": "smart_targeting",
@@ -4424,7 +4434,7 @@
       "from": "verification",
       "to": "smart_targeting",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",

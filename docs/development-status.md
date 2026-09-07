@@ -17,35 +17,35 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 98 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 99 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>GDD + TRACKER · 2026-09-07</small><strong>확정도 가중 코드 대응도</strong></span>
-    <b>72.4%</b>
+    <b>73.2%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="72.4"><i style="width: 72.4%"></i></div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="73.2"><i style="width: 73.2%"></i></div>
   <p>최신 GDD v128·62블록과 트래커 66행을 코드·기존 테스트 소스와 대조했습니다. 출시 준비율이나 이번 실제 플레이 통과율이 아닙니다. 기존 96%는 이전 백업 기준의 이력이며 현재 진행률로 사용하지 않습니다.</p>
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-코드 기준은 `c16bd24827c596f419d224365b9724f6455b7b22`입니다. 스냅샷과 전체 근거는 [66개 항목 대조](design/master-gdd-alignment.md)에 기록했습니다.
+최초 코드 기준은 `c16bd24827c596f419d224365b9724f6455b7b22`이며 N26-03A/B(`d50fdb6`, `add3a33`)의 구현·자동 계약 근거를 타게팅 1행에 추가했습니다. 스냅샷과 전체 근거는 [66개 항목 대조](design/master-gdd-alignment.md)에 기록했습니다.
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
-| 구현 근거 있음 | 37 | 1 |
-| 부분 대응 | 8 | 0.5 |
+| 구현 근거 있음 | 38 | 1 |
+| 부분 대응 | 7 | 0.5 |
 | 신규 미구현 | 6 | 0 |
 | 기존 규칙과 충돌 | 1 | 0 |
 | 기획 판단 대기 | 14 | 0 |
 
-노션의 **결정(미구현) 52개 ×3**, **미정(검토필요) 14개 ×1**로 가중합니다. `(37×3 + 8×0.5×3) ÷ (52×3 + 14×1) = 123/170 = 72.4%`. 기획 상태를 구현 완료로 치환하지 않습니다. 수치 하락은 게임 기능 삭제가 아니라 최신 요구 확대와 과대 판정 정정입니다.
+노션의 **결정(미구현) 52개 ×3**, **미정(검토필요) 14개 ×1**로 가중합니다. `(38×3 + 7×0.5×3) ÷ (52×3 + 14×1) = 124.5/170 = 73.2%`. 최초 72.4%에서 타게팅 1행만 변경했으며 기획 상태·나머지 65행은 유지합니다. 기획 상태를 구현 완료로 치환하지 않습니다.
 
 ## 현재 빌드 상태
 
-거점 준비 → 작전 → 방 전투·파밍 → 탈출·정산의 기존 플레이는 유지합니다. 원본 대조 후 N26-03A 타게팅 중심점·반경 전달을 구현하고 실제 입력 회귀를 통과했습니다. 충돌 정책·Sheet/CSV·저장 데이터는 변경하지 않았습니다.
+거점 준비 → 작전 → 방 전투·파밍 → 탈출·정산의 기존 플레이는 유지합니다. N26-03A/B의 중심점·반경 전달과 원형 최대 피격 계산을 구현하고 실제 입력 회귀를 통과했습니다. 신규 기본 스킬·충돌 정책·Sheet/CSV·저장 데이터는 변경하지 않았습니다.
 
 최신 원본에서는 키트 중심 생존, 보안 파우치, 심층 진입과 혈전 프로필 요구가 추가되거나 구체화됐습니다. 기존 HP 자연 회복·드랍·레벨업 회복과의 충돌, AP와 충전의 차이, 광역 타게팅 중심 덮어쓰기를 별도 작업으로 분리했습니다.
 
@@ -54,15 +54,15 @@ tags:
 [오너 판단표](design/master-gdd-alignment.md#owner-conflicts)에서 회복·AP·파우치·심층·혈전·소켓·기술·상태의 8개 결정을 확인합니다. 기존 사용자 지시를 대체하는 규칙은 승인 전에 적용하지 않습니다.
 
 [최신 N26 작업선](design/current-milestone-workline.md#notion-20260907):
-오너 판단(N26-01)과 독립 가능한 타게팅 수정(N26-03) → 생존/AP(N26-02) → 파우치 소유권·정산(N26-04/05) → 심층(N26-06)·혈전(N26-07) → 66항목 수락·플레이 회귀(N26-08).
+판단 없이 이어갈 순서는 N26-03 완료 → 훈련 세팅·복원(N26-08A) → 성능·선택 모듈·배포 동등성(N26-08B)입니다. 생존/AP(N26-02), 파우치(N26-04/05), 심층·혈전(N26-06/07)은 오너 판단(N26-01) 후 진행합니다.
 P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니다.
 
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 3 · IMPROVE 5 · CHANGE 4 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 4 · IMPROVE 7 · CHANGE 5 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>2</b><small>UPDATE BUNDLES</small></span><span><b>3</b><small>BUILD</small></span><span><b>5</b><small>IMPROVE</small></span><span><b>4</b><small>CHANGE</small></span><span><b>4</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -73,7 +73,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>백업본을 최신 원본으로 읽던 연결과 상위 페이지 수정을 본문 변경으로 오판하던 수집 범위를 수정했습니다. 타게팅 등 게임 차이는 후속 작업으로 등록했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>타게팅 중심 보존 · 독립 구현 시작</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 지점형 스킬에 전달되던 군집 중심이 적 좌표로 바뀌는 오류를 수정했습니다. 현재 자기장·점멸의 사용 방식은 유지합니다.</strong></div>
@@ -81,6 +81,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>개선 · 3</h3><p>동률 결과를 고정하고 기존 정책 호환 경로를 보존했으며, 별도 기획 판단 없이 이어갈 작업을 분리했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 2</h3><p>부분 구현 상태와 잔여 범위를 명시하고 실제 스킬 실행 회귀를 추가했습니다. 새 밸런스 목록과 확정 수치는 추가하지 않았습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 2</h3><p>중심점 덮어쓰기와 사거리 밖·삭제·중복 후보가 대표 대상에 섞이는 문제를 차단했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>범위 공격 · 최대 피격 위치와 계산 최적화</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 적 한 마리 주변만 보던 범위 타게팅을 개선해 적 사이에 공격을 놓을 수 있고, 중심 이동으로 가장자리 적을 놓치는 현상을 방지합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>원형 범위의 최대 포함 위치를 찾는 순수 좌표 계산기를 타게팅 정책에 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>피격 수를 유지하는 경우에만 평균 중심을 사용하고, 숫자 배열 정렬로 계산 시간과 임시 할당을 줄였습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>독립 계산 대조와 실제 효과 적중·72명 성능을 회귀 검사에 추가했습니다. 기존 반경·스킬·저장·밸런스 목록은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>두 적 사이의 가능한 타격을 놓치는 경우와, 한쪽에 적이 몰리면 평균 중심이 반대편 적을 제외하는 경우를 수정했습니다.</p></div>
+        <p><a href="features/smart-targeting/#n26-03b">타게팅 계약·검증 근거 →</a> · 다음 작업은 훈련 세팅·복원입니다. 신규 기본 스킬 추가나 사람 재미 수락 완료를 뜻하지 않습니다.</p>
       </div>
     </details>
   </div>
