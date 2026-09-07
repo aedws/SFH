@@ -12,6 +12,8 @@ SFH는 Godot의 Scene, Node, Resource, Signal을 조합해 기능을 분리합�
 
 <!-- sfh:children -->
 
+<!-- sfh:implementation -->
+
 ## 3. 위키 문서 구조도 모듈로 관리
 
 `mkdocs.yml`의 중첩 목차가 상위·하위 관계의 원본입니다. `scripts/wiki_articles.py`는 빌드 시 이 관계에서 경로와 하위 문서 링크만 만들고, `docs/stylesheets/articles.css`가 읽기 화면을 담당합니다. 인증은 기존 Worker가 담당하며 이 탐색 모듈은 권한을 판단하지 않습니다.

@@ -19,6 +19,8 @@ description: 거점에서 출격을 준비하고, 방과 통로로 이루어진 
 
 <!-- sfh:children -->
 
+<!-- sfh:implementation -->
+
 ## 3. 헷갈리기 쉬운 구분
 
 규모·지역·난이도는 같은 설정이 아닙니다. 비용과 보상 규칙은 [작전 계약](operation-contracts.md), 장비를 바꿔도 안전하게 진입하는 구조는 [작전 사전검증](operation-launch-preflight.md) 문서에서 확인하세요.

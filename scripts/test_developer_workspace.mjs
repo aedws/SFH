@@ -91,5 +91,35 @@ try {
   await deep.locator('.sfh-owner-console__detail').waitFor();
   assert.equal(await deep.locator('[data-sfh-owner-decision-console]').count(), 1);
   await deep.close();
+  for (const width of widths) {
+    const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+    for (const path of ['features/', 'features/combat/', 'features/loot/', 'features/growth/', 'architecture/']) {
+      await page.goto(`${origin}/${path}`);
+      await page.locator('[data-sfh-stage-count]').waitFor();
+      assert.ok(await page.locator('.sfh-article-children a').count() > 0);
+      assert.equal(await page.locator('.sfh-implementation-guide details[open]').count(), 0);
+      await page.locator('.sfh-implementation-guide summary').click();
+      assert.ok(await page.locator('.sfh-stage-remaining li').count() > 0);
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${path} overflow at ${width}`);
+      await page.locator('.sfh-implementation-guide summary').click();
+      if (path === 'features/') await page.screenshot({ path: `outputs/developer-workspace/article-home-${width}.png`, fullPage: true });
+    }
+    await page.close();
+  }
+  for (const role of ['planner', 'developer']) {
+    const page = await browser.newPage();
+    await page.route('**/api/auth/session', route => route.fulfill({ json: { authenticated: true, role, username: role, must_change: false } }));
+    await page.goto(`${origin}/access/login/?return=%2Ffeatures%2F`);
+    await page.waitForURL(`${origin}/features/`);
+    const otherRole = role === 'planner' ? 'developer' : 'planner';
+    await page.goto(`${origin}/access/login/?return=${encodeURIComponent('/access/' + otherRole + '/')}`);
+    await page.waitForURL(`${origin}/access/${role}/`);
+    await page.goto(`${origin}/access/login/?return=${encodeURIComponent('/\\example.com/')}`);
+    await page.waitForURL(`${origin}/access/${role}/`);
+    await page.goto(`${origin}/access/login/?return=${encodeURIComponent('/access/login/')}`);
+    await page.waitForURL(`${origin}/access/${role}/`);
+    await page.close();
+  }
+  console.log('ARTICLE_FLOW_OK 4 widths x 5 topic pages; authenticated return to root for both roles');
   assert.deepEqual(errors, []);
 } finally { await browser.close(); }

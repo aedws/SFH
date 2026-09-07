@@ -32,7 +32,7 @@ search:
       <span><i>02</i><b>전투</b><small>자동 공격·스킬·봉쇄 방 확보</small></span>
       <span><i>03</i><b>회수</b><small>전리품 선택·탈출·영구 보관</small></span>
     </div>
-    <a class="sfh-public-login" href="access/login/"><span><b>팀 작업 공간 로그인</b><small>기획자 · 개발자 전용 전체 문서</small></span><em>→</em></a>
+    <a class="sfh-public-login" href="access/login/?return=%2Ffeatures%2F"><span><b>위키 종합 문서 열기</b><small>로그인 → 큰 주제 → 세부 기능 · 기획자/개발자 공통 문서</small></span><em>→</em></a>
   </aside>
 </section>
 
@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 10 · IMPROVE 22 · CHANGE 15 · FIX 17</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 11 · IMPROVE 24 · CHANGE 16 · FIX 18</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>22</b><small>IMPROVE</small></span><span><b>15</b><small>CHANGE</small></span><span><b>17</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>11</b><small>BUILD</small></span><span><b>24</b><small>IMPROVE</small></span><span><b>16</b><small>CHANGE</small></span><span><b>18</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 10</small><b>위키 문서 동선 · 큰 주제에서 세부 기능으로</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 홈에서 로그인 후 종합 문서로 들어가고, 주제 설명을 읽으며 세부 기능으로 내려가도록 정리했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>내부 주제 문서에 검토 원본과 연결된 구현 단계·남은 경계 안내를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>하위 문서마다 설명을 표시하고 공개 홈에서 문서 읽기와 게임 플레이의 진입을 구분했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>문서 정리와 게임 기능 완료를 분리합니다. 부분 구현은 정책 결정·코드·검증이 끝나기 전까지 그대로 표시합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>로그인된 사용자가 문서 링크를 열면 요청 문서 대신 역할 작업실로 이동하던 경로를 수정했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>개발자 작업 공간 · 개요에서 근거로 좁히는 운영 화면</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 긴 대시보드를 한 번에 읽는 대신 현재 작업을 먼저 보고, 필요한 객체·관계·검증 근거만 펼쳐 확인합니다.</strong></div>

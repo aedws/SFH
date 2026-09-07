@@ -50,7 +50,7 @@ foreach ($entry in $requiredStylePatterns.GetEnumerator()) {
 $publicRoutes = @(
     'data-sfh-surface="gameplay"',
     'data-sfh-surface="windows-download"',
-    'href="access/login/"'
+    'href="access/login/?return=%2Ffeatures%2F"'
 )
 foreach ($route in $publicRoutes) {
     if ($index -notmatch [regex]::Escape($route)) {

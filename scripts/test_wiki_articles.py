@@ -187,6 +187,31 @@ assert developer_console_position >= 0 and owner_console_position < module_map_p
 for phrase in ["SFH 운영 온톨로지 읽는 순서", "판단 폐루프", "객체 탐색", "관계·계보", "행동·관측"]:
     assert phrase in developer_text, f"Developer operational ontology guidance missing: {phrase}"
 assert (SITE / "assets/project-ontology.json").is_file(), "Generated project ontology missing"
+audit = json.loads((ROOT / "docs/assets/notion-code-audit.json").read_text(encoding="utf-8"))
+tracker = json.loads((ROOT / "docs/assets/notion-tracker-snapshot.json").read_text(encoding="utf-8"))
+category_by_id = {row["id"]: row["category"] for row in tracker["rows"]}
+topic_categories = {
+    "features/index.md": None,
+    "features/operations.md": {"플레이어루프", "탈출/파산방지", "원정계약/랭킹"},
+    "features/combat.md": {"스마트타겟팅", "조작/스킬바인딩"},
+    "features/loot.md": {"전리품/파밍"},
+    "features/growth.md": {"상점/제작소", "훈련연습장"},
+    "architecture/index.md": {"엔진/아키텍처"},
+}
+for source, categories in topic_categories.items():
+    text = (SITE / route(source) / "index.html").read_text(encoding="utf-8")
+    expected_rows = [r for r in audit["rows"] if categories is None or category_by_id[r["notion_id"]] in categories]
+    assert f'data-sfh-stage-count="{len(expected_rows)}"' in text, source
+    assert "<!-- sfh:implementation -->" not in text
+    for row in expected_rows:
+        if row["assessment"] != "code_supported":
+            from html import escape
+            assert escape(row["title"]) in text, f"Missing remaining boundary: {row['title']}"
+public_home = (SITE / "index.html").read_text(encoding="utf-8")
+root_text = (SITE / "features/index.html").read_text(encoding="utf-8")
+assert "직접 조준하는 대신 이동·회피와 스킬 사용에 집중하는 전투를 설명합니다." in root_text, "Child descriptions must load before child pages render"
+assert 'return=%2Ffeatures%2F' in public_home
+assert 'data-sfh-stage-count' not in public_home, "Implementation data must stay protected"
 assert (SITE / "javascripts/owner-decision-console.js").is_file(), "Owner decision console runtime missing"
 print("PLANNER_TUTORIAL_OK anchors_8 planner_entries loot_flow notion_authoring search_index support_boundaries")
 print("DEVELOPER_ROOM_OK owner_decisions_then_code_evidence")
