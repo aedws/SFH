@@ -118,6 +118,14 @@ jobs:
           cat /tmp/sfh-partial-completion.log
           grep -q "PARTIAL_COMPLETION_OK" /tmp/sfh-partial-completion.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-partial-completion.log
+          if godot --headless --path "$GITHUB_WORKSPACE" --script res://game/tests/fun_qa_affordance_test.gd > /tmp/sfh-fun-qa.log 2>&1; then
+            cat /tmp/sfh-fun-qa.log
+          else
+            cat /tmp/sfh-fun-qa.log
+            exit 1
+          fi
+          grep -q "FUN_QA_AFFORDANCE_OK" /tmp/sfh-fun-qa.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-fun-qa.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/provisional_policy_contract_test.gd" > /tmp/sfh-provisional-policy.log 2>&1
           cat /tmp/sfh-provisional-policy.log
           grep -q "PROVISIONAL_POLICY_OK" /tmp/sfh-provisional-policy.log
