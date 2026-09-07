@@ -63,7 +63,7 @@ func _run() -> void:
 	var far := _enemy(Vector2(140, 0), sandbox)
 	var spread: Array = [near, a, far]
 	_check(policy.resolve_for_skill(&"densest", Vector2.ZERO, spread, 200, Vector2.RIGHT, 10).target_point == near.position, "small radius chooses nearest singleton")
-	_check(policy.resolve_for_skill(&"densest", Vector2.ZERO, spread, 200, Vector2.RIGHT, 50).target_point == Vector2(120, 0), "effect radius changes chosen cluster")
+	_check(policy.resolve_for_skill(&"densest", Vector2.ZERO, spread, 200, Vector2.RIGHT, 50).target_point == Vector2(55, 0), "effect radius fits bridge pair, nearest anchor breaks coverage tie")
 	var left := _enemy(Vector2(-10, 0), sandbox)
 	_check(policy.resolve_for_skill(&"densest", Vector2.ZERO, [near, left], 100, Vector2.RIGHT, 1).target_point == left.position, "equal-density equal-distance coordinate tie break")
 	_check(policy.resolve(&"direction", Vector2.ZERO, [], 100, Vector2.DOWN).target_point == Vector2(0, 100), "direction contract preserved")
@@ -102,6 +102,21 @@ func _run() -> void:
 	system.cooldowns[0] = 0
 	system.targeting_policy = null
 	_check(system.try_activate(0) and effect.received.target_point == actor.position, "optional targeting fallback")
+	# Player-observable integration: the effect, not just solver metadata, hits all.
+	system.targeting_policy = policy
+	effect.radius = 10
+	a.position = Vector2(91, 0)
+	b.position = Vector2(109, 0)
+	c.position = Vector2(900, 0)
+	system.cooldowns[0] = 0
+	_check(system.try_activate(0) and effect.last_hits == 2, "actual area activation hits bridge pair old anchor heuristic missed")
+	a.position = Vector2(90, 0)
+	b.position = Vector2(110, 0)
+	c.position = Vector2(108, 0)
+	_enemy(Vector2(108, 0), enemies)
+	_enemy(Vector2(108, 0), enemies)
+	system.cooldowns[0] = 0
+	_check(system.try_activate(0) and effect.last_hits == 5, "unsafe centroid must not lose actual boundary hits")
 	sandbox.queue_free()
 	await process_frame
 	if failures.is_empty():

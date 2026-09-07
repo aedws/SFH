@@ -1,6 +1,8 @@
 class_name SmartTargetingPolicy
 extends Resource
 
+const COVERAGE_SOLVER = preload("res://game/features/smart_targeting/circular_coverage_solver.gd")
+
 ## 스킬 정의가 요청한 대상 유형을 하나의 교체형 정책에서 해석합니다.
 
 @export_range(32.0, 600.0, 8.0) var density_radius := 180.0
@@ -82,23 +84,11 @@ func select_densest_point(origin: Vector2, candidates: Array, maximum_range: flo
 	var valid := _eligible_candidates(origin, candidates, maximum_range)
 	if valid.is_empty():
 		return origin
-	var best_cluster: Array[Node2D] = []
-	var best_anchor_distance := INF
 	var radius := effect_radius if is_finite(effect_radius) and effect_radius > 0.0 else density_radius
-	var radius_squared := radius * radius
-	for anchor in valid:
-		var cluster: Array[Node2D] = []
-		for candidate in valid:
-			if anchor.global_position.distance_squared_to(candidate.global_position) <= radius_squared:
-				cluster.append(candidate)
-		var anchor_distance := origin.distance_squared_to(anchor.global_position)
-		if cluster.size() > best_cluster.size() or (cluster.size() == best_cluster.size() and anchor_distance < best_anchor_distance):
-			best_cluster = cluster
-			best_anchor_distance = anchor_distance
-	var center := Vector2.ZERO
-	for target in best_cluster:
-		center += target.global_position
-	return center / float(best_cluster.size())
+	var positions := PackedVector2Array()
+	for target in valid:
+		positions.append(target.global_position - origin)
+	return origin + COVERAGE_SOLVER.solve(positions, radius, maximum_range)
 
 
 func get_snapshot() -> Dictionary:
