@@ -11,6 +11,14 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-07 · 임시 정책 교체 경계 {#provisional-policies}
+
+- AP 회복량은 `EnergyRegenerationPolicy`, 소켓 대상 선택은 `SessionSocketBindingPolicy`, 보유품 입출금은 `SessionSocketInventoryAdapter`로 분리했습니다. 공통 `TargetedModifierStore`는 값만 보관하며 Scene/아이템을 참조하지 않습니다.
+- 무기·스킬은 공개 대상 ID와 modifier 계약을 제공하고 Game은 조립만 합니다. I 가방은 일반 명령 제공자를 등록하므로 RunAsset 종류 분기를 UI에 복제하지 않습니다. 훈련은 기존 export/validate/restore와 저장 격리를 재사용합니다.
+- `PROVISIONAL_POLICY_OK`, 훈련 복원·기본 게임·전체 플레이 E2E 통과. 가방 부족/편집 취소/실시간 데이터 거부/정책 교체/Q 효과 누출을 포함합니다. 정적 감사는 기능 57·클래스 238·의존 26·순환 0·서비스 Scene 탐색 0입니다.
+- 무기 귀속은 현재 슬롯/정의 ID이며 물리 인스턴스 귀속과 대상 선택 UI는 후속 확장입니다. 총 용량·기존 환전·HP 규칙을 유지합니다. 이 결과는 모든 기기 성능이나 재미 수락을 보장하지 않습니다.
+- CI의 모든 작업은 수동 기동 자체 Linux 러너로 통일했습니다. 오프라인이면 대기하며 유료 hosted 폴백은 없습니다. 컨테이너 종료 시 작업 파일 소유권을 러너 사용자에게 반환합니다. 과금/Windows 자동 기동 정책은 변경하지 않습니다.
+
 ## 2026-09-07 · 프레임·타격·속도감 경계 {#frame-feedback}
 
 - 안개 내부 계산·질의 할당만 개선하며 맵 제공자 계약·차폐 정책을 변경하지 않습니다.

@@ -53,10 +53,21 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 11 · IMPROVE 24 · CHANGE 16 · FIX 18</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 14 · IMPROVE 26 · CHANGE 19 · FIX 20</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>10</b><small>UPDATE BUNDLES</small></span><span><b>11</b><small>BUILD</small></span><span><b>24</b><small>IMPROVE</small></span><span><b>16</b><small>CHANGE</small></span><span><b>18</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>26</b><small>IMPROVE</small></span><span><b>19</b><small>CHANGE</small></span><span><b>20</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>AP 재생 · 대상별 룬과 보유 훈련</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · AP는 잠시 쉬면 회복되고, 룬 효과는 장착한 대상에만 적용됩니다. 해제한 자산은 가방에서 다시 쓸 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 3</h3><p>1초 미사용 후 10 AP/s, 무기·스킬별 효과 귀속, 해제 가방 반환·재장착을 임시 정책으로 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>훈련은 보유품만 무료로 시험하고 종료 시 원복합니다. 모든 CI를 수동 기동 자체 러너로 전환해 hosted 비용 폴백을 없앴습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 3</h3><p>회복·귀속·입출금의 교체 경계를 분리하고 승인 임시/기획 확정을 구분했습니다. 66행 중 3행을 검증 근거로 갱신해 코드 대응도 75.9%, 부분 잔여 4행입니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>가방 부족·편집 취소 때 자산/효과 손실을 차단하고 컨테이너 파일 소유권으로 다음 CI가 막히던 문제를 수정했습니다.</p></div>
+        <p>원본·계산: 최신 GDD/트래커 해시 동일, 코드 dfe0f1f, 129/170. 정책 계약·전체 플레이 회귀 통과이며 사람 재미/모든 기기 수락과는 별도입니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 10</small><b>위키 문서 동선 · 큰 주제에서 세부 기능으로</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 홈에서 로그인 후 종합 문서로 들어가고, 주제 설명을 읽으며 세부 기능으로 내려가도록 정리했습니다.</strong></div>

@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "reviewed_at": "2026-09-07",
-  "reviewed_commit": "1bd3b12e61eea88c77af779cfa81078e309ce640",
-  "method": "static_code_and_existing_test_source_review; no new human-play acceptance; planner status != implementation status",
+  "reviewed_commit": "dfe0f1f",
+  "method": "owner-approved provisional AP/socket/training policies; executed contract + gameplay E2E; no new human-play acceptance; planner status unchanged",
   "gdd_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
   "tracker_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
   "scoring": {
@@ -166,16 +166,17 @@
       "title": "보유 장비/스킬/룬 무상 자유 세팅 콘솔",
       "request_id": "PLAN-05-TRAIN",
       "planner_status": "결정 (미구현)",
-      "assessment": "partial",
+      "assessment": "code_supported",
       "code": [
         "game/features/training_ground/training_loadout_service.gd"
       ],
       "existing_tests": [
+        "game/tests/provisional_policy_contract_test.gd",
         "game/tests/training_ground_gameplay_e2e_test.gd",
         "game/tests/training_loadout_restore_contract_test.gd",
         "game/tests/training_optional_matrix_test.gd"
       ],
-      "finding": "N26-08A 구현·기존 회귀 통과: 보유 장비·스킬·기존 공용 RunAsset 시험, 종료/전환/실패 복원·저장 격리·선택 기능 제거 5구성. 장비별 소켓 귀속과 보유 룬 영구 목록의 최신 기획 동등성은 미수락이므로 partial 유지. 다음 작업을 훈련 신규 구현으로 되돌리지 않음.",
+      "finding": "오너 승인 임시 정책(2026-09-07): 보유 가방/장착 RunAsset만 무료 시험, 대상별 효과 적용, 종료·실패 가방/AP/소켓 원복·저장 격리. 미보유 거부·I 편집 취소·복원 계약과 전체 E2E 통과. 영구 룬 카탈로그는 새로 만들지 않으며 기획 최종 수치/사람 수락은 별도.",
       "next_packet": "N26-08"
     },
     {
@@ -349,14 +350,15 @@
       "title": "세션 증폭 룬/코어 인게임 실시간 소켓 장착",
       "request_id": "DATA-01-LOOT",
       "planner_status": "결정 (미구현)",
-      "assessment": "partial",
+      "assessment": "code_supported",
       "code": [
         "game/features/session_sockets/session_socket_service.gd"
       ],
       "existing_tests": [
+        "game/tests/provisional_policy_contract_test.gd",
         "game/tests/basic_loop_smoke_test.gd"
       ],
-      "finding": "세션 공용 룬2·코어1·유물1 슬롯은 있음. 요구한 무기/스킬 개별 소켓 귀속과 동일한지는 미확정.",
+      "finding": "오너 승인 임시 정책(2026-09-07): 총 용량 유지, 현재 무기 슬롯/정의 ID·개별 스킬 ID 귀속, 해제 가방 반환·재장착·탈출 환전. Q 누출·스킬별 효과·가방 부족 원자성·편집 취소 회귀 통과. 물리 인스턴스 귀속/대상 선택 UI는 후속 확장, 기본 UI는 현재 무기/첫 스킬.",
       "next_packet": "N26-01"
     },
     {
@@ -1043,14 +1045,15 @@
       "title": "공용 자원(AP/스태미나) 소모 및 회복 사이클",
       "request_id": "PLAN-01-CTRL",
       "planner_status": "결정 (미구현)",
-      "assessment": "partial",
+      "assessment": "code_supported",
       "code": [
         "game/features/combat_resources/combat_resource_system.gd"
       ],
       "existing_tests": [
+        "game/tests/provisional_policy_contract_test.gd",
         "game/tests/basic_loop_smoke_test.gd"
       ],
-      "finding": "AP 차감과 드랍 복원은 있음. advance는 충전 횟수만 복구하며 미사용 초당 AP 자연 회복은 없음. 충전=에너지로 오판하지 않음.",
+      "finding": "오너 승인 임시 정책(2026-09-07): 마지막 AP 소모 후 1초부터 초당10 자연 회복, 최대치 제한, 드랍·충전은 독립 유지. 프레임 분할 동등성·정책 교체/제거·대기 시간 원복·비정상 값 거부 계약 통과. HP 정책 및 기획 최종 수치는 별도.",
       "next_packet": "N26-02"
     },
     {

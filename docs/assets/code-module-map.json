@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "0cd6a4a8cb3ab8f4e2614c977e3b210e7108c71d4d6d3aed28b1b6dc08324d92",
+  "source_sha256": "5bc12d3fe7b997d59d7986d03f74dcccc10bf142f2d74c0b07b8086a8a542ad1",
   "domains": [
     {
       "id": "system",
@@ -63,9 +63,9 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 288,
-    "named_classes": 234,
-    "relationships": 187,
+    "scripts": 293,
+    "named_classes": 238,
+    "relationships": 189,
     "project_inheritance": 7,
     "enabled_toggles": 70
   },
@@ -94,17 +94,18 @@
       "path": "game/core",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 6,
-      "class_count": 6,
+      "file_count": 7,
+      "class_count": 7,
       "classes": [
         "ArenaGrid",
         "AtomicJsonStore",
         "CatalogCsvTable",
         "FeatureManifest",
         "ItemQualityDescriptor",
-        "RunCombatMetrics"
+        "RunCombatMetrics",
+        "TargetedModifierStore"
       ],
-      "incoming_count": 9,
+      "incoming_count": 11,
       "outgoing_count": 30
     },
     {
@@ -173,12 +174,13 @@
       "path": "game/features/combat_resources",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 3,
-      "class_count": 3,
+      "file_count": 4,
+      "class_count": 4,
       "classes": [
         "CombatResourceConfig",
         "CombatResourcePickup",
-        "CombatResourceSystem"
+        "CombatResourceSystem",
+        "EnergyRegenerationPolicy"
       ],
       "incoming_count": 3,
       "outgoing_count": 0
@@ -210,7 +212,7 @@
         "TimedStatModifier"
       ],
       "incoming_count": 6,
-      "outgoing_count": 2
+      "outgoing_count": 3
     },
     {
       "id": "conditional_ranking",
@@ -1078,11 +1080,13 @@
       "path": "game/features/session_sockets",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 5,
-      "class_count": 5,
+      "file_count": 7,
+      "class_count": 7,
       "classes": [
+        "SessionSocketBindingPolicy",
         "SessionSocketConfig",
         "SessionSocketHUD",
+        "SessionSocketInventoryAdapter",
         "SessionSocketRule",
         "SessionSocketService",
         "SessionSocketTable"
@@ -1245,7 +1249,7 @@
         "WeaponProjectile"
       ],
       "incoming_count": 5,
-      "outgoing_count": 1
+      "outgoing_count": 2
     },
     {
       "id": "verification",
@@ -1256,7 +1260,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 44,
+      "file_count": 45,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1369,6 +1373,15 @@
       "module": "combat_resources",
       "path": "game/features/combat_resources/combat_resource_system.gd",
       "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:EnergyRegenerationPolicy",
+      "name": "EnergyRegenerationPolicy",
+      "module": "combat_resources",
+      "path": "game/features/combat_resources/energy_regeneration_policy.gd",
+      "extends": "Resource",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -1692,6 +1705,15 @@
       "name": "RunCombatMetrics",
       "module": "core",
       "path": "game/core/run_combat_metrics.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:TargetedModifierStore",
+      "name": "TargetedModifierStore",
+      "module": "core",
+      "path": "game/core/targeted_modifier_store.gd",
       "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
@@ -3065,6 +3087,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:SessionSocketBindingPolicy",
+      "name": "SessionSocketBindingPolicy",
+      "module": "session_sockets",
+      "path": "game/features/session_sockets/session_socket_binding_policy.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:SessionSocketConfig",
       "name": "SessionSocketConfig",
       "module": "session_sockets",
@@ -3079,6 +3110,15 @@
       "module": "session_sockets",
       "path": "game/features/session_sockets/session_socket_hud.gd",
       "extends": "PanelContainer",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:SessionSocketInventoryAdapter",
+      "name": "SessionSocketInventoryAdapter",
+      "module": "session_sockets",
+      "path": "game/features/session_sockets/session_socket_inventory_adapter.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -3372,6 +3412,12 @@
     }
   ],
   "edges": [
+    {
+      "from": "combat_skills",
+      "to": "core",
+      "type": "references",
+      "evidence_count": 1
+    },
     {
       "from": "combat_skills",
       "to": "player",
@@ -4186,13 +4232,13 @@
       "from": "verification",
       "to": "combat_resources",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
       "to": "combat_skills",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",
@@ -4438,7 +4484,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 16
+      "evidence_count": 17
     },
     {
       "from": "verification",
@@ -4486,6 +4532,12 @@
       "from": "weapon_balance",
       "to": "weapons",
       "type": "requires",
+      "evidence_count": 1
+    },
+    {
+      "from": "weapons",
+      "to": "core",
+      "type": "references",
       "evidence_count": 1
     },
     {
