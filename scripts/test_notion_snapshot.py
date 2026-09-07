@@ -151,9 +151,9 @@ class CodeCrosswalkTests(unittest.TestCase):
     def test_all_rows_and_weighted_result(self):
         audit_check.validate(self.audit, self.gdd, self.tasks)
         numerator, denominator, counts = audit_check.summary(self.audit)
-        # Owner-approved provisional AP/socket/training rules add three rows.
-        self.assertEqual((numerator, denominator, len(self.audit["rows"])), (129, 170, 66))
-        self.assertEqual((counts["code_supported"], counts["partial"]), (41, 4))
+        # Verified shop bands and actual tile/area adapters; normal-play QA stays partial.
+        self.assertEqual((numerator, denominator, len(self.audit["rows"])), (133.5, 170, 66))
+        self.assertEqual((counts["code_supported"], counts["partial"]), (44, 1))
         self.assertEqual(counts["decision_pending"], 14)
 
     def test_missing_or_duplicate_row_fails(self):

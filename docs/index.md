@@ -53,9 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 14 · IMPROVE 26 · CHANGE 19 · FIX 20</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 16 · IMPROVE 27 · CHANGE 20 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>26</b><small>IMPROVE</small></span><span><b>19</b><small>CHANGE</small></span><span><b>20</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>16</b><small>BUILD</small></span><span><b>27</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>손상품 가격 · 타일/타겟 어댑터 · 체감 QA</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 손상품은 실제로 저렴해지고, 바닥과 적 탐색은 독립 엔진 어댑터를 사용합니다. 무기 정보는 전투 중앙을 가리지 않습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>실제 바닥 TileMapLayer와 무기/스킬 공통 후보 Area2D를 연결하고 기존 충돌·길찾기·타겟 우선순위를 유지했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>첫 생성·사거리 변경·삭제·화면 중앙 가림을 별도 회귀 계약으로 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>3행 추가 검증으로 코드 대응도 78.5%(133.5/170). 배포판 일반 플레이·첫 진입 지연은 별도 검수로 남깁니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>손상품 가격을 표준 단가20~30% 범위의 6C/23C로 Sheet·CSV에 반영하고, 반복 정보 팝업과 캐릭터 앞 가림을 줄였습니다.</p></div>
+        <p><a href="quality/player-perception-audit/">플레이어 인식 QA →</a> · <a href="architecture/module-audit/#partial-adapters">모듈 경계 →</a> · 코드 dda00af. 자동 통과와 사람 재미 수락은 구분합니다.</p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 11</small><b>AP 재생 · 대상별 룬과 보유 훈련</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">

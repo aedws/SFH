@@ -24,9 +24,9 @@ tags:
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>GDD + TRACKER · 2026-09-07</small><strong>확정도 가중 코드 대응도</strong></span>
-    <b>75.9%</b>
+    <b>78.5%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75.9"><i style="width: 75.9%"></i></div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="78.5"><i style="width: 78.5%"></i></div>
   <p>최신 GDD v128·62블록과 트래커 66행을 코드·기존 테스트 소스와 대조했습니다. 출시 준비율이나 이번 실제 플레이 통과율이 아닙니다. 기존 96%는 이전 백업 기준의 이력이며 현재 진행률로 사용하지 않습니다.</p>
 </div>
 
@@ -35,13 +35,13 @@ tags:
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
-| 구현 근거 있음 | 41 | 1 |
-| 부분 대응 | 4 | 0.5 |
+| 구현 근거 있음 | 44 | 1 |
+| 부분 대응 | 1 | 0.5 |
 | 신규 미구현 | 6 | 0 |
 | 기존 규칙과 충돌 | 1 | 0 |
 | 기획 판단 대기 | 14 | 0 |
 
-노션 결정 52개×3·미정14개×1로 가중합니다. `(41×3 + 4×0.5×3) ÷ (52×3 + 14) = 129/170 = 75.9%`. AP·소켓·보유 훈련 3행만 승격했습니다. [노션 외 구현 9묶음](design/master-gdd-alignment.md#implemented-outside-notion)은 가산하지 않습니다. 확정 요구만의 참고 대응도는 82.7%이며 출시율·사람 수락률이 아닙니다.
+노션 결정 52개×3·미정14개×1로 가중합니다. `(44×3 + 1×0.5×3) ÷ (52×3 + 14) = 133.5/170 = 78.5%`. 손상 매물·바닥 TileMapLayer·타겟 Area2D 3행을 추가 검증했습니다. [노션 외 구현 9묶음](design/master-gdd-alignment.md#implemented-outside-notion)은 가산하지 않습니다. 확정 요구만의 참고 대응도는 85.6%이며 출시율·사람 수락률이 아닙니다.
 
 ## 현재 빌드 상태
 
@@ -54,15 +54,26 @@ tags:
 [오너 판단표](design/master-gdd-alignment.md#owner-conflicts)에서 회복·AP·파우치·심층·혈전·소켓·기술·상태의 8개 결정을 확인합니다. 기존 사용자 지시를 대체하는 규칙은 승인 전에 적용하지 않습니다.
 
 [최신 N26 작업선](design/current-milestone-workline.md#notion-20260907):
-N26-03A/B·훈련 복원·승인 임시 AP/소켓 정책은 구현·자동 회귀를 통과했습니다. 남은 부분 구현은 손상 매물 운영값, TileMapLayer, Area2D 타게팅, 배포 Web/Windows 일반 플레이 동등성 4행입니다. HP 충돌·파우치·심층·혈전은 별도 결정으로 유지합니다.
+N26-03A/B·훈련 복원·승인 임시 AP/소켓과 손상 매물·TileMapLayer·Area2D는 구현·자동 회귀를 통과했습니다. 남은 부분 대응은 배포 Web/Windows 일반 플레이·첫 출격 지연 검수 1행입니다. HP 충돌·파우치·심층·혈전은 별도 결정으로 유지합니다.
 P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니다.
 
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 14 · IMPROVE 26 · CHANGE 19 · FIX 20</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 16 · IMPROVE 27 · CHANGE 20 · FIX 22</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>11</b><small>UPDATE BUNDLES</small></span><span><b>14</b><small>BUILD</small></span><span><b>26</b><small>IMPROVE</small></span><span><b>19</b><small>CHANGE</small></span><span><b>20</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>16</b><small>BUILD</small></span><span><b>27</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>22</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>손상품 가격 · 타일/타겟 어댑터 · 체감 QA</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 손상품은 실제로 저렴해지고, 바닥과 적 탐색은 독립 엔진 어댑터를 사용합니다. 무기 정보는 전투 중앙을 가리지 않습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>실제 바닥 TileMapLayer와 무기/스킬 공통 후보 Area2D를 연결하고 기존 충돌·길찾기·타겟 우선순위를 유지했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>첫 생성·사거리 변경·삭제·화면 중앙 가림을 별도 회귀 계약으로 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>3행 추가 검증으로 코드 대응도 78.5%(133.5/170). 배포판 일반 플레이·첫 진입 지연은 별도 검수로 남깁니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>손상품 가격을 표준 단가20~30% 범위의 6C/23C로 Sheet·CSV에 반영하고, 반복 정보 팝업과 캐릭터 앞 가림을 줄였습니다.</p></div>
+        <p><a href="quality/player-perception-audit/">플레이어 인식 QA →</a> · <a href="architecture/module-audit/#partial-adapters">모듈 경계 →</a> · 코드 dda00af. 자동 통과와 사람 재미 수락은 구분합니다.</p>
+      </div>
+    </details>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
