@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-07",
-  "source_sha256": "891758bce33d30ceed7f926bbcbe6547c7b2e35b4855929534a8d9ff5aa37389",
+  "source_sha256": "92aab4bde39e76a308f6b9a72f979f40dd6436c5469a1440defce81c5861bd42",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -1288,9 +1288,9 @@
       "status": "blocked",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "게임 상태·저장·HUD·접근성·성능·기능 제거 계약 통합. 잔여 소켓/훈련 차이와 기술 대안 재대조",
+      "summary": "N26-08A 공용 훈련 세팅·복원·저장 보호 구현. N26-08B 성능·기능 제거·배포 동등성 검증 및 잔여 장비별 소켓/기술 대안 판단은 분리 유지",
       "acceptance": "AP 자연량·스킬 수·타겟 반경/주기·UI·리롤·손상품·환전·탈출·시즌의 임시/확정 분리 및 Web/Windows E2E",
-      "next_action": "각 신규 모듈 완료 + 잔여 오너 결정",
+      "next_action": "독립 실행은 N26-08B부터. 전체 66항목 수락은 각 신규 모듈 완료 + 잔여 오너 결정 이후",
       "route": "design/current-milestone-workline/#notion-20260907",
       "relations": [
         {
@@ -3604,14 +3604,14 @@
       "label": "훈련장",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "월드·탐색 · feature · 파일 12개",
+      "summary": "월드·탐색 · feature · 파일 13개",
       "route": "architecture/code-module-map/?module=training_ground",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/training_ground",
       "kind": "implementation",
       "metrics": {
-        "files": 12,
-        "classes": 12,
+        "files": 13,
+        "classes": 13,
         "incoming": 3,
         "outgoing": 0
       }
@@ -3658,13 +3658,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 40개",
+      "summary": "기반·검증 · verification · 파일 41개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 40,
+        "files": 41,
         "classes": 0,
         "incoming": 0,
         "outgoing": 50

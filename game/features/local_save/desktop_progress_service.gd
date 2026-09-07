@@ -20,6 +20,25 @@ var gear: Node
 var delay := 0.0
 var storage_providers: Array[Node] = []
 var result_details := {}
+var temporary_loadout := false
+
+
+func begin_temporary_loadout() -> bool:
+	if temporary_loadout:
+		return false
+	if not flush():
+		return false
+	temporary_loadout = true
+	return true
+
+
+func end_temporary_loadout() -> bool:
+	# Caller has restored every participant before releasing this checkpoint barrier.
+	temporary_loadout = false
+	if not flush():
+		temporary_loadout = true
+		return false
+	return true
 
 
 func observe_settlement(result: Dictionary) -> void:
@@ -134,7 +153,7 @@ func _on_weapon_changed(_slot: StringName, _weapon: Resource) -> void:
 func flush() -> bool:
 	if not enabled: return true
 	if blocked: return false
-	if is_instance_valid(bag) and is_instance_valid(gear):
+	if not temporary_loadout and is_instance_valid(bag) and is_instance_valid(gear):
 		var saved := {&"bag": bag.call(&"export_runtime_state"), &"gear": gear.call(&"export_runtime_state")}
 		if not bag.call(&"validate_runtime_state", saved.bag).is_empty() or not gear.call(&"validate_runtime_state", saved.gear).is_empty():
 			return _block("세팅 저장 실패", "유효하지 않은 가방/장비는 저장하지 않습니다.")
@@ -147,6 +166,7 @@ func flush() -> bool:
 
 
 func begin_run(run_id: StringName, contract: Dictionary) -> bool:
+	if temporary_loadout: return false
 	if not enabled: return true
 	if not flush(): return false
 	result_details.clear()
@@ -193,7 +213,7 @@ func get_snapshot() -> Dictionary:
 		&"path": ProjectSettings.globalize_path(storage_path) if not storage_path.is_empty() else "",
 		&"total_runs": int(document.total_runs), &"extractions": int(document.extractions),
 		&"history": document.history.duplicate(true), &"pending_run": document.pending_run.duplicate(true),
-		&"dirty": dirty, &"hub_bound": is_instance_valid(bag)}
+		&"dirty": dirty, &"hub_bound": is_instance_valid(bag), &"temporary_loadout": temporary_loadout}
 
 
 func _write() -> bool:

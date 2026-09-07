@@ -46,6 +46,9 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 	):
 		field.queue_free()
 		return {&"success": false, &"status": "자기장 전개에 실패했습니다."}
+	var registrar: Callable = context.get(&"register_runtime_effect", Callable())
+	if registrar.is_valid():
+		registrar.call(field)
 	return {
 		&"success": true,
 		&"status": "자기장 전개 · %.1f초 지속" % resolved_duration,

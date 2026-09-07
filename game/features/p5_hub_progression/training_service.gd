@@ -13,7 +13,8 @@ func configure(rows: Array[Dictionary]) -> bool:
 
 
 func start(scenario_id: StringName) -> Dictionary:
-	active = _find(scenario_id)
+	# Session ownership must not alias the reusable catalog row: finish clears active.
+	active = _find(scenario_id).duplicate(true)
 	if active.is_empty():
 		return {&"success": false, &"reason": "훈련 시나리오 없음"}
 	hits.clear()

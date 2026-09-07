@@ -218,6 +218,52 @@ func get_snapshot() -> Dictionary:
 	}
 
 
+func get_catalog_items() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var ids := rules_by_item.keys()
+	ids.sort()
+	for id in ids:
+		var rule: Resource = rules_by_item[id][0]
+		result.append({&"item_id": id, &"display_name": rule.get("display_name"), &"socket_type": rule.get("socket_type"), &"description": rule.get("description")})
+	return result
+
+
+func export_runtime_state() -> Dictionary:
+	return {&"equipped": equipped.duplicate(true), &"sequence": sequence}
+
+
+func validate_runtime_state(state: Dictionary) -> PackedStringArray:
+	if not state.get(&"equipped") is Dictionary:
+		return PackedStringArray(["소켓 복원 구획 없음"])
+	for type in state.equipped:
+		var slots: Variant = state.equipped[type]
+		if type not in SOCKET_ORDER or not slots is Array or slots.size() > int(capacities.get(type, 0)):
+			return PackedStringArray(["소켓 종류/용량 불일치"])
+		var counts := {}
+		for slot in slots:
+			if not slot is Dictionary or not rules_by_item.has(slot.get(&"item_id")):
+				return PackedStringArray(["소켓 아이템 복원 불가"])
+			var rule: Resource = rules_by_item[slot.item_id][0]
+			counts[slot.item_id] = int(counts.get(slot.item_id, 0)) + 1
+			if rule.get("socket_type") != type or counts[slot.item_id] > int(rule.get("duplicate_limit")):
+				return PackedStringArray(["소켓 중복/태그 불일치"])
+	return PackedStringArray()
+
+
+func restore_runtime_state(state: Dictionary) -> bool:
+	if not validate_runtime_state(state).is_empty():
+		return false
+	equipped = state.equipped.duplicate(true)
+	sequence = int(state.get(&"sequence", 0))
+	_apply_modifiers()
+	sockets_changed.emit(get_snapshot())
+	return true
+
+
+func _exit_tree() -> void:
+	_remove_modifiers()
+
+
 func _apply_modifiers() -> void:
 	var aggregated := _aggregate_modifiers()
 	weapon_target.call(&"set_runtime_modifiers", MODIFIER_SOURCE, aggregated[&"weapon"])

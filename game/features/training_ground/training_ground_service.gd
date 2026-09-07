@@ -8,6 +8,7 @@ signal dummy_spawned(dummy: Node)
 signal telemetry_snapshot_changed(snapshot: Dictionary)
 signal telemetry_finalized(snapshot: Dictionary)
 signal loadout_state_changed(snapshot: Dictionary)
+signal stop_requested
 
 const DEFINITION := preload("res://game/features/training_ground/training_scenario_definition.gd")
 const SPAWNER := preload("res://game/features/training_ground/training_dummy_spawner.gd")
@@ -25,6 +26,47 @@ var telemetry_service: Node
 var loadout_service
 var combat_skill_provider: Node
 var skill_catalog: Array[Resource] = []
+var socket_provider: Node
+
+
+func configure_checkpoint_provider(provider: Node) -> bool:
+	return loadout_service != null and bool(loadout_service.call(&"configure_checkpoint_provider", provider))
+
+
+func configure_socket_runtime(provider: Node) -> bool:
+	if loadout_service == null or not is_instance_valid(provider):
+		return false
+	for method in [&"socket_item", &"unsocket", &"get_catalog_items", &"get_snapshot"]:
+		if not provider.has_method(method):
+			return false
+	if not provider.has_signal(&"sockets_changed"):
+		return false
+	if not loadout_service.call(&"register_runtime_provider", &"sockets", provider):
+		return false
+	socket_provider = provider
+	provider.connect(&"sockets_changed", func(_snapshot): loadout_state_changed.emit(get_loadout_snapshot()))
+	if provider.has_signal(&"catalog_updated"):
+		provider.connect(&"catalog_updated", func(_snapshot, _source): loadout_state_changed.emit(get_loadout_snapshot()))
+	return true
+
+
+func toggle_training_socket(item_id: StringName) -> Dictionary:
+	if not _editing_active() or not is_instance_valid(socket_provider):
+		return {&"success": false, &"reason": &"training_inactive"}
+	var slots: Dictionary = socket_provider.call(&"get_snapshot").get(&"slots", {})
+	for type in slots:
+		for entry in slots[type]:
+			if entry.get(&"item_id", &"") == item_id:
+				return socket_provider.call(&"unsocket", type, entry.slot_index)
+	return socket_provider.call(&"socket_item", item_id)
+
+
+func request_stop() -> void:
+	stop_requested.emit()
+
+
+func _editing_active() -> bool:
+	return loadout_service != null and bool(loadout_service.call(&"get_snapshot").get(&"free_editing", false))
 
 
 func configure(target: Node2D, dummy_parent: Node2D, scenario_rows: Array[Dictionary],
@@ -86,10 +128,12 @@ func activate_scenario(scenario_id: StringName) -> Dictionary:
 		return {&"success": false, &"reason": "훈련 로드아웃 스냅샷 실패"}
 	var result: Dictionary = reset_service.call(&"activate", definition)
 	if bool(result.get(&"success", false)):
+		if is_instance_valid(combat_skill_provider):
+			combat_skill_provider.call(&"set_activation_enabled", true)
 		telemetry_service.call(&"begin", definition.call(&"get_snapshot"))
 		scenario_activated.emit(get_snapshot())
-	elif loadout_service != null:
-		loadout_service.call(&"restore_and_finish")
+	else:
+		stop()
 	return result
 
 
@@ -112,16 +156,21 @@ func reset_active_scenario() -> Dictionary:
 		if is_instance_valid(telemetry_service) and not scenario.is_empty():
 			telemetry_service.call(&"begin", scenario)
 		scenario_reset.emit(get_snapshot())
+	else:
+		stop()
 	return result
 
 
 func stop() -> Dictionary:
 	reset_pending = false
+	if is_instance_valid(combat_skill_provider):
+		combat_skill_provider.call(&"set_activation_enabled", false)
+	if loadout_service != null and bool(loadout_service.call(&"get_snapshot").get(&"active", false)) and not bool(loadout_service.call(&"restore_and_finish")):
+		return {&"success": false, &"reason": "원래 세팅 복원 실패 · 원본 보존, 다시 종료해 주세요"}
 	var result: Dictionary = reset_service.call(&"stop")
 	if is_instance_valid(telemetry_service):
 		result[&"telemetry"] = telemetry_service.call(&"stop")
-	if loadout_service != null and bool(loadout_service.call(&"get_snapshot").get(&"active", false)):
-		result[&"loadout_restored"] = loadout_service.call(&"restore_and_finish")
+	result[&"loadout_restored"] = loadout_service == null or bool(loadout_service.call(&"get_snapshot").get(&"last_restore_success", false))
 	scenario_stopped.emit(get_snapshot())
 	return result
 
@@ -152,6 +201,8 @@ func get_loadout_snapshot() -> Dictionary:
 		combat_skill_provider.call(&"get_skill_states")
 		if is_instance_valid(combat_skill_provider) else []
 	)
+	result[&"socket_catalog"] = socket_provider.call(&"get_catalog_items") if is_instance_valid(socket_provider) else []
+	result[&"sockets"] = socket_provider.call(&"get_snapshot") if is_instance_valid(socket_provider) else {}
 	return result
 
 
@@ -161,6 +212,7 @@ func configure_combat_runtime(new_skill_provider: Node, candidates: Array[Resour
 		or not new_skill_provider.has_method(&"get_skill_states")
 		or not new_skill_provider.has_method(&"preview_skill_replacement")
 		or not new_skill_provider.has_method(&"replace_skill")
+		or not new_skill_provider.has_method(&"set_activation_enabled")
 	):
 		return false
 	combat_skill_provider = new_skill_provider
@@ -170,12 +222,15 @@ func configure_combat_runtime(new_skill_provider: Node, candidates: Array[Resour
 			skill_catalog.append(candidate)
 	var configured := not skill_catalog.is_empty()
 	if configured:
+		if loadout_service != null and not loadout_service.call(&"register_runtime_provider", &"skills", new_skill_provider):
+			return false
+		combat_skill_provider.call(&"set_activation_enabled", false)
 		loadout_state_changed.emit(get_loadout_snapshot())
 	return configured
 
 
 func cycle_training_skill(slot_index: int) -> Dictionary:
-	if not is_instance_valid(combat_skill_provider) or skill_catalog.is_empty():
+	if not _editing_active() or not is_instance_valid(combat_skill_provider) or skill_catalog.is_empty():
 		return {&"success": false, &"reason": &"runtime_unavailable"}
 	var states: Array = combat_skill_provider.call(&"get_skill_states")
 	if slot_index < 0 or slot_index >= states.size():

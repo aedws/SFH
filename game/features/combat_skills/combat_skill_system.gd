@@ -20,6 +20,61 @@ var targeting_policy: Resource
 var equipment_provider: Node
 var binding_provider: Node
 var runtime_modifier_sources: Dictionary = {}
+var owned_effects: Array[WeakRef] = []
+
+
+func register_runtime_effect(effect: Node) -> void:
+	owned_effects = owned_effects.filter(func(entry: WeakRef): return is_instance_valid(entry.get_ref()))
+	owned_effects.append(weakref(effect))
+
+
+func cancel_runtime_effects() -> void:
+	for entry in owned_effects:
+		var effect = entry.get_ref()
+		if is_instance_valid(effect):
+			effect.free()
+	owned_effects.clear()
+
+
+func _exit_tree() -> void:
+	cancel_runtime_effects()
+
+
+func export_runtime_state() -> Dictionary:
+	if loadout == null:
+		return {}
+	return {&"loadout": loadout.duplicate(true), &"cooldowns": cooldowns.duplicate(),
+		&"resources": resource_provider.call(&"export_runtime_state") if is_instance_valid(resource_provider) and resource_provider.has_method(&"export_runtime_state") else {}}
+
+
+func validate_runtime_state(state: Dictionary) -> PackedStringArray:
+	var saved: Resource = state.get(&"loadout")
+	if loadout == null or saved == null or not saved.has_method(&"validation_errors") or not saved.call(&"validation_errors").is_empty():
+		return PackedStringArray(["스킬 정의 복원 불가"])
+	if not state.get(&"cooldowns") is Array or saved.get("skills").size() != loadout.skills.size() or state.cooldowns.size() != loadout.skills.size():
+		return PackedStringArray(["스킬 슬롯 복원 불가"])
+	for cooldown in state.cooldowns:
+		if not is_finite(float(cooldown)) or float(cooldown) < 0:
+			return PackedStringArray(["잘못된 쿨타임"])
+	if is_instance_valid(resource_provider) and not state.get(&"resources", {}).is_empty():
+		if not resource_provider.has_method(&"validate_runtime_state"):
+			return PackedStringArray(["자원 복원 계약 없음"])
+		return resource_provider.call(&"validate_runtime_state", state.resources)
+	return PackedStringArray()
+
+
+func restore_runtime_state(state: Dictionary) -> bool:
+	if not validate_runtime_state(state).is_empty():
+		return false
+	var previous_skills: Array = loadout.skills.duplicate()
+	loadout.skills.assign(state.loadout.duplicate(true).get("skills"))
+	if is_instance_valid(resource_provider) and not state.get(&"resources", {}).is_empty() and not resource_provider.call(&"restore_runtime_state", state.resources):
+		loadout.skills.assign(previous_skills)
+		return false
+	cooldowns.assign(state.cooldowns)
+	cancel_runtime_effects()
+	_emit_states()
+	return true
 
 
 func configure(
@@ -133,6 +188,7 @@ func try_activate(slot_index: int) -> bool:
 		&"target_point": activation_context[&"target_point"],
 		&"direction": activation_context[&"direction"],
 		&"mechanic_override": activation_context[&"mechanic_override"],
+		&"register_runtime_effect": Callable(self, &"register_runtime_effect"),
 	})
 	if not bool(result.get(&"success", false)):
 		return false

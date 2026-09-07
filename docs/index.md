@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 4 · IMPROVE 7 · CHANGE 5 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 6 · IMPROVE 9 · CHANGE 7 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>3</b><small>UPDATE BUNDLES</small></span><span><b>4</b><small>BUILD</small></span><span><b>7</b><small>IMPROVE</small></span><span><b>5</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>6</b><small>BUILD</small></span><span><b>9</b><small>IMPROVE</small></span><span><b>7</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>훈련 무료 세팅 · 종료 원복과 저장 보호</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 훈련에서 스킬과 공용 룬을 바꿔 비교하고 종료 버튼으로 원래 장비에 돌아옵니다. 시험 세팅이 다음 작전이나 자동 저장에 섞이지 않도록 보완했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>룬·코어·유물 시험 선택과 종료·원복 버튼을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>복원 대상에 스킬·자원·공용 소켓을 포함하고, 참여자 등록 방식으로 확장했습니다. 시험 스킬을 교체해도 해당 슬롯의 사용자 지정 키를 유지합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>3개 화면 크기의 버튼 배치와 복원·실패 재시도·상점 이동을 자동 검사에 추가했습니다. 새 밸런스 목록과 과금 변경은 없습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 3</h3><p>반복 입장 시 훈련 목록이 사라지는 참조 공유, 시험 장비 자동 저장, 창 이탈 취소 전에 훈련부터 원복하던 순서를 수정했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>범위 공격 · 최대 피격 위치와 계산 최적화</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 적 한 마리 주변만 보던 범위 타게팅을 개선해 적 사이에 공격을 놓을 수 있고, 중심 이동으로 가장자리 적을 놓치는 현상을 방지합니다.</strong></div>
