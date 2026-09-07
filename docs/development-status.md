@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 107 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 136 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -31,7 +31,7 @@ tags:
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-재대조 코드 기준은 `cd25dfe`입니다. 2026-09-07 라이브 GDD·트래커 해시는 동일합니다. 손상 매물·엔진 어댑터, 릴리스 초기화·저프레임 시야·훈련 문구·거점 HUD 회귀 근거를 추가했습니다. [원본·행별 계산 근거](design/master-gdd-alignment.md#current-classification)에서 범위를 확인합니다.
+**2026-09-07 마감 재대조 코드: `48c12bf`.** 최신 GDD·트래커를 공개 읽기로 다시 수집했고 내용 해시는 동일합니다. 오늘의 파츠/모듈 UI·슬롯 소켓과 CSV 패키징 수정은 기존 구현 근거를 보강하므로 **78.5%를 유지**합니다. [마감 결과·배포 근거](design/master-gdd-alignment.md#day-close)와 [66행 계산 근거](design/master-gdd-alignment.md#current-classification)를 확인하세요.
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
@@ -60,9 +60,18 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 19 · IMPROVE 33 · CHANGE 23 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 19 · IMPROVE 34 · CHANGE 24 · FIX 30</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>15</b><small>UPDATE BUNDLES</small></span><span><b>19</b><small>BUILD</small></span><span><b>33</b><small>IMPROVE</small></span><span><b>23</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>16</b><small>UPDATE BUNDLES</small></span><span><b>19</b><small>BUILD</small></span><span><b>34</b><small>IMPROVE</small></span><span><b>24</b><small>CHANGE</small></span><span><b>30</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 16</small><b>오늘 마감 · 노션 대비 코드 대응도 78.5%</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 홈에서 로그인 후 마감 근거로 이동하고, 개발 현황에서 기획 대응도와 잔여 범위를 확인할 수 있습니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>개발 현황의 현재 빌드 상태 위에서 78.5%를 확인합니다. 공개 홈은 플레이 소개를 유지하며 상세 계산은 팀 로그인 뒤에 제공합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>최신 공개 노션 재수집과 배포 코드 대조를 마쳤습니다. 오늘의 파츠·모듈 UI/소켓은 별도 추가 구현 근거로 갱신하고 진행률에 중복 가산하지 않습니다.</p></div>
+        <p><a href="design/master-gdd-alignment/#day-close">마감·계산 근거 →</a> · 2026-09-07 작업 종료. 새 게임 규칙·노션 원문·밸런스 목록 변경 없음.</p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 15</small><b>무기·방어구·캐릭터 모듈 카드 · 슬롯 소켓</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">

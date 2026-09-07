@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-07",
-  "source_sha256": "8c227cac8de98a36ce0dc5121a725d3b9352a064f491beb6b11cfd2fb5f76522",
+  "source_sha256": "d8d7a662024a96dc90d6317bb858141beaeb063935611e8e57cf1ec3918d210b",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -160,7 +160,7 @@
       "route": "design/master-gdd-alignment/",
       "freshness": {
         "state": "snapshot",
-        "observed_at": "2026-09-07T06:01:25.462846+00:00",
+        "observed_at": "2026-09-07T13:43:21.239018+00:00",
         "revision": "b1eb9834f867",
         "content_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
         "max_age_days": 7,
@@ -475,7 +475,7 @@
       "route": "design/master-gdd-alignment/",
       "freshness": {
         "state": "snapshot",
-        "observed_at": "2026-09-07T06:01:25.462846+00:00",
+        "observed_at": "2026-09-07T13:43:21.239018+00:00",
         "revision": "b1eb9834f867",
         "content_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
         "max_age_days": 7,

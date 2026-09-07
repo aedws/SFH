@@ -11,12 +11,28 @@ tags:
 
 # Master GDD 구현 대조
 
+## 2026-09-07 오늘 마감 {#day-close}
+
+**기획 대비 코드 대응도 78.5% 유지 · 확정 요구만 85.6%.** 노션 조사 과정에서 최신 GDD62블록과 전체 트래커66행을 공개 읽기로 재수집했습니다. 연결된 Notion 도구에는 해당 문서 접근권이 없어 저장소의 공개 원문 수집기를 사용했고, GDD/트래커 해시가 기존과 같은 것을 확인했습니다. 이전 주소의 문서 제목은 `[백업본] Master GDD`이므로 v153 백업으로 진행률을 되돌리지 않았습니다.
+
+| 마감 판단 | 근거 |
+|---|---|
+| 기준 코드 | 배포된 `48c12bf1045b990fc11345b280ac4f2fb01d2390`; 이전 `cd25dfe` 이후 변경과 66행 대조 |
+| 대표 진행률 | `(44×3 + 1×0.5×3) / (52×3 + 14×1) = 133.5/170 = 78.5%` |
+| 오늘 추가 구현 | 파츠 카드·무기/방어구/캐릭터 모듈 UI·슬롯 소켓은 EXT-CUSTOMIZATION 근거 갱신. 새 노션 완료 행이 아니므로 비가산 |
+| 품질 근거 | PR173 전체 게임/플레이 E2E·새 모듈 계약, main 실행34122699735의 Web/Windows/위키·다운로드 체크섬 검증 통과 |
+| 미완료 범위 | 부분1(첫 출격/배포 양쪽10분 일반 플레이 수락), 미구현6(파우치2·심층3·혈전1), 충돌1(HP 회복), 미정14 |
+
+부분 항목의 60FPS/첫 프레임·사람 플레이 수락은 모듈 UI 테스트나 다운로드 성공으로 대체하지 않습니다. 이번 마감에서는 게임 규칙·기획 상태를 변경하거나 새 플레이 세션을 수행하지 않았습니다. 다음 작업은 기존 N26-08B 품질 검증이며, 판단 대기 게임 규칙은 오늘 착수하지 않습니다.
+
+원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [전체 기능 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2). 수집 시각과 원문 해시는 아래 스냅샷에 보존합니다. 출시 준비율·사람 재미 점수와 구분한 마감 보고입니다.
+
 ## 최신 원본과 판정 범위
 
 - [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed): v128, 본문 62블록. 2026-09-06 18:09:49 KST 편집, 2026-09-07 재수집.
 - [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2): 66행 전체 수집, hasMore=false. 결정(미구현) 52 / 미정(검토필요) 14.
 - 스냅샷: `docs/assets/notion-source-snapshot.json`, `docs/assets/notion-tracker-snapshot.json`. 수동 판단표: `docs/assets/notion-code-audit.json`.
-- 재대조 코드 기준: `cd25dfe`(2026-09-07). 임시 정책·손상 매물·엔진 어댑터와 릴리스 초기화/표시 회귀를 검증했습니다. 새로운 66항목 사람 플레이 완료 선언이 아닙니다.
+- 재대조 코드 기준: `48c12bf`(2026-09-07 마감). 기존 정책/품질 근거에 파츠·모듈 UI/소켓·CSV 내보내기 회귀와 배포 검증을 추가했습니다. 새로운 66항목 사람 플레이 완료 선언이 아닙니다.
 - 이전 2026-09-02 GDD v153은 백업본입니다. **이전 96%를 최신 진행률로 사용하지 않습니다.** 완료 이력은 Git과 일별 업데이트에 보존합니다.
 - GDD 본문과 트래커는 독립 해시로 관리하며 상위 페이지 수정은 본문 변경으로 세지 않습니다. 체크박스·미구현 태그는 실제 코드 부재나 오너 승인을 대신하지 않습니다.
 
@@ -26,7 +42,7 @@ tags:
 
 | 질문 | 현재 구분 | 의미와 다음 행동 |
 |---|---|---|
-| 노션에 있고 구현됐나? | 구현 근거 44행 | 기존 38행 + AP 자연 회복·대상별 소켓·보유 훈련. 임시 정책과 행별 검증 범위를 확인 |
+| 노션에 있고 구현됐나? | 구현 근거 44행 | 기존 38행 + AP·대상별 런 소켓·보유 훈련·손상 매물·TileMapLayer·Area2D 6행. 임시 정책과 행별 검증 범위를 확인 |
 | 노션에 있지만 덜 됐거나 없나? | 부분 1 / 신규 미구현 6 / 충돌 1 / 미정 14행 | 부분의 잔여 조건, 미구현의 선행 결정, 기존 사용자 지시와 충돌을 구분 |
 | 노션에 없지만 구현됐나? | [세부 규격 미명시 9개 기능 묶음](#implemented-outside-notion) | 과거 사용자 요청 기반의 기존 기능. 삭제하거나 노션 확정으로 취급하지 않고 별도 유지. 66행 진행률에 가산하지 않음 |
 
@@ -1024,11 +1040,11 @@ AP 비용 계약만 있음. HP 지불·타격/처치 흡혈·물약50%를 결합
 
 ### EXT-CUSTOMIZATION · [고유 파츠·영구 모듈 코스트·강화·개조](../features/equipment-customization.md)
 
-무기 소분류별 파츠와 장비별 모듈 코스트/강화/개조를 구현했습니다. 최신 노션의 런 전용 룬/코어 소켓 귀속 규격을 충족한 것으로 합산하지 않습니다.
+48c12bf: 위아래 무기 카드/그림 주변 파츠, E/I 공통 무기·방어구·캐릭터 모듈 카드와 슬롯별 타입 소켓을 구현했습니다. 최대 레벨 해금·일치 비용 절반 올림·강화 CSV 확장·저장/복원 검증. 캐릭터 외부40 해금은 임시 정책이며 촉매/레벨 초기화는 없음. 최신 노션의 런 전용 룬/코어와 다른 영구 장비 개조이므로 66행 점수에 중복 가산하지 않습니다.
 
-코드 경계: `game/features/equipment/equipment_system.gd`, `game/features/equipment/equipment_module_instance.gd`
+코드 경계: `game/features/equipment/equipment_system.gd`, `game/features/equipment/equipment_module_instance.gd`, `game/features/equipment/module_socket_policy.gd`, `game/features/equipment/module_workspace.gd`, `game/features/equipment/weapon_attachment_rack.gd`
 
-기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`
+기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`, `game/tests/module_socket_workspace_test.gd`, `game/tests/weapon_attachment_rack_test.gd`, `game/tests/e2e_play_session_test.gd`
 
 ### EXT-FEEDBACK · [타격 방향 충격·처치 링·대시 잔상/속도선](../features/hit-feedback.md)
 

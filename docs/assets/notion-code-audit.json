@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "reviewed_at": "2026-09-07",
-  "reviewed_commit": "cd25dfe",
-  "method": "shop bands and engine adapters; gameplay E2E, 120s GPU source QA, exported PCK boot and slow-frame pixel tests; ordinary Web battle/death/hub and Windows menus reviewed; full 10-minute release parity and first-frame acceptance remain separate",
+  "reviewed_commit": "48c12bf1045b990fc11345b280ac4f2fb01d2390",
+  "method": "2026-09-07 end-of-day: live GDD v128/62 blocks and complete tracker66 unchanged; reviewed cd25dfe..48c12bf implementation delta and all66 crosswalk rows. PR173 game/E2E/module contracts and main34122699735 Web/Windows/wiki artifact verification passed. UI/module/CSV export refinements strengthen existing evidence, not new Notion completion; full10-minute release parity and first-frame acceptance remain partial. No new human play session or Notion writes in this review.",
   "gdd_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
   "tracker_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
   "scoring": {
@@ -72,9 +72,9 @@
     },
     {
       "id": "EXT-CUSTOMIZATION", "title": "고유 파츠·영구 모듈 코스트·강화·개조",
-      "finding": "무기 소분류별 파츠와 장비별 모듈 코스트/강화/개조를 구현했습니다. 최신 노션의 런 전용 룬/코어 소켓 귀속 규격을 충족한 것으로 합산하지 않습니다.",
-      "code": ["game/features/equipment/equipment_system.gd", "game/features/equipment/equipment_module_instance.gd"],
-      "existing_tests": ["game/tests/basic_loop_smoke_test.gd"],
+      "finding": "48c12bf: 위아래 무기 카드/그림 주변 파츠, E/I 공통 무기·방어구·캐릭터 모듈 카드와 슬롯별 타입 소켓을 구현했습니다. 최대 레벨 해금·일치 비용 절반 올림·강화 CSV 확장·저장/복원 검증. 캐릭터 외부40 해금은 임시 정책이며 촉매/레벨 초기화는 없음. 최신 노션의 런 전용 룬/코어와 다른 영구 장비 개조이므로 66행 점수에 중복 가산하지 않습니다.",
+      "code": ["game/features/equipment/equipment_system.gd", "game/features/equipment/equipment_module_instance.gd", "game/features/equipment/module_socket_policy.gd", "game/features/equipment/module_workspace.gd", "game/features/equipment/weapon_attachment_rack.gd"],
+      "existing_tests": ["game/tests/basic_loop_smoke_test.gd", "game/tests/module_socket_workspace_test.gd", "game/tests/weapon_attachment_rack_test.gd", "game/tests/e2e_play_session_test.gd"],
       "document": "docs/features/equipment-customization.md"
     },
     {

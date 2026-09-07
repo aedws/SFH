@@ -196,6 +196,19 @@ class CodeCrosswalkTests(unittest.TestCase):
         audit_check.validate(self.audit, self.gdd, self.tasks)
         self.assertEqual(audit_check.summary(self.audit), before)
 
+    def test_progress_matches_audit_without_exposing_public_dashboard(self):
+        numerator, denominator, _counts = audit_check.summary(self.audit)
+        percentage = f"{100 * numerator / denominator:.1f}"
+        docs = Path(__file__).resolve().parents[1] / "docs"
+        page = (docs / "development-status.md").read_text(encoding="utf-8")
+        self.assertIn(f'aria-valuenow="{percentage}"', page)
+        self.assertIn(f"<b>{percentage}%</b>", page)
+        self.assertIn("출시", page)
+        self.assertLess(page.index('aria-valuenow='), page.index("## 현재 빌드 상태"))
+        home = (docs / "index.md").read_text(encoding="utf-8")
+        self.assertNotIn('sfh-progress-panel', home)
+        self.assertIn("access/login/?return=%2Fdesign%2Fmaster-gdd-alignment%2F%23day-close", home)
+
     def test_extension_evidence_and_ids_fail_closed(self):
         for mutation in ("duplicate", "outside", "status", "empty"):
             changed = deepcopy(self.audit)
