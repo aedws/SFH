@@ -60,9 +60,19 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 16 · IMPROVE 27 · CHANGE 20 · FIX 26</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 16 · IMPROVE 29 · CHANGE 21 · FIX 28</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>12</b><small>UPDATE BUNDLES</small></span><span><b>16</b><small>BUILD</small></span><span><b>27</b><small>IMPROVE</small></span><span><b>20</b><small>CHANGE</small></span><span><b>26</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>16</b><small>BUILD</small></span><span><b>29</b><small>IMPROVE</small></span><span><b>21</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 13</small><b>FUN QA · 출격 정보와 탈출 경계</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 규모 선택은 잘리지 않는 요약과 상세로 나뉘고, 탈출 원과 F 안내가 실제 작동 범위에 맞습니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>마우스를 올리지 않아도 선택 규모의 방·적 수를 읽을 수 있습니다. 실제 충돌/F·첫 브리핑·5폭 글자 너비를 필수 검사로 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>최신 기획 재대조 후 판단 없는 신규 미구현은 없음으로 분리했습니다. 오너 판단이 필요한 6건과 코드 대응도78.5%는 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>몸만 구역에 걸친 상태의 잘못된 F 시작 안내와 규모 카드 말줄임을 수정했습니다. 선택 상세 추가 시 초기 높이 회귀도 함께 차단했습니다.</p></div>
+        <p><a href="../quality/player-perception-audit/#fun-qa-affordance">FUN QA 결과 →</a> · <a href="../architecture/module-audit/#fun-qa-affordance">모듈 경계 →</a> · 일반 Web 입력으로 14처치·문 개방·레벨2·룬 장착·31크레딧 회수 확인. 양 플랫폼10분 완주·사람 재미 합격은 별도 수락입니다.</p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 12</small><b>손상품 가격 · 타일/타겟 어댑터 · 체감 QA</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">

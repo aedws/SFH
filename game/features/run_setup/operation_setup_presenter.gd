@@ -29,6 +29,7 @@ var loadout_investment_summary: Label
 var p5_progression_summary: Label
 var preview: Control
 var tier_buttons: Dictionary = {}
+var selected_tier_detail: Label
 var root_panel: PanelContainer
 var left_column: Control
 var right_column: Control
@@ -273,7 +274,12 @@ func install(overlay: Control) -> Dictionary:
 			(button as Button).custom_minimum_size = Vector2(0.0, 82.0)
 			(button as Button).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			_fit_button(button as Button)
+			(button as Button).add_theme_font_size_override("font_size", 14)
 			tier_buttons[_tier_id_from_button(button)] = button
+	selected_tier_detail = _label("규모를 선택하면 상세 조건이 표시됩니다", 13, Color("a9bdc0"))
+	selected_tier_detail.name = "SelectedTierDetail"
+	_wrap_label(selected_tier_detail, 280.0)
+	mission_step.add_child(selected_tier_detail)
 
 	var balance := content.get_node("BalanceModeSection") as VBoxContainer
 	(balance.get_node("Title") as Label).horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -419,6 +425,10 @@ func update(payload: Dictionary) -> void:
 		int(spawn_data.get(&"minimum_enemies", 0)), int(spawn_data.get(&"maximum_enemies", 0)),
 	]
 	var reward_multiplier := maxf(0.01, float(quote.get(&"reward_multiplier", 1.0)))
+	selected_tier_detail.text = "선택 · %s  |  방 %d~%d개\n동시 적 %d~%d명  ·  회수 ×%.2f" % [
+		tier_name, int(map_data.get(&"minimum_rooms", 0)), int(map_data.get(&"maximum_rooms", 0)),
+		int(spawn_data.get(&"minimum_enemies", 0)), int(spawn_data.get(&"maximum_enemies", 0)), reward_multiplier,
+	]
 	var break_even := ceili(float(quote.get(&"entry_cost", 0)) / reward_multiplier)
 	reward_summary.text = "투입 %d C  ·  BEP %d C  ·  회수 ×%.2f  ·  고등급 ×%.2f  ·  %s" % [
 		int(quote.get(&"entry_cost", 0)), break_even, reward_multiplier,
@@ -733,6 +743,15 @@ func _style_tier_button(button: Button, selected: bool) -> void:
 		Color("02e5e1") if selected else Color("21434a"), 1, 2 if selected else 1
 	))
 	button.add_theme_color_override("font_color", Color("d2fffe") if selected else Color("a9bdc0"))
+
+
+func present_tier_card(button: Button, data: Dictionary) -> void:
+	# The assembly supplies a quote; this presenter owns its compact, touch-readable copy.
+	button.text = "%s · %d분\n%d C" % [data.display_name, data.minutes, data.entry_cost]
+	button.tooltip_text = "%s · 투입 %d C · 회수 ×%.2f · 방 %d~%d%s" % [
+		data.display_name, data.entry_cost, data.reward_multiplier,
+		data.minimum_rooms, data.maximum_rooms, data.enemy_range,
+	]
 
 
 func _tier_id_from_button(button: Node) -> StringName:

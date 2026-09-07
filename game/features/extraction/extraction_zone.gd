@@ -20,31 +20,58 @@ var locked_prompt: String = "탈출 신호 대기 중"
 var defense_actor: Node2D
 var defense_remaining_seconds: float = 0.0
 var defense_paused: bool = false
+var _last_prompt := ""
+var _last_available := false
 
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	_sync_shape.call_deferred()
 	queue_redraw()
 
 
 func configure(world_position: Vector2, new_defense_duration_seconds: float = 20.0) -> void:
 	global_position = world_position
 	defense_duration_seconds = maxf(0.0, new_defense_duration_seconds)
+	_sync_shape.call_deferred()
+	queue_redraw()
+
+
+func _sync_shape() -> void:
+	var collider := get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if collider == null:
+		return
+	var circle := CircleShape2D.new()
+	circle.radius = interaction_radius
+	collider.shape = circle
+
+
+func _inside_zone(actor: Node2D) -> bool:
+	return is_instance_valid(actor) and actor.global_position.distance_to(global_position) <= interaction_radius
+
+
+func _refresh_prompt() -> void:
+	var available := is_instance_valid(nearby_player)
+	var prompt := _interaction_prompt() if available else ""
+	if available != _last_available or prompt != _last_prompt:
+		_last_available = available
+		_last_prompt = prompt
+		interaction_availability_changed.emit(available, prompt)
 
 
 func set_locked(is_locked: bool, prompt: String = "탈출 신호 대기 중") -> void:
 	locked = is_locked
 	locked_prompt = prompt
 	queue_redraw()
-	if is_instance_valid(nearby_player):
-		interaction_availability_changed.emit(true, _interaction_prompt())
+	_refresh_prompt()
 
 
 func request_extraction(actor: Node2D) -> bool:
 	if not is_instance_valid(actor) or not actor.is_in_group(&"player"):
 		return false
-	if actor.global_position.distance_to(global_position) > interaction_radius:
+	if not _inside_zone(actor):
+		_refresh_prompt()
 		return false
 	if locked:
 		interaction_availability_changed.emit(true, _interaction_prompt())
@@ -70,6 +97,7 @@ func request_extraction(actor: Node2D) -> bool:
 
 func advance(delta: float) -> void:
 	_advance_defense(delta)
+	_refresh_prompt()
 
 
 func get_snapshot() -> Dictionary:
@@ -79,17 +107,20 @@ func get_snapshot() -> Dictionary:
 		&"defense_duration_seconds": defense_duration_seconds,
 		&"defense_remaining_seconds": defense_remaining_seconds,
 		&"defense_paused": defense_paused,
+		&"nearby_player_valid": is_instance_valid(nearby_player),
+		&"center_in_range": _inside_zone(nearby_player),
+		&"interaction_radius": interaction_radius,
 	}
 
 
 func _process(delta: float) -> void:
-	_advance_defense(delta)
+	advance(delta)
 
 
 func _advance_defense(delta: float) -> void:
 	if not is_instance_valid(defense_actor):
 		return
-	if defense_actor.global_position.distance_to(global_position) > interaction_radius:
+	if not _inside_zone(defense_actor):
 		_pause_defense()
 		return
 	if defense_paused:
@@ -117,10 +148,9 @@ func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group(&"player"):
 		return
 	nearby_player = body
-	if body == defense_actor and defense_paused:
-		defense_paused = false
-		extraction_defense_resumed.emit(defense_remaining_seconds)
-	interaction_availability_changed.emit(true, _interaction_prompt())
+	# Broad-phase overlap includes the player's collider radius, not just its center.
+	# Resume only in _advance_defense after the same center-distance gate as input.
+	_refresh_prompt()
 
 
 func _on_body_exited(body: Node2D) -> void:
@@ -129,13 +159,13 @@ func _on_body_exited(body: Node2D) -> void:
 	nearby_player = null
 	if body == defense_actor:
 		_pause_defense()
-	interaction_availability_changed.emit(false, "")
+	_refresh_prompt()
 
 
 func _draw() -> void:
 	var active_ring := Color(0.52, 0.58, 0.64, 0.9) if locked else ring_color
-	draw_circle(Vector2.ZERO, 42.0, Color(active_ring, 0.22))
-	draw_arc(Vector2.ZERO, 42.0, 0.0, TAU, 48, active_ring, 4.0)
+	draw_circle(Vector2.ZERO, interaction_radius, Color(active_ring, 0.12))
+	draw_arc(Vector2.ZERO, interaction_radius, 0.0, TAU, 48, active_ring, 3.0)
 	draw_arc(Vector2.ZERO, 31.0, 0.0, TAU, 48, Color(active_ring, 0.6), 2.0)
 	var arrow := PackedVector2Array([
 		Vector2(-9.0, 8.0),
@@ -152,6 +182,8 @@ func _interaction_prompt() -> String:
 		if defense_paused:
 			return "탈출 방어 일시정지 · 구역 복귀 시 %.1f초부터 재개" % defense_remaining_seconds
 		return "탈출 방어 중 · %.1f초 · 구역 유지" % defense_remaining_seconds
+	if not _inside_zone(nearby_player):
+		return "탈출 구역 안으로 더 이동하세요"
 	return "F · 탈출 방어전 시작"
 
 
@@ -162,6 +194,7 @@ func _cancel_defense() -> void:
 	defense_remaining_seconds = 0.0
 	defense_paused = false
 	extraction_defense_cancelled.emit()
+	_refresh_prompt()
 	queue_redraw()
 
 

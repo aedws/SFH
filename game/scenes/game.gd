@@ -3558,19 +3558,13 @@ func _configure_tier_button(button: Button, tier_id: String) -> void:
 		reward_multiplier = float(quote.get(&"reward_multiplier", 1.0))
 		if persistent_profile != null and not persistent_profile.call(&"can_spend", quoted_entry_cost):
 			button.disabled = true
-	button.text = "%s · %d분\n%d C · ×%.2f · 방 %d~%d\n%s" % [
-		config.get("display_name"),
-		roundi(float(config.get("target_run_duration_seconds")) / 60.0),
-		quoted_entry_cost,
-		reward_multiplier,
-		config.get("minimum_rooms"),
-		config.get("maximum_rooms"),
-		enemy_range.trim_prefix(" · "),
-	]
-	button.tooltip_text = "%s · 투입 %d C · 회수 배율 ×%.2f · 방 %d~%d%s" % [
-		config.get("display_name"), quoted_entry_cost, reward_multiplier,
-		config.get("minimum_rooms"), config.get("maximum_rooms"), enemy_range,
-	]
+	operation_setup_presenter.call(&"present_tier_card", button, {
+		&"display_name": config.get("display_name"),
+		&"minutes": roundi(float(config.get("target_run_duration_seconds")) / 60.0),
+		&"entry_cost": quoted_entry_cost, &"reward_multiplier": reward_multiplier,
+		&"minimum_rooms": config.get("minimum_rooms"), &"maximum_rooms": config.get("maximum_rooms"),
+		&"enemy_range": enemy_range,
+	})
 
 
 func _tier_resources_are_available(tier_id: String) -> bool:

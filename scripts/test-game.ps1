@@ -34,6 +34,10 @@ $partialOutput = & $godotExecutable --headless --path $repositoryRoot --script "
 $partialStatus = $LASTEXITCODE
 $partialOutput | ForEach-Object { Write-Output $_ }
 if ($partialStatus -ne 0 -or ($partialOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($partialOutput -match 'PARTIAL_COMPLETION_OK')) { exit 1 }
+$funOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/fun_qa_affordance_test.gd" 2>&1
+$funStatus = $LASTEXITCODE
+$funOutput | ForEach-Object { Write-Output $_ }
+if ($funStatus -ne 0 -or ($funOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($funOutput -match 'FUN_QA_AFFORDANCE_OK')) { exit 1 }
 $policyOutput | ForEach-Object { Write-Output $_ }
 if ($policyStatus -ne 0 -or ($policyOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($policyOutput -match 'PROVISIONAL_POLICY_OK')) { exit 1 }
 $feedbackOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/frame_feedback_contract_test.gd" 2>&1
