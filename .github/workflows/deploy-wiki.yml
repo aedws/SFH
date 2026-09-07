@@ -95,7 +95,7 @@ jobs:
       - name: Install font import runtime
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends fontconfig python3
+          apt-get install -y --no-install-recommends fontconfig python3 xvfb xauth libgl1-mesa-dri
 
       - name: Import game resources
         run: |
@@ -227,6 +227,21 @@ jobs:
           test -s "$GITHUB_WORKSPACE/game-web/index.html"
           test -s "$GITHUB_WORKSPACE/game-web/index.wasm"
           test -s "$GITHUB_WORKSPACE/game-web/index.pck"
+
+      - name: Verify exported resource boot (not editor source)
+        run: |
+          timeout 90 godot --headless --main-pack "$GITHUB_WORKSPACE/game-web/index.pck" --script res://game/tests/release_boot_contract_test.gd > /tmp/sfh-release-boot.log 2>&1
+          cat /tmp/sfh-release-boot.log
+          grep -q 'RELEASE_BOOT_OK' /tmp/sfh-release-boot.log
+          if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-release-boot.log; then exit 1; fi
+
+      - name: Verify rendered player visibility under slow frames
+        run: |
+          timeout 90 xvfb-run -a godot --rendering-method gl_compatibility --max-fps 5 --main-pack "$GITHUB_WORKSPACE/game-web/index.pck" --script res://game/tests/release_boot_contract_test.gd > /tmp/sfh-release-view.log 2>&1
+          cat /tmp/sfh-release-view.log
+          grep -q 'RELEASE_BOOT_OK' /tmp/sfh-release-view.log
+          grep -q 'RELEASE_PIXELS cyan=' /tmp/sfh-release-view.log
+          if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-release-view.log; then exit 1; fi
 
       - name: Record source tree and payload hashes
         run: python3 scripts/ci_budget.py attest --directory game-web
@@ -364,6 +379,13 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --export-release "Windows Desktop x86_64" "$GITHUB_WORKSPACE/build/windows/SFH.exe"
           test -s "$GITHUB_WORKSPACE/build/windows/SFH.exe"
           test -s "$GITHUB_WORKSPACE/build/windows/SFH.pck"
+
+      - name: Verify Windows exported resource boot
+        run: |
+          timeout 90 godot --headless --main-pack "$GITHUB_WORKSPACE/build/windows/SFH.pck" --script res://game/tests/release_boot_contract_test.gd > /tmp/sfh-windows-boot.log 2>&1
+          cat /tmp/sfh-windows-boot.log
+          grep -q 'RELEASE_BOOT_OK' /tmp/sfh-windows-boot.log
+          if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-windows-boot.log; then exit 1; fi
 
       - name: Include redistributable license records
         run: |

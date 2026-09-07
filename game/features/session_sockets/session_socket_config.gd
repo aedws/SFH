@@ -9,7 +9,8 @@ enum SourceMode { LOCKED_CSV, LIVE_GOOGLE_SHEET }
 @export_multiline var live_csv_url := "https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/gviz/tq?tqx=out:csv&headers=1&sheet=RunAsset"
 @export_range(1.0, 60.0, 0.5) var live_refresh_seconds := 3.0
 @export var fallback_to_locked_csv := true
-@export var binding_policy: SessionSocketBindingPolicy = SessionSocketBindingPolicy.new()
+## Serialize explicitly in .tres: release Resource duplication does not preserve object defaults.
+@export var binding_policy: SessionSocketBindingPolicy
 
 
 func validation_errors() -> PackedStringArray:
