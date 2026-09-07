@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-07",
-  "source_sha256": "1f45249bd7569d2467e51b67dc782e5191b636030813b670e54bb083f44d73b0",
+  "source_sha256": "3dbc9ccf49afa5a01ea6fc25f30cf5545c121a8c83e0e079f02dea33879e6b69",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -160,7 +160,7 @@
       "route": "design/master-gdd-alignment/",
       "freshness": {
         "state": "snapshot",
-        "observed_at": "2026-09-07T00:06:14.721435+00:00",
+        "observed_at": "2026-09-07T06:01:25.462846+00:00",
         "revision": "b1eb9834f867",
         "content_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
         "max_age_days": 7,
@@ -475,7 +475,7 @@
       "route": "design/master-gdd-alignment/",
       "freshness": {
         "state": "snapshot",
-        "observed_at": "2026-09-07T00:06:14.721435+00:00",
+        "observed_at": "2026-09-07T06:01:25.462846+00:00",
         "revision": "b1eb9834f867",
         "content_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
         "max_age_days": 7,
@@ -731,9 +731,9 @@
       "status": "ready",
       "certainty": "confirmed",
       "decision_owner": "authority:project-owner",
-      "summary": "현재 다음 작업선으로, 도감에서 해금률과 미해금 항목의 획득 지역 단서를 제공합니다.",
+      "summary": "기존 P9 후속 후보. 최신 N26 기획 정렬과 배포 일반 플레이 회귀 이후 도감 해금률·지역 힌트의 잔여 범위를 재편성합니다. 현재 최우선 작업이 아닙니다.",
       "acceptance": "잠금·해금 상태, 전체 해금률, 지역 힌트가 저장·복원되고 플레이어 인식 E2E를 통과합니다.",
-      "next_action": "오너가 착수를 선택하면 P9-01 구현과 검증을 시작합니다.",
+      "next_action": "N26-08B 초기 출격 지연·탈출 F 재현·Web/Windows 일반 플레이 수락 이후 오너가 착수 순서를 재확인합니다.",
       "relations": [
         {
           "to": "document:design/current-milestone-workline",
@@ -1068,7 +1068,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "SmartTargetingPolicy + SkillDefinition 반경 전달. UI/개별 스킬에 대상 선택 중복 금지",
       "acceptance": "중심·반경 전달, 원형 최대 피격 240개 독립 대조·36개 회전 배치, 실제 효과 2명/5명 적중, 72명 요청 성능과 기존 정책 호환",
-      "next_action": "N26-03A/B 구현·자동 회귀 통과(d50fdb6, add3a33). 다음은 N26-08A 기존 공용 슬롯 기반 훈련 무상 세팅·복원이며 신규 수치 확정은 하지 않음",
+      "next_action": "N26-03A/B 및 N26-08A 구현·자동 회귀 통과. 다음은 N26-08B 첫 출격 지연·탈출 F 재현·배포 일반 플레이 동등성. 신규 수치 확정은 하지 않음",
       "route": "design/current-milestone-workline/#notion-20260907",
       "relations": [
         {

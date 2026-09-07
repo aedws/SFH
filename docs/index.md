@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 9 · IMPROVE 17 · CHANGE 12 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 9 · IMPROVE 19 · CHANGE 14 · FIX 15</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>9</b><small>BUILD</small></span><span><b>17</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>14</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>9</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>14</b><small>CHANGE</small></span><span><b>15</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>기획·위키 재대조 · 구현 범위와 잔여 작업 구분</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 원문 요구와 실제 구현을 다시 대조해 완료 근거, 부분·미구현, 원문 외 기존 기능을 나눴습니다. 지난 작업을 다시 해야 하는 것처럼 보이던 안내도 바로잡았습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>게임 규칙·아이템·밸런스 변경 없이 문서와 검증 도구를 최신화했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>팀 작업실에서 기획 요구의 남은 범위와 별도 구현 목록을 구분하고, 진행도 계산에 추가 기능이 섞이지 않도록 검사를 강화했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>공개 원문 재수집 시각과 현행 코드 근거를 갱신하고, 자동 검사와 일반 플레이 수락을 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>오래된 다음 작업·저장 지원 안내의 문서 불일치를 바로잡았습니다. 게임 버그 수정 완료를 뜻하지 않습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 7</small><b>타격·속도감 강화 · 프레임 반복 작업 축소</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 단발 충격과 처치 표시를 구분하고 대시 표현을 강화했습니다. 화면을 불필요하게 다시 그리는 작업을 줄였으며, 첫 출격 순간 지연은 별도 검수 대상으로 남깁니다.</strong></div>

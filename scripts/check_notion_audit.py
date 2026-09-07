@@ -40,6 +40,18 @@ def validate(audit, source, tasks):
             path = (ROOT / relative).resolve()
             if not path.is_relative_to(ROOT.resolve()) or not path.is_file():
                 raise ValueError(f"missing/unsafe evidence: {relative}")
+    extensions = audit.get("extensions", [])
+    if not audit.get("extensions_scope") or not extensions or len({r["id"] for r in extensions}) != len(extensions):
+        raise ValueError("extension scope/unique IDs required")
+    for row in extensions:
+        if not row["id"].startswith("EXT-") or not row.get("title") or not row.get("finding") or "planner_status" in row:
+            raise ValueError("extension is not a Notion requirement")
+        if not row.get("code") or not row.get("existing_tests") or not row.get("document", "").startswith("docs/"):
+            raise ValueError("extension evidence required")
+        for relative in row["code"] + row["existing_tests"] + [row["document"]]:
+            path = (ROOT / relative).resolve()
+            if not path.is_relative_to(ROOT.resolve()) or not path.is_file():
+                raise ValueError(f"missing/unsafe extension evidence: {relative}")
 
 
 def summary(audit):
@@ -67,6 +79,14 @@ def render(audit, tasks):
                       "코드 경계: " + ", ".join(f"`{p}`" for p in row["code"]), "",
                       "기존 검사 근거: " + ", ".join(f"`{p}`" for p in row["existing_tests"]), ""]
         lines += ["</details>", ""]
+    lines += ["## 노션에 세부 규격이 없는 기존 구현 {#implemented-outside-notion}", "",
+              audit["extensions_scope"], "",
+              f"**{len(audit['extensions'])}개 게임 기능 묶음**입니다. 위 66개 요구 행과 단위가 다르므로 합쳐서 완료율을 계산하지 않습니다.", ""]
+    for row in audit["extensions"]:
+        link = "../" + row["document"].removeprefix("docs/")
+        lines += [f"### {row['id']} · [{row['title']}]({link})", "", row["finding"], "",
+                  "코드 경계: " + ", ".join(f"`{p}`" for p in row["code"]), "",
+                  "기존 검사 근거: " + ", ".join(f"`{p}`" for p in row["existing_tests"]), ""]
     return "\n".join(lines + [END])
 
 
