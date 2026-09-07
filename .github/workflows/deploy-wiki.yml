@@ -126,6 +126,14 @@ jobs:
           fi
           grep -q "FUN_QA_AFFORDANCE_OK" /tmp/sfh-fun-qa.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-fun-qa.log
+          if godot --headless --path "$GITHUB_WORKSPACE" --script res://game/tests/weapon_attachment_rack_test.gd > /tmp/sfh-attachments.log 2>&1; then
+            cat /tmp/sfh-attachments.log
+          else
+            cat /tmp/sfh-attachments.log
+            exit 1
+          fi
+          grep -q "WEAPON_ATTACHMENT_RACK_OK" /tmp/sfh-attachments.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-attachments.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/provisional_policy_contract_test.gd" > /tmp/sfh-provisional-policy.log 2>&1
           cat /tmp/sfh-provisional-policy.log
           grep -q "PROVISIONAL_POLICY_OK" /tmp/sfh-provisional-policy.log

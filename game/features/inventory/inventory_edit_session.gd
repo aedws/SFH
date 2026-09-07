@@ -115,6 +115,32 @@ func install_item(instance_id: StringName, slot_id: StringName) -> bool:
 	return _finish_operation(equipment.equip_state(slot_id, preview), before)
 
 
+func replace_part(instance_id: StringName, slot_id: StringName) -> bool:
+	var entry := get_item_entry(instance_id)
+	var state: Resource = equipment.get_equipment_state(slot_id) if equipment != null else null
+	var part: Resource = entry.get(&"linked_resource")
+	if state == null or not state.is_weapon() or entry.get(&"item_type") != &"part" or part == null or not part.supports_weapon(state.definition):
+		return _reject("장착 불가 · 이 무기의 고유 소켓과 호환되지 않습니다.")
+	var preview: Resource = state.duplicate(true)
+	preview.set_upgrade_balance_provider(state.upgrade_balance_provider)
+	var returned: Dictionary = {}
+	for installed in preview.installed_parts:
+		if installed.socket_id == part.socket_id:
+			returned = preview.remove_part(installed.part_id)
+			break
+	var payload: Dictionary = entry.get(&"runtime_payload", {})
+	if not preview.install_part(part, int(payload.get(&"upgrade_level", 1))) or not preview.validation_errors().is_empty():
+		return _reject("파츠 검증 실패 · 기존 세팅을 보존했습니다.")
+	if not returned.is_empty() and not inventory.can_add_linked_resource(returned[&"definition"], instance_id):
+		return _reject("기존 파츠를 돌려놓을 가방 공간이 부족합니다.")
+	var before := _checkpoint()
+	inventory.take_item_entry(instance_id)
+	var ok := bool(equipment.equip_state(slot_id, preview))
+	if ok and not returned.is_empty():
+		ok = inventory.add_linked_resource(returned[&"definition"], {&"upgrade_level": returned[&"upgrade_level"]}) != &""
+	return _finish_operation(ok, before)
+
+
 func remove_modification(slot_id: StringName, kind: StringName, item_id: StringName) -> bool:
 	var state: Resource = equipment.get_equipment_state(slot_id) if equipment != null else null
 	if state == null or kind not in [&"module", &"part"]:

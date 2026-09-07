@@ -53,9 +53,19 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 16 · IMPROVE 29 · CHANGE 21 · FIX 28</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 17 · IMPROVE 31 · CHANGE 22 · FIX 28</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>13</b><small>UPDATE BUNDLES</small></span><span><b>16</b><small>BUILD</small></span><span><b>29</b><small>IMPROVE</small></span><span><b>21</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>14</b><small>UPDATE BUNDLES</small></span><span><b>17</b><small>BUILD</small></span><span><b>31</b><small>IMPROVE</small></span><span><b>22</b><small>CHANGE</small></span><span><b>28</b><small>FIX</small></span></div>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 14</small><b>두 무기 카드 · 그림 주변 파츠 슬롯</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · I 무기 탭에서 메인·보조를 위아래로 보고, 무기 주변 슬롯을 눌러 파츠를 장착합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>실제 무기 소켓에 연결된 카드형 파츠 UI와 보유 호환 파츠 선택을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>빈 슬롯·장착·선택 상태를 아이콘과 테두리로 구분하고, 클릭/Enter 선택·4폭 배치·저장 보호를 검사합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>파츠 교체는 분리 초안에서 이전 파츠/강화 상태를 가방으로 반환하며, 실패 시 복구합니다. 저장 확인과 U/E 고급 기능은 유지합니다.</p></div>
+        <p><a href="features/grid-inventory/#weapon-attachment-rack">사용 방법 →</a> · <a href="quality/e2e-play-session/#weapon-attachment-rack">입력·저장 검증 →</a> · 참고 이미지의 에셋을 복사하지 않은 SFH 코드 도식. 새 파츠 목록·밸런스 변경 없음.</p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 13</small><b>FUN QA · 출격 정보와 탈출 경계</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">

@@ -36,6 +36,10 @@ $partialOutput | ForEach-Object { Write-Output $_ }
 if ($partialStatus -ne 0 -or ($partialOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($partialOutput -match 'PARTIAL_COMPLETION_OK')) { exit 1 }
 $funOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/fun_qa_affordance_test.gd" 2>&1
 $funStatus = $LASTEXITCODE
+$attachmentOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/weapon_attachment_rack_test.gd" 2>&1
+$attachmentStatus = $LASTEXITCODE
+$attachmentOutput | ForEach-Object { Write-Output $_ }
+if ($attachmentStatus -ne 0 -or ($attachmentOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($attachmentOutput -match 'WEAPON_ATTACHMENT_RACK_OK')) { exit 1 }
 $funOutput | ForEach-Object { Write-Output $_ }
 if ($funStatus -ne 0 -or ($funOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($funOutput -match 'FUN_QA_AFFORDANCE_OK')) { exit 1 }
 $policyOutput | ForEach-Object { Write-Output $_ }
