@@ -11,7 +11,11 @@ func is_valid() -> bool:
 	return density_radius > 0.0 and maximum_priority_rank > 0.0
 
 
-func resolve(mode: StringName, origin: Vector2, candidates: Array, maximum_range: float, input_direction: Vector2 = Vector2.RIGHT) -> Dictionary:
+func resolve_for_skill(mode: StringName, origin: Vector2, candidates: Array, maximum_range: float, input_direction: Vector2, effect_radius: float) -> Dictionary:
+	return resolve(mode, origin, candidates, maximum_range, input_direction, effect_radius)
+
+
+func resolve(mode: StringName, origin: Vector2, candidates: Array, maximum_range: float, input_direction: Vector2 = Vector2.RIGHT, effect_radius: float = 0.0) -> Dictionary:
 	var safe_range := maxf(1.0, maximum_range)
 	var target: Node2D
 	var target_point := origin
@@ -20,14 +24,17 @@ func resolve(mode: StringName, origin: Vector2, candidates: Array, maximum_range
 		&"highest_health", &"elite", &"nearest":
 			target = select_target_for_mode(mode, origin, candidates, safe_range)
 		&"densest":
-			target_point = select_densest_point(origin, candidates, safe_range)
-			target = _nearest_to_point(target_point, candidates, safe_range)
+			var eligible := _eligible_candidates(origin, candidates, safe_range)
+			target_point = select_densest_point(origin, eligible, safe_range, effect_radius)
+			target = _nearest_to_point(target_point, eligible, INF)
 		&"direction":
 			target_point = origin + direction * safe_range
 		_:
 			target_point = origin
 	if is_instance_valid(target):
-		target_point = target.global_position
+		# A cluster point is not the representative enemy's position.
+		if mode != &"densest":
+			target_point = target.global_position
 		direction = origin.direction_to(target_point)
 	return {&"mode": mode, &"target": target, &"target_point": target_point, &"direction": direction}
 
@@ -41,7 +48,7 @@ func select_target_for_mode(mode: StringName, origin: Vector2, candidates: Array
 	var best_primary := -INF
 	var best_distance := INF
 	for candidate in candidates:
-		if not candidate is Node2D or candidate.is_queued_for_deletion():
+		if not is_instance_valid(candidate) or not candidate is Node2D or candidate.is_queued_for_deletion():
 			continue
 		var target := candidate as Node2D
 		var distance := origin.distance_to(target.global_position)
@@ -60,16 +67,25 @@ func select_target_for_mode(mode: StringName, origin: Vector2, candidates: Array
 	return best
 
 
-func select_densest_point(origin: Vector2, candidates: Array, maximum_range: float) -> Vector2:
+func _eligible_candidates(origin: Vector2, candidates: Array, maximum_range: float) -> Array[Node2D]:
 	var valid: Array[Node2D] = []
 	for candidate in candidates:
-		if candidate is Node2D and not candidate.is_queued_for_deletion() and origin.distance_to((candidate as Node2D).global_position) <= maximum_range:
+		if is_instance_valid(candidate) and candidate is Node2D and not candidate.is_queued_for_deletion() and origin.distance_to((candidate as Node2D).global_position) <= maximum_range and not valid.has(candidate):
 			valid.append(candidate as Node2D)
+	# Stable tie breaks and summation, independent of spawn/tree order.
+	valid.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return a.global_position.x < b.global_position.x if a.global_position.x != b.global_position.x else a.global_position.y < b.global_position.y)
+	return valid
+
+
+func select_densest_point(origin: Vector2, candidates: Array, maximum_range: float, effect_radius: float = 0.0) -> Vector2:
+	var valid := _eligible_candidates(origin, candidates, maximum_range)
 	if valid.is_empty():
 		return origin
 	var best_cluster: Array[Node2D] = []
 	var best_anchor_distance := INF
-	var radius_squared := density_radius * density_radius
+	var radius := effect_radius if is_finite(effect_radius) and effect_radius > 0.0 else density_radius
+	var radius_squared := radius * radius
 	for anchor in valid:
 		var cluster: Array[Node2D] = []
 		for candidate in valid:
@@ -97,7 +113,7 @@ func _nearest_to_point(point: Vector2, candidates: Array, maximum_distance: floa
 	var nearest: Node2D
 	var nearest_distance := maximum_distance
 	for candidate in candidates:
-		if candidate is Node2D:
+		if is_instance_valid(candidate) and candidate is Node2D and not candidate.is_queued_for_deletion():
 			var distance := point.distance_to((candidate as Node2D).global_position)
 			if distance < nearest_distance:
 				nearest = candidate as Node2D
