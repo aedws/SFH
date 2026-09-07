@@ -18,7 +18,9 @@ concurrency:
 
 jobs:
   plan:
-    runs-on: ubuntu-24.04
+    # Persistent private runner: never execute an unreviewed contributor's PR.
+    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor == github.repository_owner)
+    runs-on: [self-hosted, Linux, X64, sfh-build]
     permissions:
       contents: write
       actions: read
@@ -388,8 +390,8 @@ jobs:
           retention-days: 1
 
   build:
-    if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
+    if: ${{ !cancelled() && needs.plan.result == 'success' }}
+    runs-on: [self-hosted, Linux, X64, sfh-build]
     needs:
       - plan
       - export-game
@@ -405,11 +407,9 @@ jobs:
         run: python3 scripts/ci_budget.py gate
 
       - name: Set up Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
-        with:
-          python-version: "3.13"
-          cache: pip
-          cache-dependency-path: requirements-docs.txt
+        run: |
+          python3 -m venv "$RUNNER_TEMP/wiki-python"
+          echo "$RUNNER_TEMP/wiki-python/bin" >> "$GITHUB_PATH"
 
       - name: Configure GitHub Pages
         if: vars.SFH_PAGES_FALLBACK != 'disabled'
@@ -503,7 +503,7 @@ jobs:
 
   cloudflare-deploy:
     if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.build.result == 'success' }}
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, Linux, X64, sfh-build]
     permissions:
       actions: write
       contents: write
@@ -584,7 +584,9 @@ jobs:
 
       - name: Install pinned Wrangler
         if: steps.cloudflare_config.outputs.ready == 'true'
-        run: npm install --global "wrangler@${WRANGLER_VERSION}"
+        run: |
+          npm install --prefix "$RUNNER_TEMP/sfh-wrangler" "wrangler@${WRANGLER_VERSION}"
+          echo "$RUNNER_TEMP/sfh-wrangler/node_modules/.bin" >> "$GITHUB_PATH"
 
       - name: Upload immutable R2 release objects
         if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
@@ -795,7 +797,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, sfh-build]
     needs: build
     steps:
       - name: Deploy to GitHub Pages

@@ -24,10 +24,10 @@ if ($Action -eq 'status') {
 }
 
 if ($Action -eq 'stop') {
-    # Block newly planned jobs first; refuse to kill a running build.
+    # Record manual-session intent; refuse to kill a running build.
     Set-RunnerVariable 'SFH_SELF_HOSTED_ENABLED' 'false'
     if (@(Get-RemoteRunner | Where-Object busy -eq $true).Count) {
-        throw 'A build is running. New local jobs are disabled; retry stop after it finishes.'
+        throw 'A build is running. Retry stop after the workflow finishes; no shutdown performed.'
     }
     Stop-ScheduledTask -TaskName $taskNames[0]
     Set-RunnerVariable 'SFH_SELF_HOSTED_READY_UNTIL' '0'

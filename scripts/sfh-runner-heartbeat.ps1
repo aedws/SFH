@@ -20,8 +20,8 @@ do {
     }
     catch {
         Write-Warning $_.Exception.Message
-        # No renewal: newly planned workflows use hosted after lease expiry.
-        # Already assigned jobs require cancellation and rerun if the PC fails.
+        # Diagnostic lease only. Work waits for this manually started host;
+        # no paid GitHub-hosted fallback is permitted by workflow routing.
     }
     if (-not $Once) { Start-Sleep -Seconds 60 }
 } while (-not $Once)

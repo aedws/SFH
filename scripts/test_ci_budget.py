@@ -105,16 +105,16 @@ class RoutingTests(unittest.TestCase):
                 reuse.assert_not_called()
             self.assertIn("game=false", output.read_text())
 
-    def test_runner_requires_fresh_lease_and_owner_pr(self):
+    def test_runner_is_manual_only_and_never_falls_back_to_hosted(self):
         with tempfile.TemporaryDirectory() as directory:
             event = Path(directory) / "event.json"
             output = Path(directory) / "out"
             for sender, repository, lease, enabled, expected in (
                 ("owner", "owner/repo", "1180", "true", True),
-                ("owner", "owner/repo", "999", "true", False),
-                ("owner", "owner/repo", "99999999", "true", False),
-                ("owner", "owner/repo", "invalid", "true", False),
-                ("owner", "owner/repo", "1180", "false", False),
+                ("owner", "owner/repo", "999", "true", True),
+                ("owner", "owner/repo", "99999999", "true", True),
+                ("owner", "owner/repo", "invalid", "true", True),
+                ("owner", "owner/repo", "1180", "false", True),
                 ("collaborator", "owner/repo", "1180", "true", False),
                 ("owner", "other/fork", "1180", "true", False),
             ):
@@ -126,10 +126,30 @@ class RoutingTests(unittest.TestCase):
                        "GITHUB_RUN_ID": "456", "GITHUB_OUTPUT": str(output),
                        "SFH_SELF_HOSTED_ENABLED": enabled, "SFH_SELF_HOSTED_READY_UNTIL": lease}
                 with self.subTest(sender=sender, repo=repository, lease=lease, enabled=enabled), \
-                     patch.dict(ci.os.environ, env), patch.object(ci.time, "time", return_value=1000), \
+                     patch.dict(ci.os.environ, env), \
                      patch.object(ci, "git", side_effect=["tree", "game/new.gd"]):
-                    ci.plan()
-                    self.assertEqual('runner=["self-hosted"' in output.read_text(), expected)
+                    if expected:
+                        ci.plan()
+                        self.assertIn('runner=["self-hosted"', output.read_text())
+                        self.assertNotIn('ubuntu-', output.read_text())
+                    else:
+                        with self.assertRaisesRegex(ValueError, 'Untrusted PR'):
+                            ci.plan()
+                        self.assertEqual(output.read_text(), '')
+
+    def test_every_workflow_uses_private_runner_and_trust_gate(self):
+        # Guard the bootstrap/build/deploy jobs too, not just the routed game jobs.
+        import yaml
+        root = Path(__file__).resolve().parents[1]
+        for file in (root / '.github/workflows').glob('*.yml'):
+            data = yaml.safe_load(file.read_text(encoding='utf-8'))
+            for name, job in data['jobs'].items():
+                runner = job.get('runs-on')
+                self.assertTrue(runner == ['self-hosted', 'Linux', 'X64', 'sfh-build']
+                                or runner == '${{ fromJSON(needs.plan.outputs.runner) }}', (file, name))
+        deploy = (root / ci.WORKFLOW).read_text(encoding='utf-8')
+        self.assertIn('github.actor == github.repository_owner', deploy)
+        self.assertIn("!cancelled() && needs.plan.result == 'success'", deploy)
 
 
 if __name__ == "__main__":
