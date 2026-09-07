@@ -11,6 +11,11 @@ var fallback_actions: Array[StringName] = []
 var fallback_labels: Array[String] = []
 
 func configure(current_loadout: Resource, binding_source: Node = null) -> void:
+	if is_instance_valid(source) and source.has_signal(&"bindings_changed") and source.is_connected(&"bindings_changed", _on_bindings_changed):
+		source.disconnect(&"bindings_changed", _on_bindings_changed)
+	original_ids.clear()
+	fallback_actions.clear()
+	fallback_labels.clear()
 	loadout = current_loadout
 	source = binding_source
 	for skill: Resource in loadout.get("skills"):
@@ -18,7 +23,10 @@ func configure(current_loadout: Resource, binding_source: Node = null) -> void:
 		fallback_actions.append(StringName(skill.get("input_action")))
 		fallback_labels.append(String(skill.get("input_label")))
 	if is_instance_valid(source) and source.has_signal(&"bindings_changed"):
-		source.connect(&"bindings_changed", func(snapshot): bindings_changed.emit(snapshot))
+		source.connect(&"bindings_changed", _on_bindings_changed)
+
+func _on_bindings_changed(snapshot: Dictionary) -> void:
+	bindings_changed.emit(snapshot)
 
 func action_for_skill(skill_id: StringName) -> StringName:
 	var index := _index_of(skill_id)

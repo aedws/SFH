@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 6 · IMPROVE 9 · CHANGE 7 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 7 · IMPROVE 11 · CHANGE 9 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>6</b><small>BUILD</small></span><span><b>9</b><small>IMPROVE</small></span><span><b>7</b><small>CHANGE</small></span><span><b>9</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>9</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 5</small><b>훈련 잔여 오류 수정 · 선택 기능과 출격 회귀</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 일부 기능을 끈 빌드에서도 훈련과 출격을 이어가며, 사용할 수 없는 교체 버튼과 같은 스킬 재선택에 따른 쿨타임 초기화를 방지합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>선택 기능을 제거한 5개 구성의 훈련→종료→중형 출격 자동 검사를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>시험 중 원본 복원 제공자 교체를 막고, 중·대형 성능 검사를 4개 조건과 실제 공격 입력으로 확장했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>성공 문구뿐 아니라 런타임 오류도 판정합니다. CPU 단기 검사와 실제 화면을 켠 10분 플레이의 검증 범위를 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>선택 기능 제거 시 배열 타입 오류, 없는 스킬 교체 버튼, 동일 스킬 재선택 자원 초기화, 키 어댑터 재구성 중복 연결을 수정했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>훈련 무료 세팅 · 종료 원복과 저장 보호</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 훈련에서 스킬과 공용 룬을 바꿔 비교하고 종료 버튼으로 원래 장비에 돌아옵니다. 시험 세팅이 다음 작전이나 자동 저장에 섞이지 않도록 보완했습니다.</strong></div>

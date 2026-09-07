@@ -20,5 +20,8 @@ if (-not $godotExecutable) {
     throw "Godot 콘솔 실행 파일을 찾지 못했습니다. Godot 4.7.2 설치를 확인하세요."
 }
 
-& $godotExecutable --headless --disable-vsync --path $repositoryRoot --script "res://game/tests/performance_budget_test.gd"
-exit $LASTEXITCODE
+$output = & $godotExecutable --headless --disable-vsync --path $repositoryRoot --script "res://game/tests/performance_budget_test.gd" 2>&1
+$status = $LASTEXITCODE
+$output | ForEach-Object { Write-Output $_ }
+if ($status -ne 0 -or ($output -match 'SCRIPT ERROR:|^ERROR:') -or -not ($output -match 'PERFORMANCE_BUDGET_OK')) { exit 1 }
+exit 0

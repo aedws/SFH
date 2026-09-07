@@ -43,6 +43,7 @@ func _run() -> void:
 	_check(transaction.configure(gear, bag), "configure")
 	_check(transaction.register_runtime_provider(&"future", future), "future participant")
 	_check(transaction.begin_session(), "capture all participants")
+	_check(not transaction.configure(future, future), "active provider replacement rejected")
 	_check(not transaction.register_runtime_provider(&"late", future), "active registration rejected")
 	bag.value = 9
 	gear.value = 9

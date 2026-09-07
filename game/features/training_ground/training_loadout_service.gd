@@ -33,8 +33,11 @@ func configure_checkpoint_provider(provider: Node) -> bool:
 
 
 func configure(new_equipment_provider: Node, new_inventory_provider: Node) -> bool:
-	if not is_instance_valid(new_equipment_provider) or not is_instance_valid(new_inventory_provider):
+	if active:
 		return false
+	for provider in [new_equipment_provider, new_inventory_provider]:
+		if not is_instance_valid(provider) or not provider.has_method(&"export_runtime_state") or not provider.has_method(&"restore_runtime_state"):
+			return false
 	equipment_provider = new_equipment_provider
 	inventory_provider = new_inventory_provider
 	return true

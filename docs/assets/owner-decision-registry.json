@@ -1031,9 +1031,9 @@
       "status": "blocked",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-        "summary": "N26-08A 공용 훈련 세팅·복원·저장 보호 구현. N26-08B 성능·기능 제거·배포 동등성 검증 및 잔여 장비별 소켓/기술 대안 판단은 분리 유지",
+        "summary": "N26-08A 훈련 복원 후속 오류 수정. N26-08B 선택 제거 5개·출격 81조합·CPU 4조건 자동 회귀 통과. 실제 렌더링 배포 동등성과 장비별 소켓/기술 대안 판단은 별도",
       "acceptance": "AP 자연량·스킬 수·타겟 반경/주기·UI·리롤·손상품·환전·탈출·시즌의 임시/확정 분리 및 Web/Windows E2E",
-        "next_action": "독립 실행은 N26-08B부터. 전체 66항목 수락은 각 신규 모듈 완료 + 잔여 오너 결정 이후",
+        "next_action": "N26-08B 계속: 동일 배포 Web/Windows 중·대형 실제 10분 렌더링·입력·메모리 수락. 전체 66항목 수락은 각 신규 모듈 완료 + 잔여 오너 결정 이후",
       "route": "design/current-milestone-workline/#notion-20260907",
       "relations": [
         {

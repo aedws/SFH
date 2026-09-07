@@ -243,6 +243,8 @@ func cycle_training_skill(slot_index: int) -> Dictionary:
 			break
 	for offset in range(1, skill_catalog.size() + 1):
 		var candidate := skill_catalog[posmod(current_index + offset, skill_catalog.size())]
+		if StringName(candidate.get("skill_id")) == current_id:
+			continue
 		var preview: Dictionary = combat_skill_provider.call(
 			&"preview_skill_replacement", slot_index, candidate
 		)

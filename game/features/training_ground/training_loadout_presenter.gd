@@ -110,7 +110,7 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 		var key := String((skills[index] as Dictionary).get(&"input_label", str(index + 1))) if index < skills.size() else str(index + 1)
 		skill_buttons[index].text = "[%s] %s" % [key, name]
 		skill_buttons[index].tooltip_text = skill_buttons[index].text
-		skill_buttons[index].disabled = not editing
+		skill_buttons[index].disabled = not editing or index >= skills.size()
 
 
 func _cycle_skill(slot_index: int) -> void:
