@@ -114,6 +114,10 @@ jobs:
 
       - name: Test game contracts
         run: |
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/partial_completion_contract_test.gd" > /tmp/sfh-partial-completion.log 2>&1
+          cat /tmp/sfh-partial-completion.log
+          grep -q "PARTIAL_COMPLETION_OK" /tmp/sfh-partial-completion.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-partial-completion.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/provisional_policy_contract_test.gd" > /tmp/sfh-provisional-policy.log 2>&1
           cat /tmp/sfh-provisional-policy.log
           grep -q "PROVISIONAL_POLICY_OK" /tmp/sfh-provisional-policy.log

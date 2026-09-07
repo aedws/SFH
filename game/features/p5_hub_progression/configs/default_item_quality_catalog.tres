@@ -6,6 +6,10 @@
 [sub_resource type="Resource" id="QualityDamaged"]
 script = ExtResource("2_definition")
 quality_id = &"damaged"
+performance_minimum = 0.7
+performance_maximum = 0.9
+standard_price_ratio_minimum = 0.2
+standard_price_ratio_maximum = 0.3
 display_name = "손상"
 option_ids = Array[StringName]([&"worn_output"])
 socket_count = 0

@@ -56,6 +56,24 @@ static func quote(offer: Dictionary, catalog: Array[Dictionary], profile: Dictio
 			result[&"standard_unit_price"] = float(candidate[&"price"]) / float(candidate[&"quantity"])
 			result[&"price_ratio"] = float(result[&"unit_price"]) / float(result[&"standard_unit_price"])
 			break
+	var ratio_max := float(quality_definition.get("standard_price_ratio_maximum"))
+	if ratio_max > 0.0:
+		var standard_prices: Array[float] = []
+		for candidate in catalog:
+			if candidate.get(&"quality") != &"standard" or candidate.get(&"target_id") != offer.get(&"target_id") or candidate.get(&"target_type") != offer.get(&"target_type"):
+				continue
+			if int(candidate.get(&"quantity", 0)) <= 0 or int(candidate.get(&"price", 0)) <= 0:
+				continue
+			var unit := float(candidate[&"price"]) / float(candidate[&"quantity"])
+			if not standard_prices.has(unit):
+				standard_prices.append(unit)
+		if standard_prices.size() != 1:
+			result[&"reason"] = "표준 단가 누락 또는 중복 · 구매 불가"
+			return result
+		var ratio := float(result[&"unit_price"]) / standard_prices[0]
+		if ratio < float(quality_definition.get("standard_price_ratio_minimum")) - 0.000001 or ratio > ratio_max + 0.000001:
+			result[&"reason"] = "품질별 가격 범위 오류 · 구매 불가"
+			return result
 	var unlock_id := StringName(offer.get(&"required_unlock_id", &""))
 	if unlock_id != &"" and unlock_id not in profile.get(&"unlock_ids", []):
 		result[&"reason"] = "해금 조건 미달"

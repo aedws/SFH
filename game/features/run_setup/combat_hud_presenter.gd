@@ -248,6 +248,7 @@ func get_snapshot(hud: Control) -> Dictionary:
 		&"session_socket_inside_viewport": session_socket_hud == null or not session_socket_hud.is_visible_in_tree() or _rect_inside_viewport(socket_rect, hud.size),
 		&"central_safe_rect": central_safe_rect,
 		&"central_safe_clear": _rects_clear_zone(persistent_rects, central_safe_rect),
+		&"detail_safe_clear": _rects_clear_zone([equipment_rect, weapon_rect], central_safe_rect),
 		&"mission_tracker": mission_tracker != null,
 		&"bottom_cluster": core_rect.size.x <= 402.0 and core_rect.size.y <= 92.0,
 		&"runtime_clustered": combat_skill_hud != null and dash_cooldown_hud != null,
@@ -449,8 +450,10 @@ func _apply_layout_for_width(viewport_width: float) -> void:
 		layout_mode = &"compact_edge"
 	if layout_mode == &"player_orbit":
 		_set_top_left_rect(mission_tracker, 18, 18, MISSION_WIDTH, MISSION_HEIGHT)
-		_set_center_rect(equipment_panel, -252, -104, 132, 100)
-		_set_center_rect(weapon_panel, -112, -104, 224, 100)
+		# Context cards must not cover the player/approaching enemies even briefly.
+		var detail_width := minf(244.0, viewport_width * 0.22 - 24.0)
+		_set_bottom_left_rect(equipment_panel, 18, -270, detail_width, 72)
+		_set_bottom_left_rect(weapon_panel, 18, -270, detail_width, 72)
 		_set_bottom_right_rect(combat_skill_hud, -458, -148, 440, 82)
 		_set_bottom_right_rect(action_dock, -410, -58, 392, 46)
 		_set_bottom_center_rect(session_socket_hud, -226, -70, 440, 62)

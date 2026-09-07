@@ -1,8 +1,8 @@
 offer_id,display_name,quality,target_type,target_id,quantity,price,performance_multiplier,required_unlock_id,rotation_weight,rotation_group,runtime_enabled,source_status
 제안 ID,표시 이름,damaged/standard/high_performance,지급 유형,대상 ID,지급 수량,가격,성능 배율,필요 해금 ID,회전 가중치,동시 중복 방지 그룹,런타임 사용,기획 상태
-damaged_medkit,손상된 구급 키트,damaged,item,field_medkit,1,20,0.8,,100,medkit,true,provisional
+damaged_medkit,손상된 구급 키트,damaged,item,field_medkit,1,6,0.8,,100,medkit,true,provisional
 standard_medkit,표준 구급 키트,standard,item,field_medkit,2,45,1.0,,100,medkit,true,provisional
 high_medkit,고성능 구급 키트,high_performance,item,field_medkit,3,85,1.25,,70,medkit,true,provisional
-damaged_core,손상된 탄도 코어,damaged,item,ballistic_core_item,1,55,0.8,,70,core,true,provisional
+damaged_core,손상된 탄도 코어,damaged,item,ballistic_core_item,1,23,0.8,,70,core,true,provisional
 standard_core,표준 탄도 코어,standard,item,ballistic_core_item,1,90,1.0,,80,core,true,provisional
 high_core,고성능 탄도 코어,high_performance,item,ballistic_core_item,1,145,1.25,,55,core,true,provisional

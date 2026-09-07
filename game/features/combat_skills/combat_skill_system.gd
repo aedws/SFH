@@ -22,6 +22,7 @@ var binding_provider: Node
 var runtime_modifier_sources: Dictionary = {}
 var targeted_modifiers := preload("res://game/core/targeted_modifier_store.gd").new()
 var owned_effects: Array[WeakRef] = []
+var _candidate_area: Area2D
 
 
 func register_runtime_effect(effect: Node) -> void:
@@ -39,6 +40,8 @@ func cancel_runtime_effects() -> void:
 
 func _exit_tree() -> void:
 	cancel_runtime_effects()
+	if is_instance_valid(_candidate_area):
+		_candidate_area.queue_free()
 
 
 func export_runtime_state() -> Dictionary:
@@ -97,6 +100,9 @@ func configure(
 		or not new_loadout.call(&"validation_errors").is_empty()
 	):
 		return false
+	if is_instance_valid(_candidate_area):
+		_candidate_area.queue_free()
+		_candidate_area = null
 	player = new_player
 	target_container = new_target_container
 	effect_parent = new_effect_parent
@@ -497,6 +503,10 @@ func _build_activation_context(skill: Resource) -> Dictionary:
 			* float(runtime_modifiers[&"damage_multiply"])
 		)
 	if targeting_policy != null and targeting_policy.has_method(&"resolve"):
+		if not is_instance_valid(_candidate_area):
+			_candidate_area = load("res://game/features/smart_targeting/target_candidate_area.gd").new()
+			player.add_child(_candidate_area)
+		candidates = _candidate_area.call(&"collect", candidates, player.global_position, maximum_range)
 		var resolved: Dictionary
 		if targeting_policy.has_method(&"resolve_for_skill") and skill.has_method(&"get_targeting_radius"):
 			resolved = targeting_policy.call(&"resolve_for_skill", mode, player.global_position,

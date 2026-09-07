@@ -4044,6 +4044,7 @@ func _on_active_weapon_changed(slot_id: StringName, weapon_definition: Resource)
 
 
 func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:
+	var previous_text := weapon_runtime_label.text
 	var trait_labels := {
 		&"steady_burst": "안정 3점사",
 		&"heavy_piercing": "고위력 관통",
@@ -4060,7 +4061,7 @@ func _on_weapon_runtime_changed(snapshot: Dictionary) -> void:
 		trait_labels.get(trait_id, String(trait_id)),
 		snapshot.get(&"source_label", "내장 기본값"),
 	]
-	if run_started:
+	if run_started and weapon_runtime_label.text != previous_text:
 		combat_hud_presenter.call(&"reveal_detail", &"weapon")
 
 
