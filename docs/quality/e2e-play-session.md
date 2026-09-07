@@ -11,6 +11,14 @@ tags:
 
 # 실제 플레이 세션 E2E 검수
 
+## 2026-09-07 · 카드형 무기 파츠 UI {#weapon-attachment-rack}
+
+- `WEAPON_ATTACHMENT_RACK_OK`: 메인/보조 카드, 실제 소총 소켓3개, Enter 슬롯 선택, 권총 전용 파츠의 소총 장착 거부, 조준경 장착/동일 소켓 교체/강화 단계 보존/이전 파츠1개 반환, 저장·취소·이탈 확인을 검사합니다.
+- 1280/1050/844/640폭에서 카드 상하 비겹침·소켓 카드 내부 경계·창 너비를 검사합니다. 본문은 작은 화면에서 세로 스크롤하며 모든 컨트롤을 동시에 한 화면에 넣는다는 뜻은 아닙니다.
+- 추가 소켓7개를 가진 검사 전용 정의에서도 카드가 늘어나고 소켓 클릭 영역이 서로 겹치지 않는지 검사합니다. 새 실제 파츠 데이터는 추가하지 않습니다.
+- 로컬 Web1280×720 일반 입력: PC→I→무기 탭→광학 클릭→소총 조준경 장착→ESC 저장 확인, 브라우저 오류0. 가방에서 파츠가 빠지고 장착 슬롯의 청록 표시/미저장 안내가 보이는지 확인했습니다.
+- 기존 전체 E2E 31개 인식/15개 흐름과 U/E 작업대·회전/드래그/저장 전환은 유지합니다. 외부 이미지 복사·신규 파츠 밸런스·게임 상태 규칙 변경은 없습니다.
+
 ## 2026-09-07 · FUN QA 경계 회귀 {#fun-qa-affordance}
 
 `fun_qa_affordance_test.gd`를 로컬 `test-game.ps1`과 자체 러너 `export-game` 필수 검사에 추가했습니다. 수정 전 경계 안내와 카드 너비 실패를 재현하고 수정 후 `FUN_QA_AFFORDANCE_OK`를 확인했습니다.
@@ -526,6 +534,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-performance.p
 | 명시적 `Range: bytes=0-31` | `206`, 정확한 `Content-Range`, 본문 32바이트 |
 
 로컬 Worker 계약은 실제 R2처럼 전체 객체에도 range descriptor를 제공해 오판 회귀를 재현합니다. main 배포 E2E는 게임 홈과 ZIP의 `200`, Range 자산의 `206`, 체크섬과 배포 커밋을 함께 확인해야 통과합니다. 같은 QA 라운드에서 실제 입력 E2E 31개 인식 체크포인트·15개 인과 흐름, P5/P6 계약, 57개 기능·231개 클래스·순환 0개, 대형 전장 평균 6.88ms 성능 예산을 통과했습니다.
+
+### 배포 CSV 가져오기 회귀 · 2026-09-07
+
+PR 패키지 부팅 검사에서 `training_scenario.csv`와 `upgrade_balance.csv`가 Translation 의존성으로 처리되어 거점 초기화가 실패했습니다. 게임 데이터 18종의 `.csv.import`를 `importer="keep"`으로 형상 관리하고, 새 데이터도 같은 계약을 지키는지 `test_balance_csv_imports.py`로 가져오기 전에 검사합니다. 수치·Sheet·Web 내장 payload 계약은 변경하지 않습니다.
+
+완성된 Web/Windows PCK에서 `RELEASE_RAW_CSV_OK`와 `RELEASE_BOOT_OK`를 확인합니다. 에디터 실행 성공만으로 배포 합격 처리하지 않습니다. 설정의 근거는 [Godot 원본 파일 보존 문서](https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/import_process.html)입니다.
 
 ## 검색 별칭
 

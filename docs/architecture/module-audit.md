@@ -11,6 +11,14 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-07 · 무기 카드형 파츠 편집 {#weapon-attachment-rack}
+
+- `WeaponAttachmentRack`는 공개 슬롯 기술자/장비 상태로 카드 두 장을 구성하고 무기·소켓 선택 신호만 내보냅니다. `WeaponPartsBoard`의 기존 도식 모드를 재사용하며 인벤토리용 아이콘·키보드 버튼은 카드 모드에 한정합니다.
+- `GridInventoryWindow`는 장비 제공자가 있을 때만 카드 UI를 로드합니다. 실제 소켓 ID와 `EquipmentPartDefinition.supports_weapon()`을 사용하며 새 호환 표를 UI에 복제하지 않습니다.
+- 파츠 교체는 `InventoryEditSession.replace_part()`의 분리 초안에서 검증→기존 소켓 제거→새 파츠 장착→기존 파츠 가방 반환 순서입니다. 실패 시 가방/장비 체크포인트를 복구하고, 저장 전 실제 플레이어에는 적용하지 않습니다.
+- `weapon_attachment_rack_test.gd`: 두 무기·실제 소켓·Enter 선택·비호환 거부·교체 반환/강화 보존·저장/취소·4폭 카드 경계를 검사합니다. 기존 전체 E2E의 가방 회전/드래그·I/U/E 전환·저장 보호도 통과했습니다.
+- 정적 감사: 기능57·클래스241·의존28·순환0·서비스 Scene 내부 접근0. Game 조립부·새 Sheet 목록·CSV 스키마·상용 에셋 추가 없음.
+
 ## 2026-09-07 · FUN QA 안내와 작동 경계 {#fun-qa-affordance}
 
 - `ExtractionZone`이 중심 거리 판정·구역 표시·근접 안내·방어 유지/재개를 소유합니다. 충돌체 겹침은 근접 후보일 뿐 실행 허가가 아니며, 같은 판정을 입력과 안내가 공유합니다. `configure()`는 인스턴스별 물리 원을 갱신해 공유 Shape 변형을 피합니다.

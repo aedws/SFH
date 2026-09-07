@@ -23,6 +23,9 @@ var stats_column: VBoxContainer
 var detail_column: VBoxContainer
 var module_column: VBoxContainer
 var module_list: VBoxContainer
+var weapon_rack: Control
+var socket_actions: VBoxContainer
+var selected_socket: StringName = &""
 var tabs: Array[Button] = []
 var slot_buttons: Dictionary = {}
 var header_summary: Label
@@ -209,6 +212,7 @@ func request_tab(index: int) -> void:
 		return
 	request_leave(func():
 		current_tab = index
+		selected_socket = &""
 		selected_entry.clear()
 		_refresh()
 	)
@@ -220,6 +224,7 @@ func _bind_draft() -> void:
 	grid_view.selected_instance_id = &""
 	selected_entry.clear()
 	selected_name.text = "아이템 선택"
+	selected_socket = &""
 	selected_description.text = "가방에서 아이템을 선택해 설명과 장착 대상을 확인하세요."
 	_refresh_slots()
 	_refresh()
@@ -245,7 +250,7 @@ func _build_ui() -> void:
 	header_summary.max_lines_visible = 1
 	var tab_row := HBoxContainer.new()
 	root_box.add_child(tab_row)
-	for title in ["작전 가방", "무기 모듈", "방어구 모듈"]:
+	for title in ["작전 가방", "무기 · 파츠 / 모듈", "방어구 모듈"]:
 		var button := _button(tab_row, title, request_tab.bind(tabs.size()))
 		button.autowrap_mode = TextServer.AUTOWRAP_OFF
 		button.clip_text = true
@@ -291,6 +296,8 @@ func _build_ui() -> void:
 	rotate_button = _button(detail_column, "선택 아이템 회전 / R", _rotate_selected_item)
 	action_button = _button(detail_column, "선택 슬롯에 장착", _apply_selection)
 	unequip_button = _button(detail_column, "선택 장비 해제", _unequip_selection)
+	socket_actions = VBoxContainer.new()
+	detail_column.add_child(socket_actions)
 	_label(detail_column, "장비 관리\nU 장비 · E 모듈/파츠\nESC 닫기 · 변경 시 저장 확인", 12)
 	status_label = _label(root_box, "", 12)
 	status_label.max_lines_visible = 2
@@ -387,8 +394,10 @@ func _refresh() -> void:
 	for i in tabs.size():
 		tabs[i].set_pressed_no_signal(i == current_tab)
 	module_column.visible = current_tab != 0
+	gear_column.visible = current_tab != 1
 	stats_column.visible = current_tab == 0
 	_refresh_modules()
+	_refresh_socket_actions()
 	for slot in slot_buttons:
 		var state: Resource = session.equipment.get_equipment_state(slot)
 		var label: String = SLOT_NAMES.get(slot, String(slot))
@@ -430,6 +439,14 @@ func _refresh_stats() -> void:
 
 
 func _refresh_modules() -> void:
+	if weapon_rack == null and session.equipment != null:
+		weapon_rack = load("res://game/features/equipment/weapon_attachment_rack.gd").new()
+		module_column.add_child(weapon_rack)
+		module_column.move_child(weapon_rack, 1)
+		weapon_rack.weapon_selected.connect(_select_slot)
+		weapon_rack.socket_selected.connect(_on_weapon_socket_selected)
+	if weapon_rack != null:
+		weapon_rack.visible = current_tab == 1
 	for child in module_list.get_children():
 		module_list.remove_child(child)
 		child.queue_free()
@@ -443,6 +460,8 @@ func _refresh_modules() -> void:
 				selected_slot = descriptor[&"slot_id"]
 				state = session.equipment.get_equipment_state(selected_slot)
 				break
+	if current_tab == 1 and weapon_rack != null:
+		weapon_rack.configure(session.equipment, selected_slot, selected_socket)
 	if state == null:
 		_label(module_list, "장비를 먼저 장착하세요.", 13)
 		return
@@ -450,13 +469,54 @@ func _refresh_modules() -> void:
 	for module in state.installed_modules:
 		_button(module_list, "%s · %d C\n해제" % [module.definition.display_name, state.effective_module_cost(module)], _remove_modification.bind(&"module", module.instance_id))
 	for part in state.installed_parts:
-		_button(module_list, "%s\n파츠 해제" % part.display_name, _remove_modification.bind(&"part", part.part_id))
+		if current_tab != 1:
+			_button(module_list, "%s\n파츠 해제" % part.display_name, _remove_modification.bind(&"part", part.part_id))
 	_label(module_list, "가방의 모듈을 선택한 뒤\n장착 버튼을 누르세요.\n코스트·중복·소켓 규칙 적용", 12)
 
 
 func _select_slot(slot: StringName) -> void:
 	selected_slot = slot
+	selected_socket = &""
 	_refresh()
+
+
+func _on_weapon_socket_selected(slot: StringName, socket: StringName) -> void:
+	selected_slot = slot
+	selected_socket = socket
+	_refresh()
+	selected_name.text = "파츠 슬롯 · %s" % weapon_rack.get_socket_label(socket)
+	selected_description.text = "호환 파츠를 선택하면 초안에 장착합니다. 변경은 저장 시 적용됩니다."
+
+
+func _refresh_socket_actions() -> void:
+	for child in socket_actions.get_children():
+		socket_actions.remove_child(child)
+		child.queue_free()
+	socket_actions.visible = current_tab == 1 and selected_socket != &""
+	if not socket_actions.visible or session.equipment == null:
+		return
+	var state: Resource = session.equipment.get_equipment_state(selected_slot)
+	if state == null or not state.is_weapon() or selected_socket not in state.definition.part_socket_ids:
+		selected_socket = &""
+		return
+	for part in state.installed_parts:
+		if part.socket_id == selected_socket:
+			_button(socket_actions, "%s\n파츠 해제 → 가방" % part.display_name, _remove_modification.bind(&"part", part.part_id))
+	_label(socket_actions, "호환 파츠 · 보유 목록", 13)
+	var count := 0
+	for entry: Dictionary in session.inventory.get_snapshot()[&"items"]:
+		if entry.get(&"item_type") != &"part":
+			continue
+		var part: Resource = entry.get(&"linked_resource")
+		if part != null and part.socket_id == selected_socket and part.supports_weapon(state.definition):
+			_button(socket_actions, entry[&"display_name"] + "\n장착 / 교체", _install_socket_item.bind(entry[&"instance_id"]))
+			count += 1
+	if count == 0:
+		_label(socket_actions, "보유한 호환 파츠가 없습니다.\n다른 무기 전용 파츠는 장착할 수 없습니다.", 12)
+
+
+func _install_socket_item(id: StringName) -> void:
+	session.replace_part(id, selected_slot)
 
 
 func _on_item_selected(entry: Dictionary) -> void:
@@ -535,7 +595,7 @@ func _layout() -> void:
 	gear_column.custom_minimum_size.x = 0 if narrow else 190
 	stats_column.custom_minimum_size.x = 0 if narrow else 126
 	detail_column.custom_minimum_size.x = 0 if narrow else 192
-	module_column.custom_minimum_size.x = 0 if narrow else 190
+	module_column.custom_minimum_size.x = 0 if narrow else 350 if current_tab == 1 else 190
 	if session.inventory != null:
 		var dimensions: Vector2i = session.inventory.grid_size
 		var available := maxf(240, bag_scroll.size.x - 18)

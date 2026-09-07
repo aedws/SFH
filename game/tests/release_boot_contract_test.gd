@@ -13,6 +13,17 @@ func _init() -> void:
 
 
 func _run() -> void:
+	var raw_tables := 0
+	for feature in DirAccess.get_directories_at("res://game/features"):
+		var data_path := "res://game/features/%s/data" % feature
+		if not DirAccess.dir_exists_absolute(data_path): continue
+		for file_name in DirAccess.get_files_at(data_path):
+			if not file_name.ends_with(".csv"): continue
+			var file := FileAccess.open(data_path.path_join(file_name), FileAccess.READ)
+			_check(file != null and not file.get_as_text().is_empty(), "raw CSV survives export: " + file_name)
+			raw_tables += 1
+	_check(raw_tables >= 18, "all gameplay CSV tables survive export")
+	print("RELEASE_RAW_CSV_OK ", raw_tables)
 	var config: Resource = SOCKETS.duplicate(true)
 	_check(config.binding_policy != null, "exported duplicate retains binding policy")
 	_check(config.validation_errors().is_empty(), "exported socket config is valid")

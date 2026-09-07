@@ -20,6 +20,12 @@ if (-not $godotExecutable) {
     throw "Godot 콘솔 실행 파일을 찾지 못했습니다. Godot 4.7.2 설치를 확인하세요."
 }
 
+# Validate before Godot can auto-import gameplay tables as translations.
+$csvPolicyPython = Join-Path $repositoryRoot '.venv/Scripts/python.exe'
+if (-not (Test-Path -LiteralPath $csvPolicyPython)) { $csvPolicyPython = 'python' }
+& $csvPolicyPython (Join-Path $PSScriptRoot 'test_balance_csv_imports.py')
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 # A fresh clone has no imported fonts or global GDScript class cache yet.
 # Build those generated inputs explicitly so the smoke test does not depend on
 # somebody having opened the project in the editor beforehand.
@@ -36,6 +42,10 @@ $partialOutput | ForEach-Object { Write-Output $_ }
 if ($partialStatus -ne 0 -or ($partialOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($partialOutput -match 'PARTIAL_COMPLETION_OK')) { exit 1 }
 $funOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/fun_qa_affordance_test.gd" 2>&1
 $funStatus = $LASTEXITCODE
+$attachmentOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/weapon_attachment_rack_test.gd" 2>&1
+$attachmentStatus = $LASTEXITCODE
+$attachmentOutput | ForEach-Object { Write-Output $_ }
+if ($attachmentStatus -ne 0 -or ($attachmentOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($attachmentOutput -match 'WEAPON_ATTACHMENT_RACK_OK')) { exit 1 }
 $funOutput | ForEach-Object { Write-Output $_ }
 if ($funStatus -ne 0 -or ($funOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($funOutput -match 'FUN_QA_AFFORDANCE_OK')) { exit 1 }
 $policyOutput | ForEach-Object { Write-Output $_ }

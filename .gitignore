@@ -16,7 +16,7 @@ site/
 venv/
 __pycache__/
 outputs/
-game/features/*/data/*.csv.import
+# Balance CSV import policy is versioned: keep raw data, never translations.
 
 # Editors and operating systems
 .idea/
