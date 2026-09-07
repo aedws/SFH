@@ -173,6 +173,13 @@ owner_console_position = developer_text.find("data-sfh-owner-decision-console-ho
 module_map_position = developer_text.find("data-sfh-code-module-map-host")
 developer_console_position = developer_text.find("SFH 운영 온톨로지 읽는 순서", module_map_position)
 assert owner_console_position >= 0, "Developer room must embed the owner decision console"
+focus_match = re.search(r'data-focus-object="([^"]+)"', developer_text)
+assert focus_match, "Current work overview focus missing"
+ontology = json.loads((SITE / "assets/project-ontology.json").read_text(encoding="utf-8"))
+assert focus_match.group(1) in {item["id"] for item in ontology["objects"]}, "Overview focus must reference a real object"
+assert len(re.findall(r'<details[^>]*class="sfh-developer-fold"', developer_text)) == 2
+assert not re.search(r'<details[^>]*class="sfh-developer-fold"[^>]*\sopen[\s>]', developer_text), "Developer details should be collapsed initially"
+assert "data-sfh-lazy-code" in developer_text, "Code map must load on disclosure"
 assert module_map_position >= 0, "Developer room must embed the live code-module map"
 assert developer_console_position >= 0 and owner_console_position < module_map_position < developer_console_position, (
     "Owner decisions must precede implementation evidence and the developer operating guide"

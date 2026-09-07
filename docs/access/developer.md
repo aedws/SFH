@@ -9,13 +9,30 @@ hide:
 
 # 개발자 작업실
 
-<div id="owner-decision-console" data-sfh-owner-decision-console-host></div>
+작업을 고르고, 필요한 근거만 펼쳐 확인합니다. 이 화면은 읽기 전용이며 최종 판단은 프로젝트 오너가 합니다.
+
+<div id="owner-decision-console" data-sfh-owner-decision-console-host data-focus-object="work:n26-08"></div>
+
+<nav class="sfh-developer-shortcuts" aria-label="개발자 빠른 문서">
+  <a href="../../design/current-milestone-workline/#notion-20260907">현재 작업선 →</a>
+  <a href="../../design/master-gdd-alignment/#current-classification">기획·구현 대조 →</a>
+  <a href="../../quality/e2e-play-session/">플레이 검증 →</a>
+  <a href="../../development-status/">변경 이력 →</a>
+</nav>
+
+<details class="sfh-developer-fold" markdown="1" data-sfh-lazy-code>
+<summary>코드 구현 관계 · 필요할 때 지도 펼치기</summary>
 
 ## 코드 구현 관계
 
 판단 콘솔에서 선택한 요구·위험·작업이 실제로 어느 모듈에 연결되는지 확인합니다. 코드는 근거이며, 프로젝트 오너의 확정 없이 범위나 출시 상태를 대신 결정하지 않습니다.
 
 <div id="code-module-map" data-sfh-code-module-map-host></div>
+
+</details>
+
+<details class="sfh-developer-fold" markdown="1">
+<summary>운영 안내 · 최신 기획, 원칙과 전체 문서</summary>
 
 ## 최신 기획 대조 · 오너 판단
 
@@ -42,10 +59,11 @@ Notion·Sheet 후보
   → 결과와 회귀 위험을 다시 판단 객체에 연결
 ```
 
-콘솔의 네 화면은 각각 다른 질문에 답합니다.
+콘솔은 개요를 먼저 보여주고, 필요한 객체와 근거를 선택해서 좁혀 봅니다. 검색·필터·목록 페이지는 탭을 오갈 때 유지됩니다. 탭은 좌우 화살표·Home·End로 이동할 수 있습니다.
 
 | 화면 | 답하는 질문 | 실패 신호 |
 |---|---|---|
+| 작업 개요 | 지금 볼 작업과 선행 조건은 무엇인가? | 원본과 다른 다음 행동·집계를 게임 진행률로 오인 |
 | 판단 대기열 | 지금 프로젝트 오너가 무엇을 결정해야 하는가? | 오너·수락 조건·다음 행동 누락 |
 | 객체 탐색 | 요구와 연결된 실제 코드·문서·원본은 무엇인가? | 고유 ID 중복·원본 없는 객체 |
 | 관계·계보 | 이 판단의 선행 근거와 후속 영향은 무엇인가? | 깨진 링크·구현/검증 근거 단절 |
@@ -89,3 +107,5 @@ Notion·Sheet 후보
   <a href="../../features/"><b>전체 게임 문서</b><span>작전·전투·장비·전리품·성장 규칙</span></a>
   <a href="../../development-status/"><b>업데이트·배포 이력</b><span>일자별 변경과 검증 결과</span></a>
 </nav>
+
+</details>

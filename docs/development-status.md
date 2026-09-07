@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 104 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 105 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -60,9 +60,9 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 9 · IMPROVE 19 · CHANGE 14 · FIX 15</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 10 · IMPROVE 22 · CHANGE 15 · FIX 17</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>9</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>14</b><small>CHANGE</small></span><span><b>15</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>9</b><small>UPDATE BUNDLES</small></span><span><b>10</b><small>BUILD</small></span><span><b>22</b><small>IMPROVE</small></span><span><b>15</b><small>CHANGE</small></span><span><b>17</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -134,7 +134,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>점멸·워프 뒤 잔상이 방을 가로질러 이어지는 표시 오류를 방지했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 8</small><b>기획·위키 재대조 · 구현 범위와 잔여 작업 구분</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 원문 요구와 실제 구현을 다시 대조해 완료 근거, 부분·미구현, 원문 외 기존 기능을 나눴습니다. 지난 작업을 다시 해야 하는 것처럼 보이던 안내도 바로잡았습니다.</strong></div>
@@ -142,6 +142,16 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>개선 · 2</h3><p>팀 작업실에서 기획 요구의 남은 범위와 별도 구현 목록을 구분하고, 진행도 계산에 추가 기능이 섞이지 않도록 검사를 강화했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 2</h3><p>공개 원문 재수집 시각과 현행 코드 근거를 갱신하고, 자동 검사와 일반 플레이 수락을 분리했습니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>오래된 다음 작업·저장 지원 안내의 문서 불일치를 바로잡았습니다. 게임 버그 수정 완료를 뜻하지 않습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 9</small><b>개발자 작업 공간 · 개요에서 근거로 좁히는 운영 화면</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 긴 대시보드를 한 번에 읽는 대신 현재 작업을 먼저 보고, 필요한 객체·관계·검증 근거만 펼쳐 확인합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>작업 개요를 기본 화면으로 추가하고 원본에 기록된 다음 행동과 선행 조건을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>객체 목록을 6개씩 탐색하고, 선택한 정보는 별도 검사 패널에서 읽으며, 코드 지도와 긴 안내는 필요할 때 펼칩니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>등록 객체 집계와 게임 진행률을 구분합니다. 인증·원본 데이터·게임 규칙은 변경하지 않았습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>전체 객체에 도달하지 못하던 목록 제한과 선택·탭 전환 시 검색 조건이 초기화되던 문제를 수정했습니다.</p></div>
       </div>
     </details>
   </div>
