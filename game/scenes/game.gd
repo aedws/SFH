@@ -1841,9 +1841,9 @@ func _install_training_combat_runtime() -> bool:
 	training_combat_skill_system.connect(
 		&"skill_activated", Callable(self, &"_on_training_skill_activated")
 	)
-	var candidates: Array[Resource] = loadout_investment_service.call(
-		&"get_skill_catalog_resources"
-	) if is_instance_valid(loadout_investment_service) else []
+	var candidates: Array[Resource] = []
+	if is_instance_valid(loadout_investment_service):
+		candidates.assign(loadout_investment_service.call(&"get_skill_catalog_resources"))
 	if candidates.is_empty():
 		for skill in training_loadout.get("skills"):
 			candidates.append(skill)

@@ -34,6 +34,10 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/training_loadout_restore_contract_test.gd"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+$optionalOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/training_optional_matrix_test.gd" 2>&1
+$optionalStatus = $LASTEXITCODE
+$optionalOutput | ForEach-Object { Write-Output $_ }
+if ($optionalStatus -ne 0 -or ($optionalOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($optionalOutput -match 'TRAINING_OPTIONAL_MATRIX_OK')) { exit 1 }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/basic_loop_smoke_test.gd"
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
