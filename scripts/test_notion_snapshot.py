@@ -188,6 +188,28 @@ class CodeCrosswalkTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unsafe evidence"):
             audit_check.validate(self.audit, self.gdd, self.tasks)
 
+    def test_extensions_do_not_inflate_notion_score(self):
+        before = audit_check.summary(self.audit)
+        extra = deepcopy(self.audit["extensions"][0])
+        extra["id"] = "EXT-ADDITIONAL-TEST"
+        self.audit["extensions"].append(extra)
+        audit_check.validate(self.audit, self.gdd, self.tasks)
+        self.assertEqual(audit_check.summary(self.audit), before)
+
+    def test_extension_evidence_and_ids_fail_closed(self):
+        for mutation in ("duplicate", "outside", "status", "empty"):
+            changed = deepcopy(self.audit)
+            if mutation == "duplicate":
+                changed["extensions"].append(deepcopy(changed["extensions"][0]))
+            elif mutation == "outside":
+                changed["extensions"][0]["code"] = ["../outside.gd"]
+            elif mutation == "status":
+                changed["extensions"][0]["planner_status"] = "구현완료"
+            else:
+                changed["extensions"][0]["existing_tests"] = []
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                audit_check.validate(changed, self.gdd, self.tasks)
+
 
 if __name__ == "__main__":
     unittest.main()

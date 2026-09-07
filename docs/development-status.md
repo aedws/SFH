@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 103 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-07</span><span>SEARCH COMMAND</span><span>10 DAYS · 104 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -31,7 +31,7 @@ tags:
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-최초 코드 기준은 `c16bd24827c596f419d224365b9724f6455b7b22`이며 N26-03A/B(`d50fdb6`, `add3a33`)의 구현·자동 계약 근거를 타게팅 1행에 추가했습니다. 스냅샷과 전체 근거는 [66개 항목 대조](design/master-gdd-alignment.md)에 기록했습니다.
+재대조 코드 기준은 `1bd3b12e61eea88c77af779cfa81078e309ce640`입니다. 2026-09-07 라이브 GDD·트래커 해시는 기존 기록과 같았습니다. N26-03A/B·훈련 원복·성능/타격 표현의 후속 근거를 갱신했습니다. [세 갈래 분류와 66개 항목 대조](design/master-gdd-alignment.md#current-classification)에서 구현·노션 외 구현·미구현을 구분합니다.
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
@@ -41,11 +41,11 @@ tags:
 | 기존 규칙과 충돌 | 1 | 0 |
 | 기획 판단 대기 | 14 | 0 |
 
-노션의 **결정(미구현) 52개 ×3**, **미정(검토필요) 14개 ×1**로 가중합니다. `(38×3 + 7×0.5×3) ÷ (52×3 + 14×1) = 124.5/170 = 73.2%`. 최초 72.4%에서 타게팅 1행만 변경했으며 기획 상태·나머지 65행은 유지합니다. 기획 상태를 구현 완료로 치환하지 않습니다.
+노션의 **결정(미구현) 52개 ×3**, **미정(검토필요) 14개 ×1**로 가중합니다. `(38×3 + 7×0.5×3) ÷ (52×3 + 14×1) = 124.5/170 = 73.2% 유지`. 이번 검토에서는 분류 수를 변경하지 않았습니다. [노션에 세부 규격이 없는 기존 구현 9묶음](design/master-gdd-alignment.md#implemented-outside-notion)은 분자·분모에서 제외합니다. 확정 요구만의 참고 대응도는 79.8%이며 출시율이 아닙니다.
 
 ## 현재 빌드 상태
 
-거점 준비 → 작전 → 방 전투·파밍 → 탈출·정산의 기존 플레이는 유지합니다. N26-03A/B의 중심점·반경 전달과 원형 최대 피격 계산을 구현하고 실제 입력 회귀를 통과했습니다. 신규 기본 스킬·충돌 정책·Sheet/CSV·저장 데이터는 변경하지 않았습니다.
+거점 준비 → 작전 → 방 전투·파밍 → 탈출·정산의 기존 플레이를 유지합니다. N26-03A/B 타게팅, N26-08A 훈련 무료 세팅·원복·저장 보호, 타격/대시 표현과 유휴 갱신 축소가 구현됐습니다. 이번 대조는 문서·검증 도구 최신화이며 게임 규칙·Sheet/CSV·저장 데이터를 바꾸지 않습니다.
 
 최신 원본에서는 키트 중심 생존, 보안 파우치, 심층 진입과 혈전 프로필 요구가 추가되거나 구체화됐습니다. 기존 HP 자연 회복·드랍·레벨업 회복과의 충돌, AP와 충전의 차이, 광역 타게팅 중심 덮어쓰기를 별도 작업으로 분리했습니다.
 
@@ -54,15 +54,15 @@ tags:
 [오너 판단표](design/master-gdd-alignment.md#owner-conflicts)에서 회복·AP·파우치·심층·혈전·소켓·기술·상태의 8개 결정을 확인합니다. 기존 사용자 지시를 대체하는 규칙은 승인 전에 적용하지 않습니다.
 
 [최신 N26 작업선](design/current-milestone-workline.md#notion-20260907):
-판단 없이 이어갈 순서는 N26-03 및 훈련 세팅·복원(N26-08A) 구현 → 성능·선택 모듈·배포 동등성(N26-08B)입니다. 훈련의 기존 공용 슬롯 범위는 보완했지만 장비별 소켓 귀속·보유 룬 동등성 수락이 남아 전체 기획 대응도 73.2%는 유지합니다. 생존/AP(N26-02), 파우치(N26-04/05), 심층·혈전(N26-06/07)은 오너 판단(N26-01) 후 진행합니다.
+N26-03A/B와 훈련 세팅·복원(N26-08A)은 구현·자동 회귀를 통과했습니다. 다음은 **N26-08B 첫 출격 지연 계측 → 탈출 F 단발 실패 재현 → 배포 Web/Windows 10분 일반 플레이 동등성**입니다. 자동 HP/입력 검사와 사람 수락은 구분합니다. 장비별 소켓·보유 룬 동등성은 남아 있으며 생존/AP(N26-02), 파우치(N26-04/05), 심층·혈전(N26-06/07)은 오너 판단(N26-01) 후 진행합니다.
 P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니다.
 
 <div class="sfh-notes">
 
 <details class="sfh-day" open>
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 9 · IMPROVE 17 · CHANGE 12 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 9 · IMPROVE 19 · CHANGE 14 · FIX 15</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>7</b><small>UPDATE BUNDLES</small></span><span><b>9</b><small>BUILD</small></span><span><b>17</b><small>IMPROVE</small></span><span><b>12</b><small>CHANGE</small></span><span><b>14</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>8</b><small>UPDATE BUNDLES</small></span><span><b>9</b><small>BUILD</small></span><span><b>19</b><small>IMPROVE</small></span><span><b>14</b><small>CHANGE</small></span><span><b>15</b><small>FIX</small></span></div>
     <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
@@ -124,7 +124,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>버그픽스 · 0</h3><p>게임 규칙과 수치는 유지합니다. 이번 경로 보정은 자동 검사기에만 적용되며 과금·자동 실행 설정 변경은 없습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 7</small><b>타격·속도감 강화 · 프레임 반복 작업 축소</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 단발 충격과 처치 표시를 구분하고 대시 표현을 강화했습니다. 화면을 불필요하게 다시 그리는 작업을 줄였으며, 첫 출격 순간 지연은 별도 검수 대상으로 남깁니다.</strong></div>
@@ -132,6 +132,16 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>개선 · 4</h3><p>안개 임시 할당 감소, 효과 대기 중 갱신 축소, 방향성 타격·처치 링, 대시 카메라·속도선 표현을 개선했습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 1</h3><p>피해량·이동 속도·대시 쿨타임은 유지하며, 반복 작업 감소와 실제 프레임 지연 해결 여부를 구분합니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>점멸·워프 뒤 잔상이 방을 가로질러 이어지는 표시 오류를 방지했습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>기획·위키 재대조 · 구현 범위와 잔여 작업 구분</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 원문 요구와 실제 구현을 다시 대조해 완료 근거, 부분·미구현, 원문 외 기존 기능을 나눴습니다. 지난 작업을 다시 해야 하는 것처럼 보이던 안내도 바로잡았습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 0</h3><p>게임 규칙·아이템·밸런스 변경 없이 문서와 검증 도구를 최신화했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>팀 작업실에서 기획 요구의 남은 범위와 별도 구현 목록을 구분하고, 진행도 계산에 추가 기능이 섞이지 않도록 검사를 강화했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>공개 원문 재수집 시각과 현행 코드 근거를 갱신하고, 자동 검사와 일반 플레이 수락을 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>오래된 다음 작업·저장 지원 안내의 문서 불일치를 바로잡았습니다. 게임 버그 수정 완료를 뜻하지 않습니다.</p></div>
       </div>
     </details>
   </div>

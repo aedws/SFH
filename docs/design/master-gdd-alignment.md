@@ -16,11 +16,49 @@ tags:
 - [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed): v128, 본문 62블록. 2026-09-06 18:09:49 KST 편집, 2026-09-07 재수집.
 - [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2): 66행 전체 수집, hasMore=false. 결정(미구현) 52 / 미정(검토필요) 14.
 - 스냅샷: `docs/assets/notion-source-snapshot.json`, `docs/assets/notion-tracker-snapshot.json`. 수동 판단표: `docs/assets/notion-code-audit.json`.
-- 코드 기준: `c16bd24827c596f419d224365b9724f6455b7b22`. 코드와 기존 테스트 소스를 읽은 정적 검토이며 새로운 66항목 실제 플레이 완료 선언이 아닙니다.
+- 재대조 코드 기준: `1bd3b12e61eea88c77af779cfa81078e309ce640`(2026-09-07). 최초 `c16bd24` 이후 타게팅·훈련·성능·타격 표현 변경과 기존 66행을 대조했습니다. 새로운 66항목 실제 플레이 완료 선언이 아닙니다.
 - 이전 2026-09-02 GDD v153은 백업본입니다. **이전 96%를 최신 진행률로 사용하지 않습니다.** 완료 이력은 Git과 일별 업데이트에 보존합니다.
 - GDD 본문과 트래커는 독립 해시로 관리하며 상위 페이지 수정은 본문 변경으로 세지 않습니다. 체크박스·미구현 태그는 실제 코드 부재나 오너 승인을 대신하지 않습니다.
 
-확정도 가중 코드 대응도는 N26-03A/B 후 **73.2%**입니다. 최초 대조 72.4%에서 타게팅 1행의 부분 대응을 코드 근거 있음으로 변경했습니다. 나머지 65행과 기획 원문 상태는 유지하며, 최초 하락은 기능 삭제가 아니라 새 요구 확대와 과대 판정 정정입니다.
+**이번 라이브 확인에서 GDD·트래커 내용 변경은 없었습니다.** GDD `5702a448dd07…`, 트래커 `b1eb9834f867…`가 재수집 결과와 같습니다. 수집 시각은 각 스냅샷의 `captured_at`에 남깁니다. 확정도 가중 코드 대응도는 **124.5/170 = 73.2% 유지**입니다. 최초 대조 72.4%에서 타게팅 1행만 승격했으며, 이번에는 분류 수를 바꾸지 않고 근거·잔여 범위·다음 작업을 최신화했습니다.
+
+## 세 가지 질문으로 읽기 {#current-classification}
+
+| 질문 | 현재 구분 | 의미와 다음 행동 |
+|---|---|---|
+| 노션에 있고 구현됐나? | 구현 근거 38행 | 이동·Q·스킬 바인딩/쿨타임·자동 타게팅·거점/출격·파밍/정산·상점/제작·훈련 더미·로컬 랭킹. 행별 코드와 테스트 범위를 확인 |
+| 노션에 있지만 덜 됐거나 없나? | 부분 7 / 신규 미구현 6 / 충돌 1 / 미정 14행 | 전부 미구현으로 묶지 않음. 부분의 잔여 조건, 미구현의 선행 결정, 충돌의 기존 사용자 지시를 구분 |
+| 노션에 없지만 구현됐나? | [세부 규격 미명시 9개 기능 묶음](#implemented-outside-notion) | 과거 사용자 요청 기반의 기존 기능. 삭제하거나 노션 확정으로 취급하지 않고 별도 유지. 66행 진행률에 가산하지 않음 |
+
+트래커의 **결정(미구현) 52행**은 현재 코드가 모두 없다는 뜻이 아닙니다. 그 안의 코드 판정은 `38 + 7 + 6 + 1 = 52`입니다. 미정 14행은 별도입니다. 확정 요구만 보면 `124.5/156 = 79.8%`지만 대표 수치는 미정까지 포함하는 기존 가중식 **73.2%**로 유지합니다. 어느 쪽도 출시 준비율이나 재미 평가 점수가 아닙니다.
+
+### 부분 대응 7행 · 남은 것만 보기
+
+| 항목 | 구현된 경계 | 아직 남은 경계 |
+|---|---|---|
+| 훈련 자유 세팅 | 보유 장비·스킬·공용 룬 시험, 종료/실패 원복, 저장 격리 | 보유 룬 목록·장비별 소켓 귀속의 최신 기획 동등성 |
+| 손상 매물 | 품질 실물·성능 저하·가격 비교 | 성능 -10~30%, 가격 정가의 20~30%라는 요구 범위 전체와 운영값 승인 |
+| 룬/코어 소켓 | 런 공용 슬롯 실시간 장착 | 무기/스킬별 귀속·교체·해제·정산 순서 |
+| AP 사이클 | 에너지 차감·드랍 복원·스킬 충전 복구 | 미사용 시 초당 AP 자연 회복. 충전 횟수 복구와 다름 |
+| TileMapLayer | 자체 던전 렌더링·충돌 | 지정 엔진 노드로 이행하거나 대체 구현을 수락하는 결정 |
+| Area2D 구조 | 탈출 Area2D 진입/이탈 | 타게팅 후보 수집은 거리/스냅샷 방식. 지정 방식 수락 별도 |
+| 기본 씬 60FPS | 소스 렌더링 중·대형 각 600초, 평균 약 59.9FPS 근거 | 첫 출격 순간 지연·배포 Web/Windows 일반 플레이 동등성. 현재 PC 자동 검사만으로 보장하지 않음 |
+
+### 신규 미구현 6행 · 기존 기능으로 대체 불가
+
+- **파우치 2행:** 기본 안전 수납·사망 100% 보존, 거점 슬롯 확장. 일반 창고/가방 저장은 파우치가 아닙니다.
+- **심층 3행:** 저항 장비 정규 진입, 수문장 처치 시 저항 장비 보장 드랍, 키카드 전용 최상위 금고. 기존 추격 보스·벽 금고로 충족 처리하지 않습니다.
+- **혈전 1행:** HP 지불 + 타격/처치 흡혈 + 회복 키트 50% 결합 프로필. 일반 스킬/AP 비용과 별개입니다.
+
+회복 충돌 1행과 미정 14행은 아래 원문별 표에 모두 보존합니다. HP 자연 회복·드랍·레벨업 회복을 임의로 제거하지 않았습니다.
+
+### 검증 수준과 열린 위험
+
+N26-03A/B, N26-08A와 선택 제거/출격 조합 회귀의 기존 통과 근거는 유효하지만 이번 대조에서 사람 플레이를 다시 수행한 것은 아닙니다. 중·대형 600초 결과는 **시험용 HP·자동 입력을 사용한 소스 검사**입니다. 최신 120초 비교에서 평균 FPS 향상은 입증되지 않았습니다. 탈출 지점 F 단발 실패는 후속 재실행에서 재현되지 않았으며 **원인 수정 완료로 표시하지 않습니다**. [성능 조건](../performance/minimum-requirements.md#frame-feedback)과 [플레이 E2E](../quality/e2e-play-session.md)를 함께 확인합니다.
+
+### 게임 요구와 분리하는 개발 기반
+
+Sheet 실시간 시험→확정 CSV, Windows 저장/배포, 위키 역할 로그인·검색·문서 노드, PR/백업·CI 비용 관리도 이미 구축한 개발 기반입니다. 이들은 최신 노션의 66개 게임 요구 완료 점수에 합산하지 않습니다. [밸런스 작성 가이드](../getting-started/planner-item-balance-tutorial.md), [개발자 작업실](../access/developer.md)에서 각각 관리합니다. 새 게임 목록이 필요 없는 이번 대조에서는 Sheet·CSV를 변경하지 않았습니다.
 
 ## 충돌 판단과 오너 결정 {#owner-conflicts}
 
@@ -52,9 +90,11 @@ tags:
 
 ## 독립 구현 후속
 
-2026-09-07 사용자 지시에 따라 판단이 필요 없는 N26-03A/B를 구현했습니다. 최초 코드 기준 이후 근거를 해당 행에 추가했습니다. 37개 구현 근거·8개 부분에서 **38개 구현 근거·7개 부분**으로 변경해 `(38×3 + 7×0.5×3) / 170 = 124.5/170 = 73.2%`입니다. 회복·소유권·수치 정책 및 14개 미정의 확정 여부는 변경하지 않았습니다. 다음은 N26-08A 훈련 세팅·복원이며 [독립 작업 순서](current-milestone-workline.md#notion-20260907)와 [모듈 계약](../features/smart-targeting.md)을 확인합니다.
+N26-03A/B와 N26-08A 훈련 세팅·복원은 구현·자동 회귀를 통과했습니다. **N26-08B는 진행 중**이며 다음은 첫 출격 준비/초기 렌더링 계측 → 배포판 탈출 F 재현 → Web/Windows 10분 일반 플레이 동등성입니다. 회복·소유권·수치 정책 및 14개 미정의 확정 여부는 변경하지 않았습니다. [독립 작업 순서](current-milestone-workline.md#notion-20260907)를 단일 실행선으로 사용하며 이전 P9 착수 안내는 최신 순서로 사용하지 않습니다.
 
 ## 최초 대조 작업의 검증
+
+**현행 재대조 검증(2026-09-07):** 원문·트래커 라이브 해시 일치, 66행 전수 대응과 추가 구현의 중복 ID/안전한 근거 경로/점수 비가산 검사 포함 24개 회귀 통과. strict 위키 빌드·96문서 링크/계층·역할/검색·가독성 계약 통과. 본문·기획자/개발자 작업실·오너 콘솔의 오래된 다음 작업을 N26-08B로 맞췄으며, 현재 결과는 코드 대응 판정입니다. 노션 쓰기·게임 규칙 변경·새 사람 플레이 수락은 하지 않았습니다.
 
 2026-09-07: 원본·트래커 라이브 해시 일치, 수집 범위·페이지 나눔·미정 판독·66행 대응 회귀 22개 통과. 위키 strict 빌드, 96문서 링크·계층 검사, 역할 권한 테스트와 신규 스냅샷 비로그인 차단 검사를 통과했습니다. 오너 콘솔의 8결정·8작업 선행 관계도 검증했습니다. 게임 실행 코드는 변경하지 않았으며 신규 요구의 플레이 E2E는 N26-08에 남깁니다.
 
@@ -226,13 +266,13 @@ ExtractionZone은 실제 Area2D이며 body_entered/body_exited와 원형 충돌�
 
 노션: **결정 (미구현)** · 코드: **부분 대응** · 작업: **N26-08**
 
-Godot 프로젝트 존재. 60FPS는 기기·해상도·부하 실측 수락이 필요하며 파일 존재만으로 달성 판정하지 않음.
+기존 소스 GPU 중·대형 각 600초에서 평균59.91/59.88FPS·종료 잔류Node0, 최신 프레임/표현 계약 근거를 추가. 시험 HP·자동 입력·현재 PC 조건이며 배포 Web/Windows 일반 플레이 동등성·첫 출격 지연 수락은 남음. 120초 비교에서 지속 FPS 개선을 입증하지 못해 partial 유지.
 
 수락 기준: 2D 뷰포트에서 기본 씬이 60FPS로 구동 확인
 
 코드 경계: `project.godot`
 
-기존 검사 근거: `game/tests/performance_budget_test.gd`
+기존 검사 근거: `game/tests/performance_budget_test.gd`, `game/tests/rendered_soak_test.gd`, `game/tests/frame_feedback_contract_test.gd`
 
 ### [TileMapLayer 기반 2D 던전 맵 렌더링 파이프라인](https://wobbly-pawpaw-1ff.notion.site/3d35b7280040813893c2fc6eddfae751)
 
@@ -654,13 +694,13 @@ N26-03A/B(d50fdb6, add3a33): 중심 보존·효과 반경/배율 전달, 원형 
 
 노션: **결정 (미구현)** · 코드: **부분 대응** · 작업: **N26-08**
 
-N26-08A: 보유 장비·스킬·기존 공용 RunAsset 시험, 종료/전환/실패 복원·저장 격리 자동 계약 추가. 장비별 소켓 귀속과 보유 룬 영구 목록의 최신 기획 동등성은 미수락이므로 partial 유지. 근거: game/tests/training_loadout_restore_contract_test.gd
+N26-08A 구현·기존 회귀 통과: 보유 장비·스킬·기존 공용 RunAsset 시험, 종료/전환/실패 복원·저장 격리·선택 기능 제거 5구성. 장비별 소켓 귀속과 보유 룬 영구 목록의 최신 기획 동등성은 미수락이므로 partial 유지. 다음 작업을 훈련 신규 구현으로 되돌리지 않음.
 
 수락 기준: 연습장 내에서 비용 없이 자유롭게 빌드 스왑
 
 코드 경계: `game/features/training_ground/training_loadout_service.gd`
 
-기존 검사 근거: `game/tests/training_ground_gameplay_e2e_test.gd`
+기존 검사 근거: `game/tests/training_ground_gameplay_e2e_test.gd`, `game/tests/training_loadout_restore_contract_test.gd`, `game/tests/training_optional_matrix_test.gd`
 
 ### [실시간 DPS, 단일 타격 수치, AP 소모율 모니터링 UI](https://wobbly-pawpaw-1ff.notion.site/3d35b72800408134bf81d6d748487eb2)
 
@@ -718,13 +758,13 @@ N26-08A: 보유 장비·스킬·기존 공용 RunAsset 시험, 종료/전환/실
 
 노션: **결정 (미구현)** · 코드: **구현 근거 있음** · 작업: **N26-08**
 
-신호기 활성·체류 카운트다운·이탈 일시정지·재개·성공 정산 구현. 방어 시간/배율 승인 별도.
+신호기 F 활성·방어 카운트다운 연결의 구현 근거는 있음. 최근 E2E에서 F 진입 단발 실패 후 재실행 통과: 상세 진단을 추가했으나 원인 수정은 미완료이며 N26-08B 재현 대상으로 유지. 기능 부재와 간헐적 품질 위험을 구분하고 무결함/사람 플레이 완료로 승격하지 않음.
 
 수락 기준: F키 입력 시 탈출 방어 시퀀스 활성화
 
 코드 경계: `game/features/extraction/extraction_zone.gd`
 
-기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`
+기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`, `game/tests/e2e_play_session_test.gd`
 
 ### [원형 탈출 구역(Area2D) 내 N초 생존 카운트다운](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081c6b32efda2ccb10389)
 
@@ -907,6 +947,84 @@ AP 비용 계약만 있음. HP 지불·타격/처치 흡혈·물약50%를 결합
 기존 검사 근거: `game/tests/operation_combination_contract_test.gd`
 
 </details>
+
+## 노션에 세부 규격이 없는 기존 구현 {#implemented-outside-notion}
+
+최신 GDD 62블록과 트래커 66행에 세부 규격이 명시되지 않은 기존 구현 묶음. 과거 사용자 요청으로 구현된 범위이며 삭제 대상이나 신규 기획 확정이 아님. 아래 묶음 수는 요구 행 수와 다르며 진행률 분자/분모에 포함하지 않음.
+
+**9개 게임 기능 묶음**입니다. 위 66개 요구 행과 단위가 다르므로 합쳐서 완료율을 계산하지 않습니다.
+
+### EXT-INVENTORY · [크기가 다른 가방 아이템 이동·R 회전·저장 확인](../features/grid-inventory.md)
+
+일반 F 획득 요구와 별개인 공간 배치 규칙. 3×2↔2×3, 충돌 거부, 편집 저장/취소가 있으며 현장 R 장착과 입력 맥락을 분리합니다.
+
+코드 경계: `game/features/inventory/grid_inventory.gd`, `game/features/inventory/inventory_edit_session.gd`
+
+기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`, `game/tests/support/inventory_editor_contract.gd`
+
+### EXT-MOBILE · [PC/모바일 선택·가로형 터치 조작·HUD 설정](../features/mobile-hud-settings.md)
+
+좌하단 이동, 우하단 공격/스킬, 배율·가로 안내·1회성 도움말을 제공하는 별도 입력/표현 계층입니다. 전 기종 실기기 수락 완료를 뜻하지 않습니다.
+
+코드 경계: `game/features/mobile_controls/mobile_control_pad.gd`, `game/features/mobile_controls/mobile_orientation_policy.gd`
+
+기존 검사 근거: `game/tests/mobile_control_entry_contract_test.gd`, `game/tests/mobile_hud_elite_contract_test.gd`
+
+### EXT-VISION · [방·통로 안개·전체 지도·조건부 워프](../features/fog-of-war.md)
+
+방 공개와 통로 시야를 분리하고 M 확장 지도에서 시작/탈출 지역 또는 클리어한 4방향 방으로 이동합니다. 봉쇄 교전 중 워프는 거부합니다. GDD의 일반 시야 페널티보다 구체적인 탐색 규칙입니다.
+
+코드 경계: `game/features/fog_of_war/fog_of_war.gd`, `game/features/room_navigation/room_warp_system.gd`
+
+기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`, `game/tests/e2e_play_session_test.gd`
+
+### EXT-ROOM · [방 진입 스폰·문 봉쇄·클리어 보상](../features/room-encounters.md)
+
+일반 던전 탐험 요구 외에 방별 전투 상태, 한정된 적 수량, 클리어 후 문 개방과 보상 상자 생성 규칙을 구현했습니다. 심층 진입 구조 구현과는 별개입니다.
+
+코드 경계: `game/features/room_encounters/room_encounter_system.gd`, `game/features/room_encounters/room_credit_reward_box.gd`
+
+기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`, `game/tests/e2e_play_session_test.gd`
+
+### EXT-PURSUIT · [진입 비용 50% 회수 시 추격 보스·방향 경고](../features/elite-pursuit.md)
+
+현재 설정은 휴대 크레딧 임계 0.5배이며 방 봉쇄와 독립된 추격자입니다. 노션의 보스 계약 선택이나 저항 장비를 보장 드랍하는 심층 수문장과 동일하지 않습니다.
+
+코드 경계: `game/features/elite_pursuit/elite_pursuit_service.gd`, `game/features/elite_pursuit/configs/default_elite_pursuit.tres`
+
+기존 검사 근거: `game/tests/support/pursuit_boss_contract.gd`, `game/tests/mobile_hud_elite_contract_test.gd`
+
+### EXT-IDENTITY · [무기 고정 고유 스킬·전기 명중 광역·장비 고정 옵션](../features/equipment-fixed-identity.md)
+
+같은 무기는 같은 고유 효과를 갖고 고정 옵션/고유 효과는 내부·외부 레벨 배율과 분리됩니다. 일반 제작 랜덤 옵션 요구와 별개이며 방어구 세트효과 전체 구현을 의미하지 않습니다.
+
+코드 경계: `game/features/weapons/weapon_innate_skill_system.gd`, `game/features/equipment/equipment_fixed_option.gd`
+
+기존 검사 근거: `game/tests/equipment_fixed_identity_contract_test.gd`
+
+### EXT-GROWTH · [내부 임시 버프·외부 캐릭터/장비 성장](../features/growth.md)
+
+런 경험치/임시 강화와 정산 뒤 메타 경험치 성장 경로가 있습니다. GDD의 거점 성장·세션 증폭이라는 큰 개념과 별개인 경험치 변환 세부 규격입니다. 레벨업 HP 회복은 아래 회복 충돌 항목에서도 다룹니다.
+
+코드 경계: `game/features/experience/progression_system.gd`, `game/features/meta_progression/meta_progression_system.gd`
+
+기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`
+
+### EXT-CUSTOMIZATION · [고유 파츠·영구 모듈 코스트·강화·개조](../features/equipment-customization.md)
+
+무기 소분류별 파츠와 장비별 모듈 코스트/강화/개조를 구현했습니다. 최신 노션의 런 전용 룬/코어 소켓 귀속 규격을 충족한 것으로 합산하지 않습니다.
+
+코드 경계: `game/features/equipment/equipment_system.gd`, `game/features/equipment/equipment_module_instance.gd`
+
+기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`
+
+### EXT-FEEDBACK · [타격 방향 충격·처치 링·대시 잔상/속도선](../features/hit-feedback.md)
+
+최신 반응 표현과 유휴 반복 작업 감소를 반영했습니다. 핵앤슬래시 재미라는 의도와 관련되지만 세부 연출 규격은 노션에 없습니다. 평균 FPS 향상이나 사람 재미 수락을 증명한 것은 아닙니다.
+
+코드 경계: `game/features/hit_feedback/hit_feedback_director.gd`, `game/features/player/player_movement_feedback.gd`
+
+기존 검사 근거: `game/tests/frame_feedback_contract_test.gd`
 
 <!-- notion-audit:end -->
 
