@@ -120,10 +120,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	var visual_was_active := muzzle_flash_remaining > 0.0 or no_target_cue_remaining > 0.0
 	muzzle_flash_remaining = maxf(0.0, muzzle_flash_remaining - delta)
 	no_target_cue_remaining = maxf(0.0, no_target_cue_remaining - delta)
 	no_target_feedback_lockout = maxf(0.0, no_target_feedback_lockout - delta)
-	queue_redraw()
+	if visual_was_active: queue_redraw()
 	cooldown -= delta
 	var attack_pressed := Input.is_action_pressed(primary_attack_action)
 	if requires_primary_attack and not attack_pressed:
@@ -309,6 +310,7 @@ func _spawn_projectile(direction: Vector2) -> void:
 	)
 	muzzle_flash_direction = direction.normalized()
 	muzzle_flash_remaining = 0.075
+	queue_redraw()
 	total_projectiles_fired += 1
 
 

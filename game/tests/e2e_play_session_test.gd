@@ -699,7 +699,7 @@ func _verify_operation_session() -> bool:
 	await _tap_key(KEY_F)
 	var extraction_state: Dictionary = extraction.call(&"get_snapshot")
 	if not bool(extraction_state.get(&"defense_active", false)):
-		return _fail("탈출 지점의 실제 F 입력이 카운트다운 방어전을 시작하지 못했습니다.")
+		return _fail("탈출 지점의 실제 F 입력이 카운트다운 방어전을 시작하지 못했습니다: state=%s distance=%.2f paused=%s nearby=%s" % [extraction_state, player.global_position.distance_to(extraction.global_position), paused, is_instance_valid(extraction.nearby_player)])
 	if not _judge_player_perception(&"extraction_start_feedback", "탈출 방어 시작 인지"):
 		return false
 	var remaining_before := float(extraction_state.get(&"defense_remaining_seconds", 0.0))

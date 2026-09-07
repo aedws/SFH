@@ -13,6 +13,8 @@ extends Resource
 @export_range(0.0, 1.0, 0.01) var lethal_bonus_trauma: float = 0.16
 @export_range(0.0, 24.0, 0.1) var maximum_camera_offset: float = 6.0
 @export_range(0.1, 30.0, 0.1) var camera_decay_per_second: float = 3.8
+@export_range(0.0, 8.0, 0.1) var directional_kick_pixels: float = 1.8
+@export_range(1.0, 40.0, 1.0) var directional_kick_decay: float = 20.0
 
 
 func is_valid() -> bool:
@@ -24,6 +26,8 @@ func is_valid() -> bool:
 		and reference_damage > 0.0
 		and maximum_camera_offset >= 0.0
 		and camera_decay_per_second > 0.0
+		and directional_kick_pixels >= 0.0
+		and directional_kick_decay > 0.0
 	)
 
 
@@ -39,4 +43,6 @@ func get_snapshot() -> Dictionary:
 		&"lethal_bonus_trauma": lethal_bonus_trauma,
 		&"maximum_camera_offset": maximum_camera_offset,
 		&"camera_decay_per_second": camera_decay_per_second,
+		&"directional_kick_pixels": directional_kick_pixels,
+		&"directional_kick_decay": directional_kick_decay,
 	}

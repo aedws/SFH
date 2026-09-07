@@ -13,6 +13,7 @@ var total_hits: int = 0
 var total_player_hits: int = 0
 var total_lethal_hits: int = 0
 var peak_active_impacts: int = 0
+var directional_kick := Vector2.ZERO
 
 
 func configure(new_camera: Camera2D, new_profile: Resource) -> bool:
@@ -26,7 +27,7 @@ func configure(new_camera: Camera2D, new_profile: Resource) -> bool:
 	camera = new_camera
 	profile = new_profile
 	z_index = 70
-	set_process(true)
+	set_process(not impacts.is_empty() or trauma > 0.0)
 	return true
 
 
@@ -55,6 +56,8 @@ func get_snapshot() -> Dictionary:
 		&"total_player_hits": total_player_hits,
 		&"total_lethal_hits": total_lethal_hits,
 		&"trauma": trauma,
+		&"directional_kick_pixels": directional_kick.length(),
+		&"processing": is_processing(),
 	}
 
 
@@ -72,7 +75,12 @@ func _process(delta: float) -> void:
 			impacts.remove_at(index)
 	trauma = maxf(0.0, trauma - float(profile.camera_decay_per_second) * safe_delta)
 	_update_camera_offset()
+	directional_kick *= exp(-float(profile.directional_kick_decay) * safe_delta)
 	queue_redraw()
+	if impacts.is_empty() and trauma <= 0.001 and directional_kick.length() < 0.02:
+		directional_kick = Vector2.ZERO
+		if is_instance_valid(camera): camera.offset = Vector2.ZERO
+		set_process(false)
 
 
 func _draw() -> void:
@@ -90,6 +98,11 @@ func _draw() -> void:
 		color.a *= 1.0 - ratio
 		var position: Vector2 = impact[&"position"]
 		draw_arc(position, radius, 0.0, TAU, 20, color, 2.0)
+		# Crisp contact flash, then a distinct expanding kill ring; no global hit-stop.
+		if ratio < 0.28:
+			draw_circle(position, 3.5 + intensity * 2.0, Color(1.0, 1.0, 1.0, 1.0 - ratio / 0.28))
+		if bool(impact.get(&"lethal", false)):
+			draw_arc(position, radius * 1.3, 0.0, TAU, 20, color, 3.0 * (1.0 - ratio))
 		if bool(impact.get(&"electric_area_primary", false)):
 			_draw_electric_area(
 				position,
@@ -124,6 +137,7 @@ func _on_actor_damaged(
 		return
 	var is_player: bool = actor.is_in_group(&"player")
 	var lethal: bool = bool(context.get(&"lethal", false))
+	set_process(true)
 	var intensity: float = clampf(total_damage / float(profile.reference_damage), 0.35, 1.6)
 	var direction: Vector2 = context.get(&"impact_direction", Vector2.RIGHT)
 	if direction.is_zero_approx():
@@ -137,6 +151,7 @@ func _on_actor_damaged(
 		&"remaining": float(profile.impact_lifetime_seconds),
 		&"lifetime": float(profile.impact_lifetime_seconds),
 		&"intensity": intensity,
+		&"lethal": lethal,
 			&"color": color,
 			&"radius_multiplier": float(context.get(&"impact_radius_multiplier", 1.0)),
 			&"ray_multiplier": float(context.get(&"impact_ray_multiplier", 1.0)),
@@ -160,6 +175,8 @@ func _on_actor_damaged(
 		1.0
 	)
 	peak_active_impacts = maxi(peak_active_impacts, impacts.size())
+	var kick := direction.normalized() * float(profile.directional_kick_pixels) * (1.8 if lethal else 1.0) * maxf(0.0, float(context.get(&"camera_trauma_multiplier", 1.0)))
+	if kick.length_squared() > directional_kick.length_squared(): directional_kick = kick
 	queue_redraw()
 
 
@@ -206,13 +223,14 @@ func _update_camera_offset() -> void:
 	if not is_instance_valid(camera) or profile == null:
 		return
 	if trauma <= 0.001:
-		camera.offset = camera.offset.lerp(Vector2.ZERO, 0.45)
+		camera.offset = directional_kick.limit_length(float(profile.maximum_camera_offset))
 		return
 	var amplitude: float = trauma * trauma * float(profile.maximum_camera_offset)
-	camera.offset = Vector2(
+	var shake := Vector2(
 		sin(elapsed * 71.0) + sin(elapsed * 43.0) * 0.45,
 		cos(elapsed * 67.0) + cos(elapsed * 37.0) * 0.45
 	).normalized() * amplitude
+	camera.offset = (shake + directional_kick).limit_length(float(profile.maximum_camera_offset))
 
 
 func _on_actor_tree_exited(actor_id: int) -> void:

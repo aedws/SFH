@@ -387,14 +387,13 @@ func _update_occlusion_rays(
 		occlusion_distances.fill(maximum_screen_distance)
 		return
 	var space_state := world.direct_space_state
+	var query := PhysicsRayQueryParameters2D.create(origin, origin, WALL_COLLISION_MASK)
+	query.collide_with_areas = false
 	for ray_index in range(MAX_OCCLUSION_RAYS):
 		var angle := TAU * float(ray_index) / float(MAX_OCCLUSION_RAYS)
 		var direction := Vector2.from_angle(angle)
 		var destination := origin + direction * maximum_world_distance
-		var query := PhysicsRayQueryParameters2D.create(
-			origin, destination, WALL_COLLISION_MASK
-		)
-		query.collide_with_areas = false
+		query.to = destination
 		var hit := space_state.intersect_ray(query)
 		var hit_position: Vector2 = hit.get(&"position", destination)
 		occlusion_distances[ray_index] = origin.distance_to(hit_position) * screen_scale
@@ -403,17 +402,8 @@ func _update_occlusion_rays(
 func _world_rect_to_screen(world_rect: Rect2, canvas_transform: Transform2D) -> Rect2:
 	if world_rect.size == Vector2.ZERO:
 		return Rect2()
-	var corners := PackedVector2Array([
-		canvas_transform * world_rect.position,
-		canvas_transform * Vector2(world_rect.end.x, world_rect.position.y),
-		canvas_transform * world_rect.end,
-		canvas_transform * Vector2(world_rect.position.x, world_rect.end.y),
-	])
-	var minimum := corners[0]
-	var maximum := corners[0]
-	for corner in corners:
-		minimum.x = minf(minimum.x, corner.x)
-		minimum.y = minf(minimum.y, corner.y)
-		maximum.x = maxf(maximum.x, corner.x)
-		maximum.y = maxf(maximum.y, corner.y)
-	return Rect2(minimum, maximum - minimum)
+	# Equivalent affine AABB, without allocating four-corner arrays per room/frame.
+	var center := canvas_transform * world_rect.get_center()
+	var half_size := world_rect.size * 0.5
+	var extent := canvas_transform.x.abs() * half_size.x + canvas_transform.y.abs() * half_size.y
+	return Rect2(center - extent, extent * 2.0)

@@ -23,12 +23,19 @@ var last_position := Vector2.ZERO
 var distance_moved := 0.0
 var motion_checkpoint := Vector2.ZERO
 var motion_at := 0.0
+var capture_seconds := 0.0
+var capture_count := 0
+var capture_max_ms := 0.0
+var capture_at := 0.0
+var slow_frame_events: Array[Dictionary] = []
+var driver_max_ms := 0.0
 
 func _init() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--tier="): tier = arg.trim_prefix("--tier=")
 		if arg.begins_with("--seconds="): duration = float(arg.trim_prefix("--seconds="))
 		if arg.begins_with("--output="): output_dir = arg.trim_prefix("--output=")
+		if arg.begins_with("--capture-seconds="): capture_seconds = maxf(0.0, float(arg.trim_prefix("--capture-seconds=")))
 	isolation = load("res://game/tests/support/save_test_isolation.gd").new()
 	node_added.connect(isolation.isolate)
 	_run.call_deferred()
@@ -78,6 +85,8 @@ func _run() -> void:
 		if int(visibility.get(&"room_index", -1)) >= 0: visits[int(visibility.room_index)] = true
 		else: corridor_frames += 1
 		var encounter: Dictionary = game.room_encounter_system.get_snapshot()
+		if samples.back() > 33.334 and slow_frame_events.size() < 16:
+			slow_frame_events.append({"at_seconds": elapsed, "frame_ms": samples.back(), "cpu_process_ms": Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, "cpu_physics_ms": Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0, "room": visibility.get(&"room_index", -1), "enemies": encounter.get(&"active_enemy_count", 0), "nodes": Performance.get_monitor(Performance.OBJECT_NODE_COUNT)})
 		if int(encounter.get(&"active_enemy_count", 0)) > 0: combat_frames += 1
 		if position.distance_to(motion_checkpoint) > 24.0:
 			motion_checkpoint = position
@@ -101,18 +110,29 @@ func _run() -> void:
 		if elapsed >= report_at:
 			print("RENDERED_SOAK_SAMPLE %s" % JSON.stringify({"wall_seconds": snappedf(elapsed, 0.1), "game_seconds": game.elapsed_time, "nodes": Performance.get_monitor(Performance.OBJECT_NODE_COUNT), "static_bytes": Performance.get_monitor(Performance.MEMORY_STATIC), "rooms": visits.size(), "combat_frames": combat_frames, "distance": distance_moved}))
 			report_at = elapsed + 60.0
+		if capture_seconds > 0.0 and elapsed >= capture_at:
+			capture_at = elapsed + capture_seconds
 			await RenderingServer.frame_post_draw
+			var capture_start := Time.get_ticks_usec()
 			root.get_texture().get_image().save_png(output_dir.path_join("%s-latest.png" % tier))
+			capture_count += 1
+			capture_max_ms = maxf(capture_max_ms, float(Time.get_ticks_usec() - capture_start) / 1000.0)
+		driver_max_ms = maxf(driver_max_ms, float(Time.get_ticks_usec() - now) / 1000.0)
 	_release_inputs()
 	var actual_seconds := float(Time.get_ticks_usec() - start) / 1000000.0
 	var frames_drawn := Engine.get_frames_drawn() - drawn_before
 	var sum := 0.0
-	for value in samples: sum += value
+	var slow_frames := 0
+	for value in samples:
+		sum += value
+		if value > 33.334: slow_frames += 1
 	samples.sort()
 	var report := {
 		"tier": tier, "seed": 8675309, "wall_seconds": actual_seconds, "game_seconds": game.elapsed_time,
 		"display_server": DisplayServer.get_name(), "gpu": RenderingServer.get_video_adapter_name(),
 		"rendering_method": RenderingServer.get_current_rendering_method(), "frames_drawn": frames_drawn,
+		"frames_over_33_ms": slow_frames, "capture_count": capture_count, "capture_max_ms": capture_max_ms,
+		"slow_frame_events_first_16": slow_frame_events, "driver_max_ms": driver_max_ms,
 		"average_frame_ms": sum / maxi(1, samples.size()), "p95_frame_ms": samples[int(samples.size() * 0.95)], "peak_frame_ms": samples.back(),
 		"max_nodes": max_nodes, "max_static_bytes": max_static_bytes, "visited_rooms": visits.size(),
 		"corridor_frames": corridor_frames, "combat_frames": combat_frames, "distance_moved": distance_moved,
