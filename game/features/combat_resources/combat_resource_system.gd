@@ -18,6 +18,7 @@ var spawned_pickups: Dictionary = {&"energy": 0, &"health": 0}
 var collected_pickups: Dictionary = {&"energy": 0, &"health": 0}
 var random := RandomNumberGenerator.new()
 var recovery_multiplier: float = 1.0
+var regeneration_idle_seconds := 0.0
 
 
 func configure(
@@ -46,6 +47,7 @@ func configure(
 	loadout = new_loadout
 	config = new_config
 	current_energy = float(config.get("starting_energy"))
+	regeneration_idle_seconds = 0.0
 	charges.clear()
 	recharge_remaining.clear()
 	for skill: Resource in loadout.get("skills"):
@@ -85,6 +87,8 @@ func consume_for_skill(slot_index: int) -> bool:
 		return false
 	var skill: Resource = loadout.get("skills")[slot_index]
 	current_energy = maxf(0.0, current_energy - float(skill.get("energy_cost")))
+	if float(skill.get("energy_cost")) > 0.0:
+		regeneration_idle_seconds = 0.0
 	charges[slot_index] -= 1
 	if recharge_remaining[slot_index] <= 0.0:
 		recharge_remaining[slot_index] = float(skill.get("charge_recovery_seconds"))
@@ -93,9 +97,17 @@ func consume_for_skill(slot_index: int) -> bool:
 
 
 func advance(delta: float) -> void:
-	if loadout == null or delta <= 0.0:
+	if loadout == null or not is_finite(delta) or delta <= 0.0:
 		return
 	var changed := false
+	var policy: Resource = config.get("regeneration_policy")
+	if policy != null:
+		var previous := current_energy
+		var amount := float(policy.call(&"recovered_amount", regeneration_idle_seconds, delta))
+		current_energy = minf(float(config.get("maximum_energy")), current_energy + maxf(0.0, amount))
+		# Limit presentation notifications to displayed AP changes, not each frame.
+		changed = floori(previous) != floori(current_energy)
+	regeneration_idle_seconds += delta
 	for slot_index in charges.size():
 		var skill: Resource = loadout.get("skills")[slot_index]
 		var maximum := int(skill.get("maximum_charges"))
@@ -116,7 +128,7 @@ func advance(delta: float) -> void:
 
 
 func restore_energy(amount: float) -> float:
-	if config == null or amount <= 0.0:
+	if config == null or not is_finite(amount) or amount <= 0.0:
 		return 0.0
 	var previous := current_energy
 	current_energy = minf(float(config.get("maximum_energy")), current_energy + amount)
@@ -171,7 +183,8 @@ func capture_skill_slot_state(slot_index: int) -> Dictionary:
 
 
 func export_runtime_state() -> Dictionary:
-	return {&"energy": current_energy, &"charges": charges.duplicate(), &"recharge": recharge_remaining.duplicate()}
+	return {&"energy": current_energy, &"charges": charges.duplicate(), &"recharge": recharge_remaining.duplicate(),
+		&"regeneration_idle_seconds": regeneration_idle_seconds}
 
 
 func validate_runtime_state(state: Dictionary) -> PackedStringArray:
@@ -179,6 +192,9 @@ func validate_runtime_state(state: Dictionary) -> PackedStringArray:
 		return PackedStringArray(["잘못된 스킬 자원 스냅샷"])
 	if state.charges.size() != charges.size() or state.recharge.size() != charges.size() or not is_finite(float(state.get(&"energy", NAN))):
 		return PackedStringArray(["스킬 자원 슬롯 불일치"])
+	var idle := float(state.get(&"regeneration_idle_seconds", 0.0))
+	if not is_finite(idle) or idle < 0.0:
+		return PackedStringArray(["잘못된 AP 회복 대기 시간"])
 	for index in state.charges.size():
 		if state.charges[index] < 0 or not is_finite(state.recharge[index]) or state.recharge[index] < 0:
 			return PackedStringArray(["잘못된 스킬 자원 값"])
@@ -191,6 +207,7 @@ func restore_runtime_state(state: Dictionary) -> bool:
 	current_energy = clampf(float(state.energy), 0, float(config.get("maximum_energy")))
 	charges = state.charges.duplicate()
 	recharge_remaining = state.recharge.duplicate()
+	regeneration_idle_seconds = float(state.get(&"regeneration_idle_seconds", 0.0))
 	_emit_changed()
 	return true
 
@@ -229,6 +246,8 @@ func get_snapshot() -> Dictionary:
 		&"spawned_pickups": spawned_pickups.duplicate(true),
 		&"collected_pickups": collected_pickups.duplicate(true),
 		&"recovery_multiplier": recovery_multiplier,
+		&"regeneration_idle_seconds": regeneration_idle_seconds,
+		&"regeneration_enabled": config != null and config.get("regeneration_policy") != null and bool(config.get("regeneration_policy").get("enabled")),
 	}
 
 

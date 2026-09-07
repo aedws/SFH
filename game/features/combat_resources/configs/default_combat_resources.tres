@@ -1,9 +1,16 @@
-[gd_resource type="Resource" script_class="CombatResourceConfig" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CombatResourceConfig" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://game/features/combat_resources/combat_resource_config.gd" id="1_config"]
+[ext_resource type="Script" path="res://game/features/combat_resources/energy_regeneration_policy.gd" id="2_regeneration"]
+
+[sub_resource type="Resource" id="Resource_regeneration"]
+script = ExtResource("2_regeneration")
+delay_after_spend = 1.0
+energy_per_second = 10.0
 
 [resource]
 script = ExtResource("1_config")
+regeneration_policy = SubResource("Resource_regeneration")
 maximum_energy = 100.0
 starting_energy = 100.0
 energy_drop_chance = 0.55

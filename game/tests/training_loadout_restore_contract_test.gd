@@ -78,6 +78,14 @@ func _run() -> void:
 	var skills: Node = game.training_combat_skill_system
 	_check(game.skill_binding_service.assign_skill(&"blink", &"combat_skill_9").success, "user remapped key")
 	var original_bindings: Dictionary = game.skill_binding_service.get_snapshot()
+	_check(service.call(&"get_loadout_snapshot").socket_catalog.is_empty(), "unowned catalog hidden")
+	# Explicit owned fixture, not a grant of every catalog entry to the player.
+	for id in [&"arc_rune", &"capacitor_core"]:
+		var item := InventoryItemDefinition.new()
+		item.item_id = id
+		item.display_name = String(id)
+		item.item_type = &"rune" if id == &"arc_rune" else &"core"
+		_check(game.inventory_system.add_item(item) != &"", "owned fixture")
 	var saved_gear: Variant = _encoded(game.equipment_system)
 	var saved_bag: Variant = _encoded(game.inventory_system)
 	var saved_skills := _skill_ids(skills)
@@ -86,6 +94,7 @@ func _run() -> void:
 	_check(not skills.call(&"try_activate", 0), "inactive skill input rejected")
 	game.call(&"_cycle_hub_training")
 	await process_frame
+	_check(not service.call(&"toggle_training_socket", &"phase_artifact").success, "unowned asset rejected")
 	_check(game.desktop_progress.get_snapshot().temporary_loadout, "native checkpoint suspended")
 	# Inspect real child button bounds, not only the outer panel.
 	var original_size := root.content_scale_size

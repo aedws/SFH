@@ -43,6 +43,7 @@ var confirmation_visible := false
 var confirm_buttons: Array[Button] = []
 var layout_deferred_pending := false
 var open_layout_ready := false
+var runtime_item_actions: Array[Node] = []
 
 
 func _ready() -> void:
@@ -64,6 +65,21 @@ func configure(bag: Node, gear: Node = null) -> void:
 	session.configure(bag, gear)
 	session.begin()
 	_bind_draft()
+
+
+func register_runtime_item_actions(provider: Node) -> bool:
+	if not is_instance_valid(provider) or not provider.has_method(&"supports_inventory_item") or not provider.has_method(&"perform_inventory_item_action"):
+		return false
+	if provider not in runtime_item_actions:
+		runtime_item_actions.append(provider)
+	return true
+
+
+func _runtime_action_provider(entry: Dictionary) -> Node:
+	for provider in runtime_item_actions:
+		if is_instance_valid(provider) and provider.call(&"supports_inventory_item", StringName(entry.get(&"item_id", &""))):
+			return provider
+	return null
 
 
 func _input(event: InputEvent) -> void:
@@ -392,7 +408,7 @@ func _refresh() -> void:
 	status_label.text = session.error_message if not session.error_message.is_empty() else "선택 후 R 회전 · 세팅은 저장 시 적용 · 장비는 태그에 맞춰 장착"
 	rotate_button.text = "선택 아이템 회전 / %s" % _action_binding_label(&"equip_field_loot", "R")
 	rotate_button.disabled = selected_entry.is_empty() or not bool(selected_entry.get(&"can_rotate", false))
-	action_button.disabled = selected_entry.is_empty() or session.equipment == null or selected_entry.get(&"item_type") not in [&"weapon", &"armor", &"module", &"part"]
+	action_button.disabled = selected_entry.is_empty() or (_runtime_action_provider(selected_entry) == null and (session.equipment == null or selected_entry.get(&"item_type") not in [&"weapon", &"armor", &"module", &"part"]))
 	unequip_button.disabled = session.equipment == null
 	_layout()
 
@@ -455,7 +471,12 @@ func _show_selected_entry(entry: Dictionary) -> void:
 	var orientation := "회전됨" if bool(entry.get(&"rotated", false)) else "기본 방향"
 	selected_description.text = "%d×%d칸 · %s · %s\n\n%s" % [footprint.x, footprint.y, kind_label, orientation, entry[&"description"]]
 	action_button.text = "모듈 / 파츠 장착" if entry[&"item_type"] in [&"module", &"part"] else "선택 슬롯에 장착"
+	action_button.tooltip_text = ""
 	action_button.disabled = session.equipment == null or entry[&"item_type"] not in [&"weapon", &"armor", &"module", &"part"]
+	if _runtime_action_provider(entry) != null:
+		action_button.text = "런 소켓에 즉시 장착"
+		action_button.disabled = false
+		action_button.tooltip_text = "가방 편집을 먼저 저장/취소한 후 즉시 적용합니다. 무기는 현재 무기, 스킬은 첫 장착 스킬에 귀속됩니다."
 	rotate_button.disabled = not bool(entry.get(&"can_rotate", false))
 
 
@@ -475,6 +496,19 @@ func _rotate_selected_item() -> void:
 
 func _apply_selection() -> void:
 	if selected_entry.is_empty():
+		return
+	var provider := _runtime_action_provider(selected_entry)
+	if provider != null:
+		var item_id := StringName(selected_entry.get(&"item_id", &""))
+		request_leave(func():
+			if not is_instance_valid(provider):
+				status_label.text = "사용 가능한 런 소켓이 없습니다."
+				return
+			var result: Dictionary = provider.call(&"perform_inventory_item_action", item_id)
+			session.begin()
+			_bind_draft()
+			status_label.text = "런 소켓 장착 완료" if result.get(&"success", false) else "장착 불가 · %s" % result.get(&"reason", "")
+		)
 		return
 	var id: StringName = selected_entry[&"instance_id"]
 	var ok := bool(session.install_item(id, selected_slot) if selected_entry[&"item_type"] in [&"module", &"part"] else session.equip_item(id, selected_slot))

@@ -1131,6 +1131,8 @@ func _verify_combat_resource_modules() -> bool:
 	var loadout: Resource = load(COMBAT_SKILL_LOADOUT_PATH)
 	var config: Resource = load(COMBAT_RESOURCE_CONFIG_PATH).duplicate(true)
 	config.set("starting_energy", 50.0)
+	# Drop/charge contract remains isolated; natural AP has its own policy tests.
+	config.set("regeneration_policy", null)
 	config.set("energy_drop_chance", 1.0)
 	config.set("health_drop_chance", 1.0)
 	var resources := (load(COMBAT_RESOURCE_SCENE_PATH) as PackedScene).instantiate()

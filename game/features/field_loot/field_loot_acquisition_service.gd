@@ -99,7 +99,7 @@ func configure(
 	)
 	session_socket_provider = (
 		new_session_socket_provider
-		if _supports(new_session_socket_provider, [&"socket_item", &"get_snapshot"])
+		if _supports(new_session_socket_provider, [&"acquire_items", &"get_snapshot"])
 		else null
 	)
 	if not comparison_service.configure(
@@ -205,6 +205,14 @@ func acquire_focused() -> bool:
 	if not is_instance_valid(focused_drop):
 		return false
 	var comparison: Dictionary = focused_drop.get("comparison")
+	var item_id := StringName(comparison[&"item_id"])
+	if _is_session_socket_item(item_id) and is_instance_valid(session_socket_provider):
+		# Prepare before recording acquisition. A full bag leaves loot in the world.
+		last_socket_result = session_socket_provider.call(&"acquire_items", item_id, int(comparison.get(&"quantity", 1)))
+		if not bool(last_socket_result.get(&"success", false)):
+			panel.show_acquisition_error("소켓/가방 공간 부족 · 전리품은 바닥에 유지됩니다.")
+			return false
+		return _finalize_focused_acquisition(&"session_socket")
 	last_acquisition_result = inventory_service.acquire(StringName(comparison[&"item_id"]), int(comparison.get(&"quantity", 1)))
 	if not bool(last_acquisition_result.get(&"success", false)):
 		panel.show_acquisition_error(last_acquisition_result.get(&"reason", "획득 실패"))
@@ -270,9 +278,9 @@ func _finalize_focused_acquisition(mode: StringName, equip_result: Dictionary = 
 	if not equip_result.is_empty():
 		entry[&"previous_item_name"] = equip_result.get(&"previous_name", "")
 		entry[&"previous_destination"] = equip_result.get(&"previous_destination", &"")
-	last_socket_result.clear()
-	if _is_session_socket_item(item_id) and is_instance_valid(session_socket_provider):
-		last_socket_result = session_socket_provider.call(&"socket_item", item_id)
+	if mode != &"session_socket":
+		last_socket_result.clear()
+	else:
 		entry[&"session_socket_result"] = last_socket_result.duplicate(true)
 	acquired_items[item_id] = entry
 	var acquired_drop := focused_drop
@@ -283,7 +291,7 @@ func _finalize_focused_acquisition(mode: StringName, equip_result: Dictionary = 
 	interaction_availability_changed.emit(false, "")
 	total_acquired += 1
 	loot_acquired.emit(item_id, quantity, get_snapshot())
-	if bool(last_socket_result.get(&"success", false)):
+	if bool(last_socket_result.get(&"success", false)) and last_socket_result.get(&"reason", &"") != &"stored_in_bag":
 		loot_socketed.emit(item_id, last_socket_result.duplicate(true), get_snapshot())
 	acquired_drop.queue_free()
 	return true

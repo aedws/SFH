@@ -28,6 +28,10 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+$policyOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/provisional_policy_contract_test.gd" 2>&1
+$policyStatus = $LASTEXITCODE
+$policyOutput | ForEach-Object { Write-Output $_ }
+if ($policyStatus -ne 0 -or ($policyOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($policyOutput -match 'PROVISIONAL_POLICY_OK')) { exit 1 }
 $feedbackOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/frame_feedback_contract_test.gd" 2>&1
 $feedbackStatus = $LASTEXITCODE
 $feedbackOutput | ForEach-Object { Write-Output $_ }

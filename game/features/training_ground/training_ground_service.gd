@@ -36,7 +36,7 @@ func configure_checkpoint_provider(provider: Node) -> bool:
 func configure_socket_runtime(provider: Node) -> bool:
 	if loadout_service == null or not is_instance_valid(provider):
 		return false
-	for method in [&"socket_item", &"unsocket", &"get_catalog_items", &"get_snapshot"]:
+	for method in [&"socket_item", &"socket_owned_item", &"unsocket", &"get_catalog_items", &"get_owned_catalog_items", &"get_snapshot"]:
 		if not provider.has_method(method):
 			return false
 	if not provider.has_signal(&"sockets_changed"):
@@ -50,7 +50,7 @@ func configure_socket_runtime(provider: Node) -> bool:
 	return true
 
 
-func toggle_training_socket(item_id: StringName) -> Dictionary:
+func toggle_training_socket(item_id: StringName, requested_targets: Dictionary = {}) -> Dictionary:
 	if not _editing_active() or not is_instance_valid(socket_provider):
 		return {&"success": false, &"reason": &"training_inactive"}
 	var slots: Dictionary = socket_provider.call(&"get_snapshot").get(&"slots", {})
@@ -58,11 +58,21 @@ func toggle_training_socket(item_id: StringName) -> Dictionary:
 		for entry in slots[type]:
 			if entry.get(&"item_id", &"") == item_id:
 				return socket_provider.call(&"unsocket", type, entry.slot_index)
-	return socket_provider.call(&"socket_item", item_id)
+	return socket_provider.call(&"socket_owned_item" if config.owned_sockets_only else &"socket_item", item_id, requested_targets)
 
 
 func request_stop() -> void:
 	stop_requested.emit()
+
+
+func supports_inventory_item(item_id: StringName) -> bool:
+	return _editing_active() and is_instance_valid(socket_provider) and bool(socket_provider.call(&"supports_inventory_item", item_id))
+
+
+func perform_inventory_item_action(item_id: StringName) -> Dictionary:
+	if not supports_inventory_item(item_id):
+		return {&"success": false, &"reason": &"training_inactive"}
+	return socket_provider.call(&"socket_owned_item", item_id)
 
 
 func _editing_active() -> bool:
@@ -201,7 +211,8 @@ func get_loadout_snapshot() -> Dictionary:
 		combat_skill_provider.call(&"get_skill_states")
 		if is_instance_valid(combat_skill_provider) else []
 	)
-	result[&"socket_catalog"] = socket_provider.call(&"get_catalog_items") if is_instance_valid(socket_provider) else []
+	result[&"socket_catalog"] = socket_provider.call(&"get_owned_catalog_items" if config.owned_sockets_only else &"get_catalog_items") if is_instance_valid(socket_provider) else []
+	result[&"owned_sockets_only"] = config.owned_sockets_only if config != null else true
 	result[&"sockets"] = socket_provider.call(&"get_snapshot") if is_instance_valid(socket_provider) else {}
 	return result
 
