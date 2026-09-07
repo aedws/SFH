@@ -144,7 +144,8 @@ func spawn_enemy_drops(world_position: Vector2) -> int:
 	var requests: Array[Dictionary] = []
 	if random.randf() <= float(config.get("energy_drop_chance")):
 		requests.append({&"resource_id": &"energy", &"amount": config.get("energy_drop_amount")})
-	if random.randf() <= float(config.get("health_drop_chance")):
+	var health_allowed := player_target.has_method(&"can_receive_healing") and bool(player_target.call(&"can_receive_healing", &"drop"))
+	if random.randf() <= float(config.get("health_drop_chance")) and health_allowed:
 		requests.append({&"resource_id": &"health", &"amount": config.get("health_drop_amount")})
 	if requests.is_empty() and bool(config.get("guarantee_one_drop")):
 		requests.append({&"resource_id": &"energy", &"amount": config.get("energy_drop_amount")})
@@ -277,7 +278,7 @@ func _on_pickup_collected(resource_id: StringName, amount: float) -> void:
 		applied = restore_energy(amount)
 	elif resource_id == &"health" and is_instance_valid(player_target):
 		var before: Dictionary = player_target.call(&"get_health_snapshot")
-		player_target.call(&"heal", amount * recovery_multiplier)
+		player_target.call(&"heal", amount * recovery_multiplier, &"drop")
 		var after: Dictionary = player_target.call(&"get_health_snapshot")
 		applied = float(after.get(&"current", 0.0)) - float(before.get(&"current", 0.0))
 	collected_pickups[resource_id] = int(collected_pickups.get(resource_id, 0)) + 1

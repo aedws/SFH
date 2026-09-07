@@ -79,9 +79,10 @@ func prepare_choices(run_level: int, choice_count: int = 3) -> Array[Dictionary]
 		var buff: Resource = candidates[(start_index + offset) % candidates.size()]
 		var current_buff_id: StringName = buff.get("buff_id")
 		offered_buff_ids.append(String(current_buff_id))
-		result.append(buff.call(
-			&"choice_snapshot", int(selected_stacks.get(current_buff_id, 0))
-		))
+		var choice: Dictionary = buff.call(&"choice_snapshot", int(selected_stacks.get(current_buff_id, 0)))
+		if float(buff.get("heal_on_apply")) > 0.0 and player_target.has_method(&"can_receive_healing") and not player_target.call(&"can_receive_healing", &"buff"):
+			choice[&"description"] = "키트 전용 정책: 아래 효과 중 HP 회복은 미적용.\n" + String(choice.get(&"description", ""))
+		result.append(choice)
 	choices_prepared.emit(run_level, result)
 	return result
 
@@ -99,7 +100,7 @@ func select_buff(buff_id: StringName) -> bool:
 	offered_buff_ids.clear()
 	_apply_aggregated_modifiers()
 	if float(buff.get("heal_on_apply")) > 0.0 and player_target.has_method(&"heal"):
-		player_target.call(&"heal", float(buff.get("heal_on_apply")))
+		player_target.call(&"heal", float(buff.get("heal_on_apply")), &"buff")
 	var snapshot := get_snapshot()
 	snapshot[&"last_selected_buff_id"] = buff_id
 	buff_applied.emit(snapshot)

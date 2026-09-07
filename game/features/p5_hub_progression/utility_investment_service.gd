@@ -75,6 +75,24 @@ func settle_run(_extracted: bool) -> Dictionary:
 	return {&"expired": expired, &"persistent_grant": {}}
 
 
+func use_healing(utility_id: StringName, patient: Node, multiplier: float = 1.0) -> Dictionary:
+	var item := _find(utility_id)
+	if not is_instance_valid(patient) or not patient.has_method(&"can_receive_healing") or not patient.has_method(&"get_health_snapshot") or not patient.has_method(&"heal"):
+		return {&"success": false, &"reason": "회복 대상 없음"}
+	var health: Dictionary = patient.call(&"get_health_snapshot")
+	var current := float(health.get(&"current", 0.0))
+	var amount := float(item.get(&"effect_value", 0.0)) * multiplier
+	if item.get(&"effect_id", &"") != &"heal" or not is_finite(amount) or amount <= 0.0 or current <= 0.0 or current >= float(health.get(&"maximum", 0.0)) or not patient.call(&"can_receive_healing", &"consumable"):
+		return {&"success": false, &"reason": "회복할 수 없는 상태"}
+	var result := use(utility_id, &"health_below_max")
+	if not bool(result.get(&"success", false)):
+		return result
+	patient.call(&"heal", amount, &"consumable")
+	var after: Dictionary = patient.call(&"get_health_snapshot")
+	result[&"healed"] = maxf(0.0, float(after.get(&"current", current)) - current)
+	return result
+
+
 func get_snapshot() -> Dictionary:
 	return {&"selected": selected.duplicate(true), &"active": active_quantities.duplicate(true),
 		&"active_run_id": active_run_id, &"investment": get_investment_context(),

@@ -2385,6 +2385,15 @@ func _assemble_game() -> bool:
 
 
 func _apply_consumable_loadout() -> void:
+	var old_button := health_bar.get_parent().get_node_or_null("MedkitButton")
+	if old_button != null:
+		old_button.free()
+	if is_instance_valid(p5_hub_progression_service) and is_instance_valid(player) and p5_hub_progression_service.has_method(&"use_healing_utility"):
+		var kit_button := Button.new()
+		kit_button.set_script(load("res://game/features/p5_hub_progression/medkit_button.gd"))
+		kit_button.name = "MedkitButton"
+		health_bar.get_parent().add_child(kit_button)
+		kit_button.call(&"configure", player, p5_hub_progression_service, float(active_contract.get(&"player_modifiers", {}).get(&"recovery_multiplier", 1.0)))
 	if hub_economy_system == null or player == null:
 		return
 	var effects: Dictionary = hub_economy_system.call(
@@ -2395,7 +2404,7 @@ func _apply_consumable_loadout() -> void:
 		player.call(&"set_runtime_modifier_source", &"consumable_loadout", modifiers)
 	var healing := float(effects.get(&"heal", 0.0))
 	if healing > 0.0 and player.has_method(&"heal"):
-		player.call(&"heal", healing)
+		player.call(&"heal", healing, &"consumable")
 
 
 func _install_health_recovery() -> bool:

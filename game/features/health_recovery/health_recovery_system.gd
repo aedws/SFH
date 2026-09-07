@@ -43,6 +43,8 @@ func _process(delta: float) -> void:
 func advance(delta: float) -> float:
 	if player_target == null or config == null:
 		return 0.0
+	if player_target.has_method(&"can_receive_healing") and not player_target.call(&"can_receive_healing", &"regeneration"):
+		return 0.0
 	delay_remaining = maxf(0.0, delay_remaining - maxf(0.0, delta))
 	var health: Dictionary = player_target.call(&"get_health_snapshot")
 	var current := float(health.get(&"current", 0.0))
@@ -56,7 +58,7 @@ func advance(delta: float) -> float:
 	)
 	if healed <= 0.0:
 		return 0.0
-	player_target.call(&"heal", healed)
+	player_target.call(&"heal", healed, &"regeneration")
 	return healed
 
 
@@ -69,7 +71,7 @@ func get_snapshot() -> Dictionary:
 		&"maximum_recovery_ratio": (
 			float(config.get("maximum_recovery_ratio")) if config != null else 0.0
 		),
-		&"recovering": delay_remaining <= 0.0,
+		&"recovering": delay_remaining <= 0.0 and is_instance_valid(player_target) and player_target.has_method(&"can_receive_healing") and bool(player_target.call(&"can_receive_healing", &"regeneration")),
 		&"recovery_multiplier": recovery_multiplier,
 	}
 
