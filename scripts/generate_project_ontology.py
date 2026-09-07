@@ -17,6 +17,7 @@ CODE_MAP = ROOT / "docs" / "assets" / "code-module-map.json"
 KNOWLEDGE_MAP = ROOT / "docs" / "assets" / "knowledge-map.json"
 MILESTONE_WORKLINE = ROOT / "docs" / "design" / "current-milestone-workline.md"
 NOTION_SNAPSHOT = ROOT / "docs" / "assets" / "notion-source-snapshot.json"
+NOTION_TRACKER = ROOT / "docs" / "assets" / "notion-tracker-snapshot.json"
 OUTPUT = ROOT / "docs" / "assets" / "project-ontology.json"
 MILESTONE_ID_PATTERN = re.compile(r"^((?:BASE|P\d+)-\d+[A-Z]?)(?:\s*·\s*(.+))?$")
 
@@ -167,7 +168,7 @@ def knowledge_collections(root: dict) -> tuple[list[dict], list[dict]]:
     return objects, relations
 
 
-def enrich_source_systems(source_systems: list[dict], notion_snapshot: dict) -> list[dict]:
+def enrich_source_systems(source_systems: list[dict], notion_snapshot: dict, notion_tracker: dict) -> list[dict]:
     enriched: list[dict] = []
     edited_ms = int(notion_snapshot["root_last_edited_time"])
     notion_observed_at = datetime.fromtimestamp(edited_ms / 1000, timezone.utc).isoformat().replace("+00:00", "Z")
@@ -181,6 +182,15 @@ def enrich_source_systems(source_systems: list[dict], notion_snapshot: dict) -> 
                 "content_sha256": notion_snapshot["content_sha256"],
                 "max_age_days": 7,
                 "check": "작업 시작 전 공개 Master GDD를 다시 읽고 스냅샷을 검증합니다.",
+            }
+        elif item["id"] == "source:notion-tracker":
+            item["freshness"] = {
+                "state": "snapshot",
+                "observed_at": notion_tracker["captured_at"],
+                "revision": notion_tracker["content_sha256"][:12],
+                "content_sha256": notion_tracker["content_sha256"],
+                "max_age_days": 7,
+                "check": "트래커 전체 행을 재수집하고 GDD와 별도로 상태·수락 기준 변경을 대조합니다.",
             }
         elif item["id"] == "source:google-sheet":
             item["freshness"] = {
@@ -224,6 +234,7 @@ def generate() -> dict:
     code_map = load_json(CODE_MAP)
     knowledge_map = load_json(KNOWLEDGE_MAP)
     notion_snapshot = load_json(NOTION_SNAPSHOT)
+    notion_tracker = load_json(NOTION_TRACKER)
 
     authority = dict(registry["authority"])
     contributors = [dict(item) for item in registry.get("contributors", [])]
@@ -232,6 +243,7 @@ def generate() -> dict:
     source_systems = enrich_source_systems(
         [dict(item) for item in registry.get("source_systems", [])],
         notion_snapshot,
+        notion_tracker,
     )
     action_types = [dict(item) for item in registry.get("action_types", [])]
     lifecycle = [dict(item) for item in registry.get("lifecycle", [])]
@@ -422,7 +434,7 @@ def generate() -> dict:
     return {
         "schema_version": registry["schema_version"],
         "updated": registry["updated"],
-        "source_sha256": digest_sources(REGISTRY, CODE_MAP, KNOWLEDGE_MAP, MILESTONE_WORKLINE, NOTION_SNAPSHOT),
+        "source_sha256": digest_sources(REGISTRY, CODE_MAP, KNOWLEDGE_MAP, MILESTONE_WORKLINE, NOTION_SNAPSHOT, NOTION_TRACKER),
         "authority": authority,
         "contributors": contributors,
         "object_types": object_types,

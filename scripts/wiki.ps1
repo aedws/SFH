@@ -52,6 +52,11 @@ try {
 	& (Join-Path $PSScriptRoot "check-wiki-role-auth.ps1")
 	& (Join-Path $PSScriptRoot "check-p7-roadmap.ps1")
 	& $virtualPython (Join-Path $PSScriptRoot "snapshot_notion_source.py") --check
+	if ($LASTEXITCODE -ne 0) { throw "Notion GDD snapshot failed." }
+	& $virtualPython (Join-Path $PSScriptRoot "snapshot_notion_tracker.py")
+	if ($LASTEXITCODE -ne 0) { throw "Notion tracker snapshot failed." }
+	& $virtualPython (Join-Path $PSScriptRoot "check_notion_audit.py")
+	if ($LASTEXITCODE -ne 0) { throw "Notion/code crosswalk failed." }
 	& $virtualPython (Join-Path $PSScriptRoot "test_notion_snapshot.py")
 	if ($LASTEXITCODE -ne 0) { throw "Notion checkbox regression failed." }
     & $virtualPython -m mkdocs $Action --strict

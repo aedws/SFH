@@ -53,48 +53,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-06</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 6 · IMPROVE 11 · CHANGE 9 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 2 · IMPROVE 2 · CHANGE 2 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>4</b><small>UPDATE BUNDLES</small></span><span><b>6</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>9</b><small>CHANGE</small></span><span><b>6</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>1</b><small>UPDATE BUNDLES</small></span><span><b>2</b><small>BUILD</small></span><span><b>2</b><small>IMPROVE</small></span><span><b>2</b><small>CHANGE</small></span><span><b>2</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 4</small><b>개발 환경 · WSL 수동 켜기와 끄기</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 1</small><b>기획 기준 현행화 · 코드 대조와 다음 작업 편성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 개발하지 않을 때 WSL이 계속 메모리를 점유하던 자동 실행을 없애고, 필요한 때만 켜는 방식으로 변경했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>러너 켜기·끄기·상태 조회 명령과 사용자 폴더 바로가기를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>빌드 중에는 종료를 거부하고, 상태 조회는 WSL을 깨우지 않습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>재설치·부팅·로그인 때 자동 시작하지 않도록 수동 작업만 등록합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>WSL을 종료해도 매분 다시 켜지던 유지 작업의 자동 트리거를 제거했습니다. 과금 설정과 게임 규칙은 변경하지 않습니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>재미 검수 · 한 판의 다섯 순간 제안</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 첫 교전·장비·강화·탈출·재도전의 개선 제안과 인간 플레이 검수 계획을 문서화했습니다. 게임 변경은 아직 적용하지 않았습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 0</h3><p>제안서 작성만 진행했습니다. 게임 기능 구현은 포함하지 않습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>기능 검사와 재미 판단을 분리하고 순간별 목표·관찰 기준·승인 순서를 정리했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>역할 작업실·검색·문서 노드맵에서 제안서를 찾도록 연결했습니다. 수치·보상 변경은 별도 승인 대상입니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>현재 게임과 확정 CSV를 유지합니다.</p></div>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>배포 효율 · 필요한 검사와 검증된 산출물 재사용</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 문서 수정 때 게임을 다시 배포하지 않고, 게임 변경은 동일 소스와 파일 해시가 검증된 Web 산출물을 재사용합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>변경 파일 분류와 소스 트리·파일 SHA-256 기반 재사용 검증을 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>오래된 PR 실행 취소, 문서 전용 게임 빌드 생략, 위키 데이터 사전 검증을 적용했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 3</h3><p>Windows 패키징은 main에서 실행하고, 백업·산출물 정리를 배포 작업에 통합했습니다. 전용 WSL2 Linux 러너와 온라인 상태 자동 확인을 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>선행 검사 실패가 생략된 성공으로 보이지 않도록 최종 build 판정을 유지합니다.</p></div>
-        <p class="sfh-intent"><b>검증</b><span>게임·E2E·위키·다운로드 검증을 유지하면서 정상 PR+배포의 hosted 사용 분 추정이 24분에서 6분으로 줄었습니다. 과금 설정은 변경하지 않았습니다.</span></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>FUN QA · 조작 피드백과 진입 가독성</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 모바일 스킬 글자 겹침, 잘못된 대시 키 표시, 대상 없는 공격의 무반응, 거점 게이트 혼선과 과밀한 최종 투입 화면을 플레이어 인식 기준으로 바로잡았습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 3</h3><p>대상 없음 피드백과 거점 게이트 방향·거리 안내를 추가하고, 온톨로지 입력 해시를 운영체제와 무관하게 고정했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 6</h3><p>모바일 버튼 압축, 이동 시각 반응 강화, 작전 카드 축약, 테스트·시즌 상세 접기, 로드아웃 단말 명칭, 완료형 닫기 문구를 적용했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 4</h3><p>대시 HUD가 현재 키 설정을 따라가고, 전체 이름은 툴팁에 보존하며, 일반 출격과 개발 정보를 분리했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>SHIFT/Space 불일치, 모바일 스킬명 침범, 좌클릭 무반응 오인과 CI 줄바꿈 해시 오판정을 재발 테스트로 고정했습니다.</p></div>
+        <div class="sfh-summary"><strong>무엇이 변했나 · 오래된 기획 백업 대신 최신 원본과 작업 목록을 연결하고, 이미 구현된 것과 새 요구의 차이를 분리했습니다. 게임 규칙은 변경하지 않았습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>기획 작업 스냅샷과 코드·검사 근거 대조표를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>기획 상태와 구현 상태를 분리하고, 충돌 판단과 의존성별 작업 순서를 개발자 작업실에 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>진행도 기준과 최신 원본 링크를 현행화했습니다. 상세 산정·수락 조건은 팀 로그인 후 확인합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>백업본을 최신 원본으로 읽던 연결과 상위 페이지 수정을 본문 변경으로 오판하던 수집 범위를 수정했습니다. 타게팅 등 게임 차이는 후속 작업으로 등록했습니다.</p></div>
       </div>
     </details>
   </div>

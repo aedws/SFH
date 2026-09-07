@@ -10,8 +10,8 @@ import pathlib
 import sys
 import urllib.request
 
-PAGE_ID = "3ce5b728-0040-81bf-a94f-e42e4ed48767"
-PAGE_URL = "https://wobbly-pawpaw-1ff.notion.site/Master-GDD-2026-09-02-04-14-00-3ce5b728004081bfa94fe42e4ed48767"
+PAGE_ID = "3d35b728-0040-81eb-a698-e9a00f6ec0ed"
+PAGE_URL = "https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed"
 ENDPOINT = "https://www.notion.so/api/v3/loadCachedPageChunk"
 
 
@@ -50,19 +50,53 @@ def _checked(properties: object) -> bool | None:
     raise ValueError(f"unknown Notion checkbox encoding: {value!r}")
 
 
-def fetch_snapshot() -> dict:
-    body = json.dumps({
-        "pageId": PAGE_ID, "limit": 100, "cursor": {"stack": []},
-        "chunkNumber": 0, "verticalColumns": False,
-    }).encode("utf-8")
+def request_json(endpoint: str, payload: dict) -> dict:
+    body = json.dumps(payload).encode("utf-8")
     request = urllib.request.Request(
-        ENDPOINT, data=body, headers={"Content-Type": "application/json"}, method="POST"
+        endpoint, data=body, headers={"Content-Type": "application/json"}, method="POST"
     )
     with urllib.request.urlopen(request, timeout=30) as response:
-        payload = json.load(response)
-    raw_blocks = payload.get("recordMap", {}).get("block", {})
+        return json.load(response)
+
+
+def fetch_snapshot() -> dict:
+    raw_blocks: dict = {}
+    cursor = {"stack": []}
+    seen_cursors: set[str] = set()
+    for chunk in range(100):
+        payload = request_json(ENDPOINT, {
+            "pageId": PAGE_ID, "limit": 100, "cursor": cursor,
+            "chunkNumber": chunk, "verticalColumns": False,
+        })
+        raw_blocks.update(payload.get("recordMap", {}).get("block", {}))
+        cursor = payload.get("cursor", {"stack": []})
+        if not isinstance(cursor, dict) or "stack" not in cursor:
+            raise ValueError("invalid page cursor")
+        if not cursor["stack"]:
+            break
+        key = json.dumps(cursor, sort_keys=True)
+        if key in seen_cursors:
+            raise ValueError("repeated page cursor")
+        seen_cursors.add(key)
+    else:
+        raise ValueError("page pagination limit exceeded")
+    # Page chunks also contain ancestor metadata. Only the chosen document and
+    # its descendants are source content; parent edits must not trigger drift.
+    selected: dict = {}
+    pending = [PAGE_ID]
+    while pending:
+        block_id = pending.pop()
+        if block_id in selected:
+            continue
+        if block_id not in raw_blocks:
+            raise ValueError(f"missing source block: {block_id}")
+        value = _record_value(raw_blocks[block_id])
+        if not value or value.get("alive") is False:
+            raise ValueError(f"unavailable source block: {block_id}")
+        selected[block_id] = value
+        pending.extend(value.get("content", []))
     blocks: list[dict] = []
-    for block_id, record in raw_blocks.items():
+    for block_id, record in selected.items():
         value = _record_value(record)
         if not value:
             continue
@@ -104,8 +138,13 @@ def validate(snapshot: dict) -> None:
     expected = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
     if snapshot["content_sha256"] != expected:
         raise ValueError("content hash mismatch")
-    if not any(block.get("id") == PAGE_ID for block in blocks):
+    if len({block.get("id") for block in blocks}) != len(blocks):
+        raise ValueError("duplicate source blocks")
+    root = next((block for block in blocks if block.get("id") == PAGE_ID), None)
+    if root is None:
         raise ValueError("root block missing")
+    if root["version"] != snapshot["root_version"] or root["last_edited_time"] != snapshot["root_last_edited_time"]:
+        raise ValueError("root metadata mismatch")
     if any(block.get("checked") is not None and not isinstance(block["checked"], bool) for block in blocks):
         raise ValueError("checkbox must be boolean or null")
 

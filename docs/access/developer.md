@@ -17,6 +17,12 @@ hide:
 
 <div id="code-module-map" data-sfh-code-module-map-host></div>
 
+## 최신 기획 대조 · 오너 판단
+
+[66항목 코드 대조와 8개 충돌 판단](../design/master-gdd-alignment.md#owner-conflicts) · [N26 다음 작업 순서](../design/current-milestone-workline.md#notion-20260907)
+
+최신 원본은 GDD v128과 작업 트래커입니다. 기존 96%는 과거 기준이며 현재 정적 코드 대응도는 72.4%입니다. 기획 ‘미구현’ 태그를 코드 부재로 해석하지 않습니다.
+
 ## SFH 운영 온톨로지 읽는 순서
 
 <div class="sfh-planner-gates">

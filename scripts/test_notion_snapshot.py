@@ -2,10 +2,14 @@
 import hashlib
 import json
 import unittest
+from copy import deepcopy
+from pathlib import Path
 from unittest.mock import patch
 from io import BytesIO
 
 import snapshot_notion_source as source
+import snapshot_notion_tracker as tracker
+import check_notion_audit as audit_check
 
 
 class CheckboxTests(unittest.TestCase):
@@ -54,6 +58,133 @@ class CheckboxTests(unittest.TestCase):
         snapshot["source_url"] = "https://example.invalid/obsolete-gdd"
         with self.assertRaisesRegex(ValueError, "source URL mismatch"):
             source.validate(snapshot)
+
+
+class PageScopeTests(unittest.TestCase):
+    def page(self, parent_version=1):
+        return {"recordMap": {"block": {
+            source.PAGE_ID: {"value": {"type": "page", "version": 2, "content": ["child"]}},
+            "child": {"value": {"type": "text", "properties": {"title": [["body"]]}}},
+            "parent": {"value": {"version": parent_version}},
+        }}}
+
+    def test_parent_edit_does_not_change_document_hash(self):
+        with patch.object(source, "request_json", side_effect=[self.page(1), self.page(99)]):
+            first, second = source.fetch_snapshot(), source.fetch_snapshot()
+        self.assertEqual(first["content_sha256"], second["content_sha256"])
+        self.assertEqual(first["block_count"], 2)
+        source.validate(first)
+
+    def test_pagination_collects_missing_descendant(self):
+        first = self.page()
+        child = first["recordMap"]["block"].pop("child")
+        first["cursor"] = {"stack": ["next"]}
+        last = {"recordMap": {"block": {"child": child}}, "cursor": {"stack": []}}
+        with patch.object(source, "request_json", side_effect=[first, last]) as request:
+            self.assertEqual(source.fetch_snapshot()["block_count"], 2)
+        self.assertEqual(request.call_args_list[1].args[1]["cursor"], first["cursor"])
+
+    def test_missing_child_fails_closed(self):
+        page = self.page()
+        del page["recordMap"]["block"]["child"]
+        with patch.object(source, "request_json", return_value=page), self.assertRaisesRegex(ValueError, "missing source block"):
+            source.fetch_snapshot()
+
+    def test_repeated_cursor_fails_closed(self):
+        page = self.page()
+        page["cursor"] = {"stack": ["next"]}
+        with patch.object(source, "request_json", return_value=page), self.assertRaisesRegex(ValueError, "repeated page cursor"):
+            source.fetch_snapshot()
+
+    def test_root_metadata_is_validated(self):
+        with patch.object(source, "request_json", return_value=self.page()):
+            snapshot = source.fetch_snapshot()
+        snapshot["root_version"] += 1
+        with self.assertRaisesRegex(ValueError, "metadata mismatch"):
+            source.validate(snapshot)
+
+
+class TrackerTests(unittest.TestCase):
+    def payload(self, more=False):
+        properties = {"title": [["이동"]], "TrYw": [["CORE-01"]], "[eq>": [["결정 (미구현)"]],
+                      ";Od`": [["전투"]], "RV~f": [["실제 이동"]]}
+        result = {"collection_group_results": {"hasMore": more, "blockIds": ["task"]}}
+        return {"result": {"reducerResults": result},
+                "recordMap": {"block": {"task": {"value": {"value": {"properties": properties}}}}}}
+
+    def test_status_is_preserved_not_converted_to_completion(self):
+        with patch.object(tracker, "request_json", return_value=self.payload()):
+            snapshot = tracker.fetch_snapshot()
+        self.assertEqual(snapshot["rows"][0]["planner_status"], "결정 (미구현)")
+        tracker.validate(snapshot)
+
+    def test_incomplete_set_fails_closed(self):
+        for more in [True, None]:
+            with self.subTest(more=more), patch.object(tracker, "request_json", return_value=self.payload(more)), self.assertRaisesRegex(ValueError, "incomplete"):
+                tracker.fetch_snapshot()
+
+    def test_limit_expands_until_complete(self):
+        with patch.object(tracker, "request_json", side_effect=[self.payload(True), self.payload(False)]) as request:
+            tracker.fetch_snapshot()
+        self.assertEqual(request.call_args_list[1].args[1]["loader"]["reducers"]["collection_group_results"]["limit"], 500)
+
+    def test_duplicates_rejected(self):
+        payload = self.payload()
+        payload["result"]["reducerResults"]["collection_group_results"]["blockIds"].append("task")
+        with patch.object(tracker, "request_json", return_value=payload), self.assertRaisesRegex(ValueError, "duplicate"):
+            tracker.fetch_snapshot()
+
+    def test_unknown_status_rejected(self):
+        payload = self.payload()
+        payload["recordMap"]["block"]["task"]["value"]["value"]["properties"]["[eq>"] = [["unknown"]]
+        with patch.object(tracker, "request_json", return_value=payload), self.assertRaisesRegex(ValueError, "status drift"):
+            tracker.fetch_snapshot()
+
+
+class CodeCrosswalkTests(unittest.TestCase):
+    def setUp(self):
+        assets = Path(__file__).resolve().parents[1] / "docs/assets"
+        self.gdd = json.loads((assets / "notion-source-snapshot.json").read_text(encoding="utf-8"))
+        self.tasks = json.loads((assets / "notion-tracker-snapshot.json").read_text(encoding="utf-8"))
+        self.audit = json.loads((assets / "notion-code-audit.json").read_text(encoding="utf-8"))
+
+    def test_all_rows_and_weighted_result(self):
+        audit_check.validate(self.audit, self.gdd, self.tasks)
+        numerator, denominator, counts = audit_check.summary(self.audit)
+        self.assertEqual((numerator, denominator, len(self.audit["rows"])), (123, 170, 66))
+        self.assertEqual(counts["decision_pending"], 14)
+
+    def test_missing_or_duplicate_row_fails(self):
+        for duplicate in [False, True]:
+            changed = deepcopy(self.audit)
+            changed["rows"].pop()
+            if duplicate:
+                changed["rows"].append(deepcopy(changed["rows"][0]))
+            with self.subTest(duplicate=duplicate), self.assertRaisesRegex(ValueError, "every tracker row"):
+                audit_check.validate(changed, self.gdd, self.tasks)
+
+    def test_either_source_drift_requires_review(self):
+        for key in ["gdd_sha256", "tracker_sha256"]:
+            changed = deepcopy(self.audit)
+            changed[key] = "stale"
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, "source drift"):
+                audit_check.validate(changed, self.gdd, self.tasks)
+
+    def test_planner_status_not_silently_changed(self):
+        self.audit["rows"][0]["planner_status"] = "구현완료"
+        with self.assertRaisesRegex(ValueError, "source row mismatch"):
+            audit_check.validate(self.audit, self.gdd, self.tasks)
+
+    def test_undecided_cannot_be_accepted(self):
+        row = next(r for r in self.audit["rows"] if r["assessment"] == "decision_pending")
+        row["assessment"] = "code_supported"
+        with self.assertRaisesRegex(ValueError, "undecided"):
+            audit_check.validate(self.audit, self.gdd, self.tasks)
+
+    def test_unsafe_evidence_rejected(self):
+        self.audit["rows"][0]["code"] = ["../outside.gd"]
+        with self.assertRaisesRegex(ValueError, "unsafe evidence"):
+            audit_check.validate(self.audit, self.gdd, self.tasks)
 
 
 if __name__ == "__main__":

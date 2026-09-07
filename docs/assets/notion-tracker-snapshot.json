@@ -1,0 +1,673 @@
+{
+  "schema_version": 1,
+  "source_url": "https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2",
+  "page_id": "3d35b728-0040-81d8-8798-e99d4a8f05c2",
+  "collection_id": "3d35b728-0040-8116-92be-000bcf3f55dd",
+  "view_id": "3d35b728-0040-81b2-a8df-000c7cf37314",
+  "complete": true,
+  "row_count": 66,
+  "content_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
+  "rows": [
+    {
+      "id": "3d35b728-0040-8100-8288-f8c33727429f",
+      "title": "타겟 록온 갱신 주기 (초당 30회 vs 60회)",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "미정 (검토필요)",
+      "category": "스마트타겟팅",
+      "acceptance": "성능 및 타겟 전환 반응속도 튜닝 필요",
+      "version": 6,
+      "last_edited_time": 1788683564395
+    },
+    {
+      "id": "3d35b728-0040-8102-b0c9-db415bca981e",
+      "title": "스킬별 개별 쿨타임(Cooldown) 카운트다운",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "스킬 사용 후 쿨타임 완료 전까지 재사용 불가",
+      "version": 6,
+      "last_edited_time": 1788683560005
+    },
+    {
+      "id": "3d35b728-0040-8103-a93c-d48292d9f86b",
+      "title": "허수아비 속성 저항 및 방어력 설정 옵션 지원",
+      "request_id": "PLAN-05-TRAIN",
+      "planner_status": "미정 (검토필요)",
+      "category": "훈련연습장",
+      "acceptance": "연습장 옵션 패널에서 더미 방어력 조절 기능 여부",
+      "version": 6,
+      "last_edited_time": 1788683578315
+    },
+    {
+      "id": "3d35b728-0040-8106-ad61-d91cfe0c6f1b",
+      "title": "타이머 0초 도달 시 탈출 성공 및 정산창 진입",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "category": "탈출/파산방지",
+      "acceptance": "생환 성공 처리 및 획득물 영구 정산",
+      "version": 6,
+      "last_edited_time": 1788683580449
+    },
+    {
+      "id": "3d35b728-0040-8109-99ed-d6fb80fbe7f5",
+      "title": "영구 자산형 장비 R키 현장 즉시 장착/스왑",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "장비 비교창에서 R키 누르면 현장에서 즉시 장착",
+      "version": 6,
+      "last_edited_time": 1788683568679
+    },
+    {
+      "id": "3d35b728-0040-810b-b4e6-fd07961bb518",
+      "title": "보유 장비/스킬/룬 무상 자유 세팅 콘솔",
+      "request_id": "PLAN-05-TRAIN",
+      "planner_status": "결정 (미구현)",
+      "category": "훈련연습장",
+      "acceptance": "연습장 내에서 비용 없이 자유롭게 빌드 스왑",
+      "version": 6,
+      "last_edited_time": 1788683577780
+    },
+    {
+      "id": "3d35b728-0040-810f-83b7-fb7f6ebb80a9",
+      "title": "제작소: 추가 재화 소모를 통한 추가 옵션/소켓 고점 부여",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "category": "상점/제작소",
+      "acceptance": "제작 시 랜덤 추가 옵션/소켓이 붙어 빌드 고점 돌파",
+      "version": 6,
+      "last_edited_time": 1788683574673
+    },
+    {
+      "id": "3d35b728-0040-810f-b02c-fd14fa4b714c",
+      "title": "상점: 인게임 세션 복귀 시 자동 품목 갱신(로테이션)",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "category": "상점/제작소",
+      "acceptance": "런을 다녀올 때마다 상점 매물 자동 새로고침",
+      "version": 6,
+      "last_edited_time": 1788683571912
+    },
+    {
+      "id": "3d35b728-0040-8113-b892-e6ce524b1f43",
+      "title": "자발적 페널티 모디파이어 선택 시 보상 배율(Multiplier) 증가",
+      "request_id": "PLAN-07-LEADER",
+      "planner_status": "결정 (미구현)",
+      "category": "원정계약/랭킹",
+      "acceptance": "페널티 토글 시 최종 보상 배율 실시간 산출",
+      "version": 6,
+      "last_edited_time": 1788683583229
+    },
+    {
+      "id": "3d35b728-0040-8115-9b5c-c24724367086",
+      "title": "시즌 명예 보상(칭호, 오라 이펙트) 지급",
+      "request_id": "PLAN-07-LEADER",
+      "planner_status": "결정 (미구현)",
+      "category": "원정계약/랭킹",
+      "acceptance": "상위 랭커 전용 칭호 및 캐릭터 오라 이펙트 장착",
+      "version": 6,
+      "last_edited_time": 1788683584308
+    },
+    {
+      "id": "3d35b728-0040-8118-9dee-e5b4e70508fb",
+      "title": "파산 방지: 무료 기본 무장 및 기본 맵 상시 제공",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "category": "탈출/파산방지",
+      "acceptance": "잔고 0원 시 언제든 기본 무장 무료 지급 (Zero-Risk)",
+      "version": 6,
+      "last_edited_time": 1788683581021
+    },
+    {
+      "id": "3d35b728-0040-811d-b001-d577cf80a660",
+      "title": "상점: 성능 -10%~-30% 손상된 하자품 헐값(20~30%) 판매",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "category": "상점/제작소",
+      "acceptance": "초특가 손상 장비가 상점 매물로 스폰",
+      "version": 6,
+      "last_edited_time": 1788683573037
+    },
+    {
+      "id": "3d35b728-0040-811e-ba68-f8adf646f3ac",
+      "title": "단일 고체력 보스 허수아비 더미 배치",
+      "request_id": "PLAN-05-TRAIN",
+      "planner_status": "결정 (미구현)",
+      "category": "훈련연습장",
+      "acceptance": "단일 록온 및 단일 DPS 측정 더미 피격 동작",
+      "version": 6,
+      "last_edited_time": 1788683576190
+    },
+    {
+      "id": "3d35b728-0040-8122-81c4-e91a314d0451",
+      "title": "영구 자산형 장비 탈출 성공 시 로비 상점 영구 해금",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "탈출 성공 시 획득 아이템이 로비 상점에 영구 등록",
+      "version": 6,
+      "last_edited_time": 1788683569185
+    },
+    {
+      "id": "3d35b728-0040-8127-b2fe-e3b3ce1920c1",
+      "title": "완전 자유 스킬 바인딩 (Any Skill to Any Key)",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "인풋 슬롯(좌/우클릭, Space, 1~9)에 임의 스킬 1:1 자유 매핑",
+      "version": 6,
+      "last_edited_time": 1788683558285
+    },
+    {
+      "id": "3d35b728-0040-8128-b071-df1c2bf344ce",
+      "title": "타일셋 그래픽 스타일 및 픽셀 뷰포트 해상도 규격",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "미정 (검토필요)",
+      "category": "엔진/아키텍처",
+      "acceptance": "해상도(예: 640x360 픽셀아트 vs 1920x1080) 확정 필요",
+      "version": 6,
+      "last_edited_time": 1788683555586
+    },
+    {
+      "id": "3d35b728-0040-8128-baaf-d108e1f9602f",
+      "title": "상점 리롤 1회당 비용 증가 곡선 (점진 증가 vs 고정)",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "미정 (검토필요)",
+      "category": "상점/제작소",
+      "acceptance": "리롤 비용(예: 100G ➔ 200G ➔ 400G 등) 확정 필요",
+      "version": 6,
+      "last_edited_time": 1788683575167
+    },
+    {
+      "id": "3d35b728-0040-812e-8dcf-d3df7845372a",
+      "title": "세션 증폭 룬/코어 인게임 실시간 소켓 장착",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "획득한 룬을 장비/스킬 소켓에 꽂아 세션 내 화력 폭발",
+      "version": 6,
+      "last_edited_time": 1788683569755
+    },
+    {
+      "id": "3d35b728-0040-8134-bf81-d6d748487eb2",
+      "title": "실시간 DPS, 단일 타격 수치, AP 소모율 모니터링 UI",
+      "request_id": "PLAN-05-TRAIN",
+      "planner_status": "결정 (미구현)",
+      "category": "훈련연습장",
+      "acceptance": "허수아비 공격 시 화면 상단/측면에 실시간 수치 표기",
+      "version": 6,
+      "last_edited_time": 1788683577262
+    },
+    {
+      "id": "3d35b728-0040-8137-8239-cf2fd6b253e8",
+      "title": "탈출 활성화 시 몰려오는 몬스터 웨이브 스폰 배율",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "미정 (검토필요)",
+      "category": "탈출/파산방지",
+      "acceptance": "일반 대비 스폰 밀도 가중치 수치",
+      "version": 6,
+      "last_edited_time": 1788683582118
+    },
+    {
+      "id": "3d35b728-0040-8138-93c2-fc6eddfae751",
+      "title": "TileMapLayer 기반 2D 던전 맵 렌더링 파이프라인",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "category": "엔진/아키텍처",
+      "acceptance": "타일맵 레이어로 벽/바닥 충돌 및 렌더링 확인",
+      "version": 6,
+      "last_edited_time": 1788683554569
+    },
+    {
+      "id": "3d35b728-0040-813c-8525-fceeaed2654f",
+      "title": "단일기: 특정 옵션 시 최고체력/엘리트(Highest HP) 동적 전환",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "결정 (미구현)",
+      "category": "스마트타겟팅",
+      "acceptance": "옵션 활성화 시 사거리 내 최고 HP 적으로 타겟 변경",
+      "version": 6,
+      "last_edited_time": 1788683562182
+    },
+    {
+      "id": "3d35b728-0040-8145-bf92-e84e1e0a0f01",
+      "title": "보안 파우치 거점 성장 업그레이드 (최대 3~4칸 확장)",
+      "request_id": "DATA-02-POUCH",
+      "planner_status": "결정 (미구현)",
+      "category": "상점/제작소",
+      "acceptance": "거점 업그레이드 완료 시 파우치 슬롯이 3~4칸으로 확장되는지 확인",
+      "version": 6,
+      "last_edited_time": 1788685612646
+    },
+    {
+      "id": "3d35b728-0040-8147-a809-d56ce5ef98cc",
+      "title": "광역기: 스킬 반경 내 최대 적 밀집 클러스터 중심점 자동 투하",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "결정 (미구현)",
+      "category": "스마트타겟팅",
+      "acceptance": "몹이 가장 뭉쳐 있는 위치의 중심 좌표에 스킬 투하",
+      "version": 6,
+      "last_edited_time": 1788683563278
+    },
+    {
+      "id": "3d35b728-0040-814c-99d0-c971098fd15c",
+      "title": "제작소: 파밍한 설계도 영구 등록 기반 확정 타겟 제작",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "category": "상점/제작소",
+      "acceptance": "보유 설계도로 원하는 장비 골드 소모 확정 제작",
+      "version": 6,
+      "last_edited_time": 1788683574125
+    },
+    {
+      "id": "3d35b728-0040-8159-819a-f0dc9eb951b5",
+      "title": "표준 자원 마모형 체력 모델 (자연회복 불가, 소모품 한정 관리)",
+      "request_id": "PLAN-08-SURVIVAL",
+      "planner_status": "결정 (미구현)",
+      "category": "엔진/아키텍처",
+      "acceptance": "피격 시 체력이 영구 누적 차감되고 자연 회복되지 않는지 확인",
+      "version": 6,
+      "last_edited_time": 1788685607645
+    },
+    {
+      "id": "3d35b728-0040-815a-b0ae-ef36ba2b2e92",
+      "title": "세션 증폭 룬/코어 탈출 시 대량 골드 자동 환전",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "탈출 결과창에서 룬이 골드로 일괄 정산 환전",
+      "version": 6,
+      "last_edited_time": 1788683570300
+    },
+    {
+      "id": "3d35b728-0040-815f-b78d-e820fa8127de",
+      "title": "원정 맵 크기(소/중/대) 및 Biome 계약 선택",
+      "request_id": "PLAN-07-LEADER",
+      "planner_status": "결정 (미구현)",
+      "category": "원정계약/랭킹",
+      "acceptance": "맵 크기 및 지역별 드랍 테이블 선택 기능",
+      "version": 6,
+      "last_edited_time": 1788683582659
+    },
+    {
+      "id": "3d35b728-0040-8165-8cff-cd45118d9084",
+      "title": "혈전/버서커 특화 빌드 (HP 소모 스킬 + 흡혈 + 회복약 효과 반감)",
+      "request_id": "PLAN-08-SURVIVAL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "스킬 시전 시 HP가 차감되고 타격 시 흡혈 및 물약 효과 50% 반감 확인",
+      "version": 6,
+      "last_edited_time": 1788685609964
+    },
+    {
+      "id": "3d35b728-0040-8169-834b-c9955f1af304",
+      "title": "1단계 로비 허브 상시 공간 인터페이스 구축",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "결정 (미구현)",
+      "category": "플레이어루프",
+      "acceptance": "창고, 상점, 제작소, 연습장, 도감, 랭킹 모듈 접근 가능",
+      "version": 6,
+      "last_edited_time": 1788683565431
+    },
+    {
+      "id": "3d35b728-0040-816b-b578-f9cc78ce74a2",
+      "title": "F 키 입력 시 맵 내 오브젝트 상호작용",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "상자/신호기 근처에서 F키 누를 때 상호작용 트리거",
+      "version": 6,
+      "last_edited_time": 1788683557771
+    },
+    {
+      "id": "3d35b728-0040-816d-aecb-dc8652d0d8de",
+      "title": "인게임 최대 동시 장착 스킬 슬롯 수 확정",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "미정 (검토필요)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "UI 상 4개, 5개, 6개 중 최종 규격 확정 필요",
+      "version": 6,
+      "last_edited_time": 1788683560540
+    },
+    {
+      "id": "3d35b728-0040-8173-9ff3-e8871dc690f7",
+      "title": "맵 내 탈출 신호기(Beacon) 접근 후 F키 상호작용 가동",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "category": "탈출/파산방지",
+      "acceptance": "F키 입력 시 탈출 방어 시퀀스 활성화",
+      "version": 6,
+      "last_edited_time": 1788683578886
+    },
+    {
+      "id": "3d35b728-0040-8176-8deb-c7f5a868a5ff",
+      "title": "광역기 클러스터 탐색 반경 기본값 수치",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "미정 (검토필요)",
+      "category": "스마트타겟팅",
+      "acceptance": "클러스터링 밀집도 판정 반경(px) 확정 필요",
+      "version": 6,
+      "last_edited_time": 1788683564941
+    },
+    {
+      "id": "3d35b728-0040-817b-bd84-efe3ea8a93e7",
+      "title": "Custom Resource 기반 데이터 관리 아키텍처 셋업",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "category": "엔진/아키텍처",
+      "acceptance": "무기/스킬/룬 데이터가 리소스 파일로 관리 및 로딩",
+      "version": 6,
+      "last_edited_time": 1788683555088
+    },
+    {
+      "id": "3d35b728-0040-817c-a4e2-f02aff23ace5",
+      "title": "Space 키 입력 시 이동 방향 회피(대쉬) 발동",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "대쉬 시 순간 가속 및 회피 동작 수행",
+      "version": 6,
+      "last_edited_time": 1788683556666
+    },
+    {
+      "id": "3d35b728-0040-8180-a869-d144728e8907",
+      "title": "보안 파우치 (사망 시 100% 보존되는 안전 금고 기본 1~2칸)",
+      "request_id": "DATA-02-POUCH",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "파우치 내 설계도/유물 수납 후 사망 시 로비 창고로 안전 회수 확인",
+      "version": 6,
+      "last_edited_time": 1788685612102
+    },
+    {
+      "id": "3d35b728-0040-8183-a83e-ff9dc784a5ef",
+      "title": "Q 키 입력 시 주무기 ↔ 보조무기 실시간 스왑",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "무기 교체 시 들고 있는 스프라이트/태그 즉각 변경",
+      "version": 6,
+      "last_edited_time": 1788683557212
+    },
+    {
+      "id": "3d35b728-0040-8185-ae76-d5cd6a8c0355",
+      "title": "실서비스 계정 서버 및 무결성 검증 연동",
+      "request_id": "PLAN-07-LEADER",
+      "planner_status": "미정 (검토필요)",
+      "category": "원정계약/랭킹",
+      "acceptance": "실서버 랭킹 API 연동 (현재 P6 로컬 마일스톤 상태)",
+      "version": 6,
+      "last_edited_time": 1788683584879
+    },
+    {
+      "id": "3d35b728-0040-8186-98d7-e0ee28c35434",
+      "title": "룬 1개당 골드 환전 가치 산정 공식 및 배율",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "미정 (검토필요)",
+      "category": "전리품/파밍",
+      "acceptance": "룬 티어별 환전 기본 골드(예: 100/300/1000G) 확정 필요",
+      "version": 6,
+      "last_edited_time": 1788683571378
+    },
+    {
+      "id": "3d35b728-0040-8188-83ae-cd19e9ee4a43",
+      "title": "출격 준비 세션 UI 상세 레이아웃 및 UX",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "미정 (검토필요)",
+      "category": "플레이어루프",
+      "acceptance": "단일 화면 모달 vs 탭 분할 화면 UI 확정 필요",
+      "version": 6,
+      "last_edited_time": 1788683567064
+    },
+    {
+      "id": "3d35b728-0040-8188-aaf0-cf37578f63be",
+      "title": "CharacterBody2D 기반 플레이어 이동 물리 셋업",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "category": "엔진/아키텍처",
+      "acceptance": "충돌체를 가진 캐릭터가 2D 평면에서 정상 이동",
+      "version": 6,
+      "last_edited_time": 1788683553478
+    },
+    {
+      "id": "3d35b728-0040-818d-8fa2-cedb610d6633",
+      "title": "3단계 인게임 던전 세션 로딩 및 결과 복귀",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "결정 (미구현)",
+      "category": "플레이어루프",
+      "acceptance": "계약 완료 시 던전 로딩, 탈출/사망 시 로비 복귀",
+      "version": 6,
+      "last_edited_time": 1788683566544
+    },
+    {
+      "id": "3d35b728-0040-81a2-bd08-e8bcb4537422",
+      "title": "상점: 기본 순정품 및 고성능 꿀매물 무작위 스폰",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "category": "상점/제작소",
+      "acceptance": "표준품 및 추가옵션 꿀매물이 무작위 확률로 등장",
+      "version": 6,
+      "last_edited_time": 1788683573578
+    },
+    {
+      "id": "3d35b728-0040-81a6-9988-e39812a2e2f6",
+      "title": "심층 코어 정규 진입로 (환경 저항 장비 착용자 통과)",
+      "request_id": "PLAN-09-DEPTH",
+      "planner_status": "결정 (미구현)",
+      "category": "플레이어루프",
+      "acceptance": "환경 저항 장비 착용 시 심층부 오염 지속 피해 면역 확인",
+      "version": 6,
+      "last_edited_time": 1788685610505
+    },
+    {
+      "id": "3d35b728-0040-81a9-b8c9-f6677ca3970c",
+      "title": "이동기: 현재 입력된 이동 방향 벡터로 즉시 발동",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "결정 (미구현)",
+      "category": "스마트타겟팅",
+      "acceptance": "이동 방향 벡터로 즉시 대쉬/돌진 발동",
+      "version": 6,
+      "last_edited_time": 1788683563844
+    },
+    {
+      "id": "3d35b728-0040-81aa-8a0f-d4dac4b38604",
+      "title": "구역 이탈 시 타이머 일시정지(Pause) 및 재진입 재개(Resume)",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "category": "탈출/파산방지",
+      "acceptance": "원 밖으로 나가면 타이머 일시정지, 재진입 시 재개",
+      "version": 6,
+      "last_edited_time": 1788683579943
+    },
+    {
+      "id": "3d35b728-0040-81c1-a28d-fe60b47f8cf9",
+      "title": "심층 코어 우회 돌파로 (수문장 처치 시 저항 장비 100% 드랍)",
+      "request_id": "PLAN-09-DEPTH",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "수문장 엘리트 몹 처치 시 저항 장비 완제품 100% 현장 드랍 확인",
+      "version": 6,
+      "last_edited_time": 1788685611073
+    },
+    {
+      "id": "3d35b728-0040-81c6-9ad2-d96b2d2305c1",
+      "title": "기본 AP 최대치 및 초당 자연 회복량 기본 수치",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "미정 (검토필요)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "기본 AP(예: 100) 및 초당 회복량(예: 20) 확정 필요",
+      "version": 6,
+      "last_edited_time": 1788683561042
+    },
+    {
+      "id": "3d35b728-0040-81c6-b32e-fda2ccb10389",
+      "title": "원형 탈출 구역(Area2D) 내 N초 생존 카운트다운",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "category": "탈출/파산방지",
+      "acceptance": "구역 내 체류 시 타이머 작동 및 웨이브 스폰",
+      "version": 6,
+      "last_edited_time": 1788683579421
+    },
+    {
+      "id": "3d35b728-0040-81c8-8a80-fd7b8c71b99d",
+      "title": "동일 규격(대형 맵+페널티) 내 비동기 3대 래더 집계",
+      "request_id": "PLAN-07-LEADER",
+      "planner_status": "결정 (미구현)",
+      "category": "원정계약/랭킹",
+      "acceptance": "최다 루팅, 스피드런, 최다 킬 3대 기록 등록 (P6 로컬)",
+      "version": 6,
+      "last_edited_time": 1788683583764
+    },
+    {
+      "id": "3d35b728-0040-81ca-b26a-f5ed495e7156",
+      "title": "기본 탈출 방어 카운트다운 시간 기본값 (15초 vs 20초)",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "미정 (검토필요)",
+      "category": "탈출/파산방지",
+      "acceptance": "맵 크기별 탈출 방어 시간 확정 필요",
+      "version": 6,
+      "last_edited_time": 1788683581580
+    },
+    {
+      "id": "3d35b728-0040-81cd-bb32-c02a13bc9624",
+      "title": "영구 자산형 장비(무기/스킬/도면) F키 가방 획득",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "전리품 근처에서 F키 누르면 가방으로 습득",
+      "version": 6,
+      "last_edited_time": 1788683568169
+    },
+    {
+      "id": "3d35b728-0040-81d3-b102-c4b1eda1ef98",
+      "title": "밀집 잡몹 허수아비 더미군 배치",
+      "request_id": "PLAN-05-TRAIN",
+      "planner_status": "결정 (미구현)",
+      "category": "훈련연습장",
+      "acceptance": "광역 클러스터링 및 연쇄 폭발 범위 타격 테스트",
+      "version": 6,
+      "last_edited_time": 1788683576707
+    },
+    {
+      "id": "3d35b728-0040-81d4-a174-d2cb05748c11",
+      "title": "인게임 진입/복귀 시 씬 전환 로딩 연출",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "미정 (검토필요)",
+      "category": "플레이어루프",
+      "acceptance": "페이드 인/아웃 또는 암전 연출 규격",
+      "version": 6,
+      "last_edited_time": 1788683567659
+    },
+    {
+      "id": "3d35b728-0040-81d8-bd12-f016a1a7a63e",
+      "title": "상점: 골드 소모 수동 리롤(Reroll) 기능",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "category": "상점/제작소",
+      "acceptance": "리롤 버튼 클릭 시 골드 차감 후 매물 즉시 갱신",
+      "version": 6,
+      "last_edited_time": 1788683572474
+    },
+    {
+      "id": "3d35b728-0040-81dc-a9bc-d63057e33c1b",
+      "title": "단일기: 사거리 내 최단거리(Closest) 적 기본 록온",
+      "request_id": "PLAN-02-TARGET",
+      "planner_status": "결정 (미구현)",
+      "category": "스마트타겟팅",
+      "acceptance": "플레이어와 가장 가까운 적을 우선 추적 발사",
+      "version": 6,
+      "last_edited_time": 1788683561592
+    },
+    {
+      "id": "3d35b728-0040-81e4-bfad-e202866c131b",
+      "title": "손상 장비에 붙는 세부 페널티 목록 풀",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "미정 (검토필요)",
+      "category": "상점/제작소",
+      "acceptance": "공격력 저하, 공속 저하, AP 소모 증가 등 풀 확정 필요",
+      "version": 6,
+      "last_edited_time": 1788683575685
+    },
+    {
+      "id": "3d35b728-0040-81e5-84ff-d1cd87160366",
+      "title": "심층 코어 최상위 보안 금고 (특수 키카드 소지자 전용 개방)",
+      "request_id": "PLAN-09-DEPTH",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "특수 키카드 소지 시에만 심층부 보안 금고 문이 열리는지 확인",
+      "version": 6,
+      "last_edited_time": 1788685611570
+    },
+    {
+      "id": "3d35b728-0040-81e5-89a4-dca71f46ec3f",
+      "title": "마우스 좌클릭 등 기본 스킬 홀드(Hold) 연속 시전",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "버튼 누르고 있을 때 공속/쿨타임 주기로 자동 연사",
+      "version": 6,
+      "last_edited_time": 1788683558837
+    },
+    {
+      "id": "3d35b728-0040-81e6-b05f-f5697a9bfd26",
+      "title": "2단계 출격 준비 세션 (로드아웃 + 맵 계약 + 페널티)",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "결정 (미구현)",
+      "category": "플레이어루프",
+      "acceptance": "출격 클릭 시 작전 브리핑 세션 진입 및 총비용 차감",
+      "version": 6,
+      "last_edited_time": 1788683566009
+    },
+    {
+      "id": "3d35b728-0040-81ef-93ac-ed46ee9dcd7e",
+      "title": "WASD 키보드 8방향/360도 평면 이동 벡터 제어",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "조준점 무관하게 입력 방향으로 즉각 이동 확인",
+      "version": 6,
+      "last_edited_time": 1788683556117
+    },
+    {
+      "id": "3d35b728-0040-81f1-9fd2-cad6784a8d28",
+      "title": "사망 실패 시 런 획득물 및 지참 로드아웃 소실",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "던전 내 사망 시 인벤토리 및 장착 템 증발",
+      "version": 6,
+      "last_edited_time": 1788683570823
+    },
+    {
+      "id": "3d35b728-0040-81f9-b4eb-cbb242aa37ab",
+      "title": "공용 자원(AP/스태미나) 소모 및 회복 사이클",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "스킬 사용 시 AP 차감, 미사용 시 초당 자연 회복",
+      "version": 6,
+      "last_edited_time": 1788683559467
+    },
+    {
+      "id": "3d35b728-0040-81fa-8aa8-ee14acbebda3",
+      "title": "Area2D 기반 타겟팅 및 탈출 구역 콜리전 구조 셋업",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "category": "엔진/아키텍처",
+      "acceptance": "반경 콜리전 진입/이탈 시그널 정상 감지",
+      "version": 6,
+      "last_edited_time": 1788683554048
+    },
+    {
+      "id": "3d35b728-0040-81fd-8f66-dbb618b30881",
+      "title": "Godot 4.x 2D 탑다운 엔진 기본 프로젝트 및 씬 구축",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "category": "엔진/아키텍처",
+      "acceptance": "2D 뷰포트에서 기본 씬이 60FPS로 구동 확인",
+      "version": 6,
+      "last_edited_time": 1788683551926
+    }
+  ],
+  "captured_at": "2026-09-07T00:06:14.721435+00:00"
+}

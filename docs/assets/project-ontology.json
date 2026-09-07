@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
-  "updated": "2026-09-05",
-  "source_sha256": "0a07b992ca234506c65817b4c2cb02495f42a28348bf3b25dfca050b982985c0",
+  "updated": "2026-09-07",
+  "source_sha256": "a02a90909067d4537405f30847f5162820100cc462a452e14313d06e8b9cee13",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -144,11 +144,27 @@
       "route": "design/master-gdd-alignment/",
       "freshness": {
         "state": "snapshot",
-        "observed_at": "2026-09-01T19:14:02.376000Z",
-        "revision": "153",
-        "content_sha256": "f06bd08f21592abb6c8638eb4bb9f73540fbae20e67ce2478625346ddf507716",
+        "observed_at": "2026-09-06T09:09:49.265000Z",
+        "revision": "128",
+        "content_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
         "max_age_days": 7,
         "check": "작업 시작 전 공개 Master GDD를 다시 읽고 스냅샷을 검증합니다."
+      }
+    },
+    {
+      "id": "source:notion-tracker",
+      "label": "Notion 기능·상태 트래커",
+      "system": "Notion",
+      "status": "manual",
+      "summary": "최신 GDD와 별개로 기획자가 작성하는 작업 상태·수락 기준. 코드 완료와 구분",
+      "route": "design/master-gdd-alignment/",
+      "freshness": {
+        "state": "snapshot",
+        "observed_at": "2026-09-07T00:06:14.721435+00:00",
+        "revision": "b1eb9834f867",
+        "content_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
+        "max_age_days": 7,
+        "check": "트래커 전체 행을 재수집하고 GDD와 별도로 상태·수락 기준 변경을 대조합니다."
       }
     },
     {
@@ -376,18 +392,18 @@
     }
   ],
   "summary": {
-    "tracked": 35,
-    "owner_decisions": 1,
-    "blocked": 1,
-    "ready": 1,
+    "tracked": 51,
+    "owner_decisions": 9,
+    "blocked": 8,
+    "ready": 2,
     "implemented": 31,
     "modules": 60,
     "documents": 96,
     "collections": 27,
     "generated_milestones": 28,
-    "sources": 6,
+    "sources": 7,
     "actions": 5,
-    "relations": 363,
+    "relations": 461,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -440,11 +456,30 @@
       "route": "design/master-gdd-alignment/",
       "freshness": {
         "state": "snapshot",
-        "observed_at": "2026-09-01T19:14:02.376000Z",
-        "revision": "153",
-        "content_sha256": "f06bd08f21592abb6c8638eb4bb9f73540fbae20e67ce2478625346ddf507716",
+        "observed_at": "2026-09-06T09:09:49.265000Z",
+        "revision": "128",
+        "content_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
         "max_age_days": 7,
         "check": "작업 시작 전 공개 Master GDD를 다시 읽고 스냅샷을 검증합니다."
+      },
+      "type": "source",
+      "certainty": "confirmed",
+      "kind": "evidence"
+    },
+    {
+      "id": "source:notion-tracker",
+      "label": "Notion 기능·상태 트래커",
+      "system": "Notion",
+      "status": "manual",
+      "summary": "최신 GDD와 별개로 기획자가 작성하는 작업 상태·수락 기준. 코드 완료와 구분",
+      "route": "design/master-gdd-alignment/",
+      "freshness": {
+        "state": "snapshot",
+        "observed_at": "2026-09-07T00:06:14.721435+00:00",
+        "revision": "b1eb9834f867",
+        "content_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
+        "max_age_days": 7,
+        "check": "트래커 전체 행을 재수집하고 GDD와 별도로 상태·수락 기준 변경을 대조합니다."
       },
       "type": "source",
       "certainty": "confirmed",
@@ -749,6 +784,566 @@
         {
           "to": "module:conditional_ranking",
           "type": "affects"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "decision:n26-health",
+      "type": "decision",
+      "label": "DEC-N26-HEALTH · 회복 원인별 허용표",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "키트 한정 회복과 현행 자연·드랍·레벨업·버프 회복 충돌. 이전 사용자 지시 대체 범위를 먼저 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "decision:n26-ap",
+      "type": "decision",
+      "label": "DEC-N26-AP · AP 자연 회복",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "에너지 드랍과 스킬 충전은 있음. 미사용 AP 자연량·지연·드랍 병행을 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "decision:n26-pouch",
+      "type": "decision",
+      "label": "DEC-N26-POUCH · 사망 보존 우선순위",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "파우치 허용품·칸수·입출금·중단·사망 후 해금/환전 순서 및 원형 보존 여부 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "decision:n26-depth",
+      "type": "decision",
+      "label": "DEC-N26-DEPTH · 심층 접근·수문장",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "입장 자격과 오염 면역 차이, 수문장 보장 드랍 및 키카드 소비·재입장 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "decision:n26-blood",
+      "type": "decision",
+      "label": "DEC-N26-BLOOD · HP 비용·흡혈",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "HP 최소치·자해 사망·AP 병행·DOT/다중 타격 흡혈 상한·키트 반감을 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "decision:n26-sockets",
+      "type": "decision",
+      "label": "DEC-N26-SOCKETS · 공용/개별 소켓",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "현재 공용 세션 슬롯을 유지할지 무기·스킬 소켓별 귀속을 추가할지 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "decision:n26-tech",
+      "type": "decision",
+      "label": "DEC-N26-TECH · 지정 노드와 대체 구현",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "탈출은 실제 Area2D로 충족. TileMapLayer 맵·Area2D 타게팅 지정과 현행 자체 맵·거리 정책의 기술 수락 범위를 결정.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "decision:n26-status",
+      "type": "decision",
+      "label": "DEC-N26-STATUS · 기획/코드 상태 분리",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "트래커 미구현 태그로 기존 구현을 초기화하지 않으며 오너가 근거 수락 후 상태 갱신.",
+      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "work:n26-01",
+      "type": "work_item",
+      "label": "N26-01 · 오너 충돌 결정·14개 미정 데이터 분리",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "회복/AP·파우치·심층·혈전·소켓·기술 8개 판단을 명시. 기획 태그를 코드 완료로 사용하지 않음",
+      "acceptance": "결정별 유지/변경/보류, 범위·수치·대체 대상·수락 기준을 기록",
+      "next_action": "오너가 8개 충돌의 유지/변경/보류와 14개 미정 데이터의 담당·수락 기준을 결정",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-health",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-ap",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-pouch",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-depth",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-blood",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-sockets",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-tech",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-status",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "work:n26-03",
+      "type": "work_item",
+      "label": "N26-03 · 광역 밀집 중심·스킬 반경 전달",
+      "status": "ready",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "SmartTargetingPolicy + SkillDefinition 반경 전달. UI/개별 스킬에 대상 선택 중복 금지",
+      "acceptance": "서로 떨어진 3기 중심점, 적 좌표와 불일치 확인, 동률·빈 후보·사거리·스킬 반경 변화 검사",
+      "next_action": "독립 착수 가능 · 이번에는 수정하지 않음",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "work:n26-02",
+      "type": "work_item",
+      "label": "N26-02 · 표준 생존 회복·AP 정책",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "RecoveryPolicy / SkillCostPolicy / Service / HUD 원인별 분리. 기존 회복 프로필 복구 가능",
+      "acceptance": "자연/드랍/레벨업/버프/키트/훈련별 승인표, AP와 충전 별도, 생존 10분 비교",
+      "next_action": "DEC-N26-HEALTH·AP",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-health",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-ap",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "work:n26-04",
+      "type": "work_item",
+      "label": "N26-04 · 파우치 소유권·슬롯·허용 목록",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "ContainerDefinition / PouchPolicy / InventoryTransferService / Presenter. 인스턴스 단일 소유",
+      "acceptance": "가방↔파우치 이동·금지품 거부·용량·회전·전체 가방·저장 취소 후 중복 없음",
+      "next_action": "DEC-N26-POUCH",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-pouch",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "work:n26-05",
+      "type": "work_item",
+      "label": "N26-05 · 파우치 사망 보존·저장·정산",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "SettlementPolicy / ProfileTransaction / DesktopSaveProvider. 보호 판정 후 해금/환전 순서 고정",
+      "acceptance": "성공·사망·중단·재접속·구버전 세이브·동일 run_id 재정산에서 자산 증식 없음",
+      "next_action": "N26-04 및 파우치 정산 우선순위 확정",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-pouch",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-04",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "work:n26-06",
+      "type": "work_item",
+      "label": "N26-06 · 심층 3중 진입·수문장·키카드",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "DepthDefinition / AccessPolicy / HazardService / GuardianDropPolicy / DoorPresenter. 추격 보스 독립",
+      "acceptance": "소·중·대×지역×난이도 생성 연결성, 저항 면역/차단, 100% 드랍 회수, 키카드 1회 소비·문 개폐",
+      "next_action": "DEC-N26-DEPTH 및 N26-05 보존 경계",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-depth",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-05",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "work:n26-07",
+      "type": "work_item",
+      "label": "N26-07 · 혈전 버서커 프로필",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "CostPolicy + HitRecoveryPolicy + ConsumableEffectPolicy 조합. 기본 전투와 기능 플래그 분리",
+      "acceptance": "HP 부족·자해 경계·AP 혼합·DOT/다중 적중 상한·중복 처치·물약50%·해제 복원",
+      "next_action": "DEC-N26-BLOOD 및 N26-02",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-blood",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-02",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
+      "id": "work:n26-08",
+      "type": "work_item",
+      "label": "N26-08 · 66항목 수락·데이터·플레이 회귀",
+      "status": "blocked",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "게임 상태·저장·HUD·접근성·성능·기능 제거 계약 통합. 잔여 소켓/훈련 차이와 기술 대안 재대조",
+      "acceptance": "AP 자연량·스킬 수·타겟 반경/주기·UI·리롤·손상품·환전·탈출·시즌의 임시/확정 분리 및 Web/Windows E2E",
+      "next_action": "각 신규 모듈 완료 + 잔여 오너 결정",
+      "route": "design/current-milestone-workline/#notion-20260907",
+      "relations": [
+        {
+          "to": "document:design/current-milestone-workline",
+          "type": "documented_by"
+        },
+        {
+          "to": "source:e2e",
+          "type": "verified_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "decision:n26-sockets",
+          "type": "depends_on"
+        },
+        {
+          "to": "decision:n26-tech",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-01",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-02",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-03",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-04",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-05",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-06",
+          "type": "depends_on"
+        },
+        {
+          "to": "work:n26-07",
+          "type": "depends_on"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
         }
       ],
       "kind": "governance"
@@ -4389,6 +4984,594 @@
       "from": "decision:server-economy-integrity",
       "to": "module:conditional_ranking",
       "type": "affects",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "decision:n26-health",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-health",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-health",
+      "to": "document:design/master-gdd-alignment",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-health",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "decision:n26-ap",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-ap",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-ap",
+      "to": "document:design/master-gdd-alignment",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-ap",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "decision:n26-pouch",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-pouch",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-pouch",
+      "to": "document:design/master-gdd-alignment",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-pouch",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "decision:n26-depth",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-depth",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-depth",
+      "to": "document:design/master-gdd-alignment",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-depth",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "decision:n26-blood",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-blood",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-blood",
+      "to": "document:design/master-gdd-alignment",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-blood",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "decision:n26-sockets",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-sockets",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-sockets",
+      "to": "document:design/master-gdd-alignment",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-sockets",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "decision:n26-tech",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-tech",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-tech",
+      "to": "document:design/master-gdd-alignment",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-tech",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "decision:n26-status",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-status",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-status",
+      "to": "document:design/master-gdd-alignment",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-status",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:n26-01",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "decision:n26-health",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "decision:n26-ap",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "decision:n26-pouch",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "decision:n26-depth",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "decision:n26-blood",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "decision:n26-sockets",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "decision:n26-tech",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "decision:n26-status",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-01",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:n26-03",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-03",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-03",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-03",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-03",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:n26-02",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-02",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-02",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-02",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-02",
+      "to": "decision:n26-health",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-02",
+      "to": "decision:n26-ap",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-02",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:n26-04",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-04",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-04",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-04",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-04",
+      "to": "decision:n26-pouch",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-04",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:n26-05",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-05",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-05",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-05",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-05",
+      "to": "decision:n26-pouch",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-05",
+      "to": "work:n26-04",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-05",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:n26-06",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-06",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-06",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-06",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-06",
+      "to": "decision:n26-depth",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-06",
+      "to": "work:n26-05",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-06",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:n26-07",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-07",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-07",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-07",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-07",
+      "to": "decision:n26-blood",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-07",
+      "to": "work:n26-02",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-07",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "authority:project-owner",
+      "to": "work:n26-08",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "document:design/current-milestone-workline",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "source:e2e",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "decision:n26-sockets",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "decision:n26-tech",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "work:n26-01",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "work:n26-02",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "work:n26-03",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "work:n26-04",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "work:n26-05",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "work:n26-06",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "work:n26-07",
+      "type": "depends_on",
+      "origin": "registry"
+    },
+    {
+      "from": "work:n26-08",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
       "origin": "registry"
     },
     {
