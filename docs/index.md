@@ -53,10 +53,20 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 7 · IMPROVE 11 · CHANGE 9 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-07</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 8 · IMPROVE 13 · CHANGE 11 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
-    <div class="sfh-daily-overview"><span><b>5</b><small>UPDATE BUNDLES</small></span><span><b>7</b><small>BUILD</small></span><span><b>11</b><small>IMPROVE</small></span><span><b>9</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
+    <div class="sfh-daily-overview"><span><b>6</b><small>UPDATE BUNDLES</small></span><span><b>8</b><small>BUILD</small></span><span><b>13</b><small>IMPROVE</small></span><span><b>11</b><small>CHANGE</small></span><span><b>13</b><small>FIX</small></span></div>
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>실시간 렌더링 검수 · 자동 검사와 실제 플레이 구분</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 화면을 실제로 그리는 상태에서 이동·교전·안개·프레임·메모리를 확인하는 장시간 검사 도구를 추가했습니다. 자동 검사를 사람의 플레이 수락으로 표시하지 않습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>별도 저장소에서 실행하는 렌더링 세션 검사와 결과·로그·화면 기록을 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>실제 경과 시간과 방·통로·교전 범위를 확인하고, 검사기 경로 이탈이 빈 화면 대기만으로 통과되지 않도록 점검합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 2</h3><p>Web 화면 확인, Windows 파일 검증, 소스 렌더링 계측, 사람 수락의 근거를 분리했습니다. 남은 플랫폼 검수는 별도로 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 0</h3><p>게임 규칙과 수치는 유지합니다. 이번 경로 보정은 자동 검사기에만 적용되며 과금·자동 실행 설정 변경은 없습니다.</p></div>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>훈련 잔여 오류 수정 · 선택 기능과 출격 회귀</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 일부 기능을 끈 빌드에서도 훈련과 출격을 이어가며, 사용할 수 없는 교체 버튼과 같은 스킬 재선택에 따른 쿨타임 초기화를 방지합니다.</strong></div>
