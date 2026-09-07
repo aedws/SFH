@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-07",
-  "source_sha256": "62b8c2d73ab7338dc912f1d43ba0e0af0362e0e41b64f8f473de005f6a56e796",
+  "source_sha256": "92aab4bde39e76a308f6b9a72f979f40dd6436c5469a1440defce81c5861bd42",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -3604,14 +3604,14 @@
       "label": "훈련장",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "월드·탐색 · feature · 파일 12개",
+      "summary": "월드·탐색 · feature · 파일 13개",
       "route": "architecture/code-module-map/?module=training_ground",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/training_ground",
       "kind": "implementation",
       "metrics": {
-        "files": 12,
-        "classes": 12,
+        "files": 13,
+        "classes": 13,
         "incoming": 3,
         "outgoing": 0
       }
