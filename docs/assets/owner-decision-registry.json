@@ -727,8 +727,8 @@
       "status": "needs_decision",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "탈출은 실제 Area2D로 충족. TileMapLayer 맵·Area2D 타게팅 지정과 현행 자체 맵·거리 정책의 기술 수락 범위를 결정.",
-      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
+      "summary": "2026-09-08: 탈출/타겟 후보는 실제 Area2D. 바닥은 성능 최적화로 TileMapLayer에서 Node2D 청크 텍스처로 교체되어 지정 노드 요구는 부분 대응으로 정정. 맵 기능 실패와 기술 규격 차이는 구분합니다.",
+      "next_action": "2026-09-09: 청크 렌더러 대체 수락 또는 TileMapLayer 요구 유지/재설계 중 오너 결정과 성능 수락 기준을 기록. 승인 전 최적화를 되돌리거나 완료 점수를 올리지 않습니다.",
       "route": "design/master-gdd-alignment/#owner-conflicts",
       "relations": [
         {
@@ -1057,7 +1057,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "훈련 복원·선택 제거·출격 조합 회귀 및 승인 임시 AP/소켓/보유 훈련 계약 통과. 배포 일반 플레이 동등성과 지정 기술 이행은 별도",
       "acceptance": "AP 자연량·스킬 수·타겟 반경/주기·UI·리롤·손상품·환전·탈출·시즌의 임시/확정 분리 및 Web/Windows E2E",
-      "next_action": "잔여 부분 4행: 손상 매물 운영값 → TileMapLayer/Area2D 어댑터 → 첫 출격/탈출 입력 및 Web/Windows 일반 플레이 동등성. 자동 검사와 사람 수락은 분리",
+      "next_action": "2026-09-09 첫 실행은 N26-08B: 배포 Web/독립 Windows 각10분 일반 입력·간헐 탈출F/진입 실패 재현. 부분2행 중 지정 TileMapLayer 대체 수락은 DEC-N26-TECH로 분리. 이후 파우치→정산→심층→혈전은 선행 승인 후 진행",
       "route": "design/current-milestone-workline/#notion-20260907",
       "relations": [
         {

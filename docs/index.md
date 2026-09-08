@@ -54,9 +54,16 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>17 UPDATE BUNDLES · BUILD 11 · IMPROVE 21 · CHANGE 3 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>18 UPDATE BUNDLES · BUILD 11 · IMPROVE 21 · CHANGE 4 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 18</small><b>오늘 마감 · 진행률 근거 정정과 내일 작업 순서</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>수정 · 1</h3><p>최신 노션 GDD62블록·트래커66행과 현행 코드를 다시 대조했습니다. 지정 기술과 실제 구현의 차이를 정정해 135/170 = 79.4%이며 출시 준비율은 아닙니다.</p></div>
+        <p>원본·확정도 가중 계산과 상세 잔여는 <a href="access/login/?return=%2Fdesign%2Fmaster-gdd-alignment%2F%23day-close">팀 마감 근거</a>, 다음 착수 조건은 <a href="design/current-milestone-workline/#next-20260909">내일 실행 순서</a>에서 확인합니다. 오늘은 신규 게임 구현 없이 마무리합니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 17</small><b>성장 그래프 · 대상 하나의 단계별 변화</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 무기·캐릭터·방어구를 각각 하나씩 선택하여 레벨·강화 단계에 따른 성능, 증가량과 성장률을 확인합니다.</strong></div>
