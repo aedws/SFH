@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-08",
-  "source_sha256": "1c1e518694bc9caebe6a54f04372a1648dc252c8bf2e8465dea4eac9bc46cfed",
+  "source_sha256": "d7ae374f6e124f38f00d3009f5a79d1cc6a1c20decd259164619a2803358fa0c",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -4231,10 +4231,10 @@
     {
       "id": "document:features/fog-of-war",
       "type": "document",
-      "label": "전장의 안개",
+      "label": "공간 단위 전장의 안개",
       "status": "reference",
       "certainty": "derived",
-      "summary": "방·통로·정면 시야 규칙",
+      "summary": "현재 시설·도로 구간 공개와 불투명 지형 기억",
       "route": "features/fog-of-war/",
       "source": "docs/features/fog-of-war.md",
       "kind": "evidence"
@@ -4429,10 +4429,10 @@
     {
       "id": "document:features/room-encounters",
       "type": "document",
-      "label": "방 진입 전투와 봉쇄 보상",
+      "label": "시설 교전과 선택형 금고",
       "status": "reference",
       "certainty": "derived",
-      "summary": "문 폐쇄·1~5개 크레딧 박스·조기 탈출",
+      "summary": "일반 시설 후퇴·금고 F 선택 봉쇄·추가 상자 1~5개",
       "route": "features/room-encounters/",
       "source": "docs/features/room-encounters.md",
       "kind": "evidence"

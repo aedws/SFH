@@ -125,7 +125,7 @@ func _update_terminal() -> void:
 		interaction_availability_changed.emit(not prompt.is_empty(),prompt)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if district_enabled and terminal_room>=0 and event.is_action_pressed(&"interact"):
+	if district_enabled and active_room_index<0 and terminal_room>=0 and event.is_action_pressed(&"interact"):
 		if not try_start_room(terminal_room,&"terminal"):
 			interaction_availability_changed.emit(true,"금고 대기 · 주변 적을 줄이거나 남은 생성 예산을 확인하세요")
 		get_viewport().set_input_as_handled()
