@@ -45,6 +45,8 @@ tags:
 
 ## 현재 빌드 상태
 
+**최신 공간 규칙:** 순환 도로·시설별 두 출입구, 일반 교전 후퇴, 금고 F 선택 봉쇄, 두 출구 즉시 현장 방어, 안전 단말 워프, 현재 공간 전체 공개를 적용했습니다. [구역 계약과 임시 시설 수치](features/extraction-district.md) · [입력/GPU 검증과 인간 수락 잔여](quality/e2e-play-session.md#extraction-district). 노션 대응도 계산은 이 오너 승인 변경을 임의 가산하지 않았습니다.
+
 2026-09-08: 표준 HP는 키트 전용이며 KIT 버튼에서 지참 수량을 사용합니다. 자연·HP 드랍·레벨업·버프 회복은 차단하고 AP는 유지합니다. 아래 기존 마일스톤 설명 중 HP 충돌 대기는 이번 승인으로 대체됩니다. N26-08B의 첫 GPU 프레임·배포 양 플랫폼10분 일반 플레이 수락은 계속 진행 중입니다.
 
 거점 → 작전 → 방 전투·파밍 → 탈출·정산을 유지합니다. 임시 AP·소켓·훈련에 손상 매물 가격 범위와 실제 바닥/타겟 어댑터를 추가했습니다. ShopOffer의 2개 가격만 Sheet·CSV·Web payload에 동기화했으며 HP 규칙·영구 저장 스키마는 유지합니다.
@@ -72,7 +74,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>개선 · 1</h3><p>공간 공개·지형만 기억·문턱 완화, 일반 무리 후퇴/생존, 금고 F 선택과 1~5상자를 구분합니다.</p></div>
         <div class="sfh-group"><h3>수정 · 1</h3><p>시간/전체 방 대기 대신 두 출구 현장 방어. 워프는 안전 단말 사이로 제한하며 임시 수치와 기획 사유를 별도 안내합니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>워프 카메라 지연, 캐릭터를 덮는 단말 표시, 확보 알림 우선순위와 중복 탈출 정산을 보강했습니다.</p></div>
-        <p><a href="features/extraction-district/">현재 규칙·모듈 계약 →</a> · <a href="access/planner/#extraction-rationale">기획 사유 →</a> · <a href="quality/e2e-play-session/#extraction-district">회귀 근거·인간 플레이 잔여 →</a></p>
+        <p><a href="../features/extraction-district/">현재 규칙·모듈 계약 →</a> · <a href="../access/planner/#extraction-rationale">기획 사유 →</a> · <a href="../quality/e2e-play-session/#extraction-district">회귀 근거·인간 플레이 잔여 →</a></p>
       </div>
     </details>
     <details class="sfh-bundle" open>
