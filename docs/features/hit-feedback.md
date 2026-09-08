@@ -13,6 +13,20 @@ tags:
 
 # 타격감과 피격 피드백
 
+## 속도감·발사 FX 보강 · 2026-09-08 {#speed-shot-fx}
+
+달릴 때 진행 방향을 먼저 보여주고, 대시에는 최대 69.3px 선행과 기본 대비 최대 8% 줌아웃을 적용합니다. 보통 이동의 줌 변화는 약 2.4%이며 정지하면 부드럽게 원복됩니다. `PlayerMovementFeedback`의 `camera_reference_speed`, `camera_lead_pixels`, `speed_zoom_out`, `zoom_response`로 조정합니다. `speed_zoom_out=0`은 줌 보정만 끄고, 피드백 모듈 비활성화는 카메라 위치·줌을 즉시 원복합니다. 이동 속도·피해·전역 시간은 바꾸지 않습니다.
+
+발사 성공 Signal `projectile_fired(position, direction, color)`을 독립 `WeaponShotFX`가 받아 방향성 총구 섬광·흰 코어·짧은 전기 잔광을 그립니다. 발사 실패/사거리 밖에서는 섬광을 만들지 않습니다. 동시 16개, 기본 수명 0.12초로 제한하며 다중 탄환도 상한을 넘지 않습니다. 더 이상 남은 섬광이 없으면 처리와 다시 그리기를 중지합니다. 카메라 `position/zoom`은 이동 표현, `offset`은 기존 피격 Director가 소유하여 서로 덮어쓰지 않습니다.
+
+상업 이용 가능한 기존 [Kenney Particle Pack](https://kenney.nl/assets/particle-pack)의 CC0 텍스처 2개를 재사용합니다. 2026-09-08 공식 CC0 표기와 반입 라이선스를 재확인했습니다. 추가 다운로드·유료 에셋·실시간 광원·전체 화면 블룸은 추가하지 않았습니다. 출처·라이선스는 `game/assets/vfx/kenney_particle_pack/`에 보존합니다.
+
+`combat_fx_contract_test.gd`는 줌 상한, 정지/비활성화 복원, 피격 offset 소유권, 발사 Signal, 100회 발사의 16개 상한과 종료, 스킬 표시 수명·취소를 검사합니다. 연출 강도는 Resource/export에서 조정하는 표현값이므로 새 게임 목록이나 Google Sheet 열은 추가하지 않습니다.
+
+로컬 렌더 검수: AMD Radeon 890M / Compatibility에서 계측용 45초 세션 평균 16.75ms·P95 17.68ms·최대 56.71ms, 2,687프레임·21발·2개 공간 이동·종료 후 잔류 노드 0을 확인했습니다. 스크린샷 저장 비용도 포함된 값이며 밀집 전투 카운터는 0이므로 고부하/최소사양/10분 일반 플레이 인증이 아닙니다. `combat_fx_render_test.gd`의 고정 GPU 장면에서 발사·점멸·자기장 수명 80%·가속 표시도 확인합니다. 근거는 `outputs/combat-fx-soak/`와 `outputs/combat-fx/overview.png`입니다.
+
+기존 E2E의 워프 안전 검사가 보스를 제거한 다음 전리품을 검사하던 순서를 **보스 전리품 → 워프**로 바꿨습니다. 실패를 무시하거나 보스를 가짜로 재생성하지 않으며 실제 게임의 위협 차단 정책은 그대로 검증합니다.
+
 피해가 숫자만 감소시키지 않고 즉시 읽히도록 1차 타격 피드백을 적용했습니다. 전역 게임 시간을 멈추는 방식은 사용하지 않습니다. 맞은 액터만 짧게 경직되므로 다수 적 전투와 입력 응답을 유지합니다.
 
 ## 한 번의 타격에서 일어나는 일

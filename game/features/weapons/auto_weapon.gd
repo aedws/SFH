@@ -3,6 +3,7 @@ extends Node2D
 
 signal weapon_runtime_changed(snapshot: Dictionary)
 signal attack_feedback(message: String, reason: StringName)
+signal projectile_fired(world_position: Vector2, direction: Vector2, color: Color)
 
 @export var projectile_scene: PackedScene
 @export var fallback_target_group: StringName = &"enemies"
@@ -27,8 +28,6 @@ var total_trigger_pulls: int = 0
 var total_projectiles_fired: int = 0
 var last_target_instance_id: int = 0
 var active_weapon_identity: Dictionary = {}
-var muzzle_flash_remaining: float = 0.0
-var muzzle_flash_direction := Vector2.RIGHT
 var no_target_cue_remaining: float = 0.0
 var no_target_feedback_lockout: float = 0.0
 var primary_attack_was_pressed := false
@@ -121,8 +120,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
-	var visual_was_active := muzzle_flash_remaining > 0.0 or no_target_cue_remaining > 0.0
-	muzzle_flash_remaining = maxf(0.0, muzzle_flash_remaining - delta)
+	var visual_was_active := no_target_cue_remaining > 0.0
 	no_target_cue_remaining = maxf(0.0, no_target_cue_remaining - delta)
 	no_target_feedback_lockout = maxf(0.0, no_target_feedback_lockout - delta)
 	if visual_was_active: queue_redraw()
@@ -336,9 +334,7 @@ func _spawn_projectile(direction: Vector2) -> void:
 			&"impact_strength_multiplier": impact_profile[&"strength_multiplier"],
 		}
 	)
-	muzzle_flash_direction = direction.normalized()
-	muzzle_flash_remaining = 0.075
-	queue_redraw()
+	projectile_fired.emit(global_position, direction.normalized(), impact_profile[&"color"])
 	total_projectiles_fired += 1
 
 
@@ -395,12 +391,6 @@ func _impact_profile(weapon_id: StringName) -> Dictionary:
 
 
 func _draw() -> void:
-	if muzzle_flash_remaining > 0.0:
-		var ratio := muzzle_flash_remaining / 0.075
-		var color: Color = _impact_profile(active_weapon_id)[&"color"]
-		color.a = clampf(ratio, 0.0, 1.0)
-		draw_line(Vector2.ZERO, muzzle_flash_direction * (24.0 + 12.0 * ratio), color, 4.0)
-		draw_circle(muzzle_flash_direction * 18.0, 5.0 + ratio * 5.0, Color(color.r, color.g, color.b, color.a * 0.35))
 	if no_target_cue_remaining > 0.0:
 		var cue_ratio := no_target_cue_remaining / 0.22
 		var cue_color := Color(0.48, 0.72, 0.76, clampf(cue_ratio * 0.8, 0.0, 0.8))

@@ -10,6 +10,9 @@ const ACCENT := Color("02e5e1")
 @export_range(0.0, 0.3, 0.01) var body_stretch: float = 0.23
 @export_range(0.0, 80.0, 1.0) var camera_lead_pixels: float = 42.0
 @export_range(1.0, 40.0, 1.0) var camera_response: float = 26.0
+@export_range(0.0, 0.15, 0.01) var speed_zoom_out: float = 0.08
+@export_range(1.0, 20.0, 0.5) var zoom_response: float = 7.0
+@export_range(1.0, 1000.0, 1.0) var camera_reference_speed: float = 280.0
 @export_range(0.05, 0.5, 0.01) var cue_duration: float = 0.24
 @export_range(2, 16, 1) var maximum_trail_points: int = 10
 @export_range(1.0, 16.0, 0.5) var dash_trail_width: float = 9.0
@@ -25,6 +28,8 @@ var body_base_scale := Vector2.ONE
 var heading_base_position := Vector2.ZERO
 var heading_base_scale := Vector2.ONE
 var camera_base_position := Vector2.ZERO
+var camera_base_zoom := Vector2.ONE
+var camera_speed_weight: float = 0.0
 var previous_velocity := Vector2.ZERO
 var last_direction := Vector2.RIGHT
 var launch_cue: float = 0.0
@@ -47,6 +52,7 @@ func _ready() -> void:
 		heading_base_scale = heading.scale
 	if camera != null:
 		camera_base_position = camera.position
+		camera_base_zoom = camera.zoom
 	_create_trail()
 	set_physics_process(enabled)
 	if not enabled:
@@ -77,6 +83,7 @@ func set_feedback_enabled(is_enabled: bool) -> void:
 		turn_cue = 0.0
 		dash_cue = 0.0
 		visual_intensity = 0.0
+		camera_speed_weight = 0.0
 		_restore_visuals()
 	else:
 		queue_redraw()
@@ -92,6 +99,7 @@ func advance_feedback(
 	var safe_delta := maxf(0.0, delta)
 	var previous_speed := previous_velocity.length()
 	var current_speed := world_velocity.length()
+	camera_speed_weight = clampf(current_speed / maxf(1.0, camera_reference_speed), 0.0, 2.0)
 	var safe_speed := maxf(1.0, maximum_speed)
 	speed_ratio = clampf(current_speed / safe_speed, 0.0, 1.5)
 	var start_threshold := safe_speed * 0.55
@@ -129,6 +137,7 @@ func get_feedback_snapshot() -> Dictionary:
 	return {
 		&"enabled": enabled,
 		&"speed_ratio": speed_ratio,
+		&"camera_zoom_ratio": camera.zoom.x / camera_base_zoom.x if camera != null else 1.0,
 		&"visual_intensity": visual_intensity,
 		&"launch_cue_active": launch_cue > 0.05,
 		&"brake_cue_active": brake_cue > 0.05,
@@ -171,7 +180,7 @@ func _update_actor_visuals(delta: float, dash_active: bool) -> void:
 			_response_weight(24.0, delta)
 		)
 	if camera != null:
-		var camera_multiplier := 1.45 if dash_active else 1.0
+		var camera_multiplier := 1.65 if dash_active else lerpf(1.0, 1.35, clampf(camera_speed_weight - 1.0, 0.0, 1.0))
 		var camera_target := (
 			camera_base_position
 			+ last_direction * camera_lead_pixels * lead_weight * camera_multiplier
@@ -180,6 +189,9 @@ func _update_actor_visuals(delta: float, dash_active: bool) -> void:
 			camera_target,
 			_response_weight(camera_response, delta)
 		)
+		# Position is movement-owned, offset remains hit-feedback-owned. Never rotate/shake here.
+		var zoom_weight := clampf(camera_speed_weight * 0.3 + (0.4 if dash_active else 0.0), 0.0, 1.0)
+		camera.zoom = camera.zoom.lerp(camera_base_zoom * (1.0 - speed_zoom_out * zoom_weight), _response_weight(zoom_response, delta))
 
 
 func _update_trail(
@@ -271,6 +283,7 @@ func _restore_visuals() -> void:
 		heading.scale = heading_base_scale
 	if camera != null:
 		camera.position = camera_base_position
+		camera.zoom = camera_base_zoom
 	if trail != null:
 		trail.clear_points()
 		trail.visible = false

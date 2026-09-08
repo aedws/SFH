@@ -127,7 +127,8 @@ func _spawn_visual() -> void:
 	var visual_profile := electric_profile.duplicate(true)
 	visual_profile.set("lifetime_seconds", duration_seconds)
 	var electric := ELECTRIC_EFFECT_SCRIPT.new()
-	effect_parent.add_child(electric)
+	# Child lifetime prevents a visual field lingering after cancellation of its damage owner.
+	add_child(electric)
 	electric.global_position = player.global_position
 	if not electric.configure_radial(radius, visual_profile, player):
 		electric.queue_free()

@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 149 TOPICS</span><span>101 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 150 TOPICS</span><span>101 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -64,9 +64,19 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 8 · IMPROVE 17 · CHANGE 3 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 9 · IMPROVE 18 · CHANGE 3 · FIX 15</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 14</small><b>전투 연출 · 달리기, 발사, 전기 스킬을 더 선명하게</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 진행 방향 카메라와 짧은 줌아웃, 방향성 발사 섬광, 지속 중인 전기 효과를 강화했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>독립 발사 FX 모듈을 추가하고 동시 16개·0.12초 상한을 적용했습니다. 기존 CC0 에셋을 재사용합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>점멸 출발·도착, 자기장 고정 외곽, 가속 아크를 보강하고 자기장 내부 채움은 줄였습니다. 카메라는 정지 후 원복합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>스킬 취소·시간 변경과 이펙트 수명을 일치시켰습니다. 보스 전리품보다 먼저 보스를 제거할 수 있던 E2E 순서도 수정했습니다.</p></div>
+        <p><a href="../features/hit-feedback/#speed-shot-fx">연출 변경·성능 예산·검수 범위 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 13</small><b>효과 툴킷 · Notion 명세에서 실제 구현 변수까지</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 스킬·무기·캐릭터·모듈 효과를 현행 코드 기준으로 지정하고 명세를 검증합니다.</strong></div>

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "09627a3ba641c4bc27e48351da57eaef9a4102389e8e5cf8dc19cab1c129e28a",
+  "source_sha256": "469330a32d75705709e768e0f1b9154483df63251b70972d9ec24fc454562787",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 337,
-    "named_classes": 264,
+    "scripts": 340,
+    "named_classes": 265,
     "relationships": 208,
     "project_inheritance": 13,
     "enabled_toggles": 70
@@ -1267,12 +1267,13 @@
       "path": "game/features/weapons",
       "wiki_route": "features/weapons/",
       "enabled": true,
-      "file_count": 3,
-      "class_count": 3,
+      "file_count": 4,
+      "class_count": 4,
       "classes": [
         "AutoWeapon",
         "WeaponInnateSkillSystem",
-        "WeaponProjectile"
+        "WeaponProjectile",
+        "WeaponShotFX"
       ],
       "incoming_count": 5,
       "outgoing_count": 3
@@ -1286,7 +1287,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 62,
+      "file_count": 64,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -3669,6 +3670,15 @@
       "extends": "Area2D",
       "base_id": "",
       "inheritance": "engine"
+    },
+    {
+      "id": "class:WeaponShotFX",
+      "name": "WeaponShotFX",
+      "module": "weapons",
+      "path": "game/features/weapons/weapon_shot_fx.gd",
+      "extends": "Node2D",
+      "base_id": "",
+      "inheritance": "engine"
     }
   ],
   "edges": [
@@ -4600,7 +4610,7 @@
       "from": "verification",
       "to": "combat_skills",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 6
     },
     {
       "from": "verification",
@@ -4810,7 +4820,7 @@
       "from": "verification",
       "to": "player",
       "type": "verifies",
-      "evidence_count": 7
+      "evidence_count": 8
     },
     {
       "from": "verification",
@@ -4894,7 +4904,7 @@
       "from": "verification",
       "to": "weapons",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 4
     },
     {
       "from": "weapon_balance",
