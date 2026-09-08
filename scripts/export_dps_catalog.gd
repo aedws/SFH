@@ -55,8 +55,9 @@ func _run() -> void:
 	catalog.sources = sources
 	var result := JSON.stringify(catalog, "\t", true, true) + "\n"
 	if "--check" in OS.get_cmdline_user_args():
-		if FileAccess.get_file_as_string(OUTPUT).replace("\r\n","\n") != result:
-			push_error("DPS catalog stale. Run scripts/export_dps_catalog.gd")
+		var difference := _difference(JSON.parse_string(FileAccess.get_file_as_string(OUTPUT)), JSON.parse_string(result), "catalog")
+		if not difference.is_empty():
+			push_error("DPS catalog stale at " + difference + ". Run scripts/export_dps_catalog.gd")
 			quit(1)
 			return
 	else:
@@ -64,6 +65,27 @@ func _run() -> void:
 		file.store_string(result)
 	print("DPS_CATALOG_OK weapons=%d skills=%d" % [catalog.weapons.size(),catalog.skills.size()])
 	quit()
+
+## JSON formatting and native floating-point serialization may differ across OSes.
+## Source hashes and topology remain exact; only numeric roundoff receives tolerance.
+func _difference(expected: Variant, actual: Variant, path: String) -> String:
+	if (expected is float or expected is int) and (actual is float or actual is int):
+		if absf(float(expected) - float(actual)) <= 0.000001 * maxf(1.0, maxf(absf(float(expected)), absf(float(actual)))): return ""
+	elif expected is Dictionary and actual is Dictionary:
+		if expected.size() != actual.size(): return path + " keys"
+		for key in expected:
+			if not actual.has(key): return path + "." + str(key) + " missing"
+			var difference := _difference(expected[key], actual[key], path + "." + str(key))
+			if not difference.is_empty(): return difference
+		return ""
+	elif expected is Array and actual is Array:
+		if expected.size() != actual.size(): return path + " length"
+		for index in expected.size():
+			var difference := _difference(expected[index], actual[index], path + "[%d]" % index)
+			if not difference.is_empty(): return difference
+		return ""
+	elif expected == actual: return ""
+	return path + ": " + str(expected) + " != " + str(actual)
 
 func _collect(directory: String) -> void:
 	for file in DirAccess.get_files_at("res://"+directory):

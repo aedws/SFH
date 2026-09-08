@@ -11228,7 +11228,7 @@
 		"game/features/weapons/projectile.tscn": "aec697a1e9c9bbee777dc6bff9c87a79d2918e12282e327b4b77dbdae94d1366",
 		"game/features/weapons/weapon_innate_skill_system.gd": "34a490622ae3b45b4785c82fc8cbff3fab6b4a68269a5eb128b0a2720095ae6f",
 		"game/features/weapons/weapon_shot_fx.gd": "07cd1eed7422a9b0885d8be0e95ebb755d06095032a0f6dbdde61ab0f8e2eeb5",
-		"scripts/export_dps_catalog.gd": "48b4488dfc7913b728a3b572671e86f0f1b135a25b2f0030d48d7680da48b96d",
+		"scripts/export_dps_catalog.gd": "87cd6923607859e39df1d5d204551a3da4d29062da2d37843c14e945c57cf176",
 		"scripts/export_dps_loadout.gd": "4e4e14eebc0b4c98e379290e235c6717b8a8f4e7345d866a7d7dd4f76e20580c"
 	},
 	"weapons": [

@@ -115,7 +115,12 @@ jobs:
 
       - name: Test game contracts
         run: |
-          godot --headless --path "$GITHUB_WORKSPACE" --script res://scripts/export_dps_catalog.gd -- --check > /tmp/sfh-dps-runtime.log 2>&1
+          if godot --headless --path "$GITHUB_WORKSPACE" --script res://scripts/export_dps_catalog.gd -- --check > /tmp/sfh-dps-runtime.log 2>&1; then
+            cat /tmp/sfh-dps-runtime.log
+          else
+            cat /tmp/sfh-dps-runtime.log
+            exit 1
+          fi
           cat /tmp/sfh-dps-runtime.log
           grep -q "DPS_CATALOG_OK" /tmp/sfh-dps-runtime.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-dps-runtime.log
