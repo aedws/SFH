@@ -1,9 +1,16 @@
 {
-  "version": 53,
+  "version": 54,
   "updated": "2026-09-08",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "맵 생성기 필수 피스 지역 랜드마크 Facility 시드",
+      "label": "맵·피스 설계실 · 익힐 수 있는 지역 배치",
+      "description": "지역 기준점과 랜덤 보조 시설 비교, 피스 시험·Notion 제안, 실제 엔진 배치 대조",
+      "category": "기획",
+      "priority": 122
+    },
     {
       "query": "전체 게임 UI 재편 제작 도감 설정 게임답게 전환 검수",
       "label": "전체 게임 UI · 선택과 결과 중심 재편",

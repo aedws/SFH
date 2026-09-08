@@ -14,7 +14,7 @@ func _check(value: bool, message: String) -> void:
 
 func _run() -> void:
 	var catalog := preload("res://game/features/map_generation/facility_catalog.gd").new()
-	_check(catalog.rows.size()==4,"locked Facility rows")
+	_check(catalog.rows.size()==5,"locked Facility rows")
 	var before := catalog.get_rows()
 	_check(not catalog.load_csv("invalid") and catalog.get_rows()==before,"invalid table preserves last valid rows")
 	var csv := preload("res://game/features/map_generation/data/facility_payload.tres").csv_text

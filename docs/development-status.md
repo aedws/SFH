@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 146 TOPICS</span><span>100 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 147 TOPICS</span><span>100 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -64,9 +64,18 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 6 · IMPROVE 14 · CHANGE 3 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 7 · IMPROVE 15 · CHANGE 3 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>지역 맵 · 기억할 기준점과 피스 설계실</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 같은 지역에서 큰길·필수 건물을 익히고, 주변 시설만 새롭게 탐색합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>기획자·개발자 맵 생성 미리보기와 피스 시험·Notion 초안을 제공합니다. 시험은 승인·게임 적용과 분리합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>지역별 필수 기준점, 고정 도로 골격, 랜덤 보조 시설로 변경했습니다. Facility는 12열·5개 피스로 확장했습니다.</p></div>
+        <p><a href="../features/extraction-district/#regional-map">맵 규칙·임시 수치·검증 범위 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 10</small><b>전체 게임 UI · 기능 도구에서 선택과 회수의 화면으로</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 준비실·제작·도감·설정·시즌 화면을 게임 흐름으로 정리하고, 전투 시야를 가리지 않는 HUD는 유지했습니다.</strong></div>

@@ -29,6 +29,8 @@
   .md-typeset .sfh-workspace > h1 + p { margin: .4rem 0; font-size: .7rem; }
   .sfh-workspace-launcher { margin: .65rem 0; }
   .sfh-workspace-launcher span { display: none; }
+  .sfh-workspace-launcher small { display: none; }
+  .md-typeset .sfh-workspace-launcher a { min-height:52px; justify-content:center; }
   .md-typeset .sfh-workspace-launcher a { padding: .5rem; }
   .sfh-workspace-launcher strong { font-size: .7rem; }
   .sfh-workspace > p:first-child { font-size: .7rem; }

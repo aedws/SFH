@@ -217,6 +217,10 @@ func _verify_setting_change_matrix(game_scene: PackedScene) -> int:
 					if int(context.get(&"utility_investment", {}).get(&"additional_entry_cost", 0)) != 30:
 						failure = "유틸리티 설정 기여 비용이 계약에서 누락됨"
 			if failure.is_empty():
+				var regional: Dictionary = game.get("map_generator").call(&"get_regional_plan")
+				if regional.get("region", "") != String(region_id):
+					failure = "선택 지역이 실제 맵의 필수 피스 계약에 전달되지 않음"
+			if failure.is_empty():
 				verified += 1
 				game.call(&"_abandon_run_to_start_hub")
 				await process_frame

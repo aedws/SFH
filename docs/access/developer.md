@@ -12,6 +12,7 @@ hide:
 작업·구조·검증 근거를 골라 확인하세요. 최종 판단은 프로젝트 오너가 합니다.
 
 <nav class="sfh-workspace-launcher" aria-label="개발자 작업 바로가기">
+  <a href="#map-workbench"><small>공간</small><strong>맵·피스 설계실</strong><span>게임 배치 대조와 오너 판단 초안</span></a>
   <a href="#owner-decision-console"><small>판단</small><strong>작업·오너 판단</strong><span>선행 조건과 판단 대기열</span></a>
   <a href="#confirmed-balance"><small>기획 확정</small><strong>확정 그래프</strong><span>편집 없이 수치 근거만 확인</span></a>
   <a href="#code-module-map"><small>구조</small><strong>코드·모듈 관계</strong><span>구현 연결과 영향 추적</span></a>
@@ -21,6 +22,19 @@ hide:
 </nav>
 
 <p class="sfh-workspace-notice">판단 콘솔·그래프는 읽기 전용입니다. 기획 확정, 오너 승인, 게임 적용 상태를 구분해서 확인합니다.</p>
+
+<details class="sfh-workspace-block" markdown="1" id="map-workbench">
+<summary>맵·피스 설계실 <small>현행 CSV 배치와 시험안을 비교</small></summary>
+
+## 지역별 필수 공간과 무작위 피스
+
+맵 설계실은 양 역할 모두 시험할 수 있습니다. 기존 기획 확정 그래프의 읽기 전용 권한은 바꾸지 않습니다. 초안은 오너 판단 요청이며 게임 적용·기획 확정이 아닙니다.
+
+<div data-sfh-map-workbench data-catalog="../../assets/map-catalog.json">맵 자료 준비 중…</div>
+
+[RegionalDistrictPlan 계약·검증](../features/extraction-district.md#regional-map). Godot 순수 배치 → 카탈로그·27개 기준 맵 → JS 동등성 검사로 연결합니다. 전투 시뮬레이터가 아니며, 초안은 자동 공유·저장되지 않습니다.
+
+</details>
 
 **최신 오너 승인 변경:** [익스트랙션 구역·공간 공개](../features/extraction-district.md) → [모듈 경계](../architecture/module-audit.md#extraction-district) → [플레이 수락 근거](../quality/e2e-play-session.md#extraction-district). 기존 전방/반경 시야와 모든 방 봉쇄는 기본값이 아니라 이전 정책입니다.
 

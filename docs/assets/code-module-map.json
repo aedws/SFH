@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "40a61190f3a971eaf615945771efe790f19b35841ed36971089a6a198c772d9f",
+  "source_sha256": "09627a3ba641c4bc27e48351da57eaef9a4102389e8e5cf8dc19cab1c129e28a",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 335,
-    "named_classes": 263,
+    "scripts": 337,
+    "named_classes": 264,
     "relationships": 208,
     "project_inheritance": 13,
     "enabled_toggles": 70
@@ -708,8 +708,8 @@
       "path": "game/features/map_generation",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 7,
-      "class_count": 7,
+      "file_count": 8,
+      "class_count": 8,
       "classes": [
         "DungeonFloorLayer",
         "ExtractionDistrictLayout",
@@ -717,6 +717,7 @@
         "ExtractionFacilityCatalog",
         "FacilityCatalogService",
         "MapTierConfig",
+        "RegionalDistrictPlan",
         "RoguelikeMapGenerator"
       ],
       "incoming_count": 7,
@@ -1285,7 +1286,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 61,
+      "file_count": 62,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -2694,6 +2695,15 @@
       "module": "map_generation",
       "path": "game/features/map_generation/map_tier_config.gd",
       "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:RegionalDistrictPlan",
+      "name": "RegionalDistrictPlan",
+      "module": "map_generation",
+      "path": "game/features/map_generation/regional_district_plan.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -4734,7 +4744,7 @@
       "from": "verification",
       "to": "map_generation",
       "type": "verifies",
-      "evidence_count": 8
+      "evidence_count": 9
     },
     {
       "from": "verification",
