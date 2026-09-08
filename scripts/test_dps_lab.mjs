@@ -24,8 +24,8 @@ try {
     await lab.getByLabel('적 방어막 (피해 흡수량)',{exact:true}).fill('50');
     await lab.getByText('무기 시험값',{exact:true}).click();
     await lab.getByLabel('탄환 기본 피해',{exact:true}).fill('10');
-    assert.notEqual(await lab.locator('path.dps-total').getAttribute('d'),original,'Graph responds to damage and enemy HP');
-    await lab.locator('.dps-graph').screenshot({path:`outputs/dps-lab/graph-${width}.png`});
+    assert.notEqual(await lab.locator('path.dps-total').first().getAttribute('d'),original,'Graph responds to damage and enemy HP');
+    await lab.locator('.dps-graph').first().screenshot({path:`outputs/dps-lab/graph-${width}.png`});
     const strong=await lab.locator('.dps-kpis').innerText();assert.match(strong,/예상 처치 시간/);
     await lab.getByLabel('탄환 기본 피해',{exact:true}).fill('');
     assert.equal(await lab.locator('[role=alert]').isVisible(),true);
@@ -44,7 +44,7 @@ try {
     await lab.getByLabel('적 기본값 불러오기',{exact:true}).selectOption('nightmare');
     assert.equal(Number(await lab.getByLabel('적 체력',{exact:true}).inputValue()),5.4);
     await lab.getByText(/현재 무기 .* 전체 수치/).click();
-    assert.equal(await lab.locator('table').count(),3);
+    assert.equal(await lab.locator('table').count(),9,'catalog/sample plus six detailed damage/survival tables');
     await bounds();
     await lab.getByLabel('목표 처치 시간 (초)',{exact:true}).focus();
     await page.keyboard.press('ControlOrMeta+A');await page.keyboard.type('8');

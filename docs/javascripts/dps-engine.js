@@ -25,7 +25,7 @@
       skillMultiplier:1, hp:catalog.enemy.hp, armor:catalog.enemy.armor, enemyDamage:catalog.enemy.damage,
       enemyInterval:catalog.enemy.interval, horizon:30, hitRate:1, coverage:1, energy:r.starting,
       maxEnergy:r.maximum, regen:r.regen, regenDelay:r.delay, targetTime:5, innate:true, fixedOptions:true,
-      shock:false, resourceLimits:true};
+      shock:false, resourceLimits:true, ...(catalog.loadout?{loadout:globalThis.SFHLoadout.defaults(catalog)}:{})};
   }
   function validate(input) {
     const errors = [];
@@ -44,6 +44,8 @@
     if (!weapon || (input.skillId && !skill)) throw Error('선택한 무기/스킬이 원본에 없습니다.');
     if (skill && !['path','field','utility'].includes(skill.kind)) throw Error('새 스킬 효과는 계산 모델 등록이 필요합니다.');
     let add=input.damageAdd, multiply=input.damageMultiplier, intervalMultiply=input.intervalMultiplier;
+    const loadout=catalog.loadout?globalThis.SFHLoadout.resolve(catalog,input.weaponId,input.loadout):null;
+    if(loadout){add+=loadout.weapon.damage_add||0;multiply*=loadout.weapon.damage_multiply??1;intervalMultiply*=loadout.weapon.fire_interval_multiply??1;}
     if (input.fixedOptions) for (const option of weapon.options) {
       if (option.modifier_id === 'damage_add') add += option.amount;
       if (option.modifier_id === 'damage_multiply') multiply *= option.amount;
@@ -61,7 +63,7 @@
     const ticks = skill?.kind === 'field' ? Math.ceil(duration/input.skillTick-1e-9) : 1;
     const perCast = skill?.kind === 'utility' || !skill || !allowed ? 0 : skillDamage*ticks*input.coverage;
     const innate = input.innate ? (weapon.innate.fixed_damage || 0) / (weapon.innate.trigger_every_hits || 1) : 0;
-    return {weapon,skill,allowed,hit,gap,burstGap,cycle,skillDamage,duration,ticks,perCast,
+    return {weapon,skill,allowed,hit,gap,burstGap,cycle,skillDamage,duration,ticks,perCast,loadout,
       sustainedWeapon:(hit+innate)*input.projectiles*input.burst*input.hitRate/cycle,
       activeSkillDps:skill?.kind === 'field' && allowed ? skillDamage/input.skillTick*input.coverage : 0};
   }
@@ -70,6 +72,8 @@
     if (x.skill?.kind === 'field' && x.ticks*(1+input.horizon/input.skillCooldown)>200000) throw Error('계산 예산 초과: 지속 시간·관측 시간을 줄이거나 틱 간격을 늘려주세요.');
     let energy=input.energy, idle=0, charges=input.charges, recharge=0, cooldown=0;
     let nextShot=0, burstIndex=0, weaponDamage=0, skillDamage=0, confirmed=0, procs=0, casts=0, ttk=null, active=[];
+    const player=x.loadout?.player||catalog.loadout?.player||{max_health:100,defense:0,movement_speed:280};
+    const receivedHit=Math.max(1,input.enemyDamage-player.defense);
     const points=[];
     const totalSteps=Math.round(input.horizon/dt);
     for (let step=0; step<=totalSteps; step++) {
@@ -112,11 +116,21 @@
       const total=weaponDamage+skillDamage;
       if(ttk===null && total+1e-9>=budget) ttk=time;
       if(step%10===0 || step===totalSteps) points.push({time,weapon:weaponDamage,skill:skillDamage,total,
-        hp:Math.max(0,input.hp-Math.max(0,total-input.armor)),armor:Math.max(0,input.armor-total),energy});
+        hp:Math.max(0,input.hp-Math.max(0,total-input.armor)),armor:Math.max(0,input.armor-total),energy,
+        playerHp:Math.max(0,player.max_health-(Math.floor((time+1e-9)/input.enemyInterval)+1)*receivedHit)});
     }
     return {points,ttk,casts,procs,weaponDamage,skillDamage,total:weaponDamage+skillDamage,
       dps:(weaponDamage+skillDamage)/input.horizon,enemyDps:input.enemyDamage/input.enemyInterval,
-      resolved:x, energy, charges};
+      resolved:x, energy, charges,player,receivedHit,receivedDps:receivedHit/input.enemyInterval,
+      survivalTime:(Math.ceil(player.max_health/receivedHit)-1)*input.enemyInterval};
   }
-  globalThis.SFHDps = Object.freeze({defaults,resolve,simulate,validate,limits,copy});
+  function skillComparisons(catalog,input){
+    // Each skill gets the SAME full initial AP pool; this is not simultaneous skill rotation.
+    return catalog.skills.map(skill=>{
+      const i={...input,skillId:skill.skill_id};const baseline=defaults(catalog,input.weaponId,skill.skill_id);
+      for(const key of ['skillDamage','skillCooldown','skillDuration','skillTick','skillCost','charges','recharge'])i[key]=skill.skill_id===input.skillId?input[key]:baseline[key];
+      return {id:skill.skill_id,name:skill.display_name,result:simulate(catalog,i)};
+    });
+  }
+  globalThis.SFHDps = Object.freeze({defaults,resolve,simulate,skillComparisons,validate,limits,copy});
 })();

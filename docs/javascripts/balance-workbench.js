@@ -51,6 +51,34 @@
       }catch(e){status.textContent=`저장되지 않음: ${e.message}`;}finally{busy=false;save.disabled=false;}
     });
   }
+  function drawBundle(host,graph){
+    const primary=el('div');host.replaceChildren(primary);draw(primary,graph);
+    for(const series of graph.series||[]){const details=el('details'),body=el('div');details.append(el('summary',series.title),body);host.append(details);draw(body,{...series,xLabel:graph.xLabel,yLabel:series.title,note:'동일 초기 자원의 독립 스킬 비교 / 생존은 회복·회피 없음. 각 스킬을 동시 사용한 합산 DPS가 아닙니다.'});}
+  }
+  globalThis.SFHBalanceView=Object.freeze({draw,drawBundle});
+  function currentCombat(root){
+    const panel=el('details');panel.open=true;panel.className='balance-combat-default';panel.append(el('summary','기본 전투 성능 · 확정안 우선 / 없으면 현행 구현값'));
+    const status=el('p'),graph=el('div'),retry=button('전투 기본값 새로고침');status.setAttribute('role','status');panel.append(status,retry,graph);root.append(panel);
+    async function load(){
+      retry.disabled=true;graph.replaceChildren();
+      try{
+        const catalog=await json(new URL(root.dataset.combatCatalog||'../../assets/dps-catalog.json',location.href));
+        let latest=null,failed=false;
+        try{latest=(await json('/api/auth/balance?latest=combat')).record;}catch(e){failed=true;status.textContent=`확정안 조회 실패: ${e.message}. 아래는 별도의 현행 구현 기준값입니다.`;}
+        const fingerprint=await SFHBalance.fingerprint(catalog.sources);
+        if(latest&&latest.source===fingerprint&&latest.model_version===SFHBalance.version){
+          status.textContent=`기본값: 기획 확정 · ${latest.title} · ${latest.confirmed_at}. 오너 승인·게임 적용과 별도입니다.`;drawBundle(graph,latest.graph);panel.dataset.source='confirmed';
+        }else{
+          if(!failed)status.textContent=latest?'기획 확정본의 코드/계산 모델이 달라 재검토가 필요합니다. 현재 구현값을 기본으로 표시합니다.':'전투 기획 확정본이 없습니다. 현재 구현값을 기본으로 표시합니다.';
+          const input=SFHDps.defaults(catalog,catalog.weapons.some(w=>w.id==='assault_rifle')?'assault_rifle':catalog.weapons[0].id,catalog.skills[0]?.skill_id||'');
+          drawBundle(graph,SFHBalance.calculate('combat',catalog,input));panel.dataset.source='implemented';
+        }
+        panel.dataset.ready='true';
+      }catch(e){status.textContent=`전투 그래프 연결 실패: ${e.message}`;delete panel.dataset.ready;}
+      finally{retry.disabled=false;}
+    }
+    retry.addEventListener('click',load);load();return load;
+  }
   async function workbench(root){
     if(root.dataset.mounted)return;root.dataset.mounted='true';root.classList.add('dps-lab');
     try{
@@ -116,6 +144,8 @@
   async function gallery(root){
     if(root.dataset.mounted)return;root.dataset.mounted='true';root.classList.add('dps-lab');
     root.replaceChildren();const refresh=button('확정 그래프 새로고침'),list=el('div'),more=button('이전 확정본 더 보기'),status=el('p');status.setAttribute('role','status');more.hidden=true;root.append(refresh,status,list,more);
+    const refreshCombat=currentCombat(root);
+    root.insertBefore(root.querySelector('.balance-combat-default'),list);
     const baseline=currentBalance(root,root.dataset.catalog);let cursor=null;
     async function load(reset){
       refresh.disabled=more.disabled=true;
@@ -125,9 +155,9 @@
         for(const record of data.records){
           const details=el('details');details.append(el('summary',`${record.title} · ${record.confirmed_at}`));list.append(details);
           details.addEventListener('toggle',async()=>{if(!details.open||details.dataset.loaded)return;details.dataset.loaded='true';
-            try{const saved=await json(`/api/auth/balance?id=${encodeURIComponent(record.id)}`);const host=el('div');details.append(el('p',`기획 확정 · 오너 승인 대기 · 게임 미적용 · 모델 v${saved.model_version}`),host);draw(host,saved.graph);
+            try{const saved=await json(`/api/auth/balance?id=${encodeURIComponent(record.id)}`);const host=el('div');details.append(el('p',`기획 확정 · 오너 승인 대기 · 게임 미적용 · 모델 v${saved.model_version}`),host);drawBundle(host,saved.graph);
               const evidence=el('p',saved.reason),link=el('a','Notion 기획 근거');link.href=saved.notion;link.rel='noopener';details.append(evidence,link);
-              let width=host.clientWidth;const observer=new ResizeObserver(()=>{if(!host.isConnected){observer.disconnect();return;}if(width!==host.clientWidth){width=host.clientWidth;draw(host,saved.graph);}});observer.observe(host);
+              let width=host.clientWidth;const observer=new ResizeObserver(()=>{if(!host.isConnected){observer.disconnect();return;}if(width!==host.clientWidth){width=host.clientWidth;drawBundle(host,saved.graph);}});observer.observe(host);
             }catch(e){details.append(el('p',`읽기 실패: ${e.message}. 새로고침으로 다시 시도하세요.`));}
           });
         }
@@ -135,7 +165,7 @@
         if(reset)baseline.open=!list.children.length;
       }catch(e){status.textContent=`확정본 연결 실패: ${e.message}. 확정본 유무를 판단할 수 없습니다. 아래 현행 CSV는 별도 기준 자료입니다.`;baseline.open=true;}finally{refresh.disabled=more.disabled=false;}
     }
-    refresh.addEventListener('click',()=>load(true));more.addEventListener('click',()=>load(false));load(true);
+    refresh.addEventListener('click',()=>{load(true);refreshCombat();});more.addEventListener('click',()=>load(false));load(true);
   }
   const init=()=>{
     document.querySelectorAll('[data-sfh-balance-workbench]').forEach(workbench);

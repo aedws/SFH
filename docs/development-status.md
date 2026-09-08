@@ -64,9 +64,18 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 9 · IMPROVE 18 · CHANGE 3 · FIX 15</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 10 · IMPROVE 19 · CHANGE 3 · FIX 15</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 15</small><b>성능 실험실 · 장착 조합과 스킬별 그래프 연결</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 파츠·모듈·방어구·캐릭터를 선택하면 실제 장착 규칙으로 피해와 생존 성능을 비교합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>장비 강화·품질·소켓 비용, 스킬별 독립 AP 피해, HP·방어·이동 속도와 피격 생존 그래프를 추가했습니다. 실제 Godot 장착 계산 104조합과 대조했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>개발자 기본 그래프는 유효한 최신 기획 확정안을 우선하고, 없거나 원본이 바뀌면 현행 구현값과 사유를 표시합니다. 확정은 게임 자동 적용과 별개입니다.</p></div>
+        <p><a href="../tools/dps-lab/">계산 범위·장착 방법·검수 근거 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 14</small><b>전투 연출 · 달리기, 발사, 전기 스킬을 더 선명하게</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 진행 방향 카메라와 짧은 줌아웃, 방향성 발사 섬광, 지속 중인 전기 효과를 강화했습니다.</strong></div>

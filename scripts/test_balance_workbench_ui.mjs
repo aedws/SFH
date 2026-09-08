@@ -66,13 +66,13 @@ try{
     await page.locator('.sfh-workspace-launcher a[href$="#confirmed-balance"]').click();
     const gallery=page.locator('[data-sfh-balance-gallery]');
     await gallery.getByText('회수 예시 '+width,{exact:false}).click();
-    await gallery.getByRole('img').waitFor();
+    await gallery.getByRole('img').first().waitFor();
     assert.equal(await gallery.locator('input,textarea').count(),0,'developer has graphs, not trial inputs');
     assert.equal(await gallery.getByRole('button',{name:'기획 확정본 저장'}).count(),0);
     assert.match(await gallery.innerText(),/오너 승인 대기/);
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`developer overflow ${width}`);
     await gallery.screenshot({path:`outputs/balance-workbench/developer-${width}.png`});
-    await page.reload();await gallery.getByText('회수 예시 '+width,{exact:false}).click();await gallery.getByRole('img').waitFor();
+    await page.reload();await gallery.getByText('회수 예시 '+width,{exact:false}).click();await gallery.getByRole('img').first().waitFor();
     assert.equal(records.size,1,'graph reload does not mutate confirmations');
     const baseline=gallery.locator('.balance-current');
     assert.equal(await baseline.getAttribute('open'),null,'confirmed graphs first; baseline available for other items');

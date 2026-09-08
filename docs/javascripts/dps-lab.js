@@ -35,10 +35,13 @@
       toolbar.append(labelled('무기 원본',weapon),labelled('스킬 원본',skill),labelled('적 기본값 불러오기',difficulty));
       const reset=el('button','현재 원본으로 초기화');reset.type='button';toolbar.append(reset);root.append(toolbar);
       const info=el('p',undefined,'dps-source');root.append(info);
+      let equipmentEditor;
+      if(catalog.loadout)equipmentEditor=SFHLoadoutUI.mount(root,catalog,weapon.value,()=>update());
       const error=el('p',undefined,'dps-error');error.setAttribute('role','alert');error.hidden=true;root.append(error);
       const result=el('section',undefined,'dps-results');result.setAttribute('aria-label','DPS 비교 결과');
       const summary=el('div',undefined,'dps-kpis');summary.setAttribute('aria-live','polite');summary.setAttribute('aria-atomic','true');result.append(summary);
       const graph=el('div',undefined,'dps-graph');result.append(graph);
+      const extraGraphs=el('details',undefined,'dps-extra-graphs');extraGraphs.append(el('summary','스킬별 피해 · 캐릭터 생존 그래프'));const extraBody=el('div');extraGraphs.append(extraBody);result.append(extraGraphs);
       const warning=el('p',undefined,'dps-note');result.append(warning);root.append(result);
       const form=el('form',undefined,'dps-inputs');form.addEventListener('submit',e=>e.preventDefault());
       const controls={};
@@ -92,6 +95,7 @@
       function update(){
         try {
           const input=E.defaults(catalog,weapon.value,skill.value);
+          if(equipmentEditor)input.loadout=equipmentEditor.read();
           for(const [key,control]of Object.entries(controls))input[key]=control.type==='checkbox'?control.checked:control.value===''?NaN:Number(control.value);
           const current=E.defaults(catalog,weapon.value,skill.value);for(const key of scenarioKeys)current[key]=input[key];
           const now=E.simulate(catalog,input),base=E.simulate(catalog,current),x=now.resolved;
@@ -103,15 +107,21 @@
           metric('무기 장기 DPS¹',f(x.sustainedWeapon),`스킬 1시전 ${f(x.perCast)} · ${now.casts}회 시전`);
           metric('관측 구간 스킬 DPS',f(now.skillDamage/input.horizon),`원본 ${f(base.skillDamage/input.horizon)} · 무기 DPS ${f(now.weaponDamage/input.horizon)}`);
           metric('적 접촉 DPS',f(now.enemyDps),'연속 접촉·플레이어 방어 미적용');
+          metric('플레이어 HP / 방어',`${f(now.player.max_health)} / ${f(now.player.defense)}`,`이동 속도 ${f(now.player.movement_speed)} · 피격 1회 ${f(now.receivedHit)}`);
+          metric('연속 피격 생존 시간',`${f(now.survivalTime)}초`,'0초부터 피격 · 회피/회복 없이 방어력 차감, 최소 피해 1');
           const notices=[];
           if(!x.allowed)notices.push(`스킬 사용 불가: ${x.skill.required_combat_tags.join(', ')} 태그 필요. 스킬 피해 0으로 계산.`);
           if(x.weapon.source_mode==='runtime_fallback')notices.push('이 무기는 확정 무기 CSV 행이 없어 실제 런타임 대체 발사값을 사용합니다. 의도된 무기 밸런스 확정값이 아닙니다.');
           if(x.skill?.kind==='utility')notices.push('기동 가속은 이동 기능입니다. 직접 피해 0은 누락이 아닙니다.');
+          if(x.loadout){notices.push(x.loadout.costs.map(c=>`${c.name} 모듈 비용 ${c.used}/${c.capacity}`).join(' · '));notices.push(...x.loadout.notes);}
           if(!input.resourceLimits)notices.push('AP·충전 무제한: 실제 전투가 아닌 쿨타임 기준 상한 실험입니다.');
           notices.push('같은 적·명중률·AP 조건에서 원본과 시험값 비교. 단일 적 / 무기 1개 + 스킬 1개 / 처치 후에도 누적 피해 그래프는 계속됩니다.');
           warning.textContent=notices.join(' ');
           info.textContent=`${x.weapon.name} · ${x.weapon.source_mode==='locked_csv'?'확정 CSV':'런타임 대체값'} + 스킬 Resource · 시험값은 이 화면에서만 적용됩니다. 원본·시트·게임 저장 변경 없음.`;
           draw(now,base,input);
+          extraBody.replaceChildren();
+          const bundle=SFHBalance.calculate('combat',catalog,input);
+          for(const series of bundle.series){const detail=el('details');detail.append(el('summary',series.title));const host=el('div');detail.append(host);extraBody.append(detail);SFHBalanceView.draw(host,{...series,xLabel:'시간 (초)',yLabel:series.title,note:'각 스킬은 같은 초기 AP에서 독립 계산합니다. 여러 스킬의 동시 사용 DPS를 합한 결과가 아닙니다.'});}
           const stride=Math.max(1,Math.floor(now.points.length/12));
           sampleBody.replaceChildren(table(['시간 (초)','시험 합계','원본 합계','무기','스킬','적 잔여 HP','적 잔여 방어막'],now.points.filter((p,j)=>j%stride===0||j===now.points.length-1).map(p=>{
             const b=base.points.find(q=>q.time===p.time);return[f(p.time),f(p.total),f(b.total),f(p.weapon),f(p.skill),f(p.hp),f(p.armor)];
@@ -121,12 +131,12 @@
           document.dispatchEvent(new Event('sfh-balance-trial'));
         }catch(e){root.sfhBalanceTrial=null;error.textContent=`계산 중단: ${e.message}`;error.hidden=false;result.hidden=true;sampleBody.textContent='유효한 수치를 입력하면 다시 계산합니다.';}
       }
-      function load(){const i=E.defaults(catalog,weapon.value,skill.value);for(const [key,node]of Object.entries(controls)){if(node.type==='checkbox')node.checked=i[key];else node.value=i[key];}difficulty.value='custom';update();}
+      function load(){equipmentEditor?.weapon(weapon.value);const i=E.defaults(catalog,weapon.value,skill.value);for(const [key,node]of Object.entries(controls)){if(node.type==='checkbox')node.checked=i[key];else node.value=i[key];}difficulty.value='custom';update();}
       // Responsive axes keep real 12px labels instead of shrinking a desktop SVG on phones.
       let lastWidth=root.clientWidth;
       const observer=new ResizeObserver(()=>{if(!root.isConnected){observer.disconnect();return;}if(root.clientWidth!==lastWidth){lastWidth=root.clientWidth;update();}});
       observer.observe(root);
-      weapon.addEventListener('change',load);skill.addEventListener('change',load);reset.addEventListener('click',load);
+      weapon.addEventListener('change',load);skill.addEventListener('change',load);reset.addEventListener('click',()=>{equipmentEditor?.reset();load();});
       form.addEventListener('input',()=>{difficulty.value='custom';update();});
       difficulty.addEventListener('change',()=>{const d=catalog.difficulties.find(d=>d.difficulty_id===difficulty.value);if(!d)return;const m=d.enemy_modifiers;controls.hp.value=catalog.enemy.hp*m.health_multiplier;controls.armor.value=catalog.enemy.armor*m.armor_multiplier;controls.enemyDamage.value=catalog.enemy.damage*m.damage_multiplier;controls.enemyInterval.value=catalog.enemy.interval;update();});
       weapon.value=catalog.weapons.some(w=>w.id==='assault_rifle')?'assault_rifle':catalog.weapons[0].id;skill.value='magnetic_field';renderCatalog();load();

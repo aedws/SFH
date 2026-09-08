@@ -1,12 +1,16 @@
 extends SceneTree
 ## Read-only game data adapter for the authenticated wiki. Never writes balance data.
 const OUTPUT := "res://docs/assets/dps-catalog.json"
-const ROOTS := ["game/features/weapons", "game/features/weapon_balance", "game/features/combat_skills", "game/features/combat_resources", "game/features/equipment/definitions/weapons", "game/features/enemies", "game/features/operation_contract"]
-const SOURCE_FILES := ["scripts/export_dps_catalog.gd", "game/features/equipment/weapon_definition.gd", "game/features/equipment/weapon_tag_profile.gd", "game/features/equipment/weapon_innate_skill_definition.gd", "game/features/equipment/equipment_fixed_option.gd", "game/features/equipment/equipment_system.gd"]
+const ROOTS := ["game/features/weapons", "game/features/weapon_balance", "game/features/combat_skills", "game/features/combat_resources", "game/features/equipment", "game/features/growth_balance", "game/features/character_selection", "game/features/player", "game/features/meta_progression", "game/features/enemies", "game/features/operation_contract"]
+const SOURCE_FILES := ["scripts/export_dps_catalog.gd"]
 var sources: Dictionary = {}
 
 func _initialize() -> void:
-	var catalog := {"schema": 1, "weapons": [], "skills": [], "sources": {}, "source_roots": ROOTS, "source_files": SOURCE_FILES}
+	_run.call_deferred()
+
+func _run() -> void:
+	var catalog := {"schema": 1, "weapons": [], "skills": [], "sources": {}, "source_roots": ROOTS, "source_files": SOURCE_FILES.duplicate()}
+	catalog["loadout"] = preload("res://scripts/export_dps_loadout.gd").build()
 	var parsed: Dictionary = load("res://game/features/weapon_balance/weapon_balance_table.gd").parse(FileAccess.get_file_as_string("res://game/features/weapon_balance/data/weapon_balance.csv"))
 	assert(parsed.errors.is_empty(), "Invalid locked weapon CSV")
 	var weapon_runtime: Node = load("res://game/features/weapons/auto_weapon.gd").new()
@@ -42,8 +46,12 @@ func _initialize() -> void:
 	catalog["enemy"] = {"hp":enemy.max_health, "armor":enemy.max_armor, "damage":enemy.contact_damage, "interval":enemy.contact_interval}
 	enemy.free()
 	catalog["difficulties"] = load("res://game/features/operation_contract/configs/default_operation_contracts.tres").difficulties
+	catalog.loadout["fixtures"] = preload("res://scripts/export_dps_loadout.gd").parity(catalog, root)
 	for directory in ROOTS: _collect(directory)
 	for path in SOURCE_FILES: _collect_file(path)
+	for path in ["scripts/export_dps_loadout.gd", "game/core/item_quality_descriptor.gd"]:
+		catalog.source_files.append(path)
+		_collect_file(path)
 	catalog.sources = sources
 	var result := JSON.stringify(catalog, "\t", true, true) + "\n"
 	if "--check" in OS.get_cmdline_user_args():

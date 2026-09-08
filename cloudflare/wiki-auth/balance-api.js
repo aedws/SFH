@@ -1,3 +1,4 @@
+import '../../docs/javascripts/dps-loadout.js';
 import '../../docs/javascripts/dps-engine.js';
 import '../../docs/javascripts/balance-engine.js';
 
@@ -6,12 +7,22 @@ const PREFIX='balance/confirmed/';
 const idPattern=/^\d{13}-[a-f0-9-]{36}$/;
 const keyFor=id=>`${PREFIX}${String(9999999999999-Number(id.slice(0,13))).padStart(13,'0')}-${id}.json`;
 const response=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json','cache-control':'no-store'}});
-const graphView=record=>{const {submission,...view}=record;return view;};
+const graphView=record=>{const {submission,...view}=record;return {...view,model:submission?.model,source:submission?.source};};
 export async function balanceApi(request,env,current,parseBody){
   if(!current)return response({error:'로그인이 필요합니다.'},401);
   if(current.user.must_change)return response({error:'먼저 비밀번호를 변경하세요.'},403);
   const url=new URL(request.url);
   if(request.method==='GET'){
+    if(url.searchParams.get('latest')==='combat'){
+      let cursor;
+      for(let pageIndex=0;pageIndex<50;pageIndex++){
+        const page=await env.WIKI_AUTH.list({prefix:PREFIX,limit:20,cursor,include:['customMetadata']});
+        const matches=page.objects.filter(o=>o.customMetadata?.model==='combat').sort((a,b)=>String(b.customMetadata.id).localeCompare(String(a.customMetadata.id)));
+        if(matches.length){const object=await env.WIKI_AUTH.get(keyFor(matches[0].customMetadata.id));if(!object)return response({error:'확정본을 읽지 못했습니다.'},503);return response({record:graphView(await object.json())});}
+        if(!page.truncated)return response({record:null});cursor=page.cursor;
+      }
+      return response({error:'확정 목록 조회 한도에 도달했습니다. 이력에서 확인하세요.'},503);
+    }
     const id=url.searchParams.get('id');
     if(id){if(!idPattern.test(id))return response({error:'잘못된 ID'},400);const object=await env.WIKI_AUTH.get(keyFor(id));if(!object)return response({error:'안건 없음'},404);const record=await object.json();return response(current.session.role==='developer'?graphView(record):record);}
     const page=await env.WIKI_AUTH.list({prefix:PREFIX,limit:20,cursor:url.searchParams.get('cursor')||undefined,include:['customMetadata']});

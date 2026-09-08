@@ -38,3 +38,9 @@
 .dps-table-scroll { max-width:100%; overflow-x:auto; }.dps-lab table { width:100%; font-size:.72rem !important; }.dps-lab caption { text-align:left; padding:.5rem; white-space:normal; }
 @media(max-width:800px){.dps-toolbar,.dps-fields,.dps-kpis {grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:480px){.dps-toolbar,.dps-fields,.dps-flags {grid-template-columns:1fr;}.dps-kpis strong {font-size:.92rem;}.dps-kpis>div {padding:.4rem;}.dps-graph {padding:0;}.dps-legend {font-size:.62rem;}}
+/* Dense attachments remain a readable single column on phones. */
+.dps-attachment-row { display:grid;grid-template-columns:minmax(120px,2fr) minmax(80px,1fr) minmax(70px,1fr) minmax(95px,1fr);gap:8px;padding:10px 0;border-top:1px solid #24474b; }
+.dps-loadout label,.dps-attachment-row label { display:flex;flex-direction:column;gap:4px;min-width:0; }
+.dps-loadout select,.dps-loadout input { width:100%;min-width:0;min-height:44px; }
+.dps-loadout > div > details { margin:12px 0;padding:10px;border:1px solid #24474b; }
+@media(max-width:600px){.dps-attachment-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}.dps-attachment-row label:first-child{grid-column:1/-1;}}

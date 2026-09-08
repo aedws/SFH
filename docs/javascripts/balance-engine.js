@@ -1,7 +1,7 @@
 /* Pure planning projections shared by the browser and authenticated confirmation API. */
 (() => {
   'use strict';
-  const version=1;
+  const version=2;
   const number=(v,min,max)=>{if(typeof v!=='number'||!Number.isFinite(v)||v<min||v>max)throw Error(`수치는 ${min}~${max} 범위여야 합니다.`);return v;};
   function table(catalog,input){
     const dataset=catalog.datasets.find(d=>d.id===input.dataset);
@@ -32,7 +32,10 @@
     const result=E.simulate(catalog,input);
     return{title:`${result.resolved.weapon.name} · ${result.resolved.skill?.display_name||'무기만'}`,xLabel:'시간 (초)',yLabel:'누적 피해',
       points:result.points.filter((_,n)=>n%10===0).map(p=>({x:p.time,label:String(p.time),value:p.total,base:input.hp+input.armor})),
-      note:`관측 DPS ${result.dps.toFixed(2)} · TTK ${result.ttk===null?'구간 내 미처치':result.ttk.toFixed(2)+'초'}. 회색은 HP+방어막. 단일 대상 평균 모델, 실제 전투 보장 아님.`};
+      series:[{title:'무기 누적 피해',points:result.points.filter((_,n)=>n%10===0).map(p=>({x:p.time,label:String(p.time),base:0,value:p.weapon}))},
+        ...E.skillComparisons(catalog,input).map(s=>({title:`${s.name} · ${s.result.resolved.allowed?'독립 AP 조건':'태그 불일치 · 피해 0'}`,points:s.result.points.filter((_,n)=>n%10===0).map(p=>({x:p.time,label:String(p.time),base:0,value:p.skill}))})),
+        {title:'플레이어 잔여 HP · 회복/회피 없음',points:result.points.filter((_,n)=>n%10===0).map(p=>({x:p.time,label:String(p.time),base:result.player.max_health,value:p.playerHp}))}],
+      note:`관측 DPS ${result.dps.toFixed(2)} · TTK ${result.ttk===null?'구간 내 미처치':result.ttk.toFixed(2)+'초'} · 플레이어 HP ${result.player.max_health.toFixed(2)} / 방어 ${result.player.defense.toFixed(2)} / 속도 ${result.player.movement_speed.toFixed(2)}. ${result.resolved.loadout?.costs.map(c=>`${c.name} 코스트 ${c.used}/${c.capacity}`).join(' · ')||''}. 회색은 HP+방어막. 단일 대상 기대 피해 모델. 스킬별 그래프는 독립 AP 조건이며 동시 사용 합계가 아닙니다.`};
   }
   const models=Object.freeze({table,recovery,facility,combat});
   function calculate(model,catalog,input){if(!Object.hasOwn(models,model))throw Error('지원하지 않는 계산 모델');return models[model](catalog,input);}

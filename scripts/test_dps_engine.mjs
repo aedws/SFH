@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+await import('../docs/javascripts/dps-loadout.js');
 await import('../docs/javascripts/dps-engine.js');
 const E=globalThis.SFHDps, catalog=JSON.parse(readFileSync(new URL('../docs/assets/dps-catalog.json',import.meta.url)));
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-6, `${a} != ${b}`);

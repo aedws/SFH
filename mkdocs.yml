@@ -50,7 +50,9 @@ extra_javascript:
   - javascripts/planner-requests.js
   - javascripts/planner-proposal.js
   - javascripts/role-auth.js
+  - javascripts/dps-loadout.js
   - javascripts/dps-engine.js
+  - javascripts/dps-loadout-ui.js
   - javascripts/dps-lab.js
   - javascripts/balance-engine.js
   - javascripts/balance-workbench.js
