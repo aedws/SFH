@@ -48,6 +48,7 @@
         const saved=await json('/api/auth/balance',{method:'POST',headers:{'content-type':'application/json','x-csrf-token':session.csrf},body:JSON.stringify(pending.body)});
         status.textContent=`기획 확정 저장 완료 · ${saved.confirmed_at} · ${saved.id}. 개발자 그래프에 공유되었습니다. 게임에는 아직 적용되지 않았습니다.`;
         consent.checked=false;
+        root.dispatchEvent(new CustomEvent('sfh-confirmed',{detail:saved}));
       }catch(e){status.textContent=`저장되지 않음: ${e.message}`;}finally{busy=false;save.disabled=false;}
     });
   }
@@ -56,6 +57,7 @@
     for(const series of graph.series||[]){const details=el('details'),body=el('div');details.append(el('summary',series.title),body);host.append(details);const render=()=>draw(body,{...series,xLabel:graph.xLabel,yLabel:series.title,note:'동일 초기 자원의 독립 스킬 비교 / 생존은 회복·회피 없음. 각 스킬을 동시 사용한 합산 DPS가 아닙니다.'});render();details.addEventListener('toggle',()=>{if(details.open)render();});}
   }
   globalThis.SFHBalanceView=Object.freeze({draw,drawBundle});
+  globalThis.SFHBalanceConfirm=confirmation;
   function currentCombat(root){
     const panel=el('details');panel.open=true;panel.className='balance-combat-default';panel.append(el('summary','기본 전투 성능 · 확정안 우선 / 없으면 현행 구현값'));
     const status=el('p'),graph=el('div'),retry=button('전투 기본값 새로고침');status.setAttribute('role','status');panel.append(status,retry,graph);root.append(panel);

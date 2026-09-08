@@ -19,7 +19,7 @@
     "game/features/p5_hub_progression/data/training_scenario.csv": "1e3b779f9ac77cdedd06e696970058c18b46f2e7798f36c61ce75497a7b4493c",
     "game/features/p5_hub_progression/data/utility.csv": "e40c5b262649a6a4d0d999ee7d6135f1e52409b8eedf3aa9cb3974ae497f5648",
     "game/features/session_sockets/data/session_socket_rules.csv": "d5773149a70dd5bb6c74cd2b51a1dd5d6e8ff761efb5413f6c4b1ab9f85ceb32",
-    "game/features/weapon_balance/data/weapon_balance.csv": "b8532fbab008c12ffe6a0f874b0e756dc5f6222fddd688281379c45060fffec8"
+    "game/features/weapon_balance/data/weapon_balance.csv": "9e0f128d72496c47a2891cec9f1544c894eb72d62abd85c624aa0b166fb73271"
   },
   "datasets": [
     {

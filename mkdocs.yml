@@ -56,6 +56,7 @@ extra_javascript:
   - javascripts/dps-lab.js
   - javascripts/balance-engine.js
   - javascripts/balance-workbench.js
+  - javascripts/weapon-distance-lab.js
   - javascripts/effect-toolkit-engine.js
   - javascripts/effect-toolkit.js
   - javascripts/role-workspace.js
@@ -122,6 +123,7 @@ nav:
           - 모듈·고유 파츠 강화 경제: features/equipment-upgrade-economy.md
           - P5-02 무기·스킬 런 투자: features/loadout-investment.md
           - Q 무기 교체와 Google Sheets 밸런스: features/weapon-balance.md
+          - 거리별 무기 피해와 확정 곡선: features/weapon-distance.md
       - 전리품과 회수:
           - 전리품과 회수: features/loot.md
           - 크레딧 파밍과 회수: features/credit-loot.md

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "469330a32d75705709e768e0f1b9154483df63251b70972d9ec24fc454562787",
+  "source_sha256": "4d357eafac688dd4f205da7b267c745296abd200f7e967288ad724210ca64c64",
   "domains": [
     {
       "id": "system",
@@ -63,9 +63,9 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 340,
-    "named_classes": 265,
-    "relationships": 208,
+    "scripts": 342,
+    "named_classes": 266,
+    "relationships": 209,
     "project_inheritance": 13,
     "enabled_toggles": 70
   },
@@ -1248,14 +1248,15 @@
       "path": "game/features/weapon_balance",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 3,
-      "class_count": 3,
+      "file_count": 4,
+      "class_count": 4,
       "classes": [
         "WeaponBalanceConfig",
         "WeaponBalanceService",
-        "WeaponBalanceTable"
+        "WeaponBalanceTable",
+        "WeaponDistancePolicy"
       ],
-      "incoming_count": 3,
+      "incoming_count": 4,
       "outgoing_count": 1
     },
     {
@@ -1276,7 +1277,7 @@
         "WeaponShotFX"
       ],
       "incoming_count": 5,
-      "outgoing_count": 3
+      "outgoing_count": 4
     },
     {
       "id": "verification",
@@ -1287,7 +1288,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 64,
+      "file_count": 65,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -3645,6 +3646,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:WeaponDistancePolicy",
+      "name": "WeaponDistancePolicy",
+      "module": "weapon_balance",
+      "path": "game/features/weapon_balance/weapon_distance_policy.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:AutoWeapon",
       "name": "AutoWeapon",
       "module": "weapons",
@@ -4898,13 +4908,13 @@
       "from": "verification",
       "to": "weapon_balance",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
       "to": "weapons",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "weapon_balance",
@@ -4927,6 +4937,12 @@
     {
       "from": "weapons",
       "to": "smart_targeting",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "weapons",
+      "to": "weapon_balance",
       "type": "references",
       "evidence_count": 1
     }

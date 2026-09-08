@@ -80,6 +80,15 @@ hide:
 </details>
 
 <details markdown="1">
+<summary>무기 거리별 DPS · 곡선 수정·확정</summary>
+
+[거리 곡선 규칙과 새 무기 작성 양식](../features/weapon-distance.md). 곡선 숫자와 파츠·모듈을 변경해 비교하고, 검토한 그래프를 명시적으로 확정합니다. **현재 값은 임시 정책**이며 새 무기는 이번 작업에서 추가하지 않았습니다.
+
+<div data-sfh-distance-lab data-editable data-catalog="../../assets/dps-catalog.json">거리 곡선 읽는 중…</div>
+
+</details>
+
+<details markdown="1">
 <summary>시설·회수·성장·강화·아이템 등 전체 수치 비교</summary>
 <div data-sfh-balance-workbench data-catalog="../../assets/balance-catalog.json">수치 목록 준비 중…</div>
 </details>

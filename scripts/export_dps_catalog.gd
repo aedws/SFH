@@ -47,6 +47,12 @@ func _run() -> void:
 	enemy.free()
 	catalog["difficulties"] = load("res://game/features/operation_contract/configs/default_operation_contracts.tres").difficulties
 	catalog.loadout["fixtures"] = preload("res://scripts/export_dps_loadout.gd").parity(catalog, root)
+	catalog["distance_fixtures"] = []
+	var distance_policy = preload("res://game/features/weapon_balance/weapon_distance_policy.gd")
+	for weapon in catalog.weapons:
+		var curve: String = weapon.balance.get("distance_damage_curve", "0:1;1:1")
+		for ratio in [0.0, 0.125, 0.25, 0.5, 0.6, 0.75, 1.0, 1.5]:
+			catalog.distance_fixtures.append({"weapon": weapon.id, "ratio": ratio, "multiplier": distance_policy.multiplier(distance_policy.parse(curve), ratio * weapon.balance.target_range_px, weapon.balance.target_range_px)})
 	for directory in ROOTS: _collect(directory)
 	for path in SOURCE_FILES: _collect_file(path)
 	for path in ["scripts/export_dps_loadout.gd", "game/core/item_quality_descriptor.gd"]:
