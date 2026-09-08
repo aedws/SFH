@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-08",
-  "source_sha256": "3d58274bb14656fa500c7f6b08e686c6f9942e626cc9c2341e489b74a2af7ec0",
+  "source_sha256": "c3a9cd2432f8a5bc9fb27e9ce08494a62549c4f3dfb13cf7e9867ff135dcfadb",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -398,12 +398,12 @@
     "ready": 1,
     "implemented": 36,
     "modules": 60,
-    "documents": 98,
+    "documents": 99,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 468,
+    "relations": 469,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -3855,6 +3855,17 @@
       "kind": "evidence"
     },
     {
+      "id": "document:tools/balance-workbench",
+      "type": "document",
+      "label": "수치 실험과 확정 그래프",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "기획자 수치 조정·동적 그래프→Notion 근거·기획 확정→개발자 읽기 전용 그래프",
+      "route": "tools/balance-workbench/",
+      "source": "docs/tools/balance-workbench.md",
+      "kind": "evidence"
+    },
+    {
       "id": "document:getting-started/search-wiki",
       "type": "document",
       "label": "위키 실시간 검색",
@@ -6600,6 +6611,12 @@
     },
     {
       "from": "document:tools/dps-lab",
+      "to": "collection:group:getting-started/collaboration",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:tools/balance-workbench",
       "to": "collection:group:getting-started/collaboration",
       "type": "part_of",
       "origin": "knowledge_map"

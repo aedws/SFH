@@ -1,3 +1,4 @@
+import { balanceApi } from './balance-api.js';
 const USER_ROLES = Object.freeze(["planner", "developer"]);
 const USER_KEYS = Object.freeze({
   planner: "users/planner.json",
@@ -372,6 +373,7 @@ async function publicSurfaceResponse(request, env) {
 async function handleApi(request, env) {
   const pathname = decodedPathname(new URL(request.url));
   try {
+    if (pathname === "/api/auth/balance") return await balanceApi(request, env, await getSession(request, env), parseJsonBody);
     if (pathname === "/api/auth/login" && request.method === "POST") return await handleLogin(request, env);
     if (pathname === "/api/auth/session" && request.method === "GET") {
       return json(publicSession(await getSession(request, env)));

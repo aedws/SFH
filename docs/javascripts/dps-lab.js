@@ -117,7 +117,9 @@
             const b=base.points.find(q=>q.time===p.time);return[f(p.time),f(p.total),f(b.total),f(p.weapon),f(p.skill),f(p.hp),f(p.armor)];
           }),'처치 기준은 체력 + 방어막. 피해선은 상한 없이 누적, 잔여량은 0에서 멈춥니다.'));
           root.dataset.ready='true';
-        }catch(e){error.textContent=`계산 중단: ${e.message}`;error.hidden=false;result.hidden=true;sampleBody.textContent='유효한 수치를 입력하면 다시 계산합니다.';}
+          root.sfhBalanceTrial={model:'combat',sources:catalog.sources,input:structuredClone(input)};
+          document.dispatchEvent(new Event('sfh-balance-trial'));
+        }catch(e){root.sfhBalanceTrial=null;error.textContent=`계산 중단: ${e.message}`;error.hidden=false;result.hidden=true;sampleBody.textContent='유효한 수치를 입력하면 다시 계산합니다.';}
       }
       function load(){const i=E.defaults(catalog,weapon.value,skill.value);for(const [key,node]of Object.entries(controls)){if(node.type==='checkbox')node.checked=i[key];else node.value=i[key];}difficulty.value='custom';update();}
       // Responsive axes keep real 12px labels instead of shrinking a desktop SVG on phones.

@@ -22,7 +22,23 @@ hide:
 
 ## 수치로 전투 난이도 비교하기
 
-[무기·스킬 DPS 실험실 열기](../tools/dps-lab.md) — 현재 무기·스킬 수치를 확인하고, 시험값과 적 체력·방어막을 바꿔 피해 그래프와 처치 시간을 비교합니다. 원본 밸런스는 바뀌지 않습니다.
+[무기·스킬 DPS 실험실 열기](../tools/dps-lab.md) — 계산 범위와 실제 전투와의 차이를 확인합니다. 아래에서 직접 시험하고 기획 확정본을 전달할 수 있습니다.
+
+## 수치 조정과 확정 그래프 {#balance-workbench}
+
+**① 수치 시험 → ② 그래프 확인 → ③ Notion 사유 작성 → ④ 기획 확정본 저장.** 저장한 결과만 개발자 화면에 전달됩니다. 오너 승인·Sheet/CSV 반영·게임 배포는 별도이며, 현재 원본의 임시 수치를 자동 확정하지 않습니다.
+
+<details markdown="1">
+<summary>무기·스킬·적·AP 계산기</summary>
+<div class="dps-lab" data-sfh-dps-lab data-confirmable data-catalog="../../assets/dps-catalog.json">계산기 준비 중…</div>
+</details>
+
+<details markdown="1">
+<summary>시설·회수·성장·강화·아이템 등 전체 수치 비교</summary>
+<div data-sfh-balance-workbench data-catalog="../../assets/balance-catalog.json">수치 목록 준비 중…</div>
+</details>
+
+[수치 실험·확정 전달 사용법](../tools/balance-workbench.md). 전체 목록은 현행 CSV의 숫자 열을 비교합니다. 지원하지 않는 효과를 임의로 DPS로 환산하지 않습니다. 시설·회수 계산기의 기본값은 **시나리오 예시**이며 현재 작전의 실제 계약을 자동 불러오는 값이 아닙니다.
 
 ## 최신 기획과 실제 구현 상태
 

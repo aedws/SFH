@@ -15,6 +15,12 @@ hide:
 
 <div id="owner-decision-console" data-sfh-owner-decision-console-host data-focus-object="work:n26-08"></div>
 
+## 기획 확정 수치 그래프 {#confirmed-balance}
+
+기획자가 검토 후 저장한 안건만 표시합니다. 이 영역에는 수치 편집기나 미확정 시험값이 없습니다. **기획 확정 ≠ 오너 승인 ≠ 게임 적용**이며, 기존 판단 콘솔에서 승인·구현 근거를 검토합니다.
+
+<div data-sfh-balance-gallery>확정 그래프 읽는 중…</div>
+
 <nav class="sfh-developer-shortcuts" aria-label="개발자 빠른 문서">
   <a href="../../design/current-milestone-workline/#notion-20260907">현재 작업선 →</a>
   <a href="../../design/master-gdd-alignment/#current-classification">기획·구현 대조 →</a>

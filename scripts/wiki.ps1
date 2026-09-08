@@ -61,7 +61,7 @@ try {
 	if ($LASTEXITCODE -ne 0) { throw "Notion checkbox regression failed." }
     & $virtualPython -m mkdocs $Action --strict
     if ($Action -eq "build") {
-        Copy-Item -LiteralPath (Join-Path $repositoryRoot "cloudflare/wiki-auth/_worker.js") -Destination (Join-Path $repositoryRoot ".wiki-site/_worker.js") -Force
+        & $virtualPython scripts/prepare_wiki_worker.py
         & (Join-Path $PSScriptRoot "check-wiki-no-github-backlinks.ps1") -SiteRoot ".wiki-site"
         & (Join-Path $PSScriptRoot "check-wiki-planner-requests.ps1") -SiteRoot ".wiki-site"
         & (Join-Path $PSScriptRoot "check-wiki-role-auth.ps1") -SiteRoot ".wiki-site"

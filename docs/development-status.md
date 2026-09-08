@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 143 TOPICS</span><span>98 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 144 TOPICS</span><span>99 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -64,8 +64,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 3 · IMPROVE 8 · CHANGE 3 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 4 · IMPROVE 9 · CHANGE 3 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>기획 수치 실험 · 확정 그래프 역할 분리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자는 수치와 그래프를 시험하고, 개발자는 기획 확정 시점의 그래프만 읽습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>DPS·시설·회수·19개 CSV 숫자 열 비교와 Notion 근거를 포함한 불변 기획 확정본 전달을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>임시 시험·기획 확정·오너 승인·게임 적용을 분리하고 역할·CSRF·원본 갱신·중복 제출을 검사합니다.</p></div>
+        <p><a href="../tools/balance-workbench/">수치 조정·확정 전달 사용법 →</a></p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 7</small><b>익스트랙션 구역 · 후퇴와 귀환을 선택하는 공간</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">

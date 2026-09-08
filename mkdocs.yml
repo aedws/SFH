@@ -50,6 +50,8 @@ extra_javascript:
   - javascripts/role-auth.js
   - javascripts/dps-engine.js
   - javascripts/dps-lab.js
+  - javascripts/balance-engine.js
+  - javascripts/balance-workbench.js
 
 plugins:
   - search:
@@ -161,6 +163,7 @@ nav:
           - 위키 수정 요청과 반영: getting-started/edit-wiki-online.md
           - 기획자 아이템·밸런싱 튜토리얼: getting-started/planner-item-balance-tutorial.md
           - 무기·스킬 DPS 실험실: tools/dps-lab.md
+          - 수치 실험과 확정 그래프: tools/balance-workbench.md
           - 위키 실시간 검색: getting-started/search-wiki.md
       - 검증과 문제 해결:
           - 검증과 문제 해결: quality/index.md
