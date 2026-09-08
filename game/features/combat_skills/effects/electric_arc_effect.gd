@@ -72,7 +72,9 @@ func _process(delta: float) -> void:
 	if elapsed_seconds >= lifetime:
 		queue_free()
 		return
-	self_modulate.a = clampf(1.0 - elapsed_seconds / lifetime, 0.0, 1.0)
+	# Hold readability during the active effect; fade only during its final short release.
+	var release := minf(0.25, lifetime * 0.35)
+	self_modulate.a = clampf((lifetime - elapsed_seconds) / maxf(0.001, release), 0.0, 1.0)
 	if is_instance_valid(followed_target):
 		global_position = followed_target.global_position
 	var refresh_interval := 1.0 / float(profile.get("geometry_refresh_hz"))
@@ -168,6 +170,15 @@ func _draw() -> void:
 	var core_color: Color = profile.get("core_color")
 	var glow_width := float(profile.get("glow_width"))
 	var core_width := float(profile.get("core_width"))
+	if String(profile.get("pattern")) == "ring":
+		# Stable radius communicates range; the inner rotating dashes communicate activity.
+		draw_arc(Vector2.ZERO, maximum_radius, 0.0, TAU, 64, Color(core_color, 0.48), 1.5, true)
+		for index in 4:
+			var angle := elapsed_seconds * 1.8 + float(index) * TAU / 4.0
+			draw_arc(Vector2.ZERO, maximum_radius * 0.92, angle, angle + 0.38, 8, core_color, 3.0, true)
+	elif String(profile.get("pattern")) == "trail":
+		draw_circle(Vector2.ZERO, 12.0, Color(core_color, 0.7))
+		draw_arc(trail_vector, 24.0, 0.0, TAU, 24, core_color, 3.0, true)
 	for points in cached_arcs:
 		draw_polyline(points, glow_color, glow_width, true)
 		draw_polyline(points, core_color, core_width, true)

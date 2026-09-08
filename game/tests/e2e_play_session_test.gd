@@ -614,13 +614,15 @@ func _verify_operation_session() -> bool:
 		return false
 	if not await _verify_room_encounter_resolution(player):
 		return false
-	if not await _verify_expanded_map_warp(player):
-		return false
 	if not await _verify_run_augment_choice():
 		return false
 	var loot_session_error: String = await loot_session_contract.verify(self, game, _tap_key)
 	if not loot_session_error.is_empty():
 		return _fail(loot_session_error)
+	# Warp safety clears nearby threats, possibly including the pursuit boss.
+	# Verify that actual boss's loot first instead of depending on random proximity.
+	if not await _verify_expanded_map_warp(player):
+		return false
 
 	await _tap_key(KEY_I)
 	var inventory = game.get("inventory_window") as Control
@@ -1075,6 +1077,10 @@ func _verify_primary_attack_resolution(player: Node2D) -> bool:
 	await process_frame
 
 	var weapon_before: Dictionary = weapon.call(&"get_runtime_snapshot")
+	var shot_fx: Node = weapon.get_node_or_null("ShotFX")
+	if shot_fx == null:
+		return _fail("실제 무기 장면에 발사 FX 모듈이 연결되지 않았습니다.")
+	var shot_events_before := int(shot_fx.get("total_events"))
 	var hit_before: Dictionary = hit_feedback.call(&"get_snapshot")
 	var resource_before: Dictionary = resources.call(&"get_snapshot")
 	var kills_before := int(game.get("defeated_enemies"))
@@ -1098,6 +1104,9 @@ func _verify_primary_attack_resolution(player: Node2D) -> bool:
 	await process_frame
 
 	var weapon_after: Dictionary = weapon.call(&"get_runtime_snapshot")
+	var projectile_delta := int(weapon_after.get(&"total_projectiles_fired", 0)) - int(weapon_before.get(&"total_projectiles_fired", 0))
+	if int(shot_fx.get("total_events")) - shot_events_before != projectile_delta or projectile_delta <= 0:
+		return _fail("실제 좌클릭 탄 발사 수와 FX 이벤트 수가 일치하지 않습니다.")
 	var hit_after: Dictionary = hit_feedback.call(&"get_snapshot")
 	var resource_after: Dictionary = resources.call(&"get_snapshot")
 	var spawned_before: Dictionary = resource_before.get(&"spawned_pickups", {})

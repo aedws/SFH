@@ -70,6 +70,10 @@ $policyOutput | ForEach-Object { Write-Output $_ }
 if ($policyStatus -ne 0 -or ($policyOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($policyOutput -match 'PROVISIONAL_POLICY_OK')) { exit 1 }
 $feedbackOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/frame_feedback_contract_test.gd" 2>&1
 $feedbackStatus = $LASTEXITCODE
+$combatFxOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/combat_fx_contract_test.gd" 2>&1
+$combatFxStatus = $LASTEXITCODE
+$combatFxOutput | Write-Output
+if ($combatFxStatus -ne 0 -or ($combatFxOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($combatFxOutput -join "`n") -notmatch 'COMBAT_FX_OK') { throw 'Combat FX contract failed.' }
 $feedbackOutput | ForEach-Object { Write-Output $_ }
 if ($feedbackStatus -ne 0 -or ($feedbackOutput -match 'SCRIPT ERROR:|^ERROR:') -or -not ($feedbackOutput -match 'FRAME_FEEDBACK_OK')) { exit 1 }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/smart_targeting_center_contract_test.gd"

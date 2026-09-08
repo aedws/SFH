@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://game/features/weapons/auto_weapon.gd" id="1_weapon"]
 [ext_resource type="PackedScene" path="res://game/features/weapons/projectile.tscn" id="2_projectile"]
 [ext_resource type="Script" path="res://game/features/weapons/weapon_innate_skill_system.gd" id="3_innate"]
+[ext_resource type="Script" path="res://game/features/weapons/weapon_shot_fx.gd" id="4_fx"]
 
 [node name="AutoWeapon" type="Node2D"]
 script = ExtResource("1_weapon")
@@ -10,3 +11,8 @@ projectile_scene = ExtResource("2_projectile")
 
 [node name="InnateSkillSystem" type="Node" parent="."]
 script = ExtResource("3_innate")
+
+[node name="ShotFX" type="Node2D" parent="."]
+script = ExtResource("4_fx")
+
+[connection signal="projectile_fired" from="." to="ShotFX" method="play"]

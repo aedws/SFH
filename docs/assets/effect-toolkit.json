@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "version": "2026-09-08.2",
-  "fingerprint": "310de3ecf394c0e4d23a6ab45cc45ec0e7ec07bec913ad90e92648b4a3c40eed",
+  "fingerprint": "0d6cc7a3f738b759568cc03b297e4b5e7eccedcb10776556ed34c49ab5dfd314",
   "sources": {
     "game/features/combat_skills/definitions/blink.tres": "f7c9548f0685e1ed90cabb98425799f8d6eed27613779d2dea53bc7712e90d7c",
     "game/features/combat_skills/definitions/arc_dash.tres": "89ae3166549f9bf2ffa602dd5f5b709fd212fdc46deb7566bfea6aae01bfeea8",
@@ -22,7 +22,7 @@
     "game/features/equipment/definitions/modules/armor_plate.tres": "a841044d9b769b3c8263c83df19dfc4339dd025d3e411cb18398f5da2c93a0da",
     "game/features/weapons/weapon_innate_skill_system.gd": "34a490622ae3b45b4785c82fc8cbff3fab6b4a68269a5eb128b0a2720095ae6f",
     "game/features/combat_skills/effects/path_damage_policy.gd": "493d5567a9d1c433707e514b4ee6e35c0fb18f79693b915c6e1e744288a2386e",
-    "game/features/combat_skills/effects/persistent_magnetic_field.gd": "9102333c1c6c8c45fbbdf8d810c25b1bb4b63b425f3e4f4d1b9261ed6c824703",
+    "game/features/combat_skills/effects/persistent_magnetic_field.gd": "513e82af14f6319fa6e1834f3a08ec986b445ff271d02acbbfe8f0d57b937539",
     "game/features/character_selection/character_definition.gd": "a3ca69c55c639f30438e7a4ede2ba105ab123ce717ab15130b40e33c862a5865",
     "game/features/equipment/stat_modifier.gd": "4cf7533c8a3ad6d81b1e0f57383dcf3648a5ba61a7c553b0e79f8e2fad13958f"
   },

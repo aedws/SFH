@@ -162,6 +162,9 @@ jobs:
           python3 scripts/check_system_modularity.py
           python3 scripts/check_game_ui_audit.py
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/frame_feedback_contract_test.gd" 2>&1 | tee /tmp/sfh-frame-feedback.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/combat_fx_contract_test.gd" 2>&1 | tee /tmp/sfh-combat-fx.log
+          grep -q 'COMBAT_FX_OK' /tmp/sfh-combat-fx.log
+          ! grep -Eq 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-combat-fx.log
           grep -q "FRAME_FEEDBACK_OK" /tmp/sfh-frame-feedback.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-frame-feedback.log
           timeout 90 xvfb-run -a godot --path "$GITHUB_WORKSPACE" --audio-driver Dummy --script "res://game/tests/floor_render_contract_test.gd" 2>&1 | tee /tmp/sfh-floor-render.log

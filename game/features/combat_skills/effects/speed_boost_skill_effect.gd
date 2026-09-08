@@ -38,7 +38,7 @@ func activate(player: Node2D, context: Dictionary) -> Dictionary:
 	):
 		modifier.queue_free()
 		return {&"success": false, &"status": "이동 가속 적용에 실패했습니다."}
-	_spawn_electric_aura(context.get(&"effect_parent"), player)
+	_spawn_electric_aura(modifier, player, resolved_duration)
 	var registrar: Callable = context.get(&"register_runtime_effect", Callable())
 	if registrar.is_valid():
 		registrar.call(modifier)
@@ -57,11 +57,13 @@ func get_parameters() -> Dictionary:
 	}
 
 
-func _spawn_electric_aura(parent: Variant, player: Node2D) -> void:
-	if not is_instance_valid(parent) or not parent is Node2D or electric_profile == null:
+func _spawn_electric_aura(parent: Node, player: Node2D, lifetime: float) -> void:
+	if not is_instance_valid(parent) or electric_profile == null:
 		return
 	var electric := ELECTRIC_EFFECT_SCRIPT.new()
-	(parent as Node2D).add_child(electric)
+	parent.add_child(electric)
 	electric.global_position = player.global_position
-	if not electric.configure_radial(78.0, electric_profile, player):
+	var visual_profile := electric_profile.duplicate(true)
+	visual_profile.set("lifetime_seconds", lifetime)
+	if not electric.configure_radial(78.0, visual_profile, player):
 		electric.queue_free()
