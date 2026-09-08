@@ -22,6 +22,7 @@ assert.equal(E.calculate('recovery',catalog,{...recovery,success:0}).points.at(-
 assert.throws(()=>E.calculate('recovery',catalog,{...recovery,success:2}));
 const input=globalThis.SFHDps.defaults(dps,'assault_rifle','magnetic_field');
 assert.ok(E.calculate('combat',dps,input).points.at(-1).value>0);
+assert.throws(()=>E.calculate('combat',dps,{...input,horizon:120,skillDuration:120,skillTick:10,skillCooldown:.05,resourceLimits:false}),/예산/);
 
 class Store{
   values=new Map();
@@ -53,7 +54,8 @@ assert.equal((await call(req({...body,title:'overwrite'}))).status,409);
 assert.equal(store.values.size,1);
 assert.equal((await call(req({}, {},'DELETE'))).status,405);
 const get=new Request(`${origin}/api/auth/balance?id=${body.id}`);
-assert.deepEqual(await (await call(get,{...current,session:{role:'developer'}})).json(),saved);
+const developerView=await (await call(get,{...current,session:{role:'developer'}})).json();
+assert.deepEqual(developerView.graph,saved.graph);assert.equal(developerView.submission,undefined,'developer API omits editable submission payload');
 for(let i=0;i<22;i++)await call(req({...body,id:`${Date.now()}-${crypto.randomUUID()}`}));
 const page=await (await call(new Request(origin+'/api/auth/balance'))).json();assert.equal(page.records.length,20);assert.ok(page.cursor);
 const next=await (await call(new Request(origin+'/api/auth/balance?cursor='+page.cursor))).json();assert.equal(next.records.length,3);

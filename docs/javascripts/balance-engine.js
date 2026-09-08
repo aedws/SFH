@@ -26,6 +26,9 @@
   function combat(catalog,input){
     const E=globalThis.SFHDps;
     for(const flag of ['fixedOptions','innate','resourceLimits','shock'])if(typeof input[flag]!=='boolean')throw Error('효과 적용 여부는 체크박스로 지정하세요.');
+    const resolved=E.resolve(catalog,input);
+    const work=input.horizon*100*(1+Math.min(resolved.duration,input.horizon)/input.skillCooldown);
+    if(resolved.skill?.kind==='field'&&work>250000)throw Error('확정 계산 예산 초과: 관측·지속 시간을 줄이거나 쿨타임을 늘려주세요.');
     const result=E.simulate(catalog,input);
     return{title:`${result.resolved.weapon.name} · ${result.resolved.skill?.display_name||'무기만'}`,xLabel:'시간 (초)',yLabel:'누적 피해',
       points:result.points.filter((_,n)=>n%10===0).map(p=>({x:p.time,label:String(p.time),value:p.total,base:input.hp+input.armor})),

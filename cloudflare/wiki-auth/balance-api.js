@@ -6,13 +6,14 @@ const PREFIX='balance/confirmed/';
 const idPattern=/^\d{13}-[a-f0-9-]{36}$/;
 const keyFor=id=>`${PREFIX}${String(9999999999999-Number(id.slice(0,13))).padStart(13,'0')}-${id}.json`;
 const response=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json','cache-control':'no-store'}});
+const graphView=record=>{const {submission,...view}=record;return view;};
 export async function balanceApi(request,env,current,parseBody){
   if(!current)return response({error:'로그인이 필요합니다.'},401);
   if(current.user.must_change)return response({error:'먼저 비밀번호를 변경하세요.'},403);
   const url=new URL(request.url);
   if(request.method==='GET'){
     const id=url.searchParams.get('id');
-    if(id){if(!idPattern.test(id))return response({error:'잘못된 ID'},400);const object=await env.WIKI_AUTH.get(keyFor(id));return object?response(await object.json()):response({error:'안건 없음'},404);}
+    if(id){if(!idPattern.test(id))return response({error:'잘못된 ID'},400);const object=await env.WIKI_AUTH.get(keyFor(id));if(!object)return response({error:'안건 없음'},404);const record=await object.json();return response(current.session.role==='developer'?graphView(record):record);}
     const page=await env.WIKI_AUTH.list({prefix:PREFIX,limit:20,cursor:url.searchParams.get('cursor')||undefined,include:['customMetadata']});
     return response({records:page.objects.map(o=>o.customMetadata),cursor:page.truncated?page.cursor:null});
   }
