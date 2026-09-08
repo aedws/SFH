@@ -54,9 +54,18 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 7 · IMPROVE 15 · CHANGE 3 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 7 · IMPROVE 16 · CHANGE 3 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>개발자 밸런스 · 확정 전에도 현재 수치 확인</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획 확정안이 없으면 빈 화면 대신 현재 CSV 수치와 그래프를 보여줍니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>19개 수치 목록의 변수·원본 표·버전·근거를 조회합니다. 일부 확정된 경우에도 현행 데이터는 별도로 확인하며 게임 수치는 바꾸지 않습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>확정 없음과 연결 오류를 구분하고 모바일 그래프 축 겹침을 줄였습니다. 4해상도 조회·재시도·권한 회귀를 검증합니다.</p></div>
+        <p><a href="tools/balance-workbench/">확정안과 현행 CSV를 구분하는 방법 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 11</small><b>지역 맵 · 기억할 기준점과 피스 설계실</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 같은 지역에서 큰길·필수 건물을 익히고, 주변 시설만 새롭게 탐색합니다.</strong></div>
