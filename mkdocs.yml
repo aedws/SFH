@@ -52,11 +52,13 @@ extra_javascript:
   - javascripts/role-auth.js
   - javascripts/dps-loadout.js
   - javascripts/dps-engine.js
+  - javascripts/growth-engine.js
   - javascripts/dps-loadout-ui.js
   - javascripts/dps-lab.js
   - javascripts/balance-engine.js
   - javascripts/balance-workbench.js
   - javascripts/weapon-distance-lab.js
+  - javascripts/growth-lab.js
   - javascripts/effect-toolkit-engine.js
   - javascripts/effect-toolkit.js
   - javascripts/role-workspace.js

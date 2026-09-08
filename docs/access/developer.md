@@ -50,6 +50,25 @@ hide:
 
 ## 기획 확정 수치 그래프 {#confirmed-balance}
 
+### 선택한 대상 하나의 성장률
+
+무기·캐릭터·방어구를 각각 하나씩 선택해 **동일 대상의 단계별 성능 변화**를 확인합니다. 가로축은 다른 아이템이 아니라 강화 단계/레벨입니다. 1단계 대비 증가량·성장률을 함께 표시합니다. 현재 구현값만 표시하며 목표안은 자동 반영하지 않습니다. [계산 조건과 사용법](../tools/balance-workbench.md#growth).
+
+<details markdown="1" open>
+<summary>무기 하나의 성장 추이</summary>
+<div data-sfh-growth-lab data-kind="weapon" data-catalog="../../assets/dps-catalog.json">성장 추이 읽는 중…</div>
+</details>
+
+<details markdown="1">
+<summary>캐릭터 하나의 성장 추이</summary>
+<div data-sfh-growth-lab data-kind="character" data-catalog="../../assets/dps-catalog.json">성장 추이 읽는 중…</div>
+</details>
+
+<details markdown="1">
+<summary>방어구 하나의 성장 추이</summary>
+<div data-sfh-growth-lab data-kind="armor" data-catalog="../../assets/dps-catalog.json">성장 추이 읽는 중…</div>
+</details>
+
 ### 무기 거리별 DPS · 현재 적용 상태
 
 이번 거리 그래프는 **현재 구현값만** 표시합니다. 기획자가 수정·확정해도 배포 전에는 이 그래프에 반영되지 않습니다. [곡선 계약·확정본 적용 절차](../features/weapon-distance.md).
