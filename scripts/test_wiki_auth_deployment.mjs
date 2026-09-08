@@ -48,6 +48,8 @@ for (const protectedPath of [
   "/assets/notion-tracker-snapshot.json",
   "/assets/notion-code-audit.json",
   "/assets/search-priorities.json",
+  "/tools/dps-lab/",
+  "/assets/dps-catalog.json",
   "/assets/owner-decision-registry.json",
   "/assets/project-ontology.json",
   "/architecture/project-ontology/",

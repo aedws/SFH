@@ -9,6 +9,10 @@ hide:
 
 # 기획자 작업실
 
+## 수치로 전투 난이도 비교하기
+
+[무기·스킬 DPS 실험실 열기](../tools/dps-lab.md) — 현재 무기·스킬 수치를 확인하고, 시험값과 적 체력·방어막을 바꿔 피해 그래프와 처치 시간을 비교합니다. 원본 밸런스는 바뀌지 않습니다.
+
 ## 최신 기획과 실제 구현 상태
 
 [최신 GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed)는 규칙을, [66개 작업 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2)는 요청 상태를 관리합니다. 노션에서 미구현이어도 게임에는 이미 있을 수 있습니다. [코드 대조와 오너 판단표](../design/master-gdd-alignment.md)를 먼저 확인하세요.

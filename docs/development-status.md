@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 140 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 141 TOPICS</span><span>97 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -62,8 +62,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 1 · IMPROVE 5 · CHANGE 2 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 2 · IMPROVE 6 · CHANGE 2 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 5</small><b>기획자 DPS 실험실 · 피해와 처치 시간 비교</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 무기·스킬 시험값과 적 체력·방어막을 바꾸면 원본 대비 피해 그래프와 처치 시간이 함께 갱신됩니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>무기 5종·스킬 4종 원본, 점사·치명·지속 피해·AP·충전 계산기를 기획자/개발자 인증 문서로 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>목표 처치 시간, 적 접촉 DPS, 모바일 입력·그래프 수치 표를 제공하고 미확정 대체값·이론 상한·실제 플레이 검수 범위를 구분합니다.</p></div>
+        <p><a href="../tools/dps-lab/">DPS 실험실·계산 범위·검증 →</a> · 시험값은 원본 시트와 게임 저장을 변경하지 않습니다.</p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 4</small><b>로그라이크 시야 · 현재/탐색/미탐색 분리</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
