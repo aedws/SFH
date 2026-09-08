@@ -21,4 +21,10 @@
 .sfh-map-invariants { border-left:3px solid var(--map-line); padding-left:.6rem; }
 .sfh-map-workbench summary { min-height:44px; padding:.6rem; cursor:pointer; }
 .sfh-map-workbench textarea { resize:vertical; }
-@media(max-width:760px){.sfh-map-body{grid-template-columns:1fr}.sfh-map-workbench button{flex:1}.sfh-map-canvas svg{max-height:420px}}
+@media(max-width:760px){
+  .sfh-map-body{grid-template-columns:1fr}
+  .sfh-map-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+  .sfh-map-controls>label:nth-child(3){grid-column:1/-1}
+  .sfh-map-controls>button{margin:0;width:100%;min-height:48px}
+  .sfh-map-canvas svg{max-height:420px}
+}

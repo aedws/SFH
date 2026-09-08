@@ -35,6 +35,9 @@ try{
   assert.equal(posts,0,'trial drafts never submit or mutate game');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${role} ${width} overflow`);
   for(const b of await host.locator('button').all())assert.ok((await b.boundingBox()).height>=44);
+  for(const b of await host.locator('.sfh-map-controls button').all()){
+   const bounds=await b.boundingBox();assert.ok(bounds.width>=80&&bounds.height<=80,'control text must not collapse into a vertical column');
+  }
   await host.getByRole('button',{name:'다른 시드',exact:true}).click();assert.equal(await host.getByLabel('Notion에 붙일 제안 초안').inputValue(),'');
   await host.getByRole('button',{name:'현행 피스로 복원'}).click();assert.match(await host.getByRole('status').first().textContent(),/현행 CSV/);
   await host.getByLabel('시드',{exact:true}).fill('-1');await host.getByLabel('시드',{exact:true}).press('Tab');assert.equal(await host.locator('svg').count(),0);
