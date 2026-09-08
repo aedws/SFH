@@ -1,5 +1,6 @@
 import '../../docs/javascripts/dps-loadout.js';
 import '../../docs/javascripts/dps-engine.js';
+import '../../docs/javascripts/growth-engine.js';
 import '../../docs/javascripts/balance-engine.js';
 
 // Immutable records in the EXISTING private wiki bucket; no gameplay or credential writes.
@@ -32,7 +33,7 @@ export async function balanceApi(request,env,current,parseBody){
   if(current.session.role!=='planner')return response({error:'개발자는 확정 그래프 읽기 전용입니다.'},403);
   if(request.headers.get('origin')!==url.origin||request.headers.get('x-csrf-token')!==current.session.csrf)return response({error:'요청 검증 실패'},403);
   const body=await parseBody(request);
-  if(!idPattern.test(body.id||'')||!['combat','distance','table','facility','recovery'].includes(body.model))return response({error:'지원하지 않는 안건'},400);
+  if(!idPattern.test(body.id||'')||!['combat','distance','growth','table','facility','recovery'].includes(body.model))return response({error:'지원하지 않는 안건'},400);
   if(typeof body.title!=='string'||!body.title.trim()||body.title.length>100||typeof body.reason!=='string'||!body.reason.trim()||body.reason.length>2000)return response({error:'제목과 기획 사유를 입력하세요.'},400);
   let source;
   try {source=new URL(body.notion);if(source.protocol!=='https:'||!['notion.site','notion.so','notion.com'].some(d=>source.hostname===d||source.hostname.endsWith('.'+d)))throw Error();}
@@ -40,7 +41,7 @@ export async function balanceApi(request,env,current,parseBody){
   // Retry of the same submitted snapshot is idempotent, including after a deploy.
   const key=keyFor(body.id),existing=await env.WIKI_AUTH.get(key);
   if(existing){const saved=await existing.json();return JSON.stringify(saved.submission)===JSON.stringify(body)?response(saved):response({error:'같은 ID의 내용을 덮어쓸 수 없습니다.'},409);}
-  const catalogPath=['combat','distance'].includes(body.model)?'/assets/dps-catalog.json':'/assets/balance-catalog.json';
+  const catalogPath=['combat','distance','growth'].includes(body.model)?'/assets/dps-catalog.json':'/assets/balance-catalog.json';
   const raw=await env.ASSETS.fetch(new Request(new URL(catalogPath,url)));
   if(!raw.ok)return response({error:'원본 카탈로그를 읽지 못했습니다.'},503);
   const catalog=await raw.json();

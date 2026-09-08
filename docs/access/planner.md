@@ -72,7 +72,26 @@ hide:
 
 </details>
 
-**① 수치 시험 → ② 그래프 확인 → ③ Notion 사유 작성 → ④ 기획 확정본 저장.** 저장한 결과만 확정안으로 개발자 화면에 전달됩니다. 확정안이 없는 동안 개발자는 현행 CSV 수치·그래프를 별도 기준 자료로 조회합니다. 오너 승인·Sheet/CSV 반영·게임 배포는 별도이며, 현재 원본의 임시 수치를 자동 확정하지 않습니다.
+### 선택한 대상 하나의 성장률
+
+무기·캐릭터·방어구를 각각 하나씩 선택해 **동일 대상의 단계별 성능 변화**를 확인합니다. 가로축은 다른 아이템이 아니라 강화 단계/레벨입니다. 1단계 대비 증가량·성장률을 함께 표시합니다. 기획자는 단계별 목표값을 시험·확정할 수 있습니다. [계산 조건과 사용법](../tools/balance-workbench.md#growth).
+
+<details markdown="1" open>
+<summary>무기 하나의 성장 추이</summary>
+<div data-sfh-growth-lab data-kind="weapon" data-editable data-catalog="../../assets/dps-catalog.json">성장 추이 읽는 중…</div>
+</details>
+
+<details markdown="1">
+<summary>캐릭터 하나의 성장 추이</summary>
+<div data-sfh-growth-lab data-kind="character" data-editable data-catalog="../../assets/dps-catalog.json">성장 추이 읽는 중…</div>
+</details>
+
+<details markdown="1">
+<summary>방어구 하나의 성장 추이</summary>
+<div data-sfh-growth-lab data-kind="armor" data-editable data-catalog="../../assets/dps-catalog.json">성장 추이 읽는 중…</div>
+</details>
+
+**① 한 대상 선택 → ② 성장 추이·목표값 검토 → ③ Notion 사유 작성 → ④ 기획 확정본 저장.** 오너 승인·게임 데이터 반영·배포는 별도입니다.
 
 <details markdown="1">
 <summary>무기·스킬·적·AP 계산기</summary>

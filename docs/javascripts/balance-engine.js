@@ -9,7 +9,7 @@
     if(!column||!Array.isArray(input.values)||input.values.length!==column.length)throw Error('원본 목록 또는 열이 변경되었습니다.');
     const ids=new Set();
     const points=column.map((p,i)=>{const v=input.values[i];if(v.id!==p.id||ids.has(v.id))throw Error('행 ID가 일치하지 않습니다.');ids.add(v.id);return {x:i,label:dataset.labels[p.id],base:p.value,value:number(v.value,-1e7,1e7)};});
-    return {title:`${dataset.title} · ${input.column}`,xLabel:'원본 행 (순서형 시간축 아님)',yLabel:dataset.column_labels[input.column],points,
+    return {kind:'catalog_table',title:`${dataset.title} · ${input.column}`,xLabel:'원본 행 (순서형 시간축 아님)',yLabel:dataset.column_labels[input.column],points,
       note:'청록 시험값 / 회색 원본. 열 단위 직접 수치 비교이며 서로 다른 행의 합을 DPS·확률·난이도로 해석하지 않습니다.'};
   }
   function recovery(_,i){
@@ -44,7 +44,7 @@
       points:Array.from({length:101},(_,n)=>{const x=trial.range*n/100;return{x,label:Number(x.toFixed(1)).toString(),base:E.resolve(catalog,{...base,distancePx:x}).sustainedWeapon,value:E.resolve(catalog,{...input,distancePx:x}).sustainedWeapon};}),
       note:'청록 시험 / 회색 현재 구현 곡선. 동일 장착·치명 기대값·명중률, 고유 고정 피해는 거리 배율 제외. 자동 탐지 또는 탄환 수명 밖은 0. 스킬 피해·관통 후속 대상은 제외합니다.'};
   }
-  const models=Object.freeze({table,recovery,facility,combat,distance});
+  const models=Object.freeze({table,recovery,facility,combat,distance,growth:(c,i)=>globalThis.SFHGrowth.calculate(c,i)});
   function calculate(model,catalog,input){if(!Object.hasOwn(models,model))throw Error('지원하지 않는 계산 모델');return models[model](catalog,input);}
   async function fingerprint(sources){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(sources)));return Array.from(new Uint8Array(bytes),v=>v.toString(16).padStart(2,'0')).join('');}
   globalThis.SFHBalance=Object.freeze({version,calculate,fingerprint});

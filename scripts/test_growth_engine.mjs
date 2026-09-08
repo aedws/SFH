@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {balanceApi} from '../cloudflare/wiki-auth/balance-api.js';
+const c=JSON.parse(await readFile('docs/assets/dps-catalog.json','utf8')),before=JSON.stringify(c),G=SFHGrowth;
+let cases=0;
+for(const kind of ['weapon','character','armor'])for(const e of G.entities(c,kind))for(const metric of Object.keys(G.metrics[kind])){
+  const graph=G.calculate(c,{kind,entityId:e.id,metric});
+  assert.equal(graph.entityId,e.id);assert.equal(graph.points.length,e.maximum);
+  graph.points.forEach((p,j)=>{assert.equal(p.x,j+1);assert.equal(p.base,p.value);assert.ok(Number.isFinite(p.value));assert.equal(p.increase,p.value-graph.points[0].value);});cases++;
+}
+const char=G.calculate(c,{kind:'character',entityId:'vanguard',metric:'max_health'});
+assert.equal(char.points.at(-1).value-char.points[0].value,195);
+const speed=G.calculate(c,{kind:'character',entityId:'vanguard',metric:'movement_speed'});
+assert.ok(Math.abs(speed.points.at(-1).value/speed.points[0].value-1.02**39)<1e-8);
+const armor=G.calculate(c,{kind:'armor',entityId:'tactical_vest',metric:'defense'});
+assert.equal(armor.points[2].value-armor.points[0].value,2);
+assert.equal(armor.points[3].value,armor.points[0].value,'missing fourth-stage modifier must not invent growth');
+const flat=G.calculate(c,{kind:'weapon',entityId:'combat_dagger',metric:'dps'});
+assert.ok(flat.points.every(p=>p.growth===0));
+const input={kind:'weapon',entityId:'assault_rifle',metric:'hit'};
+const base=G.calculate(c,input);assert.ok(base.points.at(-1).value>base.points[0].value);
+const trial=G.calculate(c,{...input,values:base.points.map((p,j)=>100*(j+1))});assert.equal(trial.points.at(-1).growth,200);assert.equal(trial.points[0].base,base.points[0].value);
+assert.equal(G.calculate(c,{...input,values:[0,10,20]}).points[1].growth,null);
+for(const bad of [{...input,entityId:'missing'},{...input,metric:'__proto__'},{...input,values:[1]},{...input,values:[1,NaN,3]},{...input,values:[1,-1,3]}])assert.throws(()=>G.calculate(c,bad));
+assert.equal(JSON.stringify(c),before,'catalog immutable');
+let saved;const env={WIKI_AUTH:{get:async()=>null,put:async(k,v)=>{saved=JSON.parse(v);return {etag:'test'};}},ASSETS:{fetch:async()=>Response.json(c)}};
+const body={id:Date.now()+'-'+crypto.randomUUID(),model:'growth',model_version:SFHBalance.version,source:await SFHBalance.fingerprint(c.sources),title:'단일 무기 성장',reason:'단계별 성장률 검토',notion:'https://example.notion.site/growth',input,graph:{forged:true}};
+const req=()=>new Request('https://wiki.test/api/auth/balance',{method:'POST',headers:{origin:'https://wiki.test','x-csrf-token':'test'},body:JSON.stringify(body)});
+const current=role=>({session:{role,csrf:'test'},user:{must_change:false}});
+assert.equal((await balanceApi(req(),env,current('developer'),r=>r.json())).status,403);
+assert.equal((await balanceApi(req(),env,current('planner'),r=>r.json())).status,201);
+assert.deepEqual(saved.graph,base,'server recalculates growth, ignoring forged graph');
+body.input={...input,values:[1]};assert.equal((await balanceApi(req(),env,current('planner'),r=>r.json())).status,400);
+console.log(`GROWTH_ENGINE_OK ${cases} entity/metric combinations; actual stage bounds, HP/speed/armor growth, flat weapons, invalid input, immutable catalog, server/role checks`);

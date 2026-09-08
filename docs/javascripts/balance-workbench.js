@@ -5,8 +5,14 @@
   const label=(text,node)=>{const n=el('label',text);node.setAttribute('aria-label',text);n.append(node);return n;};
   const button=text=>{const n=el('button',text);n.type='button';return n;};
   const json=async(path,options={})=>{const r=await fetch(path,{credentials:'same-origin',cache:'no-store',...options});if(!r.ok)throw Error((await r.json()).error||'데이터 요청 실패');return r.json();};
-  function draw(host,graph,current=false){
+  function draw(host,graph,current=false,compactGrowth=false){
     host.replaceChildren();host.classList.add('dps-graph');
+    if(graph.kind==='catalog_table'||graph.xLabel==='원본 행 (순서형 시간축 아님)'){
+      host.append(el('p',`${graph.title} · 원본 목록 표. 서로 다른 항목을 성장선으로 연결하지 않습니다.`));
+      const details=el('details');details.open=true;details.append(el('summary','원본 수치 읽기'));const table=el('table'),head=el('tr');
+      (current?['항목','현행 CSV 값']:['항목','현행 값','시험값']).forEach(v=>head.append(el('th',v)));table.append(head);
+      graph.points.forEach(p=>{const row=el('tr');(current?[p.label,String(p.value)]:[p.label,String(p.base),String(p.value)]).forEach(v=>row.append(el('td',v)));table.append(row);});details.append(table);host.append(details);return;
+    }
     const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
     const width=Math.max(280,host.clientWidth-18),height=280,points=graph.points;
     const min=Math.min(0,...points.flatMap(p=>[p.base,p.value])),max=Math.max(1,...points.flatMap(p=>[p.base,p.value]));
@@ -20,10 +26,12 @@
     for(const [key,cls]of [['base','dps-base'],['value','dps-total']])node('path',{d:points.map((p,j)=>`${j?'L':'M'}${X(j)},${Y(p[key])}`).join(' '),class:`dps-line ${cls}`});
     for(const j of [...new Set(width<500?[0,points.length-1]:[0,Math.floor((points.length-1)/2),points.length-1])])node('text',{x:X(j),y:247,'text-anchor':j===0?'start':j===points.length-1?'end':'middle'},String(points[j]?.label||'').slice(0,width<500?9:23));
     host.append(svg,el('p',`${graph.xLabel} · ${graph.note}`));
+    if(graph.kind==='growth'&&compactGrowth)return;
     // Values remain accessible without relying on color, hover or a wide canvas.
     const details=el('details'),summary=el('summary','그래프 수치 읽기');details.append(summary);
-    const table=el('table'),head=el('tr');(current?['원본 행','현행 CSV 값']:['구간 / 행','기준','시험 / 확정','차이','변화율']).forEach(v=>head.append(el('th',v)));table.append(head);
-    points.forEach(p=>{const row=el('tr');(current?[p.label,String(p.value)]:[p.label,format(p.base),format(p.value),format(p.value-p.base),p.base===0?'기준 0: 비율 없음':format((p.value-p.base)/Math.abs(p.base)*100)+'%']).forEach(v=>row.append(el('td',v)));table.append(row);});details.append(table);host.append(details);
+    const growth=graph.kind==='growth';
+    const table=el('table'),head=el('tr');(growth?['단계','현재 구현','확정값','1단계 대비 증가량','성장률']:current?['원본 행','현행 CSV 값']:['구간 / 행','기준','시험 / 확정','차이','변화율']).forEach(v=>head.append(el('th',v)));table.append(head);
+    points.forEach(p=>{const row=el('tr');(growth?[p.label,format(p.base),format(p.value),format(p.increase),p.growth===null?'기준 0: 비율 없음':format(p.growth)+'%']:current?[p.label,String(p.value)]:[p.label,format(p.base),format(p.value),format(p.value-p.base),p.base===0?'기준 0: 비율 없음':format((p.value-p.base)/Math.abs(p.base)*100)+'%']).forEach(v=>row.append(el('td',v)));table.append(row);});details.append(table);host.append(details);
   }
   function confirmation(root,getTrial){
     const details=el('details');details.className='balance-confirm';details.append(el('summary','검토한 수치를 기획 확정으로 전달'));

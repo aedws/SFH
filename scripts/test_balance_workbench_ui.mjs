@@ -54,7 +54,8 @@ try{
     await lab.getByLabel('수치 목록',{exact:true}).selectOption('facility');
     await lab.getByLabel('변수 열',{exact:true}).selectOption('risk_bonus');
     const row=lab.locator('.balance-rows input').first();await row.fill('1.5');
-    assert.match(await lab.getByRole('img').locator('title').textContent(),/risk_bonus/);
+    assert.equal(await lab.locator('svg').count(),0,'unrelated catalog rows must not form a growth curve');
+    assert.match(await lab.innerText(),/risk_bonus/);
     await lab.getByLabel('계산 대상',{exact:true}).selectOption('facility');
     await lab.getByLabel('잔여 동시 수용량',{exact:true}).fill('0');
     assert.equal(await lab.getByRole('alert').isHidden(),true);
@@ -76,10 +77,10 @@ try{
     assert.equal(records.size,1,'graph reload does not mutate confirmations');
     const baseline=gallery.locator('.balance-current');
     assert.equal(await baseline.getAttribute('open'),null,'confirmed graphs first; baseline available for other items');
-    await baseline.locator('summary').first().click();await baseline.locator('svg').waitFor();
+    await baseline.locator('summary').first().click();await baseline.locator('table').waitFor();
     await baseline.getByLabel('현행 수치 목록',{exact:true}).selectOption('facility');
     await baseline.getByLabel('현행 변수 열',{exact:true}).selectOption('risk_bonus');
-    await baseline.getByText('그래프 수치 읽기',{exact:true}).click();
+    await baseline.getByText('원본 수치 읽기',{exact:true}).waitFor();
     const values=await baseline.locator('table tr td:last-child').allTextContents();
     assert.deepEqual(values,catalog.datasets.find(d=>d.id==='facility').columns.risk_bonus.map(p=>String(p.value)));
     assert.match(await baseline.innerText(),new RegExp(catalog.version.replaceAll('.','\\.')));
@@ -92,12 +93,12 @@ try{
     await gallery.screenshot({path:`outputs/balance-workbench/current-${width}.png`});
     apiFailure=true;await gallery.getByRole('button',{name:'확정 그래프 새로고침',exact:true}).click();
     await gallery.getByRole('status').filter({hasText:'유무를 판단할 수 없습니다'}).waitFor();
-    assert.ok(await baseline.locator('svg').isVisible(),'API outage does not masquerade as empty confirmations');
+    assert.ok(await baseline.locator('table').isVisible(),'API outage does not masquerade as empty confirmations');
     apiFailure=false;catalogFailure=true;await page.reload();
     await page.locator('.sfh-workspace-launcher a[href$="#confirmed-balance"]').click();
     await gallery.getByRole('button',{name:'현행 데이터 다시 불러오기'}).waitFor();
     catalogFailure=false;await gallery.getByRole('button',{name:'현행 데이터 다시 불러오기'}).click();
-    await baseline.locator('svg').waitFor();
+    await baseline.locator('table').waitFor();
     assert.equal(await gallery.locator('input,textarea').count(),0);
     assert.equal(posts,1,'developer fallback and retry never write confirmations');
     await page.close();

@@ -54,9 +54,18 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 11 · IMPROVE 20 · CHANGE 3 · FIX 15</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>17 UPDATE BUNDLES · BUILD 11 · IMPROVE 21 · CHANGE 3 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 17</small><b>성장 그래프 · 대상 하나의 단계별 변화</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 무기·캐릭터·방어구를 각각 하나씩 선택하여 레벨·강화 단계에 따른 성능, 증가량과 성장률을 확인합니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>실제 장착 계산으로 다른 조건을 고정한 성장 곡선을 제공합니다. 기획 목표값 시험과 개발자 현행 조회를 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>서로 다른 아이템을 선으로 이어 성장처럼 보이던 목록 그래프를 원본 표로 교체했습니다. 성장 효과 없음과 단계별 하락도 그대로 표시합니다.</p></div>
+        <p><a href="tools/balance-workbench/#growth">성장 계산 조건·원본 주의사항 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 16</small><b>무기 거리 피해 · 거리 선택에 따라 달라지는 화력</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 권총은 근거리, 소총은 중거리 유지, 펄스 소총은 중거리 강화 곡선으로 직격 피해가 달라집니다.</strong></div>

@@ -540,6 +540,7 @@ jobs:
           node scripts/test_dps_engine.mjs
           node scripts/test_dps_loadout.mjs
           node scripts/test_weapon_distance.mjs
+          node scripts/test_growth_engine.mjs
           python scripts/test_weapon_distance.py
           node scripts/test_map_model.cjs
           python scripts/build_balance_catalog.py --check
