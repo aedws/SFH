@@ -15,6 +15,7 @@ var orientation_hint: Label
 var orientation_button: Button
 const ViewportPolicy := preload("res://game/features/mobile_controls/mobile_viewport_policy.gd")
 const OrientationPolicy := preload("res://game/features/mobile_controls/mobile_orientation_policy.gd")
+const UI = preload("res://game/features/presentation_theme/game_ui.gd")
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -34,11 +35,13 @@ func _ready() -> void:
 	card = VBoxContainer.new()
 	card.add_theme_constant_override("separation", 18)
 	add_child(card)
-	_label("SFH // CONTROL LINK", 24, Color("02e5e1"))
-	_label("조작 방식을 선택하세요", 30, Color("e5f6f7"))
-	_label("선택 후 로비에서 준비하고 작전 게이트로 이동합니다.", 16, Color("adc5cb"))
-	pc_button = _button("PC · 키보드 / 마우스", &"off")
-	mobile_button = _button("모바일 · 가로 플레이", &"on")
+	_label("SFH / EXTRACTION", 18, Color("02e5e1"))
+	_label("살아서 싸우고,\n가져와 성장하세요.", 36, Color("e5f6f7"))
+	_label("요원 접속 · 조작 방식을 선택하세요", 16, Color("adc5cb"))
+	pc_button = _button("PC로 시작   /   키보드 · 마우스", &"off")
+	mobile_button = _button("모바일로 시작   /   가로 · 터치", &"on")
+	UI.action(pc_button, "weapon", true)
+	UI.action(mobile_button, "move")
 	orientation_hint = _label("", 16, Color("adc5cb"))
 	orientation_button = Button.new()
 	orientation_button.text = "전체화면 · 가로 전환 요청"

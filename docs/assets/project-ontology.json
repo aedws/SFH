@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-08",
-  "source_sha256": "c3a9cd2432f8a5bc9fb27e9ce08494a62549c4f3dfb13cf7e9867ff135dcfadb",
+  "source_sha256": "807fd00c7ce3260d77640236cd1b83ba1a117ed29b7e95cbe1b4e0a19cd9d31a",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -398,12 +398,12 @@
     "ready": 1,
     "implemented": 36,
     "modules": 60,
-    "documents": 99,
+    "documents": 100,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 469,
+    "relations": 470,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -2761,7 +2761,7 @@
         "files": 17,
         "classes": 17,
         "incoming": 3,
-        "outgoing": 1
+        "outgoing": 2
       }
     },
     {
@@ -2851,7 +2851,7 @@
         "files": 24,
         "classes": 24,
         "incoming": 7,
-        "outgoing": 1
+        "outgoing": 2
       }
     },
     {
@@ -2923,7 +2923,7 @@
         "files": 11,
         "classes": 11,
         "incoming": 3,
-        "outgoing": 0
+        "outgoing": 1
       }
     },
     {
@@ -3031,7 +3031,7 @@
         "files": 2,
         "classes": 2,
         "incoming": 1,
-        "outgoing": 0
+        "outgoing": 1
       }
     },
     {
@@ -3049,7 +3049,7 @@
         "files": 9,
         "classes": 9,
         "incoming": 5,
-        "outgoing": 1
+        "outgoing": 2
       }
     },
     {
@@ -3067,7 +3067,7 @@
         "files": 3,
         "classes": 3,
         "incoming": 4,
-        "outgoing": 0
+        "outgoing": 1
       }
     },
     {
@@ -3229,7 +3229,7 @@
         "files": 8,
         "classes": 4,
         "incoming": 2,
-        "outgoing": 3
+        "outgoing": 4
       }
     },
     {
@@ -3328,16 +3328,16 @@
       "label": "거점 성장 루프",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "성장 · feature · 파일 25개",
+      "summary": "성장 · feature · 파일 26개",
       "route": "architecture/code-module-map/?module=p5_hub_progression",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/p5_hub_progression",
       "kind": "implementation",
       "metrics": {
-        "files": 25,
-        "classes": 24,
+        "files": 26,
+        "classes": 25,
         "incoming": 3,
-        "outgoing": 1
+        "outgoing": 2
       }
     },
     {
@@ -3418,15 +3418,15 @@
       "label": "화면 테마",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "UI·입력 · feature · 파일 2개",
+      "summary": "UI·입력 · feature · 파일 4개",
       "route": "architecture/code-module-map/?module=presentation_theme",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/presentation_theme",
       "kind": "implementation",
       "metrics": {
-        "files": 2,
-        "classes": 2,
-        "incoming": 2,
+        "files": 4,
+        "classes": 4,
+        "incoming": 12,
         "outgoing": 0
       }
     },
@@ -3517,7 +3517,7 @@
         "files": 6,
         "classes": 3,
         "incoming": 4,
-        "outgoing": 1
+        "outgoing": 2
       }
     },
     {
@@ -3553,7 +3553,7 @@
         "files": 3,
         "classes": 3,
         "incoming": 2,
-        "outgoing": 1
+        "outgoing": 2
       }
     },
     {
@@ -3688,13 +3688,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 59개",
+      "summary": "기반·검증 · verification · 파일 61개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 59,
+        "files": 61,
         "classes": 0,
         "incoming": 0,
         "outgoing": 54
@@ -4127,6 +4127,17 @@
       "summary": "단서·피드백·결말 이해 판정",
       "route": "quality/player-perception-audit/",
       "source": "docs/quality/player-perception-audit.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:quality/game-ui-rematch",
+      "type": "document",
+      "label": "전체 게임 UI 재편",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "전체 화면 판정·제작/도감/설정·전환 오류와 검증 경계",
+      "route": "quality/game-ui-rematch/",
+      "source": "docs/quality/game-ui-rematch.md",
       "kind": "evidence"
     },
     {
@@ -6821,6 +6832,12 @@
     },
     {
       "from": "document:quality/player-perception-audit",
+      "to": "collection:group:quality/player-qa",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:quality/game-ui-rematch",
       "to": "collection:group:quality/player-qa",
       "type": "part_of",
       "origin": "knowledge_map"

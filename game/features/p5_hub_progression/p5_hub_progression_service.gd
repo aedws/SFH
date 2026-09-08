@@ -269,6 +269,11 @@ func get_codex_entry(entry_id: StringName) -> Dictionary:
 	return codex.call(&"get_entry", entry_id) if codex != null else {}
 
 
+func get_codex_entries() -> Array[Dictionary]:
+	var codex = _module(&"codex")
+	return codex.call(&"get_entries") if codex != null else []
+
+
 func create_operation_draft(tier: Resource, penalty: Dictionary, context: Dictionary) -> Dictionary:
 	var draft = _module(&"operation_draft")
 	return draft.call(&"create_draft", tier, penalty, context) if draft != null else {}

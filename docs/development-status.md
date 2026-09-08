@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 145 TOPICS</span><span>99 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 146 TOPICS</span><span>100 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -64,9 +64,19 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 4 · IMPROVE 11 · CHANGE 3 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 6 · IMPROVE 14 · CHANGE 3 · FIX 13</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 10</small><b>전체 게임 UI · 기능 도구에서 선택과 회수의 화면으로</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 준비실·제작·도감·설정·시즌 화면을 게임 흐름으로 정리하고, 전투 시야를 가리지 않는 HUD는 유지했습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 2</h3><p>제작은 도면 선택→재료·비용 확인→제작 확정, 도감은 수집 대상·지역·진행 카드로 바뀝니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 3</h3><p>준비·장비·설정의 실행 버튼과 그림문자, 현장 전리품 종류·품명, 게임 내 시즌 보관소로 정보 위계를 맞췄습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>첫 열림의 창 넘침, 훈련 HUD가 다른 창 위에 남는 겹침, 선택 글자 대비, 모바일 안내와 메뉴 교차를 수정했습니다.</p></div>
+        <p><a href="quality/game-ui-rematch/">전체 화면 판정·검증 범위 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>역할 작업실 · 필요한 작업을 바로 여는 블록 구성</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 긴 설명 대신 역할별 6개 작업 블록에서 시작하고 필요한 도구와 근거만 펼칩니다.</strong></div>

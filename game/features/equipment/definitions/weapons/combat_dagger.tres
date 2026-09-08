@@ -48,4 +48,4 @@ maximum_level = 3
 module_slot_limit = 2
 module_cost_limit = 5
 part_socket_ids = [&"blade", &"grip"]
-description = "근접·냉병기·단검 확장 예시."
+description = "두 번째 명중마다 절단 피해를 더하는 근접 단검."

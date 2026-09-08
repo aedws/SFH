@@ -3,7 +3,8 @@
 *.translation
 
 # Exported builds
-build/
+build/*
+!build/.gdignore
 exports/
 
 # Documentation build output
@@ -15,7 +16,8 @@ site/
 .venv/
 venv/
 __pycache__/
-outputs/
+outputs/*
+!outputs/.gdignore
 # Balance CSV import policy is versioned: keep raw data, never translations.
 
 # Editors and operating systems

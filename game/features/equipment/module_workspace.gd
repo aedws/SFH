@@ -93,7 +93,13 @@ func _ready() -> void:
 	assign = _button(right, "선택 슬롯에 소켓 부여", func():
 		if socket_tags.selected >= 0: session.assign_module_socket(target, selected_socket, socket_tags.get_item_metadata(socket_tags.selected)))
 	_button(right, "장비 레벨 · 모듈 강화 작업대", func(): advanced_requested.emit())
-	_label(right, "타입 일치: 비용 50% (올림)\n불일치: 기본 비용 유지\n레벨 초기화·촉매 소모 없음\n변경은 이탈 시 저장 확인", 12)
+	var rules := Label.new()
+	rules.text = "타입 일치: 비용 50% (올림)\n불일치: 기본 비용 유지\n레벨 초기화·촉매 소모 없음\n변경은 이탈 시 저장 확인"
+	rules.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var ui = preload("res://game/features/presentation_theme/game_ui.gd")
+	ui.fold(right, "소켓 개조 규칙", rules)
+	ui.action(install, "skill", true)
+	ui.action(assign, "craft")
 	resized.connect(_layout)
 
 func configure(editor: Node, initial_target: StringName = &"") -> void:
@@ -144,7 +150,7 @@ func refresh() -> void:
 		card.caption = instance.definition.display_name if instance != null else "빈 슬롯 %d" % (index + 1)
 		if instance != null and not instance.definition.module_tags.is_empty(): card.glyph = instance.definition.module_tags[0]
 		card.cost = "C %d  /  Lv.%d" % [state.effective_module_cost(instance), instance.upgrade_level] if instance != null else "+"
-		card.detail = "소켓: %s" % (String(socket) if socket != &"" else "미지정")
+		card.detail = "소켓: %s" % (PRESENTER.tag_label(socket) if socket != &"" else "미지정")
 		card.pressed.connect(func(): selected_socket = index; refresh())
 		installed.add_child(card)
 		if instance != null:
@@ -155,7 +161,7 @@ func refresh() -> void:
 			for tag in entry[&"linked_resource"].module_tags:
 				if tag not in tags: tags.append(tag)
 	for tag in tags:
-		socket_tags.add_item(String(tag))
+		socket_tags.add_item(PRESENTER.tag_label(tag))
 		socket_tags.set_item_metadata(socket_tags.item_count - 1, tag)
 	assign.disabled = state.level < state.maximum_level() or tags.is_empty()
 	_refresh_owned()
@@ -169,7 +175,7 @@ func _refresh_owned() -> void:
 	for entry in session.inventory.get_snapshot()[&"items"]:
 		var definition: Resource = entry.get(&"linked_resource")
 		if not definition is EquipmentModuleDefinition: continue
-		if not search.text.is_empty() and not (definition.display_name + str(definition.module_tags)).to_lower().contains(search.text.to_lower()): continue
+		if not search.text.is_empty() and not (definition.display_name + str(definition.module_tags) + PRESENTER.tags_text(definition.module_tags)).to_lower().contains(search.text.to_lower()): continue
 		var level := int(entry.get(&"runtime_payload", {}).get(&"upgrade_level", 1))
 		var compatible: bool = state.can_install_module(definition, level, selected_socket)
 		if compatible_only.button_pressed and not compatible: continue
@@ -188,7 +194,7 @@ func _refresh_owned() -> void:
 		if not entry[&"linked_resource"].module_tags.is_empty(): card.glyph = entry[&"linked_resource"].module_tags[0]
 		card.cost = "C %d  /  Lv.%d" % [data.cost, data.level]
 		if data.cost != data.base: card.cost = "C %d → %d / Lv.%d" % [data.base, data.cost, data.level]
-		card.detail = " · ".join(entry[&"linked_resource"].module_tags)
+		card.detail = PRESENTER.tags_text(entry[&"linked_resource"].module_tags)
 		card.tint = Color("02e5e1") if data.compatible else Color("718187")
 		card.pressed.connect(func(): selected_item = entry[&"instance_id"]; _refresh_owned())
 		owned.add_child(card)

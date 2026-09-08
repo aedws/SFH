@@ -172,6 +172,7 @@ nav:
           - 최소·권장 사양과 성능 예산: performance/minimum-requirements.md
           - 실제 플레이 세션 E2E: quality/e2e-play-session.md
           - 플레이어 인식 단위 E2E 감사: quality/player-perception-audit.md
+          - 전체 게임 UI 재편: quality/game-ui-rematch.md
           - 한 판의 다섯 순간 — 재미 제안서: quality/five-moment-fun-proposal.md
           - 모바일 위키 반응형 E2E: quality/wiki-responsive-e2e.md
           - 문제 해결: troubleshooting/index.md

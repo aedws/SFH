@@ -3,7 +3,7 @@ extends PanelContainer
 
 signal unsocket_requested(socket_type: StringName, slot_index: int)
 
-const TYPE_LABELS := {&"rune": "RUNE", &"core": "CORE", &"artifact": "ARTIFACT"}
+const TYPE_LABELS := {&"rune": "룬", &"core": "코어", &"artifact": "유물"}
 
 @onready var slots_row: HBoxContainer = %SlotsRow
 @onready var source_label: Label = %SourceLabel
@@ -64,6 +64,8 @@ func refresh(snapshot: Dictionary) -> void:
 				button.pressed.connect(_request_unsocket.bind(socket_type, int(slot[&"slot_index"])))
 			slots_row.add_child(button)
 	source_label.text = "RUN ONLY · %s" % snapshot.get(&"source_label", "확정 CSV")
+	source_label.tooltip_text = source_label.text
+	source_label.text = "RUN ONLY · 작전 한정"
 	# 빈 슬롯 안내는 전리품 상호작용 문구가 담당합니다. 전투 중에는 실제로
 	# 장착된 런 자산이 있을 때만 가장자리 HUD를 노출해 시야를 보존합니다.
 	visible = latest_occupied_count > 0

@@ -17,6 +17,7 @@ var target_viewport: Viewport
 var telemetry_panel: Control
 var loadout_panel: Control
 var skill_panel: Control
+var surface: Control
 
 
 func configure(
@@ -35,10 +36,28 @@ func configure(
 	telemetry_panel = new_telemetry_panel
 	loadout_panel = new_loadout_panel
 	skill_panel = new_skill_panel
+	# Preserve each presenter's own active/result visibility beneath one modal gate.
+	# Hiding the parent also disables its controls; transparent overlays do not.
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	surface = Control.new()
+	surface.name = "TrainingHudSurface"
+	surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	telemetry_panel.get_parent().add_child(surface)
+	surface.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for control in [telemetry_panel, loadout_panel, skill_panel]:
+		if is_instance_valid(control): control.reparent(surface)
 	if not target_viewport.size_changed.is_connected(_apply_layout):
 		target_viewport.size_changed.connect(_apply_layout)
 	_apply_layout()
 	return true
+
+
+func _process(_delta: float) -> void:
+	if is_instance_valid(surface): surface.visible = not get_tree().paused
+
+
+func _exit_tree() -> void:
+	if is_instance_valid(surface): surface.queue_free()
 
 
 func get_snapshot() -> Dictionary:

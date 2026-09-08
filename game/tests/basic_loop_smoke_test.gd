@@ -944,6 +944,16 @@ func _hub_loadout_ui_density_failure(inventory_window: Node, workbench: Node) ->
 			inventory_window_size,
 		]
 	var workbench_density: Dictionary = workbench.call(&"get_density_snapshot")
+	# Copy/locale changes must not make real module/part cards disappear from QA.
+	var cards: Node = workbench.get("modification_inventory_grid")
+	for card in cards.get_children():
+		if not card is Button or not card.has_meta(&"item_type"): continue
+		var original_text: String = card.text
+		card.text = "현지화된 카드"
+		var localized: Dictionary = workbench.call(&"get_density_snapshot")
+		card.text = original_text
+		if localized.get(&"module_inventory_metadata_card_count") != workbench_density.get(&"module_inventory_metadata_card_count"):
+			return "모듈/파츠 카드 검수가 표시 문구에 의존합니다."
 	var workbench_window_size: Vector2 = workbench_density.get(&"window_size", Vector2.ZERO)
 	var modification_card_size: Vector2 = workbench_density.get(
 		&"modification_card_size", Vector2.ZERO

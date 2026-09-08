@@ -20,7 +20,7 @@ var season_service: Node
 var reward_catalog: Node
 var honor_profile: Node
 var reward_service: RefCounted
-var honor_panel: AcceptDialog
+var honor_panel: Control
 
 
 func configure(

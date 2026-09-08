@@ -68,6 +68,7 @@ func install(overlay: Control, title: Label, summary: Label, action: Button) -> 
 	summary_label.hide()
 	return_button.reparent(column)
 	return_button.custom_minimum_size.y = 48
+	preload("res://game/features/presentation_theme/game_ui.gd").action(return_button, "move", true)
 	previous_layout.queue_free()
 	host.resized.connect(_layout)
 	_layout()
@@ -88,7 +89,7 @@ func render(result: Dictionary, title: String, transcript: String) -> void:
 	var accent := Color("02e5e1") if extracted else Color("ffab86")
 	title_label.add_theme_color_override("font_color", accent)
 	if result.is_empty():
-		mission_label.text = "SYSTEM / 상태 확인 필요"
+		mission_label.text = "통신 복구 필요"
 		next_label.text = "재시도해도 실패하면 아래 내용을 확인해 주세요."
 		details_button.button_pressed = true
 	else:

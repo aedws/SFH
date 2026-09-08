@@ -30,4 +30,4 @@ module_slot_limit = 2
 module_cost_limit = 5
 stat_modifiers = [SubResource("MovementSpeed")]
 fixed_options = [SubResource("FixedOption")]
-description = "이동 속도를 올리는 범용 스탯 수정 예시입니다."
+description = "이동 속도를 높이는 기동 전투화. 빠르게 자리를 바꾸고 후퇴할 때 유용합니다."

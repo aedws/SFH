@@ -148,6 +148,9 @@ func _draw() -> void:
 	draw_arc(center, 39.0, -2.82, 0.35, 18, edge, 3.0, true)
 	draw_arc(center, 39.0, 0.32, 3.48, 18, edge, 3.0, true)
 	draw_arc(center, 29.0, 0.0, TAU, 24, Color(edge, 0.42), 1.0, true)
+	icon_label.hide()
+	var emblem_kind := "gear" if category_id == &"armor" else "weapon" if category_id == &"weapon" else "skill"
+	draw_texture_rect(GameUI.icon(emblem_kind), Rect2(center - Vector2(20, 20), Vector2(40, 40)), false, TEXT_PRIMARY)
 	for spoke_index in range(4):
 		var angle := PI * 0.25 + float(spoke_index) * PI * 0.5
 		var from := center + Vector2.from_angle(angle) * 33.0
