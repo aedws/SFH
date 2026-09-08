@@ -12,15 +12,18 @@ await mkdir('outputs/balance-workbench',{recursive:true});
 const errors=[];
 try{
   for(const width of [320,390,768,1440]){
-    let role='planner';const records=new Map();
+    let role='planner',apiFailure=false,catalogFailure=false,posts=0;const records=new Map();
     const bucket={get:async key=>records.has(key)?{json:async()=>JSON.parse(records.get(key).body)}:null,
       put:async(key,body,options)=>{if(records.has(key))return null;records.set(key,{body,options});return {etag:'test'};},
       list:async()=>({objects:[...records.values()].map(v=>({customMetadata:v.options.customMetadata})),truncated:false})};
     const env={WIKI_AUTH:bucket,ASSETS:{fetch:async req=>Response.json(new URL(req.url).pathname.includes('dps-')?dps:catalog)}};
     const page=await browser.newPage({viewport:{width,height:1000},reducedMotion:'reduce'});
     page.on('pageerror',e=>errors.push(String(e)));
+    await page.route('**/assets/balance-catalog.json',route=>catalogFailure?route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'test catalog outage'})}):route.continue());
     await page.route('**/api/auth/session',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({authenticated:true,role,username:role,csrf:'test'})}));
     await page.route('**/api/auth/balance*',async route=>{
+      if(apiFailure)return route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'test outage'})});
+      if(route.request().method()==='POST')posts++;
       const r=route.request();const req=new Request(r.url(),{method:r.method(),headers:{...r.headers(),origin},...(r.method()==='POST'?{body:r.postData()}: {})});
       const response=await balanceApi(req,env,{session:{role,csrf:'test'},user:{must_change:false}},r=>r.json());
       await route.fulfill({status:response.status,contentType:'application/json',body:await response.text()});
@@ -64,15 +67,41 @@ try{
     const gallery=page.locator('[data-sfh-balance-gallery]');
     await gallery.getByText('회수 예시 '+width,{exact:false}).click();
     await gallery.getByRole('img').waitFor();
-    assert.equal(await gallery.locator('input,textarea,select').count(),0,'developer has graphs, not trial inputs');
+    assert.equal(await gallery.locator('input,textarea').count(),0,'developer has graphs, not trial inputs');
     assert.equal(await gallery.getByRole('button',{name:'기획 확정본 저장'}).count(),0);
     assert.match(await gallery.innerText(),/오너 승인 대기/);
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`developer overflow ${width}`);
     await gallery.screenshot({path:`outputs/balance-workbench/developer-${width}.png`});
     await page.reload();await gallery.getByText('회수 예시 '+width,{exact:false}).click();await gallery.getByRole('img').waitFor();
     assert.equal(records.size,1,'graph reload does not mutate confirmations');
+    const baseline=gallery.locator('.balance-current');
+    assert.equal(await baseline.getAttribute('open'),null,'confirmed graphs first; baseline available for other items');
+    await baseline.locator('summary').first().click();await baseline.locator('svg').waitFor();
+    await baseline.getByLabel('현행 수치 목록',{exact:true}).selectOption('facility');
+    await baseline.getByLabel('현행 변수 열',{exact:true}).selectOption('risk_bonus');
+    await baseline.getByText('그래프 수치 읽기',{exact:true}).click();
+    const values=await baseline.locator('table tr td:last-child').allTextContents();
+    assert.deepEqual(values,catalog.datasets.find(d=>d.id==='facility').columns.risk_bonus.map(p=>String(p.value)));
+    assert.match(await baseline.innerText(),new RegExp(catalog.version.replaceAll('.','\\.')));
+    assert.ok(!(await baseline.innerText()).includes('undefined'));
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`baseline overflow ${width}`);
+    records.clear();await gallery.getByRole('button',{name:'확정 그래프 새로고침',exact:true}).click();
+    await gallery.getByRole('status').filter({hasText:'확정본이 아직 없습니다'}).waitFor();
+    assert.notEqual(await baseline.getAttribute('open'),null,'empty automatically shows current data');
+    assert.match(await baseline.getByLabel('현행 변수 열').inputValue(),/risk_bonus/,'refresh retains view selection');
+    await gallery.screenshot({path:`outputs/balance-workbench/current-${width}.png`});
+    apiFailure=true;await gallery.getByRole('button',{name:'확정 그래프 새로고침',exact:true}).click();
+    await gallery.getByRole('status').filter({hasText:'유무를 판단할 수 없습니다'}).waitFor();
+    assert.ok(await baseline.locator('svg').isVisible(),'API outage does not masquerade as empty confirmations');
+    apiFailure=false;catalogFailure=true;await page.reload();
+    await page.locator('.sfh-workspace-launcher a[href$="#confirmed-balance"]').click();
+    await gallery.getByRole('button',{name:'현행 데이터 다시 불러오기'}).waitFor();
+    catalogFailure=false;await gallery.getByRole('button',{name:'현행 데이터 다시 불러오기'}).click();
+    await baseline.locator('svg').waitFor();
+    assert.equal(await gallery.locator('input,textarea').count(),0);
+    assert.equal(posts,1,'developer fallback and retry never write confirmations');
     await page.close();
   }
   assert.deepEqual(errors,[]);
-  console.log('BALANCE_UI_E2E_OK 4 widths; trial/invalid/confirm/server recompute/read-only/reload');
+  console.log('BALANCE_UI_E2E_OK 4 widths; trial/confirm/read-only; empty/partial/current values/API outage/catalog retry/no writes');
 }finally{await browser.close();}

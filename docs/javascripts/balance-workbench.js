@@ -5,7 +5,7 @@
   const label=(text,node)=>{const n=el('label',text);node.setAttribute('aria-label',text);n.append(node);return n;};
   const button=text=>{const n=el('button',text);n.type='button';return n;};
   const json=async(path,options={})=>{const r=await fetch(path,{credentials:'same-origin',cache:'no-store',...options});if(!r.ok)throw Error((await r.json()).error||'데이터 요청 실패');return r.json();};
-  function draw(host,graph){
+  function draw(host,graph,current=false){
     host.replaceChildren();host.classList.add('dps-graph');
     const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
     const width=Math.max(280,host.clientWidth-18),height=280,points=graph.points;
@@ -18,12 +18,12 @@
     const format=v=>Math.abs(v)>9999?v.toExponential(1):Number(v.toFixed(2)).toString();
     for(let k=0;k<=4;k++){const v=min+(max-min)*k/4;node('line',{x1:55,x2:width-20,y1:Y(v),y2:Y(v),class:'dps-gridline'});node('text',{x:0,y:Y(v)+4},format(v));}
     for(const [key,cls]of [['base','dps-base'],['value','dps-total']])node('path',{d:points.map((p,j)=>`${j?'L':'M'}${X(j)},${Y(p[key])}`).join(' '),class:`dps-line ${cls}`});
-    for(const j of [...new Set([0,Math.floor((points.length-1)/2),points.length-1])])node('text',{x:X(j),y:247,'text-anchor':j===0?'start':j===points.length-1?'end':'middle'},String(points[j]?.label||'').slice(0,width<500?11:23));
+    for(const j of [...new Set(width<500?[0,points.length-1]:[0,Math.floor((points.length-1)/2),points.length-1])])node('text',{x:X(j),y:247,'text-anchor':j===0?'start':j===points.length-1?'end':'middle'},String(points[j]?.label||'').slice(0,width<500?9:23));
     host.append(svg,el('p',`${graph.xLabel} · ${graph.note}`));
     // Values remain accessible without relying on color, hover or a wide canvas.
     const details=el('details'),summary=el('summary','그래프 수치 읽기');details.append(summary);
-    const table=el('table'),head=el('tr');['구간 / 행','기준','시험 / 확정','차이','변화율'].forEach(v=>head.append(el('th',v)));table.append(head);
-    points.forEach(p=>{const row=el('tr');[p.label,format(p.base),format(p.value),format(p.value-p.base),p.base===0?'기준 0: 비율 없음':format((p.value-p.base)/Math.abs(p.base)*100)+'%'].forEach(v=>row.append(el('td',v)));table.append(row);});details.append(table);host.append(details);
+    const table=el('table'),head=el('tr');(current?['원본 행','현행 CSV 값']:['구간 / 행','기준','시험 / 확정','차이','변화율']).forEach(v=>head.append(el('th',v)));table.append(head);
+    points.forEach(p=>{const row=el('tr');(current?[p.label,String(p.value)]:[p.label,format(p.base),format(p.value),format(p.value-p.base),p.base===0?'기준 0: 비율 없음':format((p.value-p.base)/Math.abs(p.base)*100)+'%']).forEach(v=>row.append(el('td',v)));table.append(row);});details.append(table);host.append(details);
   }
   function confirmation(root,getTrial){
     const details=el('details');details.className='balance-confirm';details.append(el('summary','검토한 수치를 기획 확정으로 전달'));
@@ -83,9 +83,40 @@
       let width=root.clientWidth;const observer=new ResizeObserver(()=>{if(!root.isConnected){observer.disconnect();return;}if(width!==root.clientWidth){width=root.clientWidth;update();}});observer.observe(root);
     }catch(e){root.textContent=`계산기 연결 실패: ${e.message}`;const retry=button('다시 불러오기');retry.addEventListener('click',()=>{delete root.dataset.mounted;workbench(root);});root.append(retry);}
   }
+  // Read-only repository snapshot; never synthesizes or saves a planner confirmation.
+  function currentBalance(root,path){
+    const panel=el('details');panel.className='balance-current';panel.append(el('summary','현행 밸런스 데이터 · CSV 기준값'));
+    const body=el('div');panel.append(body);root.append(panel);
+    let loaded=false,busy=false;
+    async function load(){
+      if(loaded||busy)return;busy=true;body.textContent='현행 CSV 읽는 중…';
+      try{
+        const catalog=await json(new URL(path,location.href));
+        if(!catalog.datasets?.length)throw Error('수치 목록이 비어 있습니다.');
+        body.replaceChildren(el('p',`현행 CSV ${catalog.version} · ${catalog.datasets.length}개 수치 목록. 기획 확정 여부와 별개의 저장소 기준값입니다. 실시간 Sheet 시험값·실행 중 세이브 보정값은 포함하지 않습니다.`));
+        const controls=el('div');controls.className='balance-controls';
+        const dataset=el('select'),column=el('select'),source=el('p'),graph=el('div');source.className='dps-source';
+        catalog.datasets.forEach(d=>{const o=el('option',`${d.title} · ${d.id}`);o.value=d.id;dataset.append(o);});
+        controls.append(label('현행 수치 목록',dataset),label('현행 변수 열',column));body.append(controls,source,graph);
+        function render(){
+          const d=catalog.datasets.find(d=>d.id===dataset.value);
+          source.textContent=`${d.source} · ${column.value} · ${d.column_labels[column.value]} · SHA-256 ${catalog.sources[d.source]}`;
+          const result=SFHBalance.calculate('table',catalog,{dataset:d.id,column:column.value,values:d.columns[column.value]});
+          result.note='청록선 = 현행 CSV 수치. 행별 비교이며 합산 DPS·실제 난이도를 의미하지 않습니다. 아래 표에서 원본 정밀도의 값을 확인하세요.';
+          draw(graph,result,true);panel.dataset.ready='true';
+        }
+        function choose(){const d=catalog.datasets.find(d=>d.id===dataset.value);column.replaceChildren();Object.keys(d.columns).forEach(key=>{const o=el('option',`${d.column_labels[key]} · ${key}`);o.value=key;column.append(o);});render();}
+        dataset.addEventListener('change',choose);column.addEventListener('change',render);choose();loaded=true;
+        let width=body.clientWidth;const observer=new ResizeObserver(()=>{if(!body.isConnected){observer.disconnect();return;}if(width!==body.clientWidth){width=body.clientWidth;render();}});observer.observe(body);
+      }catch(e){body.textContent=`현행 데이터 연결 실패: ${e.message}`;const retry=button('현행 데이터 다시 불러오기');retry.addEventListener('click',load);body.append(retry);}
+      finally{busy=false;}
+    }
+    panel.addEventListener('toggle',()=>{if(panel.open)load();});return panel;
+  }
   async function gallery(root){
     if(root.dataset.mounted)return;root.dataset.mounted='true';root.classList.add('dps-lab');
-    root.replaceChildren();const refresh=button('확정 그래프 새로고침'),list=el('div'),more=button('이전 확정본 더 보기'),status=el('p');status.setAttribute('role','status');root.append(refresh,status,list,more);let cursor=null;
+    root.replaceChildren();const refresh=button('확정 그래프 새로고침'),list=el('div'),more=button('이전 확정본 더 보기'),status=el('p');status.setAttribute('role','status');more.hidden=true;root.append(refresh,status,list,more);
+    const baseline=currentBalance(root,root.dataset.catalog);let cursor=null;
     async function load(reset){
       refresh.disabled=more.disabled=true;
       try{
@@ -100,8 +131,9 @@
             }catch(e){details.append(el('p',`읽기 실패: ${e.message}. 새로고침으로 다시 시도하세요.`));}
           });
         }
-        cursor=data.cursor;more.hidden=!cursor;status.textContent=list.children.length?'확정 시점의 그래프입니다. 입력 편집과 미확정 시험값은 제공하지 않습니다.':'기획자가 저장한 확정본이 아직 없습니다. 임시 수치를 대신 표시하지 않습니다.';
-      }catch(e){status.textContent=`확정본 연결 실패: ${e.message}`;}finally{refresh.disabled=more.disabled=false;}
+        cursor=data.cursor;more.hidden=!cursor;status.textContent=list.children.length?'저장된 기획 확정안을 먼저 표시합니다. 아직 확정하지 않은 항목은 아래 현행 CSV에서 조회하세요. 확정안과 현행값의 자동 대체·게임 적용은 하지 않습니다.':'기획자가 저장한 확정본이 아직 없습니다. 현행 CSV 밸런스 데이터를 표시합니다. 기획 확정값은 아닙니다.';
+        if(reset)baseline.open=!list.children.length;
+      }catch(e){status.textContent=`확정본 연결 실패: ${e.message}. 확정본 유무를 판단할 수 없습니다. 아래 현행 CSV는 별도 기준 자료입니다.`;baseline.open=true;}finally{refresh.disabled=more.disabled=false;}
     }
     refresh.addEventListener('click',()=>load(true));more.addEventListener('click',()=>load(false));load(true);
   }

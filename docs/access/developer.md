@@ -14,7 +14,7 @@ hide:
 <nav class="sfh-workspace-launcher" aria-label="개발자 작업 바로가기">
   <a href="#map-workbench"><small>공간</small><strong>맵·피스 설계실</strong><span>게임 배치 대조와 오너 판단 초안</span></a>
   <a href="#owner-decision-console"><small>판단</small><strong>작업·오너 판단</strong><span>선행 조건과 판단 대기열</span></a>
-  <a href="#confirmed-balance"><small>기획 확정</small><strong>확정 그래프</strong><span>편집 없이 수치 근거만 확인</span></a>
+  <a href="#confirmed-balance"><small>밸런스</small><strong>확정안·현행 수치</strong><span>미확정 항목은 현재 CSV로 확인</span></a>
   <a href="#code-module-map"><small>구조</small><strong>코드·모듈 관계</strong><span>구현 연결과 영향 추적</span></a>
   <a href="../../design/current-milestone-workline/#notion-20260907"><small>실행</small><strong>현재 작업선</strong><span>작업 순서·중단·완료 조건</span></a>
   <a href="../../quality/e2e-play-session/"><small>품질</small><strong>플레이 검증</strong><span>회귀 위험과 수락 근거</span></a>
@@ -46,13 +46,13 @@ hide:
 </details>
 
 <details class="sfh-workspace-block" markdown="1">
-<summary>기획 확정 그래프 <small>저장된 안건만 읽기 전용으로 확인</small></summary>
+<summary>기획 확정안·현행 밸런스 <small>확정이 없으면 현재 CSV 수치 표시</small></summary>
 
 ## 기획 확정 수치 그래프 {#confirmed-balance}
 
-기획자가 검토 후 저장한 안건만 표시합니다. 이 영역에는 수치 편집기나 미확정 시험값이 없습니다. **기획 확정 ≠ 오너 승인 ≠ 게임 적용**이며, 기존 판단 콘솔에서 승인·구현 근거를 검토합니다.
+기획자가 저장한 확정안이 없으면 **현행 CSV의 밸런스 수치·그래프**를 자동으로 표시합니다. 일부 안건만 확정했을 때도 아래 현행 데이터에서 나머지 목록·변수 열을 조회할 수 있습니다. 조회 선택만 가능하며 수치 편집·저장은 없습니다. **현행 CSV ≠ 기획 확정 ≠ 오너 승인**이며, 확정안은 게임에 자동 적용되지 않습니다. 실시간 Sheet 시험값이나 세이브 보정값이 아닌 위키와 함께 생성한 저장소 CSV 버전·원본 경로·지문을 확인하세요.
 
-<div data-sfh-balance-gallery>확정 그래프 읽는 중…</div>
+<div data-sfh-balance-gallery data-catalog="../../assets/balance-catalog.json">확정안·현행 밸런스 읽는 중…</div>
 
 </details>
 
