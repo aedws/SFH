@@ -8,6 +8,9 @@ signal external_panel_requested(action: StringName)
 const EDIT_SESSION = preload("res://game/features/inventory/inventory_edit_session.gd")
 const GRID_VIEW = preload("res://game/features/inventory/inventory_grid_view.gd")
 const SLOT_BUTTON = preload("res://game/features/inventory/inventory_slot_button.gd")
+const ITEM_PREVIEW = preload("res://game/features/inventory/inventory_item_preview.gd")
+@export var loadout_column_width: float = 204.0
+@export var inspection_column_width: float = 224.0
 const SLOT_NAMES := {&"main": "메인 무기", &"secondary": "보조 무기", &"body": "신체", &"feet": "신발"}
 
 var session: Node
@@ -19,6 +22,7 @@ var bag_scroll: ScrollContainer
 var content_scroll: ScrollContainer
 var columns: BoxContainer
 var gear_column: VBoxContainer
+var loadout_column: VBoxContainer
 var stats_column: VBoxContainer
 var detail_column: VBoxContainer
 var module_column: VBoxContainer
@@ -35,6 +39,8 @@ var selected_name: Label
 var selected_description: Label
 var status_label: Label
 var capacity_label: Label
+var capacity_meter: ProgressBar
+var selected_preview: Control
 var action_button: Button
 var unequip_button: Button
 var rotate_button: Button
@@ -220,6 +226,9 @@ func request_tab(index: int) -> void:
 		current_tab = index
 		selected_socket = &""
 		selected_entry.clear()
+		selected_preview.present({})
+		selected_name.text = "아이템 선택"
+		selected_description.text = "아이템을 선택해 장착 대상을 확인하세요."
 		_refresh()
 	)
 
@@ -236,6 +245,7 @@ func _bind_draft() -> void:
 	grid_view.selected_instance_id = &""
 	selected_entry.clear()
 	selected_name.text = "아이템 선택"
+	selected_preview.present({})
 	selected_socket = &""
 	selected_description.text = "가방에서 아이템을 선택해 설명과 장착 대상을 확인하세요."
 	_refresh_slots()
@@ -252,8 +262,9 @@ func _build_ui() -> void:
 	margin.add_child(root_box)
 	var header := HBoxContainer.new()
 	root_box.add_child(header)
-	var header_title := _label(header, "I  가방 인벤토리", 20)
+	var header_title := _label(header, "가방 인벤토리 / LOADOUT", 20)
 	header_title.autowrap_mode = TextServer.AUTOWRAP_OFF
+	header_title.clip_text = true
 	header_title.size_flags_horizontal = SIZE_EXPAND_FILL
 	var close_button := _button(header, "닫기 / ESC", close_panel)
 	close_button.autowrap_mode = TextServer.AUTOWRAP_OFF
@@ -278,9 +289,10 @@ func _build_ui() -> void:
 	columns.size_flags_vertical = SIZE_EXPAND_FILL
 	columns.add_theme_constant_override("separation", 12)
 	content_scroll.add_child(columns)
-	gear_column = _column(columns, 190)
-	stats_column = _column(columns, 126)
-	_label(stats_column, "유저 스탯", 17)
+	loadout_column = _column(columns, loadout_column_width)
+	gear_column = _column(loadout_column, 0)
+	stats_column = _column(loadout_column, 0)
+	_label(stats_column, "장비 능력치", 13)
 	stats_label = _label(stats_column, "", 14)
 	module_column = _column(columns, 190)
 	_label(module_column, "장착 모듈 · 파츠", 16)
@@ -288,8 +300,8 @@ func _build_ui() -> void:
 	module_column.add_child(module_list)
 	var bag_column := _column(columns, 0)
 	bag_column.size_flags_horizontal = SIZE_EXPAND_FILL
-	_label(bag_column, "작전 가방 · 이동 가능", 17)
-	_label(bag_column, "드래그 / 선택 후 빈 칸 클릭 / 선택 후 R 회전", 12)
+	_label(bag_column, "회수품 / BACKPACK", 17)
+	_label(bag_column, "드래그 이동 · 선택 후 R 회전", 12)
 	bag_scroll = ScrollContainer.new()
 	bag_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	bag_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_ALWAYS
@@ -301,8 +313,15 @@ func _build_ui() -> void:
 	bag_scroll.add_child(grid_view)
 	grid_view.item_selected.connect(_on_item_selected)
 	capacity_label = _label(bag_column, "공간 사용", 12)
-	detail_column = _column(columns, 192)
-	_label(detail_column, "SELECTED ITEM", 12)
+	capacity_meter = ProgressBar.new()
+	capacity_meter.custom_minimum_size.y = 5
+	capacity_meter.show_percentage = false
+	bag_column.add_child(capacity_meter)
+	detail_column = _column(columns, inspection_column_width)
+	_label(detail_column, "아이템 검사 / INSPECT", 12)
+	selected_preview = ITEM_PREVIEW.new()
+	selected_preview.custom_minimum_size.y = 118
+	detail_column.add_child(selected_preview)
 	selected_name = _label(detail_column, "아이템 선택", 18)
 	selected_description = _label(detail_column, "아이템을 선택하면 상세 정보가 표시됩니다.", 13)
 	rotate_button = _button(detail_column, "선택 아이템 회전 / R", _rotate_selected_item)
@@ -310,7 +329,7 @@ func _build_ui() -> void:
 	unequip_button = _button(detail_column, "선택 장비 해제", _unequip_selection)
 	socket_actions = VBoxContainer.new()
 	detail_column.add_child(socket_actions)
-	_label(detail_column, "장비 관리\nU 장비 · E 모듈/파츠\nESC 닫기 · 변경 시 저장 확인", 12)
+	_label(detail_column, "장비 관리 · 저장 시 적용\nU 장비 / E 모듈 / ESC 닫기", 12)
 	status_label = _label(root_box, "", 12)
 	status_label.max_lines_visible = 2
 	_build_confirmation()
@@ -354,7 +373,7 @@ func _refresh_slots() -> void:
 		gear_column.remove_child(child)
 		child.queue_free()
 	slot_buttons.clear()
-	_label(gear_column, "장비 장착", 17)
+	_label(gear_column, "장착 중 / EQUIPPED", 13)
 	var descriptors: Array = session.equipment.get_slot_descriptors() if session.equipment != null else []
 	for kind in ["weapon", "armor"]:
 		var slot_parent: Control = gear_column
@@ -369,11 +388,11 @@ func _refresh_slots() -> void:
 				continue
 			var slot: StringName = descriptor[&"slot_id"]
 			var button = SLOT_BUTTON.new()
-			button.custom_minimum_size = Vector2(88, 92 if kind == "weapon" else 76)
+			button.custom_minimum_size = Vector2(88, 106 if kind == "weapon" else 100)
 			button.size_flags_horizontal = SIZE_EXPAND_FILL
 			button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			button.add_theme_font_size_override("font_size", 13)
-			button.add_theme_stylebox_override("normal", _style(Color("248caf") if kind == "weapon" else Color("a75b68")))
+			button.add_theme_stylebox_override("normal", _style(Color("324e60")))
 			button.pressed.connect(_select_slot.bind(slot))
 			button.accepts_item = func(id: StringName):
 				return session.equipment.can_equip_definition(slot, session.get_item_entry(id).get(&"linked_resource"))
@@ -384,12 +403,6 @@ func _refresh_slots() -> void:
 			slot_parent.add_child(button)
 			slot_buttons[slot] = button
 			count += 1
-		if kind == "armor":
-			for index in range(maxi(0, 4 - count)):
-				var placeholder := _button(slot_parent, "확장 예정", Callable())
-				placeholder.disabled = true
-				placeholder.custom_minimum_size = Vector2(88, 76)
-				placeholder.tooltip_text = "현재 방어구 데이터는 신체·신발 2종입니다. 새 슬롯 규칙 등록 시 자동 표시됩니다."
 
 
 func _refresh() -> void:
@@ -403,10 +416,13 @@ func _refresh() -> void:
 	var dimensions: Vector2i = snapshot[&"grid_size"]
 	header_summary.text = "아이템 %d개 · %s" % [snapshot[&"items"].size(), "미저장 변경 있음" if session.dirty else "저장된 세팅"]
 	capacity_label.text = "공간 사용 %d / %d칸 · 세로 스크롤" % [used, dimensions.x * dimensions.y]
+	capacity_meter.value = 100.0 * used / maxi(1, dimensions.x * dimensions.y)
+	header_summary.modulate = Color("ffc979") if session.dirty else Color("a0b9c3")
 	for i in tabs.size():
 		tabs[i].set_pressed_no_signal(i == current_tab)
 	module_column.visible = current_tab != 0
 	gear_column.visible = current_tab != 1
+	loadout_column.visible = current_tab == 0
 	stats_column.visible = current_tab == 0
 	_refresh_modules()
 	_refresh_socket_actions()
@@ -414,7 +430,8 @@ func _refresh() -> void:
 		var state: Resource = session.equipment.get_equipment_state(slot)
 		var label: String = SLOT_NAMES.get(slot, String(slot))
 		var item_name: String = state.definition.display_name if state != null else "빈 슬롯"
-		slot_buttons[slot].text = "%s%s\n%s" % ["> " if slot == selected_slot else "", label, item_name]
+		var card_entry := {&"item_type": &"weapon" if slot in [&"main",&"secondary"] else &"armor", &"linked_resource": state.definition} if state != null else {}
+		slot_buttons[slot].present(label,item_name,card_entry,slot == selected_slot)
 		var weapon_slot: bool = slot in [&"main", &"secondary"]
 		slot_buttons[slot].disabled = (current_tab == 1 and not weapon_slot) or (current_tab == 2 and weapon_slot)
 		slot_buttons[slot].tooltip_text = "%s · %s\n선택 후 장착 / 아이템을 여기로 드래그" % [label, item_name]
@@ -456,14 +473,14 @@ func _refresh_stats() -> void:
 		return
 	var modifiers: Dictionary = session.equipment.get_stat_modifiers()
 	var summary: Dictionary = session.equipment.get_summary()
-	stats_label.text = "장비 보정 미리보기\n\n활성 스킬 %d/%d\n" % [summary[&"active_skill_count"], summary[&"equipped_skill_count"]]
+	stats_label.text = "활성 스킬  %d / %d\n" % [summary[&"active_skill_count"], summary[&"equipped_skill_count"]]
 	var names := {&"max_health": "최대 체력", &"defense": "방어력", &"movement_speed": "이동속도", &"damage": "공격력"}
 	var preview: Dictionary = equipment_provider.get_player_stat_preview(modifiers)
 	for stat in preview:
-		stats_label.text += "\n%s\n%.1f\n" % [names.get(stat, String(stat)), float(preview[stat])]
+		stats_label.text += "%s  %.1f\n" % [names.get(stat, String(stat)), float(preview[stat])]
 	if preview.is_empty():
 		for stat in modifiers:
-			stats_label.text += "\n%s\n%+.1f / ×%.2f\n" % [names.get(stat, String(stat)), modifiers[stat].get(&"add", 0.0), modifiers[stat].get(&"multiply", 1.0)]
+			stats_label.text += "%s  %+.1f / ×%.2f\n" % [names.get(stat, String(stat)), modifiers[stat].get(&"add", 0.0), modifiers[stat].get(&"multiply", 1.0)]
 
 
 func _refresh_modules() -> void:
@@ -549,12 +566,13 @@ func _install_socket_item(id: StringName) -> void:
 
 
 func _on_item_selected(entry: Dictionary) -> void:
-	selected_entry = entry
+	selected_entry = entry.duplicate()
 	_show_selected_entry(entry)
 
 
 func _show_selected_entry(entry: Dictionary) -> void:
 	selected_name.text = entry[&"display_name"]
+	selected_preview.present(entry)
 	var footprint: Vector2i = entry[&"grid_size"]
 	var kind_label: String = {&"weapon": "무기", &"armor": "방어구", &"module": "모듈", &"part": "고유 파츠", &"consumable": "소모품"}.get(entry[&"item_type"], "아이템")
 	var orientation := "회전됨" if bool(entry.get(&"rotated", false)) else "기본 방향"
@@ -603,6 +621,7 @@ func _apply_selection() -> void:
 	var ok := bool(session.install_item(id, selected_slot) if selected_entry[&"item_type"] in [&"module", &"part"] else session.equip_item(id, selected_slot))
 	if ok:
 		selected_entry.clear()
+		selected_preview.present({})
 		selected_name.text = "장착 완료 · 미저장"
 		selected_description.text = "탭 이동 또는 닫기에서 저장 여부를 선택하세요."
 		_refresh()
@@ -621,9 +640,16 @@ func _layout() -> void:
 		return
 	var narrow := size.x < 1000
 	columns.vertical = narrow
-	gear_column.custom_minimum_size.x = 0 if narrow else 190
-	stats_column.custom_minimum_size.x = 0 if narrow else 126
-	detail_column.custom_minimum_size.x = 0 if narrow else 192
+	var bag_column: Control = bag_scroll.get_parent()
+	if narrow and bag_column.get_index() != 0: columns.move_child(bag_column,0)
+	elif not narrow:
+		for index in 4:
+			var column: Control = [loadout_column,module_column,bag_column,detail_column][index]
+			if column.get_index() != index: columns.move_child(column,index)
+	loadout_column.custom_minimum_size.x = 0 if narrow else loadout_column_width
+	gear_column.custom_minimum_size.x = 0
+	stats_column.custom_minimum_size.x = 0
+	detail_column.custom_minimum_size.x = 0 if narrow else inspection_column_width
 	module_column.custom_minimum_size.x = 0 if narrow else 350 if current_tab == 1 else 190
 	if session.inventory != null:
 		var dimensions: Vector2i = session.inventory.grid_size

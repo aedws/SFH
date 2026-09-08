@@ -54,8 +54,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 2 · IMPROVE 6 · CHANGE 2 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 2 · IMPROVE 7 · CHANGE 2 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>인벤토리 · 아이템 실루엣과 장착 카드</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 큰 단색 텍스트 블록을 아이템 도형 카드로 바꾸고, 장착 장비·가방·선택 미리보기를 분리했습니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>실제 장착 슬롯만 표시하고 작은 화면은 가방을 먼저 배치합니다. 작은 아이템은 아이콘과 상세 보기로 구분하며 이동·R 회전·저장 확인은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>탭 전환 시 선택 정보와 가방 표시가 같은 데이터를 공유해 표시가 비워질 수 있던 문제를 수정했습니다.</p></div>
+        <p><a href="features/grid-inventory/#item-presentation">화면 구성·모듈 계약 →</a> · <a href="quality/e2e-play-session/#inventory-presentation">4해상도·입력·저장 회귀 검증 →</a></p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 5</small><b>기획자 DPS 실험실 · 피해와 처치 시간 비교</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
