@@ -259,6 +259,20 @@ func get_world_path(from_world: Vector2, to_world: Vector2) -> PackedVector2Arra
 	return result
 
 
+func get_fog_geometry() -> Dictionary:
+	# Public immutable geometry; no enemy, loot, pathfinding or room-state references.
+	var region := astar_grid.region.grow(1)
+	var terrain := PackedByteArray()
+	terrain.resize(region.size.x * region.size.y)
+	for cell: Vector2i in floor_cells:
+		var local := cell - region.position
+		terrain[local.y * region.size.x + local.x] = 2 if obstacle_cells.has(cell) else 1
+	for cell: Vector2i in wall_cells:
+		var local := cell - region.position
+		terrain[local.y * region.size.x + local.x] = 2
+	return {&"version": 1, &"cell_size": cell_size, &"bounds": region, &"terrain": terrain}
+
+
 func get_minimap_snapshot() -> Dictionary:
 	var floor_snapshot := PackedVector2Array()
 	var obstacle_snapshot := PackedVector2Array()

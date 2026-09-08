@@ -11,6 +11,7 @@ func configure(world_position: Vector2, new_size: Vector2) -> bool:
 		return false
 	global_position = world_position
 	barrier_size = new_size
+	add_to_group(&"fog_visibility_blocker")
 	var body := StaticBody2D.new()
 	body.collision_layer = COLLISION_LAYER
 	body.collision_mask = 0
@@ -22,6 +23,10 @@ func configure(world_position: Vector2, new_size: Vector2) -> bool:
 	add_child(body)
 	queue_redraw()
 	return true
+
+
+func get_visibility_bounds() -> Rect2:
+	return Rect2(global_position - barrier_size * 0.5, barrier_size)
 
 
 func _draw() -> void:

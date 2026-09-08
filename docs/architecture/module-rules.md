@@ -83,7 +83,7 @@ SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입
 
 등급별 수치는 기능별 Resource가 소유합니다. 맵은 방 수, 생성은 동시 수량·총 생성 한계, 파밍은 최소·최대 회수 배수를 각각 관리하며 서로의 내부 배열이나 인스턴스를 직접 읽지 않습니다.
 
-공간 가시성도 같은 규칙을 따릅니다. 맵은 `get_visibility_region()`과 `get_visibility_room_rects()`로 복사된 경계만 제공하고, 안개는 방 배열·바닥 셀·길찾기 내부 자료구조에 접근하지 않습니다. 플레이어의 방향도 `get_facing_direction()` 공개 메서드로만 읽습니다.
+공간 가시성도 같은 규칙을 따릅니다. 기본 로그라이크 시야에서 맵은 `get_fog_geometry()`로 경계·셀 크기·지형 복사본만 제공하고, 문은 `get_visibility_bounds()`로 차폐 경계만 제공합니다. 순수 `RoguelikeVisibilityField`가 현재/탐색 기억을 계산하고, `RoguelikeFogRuntime`이 카메라·문 변경을 연결하며, Shader가 불투명한 지형 기억을 합성합니다. 안개는 방 배열·길찾기 내부 자료구조나 적/전리품 상태에 접근하지 않습니다. 기존 `get_visibility_region()`·`get_visibility_room_rects()`·`get_facing_direction()`은 명시적 레거시/지형 제공자 없는 폴백에만 사용합니다. 시야와 적 활성화·보상·미니맵 정책을 결합하지 않습니다.
 
 밸런스 데이터도 같은 규칙을 따릅니다. `growth_balance`는 CSV를 파싱해 카탈로그·수정자·견적만 공개하고 장비 상태나 내부 버프 선택을 직접 변경하지 않습니다. 소비 모듈은 제공자가 없으면 기존 Resource 값으로 폴백합니다.
 

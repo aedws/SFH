@@ -3098,6 +3098,10 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 
 
 func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -> bool:
+	if fog.get_snapshot().get(&"policy") == &"roguelike_three_state":
+		var evidence: Dictionary = preload("res://game/tests/support/roguelike_fog_contract.gd").verify(fog, generator, player)
+		if not evidence.passed: printerr(evidence.errors)
+		return evidence.passed
 	var room_snapshot: Dictionary = fog.call(&"get_snapshot")
 	if (
 		not bool(room_snapshot.get(&"tracks_actor", false))

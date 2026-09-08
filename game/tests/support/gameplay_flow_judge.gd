@@ -157,6 +157,10 @@ func _judge_run_loot_settlement(evidence: Dictionary, errors: PackedStringArray)
 
 
 func _judge_fog_transition(evidence: Dictionary, errors: PackedStringArray) -> void:
+	if evidence.get(&"policy") == &"roguelike_three_state":
+		for failure in evidence.get(&"errors", []): errors.append(String(failure))
+		if not evidence.get(&"passed", false): errors.append("로그라이크 가시성 통합 관측 실패")
+		return
 	var room: Dictionary = evidence.get(&"room", {})
 	var grace: Dictionary = evidence.get(&"grace", {})
 	var leaving: Dictionary = evidence.get(&"leaving", {})
