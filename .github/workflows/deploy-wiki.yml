@@ -152,6 +152,7 @@ jobs:
           python3 scripts/sync_item_lifecycle.py --check
           python3 scripts/sync_loot_table.py --check
           python3 scripts/sync_season_rewards.py --check
+          python3 scripts/sync_facilities.py --check
           python3 scripts/sync_skill_catalog.py --check
           python3 scripts/sync_session_socket_rules.py --check
           python3 scripts/sync_character_catalog.py --check
@@ -168,6 +169,7 @@ jobs:
           timeout 90s xvfb-run -a godot --path "$GITHUB_WORKSPACE" --audio-driver Dummy --script "res://game/tests/roguelike_fog_contract_test.gd" 2>&1 | tee /tmp/sfh-roguelike-fog.log
           grep -q "ROGUELIKE_FOG_OK" /tmp/sfh-roguelike-fog.log
           grep -q "ROGUELIKE_FOG_PIXELS_OK" /tmp/sfh-roguelike-fog.log
+          grep -q "SPACE_FOG_PIXELS_OK" /tmp/sfh-roguelike-fog.log
           ! grep -E 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-roguelike-fog.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/player_facing_ui_contract_test.gd" 2>&1 | tee /tmp/sfh-player-ui.log
           grep -q "PLAYER_FACING_UI_OK" /tmp/sfh-player-ui.log
@@ -339,6 +341,9 @@ jobs:
         run: |
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/training_ground_gameplay_e2e_test.gd" | tee /tmp/sfh-p8-training-e2e.log
           grep -q "E2E_P8_TRAINING_GROUND_OK hub_station interaction single_attack_telemetry telemetry_hud viewport_safe no_overlap compact_skill_hud scenario_readable ap_rate cooldown_cycle isolated_skill_runtime free_loadout_restore dense_switch spawn_isolation hub_exit_cleanup" /tmp/sfh-p8-training-e2e.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/extraction_district_contract_test.gd" 2>&1 | tee /tmp/sfh-district.log
+          grep -q 'EXTRACTION_DISTRICT_OK' /tmp/sfh-district.log
+          if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-district.log; then exit 1; fi
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK" /tmp/sfh-e2e.log
           grep -q "E2E_LOOT_SESSION_OK" /tmp/sfh-e2e.log
@@ -448,6 +453,7 @@ jobs:
             --version-file .release-version \
             --godot-version-file .godot-version \
             --csv-version-file game/features/balance_data/data_version.txt \
+            --csv game/features/map_generation/data/facility.csv \
             --csv game/features/weapon_balance/data/weapon_balance.csv \
             --csv game/features/growth_balance/data/run_buff_balance.csv \
             --csv game/features/growth_balance/data/upgrade_balance.csv \

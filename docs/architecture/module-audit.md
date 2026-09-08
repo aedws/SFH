@@ -11,6 +11,25 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-08 · 익스트랙션 구역·공간 공개 {#extraction-district}
+
+현행 기본 정책은 [구역 계약](../features/extraction-district.md)입니다. 아래 같은 날의 반경 FOV 기록은 이전 단계 근거입니다.
+
+| 경계 | 책임과 변경 가드 |
+|---|---|
+| ExtractionDistrictLayout / DistrictMapGenerator | 시드 지형 Resource / 시설·공간·두 출구 스냅샷. 소비자는 내부 배열 미참조 |
+| BalanceCsvRows / ExtractionFacilityCatalog | 범용 인용 CSV 파싱 / 시설 스키마·범위·중복 검증. 전리품 파서 의존 제거 |
+| FacilityCatalogService | 실시간 읽기·오류·마지막 정상 데이터. 작전 생성 시 깊은 복사로 고정 |
+| DistrictEncounterSystem | 일반 생존 무리와 선택 목표 분리. 기존 안전·문·보상 구현 재사용 |
+| SpaceVisibilityField / FogRuntime / shader | 공간 선택·기억 / 월드·카메라 / 불투명 렌더 분리 |
+| MultiExtractionZone | 두 위치, 단일 활성 방어·단일 완료. Game은 결과 신호만 조립 |
+| RoomWarpSystem / Player.teleport_to | 안전 단말·위협 검증 / 위치·속도·카메라 즉시 정렬 |
+| FieldLootAcquisitionService | ESC 후 접근 범위 내 인접 드랍의 자동 비교 재개 차단. 아이템 수명·획득 계산은 변경하지 않음 |
+
+새 Facility 목록은 기존 Sheet → 실시간 시험 → 확정 CSV·Web payload·Windows 메타데이터 경로를 따릅니다. 범위가 잘못된 표는 부분 적용하지 않습니다. 지도 기능 비활성 시 시설 HTTP 서비스도 설치하지 않습니다. 새 시설 표시 행은 추가할 수 있으나 새로운 행동은 별도 계약이 필요합니다. 워프 시설 ID 목록·도로 폭·여백·경계 여유·전환 시간은 코드 분기 대신 설정으로 교체합니다.
+
+정적 의존성 검사와 실제 세 규모 조립·기능 폴백 회귀를 수행합니다. 전체 입력 E2E, 81계약 조합, 구역 계약, 반경/공간 GPU 마스크 검사를 서로 다른 근거로 유지합니다. 수동 10분 재미·평균 PC 프레임 안정성은 자동 통과와 동일시하지 않습니다. [검증 목록](../quality/e2e-play-session.md#extraction-district).
+
 ## 2026-09-08 · 로그라이크 시야 책임 분리 {#roguelike-fog}
 
 맵의 복사 지형 계약 → 순수 격자 시야/기억 → 문·카메라 연결 → 불투명 기억 Shader로 분리했습니다. Game 조립부·적 생성·보상·미니맵 정책은 변경하지 않습니다. 동적 문은 공개 사각형만 제공하고 안개 계산이 방 서비스 내부 상태를 읽지 않습니다.

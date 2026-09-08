@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://game/features/extraction/extraction_zone.gd" id="1_extraction"]
+[ext_resource type="Script" path="res://game/features/extraction/multi_extraction_zone.gd" id="1_extraction"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_extraction"]
 radius = 72.0

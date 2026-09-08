@@ -13,6 +13,7 @@ var tracked_actor: Node2D
 var cell_bounds := Rect2i()
 var cell_size: float = 32.0
 var extraction_position := Vector2.ZERO
+var extraction_candidates: Array = []
 var map_texture: ImageTexture
 var redraw_elapsed: float = 0.0
 var room_definitions: Array[Dictionary] = []
@@ -32,6 +33,7 @@ func configure(snapshot: Dictionary, actor: Node2D) -> void:
 	cell_bounds = snapshot.get(&"cell_bounds", Rect2i()) as Rect2i
 	cell_size = float(snapshot.get(&"cell_size", 32.0))
 	extraction_position = snapshot.get(&"extraction_position", Vector2.ZERO) as Vector2
+	extraction_candidates = snapshot.get(&"extraction_candidates", [])
 	room_definitions.assign(snapshot.get(&"rooms", []))
 	_build_map_texture(
 		snapshot.get(&"floor_cells", PackedVector2Array()) as PackedVector2Array,
@@ -121,6 +123,13 @@ func _draw() -> void:
 	])
 	draw_colored_polygon(diamond, extraction_color)
 	draw_polyline(diamond + PackedVector2Array([diamond[0]]), Color.WHITE, 1.0, true)
+	for candidate: Dictionary in extraction_candidates:
+		if (candidate.position as Vector2).is_equal_approx(extraction_position): continue
+		var marker := _world_to_minimap(candidate.position, rendered_rect)
+		var alternate := diamond.duplicate()
+		for i in alternate.size(): alternate[i] += marker - extraction_marker
+		draw_colored_polygon(alternate, extraction_color)
+		draw_polyline(alternate + PackedVector2Array([alternate[0]]), Color.WHITE, 1.0, true)
 
 	if is_instance_valid(tracked_actor):
 		var player_marker := _world_to_minimap(tracked_actor.global_position, rendered_rect)

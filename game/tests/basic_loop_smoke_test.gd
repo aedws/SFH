@@ -229,6 +229,11 @@ func _init() -> void:
 	var map_generator = game_instance.get("map_generator")
 	if room_encounters != null and map_generator != null:
 		for room: Dictionary in map_generator.call(&"get_room_encounter_snapshot"):
+			if room_encounters.get_snapshot().get(&"policy") == &"district_optional_lockdown":
+				if room.get(&"encounter", "") != "objective": continue
+				game_instance.get("player").global_position = room.center
+				room_encounters.try_start_room(room.room_index,&"terminal")
+				break
 			if not bool(room[&"is_start_room"]) and not bool(room[&"is_extraction_room"]):
 				room_encounters.call(&"try_start_room", int(room[&"room_index"]))
 				break
@@ -3098,7 +3103,7 @@ func _verify_all_tier_entry(game_scene: PackedScene) -> bool:
 
 
 func _verify_room_and_corridor_fog(fog: Node, generator: Node, player: Node2D) -> bool:
-	if fog.get_snapshot().get(&"policy") == &"roguelike_three_state":
+	if fog.get_snapshot().get(&"policy") in [&"roguelike_three_state", &"space_disclosure"]:
 		var evidence: Dictionary = preload("res://game/tests/support/roguelike_fog_contract.gd").verify(fog, generator, player)
 		if not evidence.passed: printerr(evidence.errors)
 		return evidence.passed
@@ -3235,7 +3240,14 @@ func _verify_room_encounter_flow(
 				break
 	if room_index < 0:
 		room_index = fallback_room_index
-	if room_index < 0 or not room_encounters.call(&"try_start_room", room_index):
+	var trigger: StringName = &"external"
+	if room_encounters.get_snapshot().get(&"policy") == &"district_optional_lockdown":
+		for room: Dictionary in generator.get_room_encounter_snapshot():
+			if room.get(&"encounter", "") == "objective":
+				room_index = room.room_index
+				player.global_position = room.center
+				trigger = &"terminal"
+	if room_index < 0 or not room_encounters.call(&"try_start_room", room_index, trigger):
 		return false
 	var active: Dictionary = room_encounters.call(&"get_snapshot")
 	var config: Resource = load(ROOM_ENCOUNTER_CONFIG_PATH)
@@ -3247,7 +3259,7 @@ func _verify_room_encounter_flow(
 			ROOM_HORDE_MINIMUMS.get(StringName(tier_id), 0)
 		)
 		or enemy_count < int(tier_values[&"minimum_enemies"])
-		or enemy_count > int(tier_values[&"maximum_enemies"])
+		or enemy_count > (int(enemy_spawner.get_snapshot().maximum_active_enemies) if trigger == &"terminal" else int(tier_values[&"maximum_enemies"]))
 		or int(active.get(&"minimum_horde_size", 0)) != int(tier_values[&"minimum_enemies"])
 		or not bool(active.get(&"minimum_horde_met", false))
 		or int(active.get(&"locked_door_count", 0)) <= 0
@@ -3309,6 +3321,17 @@ func _verify_room_warp_contract(
 	if room_warp == null or minimap == null:
 		return false
 	var targets: Array = room_warp.call(&"refresh_targets")
+	if bool(room_warp.get("terminal_only")):
+		for target: Dictionary in targets:
+			if target.kind == &"extraction": return false
+		if targets.is_empty(): return false
+		player.global_position = generator.get_extraction_position()
+		if room_warp.request_warp(0): return false
+		player.global_position = generator.get_player_spawn_position()
+		minimap.set_expanded(true)
+		var accepted: bool = room_warp.request_warp(0)
+		minimap.set_expanded(false)
+		return accepted
 	var has_start := false
 	var has_extraction := false
 	var expected_cleared_junction := -1
@@ -3631,12 +3654,10 @@ func _verify_extraction_flow(game_scene: PackedScene) -> bool:
 
 	if failure_message.is_empty():
 		extraction_player.global_position = extraction_zone.global_position
-		if extraction_zone.call(&"request_extraction", extraction_player):
-			failure_message = "작전 목표 시간 전에 탈출할 수 있습니다."
-		else:
-			extraction_game.set(
-				"elapsed_time", float(extraction_game.get("extraction_unlock_seconds"))
-			)
+		if float(extraction_game.get("extraction_unlock_seconds")) > 0:
+			if extraction_zone.call(&"request_extraction", extraction_player):
+				failure_message = "레거시 목표 시간 전에 탈출할 수 있습니다."
+			extraction_game.set("elapsed_time", float(extraction_game.get("extraction_unlock_seconds")))
 			extraction_game.call(&"_process", 0.0)
 		if failure_message.is_empty() and not extraction_zone.call(
 			&"request_extraction", extraction_player

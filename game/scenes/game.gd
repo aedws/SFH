@@ -567,6 +567,7 @@ var consumed_run_items: Array[StringName] = []
 var current_map_config: Resource
 var selected_map_size: String = "small"
 var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CSV
+var facility_catalog_service: Node
 var preferred_weapon_slot: StringName = &"main"
 var hub_active_weapon_name: String = ""
 var prepared_equipment_state: Dictionary = {}
@@ -588,6 +589,10 @@ var run_skill_binding_replacements: Array[Dictionary] = []
 
 
 func _ready() -> void:
+	if features != null and features.map_generation_enabled:
+		facility_catalog_service = load("res://game/features/map_generation/facility_catalog_service.gd").new()
+		add_child(facility_catalog_service)
+		facility_catalog_service.catalog_changed.connect(func(_snapshot: Dictionary) -> void: _refresh_contract_setup_ui())
 	control_hint_label.text = "이동 WASD · Space 대시 · LMB 기본기 · 1~9 스킬 · Q/F/I/U/E · M 전술 지도 · K 키 설정"
 	hub_control_hint_label.text = "이동 WASD · I 가방 · U 장비 · E 모듈·파츠 · Q 무기 · F 게이트 · K 키 설정"
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -1494,6 +1499,7 @@ func _refresh_contract_setup_ui() -> void:
 				or bool(loadout_investment_service.call(&"can_launch"))
 			),
 			&"map": {
+				&"facility": facility_catalog_service.call(&"get_snapshot") if facility_catalog_service != null else {},
 				&"display_name": tier_config.get("display_name"),
 				&"target_seconds": tier_config.get("target_run_duration_seconds"),
 				&"minimum_rooms": tier_config.get("minimum_rooms"),
@@ -2228,6 +2234,8 @@ func _assemble_game() -> bool:
 						extraction_unlock_seconds = float(
 							current_map_config.get("extraction_unlock_seconds")
 						)
+						if map_generator.has_method(&"set_facility_rows"):
+							map_generator.call(&"set_facility_rows", facility_catalog_service.call(&"get_rows"))
 						map_generator.call(&"generate", current_map_config, features.map_seed)
 						player_spawn_position = map_generator.call(&"get_player_spawn_position")
 					else:
@@ -2882,6 +2890,8 @@ func _select_balance_source_mode(source_mode: int) -> void:
 	):
 		return
 	selected_balance_source_mode = source_mode
+	if facility_catalog_service != null:
+		facility_catalog_service.call(&"set_source_mode", source_mode)
 	if conditional_ranking_system != null:
 		conditional_ranking_system.call(&"set_reward_source_mode", source_mode)
 	locked_balance_button.button_pressed = (
@@ -3244,6 +3254,10 @@ func _install_extraction_zone() -> void:
 		&"configure", map_generator.call(&"get_extraction_position"),
 		_extraction_defense_duration()
 	)
+	if extraction_zone.has_method(&"configure_candidates"):
+		extraction_zone.call(&"configure_candidates",map_generator)
+	if map_generator.has_method(&"get_district_snapshot") and bool(map_generator.call(&"get_district_snapshot").get(&"early_extraction",false)):
+		extraction_unlock_seconds=0.0
 	extraction_unlocked = extraction_unlock_seconds <= 0.0
 	extraction_zone.call(
 		&"set_locked",
@@ -4218,7 +4232,7 @@ func _on_room_encounter_started(room_index: int, enemy_count: int) -> void:
 	var grace := float(snapshot.get(&"contact_grace_remaining", 0.0))
 	combat_hud_presenter.call(
 		&"show_status",
-		"방 %d 봉쇄 · 적 %d기 전개·섬멸 · %.1f초 접촉 피해 유예" % [room_index + 1, enemy_count, grace],
+		("시설 %d 교전 · 적 %d기 · 후퇴·우회 가능 · %.1f초 접촉 유예" if snapshot.get(&"policy", &"") == &"district_optional_lockdown" and int(snapshot.get(&"active_room_index", -1)) < 0 else "방 %d 봉쇄 · 적 %d기 전개·섬멸 · %.1f초 접촉 피해 유예") % [room_index + 1, enemy_count, grace],
 		2,
 		600.0
 	)
@@ -4237,6 +4251,7 @@ func _on_elite_pursuit_triggered(threshold: int, carried: int, elite_count: int)
 
 
 func _on_room_encounter_cleared(room_index: int) -> void:
+	var district_patrol: bool = room_encounter_system.has_method(&"is_patrol_room") and bool(room_encounter_system.call(&"is_patrol_room", room_index))
 	var field_drop_spawned := false
 	if field_loot_acquisition_service != null and map_generator != null:
 		var positions: PackedVector2Array = map_generator.call(
@@ -4248,11 +4263,11 @@ func _on_room_encounter_cleared(room_index: int) -> void:
 			) != null
 	combat_hud_presenter.call(
 		&"show_status",
-		(
+		("시설 %d 확보 · 적 드랍·현장 전리품 회수 가능" if district_patrol else (
 			"방 %d 확보 · 보상 박스 + 비교 전리품 신호"
 			if field_drop_spawned else "방 %d 확보 · 크레딧 보상 박스 생성"
-		) % [room_index + 1],
-		3,
+		)) % [room_index + 1],
+		3 if district_patrol else 6,
 		2.0
 	)
 	if room_warp_system != null:

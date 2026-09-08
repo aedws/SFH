@@ -48,9 +48,10 @@ func _run_case(tier: String, seed_value: int) -> void:
 	tier_values[&"minimum_enemies"] = tier_values[&"maximum_enemies"]
 	encounters.tier_values = tier_values
 	for room: Dictionary in game.map_generator.get_room_encounter_snapshot():
+		if encounters.get_snapshot().get(&"policy") == &"district_optional_lockdown" and room.get(&"encounter", "") != "objective": continue
 		if not room.is_start_room and not room.is_extraction_room:
 			game.player.global_position = room.center
-			encounters.try_start_room(room.room_index)
+			encounters.try_start_room(room.room_index,&"terminal" if room.get(&"encounter", "") == "objective" else &"external")
 			break
 	var initial_enemies := int(encounters.get_snapshot().get(&"active_enemy_count", 0))
 	for frame in WARMUP_FRAMES: await process_frame

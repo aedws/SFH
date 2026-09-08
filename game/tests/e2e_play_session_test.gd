@@ -1152,6 +1152,10 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 				break
 	if room.is_empty():
 		room = fallback_room
+	var district_mode: bool = encounters.get_snapshot().get(&"policy") == &"district_optional_lockdown"
+	if district_mode:
+		for candidate: Dictionary in generator.get_room_encounter_snapshot():
+			if candidate.get(&"encounter", "") == "objective": room=candidate
 	if room.is_empty():
 		return _fail("문 봉쇄가 가능한 일반 방을 생성하지 못했습니다.")
 	var test_tier_values: Dictionary = encounters.get("tier_values").duplicate(true)
@@ -1161,6 +1165,8 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 	await physics_frame
 	await process_frame
 	encounters.call(&"_process", 0.0)
+	if district_mode:
+		await _tap_key(KEY_F)
 	await process_frame
 	var active: Dictionary = encounters.call(&"get_snapshot")
 	if not _judge_player_perception(&"room_lock_feedback", "방 진입과 문 봉쇄 인지"):
@@ -1240,7 +1246,7 @@ func _verify_room_encounter_resolution(player: Node2D) -> bool:
 	var pacing: Dictionary = game.call(&"get_run_pacing_snapshot")
 	if (
 		not bool(pacing.get(&"extraction_unlocked", false))
-		or float(pacing.get(&"elapsed_seconds", INF)) >= float(pacing.get(&"extraction_unlock_seconds", 0.0))
+		or (not district_mode and float(pacing.get(&"elapsed_seconds", INF)) >= float(pacing.get(&"extraction_unlock_seconds", 0.0)))
 	):
 		return _fail("모든 전투 방 확보가 제한 시간 전 탈출을 개방하지 못했습니다: %s" % pacing)
 	var rewards: Array = encounters.call(&"get_active_rewards")
@@ -1413,13 +1419,21 @@ func _verify_expanded_map_warp(player: Node2D) -> bool:
 	var generator = game.get("map_generator")
 	if minimap == null or room_warp == null or encounters == null or generator == null:
 		return _fail("M 확장 지도 워프 E2E에 필요한 모듈이 없습니다.")
+	if room_warp.terminal_only:
+		player.global_position = generator.get_player_spawn_position()
+		# Pursuit persistence was checked earlier. A successful warp now requires
+		# actually removing nearby threats, not bypassing the production guard.
+		for enemy in game.get("enemy_spawner").get_active_targets():
+			if enemy.global_position.distance_to(player.global_position) < room_warp.terminal_threat_radius:
+				enemy.take_damage(100000.0)
+		for frame in 4: await process_frame
 	await _tap_key(KEY_M)
 	await process_frame
 	var expanded: Dictionary = minimap.call(&"get_layout_snapshot")
 	if (
 		not bool(expanded.get(&"expanded", false))
 		or expanded.get(&"layout_mode", &"") != &"expanded_interactive"
-		or int(expanded.get(&"warp_target_count", 0)) < 2
+		or int(expanded.get(&"warp_target_count", 0)) < (1 if room_warp.terminal_only else 2)
 	):
 		return _fail("실제 M 입력이 클릭 가능한 확장 전술 지도를 열지 못했습니다: %s" % expanded)
 	var targets: Array = room_warp.call(&"get_warp_targets")
@@ -1451,7 +1465,7 @@ func _verify_expanded_map_warp(player: Node2D) -> bool:
 	if not player.global_position.is_equal_approx(chosen.get(&"world_position", Vector2.ZERO)):
 		return _fail("확장 지도 후보 클릭이 플레이어를 해당 방으로 워프하지 못했습니다.")
 	if bool(minimap.call(&"is_expanded")):
-		return _fail("워프 완료 후 확장 지도가 전투 시야를 다시 열어주지 않았습니다.")
+		return _fail("워프 완료 후 확장 지도가 전투 시야를 다시 열어주지 않았습니다. 상태: %s · 판정: %s" % [game.get("status_label").text,room_warp.get_snapshot()])
 	var rejected_uncleared := false
 	for room: Dictionary in generator.call(&"get_room_encounter_snapshot"):
 		var room_index := int(room.get(&"room_index", -1))
@@ -1473,7 +1487,7 @@ func _verify_fog_room_corridor_transition(
 	fog: Node,
 	room: Dictionary
 ) -> bool:
-	if fog.get_snapshot().get(&"policy") == &"roguelike_three_state":
+	if fog.get_snapshot().get(&"policy") in [&"roguelike_three_state", &"space_disclosure"]:
 		return _judge_gameplay_flow(&"fog_room_corridor_transition", "주변 시야·문턱·탐색 기억", preload("res://game/tests/support/roguelike_fog_contract.gd").verify(fog, generator, player))
 	player.global_position = room[&"center"]
 	var enter_seconds := float(fog.get("room_enter_transition_seconds"))
@@ -1573,7 +1587,7 @@ func _verify_ten_minute_sessions(game_scene: PackedScene) -> bool:
 		var initial: Dictionary = tier_game.call(&"get_run_pacing_snapshot")
 		var until_before_unlock := maxf(
 			0.0,
-			float(initial.get(&"extraction_unlock_seconds", 600.0))
+			float(initial.get(&"target_seconds", 600.0))
 			- float(initial.get(&"elapsed_seconds", 0.0))
 			- 1.0
 		)

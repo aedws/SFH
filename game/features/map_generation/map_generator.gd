@@ -218,7 +218,7 @@ func get_loot_spawn_points(requested_count: int) -> Array[Dictionary]:
 	var maximum_attempts := requested_count * 120
 	while result.size() < requested_count and attempts < maximum_attempts:
 		attempts += 1
-		var room_index := random.randi_range(1, rooms.size() - 1)
+		var room_index := _select_loot_room()
 		if room_index == extraction_room_index:
 			continue
 		var room := rooms[room_index]
@@ -240,6 +240,10 @@ func get_loot_spawn_points(requested_count: int) -> Array[Dictionary]:
 		result.append(point)
 
 	return result
+
+
+func _select_loot_room() -> int:
+	return random.randi_range(1, rooms.size() - 1)
 
 
 func get_world_path(from_world: Vector2, to_world: Vector2) -> PackedVector2Array:

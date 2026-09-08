@@ -2,6 +2,8 @@ extends RefCounted
 ## Integration observations, separate from the pure geometry and rendered pixel tests.
 
 static func verify(fog: Node, generator: Node, player: Node2D) -> Dictionary:
+	if fog.get_snapshot().get(&"policy") == &"space_disclosure":
+		return preload("res://game/tests/support/space_fog_contract.gd").verify(fog,generator,player)
 	var errors: Array[String] = []
 	var original := player.global_position
 	fog.call(&"_process", 0.2)

@@ -17,6 +17,13 @@ class Geometry extends Node2D:
 				draw_rect(Rect2(Vector2(x,y)*32, Vector2(32,32)), Color("5a6570") if kind == 2 else Color("284353"))
 
 
+class SpaceGeometry extends Geometry:
+	func get_visibility_spaces() -> Array[Dictionary]:
+		return [
+			{&"space_id":0,&"kind":&"room",&"world_rect":Rect2(0,0,384,608)},
+			{&"space_id":1,&"kind":&"room",&"world_rect":Rect2(416,0,448,608)},
+		]
+
 func _initialize() -> void:
 	node_added.connect(isolation.isolate)
 	for arg in OS.get_cmdline_user_args():
@@ -73,11 +80,13 @@ func _run() -> void:
 	field.configure(geometry)
 	_check(field.explored_cells.is_empty(), "new session clears memory")
 	await _render_test()
+	await _space_render_test()
 	await _generated_maps()
 	for failure in failures: push_error(failure)
 	if failures.is_empty():
 		print("ROGUELIKE_FOG_OK three_states circular_rear walls corners memory idle_cache doors thin_doors session_reset maps_3")
 		print("ROGUELIKE_FOG_PIXELS_", "SKIPPED" if DisplayServer.get_name() == "headless" else "OK")
+		print("SPACE_FOG_PIXELS_", "SKIPPED" if DisplayServer.get_name() == "headless" else "OK")
 	quit(0 if failures.is_empty() else 1)
 
 
@@ -149,6 +158,47 @@ func _render_test() -> void:
 	target.free()
 	map.free()
 
+
+func _space_render_test() -> void:
+	var map := SpaceGeometry.new()
+	map.data = _geometry()
+	root.add_child(map)
+	var actor := Node2D.new()
+	actor.position = Vector2(208,304)
+	root.add_child(actor)
+	var target := ColorRect.new()
+	target.position = Vector2(512,288)
+	target.size = Vector2(32,32)
+	target.color = Color.RED
+	root.add_child(target)
+	var fog: Node = load("res://game/features/fog_of_war/fog_of_war.tscn").instantiate()
+	root.add_child(fog)
+	_check(fog.configure(actor,map),"space renderer config")
+	await _frames()
+	_check(fog.get_visibility_state(Vector2(528,304))==&"unexplored","open doorway does not reveal next space")
+	if DisplayServer.get_name()!="headless":
+		_check((await _pixel(Vector2i(528,304))).r<0.3,"undiscovered space opaque on GPU")
+	actor.position=Vector2(528,304)
+	await _frames()
+	fog._process(0.3)
+	await _frames()
+	if DisplayServer.get_name()!="headless":
+		_check((await _pixel(Vector2i(528,304))).r>0.9,"whole entered space visible on GPU")
+	actor.position=Vector2(208,304)
+	await _frames()
+	fog._process(0.3)
+	await _frames()
+	_check(fog.get_visibility_state(Vector2(528,304))==&"explored","departed space terrain memory")
+	if DisplayServer.get_name()!="headless":
+		var remembered := await _pixel(Vector2i(528,304))
+		target.color=Color.BLUE
+		await _frames()
+		_check(remembered.r<0.3 and (await _pixel(Vector2i(528,304))).is_equal_approx(remembered),"space memory hides live actors on GPU")
+	await _capture("space-memory")
+	fog.free()
+	target.free()
+	actor.free()
+	map.free()
 
 func _frames() -> void:
 	for _frame in 8: await process_frame

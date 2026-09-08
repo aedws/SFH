@@ -135,6 +135,15 @@ func get_runtime_stats() -> Dictionary:
 	return runtime_stats.duplicate(true)
 
 
+func teleport_to(destination: Vector2) -> void:
+	global_position = destination
+	velocity = Vector2.ZERO
+	var camera := get_node_or_null("Camera2D") as Camera2D
+	if camera != null:
+		camera.reset_smoothing()
+		camera.force_update_scroll()
+
+
 func get_health_snapshot() -> Dictionary:
 	return {
 		&"current": current_health,

@@ -29,7 +29,7 @@ search:
     <header><strong>현재 체험 가능</strong><b class="sfh-live">WEB · WINDOWS</b></header>
     <div class="sfh-public-features">
       <span><i>01</i><b>준비</b><small>거점에서 요원·장비·작전 설정</small></span>
-      <span><i>02</i><b>전투</b><small>자동 공격·스킬·봉쇄 방 확보</small></span>
+      <span><i>02</i><b>전투</b><small>시설 탐색·후퇴·선택 금고 공략</small></span>
       <span><i>03</i><b>회수</b><small>전리품 선택·탈출·영구 보관</small></span>
     </div>
     <a class="sfh-public-login" href="access/login/?return=%2Ffeatures%2F"><span><b>위키 종합 문서 열기</b><small>로그인 → 큰 주제 → 세부 기능 · 기획자/개발자 공통 문서</small></span><em>→</em></a>
@@ -39,10 +39,10 @@ search:
 
 <section class="sfh-public-showcase" aria-label="SFH 핵심 플레이 특징">
   <article><i>NO AIM FATIGUE</i><b>조준보다 이동과 판단</b><p>수동 조준 부담을 줄이고 이동, 회피, 스킬 쿨타임과 탈출 동선 선택에 집중합니다.</p></article>
-  <article><i>ROOM LOCKDOWN</i><b>진입하면 시작되는 방 전투</b><p>방에 들어가면 적이 생성되고 문이 봉쇄됩니다. 모두 처치하면 출구와 보상이 열립니다.</p></article>
+  <article><i>ROOM LOCKDOWN</i><b>원할 때 선택하는 금고 전투</b><p>일반 시설은 후퇴할 수 있습니다. 금고 단말을 선택하면 문을 봉쇄하고 추가 보상을 건 전투를 시작합니다.</p></article>
   <article><i>RISK · REWARD</i><b>더 투자하고 더 회수</b><p>작전 규모와 난이도를 선택하고, 위험한 전장에서 목표 수익을 채울수록 강한 추격자가 등장합니다.</p></article>
   <article><i>LOOT IDENTITY</i><b>주워서 비교하고 가져오기</b><p>무기·방어구·모듈·파츠를 현장에서 비교하고, 탈출에 성공한 전리품만 다음 작전에 남깁니다.</p></article>
-  <article><i>TACTICAL VISION</i><b>지형을 기억하는 360도 시야</b><p>벽 뒤 전투는 안개에 숨고, 탐색한 지형은 어둡게 남습니다. 전체 미니맵으로 탈출 경로를 계획하세요.</p></article>
+  <article><i>TACTICAL VISION</i><b>공간 단위로 열리는 시야</b><p>현재 건물·도로 구간은 읽기 쉽게 공개하고, 지나온 다른 공간은 지형만 기억합니다. 전체 지도로 두 출구까지의 길을 고르세요.</p></article>
   <article><i>PC · MOBILE</i><b>키보드와 가로형 모바일</b><p>PC 키 설정과 모바일 조이스틱·공격·스킬 입력을 각각의 화면에 맞게 제공합니다.</p></article>
 </section>
 
@@ -54,8 +54,19 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 2 · IMPROVE 7 · CHANGE 2 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 3 · IMPROVE 8 · CHANGE 3 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>익스트랙션 구역 · 후퇴와 귀환을 선택하는 공간</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 순환 도로·두 출입구로 우회하고, 일반 교전은 후퇴하며 금고만 선택 봉쇄합니다. 현재 공간 전체를 읽고 두 출구 중 직접 귀환할 길을 고릅니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>시드 구역·Facility 시트 4종·실시간→다음 작전 고정·CSV/Web/Windows 데이터 경로를 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>공간 공개·지형만 기억·문턱 완화, 일반 무리 후퇴/생존, 금고 F 선택과 1~5상자를 구분합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>시간/전체 방 대기 대신 두 출구 현장 방어. 워프는 안전 단말 사이로 제한하며 임시 수치와 기획 사유를 별도 안내합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>워프 카메라·단말 표시·확보 알림·중복 정산을 보강했습니다. 인접 전리품이 ESC 보류 직후 비교창을 다시 열던 문제도 수정했습니다.</p></div>
+        <p><a href="features/extraction-district/">현재 규칙·모듈 계약 →</a> · <a href="access/planner/#extraction-rationale">기획 사유 →</a> · <a href="quality/e2e-play-session/#extraction-district">회귀 근거·인간 플레이 잔여 →</a></p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 6</small><b>인벤토리 · 아이템 실루엣과 장착 카드</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">

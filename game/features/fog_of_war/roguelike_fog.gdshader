@@ -10,6 +10,9 @@ uniform vec2 grid_size;
 uniform float cell_size = 32.0;
 uniform vec2 focus_world;
 uniform float sight_radius = 640.0;
+uniform bool space_disclosure = false;
+uniform float space_reveal_blend = 1.0;
+uniform float space_brightness = 1.0;
 uniform int door_count = 0;
 uniform vec4 door_rects[64];
 
@@ -49,6 +52,7 @@ void fragment() {
 	vec3 remembered = mix(memory_floor, memory_wall, is_wall);
 	vec3 fog = mix(vec3(0.006, 0.010, 0.016), remembered, data.g);
 	float range_fade = 1.0 - smoothstep(max(1.0, sight_radius - cell_size * 1.5), sight_radius, length(world-focus_world));
+	if (space_disclosure) { range_fade = space_reveal_blend * space_brightness; }
 	// Only soften INSIDE visible cells. Adjacent hidden cells remain fully opaque.
 	vec2 corner_uv = (cell + vec2(0.5)) / grid_size;
 	float left = texture(visibility_map, corner_uv - vec2(1.0/grid_size.x, 0.0)).r;

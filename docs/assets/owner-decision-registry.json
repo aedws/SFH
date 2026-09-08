@@ -313,6 +313,18 @@
   ],
   "objects": [
     {
+      "id": "decision:extraction-district-spaces",
+      "type": "decision",
+      "label": "구역형 익스트랙션·공간 단위 공개 전환",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "2026-09-08 오너가 추천 변경안 구현을 승인했습니다. 순환 도로·시설, 일반 교전 후퇴, 선택형 금고 봉쇄, 즉시 접근 가능한 복수 탈출, 공간 단위 공개로 전환합니다. 기존 전방위 반경 FOV·모든 방 자동 봉쇄·시간/전실 클리어 탈출·어디서나 출구 워프 규칙과 충돌하며 이번 명시 지시가 현행 구현의 기준입니다. Notion의 과거 기획 상태를 자동 수정하지 않습니다.",
+      "acceptance": "세 규모 연결성, 입퇴실 공개/불투명 지형 기억, 일반 교전 후퇴, 금고 F 봉쇄, 두 탈출구 단일 정산, 제한된 워프와 CSV 교체 검증.",
+      "next_action": "시설 위험·배치 가중치는 임시 수치로 유지하고 실제 회수 동선과 플레이 시간으로 조정합니다.",
+      "relations": [{"to":"principle:owner-authority","type":"governed_by"},{"to":"source:notion","type":"informed_by"},{"to":"document:features/extraction-district","type":"documented_by"},{"to":"document:quality/e2e-play-session","type":"verified_by"}]
+    },
+    {
       "id": "principle:owner-authority",
       "type": "principle",
       "label": "최종 판단권은 프로젝트 오너에게 있다",

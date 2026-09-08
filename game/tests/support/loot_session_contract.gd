@@ -18,20 +18,30 @@ func verify(tree: SceneTree, game: Node, tap: Callable) -> String:
 	encounters.tier_values[&"maximum_encounters"] = 4
 	for category in [&"armor", &"module", &"part"]:
 		var entered := false
+		var district_mode: bool = encounters.get_snapshot().get(&"policy") == &"district_optional_lockdown"
+		var room_index := -1
+		var members: Array = []
 		for room: Dictionary in game.map_generator.get_room_encounter_snapshot():
 			if room[&"room_index"] in encounters.completed_rooms or room.get(&"is_start_room", false) or room.get(&"is_extraction_room", false):
 				continue
 			player.global_position = room[&"center"]
 			await tree.physics_frame
 			encounters.call(&"_process", 0.0)
+			if district_mode and encounters.patrol_groups.has(int(room.room_index)):
+				room_index = room.room_index
+				members = encounters.patrol_groups[room_index].duplicate()
+				entered = true
+				break
 			if encounters.active_room_index == int(room[&"room_index"]):
+				room_index = encounters.active_room_index
+				members = encounters.active_enemies.duplicate()
 				entered = true
 				break
 		if not entered: return "Additional room entry failed: %s" % category
-		if encounters.active_doors.is_empty() or encounters.active_enemies.size() < int(encounters.tier_values[&"minimum_enemies"]):
+		if (not district_mode and encounters.active_doors.is_empty()) or members.size() < int(encounters.tier_values[&"minimum_enemies"]):
 			return "Additional room did not lock/spawn its minimum horde"
-		var room_index: int = encounters.active_room_index
-		for enemy in encounters.active_enemies.duplicate():
+		if district_mode and not encounters.active_doors.is_empty(): return "Ordinary patrol unexpectedly locked doors"
+		for enemy in members:
 			enemy.take_damage(100000.0, {&"source_kind": &"e2e_room_clear"})
 		for _frame in 4: await tree.process_frame
 		encounters.call(&"_process", 0.0)

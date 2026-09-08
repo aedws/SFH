@@ -80,6 +80,7 @@ nav:
           - 투입 비용·지역·난이도 계약: features/operation-contracts.md
           - 작전 선택과 탈출: features/raid-setup-extraction.md
           - 랜덤 맵 생성: features/map-generation.md
+          - 익스트랙션 구역과 공간 공개: features/extraction-district.md
           - 전장의 안개: features/fog-of-war.md
           - 전술 미니맵: features/minimap.md
           - 탈출 방어전과 결과 정산: features/extraction-defense-results.md
