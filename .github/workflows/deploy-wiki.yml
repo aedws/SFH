@@ -529,6 +529,7 @@ jobs:
           ./scripts/check-deployment-boundaries.ps1
           ./scripts/check-game-domain-cutover.ps1
           ./scripts/check-wiki-knowledge-map.ps1
+          ./scripts/compress-wiki-release-days.ps1 -Check
           ./scripts/check-wiki-color-contrast.ps1
           ./scripts/check-wiki-responsive.ps1
           ./scripts/check-wiki-play-entry.ps1

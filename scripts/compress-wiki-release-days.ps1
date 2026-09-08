@@ -1,5 +1,6 @@
 param(
-    [switch]$Check
+    [switch]$Check,
+    [switch]$Normalize
 )
 
 $ErrorActionPreference = "Stop"
@@ -63,6 +64,20 @@ function Get-LabelCount {
     )
     $content = ($Blocks | ForEach-Object { $_.Lines -join "`n" }) -join "`n"
     return ([regex]::Matches($content, "sfh-badge $([regex]::Escape($BadgeClass))")).Count
+}
+
+function Get-DayCounts([string]$Content) {
+    $counts = @{ BUILD = 0; IMPROVE = 0; CHANGE = 0; FIX = 0 }
+    $labels = @{ '구현'='BUILD'; '개선'='IMPROVE'; '수정'='CHANGE'; '버그픽스'='FIX' }
+    $headings = [regex]::Matches([System.Net.WebUtility]::HtmlDecode($Content), '<div class="sfh-group"><h3>[^<]*?(?<label>구현|개선|수정|버그픽스)[^<]*?(?<count>\d+)</h3>')
+    if ($headings.Count) {
+        foreach ($heading in $headings) { $counts[$labels[$heading.Groups['label'].Value]] += [int]$heading.Groups['count'].Value }
+    } else {
+        foreach ($pair in @(@('BUILD','is-build'),@('IMPROVE','is-improve'),@('CHANGE','is-change'),@('FIX','is-fix'))) {
+            $counts[$pair[0]] = [regex]::Matches($Content, "sfh-badge $($pair[1])").Count
+        }
+    }
+    return $counts
 }
 
 function Convert-DayGroup {
@@ -138,6 +153,32 @@ foreach ($path in $targetFiles) {
     $duplicates = @($blocks | Group-Object Date | Where-Object Count -gt 1)
 	$isHomePage = [System.IO.Path]::GetFileName($path) -eq "index.md"
 
+    if ($Normalize) {
+        foreach ($block in $blocks) {
+            $content = $block.Lines -join "`n"
+            $numbers = [regex]::Matches($content, '<small>UPDATE (?<number>\d+)</small>')
+            if (-not $numbers.Count) { continue }
+            $maximum = ($numbers | ForEach-Object { [int]$_.Groups['number'].Value } | Measure-Object -Maximum).Maximum
+            $counts = Get-DayCounts $content
+            for ($i=$block.Start; $i -le $block.End; $i++) {
+                if ($lines[$i] -match '<details class="sfh-bundle"') {
+                    $nextNumber = [regex]::Match($lines[$i+1], '<small>UPDATE (?<number>\d+)</small>')
+                    $opening = if ($nextNumber.Success -and [int]$nextNumber.Groups['number'].Value -eq $maximum) { '<details class="sfh-bundle" open>' } else { '<details class="sfh-bundle">' }
+                    $lines[$i] = $lines[$i] -replace '<details class="sfh-bundle"(?: open)?>', $opening
+                }
+                if ($lines[$i] -match 'sfh-day-title') {
+                    foreach ($kind in @('BUILD','IMPROVE','CHANGE','FIX')) { $lines[$i] = $lines[$i] -replace "$kind \d+", "$kind $($counts[$kind])" }
+                }
+                if ($lines[$i] -match 'sfh-daily-overview') {
+                    foreach ($kind in @('BUILD','IMPROVE','CHANGE','FIX')) { $lines[$i] = $lines[$i] -replace "<b>\d+</b><small>$kind</small>", "<b>$($counts[$kind])</b><small>$kind</small>" }
+                }
+            }
+        }
+        [System.IO.File]::WriteAllLines($path, $lines, [System.Text.UTF8Encoding]::new($false))
+        Write-Host "DAILY_RELEASE_NOTES_NORMALIZED $([System.IO.Path]::GetFileName($path))"
+        continue
+    }
+
     if ($Check) {
 		if ($isHomePage -and $blocks.Count -ne 1) {
 			throw "The wiki home must contain exactly the latest one-day release block: found $($blocks.Count)."
@@ -157,18 +198,21 @@ foreach ($path in $targetFiles) {
                 throw "The daily bundle total is stale ($path / $($block.Date))."
             }
             $numberMatches = [regex]::Matches($blockContent, '<small>UPDATE (?<number>\d+)</small>')
+            $actualNumbers = @($numberMatches | ForEach-Object { [int]$_.Groups['number'].Value })
+            if ((($actualNumbers | Sort-Object) -join ',') -ne ((1..$bundleMatches.Count) -join ',')) { throw "Duplicate or missing daily update IDs ($path / $($block.Date))." }
             for ($numberIndex = 0; $numberIndex -lt $numberMatches.Count; $numberIndex += 1) {
-                $expectedNumber = if ($isHomePage) {
+                $descending = $isHomePage -or [int]$numberMatches[0].Groups['number'].Value -eq $numberMatches.Count
+                $expectedNumber = if ($descending) {
                     $numberMatches.Count - $numberIndex
                 } else {
                     $numberIndex + 1
                 }
-                if ([int]$numberMatches[$numberIndex].Groups['number'].Value -ne $expectedNumber) {
+                if ($isHomePage -and [int]$numberMatches[$numberIndex].Groups['number'].Value -ne $expectedNumber) {
                     throw "Daily bundle numbering does not match the page order ($path / $($block.Date))."
                 }
             }
             $openBundles = @($bundleMatches | Where-Object { $_.Groups['open'].Success })
-            $expectedOpenIndex = if ($isHomePage) { 0 } else { $bundleMatches.Count - 1 }
+            $expectedOpenIndex = [array]::IndexOf($actualNumbers, $bundleMatches.Count)
             if ($openBundles.Count -gt 1 -or ($openBundles.Count -eq 1 -and -not $bundleMatches[$expectedOpenIndex].Groups['open'].Success)) {
                 throw "Only the latest daily bundle may be expanded by default ($path / $($block.Date))."
             }
@@ -178,19 +222,12 @@ foreach ($path in $targetFiles) {
                 @{ Label = 'CHANGE'; Class = 'is-change'; GroupIndex = 2 },
                 @{ Label = 'FIX'; Class = 'is-fix'; GroupIndex = 3 }
             )
-            $headingMatches = [regex]::Matches($blockContent, '<div class="sfh-group"><h3>[^<]*?(?<count>\d+)</h3>')
+            $counts = Get-DayCounts $blockContent
             foreach ($badge in $badgeSummary) {
-                if ($openBundles.Count -gt 0 -and $headingMatches.Count -gt 0) {
-                    $actualBadgeCount = 0
-                    for ($headingIndex = [int]$badge.GroupIndex; $headingIndex -lt $headingMatches.Count; $headingIndex += 4) {
-                        $actualBadgeCount += [int]$headingMatches[$headingIndex].Groups['count'].Value
-                    }
-                } else {
-                    $actualBadgeCount = ([regex]::Matches($blockContent, "sfh-badge $($badge.Class)")).Count
-                }
+                $actualBadgeCount = $counts[$badge.Label]
                 $declaredBadgeCount = [regex]::Match($blockContent, "$($badge.Label) (?<count>\d+)")
                 if ((-not $declaredBadgeCount.Success) -or ([int]$declaredBadgeCount.Groups['count'].Value -ne $actualBadgeCount)) {
-                    throw "The $($badge.Label) daily total is stale ($path / $($block.Date)): declared=$($declaredBadgeCount.Groups['count'].Value) actual=$actualBadgeCount headings=$($headingMatches.Count)."
+                    throw "The $($badge.Label) daily total is stale ($path / $($block.Date)): declared=$($declaredBadgeCount.Groups['count'].Value) actual=$actualBadgeCount."
                 }
             }
         }
