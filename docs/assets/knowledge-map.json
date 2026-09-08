@@ -1,5 +1,5 @@
 {
-  "version": 30,
+  "version": 31,
   "updated": "2026-09-08",
   "root": {
     "id": "sfh",
@@ -63,6 +63,7 @@
               {"label": "위키 수정 요청과 반영", "source": "getting-started/edit-wiki-online.md", "route": "getting-started/edit-wiki-online/", "summary": "제안 초안→Notion 근거→비공개 원본 PR→Cloudflare 배포"},
               {"label": "기획자 아이템·밸런싱 튜토리얼", "source": "getting-started/planner-item-balance-tutorial.md", "route": "getting-started/planner-item-balance-tutorial/", "summary": "탭 선택→기존 수치 조정·새 아이템 연결→실시간 시험→CSV 확정·되돌리기"},
               {"label": "무기·스킬 DPS 실험실", "source": "tools/dps-lab.md", "route": "tools/dps-lab/", "summary": "현재 수치→시험값→피해 그래프·적 체력/방어막별 처치 시간 비교"},
+              {"label": "수치 실험과 확정 그래프", "source": "tools/balance-workbench.md", "route": "tools/balance-workbench/", "summary": "기획자 수치 조정·동적 그래프→Notion 근거·기획 확정→개발자 읽기 전용 그래프"},
               {"label": "위키 실시간 검색", "source": "getting-started/search-wiki.md", "route": "getting-started/search-wiki/", "summary": "검색 순위·빠른 탐색·노드맵"}
             ]
           }

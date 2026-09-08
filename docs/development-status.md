@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 143 TOPICS</span><span>98 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 144 TOPICS</span><span>99 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -64,9 +64,19 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 3 · IMPROVE 8 · CHANGE 3 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 4 · IMPROVE 9 · CHANGE 3 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>기획 수치 실험 · 확정 그래프 역할 분리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자는 수치와 그래프를 시험하고, 개발자는 기획 확정 시점의 그래프만 읽습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>DPS·시설·회수·19개 CSV 숫자 열 비교와 Notion 근거를 포함한 불변 기획 확정본 전달을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>임시 시험·기획 확정·오너 승인·게임 적용을 분리하고 역할·CSRF·원본 갱신·중복 제출을 검사합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>일일 업데이트 합계를 분류 이름으로 계산하고 최신 항목만 펼쳐 현행 문서 형식의 오판독을 수정했습니다.</p></div>
+        <p><a href="../tools/balance-workbench/">수치 조정·확정 전달 사용법 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 7</small><b>익스트랙션 구역 · 후퇴와 귀환을 선택하는 공간</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 순환 도로·두 출입구로 우회하고, 일반 교전은 후퇴하며 금고만 선택 봉쇄합니다. 현재 공간 전체를 읽고 두 출구 중 직접 귀환할 길을 고릅니다.</strong></div>
@@ -77,7 +87,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="../features/extraction-district/">현재 규칙·모듈 계약 →</a> · <a href="../access/planner/#extraction-rationale">기획 사유 →</a> · <a href="../quality/e2e-play-session/#extraction-district">회귀 근거·인간 플레이 잔여 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>인벤토리 · 아이템 실루엣과 장착 카드</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 큰 단색 텍스트 블록을 아이템 도형 카드로 바꾸고, 장착 장비·가방·선택 미리보기를 분리했습니다.</strong></div>
@@ -86,7 +96,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="../features/grid-inventory/#item-presentation">화면 구성·모듈 계약 →</a> · <a href="../quality/e2e-play-session/#inventory-presentation">4해상도·입력·저장 회귀 검증 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>기획자 DPS 실험실 · 피해와 처치 시간 비교</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 무기·스킬 시험값과 적 체력·방어막을 바꾸면 원본 대비 피해 그래프와 처치 시간이 함께 갱신됩니다.</strong></div>
@@ -95,7 +105,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="../tools/dps-lab/">DPS 실험실·계산 범위·검증 →</a> · 시험값은 원본 시트와 게임 저장을 변경하지 않습니다.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>로그라이크 시야 · 현재/탐색/미탐색 분리</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 방 전체를 켜는 대신 주변 360도 시야를 사용하고, 지나온 곳은 어두운 지형으로 기억합니다.</strong></div>
@@ -105,7 +115,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="features/fog-of-war/">시야 규칙·모듈 계약 →</a> · <a href="quality/e2e-play-session/#roguelike-fog">렌더 검증·수락 잔여 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>보급품 선택 카드 · 회수/분실 정산 화면</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 보급소는 품질과 가격을 보고 선택하고, 작전 종료는 회수/분실을 먼저 확인한 뒤 상세 기록을 펼칩니다.</strong></div>
@@ -114,7 +124,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="quality/player-perception-audit/#game-ui-audit">전체 UI 검토·다음 순서 →</a> · <a href="quality/e2e-play-session/#player-facing-ui">4해상도·실제 입력 검증 →</a> · 로비 준비·도감·제작·시즌 화면은 후속 대상입니다.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>작전 첫 화면 끊김 · 바닥 렌더 준비 축소</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 출격 직후 바닥 타일을 한꺼번에 준비하며 멈추던 구간을 줄였습니다.</strong></div>
@@ -123,7 +133,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="performance/minimum-requirements/#first-frame-20260908">측정 조건·원시 근거 →</a> · <a href="quality/e2e-play-session/#first-frame-render">QA 범위 →</a> · CPU 전체 로딩·콜드 캐시·10분 일반 플레이는 별도 검수.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>소모품 전용 HP · 지참 키트 사용</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · HP는 지참 키트로만 회복합니다. 체력 옆 KIT 버튼에서 남은 수량을 보고 사용합니다.</strong></div>
@@ -150,7 +160,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="design/master-gdd-alignment/#day-close">마감·계산 근거 →</a> · 2026-09-07 작업 종료. 새 게임 규칙·노션 원문·밸런스 목록 변경 없음.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 15</small><b>무기·방어구·캐릭터 모듈 카드 · 슬롯 소켓</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · E에서 세 대상의 모듈을 카드로 편집하고, 최대 레벨 슬롯에 소켓을 부여해 비용을 줄입니다.</strong></div>
@@ -161,7 +171,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="features/equipment-customization/#module-sockets">사용 방법·원작과 차이 →</a> · <a href="quality/e2e-play-session/#module-sockets">입력·저장 검증 →</a> · 캐릭터 해금40은 임시 정책. 촉매 소모·레벨 초기화·새 Sheet 목록 추가 없음.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 14</small><b>두 무기 카드 · 그림 주변 파츠 슬롯</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · I 무기 탭에서 메인·보조를 위아래로 보고, 무기 주변 슬롯을 눌러 파츠를 장착합니다.</strong></div>
@@ -172,7 +182,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="../features/grid-inventory/#weapon-attachment-rack">사용 방법 →</a> · <a href="../quality/e2e-play-session/#weapon-attachment-rack">입력·저장 검증 →</a> · 참고 이미지의 에셋을 복사하지 않은 SFH 코드 도식. 새 파츠 목록·밸런스 변경 없음.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 13</small><b>FUN QA · 출격 정보와 탈출 경계</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 규모 선택은 잘리지 않는 요약과 상세로 나뉘고, 탈출 원과 F 안내가 실제 작동 범위에 맞습니다.</strong></div>
@@ -182,7 +192,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="../quality/player-perception-audit/#fun-qa-affordance">FUN QA 결과 →</a> · <a href="../architecture/module-audit/#fun-qa-affordance">모듈 경계 →</a> · 일반 Web 입력으로 14처치·문 개방·레벨2·룬 장착·31크레딧 회수 확인. 양 플랫폼10분 완주·사람 재미 합격은 별도 수락입니다.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 12</small><b>손상품 가격 · 타일/타겟 어댑터 · 체감 QA</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 손상품은 실제로 저렴해지고, 바닥과 적 탐색은 독립 엔진 어댑터를 사용합니다. 무기 정보는 전투 중앙을 가리지 않습니다.</strong></div>
@@ -294,7 +304,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>로그인된 사용자가 문서 링크를 열면 요청 문서 대신 역할 작업실로 이동하던 경로를 수정했습니다.</p></div>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 11</small><b>AP 재생 · 대상별 룬과 보유 훈련</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · AP는 잠시 쉬면 회복되고, 룬 효과는 장착한 대상에만 적용됩니다. 해제한 자산은 가방에서 다시 쓸 수 있습니다.</strong></div>
@@ -2053,7 +2063,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         </div>
       </div>
     </details>
-    <details class="sfh-bundle">
+    <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 20</small><b>반응형 UI 핵심 기조 · 시야 방해 최소화 · 상황별 정보 확장</b></span><em class="sfh-chevron">&#x2304;</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary">
@@ -2089,7 +2099,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 </details>
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>21 UPDATE BUNDLES &middot; BUILD 41 &middot; IMPROVE 37 &middot; CHANGE 18 &middot; FIX 11</small></span><em class="sfh-chevron">&#x2303;</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-08-30</b><small>21 UPDATE BUNDLES &middot; BUILD 44 &middot; IMPROVE 37 &middot; CHANGE 18 &middot; FIX 11</small></span><em class="sfh-chevron">&#x2303;</em></summary>
   <div class="sfh-day-body">
     <div class="sfh-daily-overview">
       <span><b>21</b><small>UPDATE BUNDLES</small></span>
@@ -2602,7 +2612,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
             </div>
           </div>
         </details>
-        <details class="sfh-bundle">
+        <details class="sfh-bundle" open>
           <summary><span><small>UPDATE 21</small><b>무기 밸런스 · 격자 가방 · 장비 개조</b></span><em class="sfh-chevron">&#x2304;</em></summary>
           <div class="sfh-bundle-body">
             <div class="sfh-summary">

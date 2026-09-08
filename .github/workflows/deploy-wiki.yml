@@ -512,6 +512,8 @@ jobs:
         run: |
           node scripts/test_dps_catalog.mjs
           node scripts/test_dps_engine.mjs
+          python scripts/build_balance_catalog.py --check
+          node scripts/test_balance_workbench.mjs
           node scripts/test_mobile_orientation_policy.mjs
           node scripts/test_cloudflare_worker.mjs
           node scripts/test_wiki_auth_seed.mjs
@@ -527,6 +529,7 @@ jobs:
           ./scripts/check-deployment-boundaries.ps1
           ./scripts/check-game-domain-cutover.ps1
           ./scripts/check-wiki-knowledge-map.ps1
+          ./scripts/compress-wiki-release-days.ps1 -Check
           ./scripts/check-wiki-color-contrast.ps1
           ./scripts/check-wiki-responsive.ps1
           ./scripts/check-wiki-play-entry.ps1
@@ -546,7 +549,7 @@ jobs:
           ./scripts/check-project-ontology.ps1
           python -m mkdocs build --strict
           python scripts/test_wiki_articles.py .wiki-site
-          Copy-Item cloudflare/wiki-auth/_worker.js .wiki-site/_worker.js
+          python scripts/prepare_wiki_worker.py
           python scripts/check_wiki_search_index.py .wiki-site/search/search_index.json
           ./scripts/check-wiki-no-github-backlinks.ps1 -SiteRoot .wiki-site
           ./scripts/check-wiki-planner-requests.ps1 -SiteRoot .wiki-site

@@ -54,9 +54,19 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 3 · IMPROVE 8 · CHANGE 3 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 4 · IMPROVE 9 · CHANGE 3 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 8</small><b>기획 수치 실험 · 확정 그래프 역할 분리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자는 수치와 그래프를 시험하고, 개발자는 기획 확정 시점의 그래프만 읽습니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>DPS·시설·회수·19개 CSV 숫자 열 비교와 Notion 근거를 포함한 불변 기획 확정본 전달을 연결했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>임시 시험·기획 확정·오너 승인·게임 적용을 분리하고 역할·CSRF·원본 갱신·중복 제출을 검사합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>일일 업데이트 합계를 분류 이름으로 계산하고 최신 항목만 펼쳐 현행 문서 형식의 오판독을 수정했습니다.</p></div>
+        <p><a href="tools/balance-workbench/">수치 조정·확정 전달 사용법 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 7</small><b>익스트랙션 구역 · 후퇴와 귀환을 선택하는 공간</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 순환 도로·두 출입구로 우회하고, 일반 교전은 후퇴하며 금고만 선택 봉쇄합니다. 현재 공간 전체를 읽고 두 출구 중 직접 귀환할 길을 고릅니다.</strong></div>
@@ -67,7 +77,7 @@ search:
         <p><a href="features/extraction-district/">현재 규칙·모듈 계약 →</a> · <a href="access/planner/#extraction-rationale">기획 사유 →</a> · <a href="quality/e2e-play-session/#extraction-district">회귀 근거·인간 플레이 잔여 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>인벤토리 · 아이템 실루엣과 장착 카드</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 큰 단색 텍스트 블록을 아이템 도형 카드로 바꾸고, 장착 장비·가방·선택 미리보기를 분리했습니다.</strong></div>
@@ -76,7 +86,7 @@ search:
         <p><a href="features/grid-inventory/#item-presentation">화면 구성·모듈 계약 →</a> · <a href="quality/e2e-play-session/#inventory-presentation">4해상도·입력·저장 회귀 검증 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>기획자 DPS 실험실 · 피해와 처치 시간 비교</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 무기·스킬 시험값과 적 체력·방어막을 바꾸면 원본 대비 피해 그래프와 처치 시간이 함께 갱신됩니다.</strong></div>
@@ -85,7 +95,7 @@ search:
         <p><a href="tools/dps-lab/">DPS 실험실·계산 범위·검증 →</a> · 시험값은 원본 시트와 게임 저장을 변경하지 않습니다.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>로그라이크 시야 · 현재/탐색/미탐색 분리</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 방 전체를 켜는 대신 주변 360도 시야를 사용하고, 지나온 곳은 어두운 지형으로 기억합니다.</strong></div>
@@ -95,7 +105,7 @@ search:
         <p><a href="features/fog-of-war/">시야 규칙·모듈 계약 →</a> · <a href="quality/e2e-play-session/#roguelike-fog">렌더 검증·수락 잔여 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>보급품 선택 카드 · 회수/분실 정산 화면</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 보급소는 품질과 가격을 보고 선택하고, 작전 종료는 회수/분실을 먼저 확인한 뒤 상세 기록을 펼칩니다.</strong></div>
@@ -104,7 +114,7 @@ search:
         <p><a href="quality/player-perception-audit/#game-ui-audit">전체 UI 검토·다음 순서 →</a> · <a href="quality/e2e-play-session/#player-facing-ui">4해상도·실제 입력 검증 →</a> · 로비 준비·도감·제작·시즌 화면은 후속 대상입니다.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>작전 첫 화면 끊김 · 바닥 렌더 준비 축소</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 출격 직후 바닥 타일을 한꺼번에 준비하며 멈추던 구간을 줄였습니다.</strong></div>
@@ -113,7 +123,7 @@ search:
         <p><a href="performance/minimum-requirements/#first-frame-20260908">측정 조건·원시 근거 →</a> · <a href="quality/e2e-play-session/#first-frame-render">QA 범위 →</a> · CPU 전체 로딩·콜드 캐시·10분 일반 플레이는 별도 검수.</p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>소모품 전용 HP · 지참 키트 사용</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · HP는 지참 키트로만 회복합니다. 체력 옆 KIT 버튼에서 남은 수량을 보고 사용합니다.</strong></div>

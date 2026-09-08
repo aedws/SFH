@@ -45,6 +45,8 @@ CSV 행이 없는 무기는 현재 게임이 사용하는 **런타임 대체값*
 
 관련 안내: [아이템·밸런싱 튜토리얼](../getting-started/planner-item-balance-tutorial.md) · [전투와 조작](../features/combat.md) · [기획자 작업실](../access/planner.md)
 
+기획자 작업실에 내장된 같은 계산기는 [기획 확정본 전달](balance-workbench.md)을 지원합니다. 이 독립 실험실은 메모리 시험용이며, 저장은 기획자 작업실의 명시적 확인에서만 수행합니다.
+
 ## 모듈 계약과 검증
 
 `export_dps_catalog.gd`는 읽기 전용 Resource/CSV 어댑터, `dps-catalog.json`은 인증된 데이터, `dps-engine.js`는 순수 계산, `dps-lab.js`는 입력·표·SVG 표시만 담당합니다. 새 효과 종류는 계산 모델 등록 없이 임의 추정하지 않습니다. 새 게임 목록이 필요한 작업이 아니므로 Google Sheets 구조는 확장하지 않았습니다.

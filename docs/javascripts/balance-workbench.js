@@ -1,0 +1,116 @@
+/* Role presenters: local trials -> immutable planner confirmation -> read-only graph. */
+(() => {
+  'use strict';
+  const el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;};
+  const label=(text,node)=>{const n=el('label',text);node.setAttribute('aria-label',text);n.append(node);return n;};
+  const button=text=>{const n=el('button',text);n.type='button';return n;};
+  const json=async(path,options={})=>{const r=await fetch(path,{credentials:'same-origin',cache:'no-store',...options});if(!r.ok)throw Error((await r.json()).error||'데이터 요청 실패');return r.json();};
+  function draw(host,graph){
+    host.replaceChildren();host.classList.add('dps-graph');
+    const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
+    const width=Math.max(280,host.clientWidth-18),height=280,points=graph.points;
+    const min=Math.min(0,...points.flatMap(p=>[p.base,p.value])),max=Math.max(1,...points.flatMap(p=>[p.base,p.value]));
+    const X=j=>55+j/Math.max(1,points.length-1)*(width-75),Y=v=>225-(v-min)/(max-min)*180;
+    const node=(tag,attrs,text)=>{const n=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;svg.append(n);return n;};
+    svg.setAttribute('viewBox',`0 0 ${width} ${height}`);svg.setAttribute('role','img');
+    node('title',{},`${graph.title}. ${graph.yLabel}. ${graph.note}`);
+    node('text',{x:55,y:20},graph.yLabel);
+    const format=v=>Math.abs(v)>9999?v.toExponential(1):Number(v.toFixed(2)).toString();
+    for(let k=0;k<=4;k++){const v=min+(max-min)*k/4;node('line',{x1:55,x2:width-20,y1:Y(v),y2:Y(v),class:'dps-gridline'});node('text',{x:0,y:Y(v)+4},format(v));}
+    for(const [key,cls]of [['base','dps-base'],['value','dps-total']])node('path',{d:points.map((p,j)=>`${j?'L':'M'}${X(j)},${Y(p[key])}`).join(' '),class:`dps-line ${cls}`});
+    for(const j of [...new Set([0,Math.floor((points.length-1)/2),points.length-1])])node('text',{x:X(j),y:247,'text-anchor':j===0?'start':j===points.length-1?'end':'middle'},String(points[j]?.label||'').slice(0,width<500?11:23));
+    host.append(svg,el('p',`${graph.xLabel} · ${graph.note}`));
+    // Values remain accessible without relying on color, hover or a wide canvas.
+    const details=el('details'),summary=el('summary','그래프 수치 읽기');details.append(summary);
+    const table=el('table'),head=el('tr');['구간 / 행','기준','시험 / 확정','차이','변화율'].forEach(v=>head.append(el('th',v)));table.append(head);
+    points.forEach(p=>{const row=el('tr');[p.label,format(p.base),format(p.value),format(p.value-p.base),p.base===0?'기준 0: 비율 없음':format((p.value-p.base)/Math.abs(p.base)*100)+'%'].forEach(v=>row.append(el('td',v)));table.append(row);});details.append(table);host.append(details);
+  }
+  function confirmation(root,getTrial){
+    const details=el('details');details.className='balance-confirm';details.append(el('summary','검토한 수치를 기획 확정으로 전달'));
+    const title=el('input'),reason=el('textarea'),notion=el('input');title.maxLength=100;reason.maxLength=2000;notion.type='url';
+    details.append(label('안건 제목',title),label('기획 사유와 목표',reason),label('근거 Notion 링크',notion));
+    const consent=el('input');consent.type='checkbox';details.append(label('현재 입력과 그래프를 검토했습니다. 기획 확정은 오너 승인·게임 적용과 별도입니다.',consent));
+    const save=button('기획 확정본 저장'),status=el('p');status.setAttribute('role','status');details.append(save,status);root.append(details);
+    let pending=null,busy=false;
+    save.addEventListener('click',async()=>{
+      if(busy)return;
+      busy=true;save.disabled=true;
+      try{
+        const trial=getTrial();if(!trial)throw Error('유효한 계산 결과가 필요합니다.');
+        if(!consent.checked||!title.value.trim()||!reason.value.trim()||!notion.value.trim())throw Error('제목·사유·Notion 링크와 검토 확인이 필요합니다.');
+        const draft={title:title.value,reason:reason.value,notion:notion.value,...trial,source:await SFHBalance.fingerprint(trial.sources),model_version:SFHBalance.version};
+        delete draft.sources;
+        const signature=JSON.stringify(draft);
+        if(pending?.signature!==signature)pending={signature,body:{id:`${Date.now()}-${crypto.randomUUID()}`,...draft}};
+        status.textContent='기획 확정본 저장 중…';
+        const session=await json('/api/auth/session');
+        if(session.role!=='planner')throw Error('기획자 로그인에서만 확정할 수 있습니다.');
+        const saved=await json('/api/auth/balance',{method:'POST',headers:{'content-type':'application/json','x-csrf-token':session.csrf},body:JSON.stringify(pending.body)});
+        status.textContent=`기획 확정 저장 완료 · ${saved.confirmed_at} · ${saved.id}. 개발자 그래프에 공유되었습니다. 게임에는 아직 적용되지 않았습니다.`;
+        consent.checked=false;
+      }catch(e){status.textContent=`저장되지 않음: ${e.message}`;}finally{busy=false;save.disabled=false;}
+    });
+  }
+  async function workbench(root){
+    if(root.dataset.mounted)return;root.dataset.mounted='true';root.classList.add('dps-lab');
+    try{
+      const catalog=await json(new URL(root.dataset.catalog,location.href));root.replaceChildren();
+      const mode=el('select');[['table','전체 수치 목록'],['facility','시설 위험·스폰'],['recovery','투입·회수 시나리오']].forEach(([id,name])=>{const o=el('option',name);o.value=id;mode.append(o);});root.append(label('계산 대상',mode));
+      const controls=el('div');controls.className='balance-controls';root.append(controls);
+      const error=el('p');error.setAttribute('role','alert');error.hidden=true;root.append(error);
+      const graph=el('div');root.append(graph);let input={},valid=false;
+      function update(){try{const result=SFHBalance.calculate(mode.value,catalog,input);draw(graph,result);graph.hidden=false;error.hidden=true;valid=true;root.dataset.ready='true';}catch(e){error.textContent=e.message;error.hidden=false;graph.hidden=true;valid=false;}}
+      function field(key,name,value,min,max,parent=controls){const n=el('input');n.type='number';n.min=min;n.max=max;n.step='any';n.value=value;input[key]=value;n.addEventListener('input',()=>{input[key]=n.value===''?NaN:Number(n.value);update();});parent.append(label(name,n));return n;}
+      function load(){
+        controls.replaceChildren();input={};
+        if(mode.value==='table'){
+          const dataset=el('select'),column=el('select'),rows=el('div'),source=el('p');rows.className='balance-rows';
+          catalog.datasets.forEach(d=>{const o=el('option',`${d.title} · ${d.id}`);o.value=d.id;dataset.append(o);});
+          controls.append(label('수치 목록',dataset),label('변수 열',column),source,rows);
+          const renderRows=()=>{rows.replaceChildren();const d=catalog.datasets.find(d=>d.id===dataset.value);input={dataset:d.id,column:column.value,values:structuredClone(d.columns[column.value])};source.textContent=`${d.source} · CSV ${catalog.version}. 이름·ID·문자열 열은 원본에서 편집합니다. 음수 허용 여부 등 게임별 검증은 CSV 적용 시 별도로 수행합니다.`;
+            input.values.forEach(p=>{const n=el('input');n.type='number';n.step='any';n.value=p.value;n.addEventListener('input',()=>{p.value=n.value===''?NaN:Number(n.value);update();});rows.append(label(d.labels[p.id],n));});update();};
+          const changeDataset=()=>{column.replaceChildren();const d=catalog.datasets.find(d=>d.id===dataset.value);Object.keys(d.columns).forEach(key=>{const o=el('option',`${d.column_labels[key]} · ${key}`);o.value=key;column.append(o);});renderRows();};
+          dataset.addEventListener('change',changeDataset);column.addEventListener('change',renderRows);changeDataset();
+        }else if(mode.value==='facility'){
+          field('minimum','기본 최소 적 수',12,1,500);field('maximum','기본 최대 적 수',18,1,500);field('risk','시설 risk_bonus',.25,0,2);field('capacity','잔여 동시 수용량',36,0,1000);update();
+        }else{
+          field('cost','투입 크레딧 C',100,0,1e6);field('minimum','최소 회수 배수 (가정)',2.5,0,100);field('maximum','최대 회수 배수 (가정)',5,0,100);field('success','생환율 가정 (0~1)',.5,0,1);update();
+        }
+      }
+      mode.addEventListener('change',load);load();
+      const reset=button('현재 원본으로 초기화');reset.addEventListener('click',load);root.append(reset);
+      confirmation(root,()=>valid?{model:mode.value,sources:catalog.sources,input:structuredClone(input)}:null);
+      let width=root.clientWidth;const observer=new ResizeObserver(()=>{if(!root.isConnected){observer.disconnect();return;}if(width!==root.clientWidth){width=root.clientWidth;update();}});observer.observe(root);
+    }catch(e){root.textContent=`계산기 연결 실패: ${e.message}`;const retry=button('다시 불러오기');retry.addEventListener('click',()=>{delete root.dataset.mounted;workbench(root);});root.append(retry);}
+  }
+  async function gallery(root){
+    if(root.dataset.mounted)return;root.dataset.mounted='true';root.classList.add('dps-lab');
+    root.replaceChildren();const refresh=button('확정 그래프 새로고침'),list=el('div'),more=button('이전 확정본 더 보기'),status=el('p');status.setAttribute('role','status');root.append(refresh,status,list,more);let cursor=null;
+    async function load(reset){
+      refresh.disabled=more.disabled=true;
+      try{
+        const data=await json('/api/auth/balance'+(!reset&&cursor?`?cursor=${encodeURIComponent(cursor)}`:''));
+        if(reset)list.replaceChildren();
+        for(const record of data.records){
+          const details=el('details');details.append(el('summary',`${record.title} · ${record.confirmed_at}`));list.append(details);
+          details.addEventListener('toggle',async()=>{if(!details.open||details.dataset.loaded)return;details.dataset.loaded='true';
+            try{const saved=await json(`/api/auth/balance?id=${encodeURIComponent(record.id)}`);const host=el('div');details.append(el('p',`기획 확정 · 오너 승인 대기 · 게임 미적용 · 모델 v${saved.model_version}`),host);draw(host,saved.graph);
+              const evidence=el('p',saved.reason),link=el('a','Notion 기획 근거');link.href=saved.notion;link.rel='noopener';details.append(evidence,link);
+              let width=host.clientWidth;const observer=new ResizeObserver(()=>{if(!host.isConnected){observer.disconnect();return;}if(width!==host.clientWidth){width=host.clientWidth;draw(host,saved.graph);}});observer.observe(host);
+            }catch(e){details.append(el('p',`읽기 실패: ${e.message}. 새로고침으로 다시 시도하세요.`));}
+          });
+        }
+        cursor=data.cursor;more.hidden=!cursor;status.textContent=list.children.length?'확정 시점의 그래프입니다. 입력 편집과 미확정 시험값은 제공하지 않습니다.':'기획자가 저장한 확정본이 아직 없습니다. 임시 수치를 대신 표시하지 않습니다.';
+      }catch(e){status.textContent=`확정본 연결 실패: ${e.message}`;}finally{refresh.disabled=more.disabled=false;}
+    }
+    refresh.addEventListener('click',()=>load(true));more.addEventListener('click',()=>load(false));load(true);
+  }
+  const init=()=>{
+    document.querySelectorAll('[data-sfh-balance-workbench]').forEach(workbench);
+    document.querySelectorAll('[data-sfh-balance-gallery]').forEach(gallery);
+    document.querySelectorAll('[data-sfh-dps-lab][data-confirmable]').forEach(root=>{if(root.dataset.confirmMounted||!root.sfhBalanceTrial)return;root.dataset.confirmMounted='true';confirmation(root,()=>root.sfhBalanceTrial);});
+  };
+  document.addEventListener('sfh-balance-trial',init);
+  if(typeof document$!=='undefined')document$.subscribe(init);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();

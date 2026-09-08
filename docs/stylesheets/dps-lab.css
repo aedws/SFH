@@ -1,4 +1,13 @@
 /* Scoped planning workbench. No game HUD or global Material overrides. */
+.balance-controls,.balance-rows { display:grid; grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:.8rem 0; }
+.balance-controls>p,.balance-controls>.balance-rows {grid-column:1/-1;}
+.balance-rows { max-height:20rem;overflow:auto;padding:.3rem; }
+.balance-confirm textarea {width:100%;min-height:90px;background:var(--md-default-bg-color);color:var(--md-default-fg-color);border:1px solid #235463;}
+.balance-confirm label {margin:.6rem 0;}
+.balance-confirm input[type=checkbox] {width:24px;height:24px;}
+.dps-graph p {color:#d5e9ec;font:13px/1.6 sans-serif;overflow-wrap:anywhere;}
+.dps-graph details {background:var(--md-default-bg-color);overflow:auto;}
+@media(max-width:600px){.balance-controls,.balance-rows{grid-template-columns:1fr;}}
 .dps-lab { --dps-panel:var(--md-default-bg-color); --dps-line:rgba(2,229,225,.3); min-width:0; }
 .dps-lab * { box-sizing:border-box; }
 .dps-lab [hidden] { display:none !important; }
