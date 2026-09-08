@@ -365,7 +365,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _on_drop_proximity_changed(drop: Node2D, available: bool) -> void:
 	if available:
-		if suppressed_drop == drop or is_instance_valid(focused_drop):
+		if _preview_is_suppressed() or is_instance_valid(focused_drop):
 			return
 		focused_drop = drop
 		var comparison: Dictionary = drop.get("comparison")
@@ -400,6 +400,8 @@ func _on_drop_proximity_changed(drop: Node2D, available: bool) -> void:
 func _process(_delta: float) -> void:
 	if is_instance_valid(focused_drop) or not is_instance_valid(player):
 		return
+	if _preview_is_suppressed():
+		return
 	var nearest: Node2D
 	var distance := INF
 	for drop in get_active_drops():
@@ -411,6 +413,17 @@ func _process(_delta: float) -> void:
 			distance = candidate_distance
 	if nearest != null:
 		_on_drop_proximity_changed(nearest, true)
+
+
+func _preview_is_suppressed() -> bool:
+	# ESC closes the nearby comparison interaction, not just one card in a pile.
+	# Leaving its range explicitly rearms proximity discovery without deleting loot.
+	if not is_instance_valid(suppressed_drop) or not is_instance_valid(player):
+		return false
+	if player.global_position.distance_to(suppressed_drop.global_position) <= float(suppressed_drop.get("interaction_radius")):
+		return true
+	suppressed_drop = null
+	return false
 
 
 func _prune_drops() -> void:

@@ -63,7 +63,7 @@ search:
         <div class="sfh-group"><h3>구현 · 1</h3><p>시드 구역·Facility 시트 4종·실시간→다음 작전 고정·CSV/Web/Windows 데이터 경로를 연결했습니다.</p></div>
         <div class="sfh-group"><h3>개선 · 1</h3><p>공간 공개·지형만 기억·문턱 완화, 일반 무리 후퇴/생존, 금고 F 선택과 1~5상자를 구분합니다.</p></div>
         <div class="sfh-group"><h3>수정 · 1</h3><p>시간/전체 방 대기 대신 두 출구 현장 방어. 워프는 안전 단말 사이로 제한하며 임시 수치와 기획 사유를 별도 안내합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>워프 카메라 지연, 캐릭터를 덮는 단말 표시, 확보 알림 우선순위와 중복 탈출 정산을 보강했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>워프 카메라·단말 표시·확보 알림·중복 정산을 보강했습니다. 인접 전리품이 ESC 보류 직후 비교창을 다시 열던 문제도 수정했습니다.</p></div>
         <p><a href="features/extraction-district/">현재 규칙·모듈 계약 →</a> · <a href="access/planner/#extraction-rationale">기획 사유 →</a> · <a href="quality/e2e-play-session/#extraction-district">회귀 근거·인간 플레이 잔여 →</a></p>
       </div>
     </details>

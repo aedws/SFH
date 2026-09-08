@@ -24,6 +24,7 @@ tags:
 | SpaceVisibilityField / FogRuntime / shader | 공간 선택·기억 / 월드·카메라 / 불투명 렌더 분리 |
 | MultiExtractionZone | 두 위치, 단일 활성 방어·단일 완료. Game은 결과 신호만 조립 |
 | RoomWarpSystem / Player.teleport_to | 안전 단말·위협 검증 / 위치·속도·카메라 즉시 정렬 |
+| FieldLootAcquisitionService | ESC 후 접근 범위 내 인접 드랍의 자동 비교 재개 차단. 아이템 수명·획득 계산은 변경하지 않음 |
 
 새 Facility 목록은 기존 Sheet → 실시간 시험 → 확정 CSV·Web payload·Windows 메타데이터 경로를 따릅니다. 범위가 잘못된 표는 부분 적용하지 않습니다. 지도 기능 비활성 시 시설 HTTP 서비스도 설치하지 않습니다. 새 시설 표시 행은 추가할 수 있으나 새로운 행동은 별도 계약이 필요합니다. 워프 시설 ID 목록·도로 폭·여백·경계 여유·전환 시간은 코드 분기 대신 설정으로 교체합니다.
 

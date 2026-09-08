@@ -221,8 +221,15 @@ func _run() -> void:
 		or not bool(preview_panel.get(&"viewport_safe", false))
 	):
 		return _fail("접근 시 비교·보존·입력 UI 계약이 충족되지 않았습니다: %s" % preview)
+	var adjacent: Node2D = service.call(&"spawn_from_source", Vector2(12,0), &"room_reward", 2)
+	if adjacent == null: return _fail("인접 전리품 취소 회귀 준비 실패")
 	if not service.call(&"cancel_preview"):
 		return _fail("비교 패널 보류가 동작하지 않았습니다.")
+	for frame in 3: await process_frame
+	if bool(service.get_snapshot().panel.visible):
+		return _fail("ESC 보류 후 인접 드랍이 비교창을 즉시 다시 열었습니다.")
+	if not is_instance_valid(adjacent): return _fail("보류가 인접 전리품을 지웠습니다.")
+	adjacent.free()
 	var cancelled: Dictionary = service.call(&"get_snapshot")
 	if (
 		int(cancelled.get(&"active_drop_count", 0)) != 1

@@ -93,6 +93,12 @@ func _session(tier: String) -> void:
 	_check(clear.locked_door_count==0 and clear.last_reward_box_count>=1 and clear.last_reward_box_count<=5,"vault opens and rewards")
 	_check(game.extraction_unlocked and game.extraction_unlock_seconds==0,"no timer/full-clear gate")
 	game.player.global_position=game.map_generator.start_position
+	var nearby_threat := Node2D.new()
+	root.add_child(nearby_threat)
+	nearby_threat.add_to_group(&"enemies")
+	nearby_threat.global_position=game.player.global_position+Vector2(64,0)
+	_check(not game.room_warp_system.request_warp(0),"nearby threat rejects terminal warp")
+	nearby_threat.free()
 	_check(game.room_warp_system.request_warp(0),"safe terminal warp")
 	game.player.global_position=vault.center
 	_check(not game.room_warp_system.request_warp(0),"remote warp rejected")

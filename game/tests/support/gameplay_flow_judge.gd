@@ -251,7 +251,7 @@ func _judge_field_loot_acquisition(evidence: Dictionary, errors: PackedStringArr
 		or int(cancelled.get(&"total_cancelled", 0)) <= int(approached.get(&"total_cancelled", 0))
 		or bool((cancelled.get(&"panel", {}) as Dictionary).get(&"visible", true))
 	):
-		errors.append("ESC 보류가 월드 전리품은 유지하고 비교 패널만 닫지 못했습니다.")
+		errors.append("ESC 보류가 월드 전리품은 유지하고 비교 패널만 닫지 못했습니다. 전후 드랍 %d/%d · 취소 %d/%d · 패널 %s" % [int(approached.get(&"active_drop_count",0)),int(cancelled.get(&"active_drop_count",0)),int(approached.get(&"total_cancelled",0)),int(cancelled.get(&"total_cancelled",0)),cancelled.get(&"panel",{}).get(&"visible",true)])
 	if (
 		int(acquired.get(&"active_drop_count", -1)) >= int(cancelled.get(&"active_drop_count", 0))
 		or int(acquired.get(&"total_acquired", 0)) <= int(cancelled.get(&"total_acquired", 0))

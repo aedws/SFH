@@ -1419,7 +1419,14 @@ func _verify_expanded_map_warp(player: Node2D) -> bool:
 	var generator = game.get("map_generator")
 	if minimap == null or room_warp == null or encounters == null or generator == null:
 		return _fail("M 확장 지도 워프 E2E에 필요한 모듈이 없습니다.")
-	if room_warp.terminal_only: player.global_position = generator.get_player_spawn_position()
+	if room_warp.terminal_only:
+		player.global_position = generator.get_player_spawn_position()
+		# Pursuit persistence was checked earlier. A successful warp now requires
+		# actually removing nearby threats, not bypassing the production guard.
+		for enemy in game.get("enemy_spawner").get_active_targets():
+			if enemy.global_position.distance_to(player.global_position) < room_warp.terminal_threat_radius:
+				enemy.take_damage(100000.0)
+		for frame in 4: await process_frame
 	await _tap_key(KEY_M)
 	await process_frame
 	var expanded: Dictionary = minimap.call(&"get_layout_snapshot")
@@ -1458,7 +1465,7 @@ func _verify_expanded_map_warp(player: Node2D) -> bool:
 	if not player.global_position.is_equal_approx(chosen.get(&"world_position", Vector2.ZERO)):
 		return _fail("확장 지도 후보 클릭이 플레이어를 해당 방으로 워프하지 못했습니다.")
 	if bool(minimap.call(&"is_expanded")):
-		return _fail("워프 완료 후 확장 지도가 전투 시야를 다시 열어주지 않았습니다.")
+		return _fail("워프 완료 후 확장 지도가 전투 시야를 다시 열어주지 않았습니다. 상태: %s · 판정: %s" % [game.get("status_label").text,room_warp.get_snapshot()])
 	var rejected_uncleared := false
 	for room: Dictionary in generator.call(&"get_room_encounter_snapshot"):
 		var room_index := int(room.get(&"room_index", -1))
