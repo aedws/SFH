@@ -117,4 +117,9 @@ def on_page_content(html, page, **kwargs):
             '<nav class="sfh-article-children" aria-label="하위 문서"><ul>'
             + "".join(children) + '</ul></nav>',
         )
-    return navigation + '<div class="sfh-article-body">' + html + '</div>'
+    # Wrap after Markdown rendering: nesting raw interactive forms inside a
+    # markdown="1" source wrapper can split their HTML at inner div boundaries.
+    role = {"access/planner.md": "planner", "access/developer.md": "developer"}.get(page.file.src_uri)
+    body = (f'<div class="sfh-article-body sfh-workspace" data-sfh-workspace="{role}">'
+            if role else '<div class="sfh-article-body">')
+    return navigation + body + html + '</div>'

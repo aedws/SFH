@@ -16,6 +16,7 @@ try {
     let mapRequests = 0;
     page.on('request', request => { if (request.url().endsWith('/assets/code-module-map.json')) mapRequests++; });
     await page.goto(`${origin}/access/developer/`);
+    await page.locator('.sfh-workspace-launcher a[href$="#owner-decision-console"]').click();
     const consoleUI = page.locator('[data-sfh-owner-decision-console]');
     await consoleUI.waitFor();
     await page.evaluate(() => document.fonts.ready);

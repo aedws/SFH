@@ -180,6 +180,12 @@ assert focus_match.group(1) in {item["id"] for item in ontology["objects"]}, "Ov
 assert len(re.findall(r'<details[^>]*class="sfh-developer-fold"', developer_text)) == 2
 assert not re.search(r'<details[^>]*class="sfh-developer-fold"[^>]*\sopen[\s>]', developer_text), "Developer details should be collapsed initially"
 assert "data-sfh-lazy-code" in developer_text, "Code map must load on disclosure"
+for role, text in [("planner", planner_text), ("developer", developer_text)]:
+    assert f'data-sfh-workspace="{role}"' in text, "Role layout must be applied after Markdown rendering"
+    assert 'class="sfh-workspace-launcher"' in text
+    assert 'javascripts/role-workspace.js' in text and 'stylesheets/role-workspace.css' in text
+assert '&lt;div class="sfh-planner-filters"' not in planner_text, "Request controls must not become code snippets"
+assert 'id="planning-queue"' in planner_text and 'id="proposal-draft"' in planner_text
 assert module_map_position >= 0, "Developer room must embed the live code-module map"
 assert developer_console_position >= 0 and owner_console_position < module_map_position < developer_console_position, (
     "Owner decisions must precede implementation evidence and the developer operating guide"

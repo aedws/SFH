@@ -9,17 +9,38 @@ hide:
 
 # 개발자 작업실
 
-작업을 고르고, 필요한 근거만 펼쳐 확인합니다. 이 화면은 읽기 전용이며 최종 판단은 프로젝트 오너가 합니다.
+작업·구조·검증 근거를 골라 확인하세요. 최종 판단은 프로젝트 오너가 합니다.
+
+<nav class="sfh-workspace-launcher" aria-label="개발자 작업 바로가기">
+  <a href="#owner-decision-console"><small>판단</small><strong>작업·오너 판단</strong><span>선행 조건과 판단 대기열</span></a>
+  <a href="#confirmed-balance"><small>기획 확정</small><strong>확정 그래프</strong><span>편집 없이 수치 근거만 확인</span></a>
+  <a href="#code-module-map"><small>구조</small><strong>코드·모듈 관계</strong><span>구현 연결과 영향 추적</span></a>
+  <a href="../../design/current-milestone-workline/#notion-20260907"><small>실행</small><strong>현재 작업선</strong><span>작업 순서·중단·완료 조건</span></a>
+  <a href="../../quality/e2e-play-session/"><small>품질</small><strong>플레이 검증</strong><span>회귀 위험과 수락 근거</span></a>
+  <a href="#developer-contract"><small>원칙</small><strong>개발·운영 계약</strong><span>모듈 경계와 검증 규칙</span></a>
+</nav>
+
+<p class="sfh-workspace-notice">판단 콘솔·그래프는 읽기 전용입니다. 기획 확정, 오너 승인, 게임 적용 상태를 구분해서 확인합니다.</p>
 
 **최신 오너 승인 변경:** [익스트랙션 구역·공간 공개](../features/extraction-district.md) → [모듈 경계](../architecture/module-audit.md#extraction-district) → [플레이 수락 근거](../quality/e2e-play-session.md#extraction-district). 기존 전방/반경 시야와 모든 방 봉쇄는 기본값이 아니라 이전 정책입니다.
 
+<details class="sfh-workspace-block" markdown="1">
+<summary>작업·오너 판단 콘솔 <small>필요한 작업과 근거를 선택</small></summary>
+
 <div id="owner-decision-console" data-sfh-owner-decision-console-host data-focus-object="work:n26-08"></div>
+
+</details>
+
+<details class="sfh-workspace-block" markdown="1">
+<summary>기획 확정 그래프 <small>저장된 안건만 읽기 전용으로 확인</small></summary>
 
 ## 기획 확정 수치 그래프 {#confirmed-balance}
 
 기획자가 검토 후 저장한 안건만 표시합니다. 이 영역에는 수치 편집기나 미확정 시험값이 없습니다. **기획 확정 ≠ 오너 승인 ≠ 게임 적용**이며, 기존 판단 콘솔에서 승인·구현 근거를 검토합니다.
 
 <div data-sfh-balance-gallery>확정 그래프 읽는 중…</div>
+
+</details>
 
 <nav class="sfh-developer-shortcuts" aria-label="개발자 빠른 문서">
   <a href="../../design/current-milestone-workline/#notion-20260907">현재 작업선 →</a>
@@ -90,7 +111,7 @@ Notion·Sheet 후보
 | 차단 | Item·Utility 중복 원본 | Sheet 정리 대기 | Utility 단일 원본 지정, 중복 제거, 동기화 검증 성공 |
 | 보류 | 서버 위변조·거래 원장 | 별도 승인 전 미착수 | 공급자·보존 기간·비용·복구 권한·제재 기준 승인 |
 
-## 개발자 실행 계약
+## 개발자 실행 계약 {#developer-contract}
 
 1. 기획자는 의도와 후보를 제공하고, 개발자는 구현·위험·검증 근거를 제공합니다. **범위·우선순위·수락·출시는 프로젝트 오너만 확정합니다.**
 2. 새 기능은 `Definition/Policy → Service → System/Presenter → Scene 조립` 단방향 경계를 지킵니다.

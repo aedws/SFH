@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 144 TOPICS</span><span>99 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 145 TOPICS</span><span>99 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -64,9 +64,18 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 4 · IMPROVE 9 · CHANGE 3 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 4 · IMPROVE 11 · CHANGE 3 · FIX 9</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 9</small><b>역할 작업실 · 필요한 작업을 바로 여는 블록 구성</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 긴 설명 대신 역할별 6개 작업 블록에서 시작하고 필요한 도구와 근거만 펼칩니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>기획자는 수치·요청·초안, 개발자는 판단·구조·검증에 바로 접근합니다. 모바일은 보조 설명을 줄이고 핵심 제목·키보드 포커스·초안 상태를 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>접힌 내용의 직접 링크와 문서 변환 중 폼 분리를 검사하고, 기존 확정 그래프·코드 지도·역할 권한을 회귀 검증합니다.</p></div>
+        <p><a href="../quality/wiki-responsive-e2e/#role-workspace">작업실 사용·검증 계약 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 8</small><b>기획 수치 실험 · 확정 그래프 역할 분리</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획자는 수치와 그래프를 시험하고, 개발자는 기획 확정 시점의 그래프만 읽습니다.</strong></div>

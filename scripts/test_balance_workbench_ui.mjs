@@ -60,6 +60,7 @@ try{
     const combat=page.locator('[data-sfh-dps-lab][data-confirm-mounted=true]');await combat.waitFor();
     assert.equal(await combat.locator('.balance-confirm').count(),1);
     role='developer';await page.goto(origin+'/access/developer/');
+    await page.locator('.sfh-workspace-launcher a[href$="#confirmed-balance"]').click();
     const gallery=page.locator('[data-sfh-balance-gallery]');
     await gallery.getByText('회수 예시 '+width,{exact:false}).click();
     await gallery.getByRole('img').waitFor();
