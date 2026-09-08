@@ -1,0 +1,531 @@
+{
+	"difficulties": [
+		{
+			"difficulty_id": "standard",
+			"display_name": "표준",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.0,
+				"damage_multiplier": 1.0,
+				"health_multiplier": 1.0,
+				"speed_multiplier": 1.0
+			},
+			"entry_cost_multiplier": 1.0,
+			"reward_multiplier": 1.0
+		},
+		{
+			"difficulty_id": "veteran",
+			"display_name": "베테랑",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.25,
+				"damage_multiplier": 1.2,
+				"health_multiplier": 1.35,
+				"speed_multiplier": 1.08
+			},
+			"entry_cost_multiplier": 1.5,
+			"reward_multiplier": 1.55
+		},
+		{
+			"boss_guaranteed": true,
+			"difficulty_id": "nightmare",
+			"display_name": "악몽",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.6,
+				"damage_multiplier": 1.5,
+				"health_multiplier": 1.8,
+				"speed_multiplier": 1.16
+			},
+			"entry_cost_multiplier": 2.0,
+			"high_grade_drop_multiplier": 1.5,
+			"reward_multiplier": 2.25
+		}
+	],
+	"enemy": {
+		"armor": 2.0,
+		"damage": 10.0,
+		"hp": 3.0,
+		"interval": 0.75
+	},
+	"resources": {
+		"delay": 1.0,
+		"maximum": 100.0,
+		"regen": 10.0,
+		"starting": 100.0
+	},
+	"schema": 1,
+	"skills": [
+		{
+			"charge_recovery_seconds": 9.0,
+			"cooldown_seconds": 7.0,
+			"description": "전격 무기와 연동해 짧게 돌진하며 넓은 경로 피해",
+			"display_name": "아크 질주",
+			"energy_cost": 30.0,
+			"input_action": "combat_skill_3",
+			"input_label": "3",
+			"kind": "path",
+			"maximum_charges": 1,
+			"parameters": {
+				"distance": 290.0,
+				"path_damage": {
+					"applied_status_id": "ionized",
+					"damage": 22.0,
+					"half_width": 52.0,
+					"maximum_targets": 32,
+					"trigger_bonus_damage": 12.0,
+					"trigger_status_id": "shock"
+				},
+				"wall_clearance": 24.0
+			},
+			"required_combat_tags": [
+				"electric"
+			],
+			"skill_id": "arc_dash",
+			"slot_index": 0,
+			"targeting_mode": "direction",
+			"targeting_range": 820.0
+		},
+		{
+			"charge_recovery_seconds": 7.0,
+			"cooldown_seconds": 5.0,
+			"description": "바라보는 방향으로 이동하며 경로 피해",
+			"display_name": "점멸",
+			"energy_cost": 20.0,
+			"input_action": "combat_skill_1",
+			"input_label": "1",
+			"kind": "path",
+			"maximum_charges": 2,
+			"parameters": {
+				"distance": 360.0,
+				"path_damage": {
+					"applied_status_id": "ionized",
+					"damage": 12.0,
+					"half_width": 40.0,
+					"maximum_targets": 24,
+					"trigger_bonus_damage": 8.0,
+					"trigger_status_id": "shock"
+				},
+				"wall_clearance": 24.0
+			},
+			"required_combat_tags": [],
+			"skill_id": "blink",
+			"slot_index": 0,
+			"targeting_mode": "direction",
+			"targeting_range": 820.0
+		},
+		{
+			"charge_recovery_seconds": 10.0,
+			"cooldown_seconds": 8.0,
+			"description": "5초 동안 플레이어 주변 적에게 0.5초마다 누적 피해",
+			"display_name": "원형 자기장",
+			"energy_cost": 35.0,
+			"input_action": "combat_skill_2",
+			"input_label": "2",
+			"kind": "field",
+			"maximum_charges": 1,
+			"parameters": {
+				"duration_seconds": 5.0,
+				"radius": 230.0,
+				"tick_damage": 6.0,
+				"tick_interval_seconds": 0.5
+			},
+			"required_combat_tags": [
+				"electric"
+			],
+			"skill_id": "magnetic_field",
+			"slot_index": 0,
+			"targeting_mode": "self",
+			"targeting_range": 820.0
+		},
+		{
+			"charge_recovery_seconds": 14.0,
+			"cooldown_seconds": 12.0,
+			"description": "4초 동안 이동 속도 55% 증가",
+			"display_name": "기동 가속",
+			"energy_cost": 25.0,
+			"input_action": "combat_skill_3",
+			"input_label": "3",
+			"kind": "utility",
+			"maximum_charges": 2,
+			"parameters": {
+				"duration_seconds": 4.0,
+				"speed_multiplier": 1.55
+			},
+			"required_combat_tags": [],
+			"skill_id": "speed_boost",
+			"slot_index": 0,
+			"targeting_mode": "self",
+			"targeting_range": 820.0
+		}
+	],
+	"source_files": [
+		"scripts/export_dps_catalog.gd",
+		"game/features/equipment/weapon_definition.gd",
+		"game/features/equipment/weapon_tag_profile.gd",
+		"game/features/equipment/weapon_innate_skill_definition.gd",
+		"game/features/equipment/equipment_fixed_option.gd",
+		"game/features/equipment/equipment_system.gd"
+	],
+	"source_roots": [
+		"game/features/weapons",
+		"game/features/weapon_balance",
+		"game/features/combat_skills",
+		"game/features/combat_resources",
+		"game/features/equipment/definitions/weapons",
+		"game/features/enemies",
+		"game/features/operation_contract"
+	],
+	"sources": {
+		"game/features/combat_resources/combat_resource_config.gd": "0614e1603532cdbf55184a5cb433df31e28e4447874f569fe59e2dd66591f1e6",
+		"game/features/combat_resources/combat_resource_pickup.gd": "56399eda63c25b74061978c6937e9d9cc6f73493f58ac7df25ee8afefd317fda",
+		"game/features/combat_resources/combat_resource_pickup.tscn": "c21cbfe757e66a1b43448fe37afdb53b132a0a314e9b037b265ca590e6edf348",
+		"game/features/combat_resources/combat_resource_system.gd": "feef0a0b1b6cc8016e3dad086c66725145e06c83478cd2b776010caa4936e616",
+		"game/features/combat_resources/combat_resource_system.tscn": "0af9eceef3bdb7c46c88aae9aed4e9b5e069f17c8c1a5800699af9478bcc4b3a",
+		"game/features/combat_resources/configs/default_combat_resources.tres": "1b867b4991bde7d8ea4c7dc1ad9f24258241249345688b2fc7eac1332ecb2fb3",
+		"game/features/combat_resources/energy_regeneration_policy.gd": "656c11b3f14b865c37dea35134a05054bd24cf106be3c6788a9ddefad0c4a869",
+		"game/features/combat_skills/combat_skill_definition.gd": "ed830c58eddbf857bf4ba464d83d4eccf1badadcb99568907b96537e5f2d409d",
+		"game/features/combat_skills/combat_skill_effect.gd": "66b3f0c4005311c8b0ec11543efc0944e5beb2b59f09073d1934f81276220749",
+		"game/features/combat_skills/combat_skill_hud.gd": "27a91bbe7bae80887c15b730d396ae699d8acd7c76aba932d60531ac3e3fd923",
+		"game/features/combat_skills/combat_skill_hud.tscn": "ab701a6997bc86d2193ad6084cf2537951e120ebbd4bee5f52382f7cce879d28",
+		"game/features/combat_skills/combat_skill_loadout.gd": "c33f37deec8b49a35313efb8a3766a9d8ee5371d6fc8b5a02d7b7ae938f99a35",
+		"game/features/combat_skills/combat_skill_system.gd": "64e300c35d7a945a227e7e4d925f4feba1f9da22ce5dcc55402ab9e601886fca",
+		"game/features/combat_skills/combat_skill_system.tscn": "c248fa4caa70bdcb2b51cd1bfa4255c3f3241ca58f60ac139b6a067a2b7e6d42",
+		"game/features/combat_skills/configs/default_combat_skills.tres": "7f8074f9b643be944168f78214642957c2b038adb40b09098e619552193bb5e1",
+		"game/features/combat_skills/data/skill_catalog.csv": "a6c2509e83cb0e2768dd80c362b00f32d3762cf730a6dbfd53879b8e3f63c597",
+		"game/features/combat_skills/data/skill_catalog_payload.tres": "370ec9ccb695391690ec3ba357cfdc6eb578903b8b3cc2d9a0ad09795f2579f1",
+		"game/features/combat_skills/definitions/arc_dash.tres": "89ae3166549f9bf2ffa602dd5f5b709fd212fdc46deb7566bfea6aae01bfeea8",
+		"game/features/combat_skills/definitions/blink.tres": "f7c9548f0685e1ed90cabb98425799f8d6eed27613779d2dea53bc7712e90d7c",
+		"game/features/combat_skills/definitions/magnetic_field.tres": "06d90c5c850c459a41779fdb255d4fbf5d0e84255e9b8ce3d50e045f6c8727ea",
+		"game/features/combat_skills/definitions/speed_boost.tres": "e72f091950495477313d350b5e3c8643def0303968007a730956e9bc326ffeea",
+		"game/features/combat_skills/effects/blink_skill_effect.gd": "14e82180dfa4583f76439e2ca0cf670f88996b5f3b7a1a0b7cff5aa9a6f5adfb",
+		"game/features/combat_skills/effects/electric_arc_effect.gd": "550cd3777b89fff20f559554c5c55c0ed37e484703e2fb6c0a35e5d47190fe2c",
+		"game/features/combat_skills/effects/electric_effect_profile.gd": "890aaa16c4396ac914b05ef5cd37b85e27b546bbbb06ff179b1b65c80f2f586b",
+		"game/features/combat_skills/effects/magnetic_field_skill_effect.gd": "a99b86edbe425cac750355204afc3a458a858f00b0ff8971cbac2063f4200d43",
+		"game/features/combat_skills/effects/path_damage_policy.gd": "493d5567a9d1c433707e514b4ee6e35c0fb18f79693b915c6e1e744288a2386e",
+		"game/features/combat_skills/effects/persistent_magnetic_field.gd": "9102333c1c6c8c45fbbdf8d810c25b1bb4b63b425f3e4f4d1b9261ed6c824703",
+		"game/features/combat_skills/effects/profiles/blink_electric.tres": "9ca00716fa0eeaffdeece8b79fad3df265a5c4d4dada1d76491104907ba7ca22",
+		"game/features/combat_skills/effects/profiles/magnetic_electric.tres": "6821639070424326c8b04db0a66907f7d1b09663d1ef3a250d43323cf8cfa74a",
+		"game/features/combat_skills/effects/profiles/speed_electric.tres": "15c53ea5863aa224b21de153ce5092d5d4057f64f3a2bc250e8cdec59bed2b74",
+		"game/features/combat_skills/effects/speed_boost_skill_effect.gd": "b091f4e07ea23a757df50239f2dae6a025893d781cd640323439b5f321f5c88e",
+		"game/features/combat_skills/effects/timed_stat_modifier.gd": "b19726fc8389fb2e99fa7e59afc42e64c65b16e7e26681ae610f495605b51913",
+		"game/features/enemies/components/armor_component.gd": "a82fe656fd85ee22e5833138171f01ec35ece0dcefe43c9a4a278951e646ab6e",
+		"game/features/enemies/components/enemy_status_bars.gd": "2e5d71f469dae698eb441a66ad2ff8ccc4207a771ab7838609da0df424260797",
+		"game/features/enemies/components/health_component.gd": "41ac67a20b188fc5ae8518459df0f50baa3725c50efd4786736508342566bfe9",
+		"game/features/enemies/configs/default_enemy_crowd.tres": "8d319a56ca67046d895dfcfe38f27ff46656903a0bf02992fa5c080154684fa1",
+		"game/features/enemies/enemy.gd": "4c8cbcdcb924559c2acd0137814107a8ef611329b28d68f57bc4d76ca82dc35d",
+		"game/features/enemies/enemy.tscn": "5bb503fc7385cbc48c38c485f8f75f5310569c7fee9dbb6a1664f5a9c598c6ab",
+		"game/features/enemies/enemy_crowd_config.gd": "95196b431da07925a71c63ed9a947faa6dc3ffe1863d29b3cc47d6c877330841",
+		"game/features/equipment/definitions/weapons/assault_rifle.tres": "bf9bc129e3785a591b2593b24d7461a3e14614456fe9ae3c2372d065078f4e26",
+		"game/features/equipment/definitions/weapons/combat_dagger.tres": "9f4ac7df64e7e4d5ab387631caaf9dabb46af16cefdd61715d292dc56b778c21",
+		"game/features/equipment/definitions/weapons/greatsword.tres": "0b70c9846166cbcfc1889110acb41bd7cf6bda0a98864c96a3a0f67dfa4619d0",
+		"game/features/equipment/definitions/weapons/pulse_rifle.tres": "c132fa8c8dec3ef19d538a8a32f0f8a56a5ee14d6f9165f4751966b28ba1f714",
+		"game/features/equipment/definitions/weapons/service_pistol.tres": "32eb649a2b9a9db974649a604594f5dc5bb29841d7f4c1426e8bbc20fcea87d5",
+		"game/features/equipment/equipment_fixed_option.gd": "288f089545ad0efafab5671eeec6b0c90e4f28b6ea1aa39bb700cd7f51c4628a",
+		"game/features/equipment/equipment_system.gd": "6fd28af794f29165abf170d9997ba0c6802abecd0ec11fda1307eb29ab1807f2",
+		"game/features/equipment/weapon_definition.gd": "6810590210aae07523ba8f57312661c1c5560c2faf84d02ec6a6d1bfb05eb59d",
+		"game/features/equipment/weapon_innate_skill_definition.gd": "4e9b6f85e51065feafb46c79837a12ae7330d688cb618b32157ce2cdd6876130",
+		"game/features/equipment/weapon_tag_profile.gd": "2b42e5a9cfaf7899acfd6138c15579301d2e7606e5e180e33f0d3652c58876c7",
+		"game/features/operation_contract/configs/default_operation_contracts.tres": "41e8b7acd0200c0be4bbe51b9eb7f021e8da6a53f711f3e8e8230fad98e97b1a",
+		"game/features/operation_contract/operation_contract_config.gd": "6ebab55e4d3a954e2c48e48bb7768cd95e9eea75f0f6e8104a6d927b4d6b0449",
+		"game/features/operation_contract/operation_contract_service.gd": "9de73e5f35906d49abc46521253504728d66045d5edabb94ef5130a916179b29",
+		"game/features/operation_contract/operation_contract_service.tscn": "b41d4296e28b3bab080f2781ad0a1d68e9390030e26cc2381a8bfc2abab14408",
+		"game/features/weapon_balance/configs/default_weapon_balance.tres": "83a2a2de6411c44016490916aba082aafd4439c370a49ec228f7e6750c0a06d4",
+		"game/features/weapon_balance/data/weapon_balance.csv": "b8532fbab008c12ffe6a0f874b0e756dc5f6222fddd688281379c45060fffec8",
+		"game/features/weapon_balance/data/weapon_balance_payload.tres": "b48dd01ff06fb50e5082f71574bca1146da0da4e123a55b77e47c53c8f3aaa30",
+		"game/features/weapon_balance/weapon_balance_config.gd": "65517ffddf374ab4c1d4fc8baee90b9ed4c51a8492897b845b13c912492580eb",
+		"game/features/weapon_balance/weapon_balance_service.gd": "50a9ad8f6acc2e91ba215dfb569644a56ace782fc161e20e2f3eb00c14b31763",
+		"game/features/weapon_balance/weapon_balance_service.tscn": "5942ec545721b7126e029913230a3efac1468177a0c6ab91cf8ec83274ac3400",
+		"game/features/weapon_balance/weapon_balance_table.gd": "96ec6a57cb2e71d3a6330ced33c03a7f6ef6717eaaf2052844b5dc4a30e3823f",
+		"game/features/weapons/auto_weapon.gd": "918985cffdb9767e93ce09fed6ebaa58c78894130bfc726ed129302ae484abef",
+		"game/features/weapons/auto_weapon.tscn": "ee97552cd620727d6a0a4e1d0b037d424c1e31037c19dd93d14eeec8d976441c",
+		"game/features/weapons/projectile.gd": "e21230781e79c241cc87bdab2768af09e6b9147116539949430413d3b7b077e8",
+		"game/features/weapons/projectile.tscn": "aec697a1e9c9bbee777dc6bff9c87a79d2918e12282e327b4b77dbdae94d1366",
+		"game/features/weapons/weapon_innate_skill_system.gd": "34a490622ae3b45b4785c82fc8cbff3fab6b4a68269a5eb128b0a2720095ae6f",
+		"scripts/export_dps_catalog.gd": "b9a2c0517a6f845162006557f9ab5894ab9b3204c478a8e9fb66f716fa887762"
+	},
+	"weapons": [
+		{
+			"balance": {
+				"burst_count": 3,
+				"burst_interval_sec": 0.1,
+				"critical_chance": 0.05,
+				"critical_multiplier": 1.75,
+				"damage": 1.6,
+				"description": "장거리 자동 탐지와 안정적인 3점사",
+				"display_name": "돌격소총",
+				"fire_interval_sec": 0.78,
+				"pierce_count": 0,
+				"pierce_damage_retention": 1.0,
+				"projectile_lifetime_sec": 1.6,
+				"projectile_speed_px_sec": 760.0,
+				"projectiles_per_shot": 1,
+				"spread_angle_deg": 0.0,
+				"target_range_px": 820.0,
+				"trait_id": "steady_burst",
+				"weapon_id": "assault_rifle"
+			},
+			"id": "assault_rifle",
+			"innate": {
+				"description": "세 번째 명중마다 성장 배율을 받지 않는 고정 전격 피해를 추가합니다.",
+				"display_name": "축전 반향",
+				"effect_kind": "single_target",
+				"effect_radius": 0.0,
+				"fixed_damage": 1.5,
+				"impact_strength": 1.15,
+				"maximum_targets": 1,
+				"scaling_policy": "fixed_identity",
+				"skill_id": "capacitor_echo",
+				"trigger_every_hits": 3
+			},
+			"name": "돌격소총",
+			"options": [
+				{
+					"amount": 1.06,
+					"description": "장비 정체성에 귀속된 고정 피해 보정입니다.",
+					"display_name": "안정화 강선",
+					"modifier_id": "damage_multiply",
+					"operation": "multiply",
+					"option_id": "stabilized_barrel",
+					"scaling_policy": "fixed_identity",
+					"target_kind": "weapon"
+				}
+			],
+			"overrides": {
+				"magnetic_field": {
+					"applied_status_id": "shock",
+					"radius_multiplier": 1.2,
+					"status_duration": 4.0,
+					"tick_damage_multiplier": 1.1
+				}
+			},
+			"source_mode": "locked_csv",
+			"tags": [
+				"projectile",
+				"element",
+				"electric"
+			]
+		},
+		{
+			"balance": {
+				"burst_count": 3,
+				"burst_interval_sec": 0.1,
+				"critical_chance": 0.05,
+				"critical_multiplier": 1.75,
+				"damage": 1.6,
+				"display_name": "돌격소총",
+				"fire_interval_sec": 0.78,
+				"pierce_count": 0,
+				"pierce_damage_retention": 1.0,
+				"projectile_lifetime_sec": 1.6,
+				"projectile_speed_px_sec": 760.0,
+				"projectiles_per_shot": 1,
+				"spread_angle_deg": 0.0,
+				"target_range_px": 820.0,
+				"trait_id": "steady_burst"
+			},
+			"id": "combat_dagger",
+			"innate": {
+				"description": "두 번째 명중마다 고정 절단 피해를 추가합니다.",
+				"display_name": "잔상 절단",
+				"effect_kind": "single_target",
+				"effect_radius": 0.0,
+				"fixed_damage": 1.0,
+				"impact_strength": 0.8,
+				"maximum_targets": 1,
+				"scaling_policy": "fixed_identity",
+				"skill_id": "bleeding_edge",
+				"trigger_every_hits": 2
+			},
+			"name": "전투 단검",
+			"options": [
+				{
+					"amount": 1.04,
+					"description": "고정 피해 보정입니다.",
+					"display_name": "균형형 탱",
+					"modifier_id": "damage_multiply",
+					"operation": "multiply",
+					"option_id": "balanced_tang",
+					"scaling_policy": "fixed_identity",
+					"target_kind": "weapon"
+				}
+			],
+			"overrides": {},
+			"source_mode": "runtime_fallback",
+			"tags": [
+				"slash",
+				"melee"
+			]
+		},
+		{
+			"balance": {
+				"burst_count": 3,
+				"burst_interval_sec": 0.1,
+				"critical_chance": 0.05,
+				"critical_multiplier": 1.75,
+				"damage": 1.6,
+				"display_name": "돌격소총",
+				"fire_interval_sec": 0.78,
+				"pierce_count": 0,
+				"pierce_damage_retention": 1.0,
+				"projectile_lifetime_sec": 1.6,
+				"projectile_speed_px_sec": 760.0,
+				"projectiles_per_shot": 1,
+				"spread_angle_deg": 0.0,
+				"target_range_px": 820.0,
+				"trait_id": "steady_burst"
+			},
+			"id": "greatsword",
+			"innate": {
+				"description": "매 명중마다 성장 배율을 받지 않는 고정 충격 피해를 추가합니다.",
+				"display_name": "지진파",
+				"effect_kind": "single_target",
+				"effect_radius": 0.0,
+				"fixed_damage": 2.8,
+				"impact_strength": 1.6,
+				"maximum_targets": 1,
+				"scaling_policy": "fixed_identity",
+				"skill_id": "seismic_echo",
+				"trigger_every_hits": 1
+			},
+			"name": "중량 대검",
+			"options": [
+				{
+					"amount": 1.1,
+					"description": "고정 피해 보정입니다.",
+					"display_name": "중량 척추",
+					"modifier_id": "damage_multiply",
+					"operation": "multiply",
+					"option_id": "weighted_spine",
+					"scaling_policy": "fixed_identity",
+					"target_kind": "weapon"
+				}
+			],
+			"overrides": {
+				"blink": {
+					"damage_multiplier": 1.35,
+					"distance_multiplier": 0.85
+				}
+			},
+			"source_mode": "runtime_fallback",
+			"tags": [
+				"slash",
+				"blunt",
+				"melee"
+			]
+		},
+		{
+			"balance": {
+				"burst_count": 1,
+				"burst_interval_sec": 0.0,
+				"critical_chance": 0.08,
+				"critical_multiplier": 1.65,
+				"damage": 1.15,
+				"description": "현장 즉시 교체 검증용 고속 전격 소총",
+				"display_name": "전격 펄스 소총",
+				"fire_interval_sec": 0.34,
+				"pierce_count": 1,
+				"pierce_damage_retention": 0.82,
+				"projectile_lifetime_sec": 1.35,
+				"projectile_speed_px_sec": 840.0,
+				"projectiles_per_shot": 1,
+				"spread_angle_deg": 0.0,
+				"target_range_px": 760.0,
+				"trait_id": "rapid_arc",
+				"weapon_id": "pulse_rifle"
+			},
+			"id": "pulse_rifle",
+			"innate": {
+				"description": "탄환이 명중할 때마다 타격 지점 반경 144 안의 최대 8명에게 고정 전기 피해를 방출합니다.",
+				"display_name": "펄스 오버플로",
+				"effect_kind": "electric_area",
+				"effect_radius": 144.0,
+				"fixed_damage": 1.0,
+				"impact_strength": 1.25,
+				"maximum_targets": 8,
+				"scaling_policy": "fixed_identity",
+				"skill_id": "pulse_overflow",
+				"trigger_every_hits": 1
+			},
+			"name": "전격 펄스 소총",
+			"options": [
+				{
+					"amount": 0.92,
+					"description": "고정 발사 주기 옵션입니다.",
+					"display_name": "펄스 순환기",
+					"modifier_id": "fire_interval_multiply",
+					"operation": "multiply",
+					"option_id": "pulse_cycle",
+					"scaling_policy": "fixed_identity",
+					"target_kind": "weapon"
+				}
+			],
+			"overrides": {
+				"magnetic_field": {
+					"radius_multiplier": 1.1,
+					"tick_damage_multiplier": 1.25
+				}
+			},
+			"source_mode": "locked_csv",
+			"tags": [
+				"projectile",
+				"element",
+				"electric"
+			]
+		},
+		{
+			"balance": {
+				"burst_count": 1,
+				"burst_interval_sec": 0.0,
+				"critical_chance": 0.12,
+				"critical_multiplier": 2.0,
+				"damage": 3.2,
+				"description": "짧은 탐지 거리와 느린 주기 대신 강한 단발 및 1회 관통",
+				"display_name": "제식 권총",
+				"fire_interval_sec": 0.6,
+				"pierce_count": 1,
+				"pierce_damage_retention": 0.65,
+				"projectile_lifetime_sec": 1.3,
+				"projectile_speed_px_sec": 690.0,
+				"projectiles_per_shot": 1,
+				"spread_angle_deg": 0.0,
+				"target_range_px": 560.0,
+				"trait_id": "heavy_piercing",
+				"weapon_id": "service_pistol"
+			},
+			"id": "service_pistol",
+			"innate": {
+				"description": "두 번째 명중마다 강한 고정 충격 피해를 추가합니다.",
+				"display_name": "브레이커 에코",
+				"effect_kind": "single_target",
+				"effect_radius": 0.0,
+				"fixed_damage": 2.2,
+				"impact_strength": 1.4,
+				"maximum_targets": 1,
+				"scaling_policy": "fixed_identity",
+				"skill_id": "breaker_echo",
+				"trigger_every_hits": 2
+			},
+			"name": "제식 권총",
+			"options": [
+				{
+					"amount": 1.08,
+					"description": "사거리 보정은 무기 레벨 및 런 성장과 별개로 유지됩니다.",
+					"display_name": "긴 조준선",
+					"modifier_id": "target_range_multiply",
+					"operation": "multiply",
+					"option_id": "long_sight_line",
+					"scaling_policy": "fixed_identity",
+					"target_kind": "weapon"
+				}
+			],
+			"overrides": {
+				"blink": {
+					"damage_multiplier": 1.15,
+					"distance_multiplier": 1.08
+				}
+			},
+			"source_mode": "locked_csv",
+			"tags": [
+				"projectile"
+			]
+		}
+	]
+}

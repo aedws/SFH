@@ -37,6 +37,7 @@ extra_css:
   - stylesheets/extra.css
   - stylesheets/articles.css
   - stylesheets/header-actions.css
+  - stylesheets/dps-lab.css
 
 extra_javascript:
   - javascripts/search-dashboard.js
@@ -47,6 +48,8 @@ extra_javascript:
   - javascripts/planner-requests.js
   - javascripts/planner-proposal.js
   - javascripts/role-auth.js
+  - javascripts/dps-engine.js
+  - javascripts/dps-lab.js
 
 plugins:
   - search:
@@ -156,6 +159,7 @@ nav:
           - 작업 폴더 정리와 Git 복구: getting-started/source-control-and-cleanup.md
           - 위키 수정 요청과 반영: getting-started/edit-wiki-online.md
           - 기획자 아이템·밸런싱 튜토리얼: getting-started/planner-item-balance-tutorial.md
+          - 무기·스킬 DPS 실험실: tools/dps-lab.md
           - 위키 실시간 검색: getting-started/search-wiki.md
       - 검증과 문제 해결:
           - 검증과 문제 해결: quality/index.md

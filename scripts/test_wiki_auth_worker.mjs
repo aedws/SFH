@@ -116,6 +116,8 @@ for (const protectedPath of [
   "/assets/notion-tracker-snapshot.json",
   "/assets/notion-code-audit.json",
   "/assets/search-priorities.json",
+  "/tools/dps-lab/",
+  "/assets/dps-catalog.json",
   "/assets/owner-decision-registry.json",
   "/assets/project-ontology.json",
   "/sitemap.xml",
@@ -168,6 +170,12 @@ assert.equal(session.role, "planner");
 assert.equal(session.username, "planner");
 assert.equal(session.must_change, false);
 let plannerCookie = cookieFrom(response);
+
+for (const path of ["/tools/dps-lab/", "/assets/dps-catalog.json"]) {
+  const result = await worker.fetch(request(path, { headers: { cookie: plannerCookie } }), env);
+  assert.equal(result.status, 200, "planner can read DPS lab and source catalog");
+  assert.equal(result.headers.get("cache-control"), "private, no-store, max-age=0");
+}
 
 for (const path of ["/features/", "/features/equipment/", "/features/grid-inventory/", "/quality/", "/getting-started/planner-item-balance-tutorial/"]) {
   const articleResponse = await worker.fetch(request(path, { headers: { cookie: plannerCookie } }), env);
@@ -252,6 +260,9 @@ response = await worker.fetch(request("/api/auth/login", {
 assert.equal(response.status, 200);
 const developerSession = await response.json();
 const developerCookie = cookieFrom(response);
+for (const path of ["/tools/dps-lab/", "/assets/dps-catalog.json"]) {
+  assert.equal((await worker.fetch(request(path, { headers: { cookie: developerCookie } }), env)).status, 200);
+}
 assert.equal(developerSession.role, "developer");
 assert.equal(developerSession.username, "developer");
 

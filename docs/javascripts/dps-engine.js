@@ -1,0 +1,122 @@
+/* Pure, bounded planning model. No DOM, network, game mutations or saved profiles. */
+(() => {
+  'use strict';
+  const copy = value => JSON.parse(JSON.stringify(value));
+  const limits = {
+    damage:[0,10000], interval:[0.02,120], burst:[1,20], burstInterval:[0.02,10], projectiles:[1,32],
+    crit:[0,1], critMultiplier:[1,10], damageAdd:[0,10000], damageMultiplier:[0,10], intervalMultiplier:[0.02,10], level:[1,100],
+    skillDamage:[0,10000], skillCooldown:[0.05,120], skillDuration:[0.01,120], skillTick:[0.01,10],
+    skillCost:[0,1000], charges:[1,10], recharge:[0.1,120], skillMultiplier:[0,10],
+    hp:[1,1000000], armor:[0,1000000], enemyDamage:[0,10000], enemyInterval:[0.01,120],
+    horizon:[1,120], hitRate:[0,1], coverage:[0,1], energy:[0,10000], maxEnergy:[1,10000], regen:[0,1000], regenDelay:[0,60], targetTime:[0.1,120],
+  };
+  function defaults(catalog, weaponId, skillId = '') {
+    const w = catalog.weapons.find(row => row.id === weaponId);
+    if (!w) throw Error('무기 원본이 없습니다.');
+    const s = catalog.skills.find(row => row.skill_id === skillId);
+    if (skillId && !s) throw Error('스킬 원본이 없습니다.');
+    const b = w.balance, p = s?.parameters || {}, r = catalog.resources;
+    return {weaponId, skillId, damage:b.damage, interval:b.fire_interval_sec, burst:b.burst_count,
+      burstInterval:Math.max(0.02,b.burst_interval_sec), projectiles:b.projectiles_per_shot, crit:b.critical_chance,
+      critMultiplier:b.critical_multiplier, damageAdd:0, damageMultiplier:1, intervalMultiplier:1, level:1,
+      skillDamage:p.path_damage?.damage ?? p.tick_damage ?? 0, skillCooldown:s?.cooldown_seconds ?? 5,
+      skillDuration:p.duration_seconds ?? 1, skillTick:p.tick_interval_seconds ?? 0.5,
+      skillCost:s?.energy_cost ?? 0, charges:s?.maximum_charges ?? 1, recharge:s?.charge_recovery_seconds ?? 1,
+      skillMultiplier:1, hp:catalog.enemy.hp, armor:catalog.enemy.armor, enemyDamage:catalog.enemy.damage,
+      enemyInterval:catalog.enemy.interval, horizon:30, hitRate:1, coverage:1, energy:r.starting,
+      maxEnergy:r.maximum, regen:r.regen, regenDelay:r.delay, targetTime:5, innate:true, fixedOptions:true,
+      shock:false, resourceLimits:true};
+  }
+  function validate(input) {
+    const errors = [];
+    for (const [key,[min,max]] of Object.entries(limits)) {
+      if (typeof input[key] !== 'number' || !Number.isFinite(input[key]) || input[key] < min || input[key] > max) errors.push(`${key}: ${min}~${max} 범위의 숫자가 필요합니다.`);
+    }
+    for (const key of ['burst','projectiles','charges','level','horizon']) if (!Number.isInteger(input[key])) errors.push(`${key}: 정수가 필요합니다.`);
+    if (input.energy > input.maxEnergy) errors.push('시작 AP는 최대 AP보다 클 수 없습니다.');
+    return errors;
+  }
+  function resolve(catalog, input) {
+    const errors = validate(input);
+    if (errors.length) throw Error(errors.join(' '));
+    const weapon = catalog.weapons.find(row => row.id === input.weaponId);
+    const skill = catalog.skills.find(row => row.skill_id === input.skillId);
+    if (!weapon || (input.skillId && !skill)) throw Error('선택한 무기/스킬이 원본에 없습니다.');
+    if (skill && !['path','field','utility'].includes(skill.kind)) throw Error('새 스킬 효과는 계산 모델 등록이 필요합니다.');
+    let add=input.damageAdd, multiply=input.damageMultiplier, intervalMultiply=input.intervalMultiplier;
+    if (input.fixedOptions) for (const option of weapon.options) {
+      if (option.modifier_id === 'damage_add') add += option.amount;
+      if (option.modifier_id === 'damage_multiply') multiply *= option.amount;
+      if (option.modifier_id === 'fire_interval_multiply') intervalMultiply *= option.amount;
+    }
+    const hit = ((input.damage+add)*multiply + Math.floor((input.level-1)/3)) * (1+input.crit*(input.critMultiplier-1));
+    const gap = Math.max(0.02,input.interval*intervalMultiply);
+    const burstGap = Math.max(0.02,input.burstInterval*intervalMultiply);
+    const cycle = gap + (input.burst-1)*burstGap;
+    const allowed = !skill || skill.required_combat_tags.every(tag => weapon.tags.includes(tag));
+    const override = weapon.overrides[input.skillId] || {};
+    const skillDamage = input.skillDamage * input.skillMultiplier * (skill?.kind === 'field' ? override.tick_damage_multiplier ?? 1 : override.damage_multiplier ?? 1)
+      + (skill?.kind === 'path' && input.shock ? skill.parameters.path_damage.trigger_bonus_damage : 0);
+    const duration = input.skillDuration*(override.duration_multiplier ?? 1);
+    const ticks = skill?.kind === 'field' ? Math.ceil(duration/input.skillTick-1e-9) : 1;
+    const perCast = skill?.kind === 'utility' || !skill || !allowed ? 0 : skillDamage*ticks*input.coverage;
+    const innate = input.innate ? (weapon.innate.fixed_damage || 0) / (weapon.innate.trigger_every_hits || 1) : 0;
+    return {weapon,skill,allowed,hit,gap,burstGap,cycle,skillDamage,duration,ticks,perCast,
+      sustainedWeapon:(hit+innate)*input.projectiles*input.burst*input.hitRate/cycle,
+      activeSkillDps:skill?.kind === 'field' && allowed ? skillDamage/input.skillTick*input.coverage : 0};
+  }
+  function simulate(catalog, input) {
+    const x = resolve(catalog,input), dt=0.01, budget=input.hp+input.armor;
+    if (x.skill?.kind === 'field' && x.ticks*(1+input.horizon/input.skillCooldown)>200000) throw Error('계산 예산 초과: 지속 시간·관측 시간을 줄이거나 틱 간격을 늘려주세요.');
+    let energy=input.energy, idle=0, charges=input.charges, recharge=0, cooldown=0;
+    let nextShot=0, burstIndex=0, weaponDamage=0, skillDamage=0, confirmed=0, procs=0, casts=0, ttk=null, active=[];
+    const points=[];
+    const totalSteps=Math.round(input.horizon/dt);
+    for (let step=0; step<=totalSteps; step++) {
+      const time=step*dt;
+      if (step>0) {
+        energy=Math.min(input.maxEnergy,energy+Math.max(0,dt-Math.max(0,input.regenDelay-idle))*input.regen);
+        idle+=dt; cooldown=Math.max(0,cooldown-dt);
+        if (charges<input.charges) {
+          recharge-=dt;
+          while(recharge<=1e-9 && charges<input.charges) { charges++; recharge=charges<input.charges ? recharge+input.recharge : 0; }
+        }
+      }
+      if (time+1e-9>=nextShot) {
+        weaponDamage+=x.hit*input.projectiles*input.hitRate;
+        const previous=confirmed;
+        confirmed+=input.projectiles*input.hitRate;
+        const threshold=x.weapon.innate.trigger_every_hits || 1;
+        // Fractional contact is an expected-hit approximation, not a random combat replay.
+        const triggers=input.hitRate===1 ? Math.floor(confirmed/threshold)-Math.floor(previous/threshold) : input.projectiles*input.hitRate/threshold;
+        if (input.innate) { weaponDamage+=triggers*(x.weapon.innate.fixed_damage || 0); procs+=triggers; }
+        burstIndex++;
+        nextShot=time+(burstIndex<input.burst ? x.burstGap : x.gap);
+        if(burstIndex>=input.burst) burstIndex=0;
+      }
+      if(x.skill && x.allowed && cooldown<=1e-9 && (!input.resourceLimits || (charges>0 && energy+0.001>=input.skillCost))) {
+        casts++; cooldown=input.skillCooldown;
+        if(input.resourceLimits) {
+          energy=Math.max(0,energy-input.skillCost); if(input.skillCost>0) idle=0;
+          charges--; if(recharge<=0) recharge=input.recharge;
+        }
+        if(x.skill.kind==='field') active.push({start:time,next:time,end:time+x.duration});
+        else if(x.skill.kind==='path') skillDamage+=x.skillDamage*input.coverage;
+      }
+      for(const field of active) {
+        while(time+1e-9>=field.next && field.next<field.end-1e-9) {
+          skillDamage+=x.skillDamage*input.coverage; field.next+=input.skillTick;
+        }
+      }
+      active=active.filter(field=>field.next<field.end-1e-9);
+      const total=weaponDamage+skillDamage;
+      if(ttk===null && total+1e-9>=budget) ttk=time;
+      if(step%10===0 || step===totalSteps) points.push({time,weapon:weaponDamage,skill:skillDamage,total,
+        hp:Math.max(0,input.hp-Math.max(0,total-input.armor)),armor:Math.max(0,input.armor-total),energy});
+    }
+    return {points,ttk,casts,procs,weaponDamage,skillDamage,total:weaponDamage+skillDamage,
+      dps:(weaponDamage+skillDamage)/input.horizon,enemyDps:input.enemyDamage/input.enemyInterval,
+      resolved:x, energy, charges};
+  }
+  globalThis.SFHDps = Object.freeze({defaults,resolve,simulate,validate,limits,copy});
+})();

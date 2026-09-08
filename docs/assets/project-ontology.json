@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-08",
-  "source_sha256": "ab33bc27aac27795e249fa0b11f26bac1a41a1a41265e4e9a95a20fe8fcb9f7f",
+  "source_sha256": "c57d27573c227611bb44237d0781195f908d8b19c9c64591e40ab9b579f78a2b",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -398,12 +398,12 @@
     "ready": 1,
     "implemented": 35,
     "modules": 60,
-    "documents": 96,
+    "documents": 97,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 461,
+    "relations": 462,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -3814,6 +3814,17 @@
       "kind": "evidence"
     },
     {
+      "id": "document:tools/dps-lab",
+      "type": "document",
+      "label": "무기·스킬 DPS 실험실",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "현재 수치→시험값→피해 그래프·적 체력/방어막별 처치 시간 비교",
+      "route": "tools/dps-lab/",
+      "source": "docs/tools/dps-lab.md",
+      "kind": "evidence"
+    },
+    {
       "id": "document:getting-started/search-wiki",
       "type": "document",
       "label": "위키 실시간 검색",
@@ -6512,6 +6523,12 @@
     },
     {
       "from": "document:getting-started/planner-item-balance-tutorial",
+      "to": "collection:group:getting-started/collaboration",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:tools/dps-lab",
       "to": "collection:group:getting-started/collaboration",
       "type": "part_of",
       "origin": "knowledge_map"

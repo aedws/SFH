@@ -1,0 +1,68 @@
+// Render a loopback wiki build. Auth enforcement is separately tested against the real worker.
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { mkdir } from 'node:fs/promises';
+const {chromium}=createRequire(import.meta.url)('playwright');
+const origin=process.argv[2]||'http://127.0.0.1:8767';
+assert.ok(['127.0.0.1','localhost'].includes(new URL(origin).hostname));
+const browser=await chromium.launch({headless:true});
+const errors=[];
+await mkdir('outputs/dps-lab',{recursive:true});
+try {
+  for(const width of [320,390,768,1440]) {
+    const page=await browser.newPage({viewport:{width,height:1000},reducedMotion:'reduce'});
+    page.on('pageerror',e=>errors.push(String(e)));
+    await page.goto(`${origin}/tools/dps-lab/`);
+    const lab=page.locator('[data-sfh-dps-lab][data-ready=true]');await lab.waitFor();
+    await page.evaluate(()=>document.fonts.ready);
+    const bounds=async()=>assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`Overflow ${width}`);
+    await bounds();
+    await page.screenshot({path:`outputs/dps-lab/overview-${width}.png`});
+    assert.equal(await lab.getByRole('img').count(),1);
+    const original=await lab.locator('.dps-total').first().getAttribute('d');
+    await lab.getByLabel('적 체력',{exact:true}).fill('100');
+    await lab.getByLabel('적 방어막 (피해 흡수량)',{exact:true}).fill('50');
+    await lab.getByText('무기 시험값',{exact:true}).click();
+    await lab.getByLabel('탄환 기본 피해',{exact:true}).fill('10');
+    assert.notEqual(await lab.locator('path.dps-total').getAttribute('d'),original,'Graph responds to damage and enemy HP');
+    await lab.locator('.dps-graph').screenshot({path:`outputs/dps-lab/graph-${width}.png`});
+    const strong=await lab.locator('.dps-kpis').innerText();assert.match(strong,/예상 처치 시간/);
+    await lab.getByLabel('탄환 기본 피해',{exact:true}).fill('');
+    assert.equal(await lab.locator('[role=alert]').isVisible(),true);
+    assert.equal(await lab.getByRole('img').isVisible(),false,'No stale graph with invalid inputs');
+    await lab.getByLabel('탄환 기본 피해',{exact:true}).fill('0');
+    assert.equal(await lab.locator('[role=alert]').isVisible(),false,'Zero damage is valid, not a missing value');
+    await lab.getByRole('button',{name:'현재 원본으로 초기화'}).click();
+    assert.equal(await lab.getByLabel('탄환 기본 피해',{exact:true}).inputValue(),'1.6');
+    await lab.getByLabel('무기 원본',{exact:true}).selectOption('service_pistol');
+    await lab.getByLabel('스킬 원본',{exact:true}).selectOption('magnetic_field');
+    assert.match(await lab.locator('.dps-note').innerText(),/스킬 사용 불가/);
+    await lab.getByLabel('스킬 원본',{exact:true}).selectOption('speed_boost');
+    assert.match(await lab.locator('.dps-note').innerText(),/직접 피해 0/);
+    await lab.getByLabel('무기 원본',{exact:true}).selectOption('combat_dagger');
+    assert.match(await lab.locator('.dps-note').innerText(),/런타임 대체/);
+    await lab.getByLabel('적 기본값 불러오기',{exact:true}).selectOption('nightmare');
+    assert.equal(Number(await lab.getByLabel('적 체력',{exact:true}).inputValue()),5.4);
+    await lab.getByText(/현재 무기 .* 전체 수치/).click();
+    assert.equal(await lab.locator('table').count(),3);
+    await bounds();
+    await lab.getByLabel('목표 처치 시간 (초)',{exact:true}).focus();
+    await page.keyboard.press('ControlOrMeta+A');await page.keyboard.type('8');
+    assert.match(await lab.locator('.dps-kpis').innerText(),/기획자 목표 8초/);
+    await page.screenshot({path:`outputs/dps-lab/lab-${width}.png`,fullPage:true});
+    await page.close();
+  }
+  const page=await browser.newPage();
+  await page.route('**/assets/dps-catalog.json',route=>route.fulfill({status:401,contentType:'application/json',body:'{}'}));
+  await page.goto(`${origin}/tools/dps-lab/`);
+  await page.getByRole('button',{name:'다시 불러오기'}).waitFor();
+  assert.equal(await page.locator('.dps-graph').count(),0,'No fabricated fallback data on auth failure');
+  await page.unroute('**/assets/dps-catalog.json');await page.getByRole('button',{name:'다시 불러오기'}).click();
+  await page.locator('[data-ready=true]').waitFor();
+  await page.goto(`${origin}/access/planner/`);
+  await page.getByRole('link',{name:'무기·스킬 DPS 실험실 열기',exact:true}).click();
+  await page.locator('[data-sfh-dps-lab][data-ready=true]').waitFor();
+  assert.equal(await page.locator('[data-sfh-dps-lab] .dps-toolbar').count(),1,'Instant navigation mounts once');
+  assert.deepEqual(errors,[]);
+  console.log('DPS rendered E2E PASS: 4 widths, graph/input synchronization, zero/invalid/reset, tags, utility, fallback, difficulty, keyboard, auth failure/retry');
+} finally { await browser.close(); }
