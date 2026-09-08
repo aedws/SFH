@@ -23,6 +23,7 @@ try{
   const room=host.getByLabel('공간 선택 (지도 클릭과 동일)');
   const value=await room.locator('option').filter({hasText:'◆ · 의료 구역'}).getAttribute('value');await room.selectOption(value);
   await host.getByLabel('필수 위치',{exact:true}).selectOption('east');
+  assert.match(await room.locator('option:checked').textContent(),/의료 구역/,'moving a required piece must retain that piece selection');
   assert.match(await host.getByRole('status').first().textContent(),/시험 변경/);
   await host.getByText('아이디어 정리 · Notion에 전달',{exact:true}).click();
   await host.getByLabel('목적 → 기대 경험 → 확인 기준').fill('동쪽 의료 구역을 두 번째 출격에서 기억할 수 있는가');

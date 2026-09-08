@@ -36,7 +36,7 @@
     button('초안 복사',async()=>{if(!output.value){draftStatus.textContent='먼저 초안을 만드세요.';return;}try{await navigator.clipboard.writeText(output.value);draftStatus.textContent='복사 완료 · Notion에 붙여 공유하세요.';}catch(_){output.focus();output.select();draftStatus.textContent='자동 복사가 제한됐습니다. 선택된 초안을 직접 복사하세요.';}},draft);
     draft.append(output,draftStatus);
     host.append(controls,status,legend,body,invariant,draft,node('p','범위: 실제 게임과 같은 건물·도로·필수 피스 배치. 적·장애물·드랍·전투 난이도는 시뮬레이션하지 않습니다. 시드 0은 미리보기에서 재현 가능하지만 게임에서는 자동 시드입니다.'));
-    function change(){output.value='';draftStatus.textContent='설정이 변경되었습니다. 초안을 다시 만드세요.';render();}
+    function change(preferred){output.value='';draftStatus.textContent='설정이 변경되었습니다. 초안을 다시 만드세요.';render(typeof preferred==='string'?preferred:null);}
     [region,tier,seed].forEach(n=>n.addEventListener('change',change));
     room.addEventListener('change',()=>{selected=Number(room.value);showDetail();highlight();});
     function highlight(){mapHost.querySelectorAll('[data-room]').forEach(n=>n.classList.toggle('selected',Number(n.dataset.room)===selected));}
@@ -47,16 +47,17 @@
       const description=node('small','아래는 선택한 한 건물이 아니라 같은 종류의 피스 규칙을 시험합니다. 시작·탈출·도로·금고 수는 바꾸지 않습니다.');editor.append(description);
       required.addEventListener('change',()=>{
         let ids=r.required_regions==='*'?catalog.regions.map(x=>x.id):r.required_regions.split('|').filter(x=>x!=='none'&&x!==region.value);
-        ids=ids.filter(x=>x!==region.value);if(required.checked)ids.push(region.value);r.required_regions=ids.join('|')||'none';change();
+        ids=ids.filter(x=>x!==region.value);if(required.checked)ids.push(region.value);r.required_regions=ids.join('|')||'none';change(r.facility_id);
       });
       const fields=[['anchor_zone','필수 위치',[['west','서쪽'],['east','동쪽'],['north','북쪽'],['south','남쪽'],['center','중앙']]],['entrance_axis','필수 출입 방향',[['horizontal','좌우'],['vertical','상하']]]];
-      for(const [key,label,options] of fields){const wrap=node('label',label),s=node('select');s.setAttribute('aria-label',label);for(const [v,t] of options){const o=node('option',t);o.value=v;s.append(o);}s.value=r[key];s.disabled=!required.checked;s.addEventListener('change',()=>{r[key]=s.value;change();});wrap.append(s);editor.append(wrap);}
-      for(const [key,label] of [['shape_x','필수 가로 비율'],['shape_y','필수 세로 비율']]){const wrap=node('label',label),n=node('input');n.type='range';n.min='0';n.max='1';n.step='.05';n.value=r[key];n.disabled=!required.checked;const value=node('output',String(r[key]));n.addEventListener('input',()=>value.textContent=n.value);n.addEventListener('change',()=>{r[key]=Number(n.value);change();});wrap.append(n,value);editor.append(wrap);}
+      for(const [key,label,options] of fields){const wrap=node('label',label),s=node('select');s.setAttribute('aria-label',label);for(const [v,t] of options){const o=node('option',t);o.value=v;s.append(o);}s.value=r[key];s.disabled=!required.checked;s.addEventListener('change',()=>{r[key]=s.value;change(r.facility_id);});wrap.append(s);editor.append(wrap);}
+      for(const [key,label] of [['shape_x','필수 가로 비율'],['shape_y','필수 세로 비율']]){const wrap=node('label',label),n=node('input');n.type='range';n.min='0';n.max='1';n.step='.05';n.value=r[key];n.disabled=!required.checked;const value=node('output',String(r[key]));n.addEventListener('input',()=>value.textContent=n.value);n.addEventListener('change',()=>{r[key]=Number(n.value);change(r.facility_id);});wrap.append(n,value);editor.append(wrap);}
     }
-    function render(){
+    function render(preferred=null){
       try{
         plan=window.SFHMapModel.build(catalog.tiers[tier.value],region.value,Number(seed.value),facilities);
         selected=Math.min(selected,plan.count-1);
+        if(preferred){const target=plan.buildings.find(b=>b.required&&b.facility_id===preferred)||plan.buildings.find(b=>b.facility_id===preferred);if(target)selected=target.index;}
         status.textContent=`${JSON.stringify(facilities)===JSON.stringify(catalog.facilities)?'현행 CSV':'시험 변경 · 미적용'} ${catalog.version} · 시드 ${plan.seed} · ${plan.count}개 건물`;
         const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox',`0 0 ${plan.columns*plan.stride[0]+8} ${plan.rows*plan.stride[1]+8}`);svg.setAttribute('role','img');svg.setAttribute('aria-label','지역 건물과 연결 도로. 아래 공간 선택 목록으로 모든 건물을 확인할 수 있습니다.');
         const rect=(bounds,cls)=>{const n=document.createElementNS(ns,'rect');['x','y','width','height'].forEach((k,i)=>n.setAttribute(k,bounds[i]));n.setAttribute('class',cls);svg.append(n);return n;};
