@@ -95,7 +95,7 @@
 		"game/features/map_generation/facility_catalog.gd": "ad0017c2e45082abb17daa37db92cfd9bbdd862f2adae69b39e1dff60af09957",
 		"game/features/map_generation/regional_district_plan.gd": "bd919c383592d7dedc754a73f8121d55cd985d1d548ef7ecbe1abe23a836b782",
 		"game/features/operation_contract/configs/default_operation_contracts.tres": "41e8b7acd0200c0be4bbe51b9eb7f021e8da6a53f711f3e8e8230fad98e97b1a",
-		"scripts/export_map_catalog.gd": "030d3f7c23bd4a30defdcf5e76ba62e14996df1a0e3ccd6e5b336de04f367cd2"
+		"scripts/export_map_catalog.gd": "8e56de6298efc4378abc89325656acc55e2a7860731dfc6d4c3432c1bfe29d98"
 	},
 	"tiers": {
 		"large": {

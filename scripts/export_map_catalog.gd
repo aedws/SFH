@@ -27,6 +27,10 @@ func _initialize() -> void:
 
 func _write(path: String, value: Variant) -> bool:
 	var result := JSON.stringify(value,"\t",true,true)+"\n"
+	if path.contains("/fixtures/"):
+		var plans := PackedStringArray()
+		for plan in value: plans.append(JSON.stringify(plan,"",true,true))
+		result = "[\n"+",\n".join(plans)+"\n]\n"
 	if "--check" in OS.get_cmdline_user_args():
 		if FileAccess.get_file_as_string(path).replace("\r\n","\n") != result: push_error("Stale map catalog: "+path); return false
 	else: FileAccess.open(path,FileAccess.WRITE).store_string(result)
