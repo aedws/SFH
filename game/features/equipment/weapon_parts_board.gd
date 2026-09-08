@@ -11,6 +11,7 @@ const SOCKET_LABELS := {
 	&"muzzle": "총구",
 	&"magazine": "탄창",
 	&"blade": "칼날",
+	&"grip": "손잡이",
 }
 const ACCENT := Color("02e5e1")
 

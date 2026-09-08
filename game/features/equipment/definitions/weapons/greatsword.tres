@@ -48,4 +48,4 @@ maximum_level = 4
 module_slot_limit = 3
 module_cost_limit = 7
 part_socket_ids = [&"blade", &"grip"]
-description = "근접·냉병기·대검 확장 예시."
+description = "매 명중마다 충격 피해를 더하는 근접 대검. 전용 칼날 파츠를 장착할 수 있습니다."

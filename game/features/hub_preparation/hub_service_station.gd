@@ -10,9 +10,11 @@ signal interaction_availability_changed(available: bool, prompt: String)
 @export_range(48, 180, 4) var interaction_radius := 110.0
 @export var interaction_action: StringName = &"interact"
 var actor: Node2D
+var station_icon: Texture2D
 
 
 func _ready() -> void:
+	station_icon = preload("res://game/features/presentation_theme/game_ui.gd").icon("credit" if service_id == &"shop" else "gear")
 	var area := Area2D.new()
 	area.collision_layer = 0
 	area.collision_mask = 1
@@ -59,4 +61,5 @@ func _draw() -> void:
 	draw_rect(Rect2(-58, -42, 116, 84), Color("071c26"))
 	draw_rect(Rect2(-58, -42, 116, 84), accent, false, 3)
 	draw_rect(Rect2(-36, -24, 72, 40), Color(accent, 0.18))
+	if station_icon != null: draw_texture_rect(station_icon, Rect2(-16, -20, 32, 32), false, accent)
 	draw_line(Vector2(-28, 30), Vector2(28, 30), accent, 4)

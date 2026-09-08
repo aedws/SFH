@@ -186,6 +186,7 @@ func get_snapshot() -> Dictionary:
 
 
 func _build_ui() -> void:
+	var ui = preload("res://game/features/presentation_theme/game_ui.gd")
 	var backdrop := ColorRect.new()
 	backdrop.color = Color(0.005, 0.02, 0.025, 0.94)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -247,6 +248,8 @@ func _build_ui() -> void:
 	column.add_child(status_label)
 	buy_button = Button.new()
 	buy_button.text = "상품 선택 후 구매"
+	ui.action(buy_button, "credit", true)
+	ui.action(reroll_button, "gear")
 	buy_button.custom_minimum_size.y = 44
 	buy_button.disabled = true
 	buy_button.pressed.connect(purchase_selected)

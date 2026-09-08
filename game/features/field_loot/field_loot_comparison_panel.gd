@@ -27,10 +27,10 @@ func show_comparison(snapshot: Dictionary) -> void:
 	if snapshot.is_empty():
 		hide_comparison()
 		return
-	title_label.text = String(snapshot.get(&"display_name", "UNKNOWN LOOT"))
+	title_label.text = String(snapshot.get(&"display_name", "미확인 전리품"))
 	meta_label.text = "G%d · %s · 수량 %d · 보유 %d" % [
 		int(snapshot.get(&"candidate_grade", 1)),
-		String(snapshot.get(&"item_type", &"unknown")).to_upper(),
+		String({"weapon": "무기", "armor": "방어구", "module": "모듈", "part": "파츠", "skill": "스킬", "rune": "룬", "core": "코어", "artifact": "유물"}.get(String(snapshot.get(&"item_type", "")), "회수품")),
 		int(snapshot.get(&"quantity", 1)),
 		int(snapshot.get(&"owned_count", 0)),
 	]
@@ -81,7 +81,7 @@ func show_comparison(snapshot: Dictionary) -> void:
 	)
 	if bool(equip_preview.get(&"available", false)):
 		outcome_label.text += "\n%s · %s" % [
-			"임시 정책" if equip_preview.get(&"policy_status", &"") == &"provisional" else "확정 정책",
+			"장착 시",
 			String(equip_preview.get(&"previous_destination_label", "")),
 		]
 	visible = true
@@ -149,6 +149,7 @@ func _build_surface() -> void:
 func _label(text_value: String, size_value: int, color: Color) -> Label:
 	var result := Label.new()
 	result.text = text_value
+	result.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	result.add_theme_font_size_override("font_size", size_value)
 	result.add_theme_color_override("font_color", color)
 	return result

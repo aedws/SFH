@@ -48,4 +48,4 @@ maximum_level = 3
 module_slot_limit = 2
 module_cost_limit = 6
 part_socket_ids = [&"optic", &"muzzle"]
-description = "기본 보조 무기 정의."
+description = "두 번째 명중마다 충격 피해를 더하는 제식 권총. 광학·총구 파츠를 장착할 수 있습니다."

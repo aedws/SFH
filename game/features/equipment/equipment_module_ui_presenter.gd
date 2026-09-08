@@ -3,6 +3,14 @@ extends RefCounted
 
 const ITEM_QUALITY := preload("res://game/core/item_quality_descriptor.gd")
 
+static func tag_label(id: StringName) -> String:
+	return {&"ballistic": "탄도", &"mobility": "기동", &"survival": "생존", &"defense": "방어", &"rifle": "소총", &"pistol": "권총", &"greatsword": "대검", &"dagger": "단검", &"optic": "광학", &"muzzle": "총구", &"magazine": "탄창", &"blade": "칼날", &"grip": "손잡이"}.get(id, String(id))
+
+static func tags_text(values: Array) -> String:
+	var labels := PackedStringArray()
+	for value in values: labels.append(tag_label(StringName(value)))
+	return " · ".join(labels)
+
 ## 모듈 상태를 카드·적용 수치용 문자열로 바꾸는 표현 전용 어댑터입니다.
 ## 장착 가능 여부와 코스트 계산은 EquipmentItemState의 결과만 소비합니다.
 
@@ -46,8 +54,8 @@ func inventory_card_text(entry: Dictionary, compatible: bool) -> String:
 		]
 	if definition is EquipmentPartDefinition:
 		var part := definition as EquipmentPartDefinition
-		return "PART  |  %s\n%s\n%s 전용\n%s" % [
-			part.socket_id,
+		return "파츠  |  %s\n%s\n%s 전용\n%s" % [
+			tag_label(part.socket_id),
 			entry.get(&"display_name", "이름 없음"),
 			_join_names(part.compatible_minor_tags, "미지정"),
 			status,
@@ -130,5 +138,5 @@ func _format_modifier_entry(entry: Dictionary) -> String:
 func _join_names(values: Array, fallback: String) -> String:
 	var names := PackedStringArray()
 	for value in values:
-		names.append(String(value))
+		names.append(tag_label(StringName(value)))
 	return ", ".join(names) if not names.is_empty() else fallback

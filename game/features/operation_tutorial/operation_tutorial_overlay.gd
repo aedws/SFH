@@ -107,7 +107,7 @@ func _layout_panel() -> void:
 		return
 	# A single corner anchor prevents adding the viewport width to the panel.
 	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	panel.position = Vector2(edge_margin, edge_margin)
+	panel.position = Vector2(edge_margin, edge_margin + float(bindings.get(&"top_clearance", 0.0)))
 	panel.size = Vector2(minf(maximum_panel_width, maxf(1.0, size.x - edge_margin * 2.0)), 0.0)
 	_queue_height_fit()
 

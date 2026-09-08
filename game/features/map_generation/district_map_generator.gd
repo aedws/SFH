@@ -113,7 +113,7 @@ func _draw() -> void:
 		var tint := Color("f0b961") if data.encounter == "objective" else Color("3d8b94")
 		draw_rect(room.grow(-24),Color(tint,0.035))
 		draw_line(room.position+Vector2(64,36),room.position+Vector2(minf(360,room.size.x-64),36),tint,6)
-		draw_string(ThemeDB.fallback_font,room.position+Vector2(64,72),String(data.facility_id).to_upper(),HORIZONTAL_ALIGNMENT_LEFT,400,26,tint)
+		draw_string(ThemeDB.fallback_font,room.position+Vector2(64,72),String(data.get("display_name", "시설")),HORIZONTAL_ALIGNMENT_LEFT,400,26,tint)
 		if index == 0 or (index not in exit_rooms and data.facility_id in warp_facility_ids):
 			var point := _cell_center(_room_center_cell(rooms[index]))
 			draw_arc(point,48,0,TAU,24,Color("02e5e1"),3)

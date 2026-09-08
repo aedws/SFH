@@ -1,5 +1,5 @@
 {
-  "version": 31,
+  "version": 32,
   "updated": "2026-09-08",
   "root": {
     "id": "sfh",
@@ -158,6 +158,7 @@
             "documents": [
               {"label": "실제 플레이 세션 E2E", "source": "quality/e2e-play-session.md", "route": "quality/e2e-play-session/", "summary": "실제 입력·화면 상태·복귀 검증"},
               {"label": "플레이어 인식 단위 E2E 감사", "source": "quality/player-perception-audit.md", "route": "quality/player-perception-audit/", "summary": "단서·피드백·결말 이해 판정"},
+              {"label": "전체 게임 UI 재편", "source": "quality/game-ui-rematch.md", "route": "quality/game-ui-rematch/", "summary": "전체 화면 판정·제작/도감/설정·전환 오류와 검증 경계"},
               {"label": "한 판의 다섯 순간 — 재미 제안서", "source": "quality/five-moment-fun-proposal.md", "route": "quality/five-moment-fun-proposal/", "summary": "승인 전 제안·교전·획득·강화·탈출·재도전과 인간 검수"},
               {"label": "모바일 위키 반응형 E2E", "source": "quality/wiki-responsive-e2e.md", "route": "quality/wiki-responsive-e2e/", "summary": "4개 뷰포트·검색·표·링크 검증"}
             ]

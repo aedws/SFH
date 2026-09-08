@@ -48,4 +48,4 @@ maximum_level = 3
 module_slot_limit = 3
 module_cost_limit = 8
 part_socket_ids = [&"optic", &"muzzle", &"magazine"]
-description = "기본 메인 무기 정의. 실제 발사 수치는 전투 모듈에서 단계적으로 이전합니다."
+description = "세 번째 명중마다 전격을 더하는 돌격소총. 광학·총구·탄창 파츠를 장착할 수 있습니다."

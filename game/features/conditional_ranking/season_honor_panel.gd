@@ -1,24 +1,13 @@
 class_name SeasonHonorPanel
-extends AcceptDialog
+extends "res://game/features/presentation_theme/game_dossier.gd"
 var profile: Node
-var content: VBoxContainer
 var selectors: Dictionary = {}
 var rebuilding := false
 
 
 func configure(source: Node) -> void:
 	profile = source
-	title = "시즌 칭호·오라 · 로컬 테스트"
-	get_ok_button().text = "닫기"
-	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.offset_left = 16
-	margin.offset_right = -16
-	margin.offset_top = 12
-	margin.offset_bottom = -52
-	add_child(margin)
-	content = VBoxContainer.new()
-	margin.add_child(content)
+	title = "명예의 전당 · 칭호와 오라"
 	var help := Label.new()
 	help.text = "마감된 시즌의 조건별 순위로 지급 · 능력치 변화 없음\n기기 로컬 보상이며 온라인 경쟁 보상이 아닙니다."
 	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -27,6 +16,7 @@ func configure(source: Node) -> void:
 		var selector := OptionButton.new()
 		selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		selector.custom_minimum_size.y = 36
+		selector.add_theme_icon_override(&"arrow", GameUI.icon("honor"))
 		selector.item_selected.connect(func(index):
 			if not rebuilding:
 				profile.call(&"equip", kind, String(selector.get_item_metadata(index)))
@@ -35,7 +25,8 @@ func configure(source: Node) -> void:
 		selectors[kind] = selector
 	var evidence := RichTextLabel.new()
 	evidence.name = "Evidence"
-	evidence.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	evidence.fit_content = true
+	evidence.custom_minimum_size.y = 130
 	content.add_child(evidence)
 	profile.changed.connect(_refresh)
 	_refresh()
@@ -61,7 +52,9 @@ func _refresh() -> void:
 		selector.disabled = not String(state.get("storage_error", "")).is_empty()
 	var lines := PackedStringArray([String(state.get("storage_error", ""))])
 	for receipt in state["receipts"].values():
-		lines.append("%s · %s\n%s #%d → %s" % [receipt.get("season_id", ""), receipt.get("condition", ""), receipt.get("ranking_id", ""), int(receipt.get("rank", 0)), receipt.get("reward_id", "")])
+		var reward: Dictionary = owned.get(receipt.get("reward_id", ""), {})
+		var mode := String(receipt.get("ranking_id", ""))
+		lines.append("%s · %s\n%s %d위 → %s" % [receipt.get("season_id", ""), receipt.get("condition", ""), {"loot": "회수 가치", "speedrun": "탈출 시간", "kills": "처치"}.get(mode, "조건부 기록"), int(receipt.get("rank", 0)), reward.get("display_name", "시즌 보상")])
 	if state["receipts"].is_empty():
 		lines.append("아직 지급된 보상이 없습니다.\n시즌 조건으로 탈출한 후 주간 마감 시 지급됩니다.")
 	content.get_node("Evidence").text = "\n".join(lines)

@@ -63,3 +63,10 @@ func get_snapshot() -> Dictionary:
 	return {&"entry_count": entries.size(), &"completed_count": completed,
 		&"progress": profile.call(&"get_snapshot").get(&"codex_progress", {}),
 		&"region_hints": get_region_hints()}
+
+
+func get_entries() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for entry in entries:
+		result.append(get_entry(StringName(entry.get(&"entry_id", &""))))
+	return result

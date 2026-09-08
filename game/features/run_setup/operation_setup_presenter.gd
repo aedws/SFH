@@ -6,6 +6,7 @@ signal hub_edit_requested
 
 const OPERATION_PREVIEW_SCRIPT := preload("res://game/features/run_setup/operation_preview.gd")
 const STEP_FLOW_SCRIPT := preload("res://game/features/run_setup/operation_setup_step_flow.gd")
+const UI = preload("res://game/features/presentation_theme/game_ui.gd")
 
 var launch_button: Button
 var mission_title: Label
@@ -17,7 +18,7 @@ var risk_summary: Label
 var selection_summary: Label
 var season_summary: Label
 var season_history_button: Button
-var season_history_dialog: AcceptDialog
+var season_history_dialog: Control
 var season_history_content: RichTextLabel
 var season_honor_button: Button
 var character_button: Button
@@ -58,13 +59,21 @@ func take_hub_preparation_content() -> Control:
 	# Weapon editing belongs to the item inventory, never the rental catalog.
 	main_weapon_button.get_parent().hide()
 	var meta_actions := controls.find_child("MetaActions", true, false) as GridContainer
-	if meta_actions != null: meta_actions.columns = 2
-	var readiness_title := _label("출격 체크 · 읽기 전용", 13, Color("02e5e1"))
+	if meta_actions != null:
+		meta_actions.columns = 2
+		var kinds := {"ShopButton": "credit", "CraftButton": "craft", "LoadoutButton": "gear", "UtilityButton": "gear", "TrainingButton": "training", "CodexButton": "codex"}
+		for button in meta_actions.get_children():
+			if button is Button:
+				UI.action(button, kinds.get(String(button.name), "gear"))
+				button.custom_minimum_size.y = 62
+	UI.action(character_button, "honor", true)
+	for button in skill_buttons: UI.action(button, "skill")
+	var readiness_title := _label("출격 준비 완료", 13, Color("02e5e1"))
 	step_pages[1].add_child(readiness_title)
 	equipped_summary = _label("로비 장비 확인 중...", 16, Color("d2fffe"))
 	_wrap_label(equipped_summary)
 	step_pages[1].add_child(equipped_summary)
-	var hint := _label("이 단계는 장비를 바꾸는 화면이 아닙니다. 아래 준비 상태를 확인한 뒤 다음으로 진행하세요.\n무기·방어구·모듈·파츠는 로비 I/U/E에서 저장한 그대로 출격하며 다시 청구하지 않습니다.\n스킬 태그가 맞지 않으면 해당 스킬만 비활성화됩니다.", 13, Color("9fc7cf"))
+	var hint := _label("로비에서 저장한 장비로 출격합니다.\n변경이 필요하면 아래 버튼으로 돌아가세요.\n무기 태그가 맞지 않는 스킬은 사용할 수 없습니다.", 13, Color("9fc7cf"))
 	_wrap_label(hint)
 	step_pages[1].add_child(hint)
 	var back := _compact_selection_button("ReturnToHubPreparation")
@@ -233,7 +242,7 @@ func install(overlay: Control) -> Dictionary:
 	loadout_investment_summary = _label("장비 투자 데이터 계산 중...", 11, Color("8ffffc"))
 	_wrap_label(loadout_investment_summary)
 	loadout_step.add_child(loadout_investment_summary)
-	p5_progression_summary = _label("P5 거점 데이터 계산 중...", 11, Color("9fc7cf"))
+	p5_progression_summary = _label("거점 기록 확인 중...", 11, Color("9fc7cf"))
 	_wrap_label(p5_progression_summary)
 	loadout_step.add_child(p5_progression_summary)
 	mission_step.add_child(_section_title("작전 조건 선택"))
@@ -325,19 +334,14 @@ func install(overlay: Control) -> Dictionary:
 	_fit_button(season_honor_button)
 	season_honor_button.pressed.connect(func(): honor_requested.emit())
 	advanced_details.add_child(season_honor_button)
-	season_history_dialog = AcceptDialog.new()
-	season_history_dialog.title = "시즌 기록 · 로컬 테스트"
-	season_history_dialog.dialog_hide_on_ok = true
-	season_history_dialog.get_ok_button().text = "닫기"
+	season_history_dialog = preload("res://game/features/presentation_theme/game_dossier.gd").new()
+	season_history_dialog.title = "시즌 작전 기록"
 	overlay.add_child(season_history_dialog)
 	season_history_content = RichTextLabel.new()
 	season_history_content.bbcode_enabled = false
-	season_history_content.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	season_history_content.offset_left = 12
-	season_history_content.offset_top = 12
-	season_history_content.offset_right = -12
-	season_history_content.offset_bottom = -52
-	season_history_dialog.add_child(season_history_content)
+	season_history_content.fit_content = true
+	season_history_content.custom_minimum_size.y = 180
+	season_history_dialog.content.add_child(season_history_content)
 	season_history_button.pressed.connect(func(): season_history_dialog.popup_centered(Vector2i(mini(640, int(overlay.size.x) - 32), mini(440, int(overlay.size.y) - 48))))
 	_set_advanced_details_visible(false)
 	var launch_spacer := Control.new()
@@ -595,7 +599,7 @@ func _update_p5_progression(snapshot: Dictionary) -> void:
 	var investment: Dictionary = utility.get(&"investment", {})
 	var shop: Dictionary = snapshot.get(&"shop", {})
 	var codex: Dictionary = snapshot.get(&"codex", {})
-	p5_progression_summary.text = "UTILITY +%d C · SHOP Q%d · CODEX %d/%d" % [
+	p5_progression_summary.text = "보급 +%d C · 상점 %d등급 · 수집 %d/%d" % [
 		int(investment.get(&"additional_entry_cost", 0)),
 		int(shop.get(&"quality_count", 0)),
 		int(codex.get(&"completed_count", 0)), int(codex.get(&"entry_count", 0)),

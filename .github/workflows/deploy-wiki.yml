@@ -160,6 +160,7 @@ jobs:
           python3 scripts/sync_p5_catalogs.py --check
           python3 scripts/check_p5_modularity.py
           python3 scripts/check_system_modularity.py
+          python3 scripts/check_game_ui_audit.py
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/frame_feedback_contract_test.gd" 2>&1 | tee /tmp/sfh-frame-feedback.log
           grep -q "FRAME_FEEDBACK_OK" /tmp/sfh-frame-feedback.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-frame-feedback.log
@@ -340,6 +341,12 @@ jobs:
       - name: Test real-input play session
         run: |
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/training_ground_gameplay_e2e_test.gd" | tee /tmp/sfh-p8-training-e2e.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/game_ui_rematch_test.gd" 2>&1 | tee /tmp/sfh-ui-rematch.log
+          grep -q "GAME_UI_REMATCH_OK" /tmp/sfh-ui-rematch.log
+          if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-ui-rematch.log; then exit 1; fi
+          godot --headless --path "$GITHUB_WORKSPACE" res://game/tests/game_ui_review.tscn 2>&1 | tee /tmp/sfh-ui-gallery.log
+          test "$(grep -c 'UI_REVIEW_FRAME ' /tmp/sfh-ui-gallery.log)" = 29
+          if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-ui-gallery.log; then exit 1; fi
           grep -q "E2E_P8_TRAINING_GROUND_OK hub_station interaction single_attack_telemetry telemetry_hud viewport_safe no_overlap compact_skill_hud scenario_readable ap_rate cooldown_cycle isolated_skill_runtime free_loadout_restore dense_switch spawn_isolation hub_exit_cleanup" /tmp/sfh-p8-training-e2e.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/extraction_district_contract_test.gd" 2>&1 | tee /tmp/sfh-district.log
           grep -q 'EXTRACTION_DISTRICT_OK' /tmp/sfh-district.log

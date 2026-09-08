@@ -61,7 +61,10 @@ func _build_ui() -> void:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		button.add_theme_font_size_override("font_size", 12)
-		button.text = "[%d] SKILL" % (slot_index + 1)
+		button.text = "[%d] 스킬" % (slot_index + 1)
+		button.icon = GameUI.icon("skill")
+		button.expand_icon = true
+		button.add_theme_constant_override(&"icon_max_width", 16)
 		button.pressed.connect(_cycle_skill.bind(slot_index))
 		button_row.add_child(button)
 		skill_buttons.append(button)
@@ -79,7 +82,8 @@ func _build_ui() -> void:
 	socket_button.pressed.connect(_toggle_socket)
 	socket_row.add_child(socket_button)
 	finish_button = Button.new()
-	finish_button.text = "종료·원복"
+	finish_button.text = "훈련 종료"
+	finish_button.tooltip_text = "훈련 전 장비로 복원하고 종료합니다."
 	finish_button.add_theme_font_size_override("font_size", 12)
 	finish_button.pressed.connect(func(): service.call(&"request_stop"))
 	socket_row.add_child(finish_button)
@@ -99,7 +103,7 @@ func _on_state_changed(snapshot: Dictionary) -> void:
 		var installed := false
 		for slot in slots.get(entry.socket_type, []):
 			installed = installed or slot.get(&"item_id", &"") == entry.item_id
-		socket_choice.add_item(("[ON] " if installed else "") + String(entry.display_name))
+		socket_choice.add_item(("장착 · " if installed else "") + String(entry.display_name))
 	if not socket_catalog.is_empty():
 		socket_choice.select(clampi(selected, 0, socket_catalog.size() - 1))
 	else:

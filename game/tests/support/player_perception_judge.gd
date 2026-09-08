@@ -52,7 +52,7 @@ const CHECKPOINT_RULES := {
 	&"field_loot_immediate_equip": {
 		&"unit": &"decision",
 		&"surfaces": [&"field_loot"],
-		&"phrases": ["R 무기 장착", "F 획득·가방", "ESC 보류", "임시 정책", "기존 장비"],
+		&"phrases": ["R 무기 장착", "F 획득·가방", "ESC 보류", "장착 시", "기존 장비"],
 	},
 	&"field_loot_skill_swap": {
 		&"unit": &"decision",
@@ -62,12 +62,12 @@ const CHECKPOINT_RULES := {
 	&"session_socket_decision": {
 		&"unit": &"decision",
 		&"surfaces": [&"field_loot"],
-		&"phrases": ["F 런 소켓 장착", "ESC 보류", "RUNE"],
+		&"phrases": ["F 런 소켓 장착", "ESC 보류", "룬"],
 	},
 	&"session_socket_active": {
 		&"unit": &"state_feedback",
 		&"surfaces": [&"session_sockets"],
-		&"phrases": ["SESSION SOCKETS", "RUN ONLY", "RUNE"],
+		&"phrases": ["SESSION SOCKETS", "RUN ONLY", "룬"],
 	},
 	&"combat_glance": {
 		&"unit": &"glance",

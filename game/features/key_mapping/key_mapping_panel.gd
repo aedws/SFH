@@ -20,6 +20,8 @@ var key_badge_label: Label
 var presentation_rows_container: VBoxContainer
 var presentation_summary_label: Label
 var settings_panel: PanelContainer
+var layout_dirty := false
+const UI = preload("res://game/features/presentation_theme/game_ui.gd")
 
 
 func _ready() -> void:
@@ -139,10 +141,8 @@ func _build_ui() -> void:
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	backdrop.color = Color(0.015, 0.025, 0.04, 0.94)
 	add_child(backdrop)
-	var center := CenterContainer.new()
-	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(center)
 	settings_panel = PanelContainer.new()
+	settings_panel.minimum_size_changed.connect(func(): layout_dirty = true)
 	settings_panel.custom_minimum_size = Vector2(920.0, 620.0)
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.025, 0.055, 0.075, 0.98)
@@ -153,7 +153,7 @@ func _build_ui() -> void:
 	panel_style.corner_radius_bottom_left = 2
 	panel_style.corner_radius_bottom_right = 2
 	settings_panel.add_theme_stylebox_override("panel", panel_style)
-	center.add_child(settings_panel)
+	add_child(settings_panel)
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 28)
 	margin.add_theme_constant_override("margin_right", 28)
@@ -166,7 +166,7 @@ func _build_ui() -> void:
 	var header := HBoxContainer.new()
 	content.add_child(header)
 	var title := Label.new()
-	title.text = "입력 설정"
+	title.text = "요원 · 입력 설정"
 	title.add_theme_font_size_override("font_size", 30)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
@@ -178,9 +178,10 @@ func _build_ui() -> void:
 	close_button.text = "닫기"
 	close_button.custom_minimum_size = Vector2(82.0, 38.0)
 	close_button.pressed.connect(close_panel)
+	UI.action(close_button, "move")
 	header.add_child(close_button)
 	var description := Label.new()
-	description.text = "키 배치에서는 물리 키를, 스킬 배치에서는 원하는 스킬의 1~9 슬롯을 바꿉니다. 충돌 항목은 자동 교환되며 ESC는 안전을 위해 고정됩니다."
+	description.text = "키 배치 · 스킬 배치 · HUD·모바일\n손에 맞는 조작과 화면을 만드세요. 키 중복은 자동 교환 · ESC는 취소로 고정."
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description.modulate = Color(0.72, 0.82, 0.86)
 	content.add_child(description)
@@ -241,7 +242,7 @@ func _refresh_rows() -> void:
 		child.queue_free()
 	binding_buttons.clear()
 	var entries: Array = provider.call(&"get_entries")
-	summary_label.text = "변경 가능 Action %d개 · 설정 즉시 저장 · 브라우저/PC 공통" % entries.size()
+	summary_label.text = "조작 %d개 · 변경 즉시 저장" % entries.size()
 	for entry: Dictionary in entries:
 		if entry[&"action_id"] == &"toggle_key_mapping":
 			key_badge_label.text = "%s · OPEN  |  ESC · CLOSE" % entry[&"binding_text"]
@@ -261,17 +262,14 @@ func _refresh_rows() -> void:
 		row.add_theme_constant_override("separation", 10)
 		var name_label := Label.new()
 		name_label.text = String(entry[&"display_name"])
-		name_label.custom_minimum_size.x = 260.0
+		name_label.custom_minimum_size.x = 0.0
+		name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(name_label)
-		var action_label := Label.new()
-		action_label.text = String(entry[&"action_id"])
-		action_label.custom_minimum_size.x = 210.0
-		action_label.modulate = Color(0.48, 0.58, 0.64)
-		row.add_child(action_label)
 		var button := Button.new()
 		button.text = String(entry[&"binding_text"])
-		button.custom_minimum_size = Vector2(240.0, 38.0)
+		button.custom_minimum_size = Vector2(140.0, 44.0)
+		button.tooltip_text = "선택 후 원하는 키 입력 · ESC 취소"
 		var action_id: StringName = entry[&"action_id"]
 		button.pressed.connect(_begin_capture.bind(action_id))
 		row.add_child(button)
@@ -301,23 +299,30 @@ func _refresh_skill_rows() -> void:
 		row.add_theme_constant_override("separation", 10)
 		var name_label := Label.new()
 		name_label.text = String(entry[&"display_name"])
-		name_label.custom_minimum_size.x = 280.0
+		name_label.custom_minimum_size.x = 0.0
+		name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(name_label)
 		var binding_label := Label.new()
 		binding_label.text = "%s · 물리 키 %s" % [entry[&"action_slot_label"], entry[&"binding_text"]]
-		binding_label.custom_minimum_size.x = 260.0
+		binding_label.custom_minimum_size.x = 0.0
+		binding_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		binding_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		binding_label.modulate = Color("02e5e1")
 		row.add_child(binding_label)
 		var previous_button := Button.new()
 		previous_button.text = "< 이전"
-		previous_button.custom_minimum_size = Vector2(100.0, 40.0)
+		previous_button.custom_minimum_size = Vector2(56.0, 44.0)
+		previous_button.text = "<"
+		previous_button.tooltip_text = "이전 스킬 슬롯"
 		var skill_id: StringName = entry[&"skill_id"]
 		previous_button.pressed.connect(_cycle_skill_slot.bind(skill_id, -1))
 		row.add_child(previous_button)
 		var next_button := Button.new()
 		next_button.text = "다음 >"
-		next_button.custom_minimum_size = Vector2(100.0, 40.0)
+		next_button.custom_minimum_size = Vector2(56.0, 44.0)
+		next_button.text = ">"
+		next_button.tooltip_text = "다음 스킬 슬롯"
 		next_button.pressed.connect(_cycle_skill_slot.bind(skill_id, 1))
 		row.add_child(next_button)
 		skill_rows_container.add_child(row)
@@ -477,10 +482,16 @@ func _cycle_presentation_setting(setting_id: StringName) -> void:
 func _apply_responsive_size() -> void:
 	if settings_panel == null:
 		return
-	settings_panel.custom_minimum_size = Vector2(
-		clampf(size.x - 24.0, 340.0, 920.0),
-		clampf(size.y - 24.0, 520.0, 620.0)
-	)
+	settings_panel.custom_minimum_size = Vector2.ZERO
+	settings_panel.size = Vector2(minf(size.x - 24, 920), minf(size.y - 24, 620)).max(Vector2.ONE)
+	settings_panel.position = (size - settings_panel.size) * 0.5
+	key_badge_label.visible = size.x >= 700
+
+
+func _process(_delta: float) -> void:
+	if layout_dirty:
+		layout_dirty = false
+		_apply_responsive_size()
 
 
 func _display_name(action_id: StringName) -> String:

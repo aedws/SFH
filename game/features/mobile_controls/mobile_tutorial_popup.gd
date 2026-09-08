@@ -12,6 +12,7 @@ var body: VBoxContainer
 var orientation_button: Button
 
 func _ready() -> void:
+	z_index = 100
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	var shade := ColorRect.new()
@@ -37,18 +38,17 @@ func _ready() -> void:
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 12)
 	scroll.add_child(body)
-	_text("모바일 조작 안내", 26, Color("02e5e1"))
-	_text("이 기기에서 처음 한 번만 안내합니다.", 18)
-	_text("가로 플레이가 기본입니다. 기기를 가로로 돌려 주세요. 자동 회전이 막혀 있으면 기기의 회전 잠금을 해제하세요.", 20, Color("02e5e1"))
+	var ui = preload("res://game/features/presentation_theme/game_ui.gd")
+	ui.header(body, "터치 전투 준비", "처음 한 번만 안내합니다 · 가로로 돌려주세요", "move")
 	orientation_button = Button.new()
 	orientation_button.text = "전체화면 · 가로 전환 요청"
 	orientation_button.custom_minimum_size.y = 48
 	orientation_button.add_theme_font_size_override("font_size", 18)
 	orientation_button.pressed.connect(func(): preload("res://game/features/mobile_controls/mobile_orientation_policy.gd").request_landscape(true))
 	body.add_child(orientation_button)
-	_text("왼쪽 아래 · 이동\n조이스틱을 끌어서 이동합니다. 손을 떼면 멈춥니다.", 20)
-	_text("오른쪽 아래 · 공격과 스킬\n공격을 누른 채 이동할 수 있습니다. 스킬·대시의 대기 시간과 EN(에너지)을 확인하세요.", 20)
-	_text("상단 · 가방과 설정\n로비에서 장비를 준비한 뒤 동쪽 게이트에 접근하고 ‘사용’을 눌러 작전을 시작합니다.", 20)
+	ui.header(body, "01  왼손은 이동", "좌하단 조이스틱 · 손을 떼면 정지", "move")
+	ui.header(body, "02  오른손은 전투", "우하단 공격을 누른 채 이동 · 스킬은 에너지와 대기시간 확인", "skill")
+	ui.header(body, "03  준비되면 출격", "상단 가방에서 장비 준비 → 동쪽 게이트에서 사용", "gear")
 	_text("버튼·글자 크기 선택", 20, Color("02e5e1"))
 	var sizes := HBoxContainer.new()
 	sizes.add_theme_constant_override("separation", 8)
@@ -71,6 +71,7 @@ func _ready() -> void:
 	confirm_button = Button.new()
 	confirm_button.text = "확인하고 로비로 이동"
 	confirm_button.custom_minimum_size.y = 56
+	ui.action(confirm_button, "move", true)
 	confirm_button.add_theme_font_size_override("font_size", 22)
 	confirm_button.pressed.connect(func(): acknowledged.emit())
 	column.add_child(confirm_button)

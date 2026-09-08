@@ -532,6 +532,7 @@ var training_combat_skill_system
 var training_combat_skill_hud
 var shop_browser_panel
 var hub_preparation_panel
+var hub_archive_panel: Control
 var hub_service_stations
 var hub_wayfinding_policy := HUB_WAYFINDING_POLICY_SCRIPT.new()
 var hub_wayfinding_refresh_remaining := 0.0
@@ -1249,6 +1250,7 @@ func _purchase_medkit() -> void:
 
 
 func _craft_default_item() -> void:
+	if _open_hub_archive(&"craft"): return
 	if _perform_p5_hub_action(&"craft_default"): return
 	if crafting_system == null:
 		return
@@ -1286,7 +1288,23 @@ func _toggle_training_session() -> void:
 
 
 func _show_codex_summary() -> void:
+	if _open_hub_archive(&"codex"): return
 	_perform_p5_hub_action(&"codex_summary")
+
+
+func _open_hub_archive(mode: StringName) -> bool:
+	if not is_instance_valid(p5_hub_progression_service): return false
+	var methods: Array = [&"get_workshop_candidates", &"quote_workshop_recipe", &"craft_recipe"] if mode == &"craft" else [&"get_codex_entries"]
+	if not _supports_methods(p5_hub_progression_service, methods): return false
+	if not _finish_hub_training(): return true
+	if is_instance_valid(hub_archive_panel):
+		hub_archive_panel.close_panel()
+		hub_archive_panel.free()
+	hub_archive_panel = load("res://game/features/p5_hub_progression/hub_archive_panel.gd").new()
+	ui_layer.add_child(hub_archive_panel)
+	hub_archive_panel.configure(p5_hub_progression_service, mode)
+	hub_archive_panel.popup_centered(Vector2i(760, 600))
+	return true
 
 
 func _perform_p5_hub_action(action_id: StringName) -> bool:
@@ -2074,7 +2092,9 @@ func _install_operation_tutorial() -> bool:
 
 
 func _tutorial_binding_labels() -> Dictionary:
+	var touch_controls := is_instance_valid(presentation_settings_service) and bool(presentation_settings_service.call(&"should_show_mobile_controls", DisplayServer.is_touchscreen_available() or OS.has_feature("mobile")))
 	return {
+		&"top_clearance": 60.0 if touch_controls else 0.0,
 		&"move": "%s%s%s%s" % [
 			_binding_label(&"move_up"), _binding_label(&"move_left"),
 			_binding_label(&"move_down"), _binding_label(&"move_right"),

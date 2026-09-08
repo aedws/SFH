@@ -253,6 +253,7 @@ func _bind_draft() -> void:
 
 
 func _build_ui() -> void:
+	var ui = preload("res://game/features/presentation_theme/game_ui.gd")
 	add_theme_stylebox_override("panel", _style(Color("02e5e1")))
 	var margin := MarginContainer.new()
 	for edge in ["left", "right", "top", "bottom"]:
@@ -326,10 +327,11 @@ func _build_ui() -> void:
 	selected_description = _label(detail_column, "아이템을 선택하면 상세 정보가 표시됩니다.", 13)
 	rotate_button = _button(detail_column, "선택 아이템 회전 / R", _rotate_selected_item)
 	action_button = _button(detail_column, "선택 슬롯에 장착", _apply_selection)
+	ui.action(action_button, "gear", true)
 	unequip_button = _button(detail_column, "선택 장비 해제", _unequip_selection)
 	socket_actions = VBoxContainer.new()
 	detail_column.add_child(socket_actions)
-	_label(detail_column, "장비 관리 · 저장 시 적용\nU 장비 / E 모듈 / ESC 닫기", 12)
+	_label(detail_column, "장비 관리 · 변경은 저장 후 적용됩니다.", 12)
 	status_label = _label(root_box, "", 12)
 	status_label.max_lines_visible = 2
 	_build_confirmation()

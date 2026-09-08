@@ -8,6 +8,8 @@ var panel: PanelContainer
 var content_host: VBoxContainer
 var close_button: Button
 var inventory_button: Button
+var layout_dirty := false
+const UI = preload("res://game/features/presentation_theme/game_ui.gd")
 
 
 func _ready() -> void:
@@ -19,6 +21,7 @@ func _ready() -> void:
 	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(shade)
 	panel = PanelContainer.new()
+	panel.minimum_size_changed.connect(func(): layout_dirty = true)
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("06151b")
 	style.border_color = Color("02e5e1")
@@ -29,9 +32,7 @@ func _ready() -> void:
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 10)
 	panel.add_child(column)
-	var title := Label.new()
-	title.text = "HUB // 로드아웃 준비"
-	column.add_child(title)
+	UI.header(column, "출격 준비실", "요원과 스킬을 준비한 뒤, 동쪽 게이트에서 출격하세요.", "gear")
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -43,6 +44,7 @@ func _ready() -> void:
 	inventory_button = Button.new()
 	inventory_button.text = "가방·장비 세팅 · I / U / E"
 	inventory_button.custom_minimum_size.y = 44
+	UI.action(inventory_button, "gear", true)
 	inventory_button.pressed.connect(func():
 		close_panel()
 		inventory_requested.emit())
@@ -50,6 +52,7 @@ func _ready() -> void:
 	close_button = Button.new()
 	close_button.text = "세팅 완료 · 로비로 돌아가기 (ESC)"
 	close_button.custom_minimum_size.y = 44
+	UI.action(close_button, "move")
 	close_button.pressed.connect(close_panel)
 	column.add_child(close_button)
 	resized.connect(_layout)
@@ -101,3 +104,8 @@ func _layout() -> void:
 	var target := Vector2(minf(760, size.x - 24), minf(640, size.y - 24))
 	panel.position = (size - target) * 0.5
 	panel.size = target
+
+func _process(_delta: float) -> void:
+	if layout_dirty:
+		layout_dirty = false
+		_layout()

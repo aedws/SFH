@@ -71,6 +71,7 @@ func _ready() -> void:
 	}
 	for slot_id in slot_buttons:
 		(slot_buttons[slot_id] as Button).pressed.connect(_select_slot.bind(slot_id))
+		(slot_buttons[slot_id] as Button).add_theme_color_override(&"font_pressed_color", Color("f1f7fa"))
 	tabs.set_tab_title(0, "장비 장착")
 	tabs.set_tab_title(1, "모듈 · 파츠")
 	tabs.tab_changed.connect(_on_tab_changed)
@@ -90,6 +91,12 @@ func _ready() -> void:
 	%UpgradeInstalledPartButton.pressed.connect(_upgrade_selected_part)
 	%ModuleModifyButton.pressed.connect(_grant_selected_module_tag)
 	_refresh_filter_buttons()
+	var ui = preload("res://game/features/presentation_theme/game_ui.gd")
+	ui.action(equip_selected_button, "gear", true)
+	ui.action(install_selected_modification_button, "skill", true)
+	ui.action(%LevelUpButton, "training")
+	ui.action(%UpgradeInstalledButton, "craft")
+	ui.action(%UpgradeInstalledPartButton, "craft")
 
 
 func configure(
@@ -263,7 +270,7 @@ func _apply_read_only_state() -> void:
 		%ModuleModifyButton,
 	]:
 		(button as Button).disabled = true
-	status_label.text = "거점 조회 전용 · 장착과 강화는 작전 준비 기능 확장 후 지원"
+	status_label.text = "현재 환경은 장비 조회 전용입니다. 장착·강화 기능이 연결되지 않았습니다."
 
 
 func _refresh_slot_rail() -> void:
@@ -919,15 +926,16 @@ func _equipment_stats_text(state: EquipmentItemState) -> String:
 	lines.append("모듈 코스트  %d / %d" % [snapshot[&"used_module_cost"], snapshot[&"module_cost_limit"]])
 	if state.is_weapon():
 		var weapon := state.definition as EquipmentWeaponDefinition
-		lines.append("전용 파츠 소켓  %s" % (", ".join(weapon.part_socket_ids) if not weapon.part_socket_ids.is_empty() else "없음"))
+		var sockets := PackedStringArray()
+		for socket in weapon.part_socket_ids:
+			sockets.append(String(WeaponPartsBoard.SOCKET_LABELS.get(socket, socket)))
+		lines.append("전용 파츠  %s" % (" · ".join(sockets) if not sockets.is_empty() else "없음"))
 		lines.append("무기 태그       %s" % weapon.tags.display_text())
 		if weapon.innate_skill != null:
 			lines.append("고유 스킬       %s · %s" % [
 				weapon.innate_skill.display_name,
 				weapon.innate_skill.effect_summary(),
 			])
-		if not weapon.description.is_empty():
-			lines.append("\n%s" % weapon.description)
 	else:
 		var armor := state.definition as EquipmentArmorDefinition
 		lines.append("스탯 효과       %d개" % armor.stat_modifiers.size())
@@ -943,7 +951,7 @@ func _equipment_stats_text(state: EquipmentItemState) -> String:
 	lines.append("\n고정 옵션  %s" % (
 		", ".join(fixed_option_lines) if not fixed_option_lines.is_empty() else "없음"
 	))
-	lines.append("고정 기믹은 내부·외부 레벨 및 모듈 배율의 영향을 받지 않습니다.")
+	equipment_stats.tooltip_text = "고정 옵션·고유 스킬은 내부·외부 레벨 및 모듈 배율의 영향을 받지 않습니다."
 	var tags: PackedStringArray = snapshot[&"granted_module_tags"]
 	lines.append("\n개조 태그  %s" % (", ".join(tags) if not tags.is_empty() else "없음"))
 	return "\n".join(lines)
@@ -1019,6 +1027,8 @@ func _make_card(
 	card.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	card.add_theme_font_size_override(&"font_size", 13)
 	card.add_theme_color_override(&"font_color", Color(0.86, 0.92, 0.94) if compatible else Color(0.45, 0.5, 0.53))
+	card.add_theme_color_override(&"font_pressed_color", Color("f1f7fa"))
+	card.add_theme_color_override(&"font_hover_color", Color("f1f7fa"))
 	card.add_theme_stylebox_override(&"normal", _card_style(accent, selected, compatible))
 	card.add_theme_stylebox_override(&"hover", _card_style(accent, true, compatible))
 	card.add_theme_stylebox_override(&"pressed", _card_style(accent, true, compatible))
