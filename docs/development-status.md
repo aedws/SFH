@@ -72,7 +72,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <div class="sfh-summary"><strong>무엇이 변했나 · 같은 지역에서 큰길·필수 건물을 익히고, 주변 시설만 새롭게 탐색합니다.</strong></div>
         <div class="sfh-group"><h3>구현 · 1</h3><p>기획자·개발자 맵 생성 미리보기와 피스 시험·Notion 초안을 제공합니다. 시험은 승인·게임 적용과 분리합니다.</p></div>
         <div class="sfh-group"><h3>개선 · 1</h3><p>지역별 필수 기준점, 고정 도로 골격, 랜덤 보조 시설로 변경했습니다. Facility는 12열·5개 피스로 확장했습니다.</p></div>
-        <p><a href="features/extraction-district/#regional-map">맵 규칙·임시 수치·검증 범위 →</a></p>
+        <p><a href="../features/extraction-district/#regional-map">맵 규칙·임시 수치·검증 범위 →</a></p>
       </div>
     </details>
     <details class="sfh-bundle">
