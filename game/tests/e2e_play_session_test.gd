@@ -712,8 +712,8 @@ func _verify_operation_session() -> bool:
 	extraction.call(&"advance", remaining_before + 0.5)
 	await process_frame
 	var result := game.get_node("UI/GameOverOverlay") as Control
-	var title := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/EndTitle") as Label
-	var summary := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/GameOverSummary") as Label
+	var title := game.get("end_title") as Label
+	var summary := game.get("game_over_summary") as Label
 	if not result.visible or title.text != "탈출 성공" or not paused:
 		return _fail("탈출 완료 후 성공 정산 화면이 표시되지 않았습니다.")
 	var ranking_snapshot: Dictionary = game.get("conditional_ranking_system").call(&"get_snapshot")
@@ -762,7 +762,12 @@ func _verify_operation_session() -> bool:
 		return false
 	if not _judge_ui_state(&"result", "성공 결과"):
 		return false
-	if not _judge_player_perception(&"success_consequence", "탈출 성공 결과 이해"):
+	if not _judge_player_perception(&"result_glance", "성공 결과 기본 카드 인지"):
+		return false
+	await _click_tutorial_button(game.operation_result_presenter.details_button)
+	if not game.operation_result_presenter.get_snapshot().details_visible:
+		return _fail("정산 상세 실제 클릭이 기록을 펼치지 못했습니다.")
+	if not _judge_player_perception(&"success_consequence", "탈출 성공 상세 기록 이해"):
 		return false
 	await _tap_key(KEY_ENTER)
 	if game.get("start_hub") == null or bool(game.get("run_started")) or paused:
@@ -886,8 +891,8 @@ func _verify_failure_and_return_session() -> bool:
 		or float(feedback_snapshot.get(&"trauma", 0.0)) <= 0.0
 	):
 		return _fail("실제 플레이어 피격이 충격 VFX와 카메라 반응으로 연결되지 않았습니다.")
-	var title := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/EndTitle") as Label
-	var summary := game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/GameOverSummary") as Label
+	var title := game.get("end_title") as Label
+	var summary := game.get("game_over_summary") as Label
 	if not bool(game.get("run_ended")) or title.text != "작전 실패" or not paused:
 		return _fail("플레이어 사망 후 실패 정산이 표시되지 않았습니다.")
 	if not _judge_gameplay_flow(&"run_loot_settlement", "사망→런 전리품 소실", {
@@ -899,7 +904,10 @@ func _verify_failure_and_return_session() -> bool:
 		return false
 	if not _judge_ui_state(&"result", "실패 결과"):
 		return false
-	if not _judge_player_perception(&"failure_consequence", "사망 실패 결과 이해"):
+	if not _judge_player_perception(&"result_glance", "실패 결과 기본 카드 인지"):
+		return false
+	await _click_tutorial_button(game.operation_result_presenter.details_button)
+	if not _judge_player_perception(&"failure_consequence", "사망 실패 상세 기록 이해"):
 		return false
 	await _tap_key(KEY_ENTER)
 	if game.get("start_hub") == null or bool(game.get("run_started")) or paused:

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "83abe4d49cbb4adc3758d16c152bb038ce9974a63ff704279e3aa45830329f03",
+  "source_sha256": "bb9963e4b8d4e5f2c02d2dc6841d14de68c7ca823c7c74531bbb49078c8ca0e7",
   "domains": [
     {
       "id": "system",
@@ -63,9 +63,9 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 310,
-    "named_classes": 246,
-    "relationships": 192,
+    "scripts": 313,
+    "named_classes": 248,
+    "relationships": 194,
     "project_inheritance": 7,
     "enabled_toggles": 70
   },
@@ -1069,13 +1069,14 @@
       "path": "game/features/run_setup",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 5,
-      "class_count": 2,
+      "file_count": 6,
+      "class_count": 3,
       "classes": [
+        "OperationResultPresenter",
         "OperationSetupStepFlow",
         "TacticalHudIcon"
       ],
-      "incoming_count": 3,
+      "incoming_count": 4,
       "outgoing_count": 1
     },
     {
@@ -1110,14 +1111,15 @@
       "path": "game/features/shop_browser",
       "wiki_route": "features/hub-economy/",
       "enabled": true,
-      "file_count": 2,
-      "class_count": 2,
+      "file_count": 3,
+      "class_count": 3,
       "classes": [
         "ShopBrowserPanel",
+        "ShopOfferCard",
         "ShopOfferPresenter"
       ],
-      "incoming_count": 1,
-      "outgoing_count": 0
+      "incoming_count": 2,
+      "outgoing_count": 1
     },
     {
       "id": "skill_binding",
@@ -1268,11 +1270,11 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 53,
+      "file_count": 54,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
-      "outgoing_count": 52
+      "outgoing_count": 53
     }
   ],
   "classes": [
@@ -3140,6 +3142,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:OperationResultPresenter",
+      "name": "OperationResultPresenter",
+      "module": "run_setup",
+      "path": "game/features/run_setup/operation_result_presenter.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:OperationSetupStepFlow",
       "name": "OperationSetupStepFlow",
       "module": "run_setup",
@@ -3226,6 +3237,15 @@
       "module": "shop_browser",
       "path": "game/features/shop_browser/shop_browser_panel.gd",
       "extends": "Control",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:ShopOfferCard",
+      "name": "ShopOfferCard",
+      "module": "shop_browser",
+      "path": "game/features/shop_browser/shop_offer_card.gd",
+      "extends": "Button",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -4279,6 +4299,12 @@
       "evidence_count": 1
     },
     {
+      "from": "shop_browser",
+      "to": "run_setup",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
       "from": "skill_binding",
       "to": "combat_skills",
       "type": "requires",
@@ -4576,13 +4602,19 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 24
+      "evidence_count": 25
     },
     {
       "from": "verification",
       "to": "session_sockets",
       "type": "verifies",
       "evidence_count": 2
+    },
+    {
+      "from": "verification",
+      "to": "shop_browser",
+      "type": "verifies",
+      "evidence_count": 1
     },
     {
       "from": "verification",

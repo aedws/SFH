@@ -37,7 +37,7 @@ tags: [영구 해금, 상점, 창고, 소모품, 로드아웃, 저장]
 - `ShopInventoryDeliveryService`: 상점과 그리드 가방 사이의 어댑터입니다. 전체 수량을 먼저 배치할 수 있는지 검사하고 실물 지급 또는 실패 원복만 담당합니다.
 - `RotatingShopService`: 구매 때 조건을 다시 검증하며 이전 회전 번호의 견적은 차감 전에 거부합니다. 차감→실물 지급→거래 기록 중 하나라도 실패하면 지급 인스턴스와 크레딧을 함께 원복합니다. 교체 공급자의 원복까지 실패하면 환불을 보류하고 명시적 일관성 오류를 반환해 이중 획득을 막습니다.
 - `P5HubProgressionService`: `get_shop_snapshot / quote_shop_offer / purchase_shop_offer` 공개 계약을 제공합니다. UI는 프로필·창고를 직접 수정하지 않습니다.
-- `ShopOfferPresenter / ShopBrowserPanel`: 문구와 선택·명시 구매·모달·반응형 배치를 담당합니다. 740px 미만 패널 폭에서는 한 열, 넓은 화면에서는 세 열입니다. 내용은 세로 스크롤, 구매·닫기는 화면 안에 고정합니다.
+- `ShopOfferCard / ShopOfferPresenter / ShopBrowserPanel`: 품질별 카드·구매 전 보유량/잔액 비교·명시 구매·모달 배치를 담당합니다. 카드 선택은 견적만 열고, 구매 버튼에서만 거래합니다. 740px 미만 패널 폭에서는 한 열, 넓은 화면에서는 세 열입니다. 내용은 세로 스크롤, 구매·닫기는 화면 안에 고정합니다. 구매 안내는 실제 지급 영수증을 사용하고, 실물 어댑터를 끄면 창고 수량 지급/품질 효과 미적용을 표시합니다.
 - `shop_browser_enabled=false`: UI만 제거하고 상점 도메인은 보존합니다. `shop_item_delivery_enabled=false`는 실물 품질 어댑터만 제거해 레거시 창고 지급 계약으로 되돌립니다. P5 또는 회전 상점을 끄면 UI도 설치하지 않습니다.
 
 이는 로컬 상점의 읽기·구매 UX 개선입니다. DB 원자성·서버 위변조 탐지는 [구현 예정안](../design/p7-plus-preimplementation.md#economy-integrity-plan)에만 기록했고 구현하지 않았습니다.

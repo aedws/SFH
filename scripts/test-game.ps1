@@ -34,6 +34,10 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+$playerUiOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/player_facing_ui_contract_test.gd" 2>&1
+$playerUiStatus = $LASTEXITCODE
+$playerUiOutput | Write-Output
+if ($playerUiStatus -ne 0 -or ($playerUiOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($playerUiOutput -join "`n") -notmatch 'PLAYER_FACING_UI_OK') { throw 'Player-facing UI contract failed.' }
 $floorOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/floor_render_contract_test.gd" 2>&1
 $floorOutput | ForEach-Object { Write-Output $_ }
 if ($LASTEXITCODE -ne 0 -or ($floorOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($floorOutput -join "`n") -notmatch 'FLOOR_RENDER_OK') { throw 'Floor rendering contract failed.' }
