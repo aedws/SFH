@@ -524,6 +524,8 @@ jobs:
           node scripts/test_dps_engine.mjs
           node scripts/test_map_model.cjs
           python scripts/build_balance_catalog.py --check
+          python scripts/build_effect_toolkit.py --check
+          node scripts/test_effect_toolkit.mjs
           node scripts/test_balance_workbench.mjs
           node scripts/test_mobile_orientation_policy.mjs
           node scripts/test_cloudflare_worker.mjs

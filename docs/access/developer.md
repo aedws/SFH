@@ -54,6 +54,15 @@ hide:
 
 <div data-sfh-balance-gallery data-catalog="../../assets/balance-catalog.json">확정안·현행 밸런스 읽는 중…</div>
 
+<details markdown="1">
+<summary>효과·스탯 구현 툴킷 · 원본 변수와 동작 확인</summary>
+
+<div data-sfh-effect-toolkit data-readonly="true" data-catalog="../../assets/effect-toolkit.json">효과 구현 경로 읽는 중…</div>
+
+[EffectSpec 검증·구현 인계](../tools/effect-toolkit.md). 기획 확정과 오너 승인을 구분하고 미지원 행동은 새 모듈 작업으로 편성합니다.
+
+</details>
+
 </details>
 
 <nav class="sfh-developer-shortcuts" aria-label="개발자 빠른 문서">

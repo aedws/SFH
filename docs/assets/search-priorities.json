@@ -1,9 +1,16 @@
 {
-  "version": 54,
+  "version": 55,
   "updated": "2026-09-08",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "효과 스탯 툴킷 노션 EffectSpec 스킬 무기 캐릭터 모듈",
+      "label": "효과·스탯 명세 툴킷 · Notion에서 구현 연결",
+      "description": "현행 변수 선택, 명세 생성, 신규 행동 요청, 코드 원본 검증과 Sheet 확장",
+      "category": "기획",
+      "priority": 123
+    },
     {
       "query": "맵 생성기 필수 피스 지역 랜드마크 Facility 시드",
       "label": "맵·피스 설계실 · 익힐 수 있는 지역 배치",

@@ -54,9 +54,18 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 7 · IMPROVE 16 · CHANGE 3 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 8 · IMPROVE 17 · CHANGE 3 · FIX 14</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 13</small><b>효과 툴킷 · Notion 명세에서 실제 구현 변수까지</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 스킬·무기·캐릭터·모듈 효과를 현행 코드 기준으로 지정하고 명세를 검증합니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>35개 변수·92개 대상별 값과 Notion 작성 도구, 읽기 전용 변경 계획 검증기를 추가했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>공유 시트 EffectGuide·EffectSpec을 확장했습니다. 신규 행동은 구현 요청으로 구분하며 기존 게임 밸런스는 유지합니다.</p></div>
+        <p><a href="tools/effect-toolkit/">효과 작성·검증·구현 인계 방법 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 12</small><b>개발자 밸런스 · 확정 전에도 현재 수치 확인</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 기획 확정안이 없으면 빈 화면 대신 현재 CSV 수치와 그래프를 보여줍니다.</strong></div>

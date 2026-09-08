@@ -1,5 +1,5 @@
 {
-  "version": 32,
+  "version": 33,
   "updated": "2026-09-08",
   "root": {
     "id": "sfh",
@@ -34,6 +34,7 @@
               {"label": "계정 설정", "source": "access/account.md", "route": "access/account/", "summary": "로그인 뒤 고정 ID 확인·비밀번호 변경"},
               {"label": "기획자 작업실", "source": "access/planner.md", "route": "access/planner/", "summary": "온톨로지 이해·기획 작성 6문항·아이템과 밸런스·Notion 제안 가이드"},
               {"label": "개발자 작업실", "source": "access/developer.md", "route": "access/developer/", "summary": "오너 판단·객체 탐색·관계 계보·행동 관측·코드 구현 지도"}
+              ,{"label":"효과·스탯 명세 툴킷","source":"tools/effect-toolkit.md","route":"tools/effect-toolkit/","summary":"Notion 명세·지원 변수·Sheet 확장·구현 경로 검증"}
             ]
           }
         ]

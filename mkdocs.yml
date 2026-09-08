@@ -54,6 +54,8 @@ extra_javascript:
   - javascripts/dps-lab.js
   - javascripts/balance-engine.js
   - javascripts/balance-workbench.js
+  - javascripts/effect-toolkit-engine.js
+  - javascripts/effect-toolkit.js
   - javascripts/role-workspace.js
   - javascripts/map-model.js
   - javascripts/map-workbench.js
@@ -169,6 +171,7 @@ nav:
           - 기획자 아이템·밸런싱 튜토리얼: getting-started/planner-item-balance-tutorial.md
           - 무기·스킬 DPS 실험실: tools/dps-lab.md
           - 수치 실험과 확정 그래프: tools/balance-workbench.md
+          - 효과·스탯 명세 툴킷: tools/effect-toolkit.md
           - 위키 실시간 검색: getting-started/search-wiki.md
       - 검증과 문제 해결:
           - 검증과 문제 해결: quality/index.md
