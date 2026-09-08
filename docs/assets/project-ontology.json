@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-08",
-  "source_sha256": "e87051f1c6d81cabcff24e550eb7e90cd117be34116f7214d042f275a91e932b",
+  "source_sha256": "a4e4d94f788bf411334e07a8f9e73930b67c3ff7cc0cd7f83011db08e3ec1305",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -3478,15 +3478,15 @@
       "label": "런 설정",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "작전 흐름 · feature · 파일 5개",
+      "summary": "작전 흐름 · feature · 파일 6개",
       "route": "architecture/code-module-map/?module=run_setup",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/run_setup",
       "kind": "implementation",
       "metrics": {
-        "files": 5,
-        "classes": 2,
-        "incoming": 3,
+        "files": 6,
+        "classes": 3,
+        "incoming": 4,
         "outgoing": 1
       }
     },
@@ -3514,16 +3514,16 @@
       "label": "상점",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "파밍·경제 · feature · 파일 2개",
+      "summary": "파밍·경제 · feature · 파일 3개",
       "route": "architecture/code-module-map/?module=shop_browser",
       "documentation_route": "features/hub-economy/",
       "source": "game/features/shop_browser",
       "kind": "implementation",
       "metrics": {
-        "files": 2,
-        "classes": 2,
-        "incoming": 1,
-        "outgoing": 0
+        "files": 3,
+        "classes": 3,
+        "incoming": 2,
+        "outgoing": 1
       }
     },
     {
@@ -3658,16 +3658,16 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 53개",
+      "summary": "기반·검증 · verification · 파일 54개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 53,
+        "files": 54,
         "classes": 0,
         "incoming": 0,
-        "outgoing": 52
+        "outgoing": 53
       }
     },
     {

@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 138 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 139 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -62,8 +62,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 1 · IMPROVE 2 · CHANGE 1 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 4 · CHANGE 1 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>보급품 선택 카드 · 회수/분실 정산 화면</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 보급소는 품질과 가격을 보고 선택하고, 작전 종료는 회수/분실을 먼저 확인한 뒤 상세 기록을 펼칩니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>상점 품질 카드·잔액 비교, 성공/실패 결과 카드·고정 복귀 버튼으로 정보 위계를 나눴습니다. 청록 테마와 키보드 입력은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>실물 가방 지급을 창고로 안내하던 오인을 수정하고, 창고 폴백은 품질 효과 미적용으로 구분했습니다.</p></div>
+        <p><a href="quality/player-perception-audit/#game-ui-audit">전체 UI 검토·다음 순서 →</a> · <a href="quality/e2e-play-session/#player-facing-ui">4해상도·실제 입력 검증 →</a> · 로비 준비·도감·제작·시즌 화면은 후속 대상입니다.</p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 2</small><b>작전 첫 화면 끊김 · 바닥 렌더 준비 축소</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">

@@ -888,7 +888,7 @@ func _verify_start_hub_flow(game_scene: PackedScene) -> bool:
 				else:
 					hub_game.call(&"_finish_run", "테스트 종료", "거점 복귀 검증")
 					if "시작 거점" not in String(
-						hub_game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/RestartButton").text
+						hub_game.get("restart_button").text
 					):
 						failure_message = "작전 결과 UI에 시작 거점 복귀 동작이 없습니다."
 					else:
@@ -3649,7 +3649,7 @@ func _verify_extraction_flow(game_scene: PackedScene) -> bool:
 			failure_message = "탈출 성공 후 작전이 종료되지 않았습니다."
 		elif int(credit_ledger.get("secured_credits")) <= 0:
 			failure_message = "탈출 성공 후 크레딧이 회수 처리되지 않았습니다."
-		elif String(extraction_game.get_node("UI/GameOverOverlay/Center/Panel/Margin/Content/EndTitle").text) != "탈출 성공":
+		elif String(extraction_game.get("end_title").text) != "탈출 성공":
 			failure_message = "탈출 성공 결과 화면이 표시되지 않았습니다."
 
 	paused = false
@@ -3968,9 +3968,7 @@ func _process(_delta: float) -> bool:
 		var overlay := game_instance.get_node("UI/GameOverOverlay") as Control
 		if not paused or not overlay.visible:
 			return _fail("게임오버 상태가 적용되지 않았습니다.")
-		var result_summary := String(game_instance.get_node(
-			"UI/GameOverOverlay/Center/Panel/Margin/Content/GameOverSummary"
-		).text)
+		var result_summary := String(game_instance.get("game_over_summary").text)
 		if "외부 성장" not in result_summary:
 			return _fail("작전 종료 시 임시 버프가 외부 경험치로 정산되지 않았습니다.")
 

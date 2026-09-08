@@ -4,6 +4,7 @@ extends Control
 signal panel_visibility_changed(is_open: bool)
 
 const PRESENTER := preload("res://game/features/shop_browser/shop_offer_presenter.gd")
+const OFFER_CARD := preload("res://game/features/shop_browser/shop_offer_card.gd")
 
 var provider: Node
 var paused_before_open := false
@@ -95,7 +96,7 @@ func refresh() -> void:
 		selected_id = &""
 		selected_quote.clear()
 		status_label.text = "매물이 갱신됐습니다 · 상품을 다시 선택하세요."
-	balance_label.text = "보유 %d C · 회전 #%d" % [int(snapshot.get(&"credits", 0)), revision]
+	balance_label.text = "보유 크레딧\n%d C" % int(snapshot.get(&"credits", 0))
 	var reroll_quote: Dictionary = snapshot.get(&"reroll_quote", {})
 	reroll_button.text = "매물 리롤 · %d C" % int(reroll_quote.get(&"price", 0))
 	reroll_button.disabled = busy or not bool(reroll_quote.get(&"affordable", false))
@@ -110,14 +111,9 @@ func refresh() -> void:
 	for quote: Dictionary in snapshot.get(&"quotes", []):
 		var offer: Dictionary = quote.get(&"offer", {})
 		var id := StringName(offer.get(&"offer_id", &""))
-		var button := Button.new()
-		button.text = PRESENTER.card(quote)
-		button.clip_text = true
-		button.custom_minimum_size = Vector2(0, 92)
-		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.toggle_mode = true
+		var button := OFFER_CARD.new()
+		button.configure(quote)
 		button.button_pressed = id == selected_id
-		button.tooltip_text = PRESENTER.detail(quote)
 		button.pressed.connect(select_offer.bind(id))
 		cards.add_child(button)
 		offer_buttons[id] = button
@@ -131,7 +127,7 @@ func select_offer(offer_id: StringName) -> void:
 	selected_id = offer_id
 	selected_quote = provider.call(&"quote_shop_offer", offer_id)
 	selected_rotation = int(selected_quote.get(&"rotation_index", -1))
-	for id in offer_buttons: offer_buttons[id].set_pressed_no_signal(id == offer_id)
+	for id in offer_buttons: offer_buttons[id].button_pressed = id == offer_id
 	status_label.text = "선택 완료 · 아직 구매하지 않았습니다."
 	_update_detail()
 
@@ -155,8 +151,7 @@ func purchase_selected() -> void:
 	selected_quote.clear()
 	refresh()
 	if bool(result.get(&"success", false)):
-		status_label.text = "구매 완료 · %s %d개를 창고에 보관했습니다. 추가 구매는 상품을 다시 선택하세요." % [
-			result.get(&"offer", {}).get(&"display_name", "선택 상품"), int(result.get(&"granted", 0))]
+		status_label.text = PRESENTER.receipt(result)
 	else:
 		status_label.text = "구매 실패 · %s" % result.get(&"reason", "상태 확인 필요")
 
@@ -208,7 +203,7 @@ func _build_ui() -> void:
 	panel.add_child(column)
 	var header := HBoxContainer.new()
 	column.add_child(header)
-	var title := _label("SUPPLY // 상점 매물 비교", 18)
+	var title := _label("보급소 / SUPPLY", 22)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	close_button = Button.new()
@@ -219,7 +214,7 @@ func _build_ui() -> void:
 	var economy_row := HBoxContainer.new()
 	economy_row.add_theme_constant_override("separation", 10)
 	column.add_child(economy_row)
-	balance_label = _label("", 15)
+	balance_label = _label("", 18)
 	economy_row.add_child(balance_label)
 	reroll_button = Button.new()
 	reroll_button.custom_minimum_size = Vector2(180, 40)
@@ -238,8 +233,16 @@ func _build_ui() -> void:
 	cards.add_theme_constant_override("h_separation", 10)
 	cards.add_theme_constant_override("v_separation", 8)
 	body.add_child(cards)
+	var comparison_panel := PanelContainer.new()
+	var comparison_style := StyleBoxFlat.new()
+	comparison_style.bg_color = Color("10252d")
+	comparison_style.border_color = Color("02e5e1")
+	comparison_style.border_width_left = 3
+	comparison_style.set_content_margin_all(12)
+	comparison_panel.add_theme_stylebox_override("panel", comparison_style)
+	body.add_child(comparison_panel)
 	detail_label = _label(PRESENTER.detail({}), 15)
-	body.add_child(detail_label)
+	comparison_panel.add_child(detail_label)
 	status_label = _label("", 14)
 	column.add_child(status_label)
 	buy_button = Button.new()

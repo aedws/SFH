@@ -38,6 +38,8 @@ tags: [탈출, 방어전, 카운트다운, 결과 정산, 랭킹]
 ## 모듈 계약
 
 `ExtractionZone`은 카운트다운, 일시정지·재개와 구역 유지 판정만 담당합니다. `OperationResultService`는 휴대 크레딧·고철·랭킹을, [RunSettlementService](run-settlement.md)는 획득 전리품의 자동 환전·창고·해금·소실과 `run_id` 중복 방지를 담당합니다. 두 서비스는 영구 프로필의 공개 메서드만 호출하며 맵, 적, UI 내부 상태를 읽지 않습니다. 장착품 소실은 세션 조립부가 장비의 준비 상태 공개 계약을 비우는 방식이라 인벤토리 내부 배열을 직접 수정하지 않습니다.
+
+2026-09-08 결과 UI는 `OperationResultPresenter`로 분리했습니다. `install(overlay, title, summary, action)`은 표시와 기존 복귀 버튼만 조립하고, `render(result, title, transcript)`는 정산된 결과 사본을 받습니다. 성공/실패·생존/처치·정산/분실 카드가 먼저 보이고, **정산 상세**를 펼치면 랭킹·외부 성장·전체 전리품 기록을 확인합니다. 스크롤과 관계없이 거점 복귀 버튼은 하단에 유지합니다. 초기화 실패는 보상을 꾸며내지 않고 복구 설명을 펼칩니다. 제거 시 Game의 install/render 호출을 제외하면 기존 Scene의 제목/요약/복귀 컨트롤과 정산 도메인은 남습니다. [UI 검토와 잔여 작업](../quality/player-perception-audit.md#game-ui-audit).
 도면 기본 확률, 지역별 도면, 처치당 고철과 최소 고철은 `OperationResultConfig`에 분리되어 있습니다.
 
 ## 검색 별칭

@@ -551,6 +551,7 @@ var cyberpunk_overlay
 var operation_tutorial_overlay
 var operation_setup_presenter := OPERATION_SETUP_PRESENTER_SCRIPT.new()
 var combat_hud_presenter := COMBAT_HUD_PRESENTER_SCRIPT.new()
+var operation_result_presenter := preload("res://game/features/run_setup/operation_result_presenter.gd").new()
 var operation_launch_button: Button
 var character_selection_button: Button
 var main_weapon_investment_button: Button
@@ -607,6 +608,7 @@ func _ready() -> void:
 			skill_investment_buttons.append(button)
 	combat_hud_presenter.call(&"install", hud_margin)
 	combat_hud_presenter.call(&"attach_hub", start_hub_hud)
+	operation_result_presenter.install(game_over_overlay, end_title, game_over_summary, restart_button)
 	restart_button.pressed.connect(_restart_run)
 	setup_close_button.pressed.connect(_close_run_setup)
 	locked_balance_button.pressed.connect(
@@ -757,6 +759,8 @@ func _show_initialization_recovery(reason: String) -> void:
 	end_title.text = "초기화 복구 필요"
 	game_over_summary.text = "%s\n새로고침하거나 ESC로 초기화를 다시 시도하세요." % reason
 	restart_button.text = "거점 초기화 다시 시도 (Enter)"
+	if operation_result_presenter.host != null:
+		operation_result_presenter.render({}, end_title.text, game_over_summary.text)
 	game_over_overlay.visible = true
 	get_tree().paused = true
 
@@ -4158,7 +4162,9 @@ func _on_extraction_completed(_actor: Node2D) -> void:
 			int(ranks.get(&"kills", 0)),
 			_format_run_loot_settlement(loot_settlement),
 			ranking_provider_label,
-		]
+		],
+		{&"extracted": true, &"operation_credits": settlement.get(&"recovered_credits", carried_credits),
+			&"salvage": settlement.get(&"salvage", 0), &"loot": loot_settlement}
 	)
 
 
@@ -4443,7 +4449,8 @@ func _on_player_died() -> void:
 			defeated_enemies,
 			lost_credits,
 			_format_run_loot_settlement(loot_settlement),
-		]
+		],
+		{&"extracted": false, &"operation_credits": lost_credits, &"loot": loot_settlement}
 	)
 
 
@@ -4483,7 +4490,7 @@ func _format_run_loot_settlement(result: Dictionary) -> String:
 	return "\n전리품 · 사망 소실 %d종 · %d개" % [lost.size(), lost_quantity]
 
 
-func _finish_run(title: String, summary: String) -> void:
+func _finish_run(title: String, summary: String, result: Dictionary = {}) -> void:
 	if run_ended:
 		return
 	run_ended = true
@@ -4516,6 +4523,10 @@ func _finish_run(title: String, summary: String) -> void:
 	end_title.text = title
 	game_over_summary.text = final_summary
 	restart_button.text = "시작 거점으로 복귀 (Enter)"
+	var presentation := result.duplicate(true)
+	presentation.merge({&"map_name": _selected_map_display_name(), &"elapsed_seconds": elapsed_time,
+		&"kills": defeated_enemies, &"boss_kills": run_combat_metrics.get_snapshot().get(&"boss_kills", 0)})
+	operation_result_presenter.render(presentation, title, final_summary)
 	game_over_overlay.visible = true
 	get_tree().paused = true
 

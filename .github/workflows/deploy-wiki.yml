@@ -165,6 +165,9 @@ jobs:
           timeout 90 xvfb-run -a godot --path "$GITHUB_WORKSPACE" --audio-driver Dummy --script "res://game/tests/floor_render_contract_test.gd" 2>&1 | tee /tmp/sfh-floor-render.log
           grep -q "FLOOR_RENDER_OK" /tmp/sfh-floor-render.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-floor-render.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/player_facing_ui_contract_test.gd" 2>&1 | tee /tmp/sfh-player-ui.log
+          grep -q "PLAYER_FACING_UI_OK" /tmp/sfh-player-ui.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-player-ui.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/smart_targeting_center_contract_test.gd" 2>&1 | tee /tmp/sfh-targeting-center.log
           grep -q "SMART_TARGETING_CENTER_OK" /tmp/sfh-targeting-center.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-targeting-center.log
@@ -336,7 +339,7 @@ jobs:
           grep -q "E2E_LOOT_DEATH_OK" /tmp/sfh-e2e.log
           grep -q "E2E_SEASON_PLAYER_OK briefing_eligibility actual_history_click readonly_history launch_context result_bosses small_ineligible_lifetime_preserved" /tmp/sfh-e2e.log
           grep -q "E2E_HUB_LOADOUT_OK transitions_6 focused_controls repeated_open pause_restored live_edit_draft_refresh save_discard_cancel modules_parts" /tmp/sfh-e2e.log
-          grep -q "ui_state_contracts_23 player_perception_contracts_31 gameplay_flows_15" /tmp/sfh-e2e.log
+          grep -q "ui_state_contracts_23 player_perception_contracts_33 gameplay_flows_15" /tmp/sfh-e2e.log
           grep -q "physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_doorway_hysteresis fog_wall_occlusion fog_exploration_memory" /tmp/sfh-e2e.log
           grep -q "key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format" /tmp/sfh-e2e.log
           grep -q "loot_table_targeting" /tmp/sfh-e2e.log
@@ -353,7 +356,7 @@ jobs:
           grep -q "run_loot_death_loss" /tmp/sfh-e2e.log
           grep -q "E2E_WEAPON_PARTS_UI_OK weapon_schematic socket_map viewport_safe" /tmp/sfh-e2e.log
           grep -q "E2E_CYBERPUNK_THEME_OK viewport_safe input_passthrough accent_02e5e1" /tmp/sfh-e2e.log
-          grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_31 units_9" /tmp/sfh-e2e.log
+          grep -q "E2E_PLAYER_PERCEPTION_OK checkpoints_33 units_9" /tmp/sfh-e2e.log
 
       - name: Return container files to the private runner owner
         if: always()
