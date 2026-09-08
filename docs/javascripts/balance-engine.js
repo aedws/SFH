@@ -1,7 +1,7 @@
 /* Pure planning projections shared by the browser and authenticated confirmation API. */
 (() => {
   'use strict';
-  const version=2;
+  const version=3;
   const number=(v,min,max)=>{if(typeof v!=='number'||!Number.isFinite(v)||v<min||v>max)throw Error(`수치는 ${min}~${max} 범위여야 합니다.`);return v;};
   function table(catalog,input){
     const dataset=catalog.datasets.find(d=>d.id===input.dataset);
@@ -37,7 +37,14 @@
         {title:'플레이어 잔여 HP · 회복/회피 없음',points:result.points.filter((_,n)=>n%10===0).map(p=>({x:p.time,label:String(p.time),base:result.player.max_health,value:p.playerHp}))}],
       note:`관측 DPS ${result.dps.toFixed(2)} · TTK ${result.ttk===null?'구간 내 미처치':result.ttk.toFixed(2)+'초'} · 플레이어 HP ${result.player.max_health.toFixed(2)} / 방어 ${result.player.defense.toFixed(2)} / 속도 ${result.player.movement_speed.toFixed(2)}. ${result.resolved.loadout?.costs.map(c=>`${c.name} 코스트 ${c.used}/${c.capacity}`).join(' · ')||''}. 회색은 HP+방어막. 단일 대상 기대 피해 모델. 스킬별 그래프는 독립 AP 조건이며 동시 사용 합계가 아닙니다.`};
   }
-  const models=Object.freeze({table,recovery,facility,combat});
+  function distance(catalog,input){
+    const E=globalThis.SFHDps,trial=E.resolve(catalog,input);
+    const base={...input,distanceCurve:trial.weapon.balance.distance_damage_curve??'0:1;1:1'};
+    return {title:`${trial.weapon.name} · 거리별 무기 DPS`,xLabel:'발사 위치에서 표적까지 거리 (px)',yLabel:'지속 무기 DPS',
+      points:Array.from({length:101},(_,n)=>{const x=trial.range*n/100;return{x,label:Number(x.toFixed(1)).toString(),base:E.resolve(catalog,{...base,distancePx:x}).sustainedWeapon,value:E.resolve(catalog,{...input,distancePx:x}).sustainedWeapon};}),
+      note:'청록 시험 / 회색 현재 구현 곡선. 동일 장착·치명 기대값·명중률, 고유 고정 피해는 거리 배율 제외. 자동 탐지 또는 탄환 수명 밖은 0. 스킬 피해·관통 후속 대상은 제외합니다.'};
+  }
+  const models=Object.freeze({table,recovery,facility,combat,distance});
   function calculate(model,catalog,input){if(!Object.hasOwn(models,model))throw Error('지원하지 않는 계산 모델');return models[model](catalog,input);}
   async function fingerprint(sources){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(sources)));return Array.from(new Uint8Array(bytes),v=>v.toString(16).padStart(2,'0')).join('');}
   globalThis.SFHBalance=Object.freeze({version,calculate,fingerprint});

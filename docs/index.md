@@ -54,9 +54,18 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>15 UPDATE BUNDLES · BUILD 10 · IMPROVE 19 · CHANGE 3 · FIX 15</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>16 UPDATE BUNDLES · BUILD 11 · IMPROVE 20 · CHANGE 3 · FIX 15</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 16</small><b>무기 거리 피해 · 거리 선택에 따라 달라지는 화력</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 권총은 근거리, 소총은 중거리 유지, 펄스 소총은 중거리 강화 곡선으로 직격 피해가 달라집니다.</strong></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>발사 순간 곡선·사거리를 고정하고 관통 감쇠와 분리했습니다. 고유 고정 피해는 유지하며 현재 곡선은 임시 정책입니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>기획자 거리 DPS 수정·확정 파일 전달과 개발자 현행 전용 그래프, Weapon 시트 곡선 열, 신규 무기 작성 양식을 추가했습니다.</p></div>
+        <p><a href="features/weapon-distance/">곡선·작성 양식·적용 및 검증 범위 →</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 15</small><b>성능 실험실 · 장착 조합과 스킬별 그래프 연결</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 파츠·모듈·방어구·캐릭터를 선택하면 실제 장착 규칙으로 피해와 생존 성능을 비교합니다.</strong></div>

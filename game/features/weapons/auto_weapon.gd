@@ -326,6 +326,8 @@ func _spawn_projectile(direction: Vector2) -> void:
 		current_balance.get(&"projectile_color", Color.WHITE),
 		{
 			&"source_weapon_id": active_weapon_id,
+			&"distance_damage_curve": current_balance.get(&"distance_damage_curve", "0:1;1:1"),
+			&"launch_range_px": _modified_target_range(float(current_balance.get(&"target_range_px", 760.0))),
 			&"weapon_identity": active_weapon_identity.duplicate(true),
 			&"impact_color": impact_profile[&"color"],
 			&"impact_radius_multiplier": impact_profile[&"radius_multiplier"],

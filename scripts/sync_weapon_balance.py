@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import io
+import math
 import pathlib
 import sys
 import time
@@ -21,6 +22,26 @@ COLUMNS = [
     "critical_multiplier", "pierce_count", "pierce_damage_retention",
     "projectile_lifetime_sec", "projectile_color_hex", "description",
 ]
+LEGACY_COLUMNS = COLUMNS.copy()
+COLUMNS += ["distance_damage_curve"]
+
+
+def validate_distance_curve(value: str) -> list[tuple[float, float]]:
+    pairs = value.split(";")
+    if not 2 <= len(pairs) <= 16:
+        raise ValueError("거리 곡선은 2~16점이어야 합니다.")
+    points = []
+    for pair in pairs:
+        parts = pair.split(":")
+        if len(parts) != 2:
+            raise ValueError("거리:배율 형식이 필요합니다.")
+        x, y = map(float, parts)
+        if not math.isfinite(x) or not math.isfinite(y) or not 0 <= x <= 1 or not 0 <= y <= 3 or (points and x <= points[-1][0]):
+            raise ValueError("거리 0~1 오름차순, 배율 0~3이 필요합니다.")
+        points.append((x, y))
+    if points[0][0] != 0 or points[-1][0] != 1:
+        raise ValueError("거리 곡선 양 끝은 0과 1이어야 합니다.")
+    return points
 INTEGER_COLUMNS = {"projectiles_per_shot", "burst_count", "pierce_count"}
 FLOAT_COLUMNS = {
     "damage", "fire_interval_sec", "projectile_speed_px_sec", "target_range_px",
@@ -42,11 +63,12 @@ def _read_transposed_rows(matrix: list[list[str]]) -> list[dict[str, str]]:
         if variable_name in rows_by_variable:
             raise ValueError(f"변수명이 중복됩니다: {variable_name}")
         rows_by_variable[variable_name] = row
-    missing = [column for column in COLUMNS if column not in rows_by_variable]
+    missing = [column for column in LEGACY_COLUMNS if column not in rows_by_variable]
     if missing:
         raise ValueError("필수 변수가 없습니다: " + ", ".join(missing))
 
     maximum_columns = max(len(row) for row in matrix)
+    rows_by_variable.setdefault("distance_damage_curve", ["distance_damage_curve", "설명"] + ["0:1;1:1"] * (maximum_columns - 2))
     runtime_row = rows_by_variable.get("runtime_enabled")
     rows: list[dict[str, str]] = []
     for column_index in range(2, maximum_columns):
@@ -78,16 +100,16 @@ def _normalize_rows(text: str) -> list[dict[str, str]]:
 
     reader = csv.DictReader(io.StringIO(text.lstrip("\ufeff")))
     fieldnames = reader.fieldnames or []
-    missing = [column for column in COLUMNS if column not in fieldnames]
+    missing = [column for column in LEGACY_COLUMNS if column not in fieldnames]
     if missing:
         raise ValueError("필수 열이 없습니다: " + ", ".join(missing))
-    if fieldnames != COLUMNS and "runtime_enabled" not in fieldnames:
+    if fieldnames not in (COLUMNS, LEGACY_COLUMNS) and "runtime_enabled" not in fieldnames:
         raise ValueError("CSV 열 순서가 템플릿과 다릅니다: " + ", ".join(fieldnames))
     rows = list(reader)
     if "runtime_enabled" in fieldnames:
         rows = [row for row in rows if _is_enabled(row.get("runtime_enabled", ""))]
     return [
-        {column: row.get(column, "").strip() for column in COLUMNS}
+        {column: row.get(column, "0:1;1:1" if column == "distance_damage_curve" else "").strip() for column in COLUMNS}
         for row in rows
     ]
 
@@ -102,6 +124,7 @@ def validate(text: str) -> list[dict[str, str]]:
         if not weapon_id or weapon_id in seen:
             raise ValueError(f"{line_number}행 weapon_id가 비어 있거나 중복입니다.")
         seen.add(weapon_id)
+        validate_distance_curve(row["distance_damage_curve"])
         for column in INTEGER_COLUMNS:
             int(row[column])
         for column in FLOAT_COLUMNS:

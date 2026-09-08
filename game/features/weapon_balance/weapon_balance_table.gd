@@ -119,6 +119,8 @@ static func _parse_transposed_sheet(matrix: Array[PackedStringArray]) -> Diction
 			var variable_row: PackedStringArray = rows_by_variable[required_column]
 			row[StringName(required_column)] = _cell_at(variable_row, column_index).strip_edges()
 		var weapon_id := StringName(weapon_id_text)
+		if rows_by_variable.has("distance_damage_curve"):
+			row[&"distance_damage_curve"] = _cell_at(rows_by_variable["distance_damage_curve"], column_index).strip_edges()
 		if result.has(weapon_id):
 			errors.append("%d열의 weapon_id가 중복입니다: %s" % [column_index + 1, weapon_id])
 			continue
@@ -184,10 +186,13 @@ static func _convert_row(row: Dictionary) -> Dictionary:
 		&"projectile_lifetime_sec": float(row[&"projectile_lifetime_sec"]),
 		&"projectile_color": Color.from_string(row[&"projectile_color_hex"], Color.WHITE),
 		&"description": String(row[&"description"]),
+		&"distance_damage_curve": String(row.get(&"distance_damage_curve", "0:1;1:1")),
 	}
 
 
 static func _validate_row(row: Dictionary) -> String:
+	if preload("res://game/features/weapon_balance/weapon_distance_policy.gd").parse(row[&"distance_damage_curve"]).is_empty():
+		return "거리 곡선은 0~1 오름차순 거리:0~3 배율, 양 끝 0/1 포함 2~16점이어야 합니다."
 	if row[&"display_name"].is_empty() or row[&"trait_id"] == &"":
 		return "표시 이름과 특색 ID가 필요합니다."
 	if row[&"damage"] <= 0.0 or row[&"fire_interval_sec"] <= 0.0:

@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-08",
-  "source_sha256": "cb004599b4d75d749adfd527cd37887141233d07ed7d266d7c601136d4131513",
+  "source_sha256": "728f19dccb3734e19305fdbace55bc1b1ca6f770050fbe73566fe306a2ed2a96",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -398,12 +398,12 @@
     "ready": 1,
     "implemented": 37,
     "modules": 60,
-    "documents": 101,
+    "documents": 102,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 475,
+    "relations": 476,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -3678,15 +3678,15 @@
       "label": "무기 밸런스",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 3개",
+      "summary": "장비·세팅 · feature · 파일 4개",
       "route": "architecture/code-module-map/?module=weapon_balance",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/weapon_balance",
       "kind": "implementation",
       "metrics": {
-        "files": 3,
-        "classes": 3,
-        "incoming": 3,
+        "files": 4,
+        "classes": 4,
+        "incoming": 4,
         "outgoing": 1
       }
     },
@@ -3705,7 +3705,7 @@
         "files": 4,
         "classes": 4,
         "incoming": 5,
-        "outgoing": 3
+        "outgoing": 4
       }
     },
     {
@@ -3714,13 +3714,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 64개",
+      "summary": "기반·검증 · verification · 파일 65개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 64,
+        "files": 65,
         "classes": 0,
         "incoming": 0,
         "outgoing": 54
@@ -4593,6 +4593,17 @@
       "summary": "무기 특색·실시간 수치 테스트",
       "route": "features/weapon-balance/",
       "source": "docs/features/weapon-balance.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/weapon-distance",
+      "type": "document",
+      "label": "거리별 무기 피해와 확정 곡선",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "기획자 곡선 수정·확정 전달 / 개발자 현행 그래프 / 신규 무기 양식",
+      "route": "features/weapon-distance/",
+      "source": "docs/features/weapon-distance.md",
       "kind": "evidence"
     },
     {
@@ -7163,6 +7174,12 @@
     },
     {
       "from": "document:features/weapon-balance",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/weapon-distance",
       "to": "collection:group:features/equipment",
       "type": "part_of",
       "origin": "knowledge_map"

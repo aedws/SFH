@@ -232,7 +232,8 @@
               {"label": "장비 파츠·모듈 개조", "source": "features/equipment-customization.md", "route": "features/equipment-customization/", "summary": "호환 파츠·모듈 코스트·태그"},
               {"label": "모듈·고유 파츠 강화 경제", "source": "features/equipment-upgrade-economy.md", "route": "features/equipment-upgrade-economy/", "summary": "재료·크레딧·강화 단계"},
               {"label": "P5-02 무기·스킬 런 투자", "source": "features/loadout-investment.md", "route": "features/loadout-investment/", "summary": "주·보조무기·스킬 가격·해금·태그·런 구매와 복원"},
-              {"label": "Q 무기 교체와 Google Sheets 밸런스", "source": "features/weapon-balance.md", "route": "features/weapon-balance/", "summary": "무기 특색·실시간 수치 테스트"}
+              {"label": "Q 무기 교체와 Google Sheets 밸런스", "source": "features/weapon-balance.md", "route": "features/weapon-balance/", "summary": "무기 특색·실시간 수치 테스트"},
+              {"label": "거리별 무기 피해와 확정 곡선", "source": "features/weapon-distance.md", "route": "features/weapon-distance/", "summary": "기획자 곡선 수정·확정 전달 / 개발자 현행 그래프 / 신규 무기 양식"}
             ]
           },
           {

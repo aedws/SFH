@@ -13,6 +13,10 @@ var remaining_pierces: int = 0
 var pierce_damage_retention: float = 1.0
 var hit_body_ids: Dictionary = {}
 var hit_context: Dictionary = {}
+const DistancePolicy = preload("res://game/features/weapon_balance/weapon_distance_policy.gd")
+var distance_points := PackedVector2Array()
+var launch_origin := Vector2.ZERO
+var launch_range_px := 1.0
 
 @onready var body_shape: Polygon2D = $Body
 @onready var glow_shape: Polygon2D = get_node_or_null("Glow") as Polygon2D
@@ -43,6 +47,10 @@ func launch(
 	if glow_shape != null:
 		glow_shape.color = Color(new_color.r, new_color.g, new_color.b, 0.24)
 	hit_context = new_hit_context.duplicate(true)
+	hit_body_ids.clear()
+	launch_origin = global_position
+	launch_range_px = float(hit_context.get(&"launch_range_px", 1.0))
+	distance_points = DistancePolicy.parse(String(hit_context.get(&"distance_damage_curve", DistancePolicy.NEUTRAL)))
 	rotation = direction.angle()
 
 
@@ -62,14 +70,20 @@ func _on_body_entered(body: Node) -> void:
 		queue_free()
 		return
 	var context := hit_context.duplicate(true)
+	var distance_px := launch_origin.distance_to(global_position)
+	var distance_multiplier := DistancePolicy.multiplier(distance_points, distance_px, launch_range_px)
+	var applied_damage := damage * distance_multiplier
 	context.merge({
+		&"distance_px": distance_px,
+		&"distance_multiplier": distance_multiplier,
+		&"applied_damage": applied_damage,
 		&"source_kind": &"weapon_projectile",
 		&"source_position": global_position - direction * 10.0,
 		&"impact_direction": direction,
-		&"impact_strength": clampf(damage / 10.0, 0.45, 1.5)
+		&"impact_strength": clampf(applied_damage / 10.0, 0.45, 1.5)
 			* float(context.get(&"impact_strength_multiplier", 1.0)),
 	}, true)
-	body.call(&"take_damage", damage, context)
+	body.call(&"take_damage", applied_damage, context)
 	hit_confirmed.emit(body, global_position, context.duplicate(true))
 	if remaining_pierces > 0:
 		remaining_pierces -= 1
