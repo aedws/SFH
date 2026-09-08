@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "23faeec895e5bc6196d8cc0d5b558c65ddcfccc6e421895dbd87ba92a7a9d309",
+  "source_sha256": "95a3318387c6eb24f6be6760e55b69c4093fb7ad0e920ea1f41dd09380f87b25",
   "domains": [
     {
       "id": "system",
@@ -63,10 +63,10 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 320,
-    "named_classes": 252,
-    "relationships": 194,
-    "project_inheritance": 7,
+    "scripts": 330,
+    "named_classes": 260,
+    "relationships": 196,
+    "project_inheritance": 11,
     "enabled_toggles": 70
   },
   "modules": [
@@ -117,12 +117,13 @@
       "path": "game/features/balance_data",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 1,
-      "class_count": 1,
+      "file_count": 2,
+      "class_count": 2,
       "classes": [
+        "BalanceCsvRows",
         "EmbeddedCsvPayload"
       ],
-      "incoming_count": 0,
+      "incoming_count": 2,
       "outgoing_count": 0
     },
     {
@@ -406,11 +407,12 @@
       "path": "game/features/extraction",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 2,
-      "class_count": 2,
+      "file_count": 3,
+      "class_count": 3,
       "classes": [
         "ExtractionDefenseConfig",
-        "ExtractionZone"
+        "ExtractionZone",
+        "MultiExtractionZone"
       ],
       "incoming_count": 3,
       "outgoing_count": 1
@@ -451,12 +453,13 @@
       "path": "game/features/fog_of_war",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 3,
-      "class_count": 3,
+      "file_count": 4,
+      "class_count": 4,
       "classes": [
         "BattlefieldFogOfWar",
         "RoguelikeFogRuntime",
-        "RoguelikeVisibilityField"
+        "RoguelikeVisibilityField",
+        "SpaceVisibilityField"
       ],
       "incoming_count": 2,
       "outgoing_count": 1
@@ -705,15 +708,19 @@
       "path": "game/features/map_generation",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 3,
-      "class_count": 3,
+      "file_count": 7,
+      "class_count": 7,
       "classes": [
         "DungeonFloorLayer",
+        "ExtractionDistrictLayout",
+        "ExtractionDistrictMapGenerator",
+        "ExtractionFacilityCatalog",
+        "FacilityCatalogService",
         "MapTierConfig",
         "RoguelikeMapGenerator"
       ],
       "incoming_count": 7,
-      "outgoing_count": 0
+      "outgoing_count": 1
     },
     {
       "id": "meta_progression",
@@ -997,9 +1004,10 @@
       "path": "game/features/room_encounters",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 5,
-      "class_count": 5,
+      "file_count": 6,
+      "class_count": 6,
       "classes": [
+        "DistrictEncounterSystem",
         "RoomCreditRewardBox",
         "RoomDoorBarrier",
         "RoomEncounterConfig",
@@ -1274,14 +1282,23 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 57,
+      "file_count": 59,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
-      "outgoing_count": 53
+      "outgoing_count": 54
     }
   ],
   "classes": [
+    {
+      "id": "class:BalanceCsvRows",
+      "name": "BalanceCsvRows",
+      "module": "balance_data",
+      "path": "game/features/balance_data/csv_rows.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
     {
       "id": "class:EmbeddedCsvPayload",
       "name": "EmbeddedCsvPayload",
@@ -2093,6 +2110,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:MultiExtractionZone",
+      "name": "MultiExtractionZone",
+      "module": "extraction",
+      "path": "game/features/extraction/multi_extraction_zone.gd",
+      "extends": "ExtractionZone",
+      "base_id": "class:ExtractionZone",
+      "inheritance": "project"
+    },
+    {
       "id": "class:FieldLootAcquisitionService",
       "name": "FieldLootAcquisitionService",
       "module": "field_loot",
@@ -2217,6 +2243,15 @@
       "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
+    },
+    {
+      "id": "class:SpaceVisibilityField",
+      "name": "SpaceVisibilityField",
+      "module": "fog_of_war",
+      "path": "game/features/fog_of_war/space_visibility_field.gd",
+      "extends": "RoguelikeVisibilityField",
+      "base_id": "class:RoguelikeVisibilityField",
+      "inheritance": "project"
     },
     {
       "id": "class:GrowthBalanceConfig",
@@ -2611,6 +2646,42 @@
       "module": "map_generation",
       "path": "game/features/map_generation/dungeon_floor_layer.gd",
       "extends": "Node2D",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:ExtractionDistrictLayout",
+      "name": "ExtractionDistrictLayout",
+      "module": "map_generation",
+      "path": "game/features/map_generation/district_layout.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:ExtractionDistrictMapGenerator",
+      "name": "ExtractionDistrictMapGenerator",
+      "module": "map_generation",
+      "path": "game/features/map_generation/district_map_generator.gd",
+      "extends": "RoguelikeMapGenerator",
+      "base_id": "class:RoguelikeMapGenerator",
+      "inheritance": "project"
+    },
+    {
+      "id": "class:ExtractionFacilityCatalog",
+      "name": "ExtractionFacilityCatalog",
+      "module": "map_generation",
+      "path": "game/features/map_generation/facility_catalog.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:FacilityCatalogService",
+      "name": "FacilityCatalogService",
+      "module": "map_generation",
+      "path": "game/features/map_generation/facility_catalog_service.gd",
+      "extends": "Node",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -3072,6 +3143,15 @@
       "extends": "Control",
       "base_id": "",
       "inheritance": "engine"
+    },
+    {
+      "id": "class:DistrictEncounterSystem",
+      "name": "DistrictEncounterSystem",
+      "module": "room_encounters",
+      "path": "game/features/room_encounters/district_encounter_system.gd",
+      "extends": "RoomEncounterSystem",
+      "base_id": "class:RoomEncounterSystem",
+      "inheritance": "project"
     },
     {
       "id": "class:RoomCreditRewardBox",
@@ -3883,6 +3963,12 @@
       "evidence_count": 1
     },
     {
+      "from": "map_generation",
+      "to": "balance_data",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
       "from": "meta_progression",
       "to": "core",
       "type": "references",
@@ -4376,6 +4462,12 @@
     },
     {
       "from": "verification",
+      "to": "balance_data",
+      "type": "verifies",
+      "evidence_count": 1
+    },
+    {
+      "from": "verification",
       "to": "boss_warning",
       "type": "verifies",
       "evidence_count": 1
@@ -4540,7 +4632,7 @@
       "from": "verification",
       "to": "map_generation",
       "type": "verifies",
-      "evidence_count": 7
+      "evidence_count": 8
     },
     {
       "from": "verification",
@@ -4642,7 +4734,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 27
+      "evidence_count": 28
     },
     {
       "from": "verification",

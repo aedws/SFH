@@ -15,6 +15,9 @@ var player: Node2D
 var map_provider: Node
 var progress_provider: Node
 var room_definitions: Dictionary = {}
+@export var terminal_radius := 110.0
+@export var terminal_threat_radius := 1200.0
+var terminal_only := false
 
 
 func configure(new_player: Node2D, new_map_provider: Node, new_progress_provider: Node) -> bool:
@@ -27,6 +30,7 @@ func configure(new_player: Node2D, new_map_provider: Node, new_progress_provider
 	player = new_player
 	map_provider = new_map_provider
 	progress_provider = new_progress_provider
+	terminal_only = map_provider.has_method(&"get_warp_policy") and bool(map_provider.call(&"get_warp_policy").get(&"terminal_only", false))
 	room_definitions.clear()
 	for room: Dictionary in map_provider.call(&"get_room_encounter_snapshot"):
 		room_definitions[int(room.get(&"room_index", -1))] = room
@@ -70,7 +74,8 @@ func request_warp(room_index: int) -> bool:
 		warp_rejected.emit(room_index, reason)
 		return false
 	var target: Vector2 = room_definitions[room_index].get(&"center", player.global_position)
-	player.global_position = target
+	if player.has_method(&"teleport_to"): player.call(&"teleport_to",target)
+	else: player.global_position = target
 	if player is CharacterBody2D:
 		(player as CharacterBody2D).velocity = Vector2.ZERO
 	warped.emit(room_index, target)
@@ -95,13 +100,24 @@ func _warp_rejection_reason(room_index: int) -> String:
 	var encounter: Dictionary = progress_provider.call(&"get_snapshot")
 	if int(encounter.get(&"active_room_index", -1)) >= 0:
 		return "방 봉쇄 전투 중에는 워프할 수 없습니다."
+	if terminal_only:
+		var near_terminal := false
+		for site: Dictionary in get_warp_targets():
+			if player.global_position.distance_to(site.world_position) <= terminal_radius: near_terminal = true
+		if not near_terminal: return "시작 구역 또는 확보한 정비 공장 RELAY 단말 근처에서 M 지도를 여세요."
+		for enemy in get_tree().get_nodes_in_group(&"enemies"):
+			if enemy is Node2D and not enemy.is_queued_for_deletion() and player.global_position.distance_to(enemy.global_position) < terminal_threat_radius:
+				return "주변 위협이 남아 있습니다. 추격을 벗어나거나 적을 처치하세요."
 	for target in get_warp_targets():
 		if int(target.get(&"room_index", -1)) == room_index:
 			return ""
-	return "클리어한 4방향 교차 방만 워프할 수 있습니다."
+	return "확보한 안전 단말만 워프할 수 있습니다." if terminal_only else "클리어한 4방향 교차 방만 워프할 수 있습니다."
 
 
 func _target_kind(room: Dictionary) -> StringName:
+	if terminal_only:
+		if not bool(room.get(&"warp_terminal", false)): return &""
+		return &"start" if bool(room.get(&"is_start_room", false)) else &"junction"
 	if bool(room.get(&"is_start_room", false)):
 		return &"start"
 	if bool(room.get(&"is_extraction_room", false)):

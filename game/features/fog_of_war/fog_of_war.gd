@@ -6,6 +6,7 @@ const MAX_OCCLUSION_RAYS := 48
 const WALL_COLLISION_MASK := 16
 
 @export var roguelike_visibility_enabled := true
+@export var space_visibility_enabled := true
 @export_range(160.0, 960.0, 32.0) var sight_radius := 640.0
 @export_range(0.03, 0.2, 0.01) var fov_refresh_seconds := 0.08
 var roguelike_runtime: RefCounted

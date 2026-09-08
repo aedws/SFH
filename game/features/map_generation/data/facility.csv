@@ -1,0 +1,6 @@
+facility_id,display_name,encounter,risk_bonus,cache_weight,planner_note
+시설ID,시설 이름,patrol 자유 교전 또는 objective 선택 봉쇄,중심부 적 수량 추가 배수 0~2,탐색 금고 배치 가중치 0초과~10,기획 메모
+warehouse,물류 창고,patrol,0.25,1.4,임시값 일반 자원 회수 목적
+workshop,정비 공장,patrol,0.5,1,임시값 실내 우회 교전 목적
+medical,의료 구역,patrol,0.15,0.8,임시값 낮은 위험의 경유지
+vault,보안 금고,objective,0.75,2,임시값 F 단말 작동 시 봉쇄와 추가 보상

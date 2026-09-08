@@ -61,7 +61,8 @@ func _judge_room_encounter(evidence: Dictionary, errors: PackedStringArray) -> v
 		errors.append("방 진입이 전투를 활성화하지 못했습니다.")
 	if int(active.get(&"active_enemy_count", 0)) <= 0:
 		errors.append("방 진입 후 적이 생성되지 않았습니다.")
-	if active.get(&"last_trigger_source", &"none") != &"room_entry":
+	var expected_trigger: StringName = &"terminal" if active.get(&"policy") == &"district_optional_lockdown" else &"room_entry"
+	if active.get(&"last_trigger_source", &"none") != expected_trigger:
 		errors.append("플레이어의 실제 방 진입이 교전을 시작하지 않았습니다.")
 	if int(active.get(&"active_enemy_count", 0)) < int(active.get(&"minimum_horde_size", 1)):
 		errors.append("방 적 무리가 티어별 핵앤슬래시 최소 스폰량보다 적습니다.")
@@ -92,7 +93,7 @@ func _judge_ten_minute_session(evidence: Dictionary, errors: PackedStringArray) 
 		errors.append("10분 세션 판정 대상이 중형 또는 대형이 아닙니다.")
 	if not is_equal_approx(float(after.get(&"target_seconds", 0.0)), 600.0):
 		errors.append("목표 세션 시간이 10분으로 설정되지 않았습니다.")
-	if bool(before.get(&"extraction_unlocked", true)):
+	if float(before.get(&"extraction_unlock_seconds",600)) > 0 and bool(before.get(&"extraction_unlocked", true)):
 		errors.append("10분 도달 전에 탈출이 열렸습니다.")
 	if not bool(after.get(&"extraction_unlocked", false)):
 		errors.append("10분 도달 뒤 탈출이 열리지 않았습니다.")
@@ -157,7 +158,7 @@ func _judge_run_loot_settlement(evidence: Dictionary, errors: PackedStringArray)
 
 
 func _judge_fog_transition(evidence: Dictionary, errors: PackedStringArray) -> void:
-	if evidence.get(&"policy") == &"roguelike_three_state":
+	if evidence.get(&"policy") in [&"roguelike_three_state", &"space_disclosure"]:
 		for failure in evidence.get(&"errors", []): errors.append(String(failure))
 		if not evidence.get(&"passed", false): errors.append("로그라이크 가시성 통합 관측 실패")
 		return

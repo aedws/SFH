@@ -11,6 +11,8 @@ hide:
 
 작업을 고르고, 필요한 근거만 펼쳐 확인합니다. 이 화면은 읽기 전용이며 최종 판단은 프로젝트 오너가 합니다.
 
+**최신 오너 승인 변경:** [익스트랙션 구역·공간 공개](../features/extraction-district.md) → [모듈 경계](../architecture/module-audit.md#extraction-district) → [플레이 수락 근거](../quality/e2e-play-session.md#extraction-district). 기존 전방/반경 시야와 모든 방 봉쇄는 기본값이 아니라 이전 정책입니다.
+
 <div id="owner-decision-console" data-sfh-owner-decision-console-host data-focus-object="work:n26-08"></div>
 
 <nav class="sfh-developer-shortcuts" aria-label="개발자 빠른 문서">

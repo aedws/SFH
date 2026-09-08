@@ -1,5 +1,5 @@
 {
-  "version": 29,
+  "version": 30,
   "updated": "2026-09-08",
   "root": {
     "id": "sfh",
@@ -187,6 +187,7 @@
               {"label": "투입 비용·지역·난이도 계약", "source": "features/operation-contracts.md", "route": "features/operation-contracts/", "summary": "투자와 위험·보상 데이터 연결"},
               {"label": "작전 선택과 탈출", "source": "features/raid-setup-extraction.md", "route": "features/raid-setup-extraction/", "summary": "규모 선택·진입 비용·탈출"},
               {"label": "랜덤 맵 생성", "source": "features/map-generation.md", "route": "features/map-generation/", "summary": "규모별 방·통로·건물 생성"},
+              {"label": "익스트랙션 구역 · 공간 공개", "source": "features/extraction-district.md", "route": "features/extraction-district/", "summary": "순환 도로·일반 후퇴·선택 금고·두 출구·Facility 조정"},
               {"label": "전장의 안개", "source": "features/fog-of-war.md", "route": "features/fog-of-war/", "summary": "방·통로·정면 시야 규칙"},
               {"label": "전술 미니맵", "source": "features/minimap.md", "route": "features/minimap/", "summary": "M 확장 지도와 조건부 방 워프"},
               {"label": "탈출 방어전과 결과 정산", "source": "features/extraction-defense-results.md", "route": "features/extraction-defense-results/", "summary": "카운트다운·성공·실패 정산"},

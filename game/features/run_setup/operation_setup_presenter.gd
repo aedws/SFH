@@ -419,11 +419,16 @@ func update(payload: Dictionary) -> void:
 			loadout_investment_summary.text]
 	mission_title.text = "%s  ·  %s" % [region_name, tier_name]
 	mission_code.text = "%s / %s / %s" % [String(region_id).to_upper(), String(difficulty_id).to_upper(), String(tier_id).to_upper()]
-	mission_intel.text = "목표 %d분  ·  방 %d~%d개  ·  동시 적 %d~%d명\n핵심 루프  침투 → 탐색·교전 → 자원 회수 → 탈출 방어" % [
+	mission_intel.text = "목표 %d분  ·  시설 %d~%d개  ·  동시 적 %d~%d명\n우회·후퇴 가능 · 금고만 선택 봉쇄 · 출구에서 즉시 탈출 방어" % [
 		roundi(float(map_data.get(&"target_seconds", 600.0)) / 60.0),
 		int(map_data.get(&"minimum_rooms", 0)), int(map_data.get(&"maximum_rooms", 0)),
 		int(spawn_data.get(&"minimum_enemies", 0)), int(spawn_data.get(&"maximum_enemies", 0)),
 	]
+	var facility: Dictionary = map_data.get(&"facility", {})
+	if not facility.is_empty():
+		mission_intel.text += "\n시설 · %s" % facility.get(&"source", "확정 CSV")
+		if not String(facility.get(&"error", "")).is_empty():
+			mission_intel.text += " · 마지막 정상값 유지"
 	var reward_multiplier := maxf(0.01, float(quote.get(&"reward_multiplier", 1.0)))
 	selected_tier_detail.text = "선택 · %s  |  방 %d~%d개\n동시 적 %d~%d명  ·  회수 ×%.2f" % [
 		tier_name, int(map_data.get(&"minimum_rooms", 0)), int(map_data.get(&"maximum_rooms", 0)),

@@ -133,8 +133,8 @@ func _refresh() -> void:
 	var bodies := [
 		"%s 이동 · %s 대시\n점멸은 별도 스킬이며 경로의 적에게 피해를 줍니다." % [move_keys, dash_key],
 		"%s 기본기 · %s 스킬\n하단 에너지와 재사용 시간을 확인하세요." % [attack_key, skill_keys],
-		"방 진입 시 문이 잠기고 적이 나타납니다.\n전멸 후 %s로 보상 상자를 회수하세요." % interact_key,
-		"모든 전투 방 확보 시 조기 탈출 가능.\n%s 지도로 출구 확인 → 탈출 지점에서 %s." % [map_key, interact_key],
+		"일반 시설은 적을 피해 후퇴할 수 있습니다.\n금고 단말에서 %s를 누르면 봉쇄 전투·추가 보상." % interact_key,
+		"시간·전체 클리어 대기 없이 탈출 가능합니다.\n%s 지도에서 두 출구 확인 → 현장에서 %s로 방어 시작." % [map_key, interact_key],
 	]
 	step_label.text = "%d/%d" % [current_step + 1, STEP_TITLES.size()]
 	title_label.text = STEP_TITLES[current_step]

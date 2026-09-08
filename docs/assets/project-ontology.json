@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-08",
-  "source_sha256": "2f790738e6443d1d78624d2ad6ac3625fd53fb2426d8e74cfb3ebe07c67dbd3b",
+  "source_sha256": "1c1e518694bc9caebe6a54f04372a1648dc252c8bf2e8465dea4eac9bc46cfed",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -392,18 +392,18 @@
     }
   ],
   "summary": {
-    "tracked": 51,
+    "tracked": 52,
     "owner_decisions": 6,
     "blocked": 8,
     "ready": 1,
-    "implemented": 35,
+    "implemented": 36,
     "modules": 60,
-    "documents": 97,
+    "documents": 98,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 462,
+    "relations": 468,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -546,6 +546,36 @@
       "type": "source",
       "certainty": "confirmed",
       "kind": "evidence"
+    },
+    {
+      "id": "decision:extraction-district-spaces",
+      "type": "decision",
+      "label": "구역형 익스트랙션·공간 단위 공개 전환",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "2026-09-08 오너가 추천 변경안 구현을 승인했습니다. 순환 도로·시설, 일반 교전 후퇴, 선택형 금고 봉쇄, 즉시 접근 가능한 복수 탈출, 공간 단위 공개로 전환합니다. 기존 전방위 반경 FOV·모든 방 자동 봉쇄·시간/전실 클리어 탈출·어디서나 출구 워프 규칙과 충돌하며 이번 명시 지시가 현행 구현의 기준입니다. Notion의 과거 기획 상태를 자동 수정하지 않습니다.",
+      "acceptance": "세 규모 연결성, 입퇴실 공개/불투명 지형 기억, 일반 교전 후퇴, 금고 F 봉쇄, 두 탈출구 단일 정산, 제한된 워프와 CSV 교체 검증.",
+      "next_action": "시설 위험·배치 가중치는 임시 수치로 유지하고 실제 회수 동선과 플레이 시간으로 조정합니다.",
+      "relations": [
+        {
+          "to": "principle:owner-authority",
+          "type": "governed_by"
+        },
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:features/extraction-district",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        }
+      ],
+      "kind": "governance"
     },
     {
       "id": "principle:owner-authority",
@@ -2632,15 +2662,15 @@
       "label": "밸런스 데이터",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "데이터 · feature · 파일 1개",
+      "summary": "데이터 · feature · 파일 2개",
       "route": "architecture/code-module-map/?module=balance_data",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/balance_data",
       "kind": "implementation",
       "metrics": {
-        "files": 1,
-        "classes": 1,
-        "incoming": 0,
+        "files": 2,
+        "classes": 2,
+        "incoming": 2,
         "outgoing": 0
       }
     },
@@ -2866,14 +2896,14 @@
       "label": "탈출",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "작전 흐름 · feature · 파일 2개",
+      "summary": "작전 흐름 · feature · 파일 3개",
       "route": "architecture/code-module-map/?module=extraction",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/extraction",
       "kind": "implementation",
       "metrics": {
-        "files": 2,
-        "classes": 2,
+        "files": 3,
+        "classes": 3,
         "incoming": 3,
         "outgoing": 1
       }
@@ -2902,14 +2932,14 @@
       "label": "전장의 안개",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "월드·탐색 · feature · 파일 3개",
+      "summary": "월드·탐색 · feature · 파일 4개",
       "route": "architecture/code-module-map/?module=fog_of_war",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/fog_of_war",
       "kind": "implementation",
       "metrics": {
-        "files": 3,
-        "classes": 3,
+        "files": 4,
+        "classes": 4,
         "incoming": 2,
         "outgoing": 1
       }
@@ -3136,16 +3166,16 @@
       "label": "맵 생성",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "월드·탐색 · feature · 파일 3개",
+      "summary": "월드·탐색 · feature · 파일 7개",
       "route": "architecture/code-module-map/?module=map_generation",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/map_generation",
       "kind": "implementation",
       "metrics": {
-        "files": 3,
-        "classes": 3,
+        "files": 7,
+        "classes": 7,
         "incoming": 7,
-        "outgoing": 0
+        "outgoing": 1
       }
     },
     {
@@ -3406,14 +3436,14 @@
       "label": "방 전투",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "전투 · feature · 파일 5개",
+      "summary": "전투 · feature · 파일 6개",
       "route": "architecture/code-module-map/?module=room_encounters",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/room_encounters",
       "kind": "implementation",
       "metrics": {
-        "files": 5,
-        "classes": 5,
+        "files": 6,
+        "classes": 6,
         "incoming": 3,
         "outgoing": 3
       }
@@ -3658,16 +3688,16 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 57개",
+      "summary": "기반·검증 · verification · 파일 59개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 57,
+        "files": 59,
         "classes": 0,
         "incoming": 0,
-        "outgoing": 53
+        "outgoing": 54
       }
     },
     {
@@ -4185,6 +4215,17 @@
       "summary": "규모별 방·통로·건물 생성",
       "route": "features/map-generation/",
       "source": "docs/features/map-generation.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/extraction-district",
+      "type": "document",
+      "label": "익스트랙션 구역 · 공간 공개",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "순환 도로·일반 후퇴·선택 금고·두 출구·Facility 조정",
+      "route": "features/extraction-district/",
+      "source": "docs/features/extraction-district.md",
       "kind": "evidence"
     },
     {
@@ -4739,6 +4780,36 @@
     }
   ],
   "relations": [
+    {
+      "from": "authority:project-owner",
+      "to": "decision:extraction-district-spaces",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:extraction-district-spaces",
+      "to": "principle:owner-authority",
+      "type": "governed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:extraction-district-spaces",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:extraction-district-spaces",
+      "to": "document:features/extraction-district",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:extraction-district-spaces",
+      "to": "document:quality/e2e-play-session",
+      "type": "verified_by",
+      "origin": "registry"
+    },
     {
       "from": "authority:project-owner",
       "to": "principle:owner-authority",
@@ -6805,6 +6876,12 @@
     },
     {
       "from": "document:features/map-generation",
+      "to": "collection:group:features/world-operations",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/extraction-district",
       "to": "collection:group:features/world-operations",
       "type": "part_of",
       "origin": "knowledge_map"

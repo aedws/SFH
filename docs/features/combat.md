@@ -14,7 +14,7 @@ description: 직접 조준하는 대신 이동·회피와 스킬 사용에 집�
 1. [플레이어 이동](player.md)과 [키 설정](key-mapping.md)을 먼저 확인합니다.
 2. [무기](weapons.md)와 [자동 타게팅](smart-targeting.md)이 공격 대상을 정하는 방식을 읽습니다.
 3. [세 가지 전투 스킬](combat-skills.md)과 [에너지·충전](combat-resources.md)을 확인합니다.
-4. [방 진입 전투](room-encounters.md)에서 문 봉쇄·클리어·보상이 연결되는 흐름을 읽습니다.
+4. [시설 교전](room-encounters.md)에서 일반 후퇴와 선택형 금고 봉쇄·클리어·보상을 구분합니다.
 5. 기획자는 [무기·스킬 DPS 실험실](../tools/dps-lab.md)에서 적 체력·방어막에 따른 피해와 처치 시간을 비교합니다.
 
 ## 2. 하위 문서
