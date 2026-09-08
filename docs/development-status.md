@@ -24,24 +24,24 @@ tags:
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
     <span><small>GDD + TRACKER · 2026-09-08</small><strong>확정도 가중 코드 대응도</strong></span>
-    <b>80.3%</b>
+    <b>79.4%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80.3"><i style="width: 80.3%"></i></div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="79.4"><i style="width: 79.4%"></i></div>
   <p>최신 GDD v128·62블록과 트래커 66행을 코드·기존 테스트 소스와 대조했습니다. 출시 준비율이나 이번 실제 플레이 통과율이 아닙니다. 기존 96%는 이전 백업 기준의 이력이며 현재 진행률로 사용하지 않습니다.</p>
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-**2026-09-08 대조 코드: `21851a1`.** 공개 GDD·트래커 해시는 동일합니다. 오너 승인으로 HP 충돌을 키트 전용 정책으로 해결해 **80.3%**입니다. [승인·구현·부분 검수 잔여](design/master-gdd-alignment.md#health-20260908)를 확인하세요.
+**2026-09-08 마감 대조 코드: `b3239a9`.** 공개 GDD·트래커 라이브 해시는 동일합니다. HP 키트 전용은 유지하되 현행 바닥은 TileMapLayer가 아닌 청크 텍스처이므로 해당 행을 부분 대응으로 정정하여 **79.4%**입니다. [출처·계산·정정 근거](design/master-gdd-alignment.md#day-close) · [내일 순서](design/current-milestone-workline.md#next-20260909).
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
-| 구현 근거 있음 | 45 | 1 |
-| 부분 대응 | 1 | 0.5 |
+| 구현 근거 있음 | 44 | 1 |
+| 부분 대응 | 2 | 0.5 |
 | 신규 미구현 | 6 | 0 |
 | 기존 규칙과 충돌 | 0 | 0 |
 | 기획 판단 대기 | 14 | 0 |
 
-노션 결정52개×3·미정14개×1로 가중합니다. `(45×3 + 1×0.5×3) ÷ (52×3 + 14) = 136.5/170 = 80.3%`. [노션 외 구현9묶음](design/master-gdd-alignment.md#implemented-outside-notion)은 가산하지 않습니다. 확정 요구만의 참고값은87.5%이며 출시율·사람 수락률이 아닙니다.
+노션 결정52개×3·미정14개×1로 가중합니다. `(44×3 + 2×0.5×3) ÷ (52×3 + 14) = 135/170 = 79.4%`. [노션 외 구현9묶음](design/master-gdd-alignment.md#implemented-outside-notion)·위키 성장 그래프 등은 가산하지 않습니다. 확정 요구만의 참고값은86.5%이며 출시율·사람 수락률이 아닙니다.
 
 ## 현재 빌드 상태
 
@@ -64,9 +64,16 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>17 UPDATE BUNDLES · BUILD 11 · IMPROVE 21 · CHANGE 3 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>18 UPDATE BUNDLES · BUILD 11 · IMPROVE 21 · CHANGE 4 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 18</small><b>오늘 마감 · 진행률 근거 정정과 내일 작업 순서</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>수정 · 1</h3><p>최신 노션 GDD62블록·트래커66행과 현행 코드를 다시 대조했습니다. 지정 기술과 실제 구현의 차이를 정정해 135/170 = 79.4%이며 출시 준비율은 아닙니다.</p></div>
+        <p>원본·확정도 가중 계산과 상세 잔여는 <a href="access/login/?return=%2Fdesign%2Fmaster-gdd-alignment%2F%23day-close">팀 마감 근거</a>, 다음 착수 조건은 <a href="design/current-milestone-workline/#next-20260909">내일 실행 순서</a>에서 확인합니다. 오늘은 신규 게임 구현 없이 마무리합니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 17</small><b>성장 그래프 · 대상 하나의 단계별 변화</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 무기·캐릭터·방어구를 각각 하나씩 선택하여 레벨·강화 단계에 따른 성능, 증가량과 성장률을 확인합니다.</strong></div>

@@ -129,7 +129,8 @@ hide:
 
 - [게임에 있는 것과 아직 없는 것](../design/master-gdd-alignment.md#current-classification): 부분 7행의 남은 조건까지 짧게 확인합니다.
 - [노션에 세부 규격이 없는 기존 기능](../design/master-gdd-alignment.md#implemented-outside-notion): 가방 회전·모바일·방 전투/시야·추격 보스 등 9묶음. 삭제 요청이 아니라 기획에 정식 편입할지 판단할 목록입니다.
-- 훈련 무료 세팅과 원복은 이미 보강했습니다. 다음은 N26-08B의 첫 출격 지연·탈출 입력·배포판 플레이 검수입니다. 파우치·심층·혈전은 선행 정책 결정을 기다립니다.
+- **오늘 마감 79.4%:** 기획 66항목 중 구현44·부분2·미구현6·미정14입니다. 첫 렌더 개선으로 바닥 기술이 달라진 점을 부분 대응으로 정정했으며 기능 삭제로 감소한 것은 아닙니다. [계산 근거](../design/master-gdd-alignment.md#day-close).
+- 다음은 배포판 실제 플레이 검수 → 정책 선택 → 파우치·보존 정산 → 심층3경로 → 혈전 순서입니다. [내일 작업표](../design/current-milestone-workline.md#next-20260909). 미구현 기능은 선행 정책 승인이 필요하며 모두 내일 끝난다는 뜻은 아닙니다.
 
 <a class="sfh-article-entry" href="#planner-start"><strong>기획 작성 가이드부터 시작하기 →</strong><small>객체를 고르고 관계와 플레이 결과를 적으면 개발 근거와 연결됩니다.</small></a>
 

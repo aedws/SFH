@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "reviewed_at": "2026-09-08",
-  "reviewed_commit": "21851a1d70661f7c6298c4b99f63157228481e91",
-  "method": "2026-09-08: live GDD/tracker hashes unchanged. Owner explicitly approved following Notion on HP conflict. Reviewed kit-only source policy, medkit runtime button/quantity and assembled small/medium/large launch contracts; game smoke and gameplay E2E passed. HP row now code_supported; first-frame and release Web/Windows ordinary ten-minute acceptance remain partial. CPU-only assembly samples are not GPU FPS or human acceptance. Notion planner statuses unchanged.",
+  "reviewed_commit": "b3239a90f7d9be9fd62a806c0ab626ce28f948fb",
+  "method": "2026-09-08 day close: live published GDD 62 blocks and complete tracker 66 rows match both stored hashes. Reviewed all audit rows, changes since 21851a1, current settlement/AP/floor/map/encounter boundaries and linked test sources. TileMapLayer completion was stale: current DungeonFloorLayer is Node2D chunk textures, so that row is partial pending explicit technical substitution acceptance. 44 supported, 2 partial, 6 missing, 14 undecided; 135/170. First-render improvement is recorded but released Web/Windows ordinary ten-minute acceptance and intermittent extraction F remain open. PR191 and main34234262244 passed; this audit does not claim a new human play session. Notion statuses and game policy are unchanged; tools/FX/UI outside the tracker are not added to its score.",
   "gdd_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
   "tracker_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
   "scoring": {
@@ -397,14 +397,16 @@
       "title": "TileMapLayer 기반 2D 던전 맵 렌더링 파이프라인",
       "request_id": "PLAN-00-ENV",
       "planner_status": "결정 (미구현)",
-      "assessment": "code_supported",
+      "assessment": "partial",
       "code": [
-        "game/features/map_generation/map_generator.gd"
+        "game/features/map_generation/map_generator.gd",
+        "game/features/map_generation/dungeon_floor_layer.gd"
       ],
       "existing_tests": [
+        "game/tests/floor_render_contract_test.gd",
         "game/tests/basic_loop_smoke_test.gd"
       ],
-      "finding": "dda00af: DungeonFloorLayer가 실제 바닥 셀을 TileMapLayer에 배치. 음수 좌표·셀 크기 변경·재생성 초기화 계약 통과. 벽/기둥 표현과 기존 병합 충돌·AStar는 유지하고 타일의 충돌/내비게이션은 꺼 중복 물리를 방지. 실제 중형 렌더링·방/통로 이동 회귀 확인.",
+      "finding": "2026-09-08 마감 정정: 첫 렌더 최적화에서 실제 TileMapLayer를 Node2D 기반 ChunkedCellTexture로 교체했습니다. 지형·좌표·충돌 분리와 바닥 계약은 동작하지만 노션의 지정 노드 요구는 현행 코드에 없습니다. 성능 개선을 취소하지 않고 DEC-N26-TECH에서 대체 구현 수락 또는 지정 노드 재설계를 결정할 때까지 partial로 유지합니다.",
       "next_packet": "N26-01"
     },
     {
@@ -1091,7 +1093,7 @@
         "game/tests/frame_feedback_contract_test.gd",
         "game/tests/release_boot_contract_test.gd"
       ],
-      "finding": "소스 중·대형600초 및 최신 중형120초 약59.8FPS 근거. 실제 Web 릴리스 QA에서 정책 복제 null 초기화 실패와 저프레임 카메라 이탈을 발견·수정하고 중형 일반 입력 12처치→사망→거점 복귀 확인. Windows 릴리스 거점·가방·회전 충돌 안내 확인. 내보낸 PCK 초기화 및 5FPS 렌더 픽셀 게이트 추가. 첫 프레임202ms·배포 양쪽10분 일반 플레이·간헐 탈출F 원인 수락은 미완료여서 partial 유지.",
+      "finding": "2026-09-08: 청크 바닥으로 동일 PC 첫 렌더 중앙값 중형197→23ms·대형304→27ms 개선, Windows PCK 대형3회 약26ms. Web 대형 진입·이동·오류0과 PCK 부팅/5FPS 픽셀 게이트 근거가 있습니다. PR191 게임 계약/E2E와 main34234262244 배포 검증 통과. 그러나 배포 Web/독립 Windows EXE 각각10분 일반 플레이, 간헐 탈출F·출격 실패 원인 수락은 남아 partial 유지. 과거 첫 프레임202ms를 현행 측정값으로 쓰지 않으며 소스 자동 입력/시험 HP를 사람 수락으로 대체하지 않습니다.",
       "next_packet": "N26-08"
     }
   ]
