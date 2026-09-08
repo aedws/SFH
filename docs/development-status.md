@@ -75,7 +75,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="tools/balance-workbench/#growth">성장 계산 조건·원본 주의사항 →</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 16</small><b>무기 거리 피해 · 거리 선택에 따라 달라지는 화력</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-summary"><strong>무엇이 변했나 · 권총은 근거리, 소총은 중거리 유지, 펄스 소총은 중거리 강화 곡선으로 직격 피해가 달라집니다.</strong></div>
