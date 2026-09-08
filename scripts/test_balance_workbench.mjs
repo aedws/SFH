@@ -60,4 +60,14 @@ for(let i=0;i<22;i++)await call(req({...body,id:`${Date.now()}-${crypto.randomUU
 const page=await (await call(new Request(origin+'/api/auth/balance'))).json();assert.equal(page.records.length,20);assert.ok(page.cursor);
 const next=await (await call(new Request(origin+'/api/auth/balance?cursor='+page.cursor))).json();assert.equal(next.records.length,3);
 assert.ok([...store.values.keys()].every(k=>k.startsWith('balance/confirmed/')));
+assert.equal((await (await call(new Request(origin+'/api/auth/balance?latest=combat'))).json()).record,null);
+const combatBody={...body,id:`${Date.now()-10000}-${crypto.randomUUID()}`,model:'combat',input,source:await E.fingerprint(dps.sources)};
+input.loadout.weapon.modules.push({id:'ballistic_core',slot:0,level:3,quality:1});
+const combatSaved=await call(req(combatBody));assert.equal(combatSaved.status,201);
+const latest=await (await call(new Request(origin+'/api/auth/balance?latest=combat'),{...current,session:{role:'developer'}})).json();
+assert.equal(latest.record.id,combatBody.id,'find combat behind more than one page of other models');
+assert.equal(latest.record.graph.series.length,dps.skills.length+2);
+assert.equal(latest.record.source,combatBody.source);
+assert.equal(latest.record.submission,undefined);
+assert.equal((await call(new Request(origin+'/api/auth/balance?latest=combat'),null)).status,401);
 console.log(`BALANCE_WORKBENCH_OK datasets=${catalog.datasets.length} numeric columns, immutable confirmation, roles/CSRF/stale/retry/pagination`);
