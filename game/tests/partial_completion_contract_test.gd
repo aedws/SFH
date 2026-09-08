@@ -41,7 +41,7 @@ func _run() -> void:
 	floor_layer.rebuild(cells, 32.0, Color.BLACK, Color.BLUE)
 	_check(floor_layer.get_used_cells().size() == 3, "negative and positive tiles populated")
 	_check(floor_layer.map_to_local(Vector2i.ZERO) == Vector2(16, 16), "tiles align with world cell centers")
-	_check(not floor_layer.collision_enabled and not floor_layer.navigation_enabled, "no duplicate physics")
+	_check(not floor_layer.get_snapshot().collision_enabled and not floor_layer.get_snapshot().navigation_enabled, "no duplicate physics")
 	floor_layer.rebuild({Vector2i.ONE: true}, 64.0, Color.RED, Color.GREEN)
 	_check(floor_layer.get_used_cells().size() == 1, "regenerate clears previous map")
 	_check(floor_layer.map_to_local(Vector2i.ZERO) == Vector2(32, 32), "cell size changes supported")

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "2e234ee44eb083e151aa2fec0441f2f81fc46799696fa664076f5d2bab7627e3",
+  "source_sha256": "83abe4d49cbb4adc3758d16c152bb038ce9974a63ff704279e3aa45830329f03",
   "domains": [
     {
       "id": "system",
@@ -63,7 +63,7 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 308,
+    "scripts": 310,
     "named_classes": 246,
     "relationships": 192,
     "project_inheritance": 7,
@@ -1268,7 +1268,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 51,
+      "file_count": 53,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -2568,7 +2568,7 @@
       "name": "DungeonFloorLayer",
       "module": "map_generation",
       "path": "game/features/map_generation/dungeon_floor_layer.gd",
-      "extends": "TileMapLayer",
+      "extends": "Node2D",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -4474,7 +4474,7 @@
       "from": "verification",
       "to": "map_generation",
       "type": "verifies",
-      "evidence_count": 6
+      "evidence_count": 7
     },
     {
       "from": "verification",
@@ -4576,7 +4576,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 23
+      "evidence_count": 24
     },
     {
       "from": "verification",

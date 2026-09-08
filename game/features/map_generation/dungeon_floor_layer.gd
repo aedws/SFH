@@ -1,36 +1,44 @@
 class_name DungeonFloorLayer
-extends TileMapLayer
-## Visual-only tile adapter. Generation, merged collisions and navigation stay independent.
-
-var _palette_key := ""
-
+extends Node2D
+## One texel per logical cell; bounded chunks avoid per-tile quadrant uploads.
+## Pure presentation: collision, navigation and generation remain owned by the map.
+@export_range(32, 256, 32) var chunk_cells: int = 128
+var _textures: Dictionary = {}
+var _cells: Dictionary = {}
+var _cell_size := 32.0
+var _render_chunk_cells := 128
 
 func rebuild(cells: Dictionary, world_cell_size: float, primary: Color, alternate: Color) -> void:
-	clear()
-	collision_enabled = false
-	navigation_enabled = false
+	_textures.clear()
+	_cells = cells.duplicate()
+	_cell_size = world_cell_size
+	_render_chunk_cells = clampi(chunk_cells, 32, 256)
 	z_index = -1
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	var pixels := maxi(1, roundi(world_cell_size))
-	scale = Vector2.ONE * world_cell_size / float(pixels)
-	var key := "%d/%s/%s" % [pixels, primary.to_html(), alternate.to_html()]
-	if tile_set == null or key != _palette_key:
-		_palette_key = key
-		var atlas_image := Image.create(pixels * 2, pixels, false, Image.FORMAT_RGBA8)
-		atlas_image.fill(primary)
-		atlas_image.fill_rect(Rect2i(pixels, 0, pixels, pixels), alternate)
-		var atlas := TileSetAtlasSource.new()
-		atlas.texture = ImageTexture.create_from_image(atlas_image)
-		atlas.texture_region_size = Vector2i.ONE * pixels
-		atlas.create_tile(Vector2i.ZERO)
-		atlas.create_tile(Vector2i.RIGHT)
-		tile_set = TileSet.new()
-		tile_set.tile_size = Vector2i.ONE * pixels
-		tile_set.add_source(atlas, 0)
+	var images: Dictionary = {}
 	for cell: Vector2i in cells:
-		set_cell(cell, 0, Vector2i.ZERO if (cell.x + cell.y) % 2 == 0 else Vector2i.RIGHT)
+		var chunk := Vector2i(floori(float(cell.x) / _render_chunk_cells), floori(float(cell.y) / _render_chunk_cells))
+		if not images.has(chunk):
+			var image := Image.create(_render_chunk_cells, _render_chunk_cells, false, Image.FORMAT_RGBA8)
+			image.fill(Color.TRANSPARENT)
+			images[chunk] = image
+		var local := cell - chunk * _render_chunk_cells
+		images[chunk].set_pixel(local.x, local.y, primary if (cell.x + cell.y) % 2 == 0 else alternate)
+	for chunk: Vector2i in images:
+		_textures[chunk] = ImageTexture.create_from_image(images[chunk])
+	queue_redraw()
 
+func _draw() -> void:
+	for chunk: Vector2i in _textures:
+		draw_texture_rect(_textures[chunk], Rect2(Vector2(chunk * _render_chunk_cells) * _cell_size, Vector2.ONE * _render_chunk_cells * _cell_size), false)
+
+func get_used_cells() -> Array:
+	return _cells.keys()
+
+func map_to_local(cell: Vector2i) -> Vector2:
+	return (Vector2(cell) + Vector2.ONE * 0.5) * _cell_size
 
 func get_snapshot() -> Dictionary:
-	return {&"renderer": &"TileMapLayer", &"tile_count": get_used_cells().size(),
-		&"collision_enabled": collision_enabled, &"navigation_enabled": navigation_enabled}
+	return {&"renderer": &"ChunkedCellTexture", &"tile_count": _cells.size(),
+		&"chunk_count": _textures.size(), &"texture_bytes": _textures.size() * _render_chunk_cells * _render_chunk_cells * 4,
+		&"collision_enabled": false, &"navigation_enabled": false}

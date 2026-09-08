@@ -34,6 +34,9 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+$floorOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/floor_render_contract_test.gd" 2>&1
+$floorOutput | ForEach-Object { Write-Output $_ }
+if ($LASTEXITCODE -ne 0 -or ($floorOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($floorOutput -join "`n") -notmatch 'FLOOR_RENDER_OK') { throw 'Floor rendering contract failed.' }
 $healthOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/kit_only_health_contract_test.gd" 2>&1
 $healthOutput | Write-Output
 if ($LASTEXITCODE -ne 0 -or ($healthOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($healthOutput -join "`n") -notmatch 'KIT_ONLY_HEALTH_OK') { throw 'Kit-only health contract failed.' }
