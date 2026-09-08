@@ -478,6 +478,7 @@ func _refresh_modification_inventory() -> void:
 			Vector2(138, 92)
 		)
 		card.tooltip_text = String(entry.get(&"description", ""))
+		card.set_meta(&"item_type", entry.get(&"item_type", &""))
 		card.pressed.connect(_select_inventory_candidate.bind(entry, &"modification"))
 		modification_inventory_grid.add_child(card)
 	if entries.is_empty():
@@ -1089,10 +1090,8 @@ func _sort_modification_entries(first: Dictionary, second: Dictionary) -> bool:
 func get_density_snapshot() -> Dictionary:
 	var metadata_card_count := 0
 	for child in modification_inventory_grid.get_children():
-		if child is Button and (
-			String((child as Button).text).begins_with("MOD  |")
-			or String((child as Button).text).begins_with("PART  |")
-		):
+		# Presentation/localization must not change the semantic audit result.
+		if child is Button and child.get_meta(&"item_type", &"") in [&"module", &"part"]:
 			metadata_card_count += 1
 	var parts_board_snapshot: Dictionary = weapon_parts_board.call(&"get_snapshot")
 	return {
