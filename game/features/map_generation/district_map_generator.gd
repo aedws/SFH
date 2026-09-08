@@ -8,12 +8,30 @@ var district: Dictionary = {}
 var facility_rows: Array[Dictionary] = []
 var facility_metadata: Dictionary = {}
 var exit_rooms: Array[int] = []
+@export var regional_landmarks_enabled := true
+var region_id := "ruined_city"
+var regional_plan: Dictionary = {}
+
+func set_region_context(region: StringName) -> void:
+	region_id = String(region)
+
+func get_regional_plan() -> Dictionary:
+	return regional_plan.duplicate(true)
 
 func _generate_connected_rooms(count: int) -> void:
+	regional_plan.clear()
 	if not district_layout_enabled:
 		super._generate_connected_rooms(count)
 		return
-	district = district_layout.build(tier_config,random,count)
+	if regional_landmarks_enabled:
+		var source := facility_rows
+		if source.is_empty(): source = preload("res://game/features/map_generation/facility_catalog.gd").new().get_rows()
+		var config := {"minimum_rooms":tier_config.minimum_rooms,"maximum_rooms":tier_config.maximum_rooms,"minimum_size":[tier_config.minimum_room_size.x,tier_config.minimum_room_size.y],"maximum_size":[tier_config.maximum_room_size.x,tier_config.maximum_room_size.y]}
+		regional_plan = preload("res://game/features/map_generation/regional_district_plan.gd").new().build(config,region_id,used_seed,source)
+		# Invalid future tier capacity must not strand the player during operation entry.
+		district = district_layout.from_regional_plan(regional_plan) if not regional_plan.is_empty() else district_layout.build(tier_config,random,count)
+	else:
+		district = district_layout.build(tier_config,random,count)
 	rooms.assign(district.rooms)
 	floor_cells = district.floor_cells.duplicate()
 
@@ -44,10 +62,14 @@ func _assign_landmarks() -> void:
 		else: ordinary.append(row)
 	for index in rooms.size():
 		var row: Dictionary = vault if index == vault_index else ordinary[random.randi_range(0,ordinary.size()-1)]
+		if not regional_plan.is_empty():
+			for candidate: Dictionary in source:
+				if candidate.facility_id == regional_plan.buildings[index].facility_id: row = candidate; break
 		var inner := 1.0-clampf(Vector2(district.plots[index]).distance_to(center)/maxf(1,center.length()),0,1)
 		facility_metadata[index] = row.duplicate(true)
 		facility_metadata[index][&"risk"] = 1.0 + inner * float(row.risk_bonus)
 		facility_metadata[index][&"room_index"] = index
+		facility_metadata[index][&"required_landmark"] = not regional_plan.is_empty() and bool(regional_plan.buildings[index].required)
 
 func get_district_snapshot() -> Dictionary:
 	return {&"enabled":district_layout_enabled,&"facilities":facility_metadata.duplicate(true),&"exit_rooms":exit_rooms.duplicate(),&"street_cycles":int(district.get(&"columns",0))*int(district.get(&"rows",0)),&"early_extraction":district_layout_enabled,&"warp_policy":&"terminal_only"}

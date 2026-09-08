@@ -118,6 +118,7 @@ for (const protectedPath of [
   "/assets/search-priorities.json",
   "/tools/dps-lab/",
   "/assets/dps-catalog.json",
+  "/assets/map-catalog.json",
   "/assets/owner-decision-registry.json",
   "/assets/project-ontology.json",
   "/sitemap.xml",

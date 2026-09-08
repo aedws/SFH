@@ -2256,6 +2256,8 @@ func _assemble_game() -> bool:
 						)
 						if map_generator.has_method(&"set_facility_rows"):
 							map_generator.call(&"set_facility_rows", facility_catalog_service.call(&"get_rows"))
+						if map_generator.has_method(&"set_region_context"):
+							map_generator.call(&"set_region_context", active_contract.get(&"region_id", &"ruined_city"))
 						map_generator.call(&"generate", current_map_config, features.map_seed)
 						player_spawn_position = map_generator.call(&"get_player_spawn_position")
 					else:

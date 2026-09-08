@@ -12,6 +12,7 @@ hide:
 게임 규칙을 이해하고, 수치를 시험하고, 판단할 근거를 전달하는 공간입니다.
 
 <nav class="sfh-workspace-launcher" aria-label="기획자 작업 바로가기">
+  <a href="#map-workbench"><small>공간</small><strong>맵·피스 설계실</strong><span>필수 기준점과 랜덤 보조 시설 시험</span></a>
   <a href="#balance-workbench"><small>시험</small><strong>수치·그래프</strong><span>전투 DPS와 전체 밸런스 비교</span></a>
   <a href="#planning-queue"><small>할 일</small><strong>요청·완료 목록</strong><span>요청 ID, 상태, 수락 근거 확인</span></a>
   <a href="#proposal-draft"><small>전달</small><strong>기획 초안 작성</strong><span>Notion에 옮길 제안 만들기</span></a>
@@ -21,6 +22,19 @@ hide:
 </nav>
 
 <p class="sfh-workspace-notice">기획 확정 → 오너 판단 → 구현·검증 → 배포. 수치 시험이나 초안 작성만으로 게임이 바뀌지는 않습니다.</p>
+
+<details class="sfh-workspace-block" markdown="1" id="map-workbench">
+<summary>맵·피스 설계실 <small>시드 비교 → 필수 피스 → Notion 제안</small></summary>
+
+## 익힐 수 있는 지역 맵 만들기
+
+같은 지역·규모에서 큰길과 필수 건물의 위치·크기·출입 방향은 유지하고, 주변 보조 시설을 바꿉니다. **다른 시드**로 반복 비교한 뒤 공간을 선택해서 피스 규칙을 시험하세요. 건물 이름이 치료·상점·전용 드랍 기능까지 뜻하지는 않습니다.
+
+<div data-sfh-map-workbench data-catalog="../../assets/map-catalog.json">맵 자료 준비 중…</div>
+
+[맵 규칙·Facility 입력·검증 범위](../features/extraction-district.md#regional-map). 초안은 이 화면에만 있으며 자동 공유·저장되지 않습니다. Notion에 붙여 넣고 오너 판단을 요청하세요.
+
+</details>
 
 <details class="sfh-workspace-block" markdown="1">
 <summary>변경 사유 <small>공간·탈출 정책이 달라진 이유</small></summary>
@@ -32,7 +46,7 @@ hide:
 건물 전체가 보이는 시야는 방 내부 상황을 한 번에 읽게 하려는 선택입니다. 건물을 나오면 그 안의 적과 물건은 숨고 지형만 기억합니다. 원작의 에셋을 가져오거나 원작과 같은 전투 규칙을 강제하는 뜻은 아닙니다.
 
 - **오너 승인:** 순환 도로·복수 출입구·일반 후퇴·선택 금고·두 출구·공간 공개. [현재 규칙](../features/extraction-district.md).
-- **기획자 제안 필요:** 시설별 위험/자원 가중치, 첫 회수까지 시간, 금고 도전률, 출구까지 이동 시간. Facility 4행은 임시값입니다. 의료 구역이라는 이름만으로 치료 아이템 전용 드랍이 구현된 것은 아닙니다.
+- **기획자 제안 필요:** 시설별 위험/자원 가중치, 첫 회수까지 시간, 금고 도전률, 출구까지 이동 시간. Facility 5개 피스와 배치 수치는 임시값입니다. 의료 구역이라는 이름만으로 치료 아이템 전용 드랍이 구현된 것은 아닙니다.
 - **작성 예:** `[임시] 창고 cache_weight=1.4. 초보가 위험한 중심 금고 없이 3분 안에 소액 회수하는지 확인. 성공률/이동 시간을 근거로 오너에게 확정 요청.`
 - [시트 입력 방법](../getting-started/planner-item-balance-tutorial.md#facility) · [자동 검사와 인간 플레이 잔여](../quality/e2e-play-session.md#extraction-district). 노션과 충돌하는 옛 방 봉쇄·시간 대기는 오너 승인 변경으로 따로 기록하며 노션 체크박스를 임의로 바꾸지 않습니다.
 

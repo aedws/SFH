@@ -12,6 +12,7 @@ TITLES = dict(zip(
     'character_catalog skill_catalog season_reward equipment_identity run_buff_balance upgrade_balance skill_investment weapon_investment item_lifecycle loot_table facility codex operation_preset recipe shop_offer training_scenario utility session_socket_rules weapon_balance'.split(),
     ['캐릭터','스킬','시즌 보상','장비 고유 기능·옵션','내부 성장','장비·모듈 강화','스킬 투자','무기 투자','아이템 생명 주기','지역 드랍 표','시설','도감','작전 프리셋','제작 레시피','상점','훈련장','소모품','런 소켓','무기 밸런스']))
 LABELS = {
+    'shape_x':'필수 피스 가로 0~1','shape_y':'필수 피스 세로 0~1','random_weight':'보조 시설 추첨 가중치',
     'entry_cost':'진입 비용 C','max_health_add':'최대 체력 추가','defense_add':'방어 추가',
     'movement_speed_multiplier':'이동 속도 배수','target_slot_index':'대상 슬롯 번호',
     'cooldown_seconds':'쿨타임 초','energy_cost':'AP 소모','maximum_charges':'최대 충전 횟수','charge_recovery_seconds':'충전 회복 초',

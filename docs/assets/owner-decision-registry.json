@@ -313,6 +313,18 @@
   ],
   "objects": [
     {
+      "id": "decision:regional-landmark-map",
+      "type": "decision",
+      "label": "지역별 필수 피스와 학습 가능한 도로 골격",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "2026-09-08 오너가 지역별 특정 맵 보장과 랜덤성 축소, 기획자·개발자 맵 설계실을 요청했습니다. 정책은 승인됐지만 5개 피스의 크기·위치·가중치는 임시 수치입니다. 노션 과거 체크박스를 완료로 바꾸지 않습니다.",
+      "acceptance": "3지역×3규모 실경로와 필수 피스, 시드 변경 시 기준점 유지와 보조 변화, Web/Godot 배치 동등성, 양 역할 모바일 초안의 무단 적용 방지.",
+      "next_action": "두 번째 출격에서 길찾기 시간·귀환 판단이 개선되는지 사람 플레이로 확인하고 Notion 사유와 함께 수치 확정을 요청합니다.",
+      "relations": [{"to":"principle:owner-authority","type":"governed_by"},{"to":"document:features/extraction-district","type":"documented_by"},{"to":"document:quality/e2e-play-session","type":"verified_by"}]
+    },
+    {
       "id": "decision:extraction-district-spaces",
       "type": "decision",
       "label": "구역형 익스트랙션·공간 단위 공개 전환",

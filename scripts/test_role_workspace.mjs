@@ -19,7 +19,7 @@ try {
     await page.evaluate(()=>document.fonts.ready);
     const root=page.locator('[data-sfh-workspace]');
     const cards=root.locator('.sfh-workspace-launcher a');
-    assert.equal(await cards.count(),6);
+    assert.equal(await cards.count(),7);
     const rect=await cards.last().boundingBox();
     assert.ok(rect.y+rect.height<height,`${role} ${width}: all primary actions in first screen`);
     assert.equal(await root.locator(':scope > details[open]').count(),role==='planner'?1:0);

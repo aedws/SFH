@@ -350,6 +350,9 @@ jobs:
           grep -q "E2E_P8_TRAINING_GROUND_OK hub_station interaction single_attack_telemetry telemetry_hud viewport_safe no_overlap compact_skill_hud scenario_readable ap_rate cooldown_cycle isolated_skill_runtime free_loadout_restore dense_switch spawn_isolation hub_exit_cleanup" /tmp/sfh-p8-training-e2e.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/extraction_district_contract_test.gd" 2>&1 | tee /tmp/sfh-district.log
           grep -q 'EXTRACTION_DISTRICT_OK' /tmp/sfh-district.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/regional_map_contract_test.gd" 2>&1 | tee /tmp/sfh-regional-map.log
+          grep -q 'REGIONAL_MAP_OK' /tmp/sfh-regional-map.log
+          if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-regional-map.log; then exit 1; fi
           if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-district.log; then exit 1; fi
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
           grep -q "E2E_PLAY_SESSION_OK" /tmp/sfh-e2e.log
@@ -519,6 +522,7 @@ jobs:
         run: |
           node scripts/test_dps_catalog.mjs
           node scripts/test_dps_engine.mjs
+          node scripts/test_map_model.cjs
           python scripts/build_balance_catalog.py --check
           node scripts/test_balance_workbench.mjs
           node scripts/test_mobile_orientation_policy.mjs

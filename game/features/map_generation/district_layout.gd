@@ -42,3 +42,18 @@ func _add_space(rect: Rect2i, kind: StringName, floors: Dictionary, spaces: Arra
 	spaces.append({&"space_id":spaces.size(),&"cell_rect":rect,&"kind":kind,&"room_index":room_index})
 	for y in range(rect.position.y,rect.end.y):
 		for x in range(rect.position.x,rect.end.x): floors[Vector2i(x,y)] = true
+
+func from_regional_plan(plan: Dictionary) -> Dictionary:
+	var floors := {}
+	var spaces: Array[Dictionary] = []
+	var rooms: Array[Rect2i] = []
+	var plots: Array[Vector2i] = []
+	for rect: Array in plan.streets: _add_space(Rect2i(rect[0],rect[1],rect[2],rect[3]), &"street", floors, spaces)
+	for building: Dictionary in plan.buildings:
+		var r: Array = building.rect
+		var room := Rect2i(r[0],r[1],r[2],r[3])
+		rooms.append(room)
+		plots.append(Vector2i(building.plot[0],building.plot[1]))
+		_add_space(room,&"room",floors,spaces,int(building.index))
+	for rect: Array in plan.passages: _add_space(Rect2i(rect[0],rect[1],rect[2],rect[3]), &"passage", floors, spaces)
+	return {&"rooms":rooms,&"floor_cells":floors,&"spaces":spaces,&"plots":plots,&"columns":plan.columns,&"rows":plan.rows,&"stride":Vector2i(plan.stride[0],plan.stride[1])}

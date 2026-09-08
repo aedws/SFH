@@ -1,0 +1,139 @@
+{
+	"facilities": [
+		{
+			"anchor_zone": "east",
+			"cache_weight": 1.4,
+			"display_name": "물류 창고",
+			"encounter": "patrol",
+			"entrance_axis": "horizontal",
+			"facility_id": "warehouse",
+			"planner_note": "임시값 일반 자원 회수 목적",
+			"random_weight": 1.0,
+			"required_regions": "industrial_district",
+			"risk_bonus": 0.25,
+			"shape_x": 1.0,
+			"shape_y": 0.25
+		},
+		{
+			"anchor_zone": "west",
+			"cache_weight": 1.0,
+			"display_name": "정비 공장",
+			"encounter": "patrol",
+			"entrance_axis": "vertical",
+			"facility_id": "workshop",
+			"planner_note": "임시값 실내 우회 교전 목적",
+			"random_weight": 1.0,
+			"required_regions": "*",
+			"risk_bonus": 0.5,
+			"shape_x": 0.3,
+			"shape_y": 1.0
+		},
+		{
+			"anchor_zone": "north",
+			"cache_weight": 0.8,
+			"display_name": "의료 구역",
+			"encounter": "patrol",
+			"entrance_axis": "horizontal",
+			"facility_id": "medical",
+			"planner_note": "임시값 낮은 위험의 경유지",
+			"random_weight": 1.0,
+			"required_regions": "research_complex",
+			"risk_bonus": 0.15,
+			"shape_x": 0.0,
+			"shape_y": 0.7
+		},
+		{
+			"anchor_zone": "center",
+			"cache_weight": 2.0,
+			"display_name": "보안 금고",
+			"encounter": "objective",
+			"entrance_axis": "vertical",
+			"facility_id": "vault",
+			"planner_note": "임시값 F 단말 작동 시 봉쇄와 추가 보상",
+			"random_weight": 0.0,
+			"required_regions": "*",
+			"risk_bonus": 0.75,
+			"shape_x": 0.7,
+			"shape_y": 0.7
+		},
+		{
+			"anchor_zone": "south",
+			"cache_weight": 1.0,
+			"display_name": "환승 광장",
+			"encounter": "patrol",
+			"entrance_axis": "horizontal",
+			"facility_id": "transit_square",
+			"planner_note": "임시 피스 폐허 도시의 길찾기 기준점 치료나 상점 기능 없음",
+			"random_weight": 0.0,
+			"required_regions": "ruined_city",
+			"risk_bonus": 0.2,
+			"shape_x": 1.0,
+			"shape_y": 1.0
+		}
+	],
+	"regions": [
+		{
+			"id": "ruined_city",
+			"name": "폐허 도시"
+		},
+		{
+			"id": "industrial_district",
+			"name": "산업 지구"
+		},
+		{
+			"id": "research_complex",
+			"name": "연구 단지"
+		}
+	],
+	"schema": 1,
+	"sources": {
+		"game/features/balance_data/data_version.txt": "2c5ca3cfbbe41ab6f2a8918708e1aeb7f449dd0a91c3809d7ac6cb14729983ba",
+		"game/features/map_generation/configs/large.tres": "eaa1d5d76a32ede0d8cf07170aa5c1635411ffe1951ddeea92fd50fb11916090",
+		"game/features/map_generation/configs/medium.tres": "1294fc7f93fa399c4fb81aaab2c10e8b6855755984a83a5f9502c1dc52ec849f",
+		"game/features/map_generation/configs/small.tres": "83be6272db6de3d3ca57ba41d9902e2bfd001efb4941cce3e573da23fda3f996",
+		"game/features/map_generation/data/facility.csv": "8f0be134bbfb8d63fa816289512dd2dcb9a9e6eb7ec451ec5002f7c493cb76aa",
+		"game/features/map_generation/facility_catalog.gd": "ad0017c2e45082abb17daa37db92cfd9bbdd862f2adae69b39e1dff60af09957",
+		"game/features/map_generation/regional_district_plan.gd": "bd919c383592d7dedc754a73f8121d55cd985d1d548ef7ecbe1abe23a836b782",
+		"game/features/operation_contract/configs/default_operation_contracts.tres": "41e8b7acd0200c0be4bbe51b9eb7f021e8da6a53f711f3e8e8230fad98e97b1a",
+		"scripts/export_map_catalog.gd": "030d3f7c23bd4a30defdcf5e76ba62e14996df1a0e3ccd6e5b336de04f367cd2"
+	},
+	"tiers": {
+		"large": {
+			"maximum_rooms": 60,
+			"maximum_size": [
+				68,
+				42
+			],
+			"minimum_rooms": 45,
+			"minimum_size": [
+				50,
+				30
+			]
+		},
+		"medium": {
+			"maximum_rooms": 40,
+			"maximum_size": [
+				60,
+				38
+			],
+			"minimum_rooms": 30,
+			"minimum_size": [
+				46,
+				28
+			]
+		},
+		"small": {
+			"maximum_rooms": 24,
+			"maximum_size": [
+				54,
+				34
+			],
+			"minimum_rooms": 18,
+			"minimum_size": [
+				42,
+				25
+			]
+		}
+	},
+	"version": "2026-09-08.2"
+}

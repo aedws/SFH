@@ -1,6 +1,7 @@
-facility_id,display_name,encounter,risk_bonus,cache_weight,planner_note
-시설ID,시설 이름,patrol 자유 교전 또는 objective 선택 봉쇄,중심부 적 수량 추가 배수 0~2,탐색 금고 배치 가중치 0초과~10,기획 메모
-warehouse,물류 창고,patrol,0.25,1.4,임시값 일반 자원 회수 목적
-workshop,정비 공장,patrol,0.5,1,임시값 실내 우회 교전 목적
-medical,의료 구역,patrol,0.15,0.8,임시값 낮은 위험의 경유지
-vault,보안 금고,objective,0.75,2,임시값 F 단말 작동 시 봉쇄와 추가 보상
+facility_id,display_name,encounter,risk_bonus,cache_weight,planner_note,required_regions,anchor_zone,shape_x,shape_y,entrance_axis,random_weight
+시설ID,시설 이름,patrol 자유 교전 또는 objective 선택 봉쇄,중심부 적 수량 추가 배수 0~2,탐색 금고 배치 가중치 0초과~10,기획 메모,필수 지역 ID | 구분 또는 * 전체 none 없음,필수 시설 위치 west east north south center,필수 피스 가로 0 최소~1 최대,필수 피스 세로 0 최소~1 최대,필수 출입 방향 horizontal 또는 vertical,보조 시설 추첨 가중치 0~10
+warehouse,물류 창고,patrol,0.25,1.4,임시값 일반 자원 회수 목적,industrial_district,east,1,0.25,horizontal,1
+workshop,정비 공장,patrol,0.5,1,임시값 실내 우회 교전 목적,*,west,0.3,1,vertical,1
+medical,의료 구역,patrol,0.15,0.8,임시값 낮은 위험의 경유지,research_complex,north,0,0.7,horizontal,1
+vault,보안 금고,objective,0.75,2,임시값 F 단말 작동 시 봉쇄와 추가 보상,*,center,0.7,0.7,vertical,0
+transit_square,환승 광장,patrol,0.2,1,임시 피스 폐허 도시의 길찾기 기준점 치료나 상점 기능 없음,ruined_city,south,1,1,horizontal,0
