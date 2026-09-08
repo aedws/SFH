@@ -9,6 +9,22 @@ hide:
 
 # 기획자 작업실
 
+게임 규칙을 이해하고, 수치를 시험하고, 판단할 근거를 전달하는 공간입니다.
+
+<nav class="sfh-workspace-launcher" aria-label="기획자 작업 바로가기">
+  <a href="#balance-workbench"><small>시험</small><strong>수치·그래프</strong><span>전투 DPS와 전체 밸런스 비교</span></a>
+  <a href="#planning-queue"><small>할 일</small><strong>요청·완료 목록</strong><span>요청 ID, 상태, 수락 근거 확인</span></a>
+  <a href="#proposal-draft"><small>전달</small><strong>기획 초안 작성</strong><span>Notion에 옮길 제안 만들기</span></a>
+  <a href="#current-scope"><small>현재 게임</small><strong>구현 범위 확인</strong><span>완료 기능과 미정 정책 구분</span></a>
+  <a href="#item-balance"><small>데이터</small><strong>아이템·시트</strong><span>추가 방법과 입력 규칙</span></a>
+  <a href="#notion-authoring"><small>처음이라면</small><strong>작성 가이드</strong><span>확정·임시·변경 작성 예시</span></a>
+</nav>
+
+<p class="sfh-workspace-notice">기획 확정 → 오너 판단 → 구현·검증 → 배포. 수치 시험이나 초안 작성만으로 게임이 바뀌지는 않습니다.</p>
+
+<details class="sfh-workspace-block" markdown="1">
+<summary>변경 사유 <small>공간·탈출 정책이 달라진 이유</small></summary>
+
 ## 이번 공간·탈출 변경의 기획 사유 {#extraction-rationale}
 
 **모든 방을 청소하는 게임보다, 언제 더 들어가고 언제 가지고 나올지 고르는 게임으로 바꿉니다.** 일반 건물에서는 싸우다가 나올 수 있고, 더 받고 싶으면 금고 단말을 눌러 스스로 봉쇄전을 선택합니다. 출구 2곳을 처음부터 사용할 수 있지만 직접 가서 방어해야 합니다.
@@ -19,6 +35,11 @@ hide:
 - **기획자 제안 필요:** 시설별 위험/자원 가중치, 첫 회수까지 시간, 금고 도전률, 출구까지 이동 시간. Facility 4행은 임시값입니다. 의료 구역이라는 이름만으로 치료 아이템 전용 드랍이 구현된 것은 아닙니다.
 - **작성 예:** `[임시] 창고 cache_weight=1.4. 초보가 위험한 중심 금고 없이 3분 안에 소액 회수하는지 확인. 성공률/이동 시간을 근거로 오너에게 확정 요청.`
 - [시트 입력 방법](../getting-started/planner-item-balance-tutorial.md#facility) · [자동 검사와 인간 플레이 잔여](../quality/e2e-play-session.md#extraction-district). 노션과 충돌하는 옛 방 봉쇄·시간 대기는 오너 승인 변경으로 따로 기록하며 노션 체크박스를 임의로 바꾸지 않습니다.
+
+</details>
+
+<details class="sfh-workspace-block" markdown="1" open>
+<summary>수치 실험실 <small>계산기를 골라 시험하고 확정본 전달</small></summary>
 
 ## 수치로 전투 난이도 비교하기
 
@@ -40,6 +61,11 @@ hide:
 
 [수치 실험·확정 전달 사용법](../tools/balance-workbench.md). 전체 목록은 현행 CSV의 숫자 열을 비교합니다. 지원하지 않는 효과를 임의로 DPS로 환산하지 않습니다. 시설·회수 계산기의 기본값은 **시나리오 예시**이며 현재 작전의 실제 계약을 자동 불러오는 값이 아닙니다.
 
+</details>
+
+<details class="sfh-workspace-block" markdown="1">
+<summary>기획·구현 대조 <small>최신 확인 기준과 남은 범위</small></summary>
+
 ## 최신 기획과 실제 구현 상태
 
 [최신 GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed)는 규칙을, [66개 작업 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2)는 요청 상태를 관리합니다. 노션에서 미구현이어도 게임에는 이미 있을 수 있습니다. [코드 대조와 오너 판단표](../design/master-gdd-alignment.md)를 먼저 확인하세요.
@@ -53,6 +79,11 @@ hide:
 - 훈련 무료 세팅과 원복은 이미 보강했습니다. 다음은 N26-08B의 첫 출격 지연·탈출 입력·배포판 플레이 검수입니다. 파우치·심층·혈전은 선행 정책 결정을 기다립니다.
 
 <a class="sfh-article-entry" href="#planner-start"><strong>기획 작성 가이드부터 시작하기 →</strong><small>객체를 고르고 관계와 플레이 결과를 적으면 개발 근거와 연결됩니다.</small></a>
+
+</details>
+
+<details class="sfh-workspace-block" markdown="1">
+<summary>게임과 기획 구조 이해 <small>처음 읽는 사람을 위한 안내</small></summary>
 
 <section class="sfh-role-console is-planner sfh-role-workspace">
   <header><span class="sfh-kicker">PLANNER ROOM · PLAIN LANGUAGE</span><h2>이 게임을 처음 봐도 여기서부터 읽으면 됩니다</h2><p>SFH는 거점에서 장비를 고르고, 위험한 지역에 들어가 전리품을 모은 뒤, 살아서 탈출해 다음 출격을 준비하는 탑다운 액션 게임입니다.</p></header>
@@ -97,6 +128,11 @@ hide:
 
 하나라도 비어 있으면 개발자는 임의 확정하지 않습니다. `미정`으로 남겨 시험 가능한 기본값과 작업 금지 범위를 분리하고, 프로젝트 오너 판단 대기열에 연결합니다.
 
+</details>
+
+<details class="sfh-workspace-block" markdown="1">
+<summary>아이템·데이터 입력 <small>시트 추가와 수치 변경 방법</small></summary>
+
 ## 아이템 추가·밸런싱 처음 하기 {#item-balance}
 
 **① 표에서 대상 찾기 → ② 하나씩 시험하기 → ③ Notion 확정 후 개발자에게 CSV 배포 요청.**
@@ -107,7 +143,12 @@ hide:
 
 시트는 1행 변수명·2행 설명·3행부터 데이터입니다. **Armor와 새 아이템 효과는 행 입력만으로 게임에 생성되지 않습니다.** 상세 튜토리얼에서 기획자 작성과 개발자 연결 작업을 구분했습니다.
 
-## 현재 변경과 완료 범위
+</details>
+
+<details class="sfh-workspace-block" markdown="1">
+<summary>현재 게임·장비 획득 <small>완료 기능과 임시 드랍 정책</small></summary>
+
+## 현재 변경과 완료 범위 {#current-scope}
 
 **P6 마감 확인:** 시즌 신규 기본값은 대형/페널티 10점입니다. 이미 시작한 구 시즌은 마감까지 기존 조건을 유지합니다. 3대 기록·시즌 마감·칭호/오라는 로컬에서 검증했으며, 실제 계정 서버·서버 검증 지급은 아직 아닙니다. [완료/남은 범위](../features/ranking-provider.md#p6-closeout)를 구분해 두었습니다.
 
@@ -162,6 +203,11 @@ hide:
 - 전투 단검과 이후 추가 장비의 지역·난이도·획득처
 
 확정할 때는 [지역·난이도 드랍 표](../features/loot-tables.md), [전리품 생명 주기](../features/loot-lifecycle.md), [현장 비교·획득](../features/field-loot-acquisition.md)을 함께 보고 Notion에 **획득처 / 대상 장비 / 등급 / 확률 또는 가중치 / 성공·실패 결과**를 남기면 됩니다.
+
+</details>
+
+<details class="sfh-workspace-block" markdown="1">
+<summary>Notion 작성 가이드 <small>상태·근거·변경 예시</small></summary>
 
 ## Notion에 어떻게 적어야 개발에 반영되나요? {#notion-authoring}
 
@@ -262,6 +308,11 @@ hide:
 
 작성 중 충돌하거나 빠진 값이 있으면 개발자는 임의로 확정하지 않고 프로젝트 오너 판단 콘솔의 **오너 판단 필요** 항목으로 돌려놓습니다.
 
+</details>
+
+<details class="sfh-workspace-block" markdown="1">
+<summary>검토할 정책 후보 <small>프로젝트 오너에게 제안할 내용</small></summary>
+
 ## 기획자가 제안하고 프로젝트 오너가 판단할 것
 
 <div class="sfh-decision-lanes">
@@ -271,7 +322,9 @@ hide:
   <a href="../../quality/five-moment-fun-proposal/"><small>승인 전 제안</small><b>한 판의 다섯 순간</b><span>교전·장비·강화·탈출·재도전의 의도와 인간 검수 계획을 보완합니다. 최종 채택은 오너가 판단합니다.</span><em>PROPOSAL</em></a>
 </div>
 
-<details class="sfh-home-drawer sfh-planner-requests" data-sfh-planner-requests>
+</details>
+
+<details id="planning-queue" class="sfh-home-drawer sfh-planner-requests" data-sfh-planner-requests>
   <summary><span><span class="sfh-kicker">DECISION QUEUE</span><b>실제 기획 요청·완료 근거 보기</b><small>담당·상태·수락 기준을 요청 ID로 추적합니다.</small></span><em>＋</em></summary>
   <div class="sfh-home-drawer__body">
     <div class="sfh-planner-requests__heading"><span class="sfh-planner-requests__status" data-sfh-planner-request-status>요청 목록 연결 중</span></div>
@@ -287,7 +340,7 @@ hide:
   </div>
 </details>
 
-<details class="sfh-home-drawer sfh-proposal-composer" data-sfh-proposal-composer>
+<details id="proposal-draft" class="sfh-home-drawer sfh-proposal-composer" data-sfh-proposal-composer>
   <summary><span><span class="sfh-kicker">NOTION DRAFT</span><b>기획 제안 초안 만들기</b><small>브라우저 안에서만 작성하며 자동 전송하지 않습니다.</small></span><em>＋</em></summary>
   <div class="sfh-home-drawer__body">
     <p class="sfh-proposal-local-state">LOCAL ONLY · NO PUBLIC WRITE</p>
@@ -311,6 +364,9 @@ hide:
   </div>
 </details>
 
+<details class="sfh-workspace-block" markdown="1">
+<summary>전달 순서·관련 문서 <small>작성 이후 확인할 곳</small></summary>
+
 ## 오너에게 전달할 기획 근거를 남기는 방법
 
 1. [기획 요청 목록](../design/planner-request-workflow.md)에서 결정할 요청 ID를 확인합니다.
@@ -324,3 +380,5 @@ hide:
   <a href="../../quality/player-perception-audit/"><b>플레이 수락 검사</b><span>사람 눈에 보이는 완료 기준</span></a>
   <a href="../../development-status/"><b>완료된 변경</b><span>하루 단위 구현 결과와 검증</span></a>
 </nav>
+
+</details>

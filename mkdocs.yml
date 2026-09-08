@@ -38,6 +38,7 @@ extra_css:
   - stylesheets/articles.css
   - stylesheets/header-actions.css
   - stylesheets/dps-lab.css
+  - stylesheets/role-workspace.css
 
 extra_javascript:
   - javascripts/search-dashboard.js
@@ -52,6 +53,7 @@ extra_javascript:
   - javascripts/dps-lab.js
   - javascripts/balance-engine.js
   - javascripts/balance-workbench.js
+  - javascripts/role-workspace.js
 
 plugins:
   - search:
