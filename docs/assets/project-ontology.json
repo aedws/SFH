@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-08",
-  "source_sha256": "9e302541c98eafb7203df33caaac47f107e650dcaf59dff7a9d6e78a23762591",
+  "source_sha256": "e87051f1c6d81cabcff24e550eb7e90cd117be34116f7214d042f275a91e932b",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -3658,13 +3658,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 51개",
+      "summary": "기반·검증 · verification · 파일 53개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 51,
+        "files": 53,
         "classes": 0,
         "incoming": 0,
         "outgoing": 52

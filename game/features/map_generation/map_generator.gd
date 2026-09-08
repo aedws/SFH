@@ -39,7 +39,7 @@ var astar_grid := AStarGrid2D.new()
 var random := RandomNumberGenerator.new()
 var collision_body: StaticBody2D
 var collision_shape_count: int = 0
-var floor_layer: TileMapLayer
+var floor_layer: Node2D
 
 
 func configure_obstacles(is_enabled: bool) -> void:

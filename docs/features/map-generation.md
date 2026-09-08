@@ -12,9 +12,9 @@ tags:
 
 # 랜덤 맵 생성
 
-## 바닥 타일 렌더링 · 2026-09-07
+## 바닥 청크 렌더링 · 2026-09-08
 
-`DungeonFloorLayer`가 생성된 바닥 셀을 실제 `TileMapLayer`에 배치합니다. 음수 좌표·다른 셀 크기·재생성 초기화를 지원하며 타일 중복 충돌은 끕니다. 벽/기둥의 기존 표현, 병합 충돌과 AStar 경로·미니맵·안개용 맵 데이터 계약은 유지합니다. [경계와 검증](../architecture/module-audit.md#partial-adapters).
+`DungeonFloorLayer`가 생성된 바닥 셀을 **셀당1픽셀·기본128×128셀 청크 텍스처**로 그립니다. 9/7의 TileMapLayer 방식에서 발생하던 첫 화면의 대량 타일 갱신·업로드를 제거했습니다. 음수 좌표·다른 셀 크기·재생성·빈 영역 투명도를 지원하며 충돌/내비게이션은 생성하지 않습니다. 벽/기둥 표현, 병합 충돌과 AStar·미니맵·안개용 맵 데이터 계약은 유지합니다. [경계와 검증](../architecture/module-audit.md#first-frame-floor) · [첫 렌더 계측](../performance/minimum-requirements.md#first-frame-20260908).
 
 ## 목적
 

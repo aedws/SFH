@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 137 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 138 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -62,8 +62,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLE · BUILD 1 · IMPROVE 1 · CHANGE 1 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 1 · IMPROVE 2 · CHANGE 1 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>작전 첫 화면 끊김 · 바닥 렌더 준비 축소</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 출격 직후 바닥 타일을 한꺼번에 준비하며 멈추던 구간을 줄였습니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>맵 바닥을 셀당1픽셀 청크 텍스처로 교체. 같은PC 각3회 첫 렌더 중앙값: 중형197→23ms·대형304→27ms.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>첫 화면의 대량 타일 갱신·업로드 제거. 바닥 무늬·빈 영역·벽/충돌·안개는 유지하고 실제 렌더 픽셀 회귀를 추가했습니다.</p></div>
+        <p><a href="performance/minimum-requirements/#first-frame-20260908">측정 조건·원시 근거 →</a> · <a href="quality/e2e-play-session/#first-frame-render">QA 범위 →</a> · CPU 전체 로딩·콜드 캐시·10분 일반 플레이는 별도 검수.</p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 1</small><b>소모품 전용 HP · 지참 키트 사용</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
