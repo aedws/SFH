@@ -53,25 +53,28 @@
   }
   function drawBundle(host,graph){
     const primary=el('div');host.replaceChildren(primary);draw(primary,graph);
-    for(const series of graph.series||[]){const details=el('details'),body=el('div');details.append(el('summary',series.title),body);host.append(details);draw(body,{...series,xLabel:graph.xLabel,yLabel:series.title,note:'동일 초기 자원의 독립 스킬 비교 / 생존은 회복·회피 없음. 각 스킬을 동시 사용한 합산 DPS가 아닙니다.'});}
+    for(const series of graph.series||[]){const details=el('details'),body=el('div');details.append(el('summary',series.title),body);host.append(details);const render=()=>draw(body,{...series,xLabel:graph.xLabel,yLabel:series.title,note:'동일 초기 자원의 독립 스킬 비교 / 생존은 회복·회피 없음. 각 스킬을 동시 사용한 합산 DPS가 아닙니다.'});render();details.addEventListener('toggle',()=>{if(details.open)render();});}
   }
   globalThis.SFHBalanceView=Object.freeze({draw,drawBundle});
   function currentCombat(root){
     const panel=el('details');panel.open=true;panel.className='balance-combat-default';panel.append(el('summary','기본 전투 성능 · 확정안 우선 / 없으면 현행 구현값'));
     const status=el('p'),graph=el('div'),retry=button('전투 기본값 새로고침');status.setAttribute('role','status');panel.append(status,retry,graph);root.append(panel);
+    let activeGraph=null,width=graph.clientWidth;
+    const render=value=>{activeGraph=value;drawBundle(graph,value);};
+    const observer=new ResizeObserver(()=>{if(!panel.isConnected){observer.disconnect();return;}if(width!==graph.clientWidth){width=graph.clientWidth;if(activeGraph)drawBundle(graph,activeGraph);}});observer.observe(graph);
     async function load(){
-      retry.disabled=true;graph.replaceChildren();
+      retry.disabled=true;activeGraph=null;graph.replaceChildren();delete panel.dataset.source;delete panel.dataset.ready;
       try{
         const catalog=await json(new URL(root.dataset.combatCatalog||'../../assets/dps-catalog.json',location.href));
         let latest=null,failed=false;
         try{latest=(await json('/api/auth/balance?latest=combat')).record;}catch(e){failed=true;status.textContent=`확정안 조회 실패: ${e.message}. 아래는 별도의 현행 구현 기준값입니다.`;}
         const fingerprint=await SFHBalance.fingerprint(catalog.sources);
         if(latest&&latest.source===fingerprint&&latest.model_version===SFHBalance.version){
-          status.textContent=`기본값: 기획 확정 · ${latest.title} · ${latest.confirmed_at}. 오너 승인·게임 적용과 별도입니다.`;drawBundle(graph,latest.graph);panel.dataset.source='confirmed';
+          status.textContent=`기본값: 기획 확정 · ${latest.title} · ${latest.confirmed_at}. 오너 승인·게임 적용과 별도입니다.`;render(latest.graph);panel.dataset.source='confirmed';
         }else{
           if(!failed)status.textContent=latest?'기획 확정본의 코드/계산 모델이 달라 재검토가 필요합니다. 현재 구현값을 기본으로 표시합니다.':'전투 기획 확정본이 없습니다. 현재 구현값을 기본으로 표시합니다.';
           const input=SFHDps.defaults(catalog,catalog.weapons.some(w=>w.id==='assault_rifle')?'assault_rifle':catalog.weapons[0].id,catalog.skills[0]?.skill_id||'');
-          drawBundle(graph,SFHBalance.calculate('combat',catalog,input));panel.dataset.source='implemented';
+          render(SFHBalance.calculate('combat',catalog,input));panel.dataset.source='implemented';
         }
         panel.dataset.ready='true';
       }catch(e){status.textContent=`전투 그래프 연결 실패: ${e.message}`;delete panel.dataset.ready;}
