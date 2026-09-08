@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "bb9963e4b8d4e5f2c02d2dc6841d14de68c7ca823c7c74531bbb49078c8ca0e7",
+  "source_sha256": "207dd5a4674fe778e6cd1c10d4894e4bf6991de9c93ecdb93da447eaa8e9240a",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 313,
-    "named_classes": 248,
+    "scripts": 317,
+    "named_classes": 250,
     "relationships": 194,
     "project_inheritance": 7,
     "enabled_toggles": 70
@@ -451,10 +451,12 @@
       "path": "game/features/fog_of_war",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 1,
-      "class_count": 1,
+      "file_count": 3,
+      "class_count": 3,
       "classes": [
-        "BattlefieldFogOfWar"
+        "BattlefieldFogOfWar",
+        "RoguelikeFogRuntime",
+        "RoguelikeVisibilityField"
       ],
       "incoming_count": 2,
       "outgoing_count": 1
@@ -1270,7 +1272,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 54,
+      "file_count": 56,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -2193,6 +2195,24 @@
       "module": "fog_of_war",
       "path": "game/features/fog_of_war/fog_of_war.gd",
       "extends": "CanvasLayer",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:RoguelikeFogRuntime",
+      "name": "RoguelikeFogRuntime",
+      "module": "fog_of_war",
+      "path": "game/features/fog_of_war/roguelike_fog_runtime.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:RoguelikeVisibilityField",
+      "name": "RoguelikeVisibilityField",
+      "module": "fog_of_war",
+      "path": "game/features/fog_of_war/visibility_field.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -4428,7 +4448,7 @@
       "from": "verification",
       "to": "fog_of_war",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
@@ -4584,7 +4604,7 @@
       "from": "verification",
       "to": "room_encounters",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
@@ -4602,7 +4622,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 25
+      "evidence_count": 26
     },
     {
       "from": "verification",

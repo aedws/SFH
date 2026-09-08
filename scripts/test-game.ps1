@@ -34,6 +34,10 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+$fogOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/roguelike_fog_contract_test.gd" 2>&1
+$fogStatus = $LASTEXITCODE
+$fogOutput | Write-Output
+if ($fogStatus -ne 0 -or ($fogOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($fogOutput -join "`n") -notmatch 'ROGUELIKE_FOG_OK') { throw 'Roguelike fog contract failed.' }
 $playerUiOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/player_facing_ui_contract_test.gd" 2>&1
 $playerUiStatus = $LASTEXITCODE
 $playerUiOutput | Write-Output

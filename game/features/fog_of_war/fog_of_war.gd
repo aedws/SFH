@@ -5,6 +5,11 @@ const MAX_SHADER_ROOM_RECTS := 64
 const MAX_OCCLUSION_RAYS := 48
 const WALL_COLLISION_MASK := 16
 
+@export var roguelike_visibility_enabled := true
+@export_range(160.0, 960.0, 32.0) var sight_radius := 640.0
+@export_range(0.03, 0.2, 0.01) var fov_refresh_seconds := 0.08
+var roguelike_runtime: RefCounted
+
 @export_range(80.0, 500.0, 10.0) var corridor_near_radius: float = 220.0
 @export_range(300.0, 1600.0, 10.0) var corridor_forward_distance: float = 780.0
 @export_range(20.0, 85.0, 1.0) var corridor_half_angle_degrees: float = 68.0
@@ -59,6 +64,19 @@ func _ready() -> void:
 func configure(actor: Node2D, new_visibility_provider: Node = null) -> bool:
 	if not is_instance_valid(actor):
 		return false
+	roguelike_runtime = null
+	if roguelike_visibility_enabled and is_instance_valid(new_visibility_provider) and new_visibility_provider.has_method(&"get_fog_geometry"):
+		roguelike_runtime = preload("res://game/features/fog_of_war/roguelike_fog_runtime.gd").new()
+		roguelike_runtime.visibility_multiplier = visibility_multiplier
+		if not roguelike_runtime.configure(self, actor, new_visibility_provider): return false
+		tracked_actor = actor
+		visibility_provider = new_visibility_provider
+		set_process(true)
+		return true
+	# Explicit legacy/no-geometry fallback, including reconfiguration after a grid run.
+	var legacy_material := ShaderMaterial.new()
+	legacy_material.shader = preload("res://game/features/fog_of_war/fog_of_war.gdshader")
+	overlay.material = legacy_material
 	tracked_actor = actor
 	visibility_provider = null
 	room_world_rects.clear()
@@ -99,6 +117,7 @@ func set_visibility_multiplier(multiplier: float) -> void:
 
 
 func get_snapshot() -> Dictionary:
+	if roguelike_runtime != null: return roguelike_runtime.get_snapshot()
 	return {
 		&"corridor_near_radius": corridor_near_radius,
 		&"corridor_forward_distance": corridor_forward_distance,
@@ -138,6 +157,13 @@ func get_snapshot() -> Dictionary:
 	}
 
 
+func get_visibility_state(world_position: Vector2) -> StringName:
+	# Diagnostic CELL state; shader edge/actual thin-door masks may hide more pixels.
+	# Not an AI targeting or hit-permission API.
+	if roguelike_runtime != null: return roguelike_runtime.field.state_at(world_position)
+	return &"legacy"
+
+
 func _minimum_occlusion_distance() -> float:
 	var result := corridor_forward_distance * visibility_multiplier
 	for distance in occlusion_distances:
@@ -167,6 +193,10 @@ func _process(delta: float) -> void:
 
 
 func _apply_static_shader_parameters() -> void:
+	if roguelike_runtime != null:
+		roguelike_runtime.visibility_multiplier = visibility_multiplier
+		roguelike_runtime.update(0, true)
+		return
 	var shader_material := overlay.material as ShaderMaterial
 	if shader_material == null:
 		return
@@ -198,6 +228,9 @@ func _apply_static_shader_parameters() -> void:
 
 
 func _update_focus(delta: float = 0.0, snap_transition: bool = false) -> void:
+	if roguelike_runtime != null:
+		roguelike_runtime.update(delta, snap_transition)
+		return
 	if not is_instance_valid(tracked_actor):
 		set_process(false)
 		return

@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-08",
-  "source_sha256": "a4e4d94f788bf411334e07a8f9e73930b67c3ff7cc0cd7f83011db08e3ec1305",
+  "source_sha256": "ab33bc27aac27795e249fa0b11f26bac1a41a1a41265e4e9a95a20fe8fcb9f7f",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -2902,14 +2902,14 @@
       "label": "전장의 안개",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "월드·탐색 · feature · 파일 1개",
+      "summary": "월드·탐색 · feature · 파일 3개",
       "route": "architecture/code-module-map/?module=fog_of_war",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/fog_of_war",
       "kind": "implementation",
       "metrics": {
-        "files": 1,
-        "classes": 1,
+        "files": 3,
+        "classes": 3,
         "incoming": 2,
         "outgoing": 1
       }
@@ -3658,13 +3658,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 54개",
+      "summary": "기반·검증 · verification · 파일 56개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 54,
+        "files": 56,
         "classes": 0,
         "incoming": 0,
         "outgoing": 53

@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 139 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 140 TOPICS</span><span>96 DOCS · CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -62,8 +62,18 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 4 · CHANGE 1 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 1 · IMPROVE 5 · CHANGE 2 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>로그라이크 시야 · 현재/탐색/미탐색 분리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 방 전체를 켜는 대신 주변 360도 시야를 사용하고, 지나온 곳은 어두운 지형으로 기억합니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>방·통로 동일 시야, 벽·문 차폐, 전체 미니맵 유지. 계산·월드 연결·기억 렌더를 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>탐색 기억은 불투명한 간략 지형만 표시해 현재 안 보이는 적·전리품을 숨깁니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>막힌 대각선·얇은 문 뒤 시야 누출을 차단하고 문 개폐·워프·세 규모 생성 맵·GPU 픽셀 검사를 추가했습니다.</p></div>
+        <p><a href="features/fog-of-war/">시야 규칙·모듈 계약 →</a> · <a href="quality/e2e-play-session/#roguelike-fog">렌더 검증·수락 잔여 →</a></p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 3</small><b>보급품 선택 카드 · 회수/분실 정산 화면</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">

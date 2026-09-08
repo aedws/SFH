@@ -42,7 +42,7 @@ search:
   <article><i>ROOM LOCKDOWN</i><b>진입하면 시작되는 방 전투</b><p>방에 들어가면 적이 생성되고 문이 봉쇄됩니다. 모두 처치하면 출구와 보상이 열립니다.</p></article>
   <article><i>RISK · REWARD</i><b>더 투자하고 더 회수</b><p>작전 규모와 난이도를 선택하고, 위험한 전장에서 목표 수익을 채울수록 강한 추격자가 등장합니다.</p></article>
   <article><i>LOOT IDENTITY</i><b>주워서 비교하고 가져오기</b><p>무기·방어구·모듈·파츠를 현장에서 비교하고, 탈출에 성공한 전리품만 다음 작전에 남깁니다.</p></article>
-  <article><i>TACTICAL VISION</i><b>방과 통로가 다른 시야</b><p>전장의 안개와 전체 미니맵을 함께 사용해 탐색한 방, 통로, 탈출 방향을 판단합니다.</p></article>
+  <article><i>TACTICAL VISION</i><b>지형을 기억하는 360도 시야</b><p>벽 뒤 전투는 안개에 숨고, 탐색한 지형은 어둡게 남습니다. 전체 미니맵으로 탈출 경로를 계획하세요.</p></article>
   <article><i>PC · MOBILE</i><b>키보드와 가로형 모바일</b><p>PC 키 설정과 모바일 조이스틱·공격·스킬 입력을 각각의 화면에 맞게 제공합니다.</p></article>
 </section>
 
@@ -54,8 +54,18 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 4 · CHANGE 1 · FIX 4</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 1 · IMPROVE 5 · CHANGE 2 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>로그라이크 시야 · 현재/탐색/미탐색 분리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-summary"><strong>무엇이 변했나 · 방 전체를 켜는 대신 주변 360도 시야를 사용하고, 지나온 곳은 어두운 지형으로 기억합니다.</strong></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>방·통로 동일 시야, 벽·문 차폐, 전체 미니맵 유지. 계산·월드 연결·기억 렌더를 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>탐색 기억은 불투명한 간략 지형만 표시해 현재 안 보이는 적·전리품을 숨깁니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>막힌 대각선·얇은 문 뒤 시야 누출을 차단하고 문 개폐·워프·세 규모 생성 맵·GPU 픽셀 검사를 추가했습니다.</p></div>
+        <p><a href="features/fog-of-war/">시야 규칙·모듈 계약 →</a> · <a href="quality/e2e-play-session/#roguelike-fog">렌더 검증·수락 잔여 →</a></p>
+      </div>
+    </details>
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 3</small><b>보급품 선택 카드 · 회수/분실 정산 화면</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
