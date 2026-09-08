@@ -14,6 +14,10 @@ tags: [기획자, 아이템 추가, 밸런싱, Google Sheets, CSV, 튜토리얼]
 
 ## 1. 먼저 할 일 고르기 {#choose}
 
+### 효과와 스탯을 Notion에서 지정하기
+
+[효과·스탯 명세 툴킷](../tools/effect-toolkit.md)에서 현재 지원하는 스킬·무기·캐릭터·모듈 변수와 단위를 선택하고 Notion 작성문을 만드세요. 공유 시트 **EffectGuide**는 현행 코드 사전, **EffectSpec**은 구현 요청입니다. 새 행동은 `custom_effect`로 규칙을 적으며 기존 밸런스 탭이나 게임에 자동 적용되지 않습니다.
+
 ### 시설 배치와 위험 조정 · Facility {#facility}
 
 2026-09-08 공유 시트의 **Facility**를 12열·5개 피스로 확장했습니다. 1·2행은 고정 설명, 3행부터 데이터입니다. 물류 창고·정비 공장·의료 구역·보안 금고·환승 광장 수치는 임시값입니다. [각 변수와 플레이 영향](../features/extraction-district.md#regional-map).

@@ -1,0 +1,1971 @@
+{
+  "schema": 1,
+  "version": "2026-09-08.2",
+  "fingerprint": "310de3ecf394c0e4d23a6ab45cc45ec0e7ec07bec913ad90e92648b4a3c40eed",
+  "sources": {
+    "game/features/combat_skills/definitions/blink.tres": "f7c9548f0685e1ed90cabb98425799f8d6eed27613779d2dea53bc7712e90d7c",
+    "game/features/combat_skills/definitions/arc_dash.tres": "89ae3166549f9bf2ffa602dd5f5b709fd212fdc46deb7566bfea6aae01bfeea8",
+    "game/features/combat_skills/definitions/magnetic_field.tres": "06d90c5c850c459a41779fdb255d4fbf5d0e84255e9b8ce3d50e045f6c8727ea",
+    "game/features/combat_skills/definitions/speed_boost.tres": "e72f091950495477313d350b5e3c8643def0303968007a730956e9bc326ffeea",
+    "game/features/weapon_balance/data/weapon_balance.csv": "b8532fbab008c12ffe6a0f874b0e756dc5f6222fddd688281379c45060fffec8",
+    "game/features/equipment/data/equipment_identity.csv": "bc0d383b10da0b5588d4e0fa6611591c857b461caada789e7b3435427dfb152d",
+    "game/features/character_selection/data/character_catalog.csv": "f0152c1a3ae4ce6cb9c08674e37034334eab700d152d114114d849d6fe614a00",
+    "game/features/equipment/definitions/weapons/assault_rifle.tres": "fda1cfde4dc258bcabbdaaf70e3e3b346c3629fe8975f04819666443cf1fd5c4",
+    "game/features/equipment/weapon_innate_skill_definition.gd": "4e9b6f85e51065feafb46c79837a12ae7330d688cb618b32157ce2cdd6876130",
+    "game/features/equipment/definitions/weapons/service_pistol.tres": "490cc2f67b778b3ec481c231bc04b2857ac4f2af3b83b303e9b7992326742b1d",
+    "game/features/equipment/definitions/weapons/combat_dagger.tres": "a22e34dd515abbd2da8f47a17ac92279fc9912be5917cc392ce4621deda1fa08",
+    "game/features/equipment/definitions/weapons/greatsword.tres": "5c82786d15f5dee84d016c943cb9d3b9ce51ad916bb1862db7f7058ba9255b7f",
+    "game/features/equipment/definitions/weapons/pulse_rifle.tres": "c132fa8c8dec3ef19d538a8a32f0f8a56a5ee14d6f9165f4751966b28ba1f714",
+    "game/features/equipment/definitions/modules/ballistic_core.tres": "2a2e71c39ae36800c943ff533c3b1e6b983333b1b41ce831169bf51dc5942a96",
+    "game/features/equipment/definitions/modules/vitality_matrix.tres": "c6955455c65aa97b4ac01d434e09c8f50e8ec13d9deac37ca57e740dbe891185",
+    "game/features/equipment/definitions/modules/mobility_chip.tres": "fb585010f1c465e90246182ce6df239b7d53de2a209eaff0ede8bbf58619a9a1",
+    "game/features/equipment/definitions/modules/armor_plate.tres": "a841044d9b769b3c8263c83df19dfc4339dd025d3e411cb18398f5da2c93a0da",
+    "game/features/weapons/weapon_innate_skill_system.gd": "34a490622ae3b45b4785c82fc8cbff3fab6b4a68269a5eb128b0a2720095ae6f",
+    "game/features/combat_skills/effects/path_damage_policy.gd": "493d5567a9d1c433707e514b4ee6e35c0fb18f79693b915c6e1e744288a2386e",
+    "game/features/combat_skills/effects/persistent_magnetic_field.gd": "9102333c1c6c8c45fbbdf8d810c25b1bb4b63b425f3e4f4d1b9261ed6c824703",
+    "game/features/character_selection/character_definition.gd": "a3ca69c55c639f30438e7a4ede2ba105ab123ce717ab15130b40e33c862a5865",
+    "game/features/equipment/stat_modifier.gd": "4cf7533c8a3ad6d81b1e0f57383dcf3648a5ba61a7c553b0e79f8e2fad13958f"
+  },
+  "fields": [
+    {
+      "id": "skill.cooldown_seconds",
+      "kind": "skill",
+      "label": "재사용 대기시간",
+      "unit": "초",
+      "minimum": 0.1,
+      "maximum": 120,
+      "integer": false,
+      "choices": null,
+      "effect": "스킬 입력 / 충전 1회 소비",
+      "targets": [
+        {
+          "id": "blink",
+          "name": "점멸",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/blink.tres",
+              "section": "resource",
+              "field": "cooldown_seconds"
+            }
+          ]
+        },
+        {
+          "id": "arc_dash",
+          "name": "아크 질주",
+          "current": 7.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/arc_dash.tres",
+              "section": "resource",
+              "field": "cooldown_seconds"
+            }
+          ]
+        },
+        {
+          "id": "magnetic_field",
+          "name": "원형 자기장",
+          "current": 8.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/magnetic_field.tres",
+              "section": "resource",
+              "field": "cooldown_seconds"
+            }
+          ]
+        },
+        {
+          "id": "speed_boost",
+          "name": "기동 가속",
+          "current": 12.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/speed_boost.tres",
+              "section": "resource",
+              "field": "cooldown_seconds"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.energy_cost",
+      "kind": "skill",
+      "label": "AP 소모",
+      "unit": "AP",
+      "minimum": 0,
+      "maximum": 1000,
+      "integer": false,
+      "choices": null,
+      "effect": "스킬 입력 / 충전 1회 소비",
+      "targets": [
+        {
+          "id": "blink",
+          "name": "점멸",
+          "current": 20.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/blink.tres",
+              "section": "resource",
+              "field": "energy_cost"
+            }
+          ]
+        },
+        {
+          "id": "arc_dash",
+          "name": "아크 질주",
+          "current": 30.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/arc_dash.tres",
+              "section": "resource",
+              "field": "energy_cost"
+            }
+          ]
+        },
+        {
+          "id": "magnetic_field",
+          "name": "원형 자기장",
+          "current": 35.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/magnetic_field.tres",
+              "section": "resource",
+              "field": "energy_cost"
+            }
+          ]
+        },
+        {
+          "id": "speed_boost",
+          "name": "기동 가속",
+          "current": 25.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/speed_boost.tres",
+              "section": "resource",
+              "field": "energy_cost"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.maximum_charges",
+      "kind": "skill",
+      "label": "최대 충전",
+      "unit": "회",
+      "minimum": 1,
+      "maximum": 10,
+      "integer": true,
+      "choices": null,
+      "effect": "스킬 입력 / 충전 1회 소비",
+      "targets": [
+        {
+          "id": "blink",
+          "name": "점멸",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/blink.tres",
+              "section": "resource",
+              "field": "maximum_charges"
+            }
+          ]
+        },
+        {
+          "id": "arc_dash",
+          "name": "아크 질주",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/arc_dash.tres",
+              "section": "resource",
+              "field": "maximum_charges"
+            }
+          ]
+        },
+        {
+          "id": "magnetic_field",
+          "name": "원형 자기장",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/magnetic_field.tres",
+              "section": "resource",
+              "field": "maximum_charges"
+            }
+          ]
+        },
+        {
+          "id": "speed_boost",
+          "name": "기동 가속",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/speed_boost.tres",
+              "section": "resource",
+              "field": "maximum_charges"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.charge_recovery_seconds",
+      "kind": "skill",
+      "label": "충전 회복 시간",
+      "unit": "초",
+      "minimum": 0.1,
+      "maximum": 120,
+      "integer": false,
+      "choices": null,
+      "effect": "스킬 입력 / 충전 1회 소비",
+      "targets": [
+        {
+          "id": "blink",
+          "name": "점멸",
+          "current": 7.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/blink.tres",
+              "section": "resource",
+              "field": "charge_recovery_seconds"
+            }
+          ]
+        },
+        {
+          "id": "arc_dash",
+          "name": "아크 질주",
+          "current": 9.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/arc_dash.tres",
+              "section": "resource",
+              "field": "charge_recovery_seconds"
+            }
+          ]
+        },
+        {
+          "id": "magnetic_field",
+          "name": "원형 자기장",
+          "current": 10.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/magnetic_field.tres",
+              "section": "resource",
+              "field": "charge_recovery_seconds"
+            }
+          ]
+        },
+        {
+          "id": "speed_boost",
+          "name": "기동 가속",
+          "current": 14.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/speed_boost.tres",
+              "section": "resource",
+              "field": "charge_recovery_seconds"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.BlinkEffect.distance",
+      "kind": "skill",
+      "label": "이동 거리",
+      "unit": "px",
+      "minimum": 32,
+      "maximum": 1200,
+      "integer": false,
+      "choices": null,
+      "effect": "이동 방향 경로 / 벽에 막힘 / 한 발동에서 대상당 1회",
+      "targets": [
+        {
+          "id": "blink",
+          "name": "점멸",
+          "current": 360.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/blink.tres",
+              "section": "sub_resource type=\"Resource\" id=\"BlinkEffect\"",
+              "field": "distance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.PathDamagePolicy.damage",
+      "kind": "skill",
+      "label": "경로 피해",
+      "unit": "피해",
+      "minimum": 0,
+      "maximum": 10000,
+      "integer": false,
+      "choices": null,
+      "effect": "이동 방향 경로 / 벽에 막힘 / 한 발동에서 대상당 1회",
+      "targets": [
+        {
+          "id": "blink",
+          "name": "점멸",
+          "current": 12.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/blink.tres",
+              "section": "sub_resource type=\"Resource\" id=\"PathDamagePolicy\"",
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "arc_dash",
+          "name": "아크 질주",
+          "current": 22.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/arc_dash.tres",
+              "section": "sub_resource type=\"Resource\" id=\"PathDamagePolicy\"",
+              "field": "damage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.PathDamagePolicy.half_width",
+      "kind": "skill",
+      "label": "경로 반폭",
+      "unit": "px",
+      "minimum": 1,
+      "maximum": 240,
+      "integer": false,
+      "choices": null,
+      "effect": "이동 방향 경로 / 벽에 막힘 / 한 발동에서 대상당 1회",
+      "targets": [
+        {
+          "id": "blink",
+          "name": "점멸",
+          "current": 40.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/blink.tres",
+              "section": "sub_resource type=\"Resource\" id=\"PathDamagePolicy\"",
+              "field": "half_width"
+            }
+          ]
+        },
+        {
+          "id": "arc_dash",
+          "name": "아크 질주",
+          "current": 52.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/arc_dash.tres",
+              "section": "sub_resource type=\"Resource\" id=\"PathDamagePolicy\"",
+              "field": "half_width"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.PathDamagePolicy.maximum_targets",
+      "kind": "skill",
+      "label": "최대 피격 대상",
+      "unit": "명",
+      "minimum": 1,
+      "maximum": 64,
+      "integer": true,
+      "choices": null,
+      "effect": "이동 방향 경로 / 벽에 막힘 / 한 발동에서 대상당 1회",
+      "targets": [
+        {
+          "id": "blink",
+          "name": "점멸",
+          "current": 24.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/blink.tres",
+              "section": "sub_resource type=\"Resource\" id=\"PathDamagePolicy\"",
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "arc_dash",
+          "name": "아크 질주",
+          "current": 32.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/arc_dash.tres",
+              "section": "sub_resource type=\"Resource\" id=\"PathDamagePolicy\"",
+              "field": "maximum_targets"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.ArcDashEffect.distance",
+      "kind": "skill",
+      "label": "이동 거리",
+      "unit": "px",
+      "minimum": 32,
+      "maximum": 1200,
+      "integer": false,
+      "choices": null,
+      "effect": "이동 방향 경로 / 벽에 막힘 / 한 발동에서 대상당 1회",
+      "targets": [
+        {
+          "id": "arc_dash",
+          "name": "아크 질주",
+          "current": 290.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/arc_dash.tres",
+              "section": "sub_resource type=\"Resource\" id=\"ArcDashEffect\"",
+              "field": "distance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.MagneticFieldEffect.radius",
+      "kind": "skill",
+      "label": "원형 반경",
+      "unit": "px",
+      "minimum": 32,
+      "maximum": 1000,
+      "integer": false,
+      "choices": null,
+      "effect": "플레이어를 따라가는 원형 지속 피해 / 최초 틱 포함 / 성장 보정은 기존 스킬 계약",
+      "targets": [
+        {
+          "id": "magnetic_field",
+          "name": "원형 자기장",
+          "current": 230.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/magnetic_field.tres",
+              "section": "sub_resource type=\"Resource\" id=\"MagneticFieldEffect\"",
+              "field": "radius"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.MagneticFieldEffect.tick_damage",
+      "kind": "skill",
+      "label": "틱당 피해",
+      "unit": "피해",
+      "minimum": 0,
+      "maximum": 10000,
+      "integer": false,
+      "choices": null,
+      "effect": "플레이어를 따라가는 원형 지속 피해 / 최초 틱 포함 / 성장 보정은 기존 스킬 계약",
+      "targets": [
+        {
+          "id": "magnetic_field",
+          "name": "원형 자기장",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/magnetic_field.tres",
+              "section": "sub_resource type=\"Resource\" id=\"MagneticFieldEffect\"",
+              "field": "tick_damage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.MagneticFieldEffect.duration_seconds",
+      "kind": "skill",
+      "label": "지속 시간",
+      "unit": "초",
+      "minimum": 0.1,
+      "maximum": 8,
+      "integer": false,
+      "choices": null,
+      "effect": "플레이어를 따라가는 원형 지속 피해 / 최초 틱 포함 / 성장 보정은 기존 스킬 계약",
+      "targets": [
+        {
+          "id": "magnetic_field",
+          "name": "원형 자기장",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/magnetic_field.tres",
+              "section": "sub_resource type=\"Resource\" id=\"MagneticFieldEffect\"",
+              "field": "duration_seconds"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.MagneticFieldEffect.tick_interval_seconds",
+      "kind": "skill",
+      "label": "피해 간격",
+      "unit": "초",
+      "minimum": 0.1,
+      "maximum": 2,
+      "integer": false,
+      "choices": null,
+      "effect": "플레이어를 따라가는 원형 지속 피해 / 최초 틱 포함 / 성장 보정은 기존 스킬 계약",
+      "targets": [
+        {
+          "id": "magnetic_field",
+          "name": "원형 자기장",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/magnetic_field.tres",
+              "section": "sub_resource type=\"Resource\" id=\"MagneticFieldEffect\"",
+              "field": "tick_interval_seconds"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.SpeedBoostEffect.speed_multiplier",
+      "kind": "skill",
+      "label": "이동 속도 배율",
+      "unit": "배",
+      "minimum": 1.01,
+      "maximum": 5,
+      "integer": false,
+      "choices": null,
+      "effect": "본인 이동 속도 / 재사용 시 기존 버프 교체 / 종료 시 원복",
+      "targets": [
+        {
+          "id": "speed_boost",
+          "name": "기동 가속",
+          "current": 1.55,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/speed_boost.tres",
+              "section": "sub_resource type=\"Resource\" id=\"SpeedBoostEffect\"",
+              "field": "speed_multiplier"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.SpeedBoostEffect.duration_seconds",
+      "kind": "skill",
+      "label": "지속 시간",
+      "unit": "초",
+      "minimum": 0.1,
+      "maximum": 60,
+      "integer": false,
+      "choices": null,
+      "effect": "본인 이동 속도 / 재사용 시 기존 버프 교체 / 종료 시 원복",
+      "targets": [
+        {
+          "id": "speed_boost",
+          "name": "기동 가속",
+          "current": 4.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/combat_skills/definitions/speed_boost.tres",
+              "section": "sub_resource type=\"Resource\" id=\"SpeedBoostEffect\"",
+              "field": "duration_seconds"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.damage",
+      "kind": "weapon",
+      "label": "탄환 기본 피해",
+      "unit": "피해",
+      "minimum": 0,
+      "maximum": 10000,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 1.6,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "assault_rifle"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "제식 권총",
+          "current": 3.2,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "service_pistol"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "전격 펄스 소총",
+          "current": 1.15,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "pulse_rifle"
+              },
+              "field": "damage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.fire_interval_sec",
+      "kind": "weapon",
+      "label": "발사 간격",
+      "unit": "초",
+      "minimum": 0.05,
+      "maximum": 60,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 0.78,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "assault_rifle"
+              },
+              "field": "fire_interval_sec"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "제식 권총",
+          "current": 0.6,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "service_pistol"
+              },
+              "field": "fire_interval_sec"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "전격 펄스 소총",
+          "current": 0.34,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "pulse_rifle"
+              },
+              "field": "fire_interval_sec"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.target_range_px",
+      "kind": "weapon",
+      "label": "탐지 사거리",
+      "unit": "px",
+      "minimum": 32,
+      "maximum": 3000,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 820.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "assault_rifle"
+              },
+              "field": "target_range_px"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "제식 권총",
+          "current": 560.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "service_pistol"
+              },
+              "field": "target_range_px"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "전격 펄스 소총",
+          "current": 760.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "pulse_rifle"
+              },
+              "field": "target_range_px"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.critical_chance",
+      "kind": "weapon",
+      "label": "치명 확률",
+      "unit": "0~1",
+      "minimum": 0,
+      "maximum": 1,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 0.05,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "assault_rifle"
+              },
+              "field": "critical_chance"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "제식 권총",
+          "current": 0.12,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "service_pistol"
+              },
+              "field": "critical_chance"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "전격 펄스 소총",
+          "current": 0.08,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "pulse_rifle"
+              },
+              "field": "critical_chance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.critical_multiplier",
+      "kind": "weapon",
+      "label": "치명 배율",
+      "unit": "배",
+      "minimum": 1,
+      "maximum": 10,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 1.75,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "assault_rifle"
+              },
+              "field": "critical_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "제식 권총",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "service_pistol"
+              },
+              "field": "critical_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "전격 펄스 소총",
+          "current": 1.65,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "pulse_rifle"
+              },
+              "field": "critical_multiplier"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.burst_count",
+      "kind": "weapon",
+      "label": "점사 발수",
+      "unit": "발",
+      "minimum": 1,
+      "maximum": 32,
+      "integer": true,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "assault_rifle"
+              },
+              "field": "burst_count"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "제식 권총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "service_pistol"
+              },
+              "field": "burst_count"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "전격 펄스 소총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "pulse_rifle"
+              },
+              "field": "burst_count"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.projectiles_per_shot",
+      "kind": "weapon",
+      "label": "발사당 탄환",
+      "unit": "발",
+      "minimum": 1,
+      "maximum": 32,
+      "integer": true,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "assault_rifle"
+              },
+              "field": "projectiles_per_shot"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "제식 권총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "service_pistol"
+              },
+              "field": "projectiles_per_shot"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "전격 펄스 소총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "pulse_rifle"
+              },
+              "field": "projectiles_per_shot"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.pierce_count",
+      "kind": "weapon",
+      "label": "추가 관통 수",
+      "unit": "명",
+      "minimum": 0,
+      "maximum": 32,
+      "integer": true,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "assault_rifle"
+              },
+              "field": "pierce_count"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "제식 권총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "service_pistol"
+              },
+              "field": "pierce_count"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "전격 펄스 소총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "pulse_rifle"
+              },
+              "field": "pierce_count"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.innate_trigger_hits",
+      "kind": "weapon",
+      "label": "고유 기능 발동 명중 수",
+      "unit": "회",
+      "minimum": 1,
+      "maximum": 100,
+      "integer": true,
+      "choices": null,
+      "effect": "탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "assault_rifle"
+              },
+              "field": "innate_trigger_hits"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/assault_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "trigger_every_hits"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "서비스 권총",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "service_pistol"
+              },
+              "field": "innate_trigger_hits"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/service_pistol.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "trigger_every_hits"
+            }
+          ]
+        },
+        {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "combat_dagger"
+              },
+              "field": "innate_trigger_hits"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/combat_dagger.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "trigger_every_hits"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "대검",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "greatsword"
+              },
+              "field": "innate_trigger_hits"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/greatsword.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "trigger_every_hits"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "펄스 소총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "pulse_rifle"
+              },
+              "field": "innate_trigger_hits"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/pulse_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "trigger_every_hits"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.innate_fixed_damage",
+      "kind": "weapon",
+      "label": "고유 고정 피해",
+      "unit": "피해",
+      "minimum": 0.01,
+      "maximum": 10000,
+      "integer": false,
+      "choices": null,
+      "effect": "탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 1.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "assault_rifle"
+              },
+              "field": "innate_fixed_damage"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/assault_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "fixed_damage"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "서비스 권총",
+          "current": 2.2,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "service_pistol"
+              },
+              "field": "innate_fixed_damage"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/service_pistol.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "fixed_damage"
+            }
+          ]
+        },
+        {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "combat_dagger"
+              },
+              "field": "innate_fixed_damage"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/combat_dagger.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "fixed_damage"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "대검",
+          "current": 2.8,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "greatsword"
+              },
+              "field": "innate_fixed_damage"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/greatsword.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "fixed_damage"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "펄스 소총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "pulse_rifle"
+              },
+              "field": "innate_fixed_damage"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/pulse_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "fixed_damage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.innate_effect_kind",
+      "kind": "weapon",
+      "label": "명중 고유 효과",
+      "unit": "종류",
+      "minimum": 0,
+      "maximum": 0,
+      "integer": false,
+      "choices": [
+        "single_target",
+        "electric_area"
+      ],
+      "effect": "탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": "single_target",
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "assault_rifle"
+              },
+              "field": "innate_effect_kind"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/assault_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "effect_kind",
+              "enum_values": {
+                "single_target": 0,
+                "electric_area": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "서비스 권총",
+          "current": "single_target",
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "service_pistol"
+              },
+              "field": "innate_effect_kind"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/service_pistol.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "effect_kind",
+              "enum_values": {
+                "single_target": 0,
+                "electric_area": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": "single_target",
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "combat_dagger"
+              },
+              "field": "innate_effect_kind"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/combat_dagger.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "effect_kind",
+              "enum_values": {
+                "single_target": 0,
+                "electric_area": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "대검",
+          "current": "single_target",
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "greatsword"
+              },
+              "field": "innate_effect_kind"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/greatsword.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "effect_kind",
+              "enum_values": {
+                "single_target": 0,
+                "electric_area": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "펄스 소총",
+          "current": "electric_area",
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "pulse_rifle"
+              },
+              "field": "innate_effect_kind"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/pulse_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "effect_kind",
+              "enum_values": {
+                "single_target": 0,
+                "electric_area": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.innate_effect_radius",
+      "kind": "weapon",
+      "label": "고유 효과 반경",
+      "unit": "px",
+      "minimum": 0,
+      "maximum": 1000,
+      "integer": false,
+      "choices": null,
+      "effect": "탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "assault_rifle"
+              },
+              "field": "innate_effect_radius"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/assault_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "effect_radius"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "서비스 권총",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "service_pistol"
+              },
+              "field": "innate_effect_radius"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/service_pistol.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "effect_radius"
+            }
+          ]
+        },
+        {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "combat_dagger"
+              },
+              "field": "innate_effect_radius"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/combat_dagger.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "effect_radius"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "대검",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "greatsword"
+              },
+              "field": "innate_effect_radius"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/greatsword.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "effect_radius"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "펄스 소총",
+          "current": 144.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "pulse_rifle"
+              },
+              "field": "innate_effect_radius"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/pulse_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "effect_radius"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weapon.innate_maximum_targets",
+      "kind": "weapon",
+      "label": "고유 최대 대상",
+      "unit": "명",
+      "minimum": 1,
+      "maximum": 32,
+      "integer": true,
+      "choices": null,
+      "effect": "탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
+      "targets": [
+        {
+          "id": "assault_rifle",
+          "name": "돌격소총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "assault_rifle"
+              },
+              "field": "innate_maximum_targets"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/assault_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "service_pistol",
+          "name": "서비스 권총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "service_pistol"
+              },
+              "field": "innate_maximum_targets"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/service_pistol.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "combat_dagger"
+              },
+              "field": "innate_maximum_targets"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/combat_dagger.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "대검",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "greatsword"
+              },
+              "field": "innate_maximum_targets"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/greatsword.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "pulse_rifle",
+          "name": "펄스 소총",
+          "current": 8.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "pulse_rifle"
+              },
+              "field": "innate_maximum_targets"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/pulse_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "maximum_targets"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "character.max_health_add",
+      "kind": "character",
+      "label": "패시브 최대 체력 가산",
+      "unit": "HP",
+      "minimum": 0,
+      "maximum": 10000,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "vanguard",
+          "name": "선봉대",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "vanguard"
+              },
+              "field": "max_health_add"
+            }
+          ]
+        },
+        {
+          "id": "runner",
+          "name": "질주자",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "runner"
+              },
+              "field": "max_health_add"
+            }
+          ]
+        },
+        {
+          "id": "bulwark",
+          "name": "방벽병",
+          "current": 35.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "bulwark"
+              },
+              "field": "max_health_add"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "character.defense_add",
+      "kind": "character",
+      "label": "패시브 방어 가산",
+      "unit": "방어",
+      "minimum": 0,
+      "maximum": 1000,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "vanguard",
+          "name": "선봉대",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "vanguard"
+              },
+              "field": "defense_add"
+            }
+          ]
+        },
+        {
+          "id": "runner",
+          "name": "질주자",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "runner"
+              },
+              "field": "defense_add"
+            }
+          ]
+        },
+        {
+          "id": "bulwark",
+          "name": "방벽병",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "bulwark"
+              },
+              "field": "defense_add"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "character.movement_speed_multiplier",
+      "kind": "character",
+      "label": "패시브 이동 속도 배율",
+      "unit": "배",
+      "minimum": 0.1,
+      "maximum": 5,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "vanguard",
+          "name": "선봉대",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "vanguard"
+              },
+              "field": "movement_speed_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "runner",
+          "name": "질주자",
+          "current": 1.1,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "runner"
+              },
+              "field": "movement_speed_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "bulwark",
+          "name": "방벽병",
+          "current": 0.92,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "bulwark"
+              },
+              "field": "movement_speed_multiplier"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module.DamageModifier.amount",
+      "kind": "module",
+      "label": "기본 피해 가산",
+      "unit": "피해",
+      "minimum": 0,
+      "maximum": 10000,
+      "integer": false,
+      "choices": null,
+      "effect": "장착한 동안 가산 / 해제 시 제거 / 강화 추가분은 Upgrade 별도 / candidate ID는 구현된 특수 효과가 아님",
+      "targets": [
+        {
+          "id": "ballistic_core",
+          "name": "탄도 연산 코어",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/modules/ballistic_core.tres",
+              "section": "sub_resource type=\"Resource\" id=\"DamageModifier\"",
+              "field": "amount"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module.HealthModifier.amount",
+      "kind": "module",
+      "label": "최대 체력 가산",
+      "unit": "HP",
+      "minimum": 0,
+      "maximum": 10000,
+      "integer": false,
+      "choices": null,
+      "effect": "장착한 동안 가산 / 해제 시 제거 / 강화 추가분은 Upgrade 별도 / candidate ID는 구현된 특수 효과가 아님",
+      "targets": [
+        {
+          "id": "vitality_matrix",
+          "name": "생체 강화 매트릭스",
+          "current": 10.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/modules/vitality_matrix.tres",
+              "section": "sub_resource type=\"Resource\" id=\"HealthModifier\"",
+              "field": "amount"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module.SpeedModifier.amount",
+      "kind": "module",
+      "label": "이동 속도 가산",
+      "unit": "px/초",
+      "minimum": 0,
+      "maximum": 10000,
+      "integer": false,
+      "choices": null,
+      "effect": "장착한 동안 가산 / 해제 시 제거 / 강화 추가분은 Upgrade 별도 / candidate ID는 구현된 특수 효과가 아님",
+      "targets": [
+        {
+          "id": "mobility_chip",
+          "name": "기동 보조 칩",
+          "current": 10.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/modules/mobility_chip.tres",
+              "section": "sub_resource type=\"Resource\" id=\"SpeedModifier\"",
+              "field": "amount"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module.DefenseModifier.amount",
+      "kind": "module",
+      "label": "방어 가산",
+      "unit": "방어",
+      "minimum": 0,
+      "maximum": 10000,
+      "integer": false,
+      "choices": null,
+      "effect": "장착한 동안 가산 / 해제 시 제거 / 강화 추가분은 Upgrade 별도 / candidate ID는 구현된 특수 효과가 아님",
+      "targets": [
+        {
+          "id": "armor_plate",
+          "name": "복합 장갑판",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/modules/armor_plate.tres",
+              "section": "sub_resource type=\"Resource\" id=\"DefenseModifier\"",
+              "field": "amount"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

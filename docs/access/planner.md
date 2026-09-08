@@ -61,6 +61,15 @@ hide:
 
 ## 수치 조정과 확정 그래프 {#balance-workbench}
 
+<details markdown="1">
+<summary>효과·스탯 툴킷 · 노션 명세와 시트 입력안 만들기</summary>
+
+대상과 효과를 선택하고 수치를 지정하면 구현 변수를 확인하고 Notion 작성문을 생성합니다. [작성 규격·신규 효과 요청](../tools/effect-toolkit.md). 새 Sheet **EffectGuide**는 선택 사전, **EffectSpec**은 요청 명세입니다. 원본 Weapon·Character·Skill·Upgrade와 별개이며 승인 전 게임 값을 덮어쓰지 않습니다.
+
+<div data-sfh-effect-toolkit data-catalog="../../assets/effect-toolkit.json">효과·스탯 자료 읽는 중…</div>
+
+</details>
+
 **① 수치 시험 → ② 그래프 확인 → ③ Notion 사유 작성 → ④ 기획 확정본 저장.** 저장한 결과만 확정안으로 개발자 화면에 전달됩니다. 확정안이 없는 동안 개발자는 현행 CSV 수치·그래프를 별도 기준 자료로 조회합니다. 오너 승인·Sheet/CSV 반영·게임 배포는 별도이며, 현재 원본의 임시 수치를 자동 확정하지 않습니다.
 
 <details markdown="1">

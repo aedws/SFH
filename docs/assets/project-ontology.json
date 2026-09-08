@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-08",
-  "source_sha256": "24f4a6301aa3b42f8d54d3c9dc227aa1212d0992d12a7f167adcf139dea64f58",
+  "source_sha256": "0d928ad359174ea5fa426251c9a793164e2cf05d250416c079b752bac1e6a111",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -398,12 +398,12 @@
     "ready": 1,
     "implemented": 37,
     "modules": 60,
-    "documents": 100,
+    "documents": 101,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 474,
+    "relations": 475,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -3793,6 +3793,17 @@
       "kind": "evidence"
     },
     {
+      "id": "document:tools/effect-toolkit",
+      "type": "document",
+      "label": "효과·스탯 명세 툴킷",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "Notion 명세·지원 변수·Sheet 확장·구현 경로 검증",
+      "route": "tools/effect-toolkit/",
+      "source": "docs/tools/effect-toolkit.md",
+      "kind": "evidence"
+    },
+    {
       "id": "document:getting-started/index",
       "type": "document",
       "label": "시작하기",
@@ -6606,6 +6617,12 @@
     },
     {
       "from": "document:access/developer",
+      "to": "collection:group:project/role-workspaces",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:tools/effect-toolkit",
       "to": "collection:group:project/role-workspaces",
       "type": "part_of",
       "origin": "knowledge_map"
