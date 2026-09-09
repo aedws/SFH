@@ -2425,8 +2425,8 @@ func _verify_growth_balance_modules() -> bool:
 		)
 		if int(snapshot.get(&"run_buff_count", 0)) != 5:
 			failure_message = "RunBuff 시트의 내부 성장 선택지 5개를 읽지 못했습니다."
-		elif int(snapshot.get(&"upgrade_spec_count", 0)) != 25:
-			failure_message = "Upgrade 시트의 강화 스펙 25개를 읽지 못했습니다."
+		elif int(snapshot.get(&"upgrade_spec_count", 0)) != 61:
+			failure_message = "Upgrade 시트의 강화 스펙 61개를 읽지 못했습니다."
 		elif catalog == null or catalog.get_buff(&"vitality") == null:
 			failure_message = "내부 성장 CSV를 RunBuffCatalog로 변환하지 못했습니다."
 		elif not is_equal_approx(float(rifle_level_two.get(&"damage_add", 0.0)), 0.5):
@@ -2447,7 +2447,7 @@ func _verify_growth_balance_modules() -> bool:
 			failure_message = "모듈 1→2 강화 비용을 시트에서 읽지 못했습니다."
 		elif service.call(&"load_upgrade_csv_text", "target_kind,target_id\nmodule,broken", "오류 테스트"):
 			failure_message = "필수 열이 없는 성장 CSV를 허용했습니다."
-		elif int((service.call(&"get_snapshot") as Dictionary).get(&"upgrade_spec_count", 0)) != 25:
+		elif int((service.call(&"get_snapshot") as Dictionary).get(&"upgrade_spec_count", 0)) != 61:
 			failure_message = "잘못된 갱신 후 마지막 정상 성장 데이터가 보존되지 않았습니다."
 		var fallback_payload := balance_config.get("locked_run_buff_payload").duplicate(true) as Resource
 		fallback_payload.set("source_path", "res://missing/web_run_buff_balance.csv")

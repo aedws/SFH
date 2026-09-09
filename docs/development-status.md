@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 158 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 159 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -64,9 +64,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>8 UPDATE BUNDLES · BUILD 3 · IMPROVE 7 · CHANGE 1 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 4 · IMPROVE 8 · CHANGE 1 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 9</small><b>방어구 14종 · 4부위와 2/4세트 효과</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>수호자·질주자·축전자 12종을 추가했습니다. 머리·몸·손·발에 장착하며 2/4세트와 2+2 혼합으로 생존·기동·스킬 성능을 조정합니다. 기존 방탄복·전투화와 저장 장비는 유지합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>지역별 방 보상·보스 드랍, 가방 편집·저장·복원, 모듈 화면의 세트 활성 표시, 게임과 같은 DPS·성장 그래프를 연결했습니다. 공유 시트에 ArmorSet 탭과 방어구·성장·드랍 목록을 추가했습니다. 수치는 임시입니다.</p></div>
+        <p><a href="/features/armor-sets/">방어구 세트·조정 방법</a> · <a href="/quality/e2e-play-session/#armor-20260909">검증 범위</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 8</small><b>무기 8종 · 실제 근접 베기와 찌르기</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>단검·대검은 실제 근접 베기, 신규 창은 긴 찌르기로 변경했습니다. 산탄총 5발 분산과 레일 소총 관통으로 총기 5종·근접 3종을 구성합니다.</p></div>

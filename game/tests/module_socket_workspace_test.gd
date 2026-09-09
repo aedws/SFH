@@ -77,7 +77,7 @@ func _run() -> void:
 	window.open_modules(&"character")
 	await _frames()
 	var board: Control = window.module_workspace
-	_check(board.visible and board.target == &"character" and board.targets.item_count == 5, "three target kinds and five equipped targets")
+	_check(board.visible and board.target == &"character" and board.targets.item_count == 7, "weapon two + armor four + character module targets")
 	var module_id := &""
 	for entry in window.session.inventory.get_snapshot()[&"items"]:
 		if entry.get(&"linked_resource") is EquipmentModuleDefinition:

@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const carrier=()=>({level:1,quality:1,modules:[],parts:[],sockets:{}});
-  function defaults(catalog){const slots=new Set();return {characterId:catalog.loadout.characters[0].character_id,weapon:carrier(),armor:catalog.loadout.armor.filter(a=>{if(slots.has(a.slot))return false;slots.add(a.slot);return true;}).map(a=>({id:a.id,...carrier()})),character:carrier()};}
+  function defaults(catalog){return {characterId:catalog.loadout.characters[0].character_id,weapon:carrier(),armor:catalog.loadout.armor.filter(a=>['tactical_vest','runner_boots'].includes(a.id)).map(a=>({id:a.id,...carrier()})),character:carrier()};}
   const integer=(v,min,max,name)=>{if(!Number.isInteger(v)||v<min||v>max)throw Error(`${name}: ${min}~${max} 정수 필요`);};
   const quality=v=>{if(typeof v!=='number'||!Number.isFinite(v)||v<=0||v>100)throw Error('품질 배율: 0 초과 100 이하');return v;};
   function merge(target,source,q=1){for(const [id,v] of Object.entries(source||{})){const t=target[id]||{add:0,multiply:1};t.add+=(v.add||0)*q;t.multiply*=1+((v.multiply??1)-1)*q;target[id]=t;}}
@@ -58,12 +58,24 @@
     apply(definition,input.weapon,'weapon');
     for(const state of input.armor){const def=data.armor.find(a=>a.id===state.id);if(!def||occupied.has(def.slot))throw Error('방어구 슬롯 중복 또는 원본 없음');occupied.add(def.slot);apply(def,state,'armor');}
     apply({...data.character_carrier,name:'캐릭터'},input.character,'character');
+    const skill={},sets=[];
+    for(const definition of data.armor_sets||[]){
+      const count=input.armor.filter(a=>data.armor.find(d=>d.id===a.id)?.set_id===definition.id).length;
+      if(!count)continue;
+      sets.push({id:definition.id,count});
+      for(const bonus of definition.bonuses){
+        const active=count>=bonus.required_pieces;
+        notes.push(`${definition.name} ${count}/4 · ${bonus.required_pieces}세트 ${active?'활성':'미충족'}: ${bonus.description}`);
+        if(!active)continue;
+        merge(stats,bonus.player);weaponMerge(weapon,bonus.weapon);weaponMerge(skill,bonus.skill);
+      }
+    }
     // Same external character growth as MetaProgressionSystem (no loadout mutation).
     merge(stats,{max_health:{add:(input.character.level-1)*5,multiply:1},movement_speed:{add:0,multiply:Math.pow(1.02,input.character.level-1)}});
     const player={...data.player};for(const [id,v]of Object.entries(stats))player[id]=((player[id]||0)+v.add)*v.multiply;
     player.max_health=Math.max(1,player.max_health);player.defense=Math.max(0,player.defense);player.movement_speed=Math.max(0,player.movement_speed);
     for(const key of Object.keys(stats))if(!Object.hasOwn(data.player,key))notes.push(`${key}: 플레이어 미사용 수치이며 무기/스킬 피해에 자동 합산하지 않습니다.`);
-    return {player,weapon,costs,notes:[...new Set(notes)],character:selected};
+    return {player,weapon,skill,sets,costs,notes:[...new Set(notes)],character:selected};
   }
   globalThis.SFHLoadout=Object.freeze({defaults,resolve,carrier});
 })();

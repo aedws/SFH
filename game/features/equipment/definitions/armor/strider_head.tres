@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="EquipmentArmorDefinition" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/armor_definition.gd" id="armor"]
+[ext_resource type="Script" path="res://game/features/equipment/stat_modifier.gd" id="stat"]
+[ext_resource type="Script" path="res://game/features/equipment/equipment_fixed_option.gd" id="option"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor_sets/strider.tres" id="set"]
+
+[sub_resource type="Resource" id="max_health"]
+script = ExtResource("stat")
+stat_id = &"max_health"
+operation = 0
+amount = 5.0
+
+[sub_resource type="Resource" id="defense"]
+script = ExtResource("stat")
+stat_id = &"defense"
+operation = 0
+amount = 0.5
+
+[sub_resource type="Resource" id="movement_speed"]
+script = ExtResource("stat")
+stat_id = &"movement_speed"
+operation = 0
+amount = 2.0
+
+[sub_resource type="Resource" id="fixed"]
+script = ExtResource("option")
+option_id = &"strider_head_lining"
+display_name = "기동 섬유"
+target_kind = 0
+modifier_id = &"movement_speed"
+operation = 0
+amount = 3.0
+
+
+[resource]
+script = ExtResource("armor")
+armor_id = &"strider_head"
+display_name = "질주자 헬멧"
+slot_id = &"head"
+maximum_level = 3
+module_slot_limit = 2
+module_cost_limit = 6
+stat_modifiers = [SubResource("max_health"), SubResource("defense"), SubResource("movement_speed")]
+fixed_options = [SubResource("fixed")]
+armor_set = ExtResource("set")
+description = "질주자 세트 · 같은 세트 2/4부위 보너스 · 수치 임시 · 고정 옵션 기동 섬유: 3 · 2세트 이동 속도 +8% / 4세트 활성 무기 공격 간격 10% 감소"

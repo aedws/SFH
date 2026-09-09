@@ -1,9 +1,16 @@
 {
-  "version": 58,
+  "version": 59,
   "updated": "2026-09-09",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
+    {
+      "query": "방어구 세트 머리 몸 손 발 수호자 질주자 축전자 2세트 4세트",
+      "label": "방어구 14종 · 개별 능력치와 세트 효과",
+      "description": "Armor·ArmorSet·Upgrade·LootTable, 혼합 2+2와 생존/스킬 그래프, 임시 수치 조정",
+      "category": "기획",
+      "priority": 120
+    },
     {
       "query": "총기 근접 무기 단검 대검 창 산탄총 레일 소총 8종",
       "label": "무기 8종 · 공격 방식과 획득 경로",

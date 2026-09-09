@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="EquipmentArmorDefinition" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/armor_definition.gd" id="armor"]
+[ext_resource type="Script" path="res://game/features/equipment/stat_modifier.gd" id="stat"]
+[ext_resource type="Script" path="res://game/features/equipment/equipment_fixed_option.gd" id="option"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor_sets/bastion.tres" id="set"]
+
+[sub_resource type="Resource" id="max_health"]
+script = ExtResource("stat")
+stat_id = &"max_health"
+operation = 0
+amount = 5.0
+
+[sub_resource type="Resource" id="defense"]
+script = ExtResource("stat")
+stat_id = &"defense"
+operation = 0
+amount = 1.0
+
+[sub_resource type="Resource" id="fixed"]
+script = ExtResource("option")
+option_id = &"bastion_hands_lining"
+display_name = "강화 내피"
+target_kind = 0
+modifier_id = &"defense"
+operation = 0
+amount = 0.5
+
+
+[resource]
+script = ExtResource("armor")
+armor_id = &"bastion_hands"
+display_name = "수호자 장갑"
+slot_id = &"hands"
+maximum_level = 3
+module_slot_limit = 2
+module_cost_limit = 6
+stat_modifiers = [SubResource("max_health"), SubResource("defense")]
+fixed_options = [SubResource("fixed")]
+armor_set = ExtResource("set")
+description = "수호자 세트 · 같은 세트 2/4부위 보너스 · 수치 임시 · 고정 옵션 강화 내피: 0.5 · 2세트 최대 체력 +12% / 4세트 고정 피해 감소 방어력 +3"

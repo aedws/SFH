@@ -1,6 +1,6 @@
 {
-  "version": 33,
-  "updated": "2026-09-08",
+  "version": 34,
+  "updated": "2026-09-09",
   "root": {
     "id": "sfh",
     "label": "SFH 개발 위키",
@@ -225,6 +225,7 @@
             "description": "요원·무기·방어구·가방을 준비하는 방법",
             "documents": [
               {"label": "장비와 인벤토리", "source": "features/equipment.md", "route": "features/equipment/", "summary": "요원·무기·방어구·가방을 준비하는 방법"},
+              {"label": "방어구 4부위와 세트 효과", "source": "features/armor-sets.md", "route": "features/armor-sets/", "summary": "14종 방어구와 2/4세트·지역 파밍·성장·기획 조정"},
               {"label": "P5-01 캐릭터 선택", "source": "features/character-selection.md", "route": "features/character-selection/", "summary": "캐릭터 가격·패시브·작전 견적과 실전 적용"},
               {"label": "캐릭터 장비와 로드아웃", "source": "features/character-equipment.md", "route": "features/character-equipment/", "summary": "무기·방어구·스킬 슬롯"},
               {"label": "무기 고유 스킬과 장비 고정 옵션", "source": "features/equipment-fixed-identity.md", "route": "features/equipment-fixed-identity/", "summary": "같은 무기 고유 효과·성장 비적용 장비 옵션·Sheet/CSV"},

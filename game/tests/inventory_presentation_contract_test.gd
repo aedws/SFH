@@ -20,8 +20,14 @@ func _run() -> void:
 	await _frames()
 	var before: Dictionary = game.inventory_system.export_runtime_state()
 	_check(window.slot_buttons.size() == game.equipment_system.get_slot_descriptors().size(),"only real equipment slots")
-	for button: Button in window.slot_buttons.values():
-		_check(not button.presentation.is_empty(),"equipped silhouette has real definition")
+	for slot in window.slot_buttons:
+		var button: Button = window.slot_buttons[slot]
+		var state: Resource = window.session.equipment.get_equipment_state(slot)
+		if state == null:
+			_check(button.presentation.is_empty() and button.item_label == "빈 슬롯", "empty slot must not invent an equipped silhouette")
+			_check(not button.slot_label.is_empty(), "empty slot retains localized slot identity")
+		else:
+			_check(not button.presentation.is_empty() and button.presentation.get(&"linked_resource") == state.definition,"equipped silhouette has actual slot definition")
 		_check(button.text.contains(button.item_label),"native button name retained")
 	var entries: Array = window.session.inventory.get_snapshot().items
 	for dimensions in [Vector2i(1280,720),Vector2i(1920,1080),Vector2i(640,360),Vector2i(390,844)]:

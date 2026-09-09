@@ -144,4 +144,10 @@ SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입
 
 Git은 소스·변경 이유·검사/복구 기록을 소유하며 빌드 바이너리를 전달하지 않습니다. `ci_budget`는 보수적 검사 분류, `ci_transfer`는 동일 러너 실행/시도별 해시 전달, `deploy_cloudflare_assets`는 커밋/ZIP 대조와 R2 후보 업로드·읽기 검증, Worker는 활성 경로 읽기만 담당합니다. 워크플로가 전환·사후 검증·복구·보존 순서를 조립합니다. 문서 변경은 현재 게임 커밋을 유지하며 토큰·로그인·사용자 저장을 전달 payload에 넣지 않습니다. [재시도·확장 계약](../getting-started/source-control-and-cleanup.md#source-only-delivery).
 
+### 방어구 세트 계약
+
+[방어구 세트](../features/armor-sets.md)는 `ArmorSetDefinition`(지원 수치/임계 검증) → `ArmorSetResolver`(서로 다른 장착 부위 집계) → `EquipmentSystem`(player/weapon/skill 전달)로 분리합니다. Game에 개별 세트 ID 분기를 추가하지 않습니다. 2/4세트는 각각 한 번 적용하고 품질/레벨 배율을 다시 곱하지 않습니다. 같은 ID의 상충된 정의·중복 슬롯은 실패 처리하며 장착 실패 전 원본 상태를 보존합니다. 실제 스킬 효과는 발동 시 스냅샷을 사용합니다.
+
+Armor/ArmorSet 잠금 CSV와 `sync_armor_catalog.py`가 런타임 Resource 및 Web 미러를 함께 생성합니다. 데이터 수정은 컴파일러 검증, 새 행동은 명시적인 허용 키·실행기·회귀 검증을 거칩니다. UI는 미리보기/저장 경계를 지키고, 그래프는 동일 Resource 추출값과 Godot 결과를 대조합니다. 구형 기본 슬롯만 머리·손을 추가하며 사용자 정의 슬롯과 기존 장비는 유지합니다.
+
 플러그인, 컴포넌트, 기능 토글, 기능 끄기, 모듈 제거, 의존성 분리, 인벤토리 토글, 장비 개조 토글

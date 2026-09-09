@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "version": "2026-09-08.2",
-  "fingerprint": "72c693dd4a3d796fbccf0cbbae592967437a693611e6657a68b790eefa393731",
+  "version": "2026-09-09.1",
+  "fingerprint": "f7b2153be559502adc61c521dcf14972a314d9b5a1232eda020d8265c2965740",
   "sources": {
     "game/features/combat_skills/definitions/blink.tres": "f7c9548f0685e1ed90cabb98425799f8d6eed27613779d2dea53bc7712e90d7c",
     "game/features/combat_skills/definitions/arc_dash.tres": "89ae3166549f9bf2ffa602dd5f5b709fd212fdc46deb7566bfea6aae01bfeea8",
     "game/features/combat_skills/definitions/magnetic_field.tres": "06d90c5c850c459a41779fdb255d4fbf5d0e84255e9b8ce3d50e045f6c8727ea",
     "game/features/combat_skills/definitions/speed_boost.tres": "e72f091950495477313d350b5e3c8643def0303968007a730956e9bc326ffeea",
     "game/features/weapon_balance/data/weapon_balance.csv": "d6696115650d5be648b67ee0a197e3a2f0bd0cace67588b503ebd298a6c3ddd4",
-    "game/features/equipment/data/equipment_identity.csv": "d1e0b4089238455685bff0aab2d25cd88e5336f1e414be5076126363f91bc85c",
+    "game/features/equipment/data/equipment_identity.csv": "d4637b51f990df33d00812a9e90ae7defb1caa565ecc4da56d4c5112fc40c568",
     "game/features/character_selection/data/character_catalog.csv": "f0152c1a3ae4ce6cb9c08674e37034334eab700d152d114114d849d6fe614a00",
     "game/features/equipment/definitions/weapons/assault_rifle.tres": "fda1cfde4dc258bcabbdaaf70e3e3b346c3629fe8975f04819666443cf1fd5c4",
     "game/features/equipment/weapon_innate_skill_definition.gd": "4e9b6f85e51065feafb46c79837a12ae7330d688cb618b32157ce2cdd6876130",

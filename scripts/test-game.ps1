@@ -34,10 +34,20 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+$armorOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/armor_set_contract_test.gd" 2>&1
+$armorStatus = $LASTEXITCODE
+$armorOutput | Write-Output
+if ($armorStatus -ne 0 -or ($armorOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($armorOutput -join "`n") -notmatch 'ARMOR_SET_OK') { throw 'Armor set contract failed.' }
+
 $arsenalOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/weapon_arsenal_contract_test.gd" 2>&1
 $arsenalStatus = $LASTEXITCODE
 $arsenalOutput | Write-Output
 if ($arsenalStatus -ne 0 -or ($arsenalOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($arsenalOutput -join "`n") -notmatch 'WEAPON_ARSENAL_OK') { throw 'Weapon arsenal contract failed.' }
+
+$inventoryViewOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/inventory_presentation_contract_test.gd" 2>&1
+$inventoryViewStatus = $LASTEXITCODE
+$inventoryViewOutput | Write-Output
+if ($inventoryViewStatus -ne 0 -or ($inventoryViewOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($inventoryViewOutput -join "`n") -notmatch 'INVENTORY_PRESENTATION_OK') { throw 'Inventory presentation contract failed.' }
 
 $fogOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/roguelike_fog_contract_test.gd" 2>&1
 $fogStatus = $LASTEXITCODE

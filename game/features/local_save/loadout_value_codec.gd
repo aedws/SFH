@@ -9,6 +9,7 @@ const TYPES := {
 	"character_module_definition": "res://game/features/equipment/character_module_definition.gd",
 	"weapon": "res://game/features/equipment/weapon_definition.gd",
 	"armor": "res://game/features/equipment/armor_definition.gd",
+	"armor_set": "res://game/features/equipment/armor_set_definition.gd",
 	"fixed_option": "res://game/features/equipment/equipment_fixed_option.gd",
 	"innate_skill": "res://game/features/equipment/weapon_innate_skill_definition.gd",
 	"skill": "res://game/features/equipment/skill_definition.gd",

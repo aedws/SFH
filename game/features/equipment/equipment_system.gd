@@ -234,7 +234,16 @@ func get_active_weapon_upgrade_modifiers() -> Dictionary:
 				module_instance.upgrade_level
 				), module_instance.item_quality_payload)
 			)
+	_accumulate_weapon_modifier_dictionary(result, get_armor_set_snapshot().weapon)
 	return result
+
+
+func get_armor_set_snapshot() -> Dictionary:
+	return ArmorSetResolver.resolve(equipment_states.values() if armor_enabled else [])
+
+
+func get_equipment_skill_modifiers() -> Dictionary:
+	return get_armor_set_snapshot().skill
 
 
 func get_active_weapon_fixed_modifiers() -> Dictionary:
@@ -266,7 +275,7 @@ func get_active_weapon_identity_snapshot() -> Dictionary:
 
 
 func can_equip_definition(slot_id: StringName, definition: Resource) -> bool:
-	if loadout == null:
+	if loadout == null or definition == null or not definition.has_method(&"is_valid") or not definition.is_valid():
 		return false
 	var rule := loadout.get_slot_rule(slot_id)
 	if rule == null or not rule.accepts(definition):
@@ -307,6 +316,10 @@ func equip_state(slot_id: StringName, saved_state: EquipmentItemState) -> bool:
 	var state := saved_state.duplicate(true) as EquipmentItemState
 	state.state_id = slot_id
 	state.set_upgrade_balance_provider(upgrade_balance_provider)
+	if not state.validation_errors().is_empty(): return false
+	var prospective := equipment_states.duplicate()
+	prospective[slot_id] = state
+	if not ArmorSetResolver.resolve(prospective.values()).errors.is_empty(): return false
 	equipment_states[slot_id] = state
 	_assign_definition_to_loadout(slot_id, state.definition)
 	_refresh_after_customization()
@@ -449,6 +462,8 @@ func validate_runtime_state(saved: Dictionary, weapon_paths: Dictionary = {}) ->
 		var rule := saved_loadout.get_slot_rule(StringName(slot_id))
 		if rule == null or not rule.accepts(definition):
 			errors.append("작전 선택 무기가 슬롯 규칙과 맞지 않습니다: %s" % slot_id)
+	for message in ArmorSetResolver.resolve(saved_states.values()).errors:
+		errors.append(message)
 	return errors
 
 
@@ -635,6 +650,7 @@ func _resolve_stat_modifiers() -> void:
 		stat_modifiers_changed.emit(get_stat_modifiers())
 		return
 
+	_accumulate_modifier_dictionary(get_armor_set_snapshot().player)
 	var module_targets := equipment_states.values()
 	if character_module_state != null: module_targets.append(character_module_state)
 	for target in module_targets:

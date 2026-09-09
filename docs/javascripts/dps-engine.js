@@ -79,19 +79,20 @@
     const cycle = gap + (input.burst-1)*burstGap;
     const allowed = !skill || skill.required_combat_tags.every(tag => weapon.tags.includes(tag));
     const override = weapon.overrides[input.skillId] || {};
-    const skillDamage = input.skillDamage * input.skillMultiplier * (skill?.kind === 'field' ? override.tick_damage_multiplier ?? 1 : override.damage_multiplier ?? 1)
+    const skillDamage = input.skillDamage * input.skillMultiplier * (loadout?.skill.damage_multiply??1) * (skill?.kind === 'field' ? override.tick_damage_multiplier ?? 1 : override.damage_multiplier ?? 1)
       + (skill?.kind === 'path' && input.shock ? skill.parameters.path_damage.trigger_bonus_damage : 0);
     const duration = input.skillDuration*(override.duration_multiplier ?? 1);
     const ticks = skill?.kind === 'field' ? Math.ceil(duration/input.skillTick-1e-9) : 1;
     const perCast = skill?.kind === 'utility' || !skill || !allowed ? 0 : skillDamage*ticks*input.coverage;
     const innate = input.innate && reachable ? (weapon.innate.fixed_damage || 0) / (weapon.innate.trigger_every_hits || 1) : 0;
-    return {weapon,skill,allowed,hit,gap,burstGap,cycle,skillDamage,duration,ticks,perCast,loadout,range,distanceFactor,reachable,
+    const skillCooldown=Math.max(.05,input.skillCooldown*(loadout?.skill.cooldown_multiply??1));
+    return {weapon,skill,allowed,hit,gap,burstGap,cycle,skillDamage,skillCooldown,duration,ticks,perCast,loadout,range,distanceFactor,reachable,
       sustainedWeapon:(hit+innate)*input.projectiles*input.burst*input.hitRate/cycle,
       activeSkillDps:skill?.kind === 'field' && allowed ? skillDamage/input.skillTick*input.coverage : 0};
   }
   function simulate(catalog, input) {
     const x = resolve(catalog,input), dt=0.01, budget=input.hp+input.armor;
-    if (x.skill?.kind === 'field' && x.ticks*(1+input.horizon/input.skillCooldown)>200000) throw Error('계산 예산 초과: 지속 시간·관측 시간을 줄이거나 틱 간격을 늘려주세요.');
+    if (x.skill?.kind === 'field' && x.ticks*(1+input.horizon/x.skillCooldown)>200000) throw Error('계산 예산 초과: 지속 시간·관측 시간을 줄이거나 틱 간격을 늘려주세요.');
     let energy=input.energy, idle=0, charges=input.charges, recharge=0, cooldown=0;
     let nextShot=0, burstIndex=0, weaponDamage=0, skillDamage=0, confirmed=0, procs=0, casts=0, ttk=null, active=[];
     const player=x.loadout?.player||catalog.loadout?.player||{max_health:100,defense:0,movement_speed:280};
@@ -121,7 +122,7 @@
         if(burstIndex>=input.burst) burstIndex=0;
       }
       if(x.skill && x.allowed && cooldown<=1e-9 && (!input.resourceLimits || (charges>0 && energy+0.001>=input.skillCost))) {
-        casts++; cooldown=input.skillCooldown;
+        casts++; cooldown=x.skillCooldown;
         if(input.resourceLimits) {
           energy=Math.max(0,energy-input.skillCost); if(input.skillCost>0) idle=0;
           charges--; if(recharge<=0) recharge=input.recharge;
