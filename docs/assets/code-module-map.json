@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "7e1347daa051b0af9c251c3fe3429de3796683f8a6cb59237d2d97001389be3f",
+  "source_sha256": "5b1b9f71ecbf3e0551e456bb744a71e55058a5d227367f96d89fb98348e3743c",
   "domains": [
     {
       "id": "system",
@@ -4650,7 +4650,7 @@
       "from": "verification",
       "to": "combat_skills",
       "type": "verifies",
-      "evidence_count": 6
+      "evidence_count": 7
     },
     {
       "from": "verification",
@@ -4920,7 +4920,7 @@
       "from": "verification",
       "to": "skill_binding",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",

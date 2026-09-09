@@ -54,9 +54,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 2 · IMPROVE 5 · CHANGE 1 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>7 UPDATE BUNDLES · BUILD 2 · IMPROVE 6 · CHANGE 1 · FIX 5</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 7</small><b>무기 드랍 재검증 · 교체 스킬 키·복원 수정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>교체 스킬이 사용자 지정 키를 잃던 출격 경로와 K 설정·연속 교체·복귀 시 배치 불일치를 수정했습니다. 임시 스킬 ID는 영구 설정에 남기지 않습니다.</p><p>실행 계약 없는 효과가 유효한 스킬로 인정되던 검증 누락을 막았습니다. 정의·효과를 교체한 시험 스킬도 공통 실행기로 발동합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>무기 방/보스 드랍 54경로와 실제 가방·장착·정산 E2E를 확인하고, 세 규모 보조 출구를 실제 F 입력으로 검사했습니다. 일반 적 무기 드랍 행은 없으며 보상 정책은 유지합니다.</p></div>
+        <p><a href="quality/e2e-play-session/#loot-skill-20260909">감사 결과·수정·남은 일반 플레이 QA</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 6</small><b>기획자 안내 · 미정 14건의 판단 질문과 예시</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>개선 · 1</h3><p>최상단 판단 안내에 추가 미정 14건의 선택 질문·미승인 예시를 항목별로 제공했습니다. 같은 요청 ID는 항목 이름까지 전달하고, 임시 구현 유지와 새 승인·서버 운영을 구분합니다.</p></div>

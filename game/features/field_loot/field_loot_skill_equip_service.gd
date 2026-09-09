@@ -80,7 +80,7 @@ func equip(item_id: StringName) -> Dictionary:
 	if not bool(replacement.get(&"success", false)):
 		return replacement
 	if not bool(binding_provider.call(
-		&"replace_runtime_skill", previous_skill_id, entry.definition.skill_id, action_id
+		&"replace_runtime_skill", previous_skill_id, entry.definition.skill_id, action_id, entry.definition
 	)):
 		skill_system.call(
 			&"restore_skill_replacement",

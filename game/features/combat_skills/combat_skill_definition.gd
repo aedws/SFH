@@ -23,10 +23,15 @@ func is_valid() -> bool:
 		and not display_name.is_empty()
 		and input_action != &""
 		and cooldown_seconds > 0.0
+		and is_finite(cooldown_seconds)
 		and energy_cost >= 0.0
+		and is_finite(energy_cost)
 		and maximum_charges > 0
 		and charge_recovery_seconds > 0.0
+		and is_finite(charge_recovery_seconds)
 		and effect != null
+		and effect.has_method(&"activate")
+		and effect.has_method(&"get_parameters")
 	)
 
 

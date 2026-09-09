@@ -206,6 +206,8 @@ jobs:
           grep -q "CHARACTER_SELECTION_OK characters_3 optional_module locked_live_csv briefing_quote passive_runtime entry_cost_once" /tmp/sfh-character-selection.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loadout_investment_contract_test.gd" | tee /tmp/sfh-loadout-investment.log
           grep -q "LOADOUT_INVESTMENT_E2E_OK owned_locked_run_purchase skill_price_once equipped_weapon_preserved tag_gate hub_module_part_preserved same_weapon_customization no_catalog_override preflight modular_boundary" /tmp/sfh-loadout-investment.log
+          grep -q "remapped_launch physical_skill_input runtime_settings nested_swap_restore save_failure_atomic future_definition" /tmp/sfh-loadout-investment.log
+          grep -q "weapon_sources_54" /tmp/sfh-loot-table.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/hub_preparation_contract_test.gd" | tee /tmp/sfh-hub-preparation.log
           grep -q "HUB_PREPARATION_OK" /tmp/sfh-hub-preparation.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/mobile_hud_elite_contract_test.gd" | tee /tmp/sfh-mobile-hud-elite.log

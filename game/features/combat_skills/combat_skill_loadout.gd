@@ -14,7 +14,7 @@ func validation_errors() -> PackedStringArray:
 	var used_ids := {}
 	var used_actions := {}
 	for skill in skills:
-		if skill == null or not bool(skill.call(&"is_valid")):
+		if skill == null or not skill.has_method(&"is_valid") or not bool(skill.call(&"is_valid")):
 			errors.append("유효하지 않은 전투 스킬 정의가 있습니다.")
 			continue
 		var skill_id: StringName = skill.get("skill_id")

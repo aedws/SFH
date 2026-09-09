@@ -106,7 +106,13 @@ func _session(tier: String) -> void:
 	_check(zone.get_snapshot().exit_count==2,"game wires two exits")
 	var alternative: Node=zone.alternatives[0]
 	game.player.global_position=alternative.global_position
-	_check(zone.request_extraction(game.player),"alternate exit accepts input")
+	if game.operation_tutorial_overlay != null: game.operation_tutorial_overlay.dismiss()
+	for frame in 5: await physics_frame
+	# Close an optional loot comparison using its public command before F is
+	# expected to address the exit. No nearby-player injection/direct extraction.
+	game.field_loot_acquisition_service.cancel_preview()
+	await _tap(KEY_F)
+	_check(zone.get_snapshot().defense_active,"alternate exit accepts physical F")
 	zone.advance(1)
 	var remaining: float=zone.get_snapshot().defense_remaining_seconds
 	game.player.global_position+=Vector2(300,0)
@@ -121,6 +127,18 @@ func _session(tier: String) -> void:
 	_check(not zone.request_extraction(game.player),"completed exit rejects repeated settlement")
 	game.queue_free()
 	await process_frame
+	await process_frame
+
+func _tap(code: Key) -> void:
+	var event := InputEventKey.new()
+	event.physical_keycode=code
+	event.keycode=code
+	event.pressed=true
+	Input.parse_input_event(event)
+	await process_frame
+	event=event.duplicate()
+	event.pressed=false
+	Input.parse_input_event(event)
 	await process_frame
 
 func _capture(game: Node, label: String) -> void:

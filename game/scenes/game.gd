@@ -3125,9 +3125,9 @@ func _prepare_run_skill_bindings() -> void:
 		var selected_id: StringName = selected.get("skill_id")
 		if previous_id == selected_id:
 			continue
-		var action_id: StringName = previous.get("input_action")
+		var action_id: StringName = skill_binding_service.call(&"action_for_skill", previous_id)
 		if bool(skill_binding_service.call(
-			&"replace_runtime_skill", previous_id, selected_id, action_id
+			&"replace_runtime_skill", previous_id, selected_id, action_id, selected
 		)):
 			run_skill_binding_replacements.append({
 				&"previous_skill_id": previous_id, &"current_skill_id": selected_id,
