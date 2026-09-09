@@ -166,6 +166,7 @@ jobs:
           python3 scripts/sync_facilities.py --check
           python3 scripts/sync_skill_catalog.py --check
           python3 scripts/compile_tactical_skills.py --check
+          python3 scripts/test_tactical_compiler.py
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/tactical_skill_catalog_test.gd" 2>&1 | tee /tmp/sfh-tactical-skills.log
           grep -q "TACTICAL_SKILL_CATALOG_PASS" /tmp/sfh-tactical-skills.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-tactical-skills.log

@@ -49,9 +49,10 @@ func _ready() -> void:
 			if weapon != null and weapon.is_valid() and main_rule != null and main_rule.accepts(weapon):
 				weapons.append(weapon)
 				weapon_choice.add_item(weapon.display_name)
+				if weapon.weapon_id == &"assault_rifle": weapon_choice.select(weapons.size() - 1)
 	add_child(weapon_choice)
 	var help := Label.new()
-	help.text = "패시브는 요원 고정입니다. 로비에서 장비·스킬을 준비한 뒤 작전 게이트로 이동하세요."
+	help.text = "로비에서 장비·스킬을 바꾼 뒤, 작전 게이트에서 출격합니다."
 	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(help)
 	confirm_button = Button.new()

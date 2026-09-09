@@ -29,6 +29,8 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 # A fresh clone has no imported fonts or global GDScript class cache yet.
 & $csvPolicyPython (Join-Path $PSScriptRoot 'compile_tactical_skills.py') --check
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $csvPolicyPython (Join-Path $PSScriptRoot 'test_tactical_compiler.py')
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 # Build those generated inputs explicitly so the smoke test does not depend on
 # somebody having opened the project in the editor beforehand.
 & $godotExecutable --headless --editor --path $repositoryRoot --quit

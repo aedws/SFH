@@ -7,6 +7,7 @@ import csv
 import io
 import json
 import math
+import re
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -21,15 +22,24 @@ META = {"skill_id", "display_name", "slot", "cooldown", "energy", "description"}
 def read(path):
     return list(csv.DictReader(path.open(encoding="utf-8-sig")))
 
-def compile_catalog(rows=None):
+def compile_catalog(rows=None, skill_overrides=None):
     rows = read(BASE / "data/tactical_patterns.csv") if rows is None else rows
+    metadata = {r['skill_id']:r for r in read(BASE / 'data/skill_catalog.csv')}
+    for sid, values in (skill_overrides or {}).items(): metadata[sid] = {**metadata.get(sid,{}), **values}
     ids = [row["skill_id"] for row in rows]
     if len(ids) != len(set(ids)) or len(ids) < 36:
         raise ValueError("Need 36 unique additional skill IDs")
     output = {}
     for row in rows:
         sid = row["skill_id"]
-        if not sid.replace("_", "").isalnum(): raise ValueError("Invalid ID")
+        if not re.fullmatch(r'[a-z][a-z0-9_]*', sid): raise ValueError("Invalid ID")
+        meta = metadata.get(sid, {})
+        charges = int(meta.get('maximum_charges','1'))
+        recovery = float(meta.get('charge_recovery_seconds',row['cooldown']))
+        if not 1 <= charges <= 10 or not .1 <= recovery <= 120: raise ValueError(f'{sid}: charge policy')
+        tags = [tag for tag in meta.get('required_combat_tags','').split('|') if tag]
+        if any(not re.fullmatch(r'[a-z][a-z0-9_]*',tag) for tag in tags): raise ValueError(f'{sid}: tags')
+        rendered_tags = ', '.join('&'+json.dumps(tag) for tag in tags)
         if row['shape'] not in {'circle','ring','cone','line','chain','single','self'}: raise ValueError(f'{sid}: shape')
         for key, low, high in [('slot',0,2),('pulses',1,40),('maximum_targets',1,64)]:
             number=float(row[key])
@@ -61,19 +71,31 @@ def compile_catalog(rows=None):
             'description = ' + json.dumps(row['description'], ensure_ascii=False),
             f'input_action = &"combat_skill_{int(row["slot"])+1}"', f'input_label = "{int(row["slot"])+1}"',
             f'targeting_mode = "{mode}"', f'targeting_range = {row["radius"]}',
+            f'required_combat_tags = [{rendered_tags}]',
             f'cooldown_seconds = {row["cooldown"]}', f'energy_cost = {row["energy"]}',
-            f'charge_recovery_seconds = {row["cooldown"]}', 'effect = SubResource("Effect")', ''])
+            f'maximum_charges = {charges}', f'charge_recovery_seconds = {recovery:g}', 'effect = SubResource("Effect")', ''])
     for relative, kind in [("combat_skills/data/skill_catalog.csv", "catalog"), ("loadout_investment/data/skill_investment.csv", "investment")]:
         path = ROOT / "game/features" / relative
         original = read(path)
+        by_id = {r.get('skill_id',r.get('item_id')):r for r in original}
         result = [row for row in original if row.get("skill_id", row.get("item_id")) not in ids]
         fields = list(original[0])
         for row in rows:
             sid = row["skill_id"]
+            entry = {field:'' for field in fields}
+            entry.update(by_id.get(sid, {}))
+            meta = metadata.get(sid,{})
             if kind == "catalog":
-                result.append(dict(zip(fields, [sid,row['display_name'],row['slot'],"direction" if row['shape'] in {'line','cone'} else 'cluster' if row['anchor_on_target']=='TRUE' else 'single' if row['shape']=='single' else 'self','',row['cooldown'],row['energy'],'1',row['cooldown'],'3','global','default','TRUE','임시 전술 스킬 · '+row['description']])))
+                entry.update({key:meta[key] for key in fields if key in meta})
+                entry.update(skill_id=sid,display_name=row['display_name'],target_slot_index=row['slot'],targeting_mode='direction' if row['shape'] in {'line','cone'} else 'cluster' if row['anchor_on_target']=='TRUE' else 'single' if row['shape']=='single' else 'self',cooldown_seconds=row['cooldown'],energy_cost=row['energy'],maximum_charges=meta.get('maximum_charges','1'),charge_recovery_seconds=meta.get('charge_recovery_seconds',row['cooldown']))
+                for key,value in dict(grade='3',region_tags='global',acquisition_mode='default',runtime_enabled='TRUE',planner_note='임시 전술 스킬 · '+row['description']).items():
+                    if not entry.get(key): entry[key]=value
             else:
-                result.append(dict(zip(fields,[sid,row['display_name'],'skill_'+row['slot'],f'res://game/features/combat_skills/definitions/{sid}.tres','0','TRUE','','temporary'])))
+                entry.update(item_id=sid,display_name=row['display_name'],slot_id='skill_'+row['slot'],resource_path=f'res://game/features/combat_skills/definitions/{sid}.tres')
+                for key,default in dict(run_investment_price='0',default_owned='TRUE',required_unlock_id='',source_status='temporary').items():
+                    source_key='investment_source_status' if key=='source_status' else key
+                    entry[key]=str(meta.get(source_key,entry.get(key) or default))
+            result.append(entry)
         stream = io.StringIO()
         writer = csv.DictWriter(stream, fieldnames=fields, lineterminator='\n')
         writer.writeheader(); writer.writerows(result)
@@ -87,6 +109,7 @@ def main():
     parser.add_argument('--spreadsheet-id', default='1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM')
     args = parser.parse_args()
     rows = None
+    skills = None
     if args.from_sheet:
         if args.check: raise ValueError('--check does not fetch or change data')
         def fetch(tab):
@@ -105,7 +128,7 @@ def main():
                 if key in BOOLEAN: row[key] = row[key].upper()
                 elif key not in TEXT | {'skill_id','display_name','description'}: row[key] = format(float(row[key]), '.12g')
             rows.append(row)
-    outputs = compile_catalog(rows)
+    outputs = compile_catalog(rows, skills)
     if rows is not None:
         stream = io.StringIO()
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator='\n')

@@ -503,6 +503,9 @@ func _build_activation_context(skill: Resource) -> Dictionary:
 	for modifier_id in runtime_modifiers:
 		if modifier_id == &"cooldown_multiply":
 			continue
+		if modifier_id == &"radius_multiplier":
+			mechanic_override[modifier_id] = float(mechanic_override.get(modifier_id, 1.0)) * float(runtime_modifiers[modifier_id])
+			continue
 		mechanic_override[modifier_id] = runtime_modifiers[modifier_id]
 	if runtime_modifiers.has(&"damage_multiply"):
 		mechanic_override[&"damage_multiplier"] = (

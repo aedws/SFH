@@ -89,8 +89,9 @@ func _run() -> void:
 	await process_frame
 	check(panel.characters.size()==3 and not panel.confirm_button.disabled, "initial selector")
 	panel.free()
-	await _entry_layout()
 	world.free()
+	root.canvas_transform = Transform2D.IDENTITY
+	await _entry_layout()
 	await _initial_launch_matrix()
 	if not errors.is_empty():
 		for error in errors: push_error(error)
