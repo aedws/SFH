@@ -2,6 +2,7 @@ class_name SkillBalanceSnapshot
 extends RefCounted
 ## Plain-data boundary for live trials and immutable operation plans.
 static func apply(definition: Resource, values: Dictionary) -> Resource:
+	if definition == null or not definition.has_method(&"is_valid"): return null
 	var result: Resource = definition.duplicate(true)
 	for key in ["cooldown_seconds", "energy_cost", "maximum_charges", "charge_recovery_seconds"]:
 		if values.has(key): result.set(key, values[key])
@@ -18,11 +19,15 @@ static func apply(definition: Resource, values: Dictionary) -> Resource:
 
 static func parse_rows(text: String) -> Array[Dictionary]:
 	var rows: Array[Dictionary] = []
-	var lines := text.replace("\r", "").split("\n", false)
-	if lines.size() < 2: return rows
-	var header := CatalogCsvTable._parse_csv_line(lines[0])
-	for line in lines.slice(1):
-		var cells := CatalogCsvTable._parse_csv_line(line)
+	var matrix := BalanceCsvRows.parse(text)
+	if matrix.size() < 2: return rows
+	var header := matrix[0]
+	var columns := {}
+	for key in header:
+		if key.is_empty() or columns.has(key): return []
+		columns[key] = true
+	for cells in matrix.slice(1):
+		if cells.size() != header.size(): return []
 		var row := {}
 		for index in header.size(): row[header[index]] = cells[index] if index < cells.size() else ""
 		rows.append(row)

@@ -1,9 +1,13 @@
-[gd_resource type="Resource" script_class="HitFeedbackProfile" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="HitFeedbackProfile" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://game/features/hit_feedback/hit_feedback_profile.gd" id="1_profile"]
+[ext_resource type="Resource" path="res://game/features/hit_feedback/configs/default_combat_audio.tres" id="2_audio"]
+[ext_resource type="Texture2D" path="res://game/assets/vfx/kenney_particle_pack/spark_01.png" id="3_spark"]
 
 [resource]
 script = ExtResource("1_profile")
+audio_profile = ExtResource("2_audio")
+contact_texture = ExtResource("3_spark")
 impact_lifetime_seconds = 0.18
 impact_radius = 26.0
 impact_ray_count = 8

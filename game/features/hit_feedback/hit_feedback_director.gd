@@ -14,6 +14,16 @@ var total_player_hits: int = 0
 var total_lethal_hits: int = 0
 var peak_active_impacts: int = 0
 var directional_kick := Vector2.ZERO
+var audio_feedback: CombatFeedbackAudio
+
+func register_attack_source(source: Node) -> bool:
+	if not is_instance_valid(source) or not source.has_signal(&"presentation_event"): return false
+	if not source.is_connected(&"presentation_event", _on_presentation_event):
+		source.connect(&"presentation_event", _on_presentation_event)
+	return true
+
+func _on_presentation_event(kind: StringName, position: Vector2, _context: Dictionary) -> void:
+	if is_instance_valid(audio_feedback): audio_feedback.play_event(kind, position)
 
 
 func configure(new_camera: Camera2D, new_profile: Resource) -> bool:
@@ -26,6 +36,11 @@ func configure(new_camera: Camera2D, new_profile: Resource) -> bool:
 		return false
 	camera = new_camera
 	profile = new_profile
+	if is_instance_valid(audio_feedback): audio_feedback.free()
+	if profile.audio_profile != null:
+		audio_feedback = CombatFeedbackAudio.new()
+		add_child(audio_feedback)
+		if not audio_feedback.configure(profile.audio_profile, camera): return false
 	z_index = 70
 	set_process(not impacts.is_empty() or trauma > 0.0)
 	return true
@@ -58,6 +73,7 @@ func get_snapshot() -> Dictionary:
 		&"trauma": trauma,
 		&"directional_kick_pixels": directional_kick.length(),
 		&"processing": is_processing(),
+		&"audio": audio_feedback.get_snapshot() if is_instance_valid(audio_feedback) else {},
 	}
 
 
@@ -101,6 +117,9 @@ func _draw() -> void:
 		# Crisp contact flash, then a distinct expanding kill ring; no global hit-stop.
 		if ratio < 0.28:
 			draw_circle(position, 3.5 + intensity * 2.0, Color(1.0, 1.0, 1.0, 1.0 - ratio / 0.28))
+			if profile.contact_texture != null:
+				var size := Vector2.ONE * (18.0 + intensity * 12.0)
+				draw_texture_rect(profile.contact_texture, Rect2(position - size * 0.5, size), false, Color(1,1,1,1.0-ratio/0.28))
 		if bool(impact.get(&"lethal", false)):
 			draw_arc(position, radius * 1.3, 0.0, TAU, 20, color, 3.0 * (1.0 - ratio))
 		if bool(impact.get(&"electric_area_primary", false)):
@@ -137,6 +156,8 @@ func _on_actor_damaged(
 		return
 	var is_player: bool = actor.is_in_group(&"player")
 	var lethal: bool = bool(context.get(&"lethal", false))
+	if is_instance_valid(audio_feedback):
+		audio_feedback.play_event(&"lethal" if lethal else &"armor" if armor_damage > health_damage else &"hit", world_position)
 	set_process(true)
 	var intensity: float = clampf(total_damage / float(profile.reference_damage), 0.35, 1.6)
 	var direction: Vector2 = context.get(&"impact_direction", Vector2.RIGHT)

@@ -265,7 +265,9 @@ func get_skill_catalog_resources() -> Array[Resource]:
 		if ResourceLoader.exists(entry.definition_path):
 			var definition := load(entry.definition_path)
 			if definition != null and definition.has_method(&"is_valid") and bool(definition.call(&"is_valid")):
-				result.append(definition)
+				var snapshot := SkillBalanceSnapshot.apply(definition, skill_balance_values.get(String(entry.item_id), {}))
+				if snapshot == null: return [] # Never expose a mixed/invalid catalog.
+				result.append(snapshot)
 	return result
 
 

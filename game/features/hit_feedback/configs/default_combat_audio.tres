@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CombatAudioProfile" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://game/features/hit_feedback/combat_audio_profile.gd" id="1"]
+[ext_resource type="AudioStream" path="res://game/assets/audio/kenney_scifi/laserSmall_000.ogg" id="2"]
+[ext_resource type="AudioStream" path="res://game/assets/audio/kenney_scifi/laserLarge_000.ogg" id="3"]
+[ext_resource type="AudioStream" path="res://game/assets/audio/kenney_scifi/forceField_000.ogg" id="4"]
+[ext_resource type="AudioStream" path="res://game/assets/audio/kenney_impact/impactSoft_medium_000.ogg" id="5"]
+[ext_resource type="AudioStream" path="res://game/assets/audio/kenney_scifi/impactMetal_000.ogg" id="6"]
+[ext_resource type="AudioStream" path="res://game/assets/audio/kenney_scifi/explosionCrunch_000.ogg" id="7"]
+
+[resource]
+script = ExtResource("1")
+shot = ExtResource("2")
+melee = ExtResource("3")
+cast = ExtResource("4")
+hit = ExtResource("5")
+armor = ExtResource("6")
+lethal = ExtResource("7")

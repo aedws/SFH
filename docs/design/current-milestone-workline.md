@@ -14,12 +14,12 @@ tags:
 
 ## 다음 실행 순서 · 2026-09-10 {#next-20260910}
 
-**내일 첫 작업은 QA-LIVE-TRAINING입니다.** 마감 게임은 `a423dad528e15765f5718864ad10ba7ce2dbd971`, CSV `2026-09-09.3`입니다. B+A+C/위험1~10 배포·원격 게임/E2E·Windows/위키 검증은 통과했지만 훈련 라이브 오류·일반10분·체감 수락은 남습니다. [마감 대조표](../quality/full-system-audit-20260909.md#day-close-20260909)를 먼저 읽고 아래 순서로 시작합니다. 하루에 전부 끝난다는 약속은 아닙니다.
+**9/10 첫 작업 수정·회귀 완료, 다음은 배포판 정상10분입니다.** QA-LIVE-TRAINING의 불변 스냅샷/원복을 수정하고 요청된 상업 이용 CC0 오디오6종·계열별 타격 표현을 추가했습니다. 2번의 클래스/상속 감사·공개CSV 파서도 보완했습니다. 전체 게임·E2E와 GPU/믹서 검사는 통과했으나 일반10분·맵/스킬 체감은 미완료입니다. CSV `2026-09-09.3`과 기획 수치는 유지합니다. [오늘 증거](../quality/e2e-play-session.md#training-feedback-20260910). 하루에 전부 끝난다는 약속은 아닙니다.
 
 | 순서 | 기획 판단 없이 진행할 작업 | 종료 기준 |
 |---:|---|---|
-| 1 | QA-LIVE-TRAINING · 훈련/작전 스킬 스냅샷 통일 | 피해123·쿨타임3 시험 시 훈련도 같은 값. AP/충전/효과 동등성·퇴장 원복·잘못된 값 거부 회귀 |
-| 2 | QA-MODULE-COVERAGE · 암묵적 클래스 의존성과 공개 파서 계약 | 새 코드에서 의존성 수를 재측정. 과거44/50을 최신값으로 복사하지 않고 클래스·상속·미래 확장/제거 fixture 검사 |
+| 1 · 수정/회귀 완료 | QA-LIVE-TRAINING + 타격 표현 | 123/3·AP/충전/패턴 동등성·퇴장 원복·잘못된 값 거부, CC0 음향6종·8음성 예산·GPU/믹서 검사 통과 |
+| 2 · 핵심 보완 | QA-MODULE-COVERAGE · 클래스 의존성과 공개 파서 | 공통 분석기7fixture·57기능/52의존/순환0·공개CSV 통과. Game 조립부 분량·초기 선택 UI 카탈로그 책임/동적 교체는 후속 구조 검토 |
 | 3 | N26-08B · 배포 Web/독립 Windows 각각 정상10분 | 로비→중형/대형→전투/획득→탈출/사망→복귀. F 경계·포커스·프레임·시드 기록, 치트/시간 가속 제외 |
 | 4 | QA-MAP-COMPOUND · B+A+C/1·5·10단계 FUN QA | 입구 발견 시간·내부 파밍/후퇴 선택·모서리 끼임·공간 안개 전환·같은 장비의 체감 위험 기록. 숫자 확정은 오너 판단 |
 | 5 | QA-SKILL-FEEL · 40종 대표 계열 체감 | 7개 효과 계열의 실제 범위/FX·벽 차폐·제어 이유·AP/쿨타임 안내·중앙 시야 가림 확인. 대표 통과를40종 전수 수락으로 확대하지 않음 |
@@ -33,11 +33,11 @@ tags:
 
 1. 이 작업선 → [마감 대조표](../quality/full-system-audit-20260909.md#day-close-20260909) → [훈련 오류 재현](../quality/full-system-audit-20260909.md#qa-live-training)을 읽습니다. 새 오너 지시가 있으면 충돌부터 확인합니다.
 2. `git status --short`로 사용자 변경을 확인하고 깨끗할 때 `main`을 fast-forward합니다. 현재 main에는 마감 게임 이후 문서 커밋이 있을 수 있습니다. 게임 기준으로 강제 되돌리지 않습니다. 기존 미완료 브랜치가 없으면 `codex/qa-live-training`에서 시작합니다.
-3. 먼저 아래 실패 fixture를 추가해 재현하고, 수정→통과를 순서대로 기록합니다. 이번 문서에서 테스트 파일이 이미 생겼거나 오류가 고쳐졌다고 해석하지 않습니다.
+3. 첫 실패 fixture `training_live_catalog_contract_test.gd`는9/10 작성·실패 재현·수정 후 통과하고 CI에 등록했습니다. 아래 표는 최초 착수 위치를 보존한 것입니다. 후속 작업은 위 현행 상태와 증거를 기준으로 이어갑니다.
 
 | 작업 | 시작 파일/책임 | 반드시 남길 증거 |
 |---|---|---|
-| 1 · 훈련 동등성 | `game/features/loadout_investment/loadout_investment_service.gd`의 `get_skill_catalog_resources()`, `game/features/combat_skills/skill_balance_snapshot.gd`, `game/features/training_ground/training_ground_service.gd` | 현재 제공자는 `load()` 원본 반환. 격리 시험값 피해123/쿨타임3과 AP·충전·패턴 값을 훈련/작전에 비교. 신규 `game/tests/training_live_catalog_contract_test.gd`는 **작성 예정** |
+| 1 · 훈련 동등성 | `game/features/loadout_investment/loadout_investment_service.gd`의 `get_skill_catalog_resources()`, `game/features/combat_skills/skill_balance_snapshot.gd`, `game/features/training_ground/training_ground_service.gd` | 원본 반환을 공통 사본 제공으로 교체. 격리123/3·AP/충전/패턴, 동결/복원 회귀 `game/tests/training_live_catalog_contract_test.gd` 통과 |
 | 2 · 감사 경계 | `scripts/check_system_modularity.py`, `scripts/generate_code_module_map.py`, `game/features/balance_data/csv_rows.gd` | 클래스/상속 이름 참조, 재정렬·교체·선택 비활성화. `SkillBalanceSnapshot`의 내부 `_parse_csv_line` 의존을 공개 파싱 계약으로 교체 |
 | 3·4 · 실제 플레이 | 배포 Web/Windows, `game/tests/compound_difficulty_contract_test.gd`, `game/tests/e2e_play_session_test.gd` | 플랫폼·빌드/CSV·시드·지역/규모/단계·요원/장비·원래HP·실제 경과시간·처치/드랍/회수·F입력/포커스·프레임·정산. 사망/중단 이유를 숨기지 않음 |
 | 5 · 스킬 체감 | `game/features/combat_skills/`, `game/tests/tactical_skill_catalog_test.gd` | 계열 대표 ID·예고 범위/명중/FX·벽/면역·AP/충전/쿨타임 표시. 버그 수정과 밸런스 제안을 분리 |

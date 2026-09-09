@@ -1792,6 +1792,7 @@ func _install_training_ground() -> bool:
 		training_ground_service = null
 		return false
 	training_ground_service.connect(&"dummy_spawned", _on_training_dummy_spawned)
+	if features.hit_feedback_enabled and not _install_hit_feedback(): return false
 	training_ground_service.connect(&"stop_requested", _finish_hub_training)
 	if desktop_progress != null and not training_ground_service.call(&"configure_checkpoint_provider", desktop_progress):
 		_report_configuration_error("훈련 저장 체크포인트 제공자 연결 실패")
@@ -1816,6 +1817,7 @@ func _install_training_ground() -> bool:
 			training_ground_service = null
 			return false
 		auto_weapon.call(&"configure", projectiles_container, equipment_system, null)
+		if is_instance_valid(hit_feedback_director): hit_feedback_director.call(&"register_attack_source", auto_weapon)
 		if features.smart_targeting_enabled:
 			auto_weapon.call(&"set_targeting_policy", load(features.smart_targeting_policy_path))
 		if not bool(auto_weapon.call(&"set_target_provider", training_ground_service)):
@@ -1894,11 +1896,13 @@ func _install_training_combat_runtime() -> bool:
 	training_combat_skill_system.connect(
 		&"skill_activated", Callable(self, &"_on_training_skill_activated")
 	)
+	if is_instance_valid(hit_feedback_director): hit_feedback_director.call(&"register_attack_source", training_combat_skill_system)
 	if is_instance_valid(character_selection_service):
 		training_combat_skill_system.call(&"set_character_specialization", character_selection_service.call(&"get_investment_context").get(&"skill_specialization", {}))
 	var candidates: Array[Resource] = []
 	if is_instance_valid(loadout_investment_service):
 		candidates.assign(loadout_investment_service.call(&"get_skill_catalog_resources"))
+		if not training_ground_service.call(&"configure_skill_catalog_provider", loadout_investment_service): return false
 	if candidates.is_empty():
 		for skill in training_loadout.get("skills"):
 			candidates.append(skill)
@@ -2022,6 +2026,8 @@ func _close_run_setup() -> void:
 func _clear_start_hub() -> bool:
 	if not _finish_hub_training():
 		return false
+	_free_feature_node(hit_feedback_director)
+	hit_feedback_director = null
 	if desktop_progress != null:
 		desktop_progress.call(&"unbind_hub")
 	if operation_launch_preflight_service != null:
@@ -2094,6 +2100,7 @@ func _finish_hub_training() -> bool:
 
 
 func _on_training_dummy_spawned(dummy: Node) -> void:
+	if is_instance_valid(hit_feedback_director): hit_feedback_director.call(&"register_actor", dummy)
 	if dummy.has_signal(&"damaged") and p5_hub_progression_service != null:
 		dummy.connect(&"damaged", Callable(self, &"_on_enemy_training_damage"))
 
@@ -2376,6 +2383,7 @@ func _assemble_game() -> bool:
 				&"weapon_runtime_changed", Callable(self, &"_on_weapon_runtime_changed")
 			)
 			auto_weapon.connect(&"attack_feedback", Callable(self, &"_on_weapon_attack_feedback"))
+			if is_instance_valid(hit_feedback_director): hit_feedback_director.call(&"register_attack_source", auto_weapon)
 			auto_weapon.call(
 				&"configure", projectiles_container, equipment_system, weapon_balance_service
 			)
@@ -2516,6 +2524,7 @@ func _install_combat_skills() -> bool:
 		_report_configuration_error("전투 스킬 실행기를 구성하지 못했습니다.")
 		return false
 	combat_skill_system.connect(&"skill_activated", Callable(self, &"_on_combat_skill_activated"))
+	if is_instance_valid(hit_feedback_director): hit_feedback_director.call(&"register_attack_source", combat_skill_system)
 	combat_skill_system.call(&"set_character_specialization", active_contract.get(&"investment_context", {}).get(&"skill_specialization", {}))
 	combat_skill_hud = _instantiate_feature(
 		COMBAT_SKILL_HUD_SCENE_PATH, ui_layer, &"CombatSkillHud"
