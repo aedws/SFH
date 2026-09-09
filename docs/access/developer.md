@@ -152,7 +152,7 @@ Notion·Sheet 후보
 
 ## 다음 실행선과 현재 위험
 
-**2026-09-08 마감: 79.4%** — 구현44·부분2·미구현6·미정14. 지정 TileMapLayer가 청크 렌더러로 교체된 점을 부분 대응으로 정정했습니다. [계산 근거](../design/master-gdd-alignment.md#day-close) · **[내일 실행 순서](../design/current-milestone-workline.md#next-20260909)**.
+**2026-09-09 대체 승인: 80.3%** — 구현45·부분1·미구현6·미정14. 첫 GPU 지연을 줄인 청크 렌더러를 TileMapLayer의 대체 구현으로 오너가 수락했습니다. [계산·계약 근거](../design/master-gdd-alignment.md#day-close) · **[현재 실행 순서](../design/current-milestone-workline.md#next-20260909)**. 일반10분 QA는 아직 부분 대응입니다.
 
 | 우선순위 | 대상 | 현재 상태 | 오너가 확인할 완료 조건 |
 |---:|---|---|---|

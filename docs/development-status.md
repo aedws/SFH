@@ -17,31 +17,31 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-08</span><span>SEARCH COMMAND</span><span>11 DAYS · 150 TOPICS</span><span>101 DOCS · CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 151 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
-    <span><small>GDD + TRACKER · 2026-09-08</small><strong>확정도 가중 코드 대응도</strong></span>
-    <b>79.4%</b>
+    <span><small>GDD + TRACKER · 2026-09-09</small><strong>확정도 가중 코드 대응도</strong></span>
+    <b>80.3%</b>
   </div>
-  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="79.4"><i style="width: 79.4%"></i></div>
+  <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80.3"><i style="width: 80.3%"></i></div>
   <p>최신 GDD v128·62블록과 트래커 66행을 코드·기존 테스트 소스와 대조했습니다. 출시 준비율이나 이번 실제 플레이 통과율이 아닙니다. 기존 96%는 이전 백업 기준의 이력이며 현재 진행률로 사용하지 않습니다.</p>
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-**2026-09-08 마감 대조 코드: `b3239a9`.** 공개 GDD·트래커 라이브 해시는 동일합니다. HP 키트 전용은 유지하되 현행 바닥은 TileMapLayer가 아닌 청크 텍스처이므로 해당 행을 부분 대응으로 정정하여 **79.4%**입니다. [출처·계산·정정 근거](design/master-gdd-alignment.md#day-close) · [내일 순서](design/current-milestone-workline.md#next-20260909).
+**2026-09-09 대조 코드: `353aa72`.** 공개 GDD·트래커 라이브 해시는 동일합니다. 오너가 첫 GPU 지연 개선을 위한 청크 텍스처 대체를 수락하여 **80.3%**입니다. TileMapLayer 실제 사용으로 오기하지 않으며 일반10분 QA는 부분 대응으로 유지합니다. [출처·계산·승인 근거](design/master-gdd-alignment.md#day-close) · [현재 순서](design/current-milestone-workline.md#next-20260909).
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
-| 구현 근거 있음 | 44 | 1 |
-| 부분 대응 | 2 | 0.5 |
+| 구현 근거 있음 | 45 | 1 |
+| 부분 대응 | 1 | 0.5 |
 | 신규 미구현 | 6 | 0 |
 | 기존 규칙과 충돌 | 0 | 0 |
 | 기획 판단 대기 | 14 | 0 |
 
-노션 결정52개×3·미정14개×1로 가중합니다. `(44×3 + 2×0.5×3) ÷ (52×3 + 14) = 135/170 = 79.4%`. [노션 외 구현9묶음](design/master-gdd-alignment.md#implemented-outside-notion)·위키 성장 그래프 등은 가산하지 않습니다. 확정 요구만의 참고값은86.5%이며 출시율·사람 수락률이 아닙니다.
+노션 결정52개×3·미정14개×1로 가중합니다. `(45×3 + 1×0.5×3) ÷ (52×3 + 14) = 136.5/170 = 80.3%`. [노션 외 구현9묶음](design/master-gdd-alignment.md#implemented-outside-notion)·위키 성장 그래프 등은 가산하지 않습니다. 확정 요구만의 참고값은87.5%이며 출시율·사람 수락률이 아닙니다.
 
 ## 현재 빌드 상태
 
@@ -58,13 +58,27 @@ tags:
 [오너 판단표](design/master-gdd-alignment.md#owner-conflicts)에서 회복·AP·파우치·심층·혈전·소켓·기술·상태의 8개 결정을 확인합니다. 기존 사용자 지시를 대체하는 규칙은 승인 전에 적용하지 않습니다.
 
 [최신 N26 작업선](design/current-milestone-workline.md#notion-20260907):
-N26-03A/B·훈련 복원·승인 임시 AP/소켓과 손상 매물·TileMapLayer·Area2D는 구현·자동 회귀를 통과했습니다. 남은 부분 대응은 배포 Web/Windows 일반 플레이·첫 출격 지연 검수 1행입니다. HP 충돌·파우치·심층·혈전은 별도 결정으로 유지합니다.
+N26-03A/B·훈련 복원·승인 임시 AP/소켓과 손상 매물·청크 바닥 대체·후보 Area2D는 구현·자동 회귀 근거가 있습니다. 남은 부분 대응은 배포 Web/Windows 일반 플레이 검수1행입니다. HP 키트 전용은 승인 구현됐으며 파우치·심층·혈전 정책은 별도 결정으로 유지합니다.
 P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니다.
 
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>18 UPDATE BUNDLES · BUILD 11 · IMPROVE 21 · CHANGE 4 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 1 · CHANGE 1 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>바닥 렌더러 대체 승인 · 배포 플레이 검수 착수</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>수정 · 1</h3><p>첫 화면 지연을 줄인 청크 텍스처 방식을 지정 타일 레이어 대신 유지하도록 승인했습니다. 기존 개선을 되돌리지 않고 변경 이유와 검증 계약을 남겼습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>배포 중형 작전을 일반 입력으로 검수했습니다. 18처치·드랍 표시·02:45 사망 정산·거점 복귀를 확인했으며, 10분 완주와 탈출 검수는 계속 진행할 항목으로 구분했습니다.</p></div>
+        <p><a href="access/login/?return=%2Fdesign%2Fmaster-gdd-alignment%2F%23day-close">팀 승인·계산 근거</a> · <a href="quality/e2e-play-session/#release-normal-20260909">QA 결과와 미완료 범위</a> · <a href="design/current-milestone-workline/#next-20260909">작업 순서</a></p>
+      </div>
+    </details>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-09-08</b><small>18 UPDATE BUNDLES · BUILD 11 · IMPROVE 21 · CHANGE 4 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 18</small><b>오늘 마감 · 진행률 근거 정정과 내일 작업 순서</b></span><em class="sfh-chevron">⌄</em></summary>

@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "updated": "2026-09-08",
+  "updated": "2026-09-09",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -724,11 +724,11 @@
       "id": "decision:n26-tech",
       "type": "decision",
       "label": "DEC-N26-TECH · 지정 노드와 대체 구현",
-      "status": "needs_decision",
-      "certainty": "provisional",
+      "status": "implemented",
+      "certainty": "confirmed",
       "decision_owner": "authority:project-owner",
-      "summary": "2026-09-08: 탈출/타겟 후보는 실제 Area2D. 바닥은 성능 최적화로 TileMapLayer에서 Node2D 청크 텍스처로 교체되어 지정 노드 요구는 부분 대응으로 정정. 맵 기능 실패와 기술 규격 차이는 구분합니다.",
-      "next_action": "2026-09-09: 청크 렌더러 대체 수락 또는 TileMapLayer 요구 유지/재설계 중 오너 결정과 성능 수락 기준을 기록. 승인 전 최적화를 되돌리거나 완료 점수를 올리지 않습니다.",
+      "summary": "2026-09-09 오너가 미사용 TileMapLayer의 변경 이유 기록 및 완료 처리를 승인. 첫 GPU 업로드 지연을 줄인 Node2D 청크 텍스처를 대체 구현으로 수락했습니다(중형197→23ms·대형304→27ms). TileMapLayer 사용 완료라는 뜻은 아니며 탈출/타겟 후보 Area2D는 유지합니다.",
+      "next_action": "대체 승인 완료. 셀/좌표 공개 계약과 충돌·길찾기 분리를 유지합니다. 이후 렌더러 변경 시 바닥 계약·첫 프레임 성능을 재검증합니다. 일반10분 QA와 파우치·심층·혈전 정책은 별도 게이트로 유지합니다.",
       "route": "design/master-gdd-alignment/#owner-conflicts",
       "relations": [
         {
@@ -1057,7 +1057,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "훈련 복원·선택 제거·출격 조합 회귀 및 승인 임시 AP/소켓/보유 훈련 계약 통과. 배포 일반 플레이 동등성과 지정 기술 이행은 별도",
       "acceptance": "AP 자연량·스킬 수·타겟 반경/주기·UI·리롤·손상품·환전·탈출·시즌의 임시/확정 분리 및 Web/Windows E2E",
-      "next_action": "2026-09-09 첫 실행은 N26-08B: 배포 Web/독립 Windows 각10분 일반 입력·간헐 탈출F/진입 실패 재현. 부분2행 중 지정 TileMapLayer 대체 수락은 DEC-N26-TECH로 분리. 이후 파우치→정산→심층→혈전은 선행 승인 후 진행",
+      "next_action": "2026-09-09 Web 중형 일반 입력 02:45·18처치·드랍 표시·사망 정산·로비 복귀 확인, 오류0. 다음은 KIT 지참 중형→탈출F/경계→대형/다른 요원→독립 Windows 각10분. 부분 대응 QA1행 유지. 기술 대체 승인 완료. 파우치→정산→심층→혈전은 선행 승인 후 진행",
       "route": "design/current-milestone-workline/#notion-20260907",
       "relations": [
         {

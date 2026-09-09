@@ -120,6 +120,10 @@ SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입
 
 ## 검색 별칭
 
+### 바닥 렌더러 대체 계약
+
+2026-09-09 오너 승인으로 `DungeonFloorLayer`의 Node2D 청크 텍스처를 TileMapLayer 대신 사용합니다. 첫 GPU 업로드 지연 감소가 변경 이유이며 [측정 근거](../performance/minimum-requirements.md#first-frame-20260908)를 보존합니다. `rebuild`, `get_used_cells`, `map_to_local` 계약은 유지하고 충돌/길찾기 데이터는 렌더러에 넣지 않습니다. 교체 시 `floor_render_contract_test`와 첫 렌더 검수를 다시 수행합니다. 기술 대체 승인은 일반 플레이 QA 완료와 분리합니다.
+
 ### 단일 대상 성장 표시 계약
 
 [성장 그래프](../tools/balance-workbench.md#growth)는 `growth-engine.js`가 동일 entity ID의 레벨/강화 단계만 순회하여 기존 DPS·장착 계산기를 호출하고, `growth-lab.js`는 선택·표시·시험 입력을 담당합니다. 캐릭터·무기·방어구 목록을 가로축으로 연결하지 않습니다. 현재 보정이 없거나 하락하는 단계도 그대로 표시하며 값을 보간하지 않습니다. 서버는 동일 순수 모델로 확정안을 재계산하고 게임 반영과 분리합니다.
