@@ -15,6 +15,7 @@
     "game/features/loot_lifecycle/data/item_lifecycle.csv": "02805156113001ba85cbbe379be5952b91f85b6420ec7fbed66ca711b92a115e",
     "game/features/loot_tables/data/loot_table.csv": "ef9e02b0d8a7b6e32347f55b3d0fd53daf5fedb5b43b09625b36c4bc00861fe4",
     "game/features/map_generation/data/facility.csv": "8f0be134bbfb8d63fa816289512dd2dcb9a9e6eb7ec451ec5002f7c493cb76aa",
+    "game/features/operation_contract/data/difficulty.csv": "60274ce0ff308324201255e2f8f2a23180f5de7b16f56567d94a2a205a7affc1",
     "game/features/p5_hub_progression/data/codex.csv": "269aea6b1329ba644a9867d91b60aabcdcffb1576326a5226acfda71dacbe6a4",
     "game/features/p5_hub_progression/data/operation_preset.csv": "214f73f9a1e1c6be32d48522f16dc49c10b0e93ee4244a5b60c7df2eb15c5e74",
     "game/features/p5_hub_progression/data/recipe.csv": "793d33716fb7a1dda4434f57bbbf3d5522bb71379c2153c249b82c31c5708ab8",
@@ -10691,6 +10692,414 @@
       }
     },
     {
+      "id": "difficulty",
+      "title": "difficulty",
+      "source": "game/features/operation_contract/data/difficulty.csv",
+      "labels": {
+        "1": "위험 단계 1 / 10 Lv.1 (CSV 3행)",
+        "2": "위험 단계 2 / 10 Lv.2 (CSV 4행)",
+        "3": "위험 단계 3 / 10 Lv.3 (CSV 5행)",
+        "4": "위험 단계 4 / 10 Lv.4 (CSV 6행)",
+        "5": "위험 단계 5 / 10 Lv.5 (CSV 7행)",
+        "6": "위험 단계 6 / 10 Lv.6 (CSV 8행)",
+        "7": "위험 단계 7 / 10 Lv.7 (CSV 9행)",
+        "8": "위험 단계 8 / 10 Lv.8 (CSV 10행)",
+        "9": "위험 단계 9 / 10 Lv.9 (CSV 11행)",
+        "10": "위험 단계 10 / 10 Lv.10 (CSV 12행)"
+      },
+      "column_labels": {
+        "level": "레벨",
+        "entry_cost_multiplier": "entry_cost_multiplier",
+        "health_multiplier": "health_multiplier",
+        "damage_multiplier": "damage_multiplier",
+        "armor_multiplier": "armor_multiplier",
+        "speed_multiplier": "이동 배율",
+        "reward_multiplier": "reward_multiplier",
+        "high_grade_drop_multiplier": "high_grade_drop_multiplier",
+        "polygon_ratio": "polygon_ratio"
+      },
+      "columns": {
+        "level": [
+          {
+            "id": "1",
+            "value": 1.0
+          },
+          {
+            "id": "2",
+            "value": 2.0
+          },
+          {
+            "id": "3",
+            "value": 3.0
+          },
+          {
+            "id": "4",
+            "value": 4.0
+          },
+          {
+            "id": "5",
+            "value": 5.0
+          },
+          {
+            "id": "6",
+            "value": 6.0
+          },
+          {
+            "id": "7",
+            "value": 7.0
+          },
+          {
+            "id": "8",
+            "value": 8.0
+          },
+          {
+            "id": "9",
+            "value": 9.0
+          },
+          {
+            "id": "10",
+            "value": 10.0
+          }
+        ],
+        "entry_cost_multiplier": [
+          {
+            "id": "1",
+            "value": 1.0
+          },
+          {
+            "id": "2",
+            "value": 1.125
+          },
+          {
+            "id": "3",
+            "value": 1.25
+          },
+          {
+            "id": "4",
+            "value": 1.375
+          },
+          {
+            "id": "5",
+            "value": 1.5
+          },
+          {
+            "id": "6",
+            "value": 1.6
+          },
+          {
+            "id": "7",
+            "value": 1.7
+          },
+          {
+            "id": "8",
+            "value": 1.8
+          },
+          {
+            "id": "9",
+            "value": 1.9
+          },
+          {
+            "id": "10",
+            "value": 2.0
+          }
+        ],
+        "health_multiplier": [
+          {
+            "id": "1",
+            "value": 1.0
+          },
+          {
+            "id": "2",
+            "value": 1.087
+          },
+          {
+            "id": "3",
+            "value": 1.175
+          },
+          {
+            "id": "4",
+            "value": 1.263
+          },
+          {
+            "id": "5",
+            "value": 1.35
+          },
+          {
+            "id": "6",
+            "value": 1.44
+          },
+          {
+            "id": "7",
+            "value": 1.53
+          },
+          {
+            "id": "8",
+            "value": 1.62
+          },
+          {
+            "id": "9",
+            "value": 1.71
+          },
+          {
+            "id": "10",
+            "value": 1.8
+          }
+        ],
+        "damage_multiplier": [
+          {
+            "id": "1",
+            "value": 1.0
+          },
+          {
+            "id": "2",
+            "value": 1.05
+          },
+          {
+            "id": "3",
+            "value": 1.1
+          },
+          {
+            "id": "4",
+            "value": 1.15
+          },
+          {
+            "id": "5",
+            "value": 1.2
+          },
+          {
+            "id": "6",
+            "value": 1.26
+          },
+          {
+            "id": "7",
+            "value": 1.32
+          },
+          {
+            "id": "8",
+            "value": 1.38
+          },
+          {
+            "id": "9",
+            "value": 1.44
+          },
+          {
+            "id": "10",
+            "value": 1.5
+          }
+        ],
+        "armor_multiplier": [
+          {
+            "id": "1",
+            "value": 1.0
+          },
+          {
+            "id": "2",
+            "value": 1.063
+          },
+          {
+            "id": "3",
+            "value": 1.125
+          },
+          {
+            "id": "4",
+            "value": 1.188
+          },
+          {
+            "id": "5",
+            "value": 1.25
+          },
+          {
+            "id": "6",
+            "value": 1.32
+          },
+          {
+            "id": "7",
+            "value": 1.39
+          },
+          {
+            "id": "8",
+            "value": 1.46
+          },
+          {
+            "id": "9",
+            "value": 1.53
+          },
+          {
+            "id": "10",
+            "value": 1.6
+          }
+        ],
+        "speed_multiplier": [
+          {
+            "id": "1",
+            "value": 1.0
+          },
+          {
+            "id": "2",
+            "value": 1.02
+          },
+          {
+            "id": "3",
+            "value": 1.04
+          },
+          {
+            "id": "4",
+            "value": 1.06
+          },
+          {
+            "id": "5",
+            "value": 1.08
+          },
+          {
+            "id": "6",
+            "value": 1.096
+          },
+          {
+            "id": "7",
+            "value": 1.112
+          },
+          {
+            "id": "8",
+            "value": 1.128
+          },
+          {
+            "id": "9",
+            "value": 1.144
+          },
+          {
+            "id": "10",
+            "value": 1.16
+          }
+        ],
+        "reward_multiplier": [
+          {
+            "id": "1",
+            "value": 1.0
+          },
+          {
+            "id": "2",
+            "value": 1.137
+          },
+          {
+            "id": "3",
+            "value": 1.275
+          },
+          {
+            "id": "4",
+            "value": 1.413
+          },
+          {
+            "id": "5",
+            "value": 1.55
+          },
+          {
+            "id": "6",
+            "value": 1.69
+          },
+          {
+            "id": "7",
+            "value": 1.83
+          },
+          {
+            "id": "8",
+            "value": 1.97
+          },
+          {
+            "id": "9",
+            "value": 2.11
+          },
+          {
+            "id": "10",
+            "value": 2.25
+          }
+        ],
+        "high_grade_drop_multiplier": [
+          {
+            "id": "1",
+            "value": 1.0
+          },
+          {
+            "id": "2",
+            "value": 1.05
+          },
+          {
+            "id": "3",
+            "value": 1.1
+          },
+          {
+            "id": "4",
+            "value": 1.15
+          },
+          {
+            "id": "5",
+            "value": 1.2
+          },
+          {
+            "id": "6",
+            "value": 1.26
+          },
+          {
+            "id": "7",
+            "value": 1.32
+          },
+          {
+            "id": "8",
+            "value": 1.38
+          },
+          {
+            "id": "9",
+            "value": 1.44
+          },
+          {
+            "id": "10",
+            "value": 1.5
+          }
+        ],
+        "polygon_ratio": [
+          {
+            "id": "1",
+            "value": 0.0
+          },
+          {
+            "id": "2",
+            "value": 0.067
+          },
+          {
+            "id": "3",
+            "value": 0.133
+          },
+          {
+            "id": "4",
+            "value": 0.2
+          },
+          {
+            "id": "5",
+            "value": 0.267
+          },
+          {
+            "id": "6",
+            "value": 0.333
+          },
+          {
+            "id": "7",
+            "value": 0.4
+          },
+          {
+            "id": "8",
+            "value": 0.467
+          },
+          {
+            "id": "9",
+            "value": 0.533
+          },
+          {
+            "id": "10",
+            "value": 0.6
+          }
+        ]
+      }
+    },
+    {
       "id": "codex",
       "title": "도감",
       "source": "game/features/p5_hub_progression/data/codex.csv",
@@ -11665,5 +12074,5 @@
       }
     }
   ],
-  "version": "2026-09-09.2"
+  "version": "2026-09-09.3"
 }
