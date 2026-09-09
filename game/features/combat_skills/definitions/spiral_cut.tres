@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/tactical_pattern_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2")
+shape = "cone"
+radius = 200
+inner_radius = 80
+width = 48
+angle_degrees = 80
+damage = 13
+pulses = 6
+interval = 0.2
+delay = 0
+follow_player = true
+anchor_on_target = false
+maximum_targets = 12
+chain_range = 150
+status_id = ""
+status_duration = 2
+consume_status_id = ""
+combo_multiplier = 2
+rotation_per_pulse = 60
+defense_add = 0
+speed_multiplier = 1.15
+buff_duration = 2
+
+[resource]
+script = ExtResource("1")
+skill_id = &"spiral_cut"
+display_name = "나선 검무"
+description = "가속과 함께 여섯 방향 회전 참격"
+input_action = &"combat_skill_3"
+input_label = "3"
+targeting_mode = "direction"
+targeting_range = 200
+cooldown_seconds = 12
+energy_cost = 35
+charge_recovery_seconds = 12
+effect = SubResource("Effect")

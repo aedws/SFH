@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/tactical_pattern_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2")
+shape = "cone"
+radius = 240
+inner_radius = 80
+width = 48
+angle_degrees = 95
+damage = 28
+pulses = 1
+interval = 0.5
+delay = 0
+follow_player = false
+anchor_on_target = false
+maximum_targets = 10
+chain_range = 150
+status_id = ""
+status_duration = 2
+consume_status_id = "vulnerable"
+combo_multiplier = 3
+rotation_per_pulse = 0
+defense_add = 0
+speed_multiplier = 1
+buff_duration = 4
+
+[resource]
+script = ExtResource("1")
+skill_id = &"execution_fan"
+display_name = "처형 절단"
+description = "취약 표식을 소모하여 근접 피해 세 배"
+input_action = &"combat_skill_1"
+input_label = "1"
+targeting_mode = "direction"
+targeting_range = 240
+cooldown_seconds = 12
+energy_cost = 30
+charge_recovery_seconds = 12
+effect = SubResource("Effect")

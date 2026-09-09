@@ -27,12 +27,19 @@ if (-not (Test-Path -LiteralPath $csvPolicyPython)) { $csvPolicyPython = 'python
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 # A fresh clone has no imported fonts or global GDScript class cache yet.
+& $csvPolicyPython (Join-Path $PSScriptRoot 'compile_tactical_skills.py') --check
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 # Build those generated inputs explicitly so the smoke test does not depend on
 # somebody having opened the project in the editor beforehand.
 & $godotExecutable --headless --editor --path $repositoryRoot --quit
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
+
+$tacticalOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/tactical_skill_catalog_test.gd" 2>&1
+$tacticalStatus = $LASTEXITCODE
+$tacticalOutput | Write-Output
+if ($tacticalStatus -ne 0 -or ($tacticalOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($tacticalOutput -join "`n") -notmatch 'TACTICAL_SKILL_CATALOG_PASS') { throw 'Tactical skill contract failed.' }
 
 $armorOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/armor_set_contract_test.gd" 2>&1
 $armorStatus = $LASTEXITCODE

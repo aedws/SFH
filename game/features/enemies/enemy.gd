@@ -150,7 +150,7 @@ func _physics_process(delta: float) -> void:
 					+ cached_crowd_steering * float(crowd_config.get("separation_strength"))
 				).normalized()
 			)
-		var desired_velocity := direction * move_speed
+		var desired_velocity := direction * move_speed * EnemyStatusPolicy.movement_multiplier(active_statuses, boss)
 		velocity = (
 			hit_reaction.advance(delta, desired_velocity)
 			if hit_reaction != null else desired_velocity
@@ -208,7 +208,7 @@ func take_damage(amount: float, hit_context: Dictionary = {}) -> void:
 		return
 
 	var armor_before := armor_component.current_value
-	var remaining_damage := armor_component.absorb_damage(amount)
+	var remaining_damage := armor_component.absorb_damage(amount * EnemyStatusPolicy.damage_multiplier(active_statuses))
 	var armor_damage := maxf(0.0, armor_before - armor_component.current_value)
 	var health_damage := health_component.apply_damage(remaining_damage)
 	var context := hit_context.duplicate(true)
@@ -277,7 +277,7 @@ func _on_health_depleted() -> void:
 
 
 func _try_contact_damage() -> void:
-	if not damage_enabled or contact_cooldown > 0.0:
+	if not damage_enabled or contact_cooldown > 0.0 or not EnemyStatusPolicy.can_attack(active_statuses, boss):
 		return
 
 	for body in contact_area.get_overlapping_bodies():

@@ -148,7 +148,11 @@ SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입
 
 Git은 소스·변경 이유·검사/복구 기록을 소유하며 빌드 바이너리를 전달하지 않습니다. `ci_budget`는 보수적 검사 분류, `ci_transfer`는 동일 러너 실행/시도별 해시 전달, `deploy_cloudflare_assets`는 커밋/ZIP 대조와 R2 후보 업로드·읽기 검증, Worker는 활성 경로 읽기만 담당합니다. 워크플로가 전환·사후 검증·복구·보존 순서를 조립합니다. 문서 변경은 현재 게임 커밋을 유지하며 토큰·로그인·사용자 저장을 전달 payload에 넣지 않습니다. [재시도·확장 계약](../getting-started/source-control-and-cleanup.md#source-only-delivery).
 
-### 방어구 세트 계약
+### 초기 선택·데이터형 액티브 계약
+
+[40종 스킬](../features/tactical-skill-catalog.md)은 초기 선택 ID → 실제 장비 규칙 재검증 → 로비 장착 보존으로 연결합니다. 캐릭터 고정 특화는 순수 계열 정책, 액티브는 검증된 효과 Resource, 지속 상태는 취소 가능한 Runtime이 소유합니다. CombatResourceSystem은 공개된 스킬별 충전 배율만 받으며 캐릭터 ID를 알지 않습니다. 라이브 Skill/SkillPattern은 한 번에 검증하고 출격 계획과 효과는 값 복사본을 사용합니다. 새 목록이 생겼다고 공통 실행기·Game에 ID 분기문을 추가하지 않습니다.
+
+### 방어구 세트 실행 경계
 
 [방어구 세트](../features/armor-sets.md)는 `ArmorSetDefinition`(지원 수치/임계 검증) → `ArmorSetResolver`(서로 다른 장착 부위 집계) → `EquipmentSystem`(player/weapon/skill 전달)로 분리합니다. Game에 개별 세트 ID 분기를 추가하지 않습니다. 2/4세트는 각각 한 번 적용하고 품질/레벨 배율을 다시 곱하지 않습니다. 같은 ID의 상충된 정의·중복 슬롯은 실패 처리하며 장착 실패 전 원본 상태를 보존합니다. 실제 스킬 효과는 발동 시 스냅샷을 사용합니다.
 

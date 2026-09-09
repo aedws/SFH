@@ -92,7 +92,15 @@ def build():
         ('innate_effect_radius','고유 효과 반경','px',0,1000,False,None),('innate_maximum_targets','고유 최대 대상','명',1,32,True,None)],lambda r:r['equipment_kind']=='weapon')
     table('character','game/features/character_selection/data/character_catalog.csv','character_id',[
         ('max_health_add','패시브 최대 체력 가산','HP',0,10000,False,None),('defense_add','패시브 방어 가산','방어',0,1000,False,None),
-        ('movement_speed_multiplier','패시브 이동 속도 배율','배',.1,5,False,None)])
+        ('movement_speed_multiplier','패시브 이동 속도 배율','배',.1,5,False,None),
+        ('skill_damage_multiplier','특화 스킬 피해 배율','배',.1,5,False,None),
+        ('skill_cooldown_multiplier','특화 쿨타임·충전 배율','배',.1,5,False,None),
+        ('skill_radius_multiplier','특화 스킬 반경 배율','배',.1,5,False,None)])
+    table('skill','game/features/combat_skills/data/tactical_patterns.csv','skill_id',[
+        ('damage','펄스당 피해','피해',0,10000,False,None),('radius','효과 반경·길이','px',81,2400,False,None),
+        ('pulses','총 타격 횟수','회',1,40,True,None),('interval','타격 간격','초',.1,10,False,None),
+        ('delay','첫 타격 지연','초',0,10,False,None),('maximum_targets','대상 수 상한','명',1,64,True,None),
+        ('status_duration','상태 지속','초',0,30,False,None),('combo_multiplier','연계 피해 배율','배',1,10,False,None)])
     # Identity CSV is an audited mirror; .tres is the actual runtime definition.
     identity_keys = {'innate_trigger_hits':'trigger_every_hits','innate_fixed_damage':'fixed_damage',
                      'innate_effect_kind':'effect_kind','innate_effect_radius':'effect_radius',

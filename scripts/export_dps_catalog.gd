@@ -34,6 +34,7 @@ func _run() -> void:
 		row.erase(&"accent_color")
 		var effect_kinds := {"res://game/features/combat_skills/effects/blink_skill_effect.gd":"path", "res://game/features/combat_skills/effects/magnetic_field_skill_effect.gd":"field", "res://game/features/combat_skills/effects/speed_boost_skill_effect.gd":"utility"}
 		var effect_path: String = skill.effect.get_script().resource_path
+		effect_kinds["res://game/features/combat_skills/effects/tactical_pattern_effect.gd"] = "pattern"
 		if not effect_kinds.has(effect_path):
 			push_error("Register DPS model for new effect: " + effect_path)
 			quit(1)

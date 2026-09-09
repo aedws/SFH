@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/tactical_pattern_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2")
+shape = "circle"
+radius = 260
+inner_radius = 80
+width = 48
+angle_degrees = 90
+damage = 4
+pulses = 8
+interval = 0.5
+delay = 0
+follow_player = false
+anchor_on_target = true
+maximum_targets = 24
+chain_range = 150
+status_id = "slow"
+status_duration = 1
+consume_status_id = ""
+combo_multiplier = 2
+rotation_per_pulse = 0
+defense_add = 0
+speed_multiplier = 1
+buff_duration = 4
+
+[resource]
+script = ExtResource("1")
+skill_id = &"frost_zone"
+display_name = "동결 구역"
+description = "밀집 지점에 고정 냉각 장판"
+input_action = &"combat_skill_2"
+input_label = "2"
+targeting_mode = "densest"
+targeting_range = 260
+cooldown_seconds = 15
+energy_cost = 30
+charge_recovery_seconds = 15
+effect = SubResource("Effect")

@@ -1,5 +1,5 @@
 {
-  "version": 34,
+  "version": 35,
   "updated": "2026-09-09",
   "root": {
     "id": "sfh",
@@ -210,6 +210,7 @@
               {"label": "자동 무기", "source": "features/weapons.md", "route": "features/weapons/", "summary": "무조준 기본기와 무기 태그"},
               {"label": "스마트 자동 타게팅", "source": "features/smart-targeting.md", "route": "features/smart-targeting/", "summary": "대상·밀집·이동 방향 정책"},
               {"label": "전투 스킬과 쿨타임 HUD", "source": "features/combat-skills.md", "route": "features/combat-skills/", "summary": "점멸·자기장·기동 가속"},
+              {"label": "첫 출격·액티브 40종", "source": "features/tactical-skill-catalog.md", "route": "features/tactical-skill-catalog/", "summary": "초기 요원·무장 선택, 고정 패시브와 SkillPattern 효과 목록"},
               {"label": "전투 에너지·충전·회복 드랍", "source": "features/combat-resources.md", "route": "features/combat-resources/", "summary": "스킬 자원과 처치 드랍"},
               {"label": "부분 체력 회복", "source": "features/health-recovery.md", "route": "features/health-recovery/", "summary": "회복 규칙과 제한"},
               {"label": "타격감과 피격 피드백", "source": "features/hit-feedback.md", "route": "features/hit-feedback/", "summary": "섬광·넉백·충격·카메라 반응"},

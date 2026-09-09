@@ -165,6 +165,10 @@ jobs:
           python3 scripts/sync_season_rewards.py --check
           python3 scripts/sync_facilities.py --check
           python3 scripts/sync_skill_catalog.py --check
+          python3 scripts/compile_tactical_skills.py --check
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/tactical_skill_catalog_test.gd" 2>&1 | tee /tmp/sfh-tactical-skills.log
+          grep -q "TACTICAL_SKILL_CATALOG_PASS" /tmp/sfh-tactical-skills.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-tactical-skills.log
           python3 scripts/sync_session_socket_rules.py --check
           python3 scripts/sync_character_catalog.py --check
           python3 scripts/sync_loadout_investment.py --check
@@ -504,6 +508,7 @@ jobs:
             --csv game/features/loot_tables/data/loot_table.csv \
             --csv game/features/conditional_ranking/data/season_reward.csv \
             --csv game/features/combat_skills/data/skill_catalog.csv \
+            --csv game/features/combat_skills/data/tactical_patterns.csv \
             --csv game/features/session_sockets/data/session_socket_rules.csv \
             --csv game/features/character_selection/data/character_catalog.csv \
             --commit "$GITHUB_SHA"

@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "version": "2026-09-09.1",
-  "fingerprint": "f7b2153be559502adc61c521dcf14972a314d9b5a1232eda020d8265c2965740",
+  "version": "2026-09-09.2",
+  "fingerprint": "b888509763e57a05cbbe18b65fd87bce397e22d804a671a5e7727a5241ba4a3b",
   "sources": {
     "game/features/combat_skills/definitions/blink.tres": "f7c9548f0685e1ed90cabb98425799f8d6eed27613779d2dea53bc7712e90d7c",
     "game/features/combat_skills/definitions/arc_dash.tres": "89ae3166549f9bf2ffa602dd5f5b709fd212fdc46deb7566bfea6aae01bfeea8",
@@ -9,7 +9,8 @@
     "game/features/combat_skills/definitions/speed_boost.tres": "e72f091950495477313d350b5e3c8643def0303968007a730956e9bc326ffeea",
     "game/features/weapon_balance/data/weapon_balance.csv": "d6696115650d5be648b67ee0a197e3a2f0bd0cace67588b503ebd298a6c3ddd4",
     "game/features/equipment/data/equipment_identity.csv": "d4637b51f990df33d00812a9e90ae7defb1caa565ecc4da56d4c5112fc40c568",
-    "game/features/character_selection/data/character_catalog.csv": "f0152c1a3ae4ce6cb9c08674e37034334eab700d152d114114d849d6fe614a00",
+    "game/features/character_selection/data/character_catalog.csv": "6e3c427235d0e55adbe28c8906bd868f0b7d47d6fd061a6fba6b00e4409eb9a9",
+    "game/features/combat_skills/data/tactical_patterns.csv": "02a386770a9a40fb7acece93e76dcc894ef9cfb03a5be33f748f3a53a5dcf61d",
     "game/features/equipment/definitions/weapons/assault_rifle.tres": "fda1cfde4dc258bcabbdaaf70e3e3b346c3629fe8975f04819666443cf1fd5c4",
     "game/features/equipment/weapon_innate_skill_definition.gd": "4e9b6f85e51065feafb46c79837a12ae7330d688cb618b32157ce2cdd6876130",
     "game/features/equipment/definitions/weapons/service_pistol.tres": "490cc2f67b778b3ec481c231bc04b2857ac4f2af3b83b303e9b7992326742b1d",
@@ -26,7 +27,7 @@
     "game/features/weapons/weapon_innate_skill_system.gd": "34a490622ae3b45b4785c82fc8cbff3fab6b4a68269a5eb128b0a2720095ae6f",
     "game/features/combat_skills/effects/path_damage_policy.gd": "493d5567a9d1c433707e514b4ee6e35c0fb18f79693b915c6e1e744288a2386e",
     "game/features/combat_skills/effects/persistent_magnetic_field.gd": "513e82af14f6319fa6e1834f3a08ec986b445ff271d02acbbfe8f0d57b937539",
-    "game/features/character_selection/character_definition.gd": "a3ca69c55c639f30438e7a4ede2ba105ab123ce717ab15130b40e33c862a5865",
+    "game/features/character_selection/character_definition.gd": "1a11c84ad838164850e77c15501106018aa7d9bdea0433ba11a57bcffb26d952",
     "game/features/equipment/stat_modifier.gd": "4cf7533c8a3ad6d81b1e0f57383dcf3648a5ba61a7c553b0e79f8e2fad13958f"
   },
   "fields": [
@@ -2788,6 +2789,4604 @@
                 "character_id": "bulwark"
               },
               "field": "movement_speed_multiplier"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "character.skill_damage_multiplier",
+      "kind": "character",
+      "label": "특화 스킬 피해 배율",
+      "unit": "배",
+      "minimum": 0.1,
+      "maximum": 5,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "vanguard",
+          "name": "선봉대",
+          "current": 1.2,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "vanguard"
+              },
+              "field": "skill_damage_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "runner",
+          "name": "질주자",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "runner"
+              },
+              "field": "skill_damage_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "bulwark",
+          "name": "방벽병",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "bulwark"
+              },
+              "field": "skill_damage_multiplier"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "character.skill_cooldown_multiplier",
+      "kind": "character",
+      "label": "특화 쿨타임·충전 배율",
+      "unit": "배",
+      "minimum": 0.1,
+      "maximum": 5,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "vanguard",
+          "name": "선봉대",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "vanguard"
+              },
+              "field": "skill_cooldown_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "runner",
+          "name": "질주자",
+          "current": 0.8,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "runner"
+              },
+              "field": "skill_cooldown_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "bulwark",
+          "name": "방벽병",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "bulwark"
+              },
+              "field": "skill_cooldown_multiplier"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "character.skill_radius_multiplier",
+      "kind": "character",
+      "label": "특화 스킬 반경 배율",
+      "unit": "배",
+      "minimum": 0.1,
+      "maximum": 5,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "vanguard",
+          "name": "선봉대",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "vanguard"
+              },
+              "field": "skill_radius_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "runner",
+          "name": "질주자",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "runner"
+              },
+              "field": "skill_radius_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "bulwark",
+          "name": "방벽병",
+          "current": 1.15,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/character_selection/data/character_catalog.csv",
+              "selector": {
+                "character_id": "bulwark"
+              },
+              "field": "skill_radius_multiplier"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.damage",
+      "kind": "skill",
+      "label": "펄스당 피해",
+      "unit": "피해",
+      "minimum": 0,
+      "maximum": 10000,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "arc_link",
+          "name": "연쇄 전격",
+          "current": 18.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "arc_link"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "relay_stun",
+          "name": "정지 릴레이",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_stun"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "overload_link",
+          "name": "과부하 연결",
+          "current": 16.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "overload_link"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "relay_barrage",
+          "name": "반복 릴레이",
+          "current": 7.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_barrage"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "plasma_lance",
+          "name": "플라스마 창",
+          "current": 32.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "plasma_lance"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "cryo_ray",
+          "name": "냉각 광선",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "cryo_ray"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "breach_ray",
+          "name": "균열 광선",
+          "current": 14.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "breach_ray"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "rotating_ray",
+          "name": "회전 절단광",
+          "current": 9.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "rotating_ray"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "crossfire",
+          "name": "십자 섬광",
+          "current": 24.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "crossfire"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "charged_rail",
+          "name": "축전 레일",
+          "current": 85.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "charged_rail"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "fan_cut",
+          "name": "부채꼴 참격",
+          "current": 35.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fan_cut"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "suppression_fan",
+          "name": "제압 부채",
+          "current": 8.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "suppression_fan"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "frost_fan",
+          "name": "서리 분사",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_fan"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "execution_fan",
+          "name": "처형 절단",
+          "current": 28.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "execution_fan"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "spiral_cut",
+          "name": "나선 검무",
+          "current": 13.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "spiral_cut"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "seismic_pulse",
+          "name": "지진 파동",
+          "current": 20.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "seismic_pulse"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "thermal_bloom",
+          "name": "열화 개화",
+          "current": 70.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thermal_bloom"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "static_trap",
+          "name": "정전 덫",
+          "current": 10.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "static_trap"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "frost_zone",
+          "name": "동결 구역",
+          "current": 4.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_zone"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "corrosion_zone",
+          "name": "부식 구역",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "corrosion_zone"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "storm_mantle",
+          "name": "폭풍 외투",
+          "current": 9.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "storm_mantle"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "orbit_guard",
+          "name": "궤도 방호",
+          "current": 12.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "orbit_guard"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "perimeter_mine",
+          "name": "외곽 지뢰",
+          "current": 60.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "perimeter_mine"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "containment_ring",
+          "name": "격리 고리",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "containment_ring"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "resonance_ring",
+          "name": "공명 고리",
+          "current": 16.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "resonance_ring"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "mark_target",
+          "name": "집중 표식",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "mark_target"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "ion_strike",
+          "name": "이온 저격",
+          "current": 80.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "ion_strike"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "stasis_lock",
+          "name": "정지 구속",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "stasis_lock"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "focused_barrage",
+          "name": "집중 포격",
+          "current": 13.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "focused_barrage"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "shatter",
+          "name": "빙결 분쇄",
+          "current": 20.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "shatter"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "reactive_shell",
+          "name": "반응 장갑",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "reactive_shell"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "evasive_drive",
+          "name": "회피 구동",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "evasive_drive"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "fortress_pulse",
+          "name": "요새 진동",
+          "current": 8.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fortress_pulse"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "assault_drive",
+          "name": "돌격 구동",
+          "current": 10.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "assault_drive"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "null_wave",
+          "name": "무력화 파동",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "null_wave"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "thunder_finale",
+          "name": "뇌전 종막",
+          "current": 22.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thunder_finale"
+              },
+              "field": "damage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.radius",
+      "kind": "skill",
+      "label": "효과 반경·길이",
+      "unit": "px",
+      "minimum": 81,
+      "maximum": 2400,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "arc_link",
+          "name": "연쇄 전격",
+          "current": 520.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "arc_link"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "relay_stun",
+          "name": "정지 릴레이",
+          "current": 440.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_stun"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "overload_link",
+          "name": "과부하 연결",
+          "current": 520.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "overload_link"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "relay_barrage",
+          "name": "반복 릴레이",
+          "current": 400.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_barrage"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "plasma_lance",
+          "name": "플라스마 창",
+          "current": 700.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "plasma_lance"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "cryo_ray",
+          "name": "냉각 광선",
+          "current": 550.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "cryo_ray"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "breach_ray",
+          "name": "균열 광선",
+          "current": 600.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "breach_ray"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "rotating_ray",
+          "name": "회전 절단광",
+          "current": 360.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "rotating_ray"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "crossfire",
+          "name": "십자 섬광",
+          "current": 500.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "crossfire"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "charged_rail",
+          "name": "축전 레일",
+          "current": 820.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "charged_rail"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "fan_cut",
+          "name": "부채꼴 참격",
+          "current": 210.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fan_cut"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "suppression_fan",
+          "name": "제압 부채",
+          "current": 330.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "suppression_fan"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "frost_fan",
+          "name": "서리 분사",
+          "current": 300.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_fan"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "execution_fan",
+          "name": "처형 절단",
+          "current": 240.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "execution_fan"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "spiral_cut",
+          "name": "나선 검무",
+          "current": 200.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "spiral_cut"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "seismic_pulse",
+          "name": "지진 파동",
+          "current": 270.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "seismic_pulse"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "thermal_bloom",
+          "name": "열화 개화",
+          "current": 240.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thermal_bloom"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "static_trap",
+          "name": "정전 덫",
+          "current": 160.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "static_trap"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "frost_zone",
+          "name": "동결 구역",
+          "current": 260.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_zone"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "corrosion_zone",
+          "name": "부식 구역",
+          "current": 220.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "corrosion_zone"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "storm_mantle",
+          "name": "폭풍 외투",
+          "current": 145.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "storm_mantle"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "orbit_guard",
+          "name": "궤도 방호",
+          "current": 185.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "orbit_guard"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "perimeter_mine",
+          "name": "외곽 지뢰",
+          "current": 320.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "perimeter_mine"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "containment_ring",
+          "name": "격리 고리",
+          "current": 300.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "containment_ring"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "resonance_ring",
+          "name": "공명 고리",
+          "current": 340.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "resonance_ring"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "mark_target",
+          "name": "집중 표식",
+          "current": 650.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "mark_target"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "ion_strike",
+          "name": "이온 저격",
+          "current": 760.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "ion_strike"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "stasis_lock",
+          "name": "정지 구속",
+          "current": 600.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "stasis_lock"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "focused_barrage",
+          "name": "집중 포격",
+          "current": 680.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "focused_barrage"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "shatter",
+          "name": "빙결 분쇄",
+          "current": 250.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "shatter"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "reactive_shell",
+          "name": "반응 장갑",
+          "current": 220.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "reactive_shell"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "evasive_drive",
+          "name": "회피 구동",
+          "current": 220.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "evasive_drive"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "fortress_pulse",
+          "name": "요새 진동",
+          "current": 180.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fortress_pulse"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "assault_drive",
+          "name": "돌격 구동",
+          "current": 180.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "assault_drive"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "null_wave",
+          "name": "무력화 파동",
+          "current": 360.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "null_wave"
+              },
+              "field": "radius"
+            }
+          ]
+        },
+        {
+          "id": "thunder_finale",
+          "name": "뇌전 종막",
+          "current": 400.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thunder_finale"
+              },
+              "field": "radius"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.pulses",
+      "kind": "skill",
+      "label": "총 타격 횟수",
+      "unit": "회",
+      "minimum": 1,
+      "maximum": 40,
+      "integer": true,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "arc_link",
+          "name": "연쇄 전격",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "arc_link"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "relay_stun",
+          "name": "정지 릴레이",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_stun"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "overload_link",
+          "name": "과부하 연결",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "overload_link"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "relay_barrage",
+          "name": "반복 릴레이",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_barrage"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "plasma_lance",
+          "name": "플라스마 창",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "plasma_lance"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "cryo_ray",
+          "name": "냉각 광선",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "cryo_ray"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "breach_ray",
+          "name": "균열 광선",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "breach_ray"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "rotating_ray",
+          "name": "회전 절단광",
+          "current": 8.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "rotating_ray"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "crossfire",
+          "name": "십자 섬광",
+          "current": 4.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "crossfire"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "charged_rail",
+          "name": "축전 레일",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "charged_rail"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "fan_cut",
+          "name": "부채꼴 참격",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fan_cut"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "suppression_fan",
+          "name": "제압 부채",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "suppression_fan"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "frost_fan",
+          "name": "서리 분사",
+          "current": 7.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_fan"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "execution_fan",
+          "name": "처형 절단",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "execution_fan"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "spiral_cut",
+          "name": "나선 검무",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "spiral_cut"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "seismic_pulse",
+          "name": "지진 파동",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "seismic_pulse"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "thermal_bloom",
+          "name": "열화 개화",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thermal_bloom"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "static_trap",
+          "name": "정전 덫",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "static_trap"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "frost_zone",
+          "name": "동결 구역",
+          "current": 8.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_zone"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "corrosion_zone",
+          "name": "부식 구역",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "corrosion_zone"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "storm_mantle",
+          "name": "폭풍 외투",
+          "current": 10.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "storm_mantle"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "orbit_guard",
+          "name": "궤도 방호",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "orbit_guard"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "perimeter_mine",
+          "name": "외곽 지뢰",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "perimeter_mine"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "containment_ring",
+          "name": "격리 고리",
+          "current": 8.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "containment_ring"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "resonance_ring",
+          "name": "공명 고리",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "resonance_ring"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "mark_target",
+          "name": "집중 표식",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "mark_target"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "ion_strike",
+          "name": "이온 저격",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "ion_strike"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "stasis_lock",
+          "name": "정지 구속",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "stasis_lock"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "focused_barrage",
+          "name": "집중 포격",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "focused_barrage"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "shatter",
+          "name": "빙결 분쇄",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "shatter"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "reactive_shell",
+          "name": "반응 장갑",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "reactive_shell"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "evasive_drive",
+          "name": "회피 구동",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "evasive_drive"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "fortress_pulse",
+          "name": "요새 진동",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fortress_pulse"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "assault_drive",
+          "name": "돌격 구동",
+          "current": 8.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "assault_drive"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "null_wave",
+          "name": "무력화 파동",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "null_wave"
+              },
+              "field": "pulses"
+            }
+          ]
+        },
+        {
+          "id": "thunder_finale",
+          "name": "뇌전 종막",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thunder_finale"
+              },
+              "field": "pulses"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.interval",
+      "kind": "skill",
+      "label": "타격 간격",
+      "unit": "초",
+      "minimum": 0.1,
+      "maximum": 10,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "arc_link",
+          "name": "연쇄 전격",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "arc_link"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "relay_stun",
+          "name": "정지 릴레이",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_stun"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "overload_link",
+          "name": "과부하 연결",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "overload_link"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "relay_barrage",
+          "name": "반복 릴레이",
+          "current": 0.6,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_barrage"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "plasma_lance",
+          "name": "플라스마 창",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "plasma_lance"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "cryo_ray",
+          "name": "냉각 광선",
+          "current": 0.3,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "cryo_ray"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "breach_ray",
+          "name": "균열 광선",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "breach_ray"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "rotating_ray",
+          "name": "회전 절단광",
+          "current": 0.25,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "rotating_ray"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "crossfire",
+          "name": "십자 섬광",
+          "current": 0.1,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "crossfire"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "charged_rail",
+          "name": "축전 레일",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "charged_rail"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "fan_cut",
+          "name": "부채꼴 참격",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fan_cut"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "suppression_fan",
+          "name": "제압 부채",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "suppression_fan"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "frost_fan",
+          "name": "서리 분사",
+          "current": 0.3,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_fan"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "execution_fan",
+          "name": "처형 절단",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "execution_fan"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "spiral_cut",
+          "name": "나선 검무",
+          "current": 0.2,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "spiral_cut"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "seismic_pulse",
+          "name": "지진 파동",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "seismic_pulse"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "thermal_bloom",
+          "name": "열화 개화",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thermal_bloom"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "static_trap",
+          "name": "정전 덫",
+          "current": 0.7,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "static_trap"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "frost_zone",
+          "name": "동결 구역",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_zone"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "corrosion_zone",
+          "name": "부식 구역",
+          "current": 0.6,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "corrosion_zone"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "storm_mantle",
+          "name": "폭풍 외투",
+          "current": 0.4,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "storm_mantle"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "orbit_guard",
+          "name": "궤도 방호",
+          "current": 0.6,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "orbit_guard"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "perimeter_mine",
+          "name": "외곽 지뢰",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "perimeter_mine"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "containment_ring",
+          "name": "격리 고리",
+          "current": 0.4,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "containment_ring"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "resonance_ring",
+          "name": "공명 고리",
+          "current": 0.7,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "resonance_ring"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "mark_target",
+          "name": "집중 표식",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "mark_target"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "ion_strike",
+          "name": "이온 저격",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "ion_strike"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "stasis_lock",
+          "name": "정지 구속",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "stasis_lock"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "focused_barrage",
+          "name": "집중 포격",
+          "current": 0.25,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "focused_barrage"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "shatter",
+          "name": "빙결 분쇄",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "shatter"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "reactive_shell",
+          "name": "반응 장갑",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "reactive_shell"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "evasive_drive",
+          "name": "회피 구동",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "evasive_drive"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "fortress_pulse",
+          "name": "요새 진동",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fortress_pulse"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "assault_drive",
+          "name": "돌격 구동",
+          "current": 0.4,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "assault_drive"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "null_wave",
+          "name": "무력화 파동",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "null_wave"
+              },
+              "field": "interval"
+            }
+          ]
+        },
+        {
+          "id": "thunder_finale",
+          "name": "뇌전 종막",
+          "current": 0.8,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thunder_finale"
+              },
+              "field": "interval"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.delay",
+      "kind": "skill",
+      "label": "첫 타격 지연",
+      "unit": "초",
+      "minimum": 0,
+      "maximum": 10,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "arc_link",
+          "name": "연쇄 전격",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "arc_link"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "relay_stun",
+          "name": "정지 릴레이",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_stun"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "overload_link",
+          "name": "과부하 연결",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "overload_link"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "relay_barrage",
+          "name": "반복 릴레이",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_barrage"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "plasma_lance",
+          "name": "플라스마 창",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "plasma_lance"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "cryo_ray",
+          "name": "냉각 광선",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "cryo_ray"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "breach_ray",
+          "name": "균열 광선",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "breach_ray"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "rotating_ray",
+          "name": "회전 절단광",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "rotating_ray"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "crossfire",
+          "name": "십자 섬광",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "crossfire"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "charged_rail",
+          "name": "축전 레일",
+          "current": 1.1,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "charged_rail"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "fan_cut",
+          "name": "부채꼴 참격",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fan_cut"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "suppression_fan",
+          "name": "제압 부채",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "suppression_fan"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "frost_fan",
+          "name": "서리 분사",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_fan"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "execution_fan",
+          "name": "처형 절단",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "execution_fan"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "spiral_cut",
+          "name": "나선 검무",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "spiral_cut"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "seismic_pulse",
+          "name": "지진 파동",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "seismic_pulse"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "thermal_bloom",
+          "name": "열화 개화",
+          "current": 1.2,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thermal_bloom"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "static_trap",
+          "name": "정전 덫",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "static_trap"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "frost_zone",
+          "name": "동결 구역",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_zone"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "corrosion_zone",
+          "name": "부식 구역",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "corrosion_zone"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "storm_mantle",
+          "name": "폭풍 외투",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "storm_mantle"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "orbit_guard",
+          "name": "궤도 방호",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "orbit_guard"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "perimeter_mine",
+          "name": "외곽 지뢰",
+          "current": 1.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "perimeter_mine"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "containment_ring",
+          "name": "격리 고리",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "containment_ring"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "resonance_ring",
+          "name": "공명 고리",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "resonance_ring"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "mark_target",
+          "name": "집중 표식",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "mark_target"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "ion_strike",
+          "name": "이온 저격",
+          "current": 0.7,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "ion_strike"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "stasis_lock",
+          "name": "정지 구속",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "stasis_lock"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "focused_barrage",
+          "name": "집중 포격",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "focused_barrage"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "shatter",
+          "name": "빙결 분쇄",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "shatter"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "reactive_shell",
+          "name": "반응 장갑",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "reactive_shell"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "evasive_drive",
+          "name": "회피 구동",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "evasive_drive"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "fortress_pulse",
+          "name": "요새 진동",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fortress_pulse"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "assault_drive",
+          "name": "돌격 구동",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "assault_drive"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "null_wave",
+          "name": "무력화 파동",
+          "current": 0.4,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "null_wave"
+              },
+              "field": "delay"
+            }
+          ]
+        },
+        {
+          "id": "thunder_finale",
+          "name": "뇌전 종막",
+          "current": 0.6,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thunder_finale"
+              },
+              "field": "delay"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.maximum_targets",
+      "kind": "skill",
+      "label": "대상 수 상한",
+      "unit": "명",
+      "minimum": 1,
+      "maximum": 64,
+      "integer": true,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "arc_link",
+          "name": "연쇄 전격",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "arc_link"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "relay_stun",
+          "name": "정지 릴레이",
+          "current": 4.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_stun"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "overload_link",
+          "name": "과부하 연결",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "overload_link"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "relay_barrage",
+          "name": "반복 릴레이",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_barrage"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "plasma_lance",
+          "name": "플라스마 창",
+          "current": 12.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "plasma_lance"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "cryo_ray",
+          "name": "냉각 광선",
+          "current": 12.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "cryo_ray"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "breach_ray",
+          "name": "균열 광선",
+          "current": 16.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "breach_ray"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "rotating_ray",
+          "name": "회전 절단광",
+          "current": 12.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "rotating_ray"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "crossfire",
+          "name": "십자 섬광",
+          "current": 16.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "crossfire"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "charged_rail",
+          "name": "축전 레일",
+          "current": 8.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "charged_rail"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "fan_cut",
+          "name": "부채꼴 참격",
+          "current": 12.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fan_cut"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "suppression_fan",
+          "name": "제압 부채",
+          "current": 18.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "suppression_fan"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "frost_fan",
+          "name": "서리 분사",
+          "current": 16.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_fan"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "execution_fan",
+          "name": "처형 절단",
+          "current": 10.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "execution_fan"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "spiral_cut",
+          "name": "나선 검무",
+          "current": 12.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "spiral_cut"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "seismic_pulse",
+          "name": "지진 파동",
+          "current": 24.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "seismic_pulse"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "thermal_bloom",
+          "name": "열화 개화",
+          "current": 24.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thermal_bloom"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "static_trap",
+          "name": "정전 덫",
+          "current": 16.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "static_trap"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "frost_zone",
+          "name": "동결 구역",
+          "current": 24.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_zone"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "corrosion_zone",
+          "name": "부식 구역",
+          "current": 24.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "corrosion_zone"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "storm_mantle",
+          "name": "폭풍 외투",
+          "current": 12.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "storm_mantle"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "orbit_guard",
+          "name": "궤도 방호",
+          "current": 16.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "orbit_guard"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "perimeter_mine",
+          "name": "외곽 지뢰",
+          "current": 24.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "perimeter_mine"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "containment_ring",
+          "name": "격리 고리",
+          "current": 24.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "containment_ring"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "resonance_ring",
+          "name": "공명 고리",
+          "current": 24.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "resonance_ring"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "mark_target",
+          "name": "집중 표식",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "mark_target"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "ion_strike",
+          "name": "이온 저격",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "ion_strike"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "stasis_lock",
+          "name": "정지 구속",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "stasis_lock"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "focused_barrage",
+          "name": "집중 포격",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "focused_barrage"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "shatter",
+          "name": "빙결 분쇄",
+          "current": 24.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "shatter"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "reactive_shell",
+          "name": "반응 장갑",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "reactive_shell"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "evasive_drive",
+          "name": "회피 구동",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "evasive_drive"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "fortress_pulse",
+          "name": "요새 진동",
+          "current": 16.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fortress_pulse"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "assault_drive",
+          "name": "돌격 구동",
+          "current": 10.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "assault_drive"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "null_wave",
+          "name": "무력화 파동",
+          "current": 32.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "null_wave"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "thunder_finale",
+          "name": "뇌전 종막",
+          "current": 32.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thunder_finale"
+              },
+              "field": "maximum_targets"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.status_duration",
+      "kind": "skill",
+      "label": "상태 지속",
+      "unit": "초",
+      "minimum": 0,
+      "maximum": 30,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "arc_link",
+          "name": "연쇄 전격",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "arc_link"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "relay_stun",
+          "name": "정지 릴레이",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_stun"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "overload_link",
+          "name": "과부하 연결",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "overload_link"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "relay_barrage",
+          "name": "반복 릴레이",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_barrage"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "plasma_lance",
+          "name": "플라스마 창",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "plasma_lance"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "cryo_ray",
+          "name": "냉각 광선",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "cryo_ray"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "breach_ray",
+          "name": "균열 광선",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "breach_ray"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "rotating_ray",
+          "name": "회전 절단광",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "rotating_ray"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "crossfire",
+          "name": "십자 섬광",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "crossfire"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "charged_rail",
+          "name": "축전 레일",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "charged_rail"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "fan_cut",
+          "name": "부채꼴 참격",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fan_cut"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "suppression_fan",
+          "name": "제압 부채",
+          "current": 2.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "suppression_fan"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "frost_fan",
+          "name": "서리 분사",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_fan"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "execution_fan",
+          "name": "처형 절단",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "execution_fan"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "spiral_cut",
+          "name": "나선 검무",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "spiral_cut"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "seismic_pulse",
+          "name": "지진 파동",
+          "current": 1.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "seismic_pulse"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "thermal_bloom",
+          "name": "열화 개화",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thermal_bloom"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "static_trap",
+          "name": "정전 덫",
+          "current": 0.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "static_trap"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "frost_zone",
+          "name": "동결 구역",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_zone"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "corrosion_zone",
+          "name": "부식 구역",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "corrosion_zone"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "storm_mantle",
+          "name": "폭풍 외투",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "storm_mantle"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "orbit_guard",
+          "name": "궤도 방호",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "orbit_guard"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "perimeter_mine",
+          "name": "외곽 지뢰",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "perimeter_mine"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "containment_ring",
+          "name": "격리 고리",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "containment_ring"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "resonance_ring",
+          "name": "공명 고리",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "resonance_ring"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "mark_target",
+          "name": "집중 표식",
+          "current": 8.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "mark_target"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "ion_strike",
+          "name": "이온 저격",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "ion_strike"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "stasis_lock",
+          "name": "정지 구속",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "stasis_lock"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "focused_barrage",
+          "name": "집중 포격",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "focused_barrage"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "shatter",
+          "name": "빙결 분쇄",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "shatter"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "reactive_shell",
+          "name": "반응 장갑",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "reactive_shell"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "evasive_drive",
+          "name": "회피 구동",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "evasive_drive"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "fortress_pulse",
+          "name": "요새 진동",
+          "current": 1.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fortress_pulse"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "assault_drive",
+          "name": "돌격 구동",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "assault_drive"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "null_wave",
+          "name": "무력화 파동",
+          "current": 6.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "null_wave"
+              },
+              "field": "status_duration"
+            }
+          ]
+        },
+        {
+          "id": "thunder_finale",
+          "name": "뇌전 종막",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thunder_finale"
+              },
+              "field": "status_duration"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skill.combo_multiplier",
+      "kind": "skill",
+      "label": "연계 피해 배율",
+      "unit": "배",
+      "minimum": 1,
+      "maximum": 10,
+      "integer": false,
+      "choices": null,
+      "effect": "해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.",
+      "targets": [
+        {
+          "id": "arc_link",
+          "name": "연쇄 전격",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "arc_link"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "relay_stun",
+          "name": "정지 릴레이",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_stun"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "overload_link",
+          "name": "과부하 연결",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "overload_link"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "relay_barrage",
+          "name": "반복 릴레이",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "relay_barrage"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "plasma_lance",
+          "name": "플라스마 창",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "plasma_lance"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "cryo_ray",
+          "name": "냉각 광선",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "cryo_ray"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "breach_ray",
+          "name": "균열 광선",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "breach_ray"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "rotating_ray",
+          "name": "회전 절단광",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "rotating_ray"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "crossfire",
+          "name": "십자 섬광",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "crossfire"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "charged_rail",
+          "name": "축전 레일",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "charged_rail"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "fan_cut",
+          "name": "부채꼴 참격",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fan_cut"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "suppression_fan",
+          "name": "제압 부채",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "suppression_fan"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "frost_fan",
+          "name": "서리 분사",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_fan"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "execution_fan",
+          "name": "처형 절단",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "execution_fan"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "spiral_cut",
+          "name": "나선 검무",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "spiral_cut"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "seismic_pulse",
+          "name": "지진 파동",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "seismic_pulse"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "thermal_bloom",
+          "name": "열화 개화",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thermal_bloom"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "static_trap",
+          "name": "정전 덫",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "static_trap"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "frost_zone",
+          "name": "동결 구역",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "frost_zone"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "corrosion_zone",
+          "name": "부식 구역",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "corrosion_zone"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "storm_mantle",
+          "name": "폭풍 외투",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "storm_mantle"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "orbit_guard",
+          "name": "궤도 방호",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "orbit_guard"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "perimeter_mine",
+          "name": "외곽 지뢰",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "perimeter_mine"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "containment_ring",
+          "name": "격리 고리",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "containment_ring"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "resonance_ring",
+          "name": "공명 고리",
+          "current": 2.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "resonance_ring"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "mark_target",
+          "name": "집중 표식",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "mark_target"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "ion_strike",
+          "name": "이온 저격",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "ion_strike"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "stasis_lock",
+          "name": "정지 구속",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "stasis_lock"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "focused_barrage",
+          "name": "집중 포격",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "focused_barrage"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "shatter",
+          "name": "빙결 분쇄",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "shatter"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "reactive_shell",
+          "name": "반응 장갑",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "reactive_shell"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "evasive_drive",
+          "name": "회피 구동",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "evasive_drive"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "fortress_pulse",
+          "name": "요새 진동",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "fortress_pulse"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "assault_drive",
+          "name": "돌격 구동",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "assault_drive"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "null_wave",
+          "name": "무력화 파동",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "null_wave"
+              },
+              "field": "combo_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "thunder_finale",
+          "name": "뇌전 종막",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/combat_skills/data/tactical_patterns.csv",
+              "selector": {
+                "skill_id": "thunder_finale"
+              },
+              "field": "combo_multiplier"
             }
           ]
         }

@@ -40,6 +40,10 @@ static func parse(csv_text: String) -> Dictionary:
 		definition.movement_speed_multiplier = float(row[&"movement_speed_multiplier"])
 		definition.source_status = StringName(row[&"source_status"])
 		definition.planner_note = row[&"planner_note"]
+		definition.skill_families = row.get(&"skill_families", "")
+		for key in ["skill_damage_multiplier", "skill_cooldown_multiplier", "skill_radius_multiplier"]:
+			var value := String(row.get(StringName(key), "1"))
+			definition.set(key, float(value) if not value.is_empty() else 1.0)
 		if ids.has(definition.character_id):
 			errors.append("character_id가 중복입니다: %s" % definition.character_id)
 			continue

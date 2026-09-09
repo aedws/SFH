@@ -23,6 +23,16 @@ var runtime_modifier_sources: Dictionary = {}
 var targeted_modifiers := preload("res://game/core/targeted_modifier_store.gd").new()
 var owned_effects: Array[WeakRef] = []
 var _candidate_area: Area2D
+var character_specialization: Dictionary = {}
+
+func set_character_specialization(policy: Dictionary) -> void:
+	character_specialization = policy.duplicate(true)
+	if loadout != null and is_instance_valid(resource_provider) and resource_provider.has_method(&"set_skill_recharge_multipliers"):
+		var values := {}
+		for skill in loadout.skills:
+			values[skill.skill_id] = SkillSpecializationPolicy.modifiers(skill, character_specialization).get(&"cooldown_multiply", 1.0)
+		resource_provider.call(&"set_skill_recharge_multipliers", values)
+	_emit_states()
 
 
 func register_runtime_effect(effect: Node) -> void:
@@ -186,6 +196,7 @@ func try_activate(slot_index: int) -> bool:
 	var skill: Resource = loadout.skills[slot_index]
 	if not _skill_matches_active_weapon(skill):
 		return false
+	set_character_specialization(character_specialization)
 	var effect: Resource = skill.get("effect")
 	var activation_context := _build_activation_context(skill)
 	var result: Dictionary = effect.call(&"activate", player, {
@@ -550,6 +561,10 @@ func _modified_cooldown(base_value: float, skill_id: StringName = &"") -> float:
 func _aggregated_runtime_modifiers(skill_id: StringName = &"") -> Dictionary:
 	var result: Dictionary = {}
 	var sources := runtime_modifier_sources.values() + targeted_modifiers.values_for(skill_id)
+	if loadout != null and not character_specialization.is_empty():
+		for skill: Resource in loadout.skills:
+			if skill.get("skill_id") == skill_id:
+				sources.append(SkillSpecializationPolicy.modifiers(skill, character_specialization))
 	if is_instance_valid(equipment_provider) and equipment_provider.has_method(&"get_equipment_skill_modifiers"):
 		sources.append(equipment_provider.call(&"get_equipment_skill_modifiers"))
 	for source: Dictionary in sources:

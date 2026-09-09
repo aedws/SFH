@@ -713,6 +713,12 @@ func _ready() -> void:
 		_connect_modal_panel(hub_preparation_panel)
 		operation_setup_presenter.connect(&"hub_edit_requested", _close_run_setup)
 	_route_initial_entry()
+	if get_window().has_meta(&"sfh_initial_loadout"):
+		var selection: Dictionary = get_window().get_meta(&"sfh_initial_loadout")
+		if preload("res://game/features/character_selection/initial_loadout_panel.gd").apply_selection(selection, character_selection_service, equipment_system):
+			get_window().remove_meta(&"sfh_initial_loadout")
+		else:
+			status_label.text = "초기 세팅 적용 실패 · 로비 준비실에서 다시 선택하세요."
 
 
 func _route_initial_entry() -> void:
@@ -1325,6 +1331,8 @@ func _on_profile_changed(_snapshot: Dictionary) -> void:
 
 
 func _on_contract_changed(_snapshot: Dictionary) -> void:
+	if not run_started and is_instance_valid(training_combat_skill_system) and is_instance_valid(character_selection_service):
+		training_combat_skill_system.call(&"set_character_specialization", character_selection_service.call(&"get_investment_context").get(&"skill_specialization", {}))
 	_refresh_contract_setup_ui()
 
 
@@ -1881,6 +1889,8 @@ func _install_training_combat_runtime() -> bool:
 	training_combat_skill_system.connect(
 		&"skill_activated", Callable(self, &"_on_training_skill_activated")
 	)
+	if is_instance_valid(character_selection_service):
+		training_combat_skill_system.call(&"set_character_specialization", character_selection_service.call(&"get_investment_context").get(&"skill_specialization", {}))
 	var candidates: Array[Resource] = []
 	if is_instance_valid(loadout_investment_service):
 		candidates.assign(loadout_investment_service.call(&"get_skill_catalog_resources"))
@@ -2499,6 +2509,7 @@ func _install_combat_skills() -> bool:
 		_report_configuration_error("전투 스킬 실행기를 구성하지 못했습니다.")
 		return false
 	combat_skill_system.connect(&"skill_activated", Callable(self, &"_on_combat_skill_activated"))
+	combat_skill_system.call(&"set_character_specialization", active_contract.get(&"investment_context", {}).get(&"skill_specialization", {}))
 	combat_skill_hud = _instantiate_feature(
 		COMBAT_SKILL_HUD_SCENE_PATH, ui_layer, &"CombatSkillHud"
 	)
@@ -3106,7 +3117,9 @@ func _get_active_run_skill_loadout() -> Resource:
 			and slot_index < active_run_skill_loadout.get("skills").size()
 			and ResourceLoader.exists(path)
 		):
-			active_run_skill_loadout.get("skills")[slot_index] = load(path)
+			var definition: Resource = load(path)
+			var values: Dictionary = investment.get(&"skill_balance_values", {}).get(String(definition.get("skill_id")), {})
+			active_run_skill_loadout.get("skills")[slot_index] = SkillBalanceSnapshot.apply(definition, values)
 	return active_run_skill_loadout
 
 

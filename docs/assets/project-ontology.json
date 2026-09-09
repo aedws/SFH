@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "0a984fb7f359a6ee3dfb86efcf8c4e3321384e5643a5f242a90bde6e8cdbefdb",
+  "source_sha256": "fe36abf764f3c62613116075235e158523b3766b6b9856fa6c1b952e923d5b5b",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -398,12 +398,12 @@
     "ready": 1,
     "implemented": 38,
     "modules": 60,
-    "documents": 103,
+    "documents": 104,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 477,
+    "relations": 478,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -2724,16 +2724,16 @@
       "label": "요원 선택",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 4개",
+      "summary": "장비·세팅 · feature · 파일 5개",
       "route": "architecture/code-module-map/?module=character_selection",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/character_selection",
       "kind": "implementation",
       "metrics": {
-        "files": 4,
-        "classes": 4,
-        "incoming": 3,
-        "outgoing": 0
+        "files": 5,
+        "classes": 5,
+        "incoming": 4,
+        "outgoing": 1
       }
     },
     {
@@ -2760,14 +2760,14 @@
       "label": "전투 스킬",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "전투 · feature · 파일 13개",
+      "summary": "전투 · feature · 파일 17개",
       "route": "architecture/code-module-map/?module=combat_skills",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/combat_skills",
       "kind": "implementation",
       "metrics": {
-        "files": 13,
-        "classes": 13,
+        "files": 17,
+        "classes": 17,
         "incoming": 6,
         "outgoing": 4
       }
@@ -2850,14 +2850,14 @@
       "label": "적 유닛",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "전투 · feature · 파일 5개",
+      "summary": "전투 · feature · 파일 6개",
       "route": "architecture/code-module-map/?module=enemies",
       "documentation_route": "features/enemies/",
       "source": "game/features/enemies",
       "kind": "implementation",
       "metrics": {
-        "files": 5,
-        "classes": 5,
+        "files": 6,
+        "classes": 6,
         "incoming": 4,
         "outgoing": 0
       }
@@ -2876,7 +2876,7 @@
       "metrics": {
         "files": 28,
         "classes": 28,
-        "incoming": 7,
+        "incoming": 8,
         "outgoing": 2
       }
     },
@@ -3255,7 +3255,7 @@
         "files": 8,
         "classes": 4,
         "incoming": 2,
-        "outgoing": 4
+        "outgoing": 5
       }
     },
     {
@@ -3714,13 +3714,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 69개",
+      "summary": "기반·검증 · verification · 파일 70개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 69,
+        "files": 70,
         "classes": 0,
         "incoming": 0,
         "outgoing": 55
@@ -4417,6 +4417,17 @@
       "summary": "점멸·자기장·기동 가속",
       "route": "features/combat-skills/",
       "source": "docs/features/combat-skills.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/tactical-skill-catalog",
+      "type": "document",
+      "label": "첫 출격·액티브 40종",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "초기 요원·무장 선택, 고정 패시브와 SkillPattern 효과 목록",
+      "route": "features/tactical-skill-catalog/",
+      "source": "docs/features/tactical-skill-catalog.md",
       "kind": "evidence"
     },
     {
@@ -7083,6 +7094,12 @@
     },
     {
       "from": "document:features/combat-skills",
+      "to": "collection:group:features/combat-controls",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/tactical-skill-catalog",
       "to": "collection:group:features/combat-controls",
       "type": "part_of",
       "origin": "knowledge_map"

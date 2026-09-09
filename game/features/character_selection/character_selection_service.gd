@@ -102,6 +102,7 @@ func get_investment_context() -> Dictionary:
 		&"passive_name": selected.passive_name,
 		&"passive_description": selected.passive_description,
 		&"player_runtime_modifiers": selected.runtime_modifiers(),
+		&"skill_specialization": selected.skill_specialization(),
 		&"source_status": selected.source_status,
 	}
 

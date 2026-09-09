@@ -23,5 +23,6 @@ for (const path of files) {
 assert.ok(catalog.weapons.length && catalog.skills.length);
 assert.equal(new Set(catalog.weapons.map(w=>w.id)).size,catalog.weapons.length);
 assert.equal(new Set(catalog.skills.map(s=>s.skill_id)).size,catalog.skills.length);
-assert.ok(catalog.skills.every(s=>['path','field','utility'].includes(s.kind)));
+assert.ok(catalog.skills.every(s=>['path','field','utility','pattern'].includes(s.kind)));
+assert.ok(catalog.skills.length >= 40);
 console.log(`DPS source freshness PASS (${files.length} files)`);

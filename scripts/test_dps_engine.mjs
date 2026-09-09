@@ -4,6 +4,12 @@ await import('../docs/javascripts/dps-loadout.js');
 await import('../docs/javascripts/dps-engine.js');
 const E=globalThis.SFHDps, catalog=JSON.parse(readFileSync(new URL('../docs/assets/dps-catalog.json',import.meta.url)));
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-6, `${a} != ${b}`);
+for(const skill of catalog.skills){
+  const input=E.defaults(catalog,'assault_rifle',skill.skill_id);
+  assert.ok(Number.isFinite(E.simulate(catalog,input).skillDamage),skill.skill_id);
+}
+const lanceInput=E.defaults(catalog,'assault_rifle','plasma_lance');
+near(E.resolve(catalog,lanceInput).skillDamage, lanceInput.skillDamage*1.2);
 let i=E.defaults(catalog,'assault_rifle','magnetic_field');
 let x=E.resolve(catalog,i);
 near(x.cycle,.98); near(x.hit,1.6*1.06*1.0375); near(x.perCast,66); assert.equal(x.ticks,10);

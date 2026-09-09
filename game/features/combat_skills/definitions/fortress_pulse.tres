@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/tactical_pattern_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2")
+shape = "circle"
+radius = 180
+inner_radius = 80
+width = 48
+angle_degrees = 90
+damage = 8
+pulses = 5
+interval = 1
+delay = 0
+follow_player = true
+anchor_on_target = false
+maximum_targets = 16
+chain_range = 150
+status_id = "slow"
+status_duration = 1.5
+consume_status_id = ""
+combo_multiplier = 2
+rotation_per_pulse = 0
+defense_add = 7
+speed_multiplier = 0.9
+buff_duration = 5
+
+[resource]
+script = ExtResource("1")
+skill_id = &"fortress_pulse"
+display_name = "요새 진동"
+description = "단단한 방호 중 주변 적을 주기적으로 둔화"
+input_action = &"combat_skill_3"
+input_label = "3"
+targeting_mode = "self"
+targeting_range = 180
+cooldown_seconds = 20
+energy_cost = 40
+charge_recovery_seconds = 20
+effect = SubResource("Effect")
