@@ -82,7 +82,7 @@ func _run() -> void:
 		for board in window.weapon_rack.boards.values():
 			for button in board.socket_buttons.values():
 				_check(Rect2(Vector2.ZERO, board.size).encloses(button.get_rect()), "socket within card at %d" % dimensions.x)
-		_check(window.size.x <= dimensions.x, "window fits viewport")
+		_check(window.size.x <= dimensions.x, "window fits viewport %s actual %s" % [dimensions, window.size])
 	window.close_panel()
 	window.resolve_exit(&"discard")
 	var future = load("res://game/features/equipment/weapon_parts_board.gd").new()

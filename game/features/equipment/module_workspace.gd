@@ -5,6 +5,8 @@ signal target_changed(target: StringName)
 signal advanced_requested
 const CARD = preload("res://game/features/equipment/module_chip_card.gd")
 const PRESENTER = preload("res://game/features/equipment/equipment_module_ui_presenter.gd")
+const SCREEN_LAYOUT = preload("res://game/features/equipment/equipment_screen_layout.gd")
+var equipment_preview: Control
 var session: Node
 var target := &"main"
 var selected_socket := 0
@@ -46,6 +48,10 @@ func _ready() -> void:
 	add_child(body)
 	left = _column(body, 190)
 	overview = _label(left, "", 19)
+	equipment_preview = preload("res://game/features/presentation_theme/inventory_item_preview.gd").new()
+	equipment_preview.custom_minimum_size.y = 160
+	left.add_child(equipment_preview)
+	_label(left, "적용 효과 / ATTRIBUTES", 12)
 	effects = _label(left, "", 13)
 	center = _column(body, 0)
 	center.size_flags_horizontal = SIZE_EXPAND_FILL
@@ -72,7 +78,7 @@ func _ready() -> void:
 	owned = GridContainer.new()
 	center.add_child(owned)
 	right = _column(body, 205)
-	_label(right, "모듈 추가 설정", 16)
+	_label(right, "소켓 관리 / TUNING", 16)
 	capacity = _label(right, "", 16)
 	bar = ProgressBar.new()
 	bar.custom_minimum_size.y = 10
@@ -125,6 +131,7 @@ func refresh() -> void:
 	_clear(installed)
 	socket_tags.clear()
 	if state == null:
+		equipment_preview.present({})
 		overview.text = "장비를 먼저 장착하세요."
 		effects.text = ""
 		capacity.text = "코스트 0 / 0"
@@ -135,7 +142,8 @@ func refresh() -> void:
 		_clear(owned)
 		return
 	selected_socket = clampi(selected_socket, 0, maxi(0, state.module_slot_limit() - 1))
-	overview.text = "%s\n\nLv.%d / %d\n%s" % [state.display_name(), state.level, state.maximum_level(), "소켓 개조 가능" if state.level >= state.maximum_level() else "최대 레벨에서 소켓 해금"]
+	overview.text = "%s\nLv.%d / %d · %s" % [state.display_name(), state.level, state.maximum_level(), "개조 가능" if state.level >= state.maximum_level() else "성장 중"]
+	equipment_preview.present({&"item_type": &"weapon" if state.is_weapon() else &"armor" if state.is_armor() else &"character", &"linked_resource": state.definition})
 	effects.text = presenter.applied_effects_text(state)
 	if state.is_armor(): effects.text += "\n" + ArmorSetResolver.describe(session.equipment.get_armor_set_snapshot())
 	capacity.text = "사용 코스트  %d / %d\n장착  %d / %d" % [state.used_module_cost(), state.module_cost_limit(), state.installed_modules.size(), state.module_slot_limit()]
@@ -218,12 +226,12 @@ func _refresh_detail() -> void:
 
 func _layout() -> void:
 	if body == null: return
-	var narrow := size.x < 900
+	var proportions := SCREEN_LAYOUT.module_columns(size.x)
+	var narrow: bool = proportions.narrow
 	body.vertical = narrow
-	left.custom_minimum_size.x = 0 if narrow else 190
-	right.custom_minimum_size.x = 0 if narrow else 205
-	var available := size.x if narrow else maxf(104, size.x - 425)
-	installed.columns = clampi(int(available / 112), 1, 5)
+	left.custom_minimum_size.x = proportions.left
+	right.custom_minimum_size.x = proportions.right
+	installed.columns = proportions.cards
 	owned.columns = installed.columns
 
 func _column(parent: Node, width: float) -> VBoxContainer:

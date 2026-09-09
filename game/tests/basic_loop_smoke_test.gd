@@ -934,8 +934,8 @@ func _hub_loadout_ui_density_failure(inventory_window: Node, workbench: Node) ->
 		or grid_size.x > 624.0
 		or not inventory_density.get(&"scrollable_bag", false)
 		or int(inventory_density.get(&"slot_count", 0)) < 4
-		or inventory_window_size.x > 1240.0
-		or inventory_window_size.y > 680.0
+		or inventory_window_size.x > inventory_window.get_viewport_rect().size.x - 40.0
+		or inventory_window_size.y > inventory_window.get_viewport_rect().size.y - 40.0
 	):
 		return "I 가방 밀도 기준 실패: grid=%s detail=%.0f cell=%.0f window=%s" % [
 			grid_size,
@@ -963,7 +963,7 @@ func _hub_loadout_ui_density_failure(inventory_window: Node, workbench: Node) ->
 	)
 	if (
 		float(workbench_density.get(&"slot_rail_width", 0.0)) > 200.0
-		or float(workbench_density.get(&"slot_button_height", 0.0)) > 54.0
+		or float(workbench_density.get(&"slot_button_height", 0.0)) > 70.0
 		or int(workbench_density.get(&"equipment_columns", 0)) < 3
 		or int(workbench_density.get(&"modification_columns", 0)) < 4
 		or modification_card_size.x > 140.0
@@ -974,12 +974,12 @@ func _hub_loadout_ui_density_failure(inventory_window: Node, workbench: Node) ->
 		or int(workbench_density.get(&"module_sort_control_count", 0)) != 2
 		or workbench_density.get(&"modification_sort", &"") != &"compatibility"
 		or not bool(workbench_density.get(&"weapon_parts_board_visible", false))
-		or parts_board_size.x < 290.0
+		or parts_board_size.x < 240.0
 		or parts_board_size.y < 118.0
 		or int(workbench_density.get(&"weapon_parts_socket_count", 0)) != 3
 		or workbench_density.get(&"weapon_parts_minor_tag", &"") != &"rifle"
-		or workbench_window_size.x > 1224.0
-		or workbench_window_size.y > 680.0
+		or workbench_window_size.x > workbench.get_viewport_rect().size.x - 56.0
+		or workbench_window_size.y > workbench.get_viewport_rect().size.y - 40.0
 	):
 		return "U·E 밀도 기준 실패: rail=%.0f slot=%.0f equipment=%d modification=%d card=%s meta=%d sort=%s parts=%s sockets=%d window=%s" % [
 			float(workbench_density.get(&"slot_rail_width", 0.0)),

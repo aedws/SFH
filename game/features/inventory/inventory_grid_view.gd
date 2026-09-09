@@ -13,8 +13,8 @@ var move_handler: Callable
 var drop_cell := Vector2i(-1, -1)
 var drop_size := Vector2i.ONE
 var drop_valid := false
-const ART = preload("res://game/features/inventory/inventory_item_art.gd")
-const PREVIEW = preload("res://game/features/inventory/inventory_item_preview.gd")
+const ART = preload("res://game/features/presentation_theme/inventory_item_art.gd")
+const PREVIEW = preload("res://game/features/presentation_theme/inventory_item_preview.gd")
 var hovered_instance_id: StringName = &""
 
 func _ready() -> void:

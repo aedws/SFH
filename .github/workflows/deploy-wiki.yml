@@ -192,6 +192,9 @@ jobs:
           timeout 60s xvfb-run -a godot --path "$GITHUB_WORKSPACE" --audio-driver Dummy --script "res://game/tests/inventory_presentation_contract_test.gd" 2>&1 | tee /tmp/sfh-inventory-ui.log
           grep -q "INVENTORY_PRESENTATION_OK" /tmp/sfh-inventory-ui.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-inventory-ui.log
+          timeout 120s xvfb-run -a godot --path "$GITHUB_WORKSPACE" --audio-driver Dummy --script "res://game/tests/equipment_screen_contract_test.gd" 2>&1 | tee /tmp/sfh-equipment-screen.log
+          grep -q "EQUIPMENT_SCREEN_OK" /tmp/sfh-equipment-screen.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-equipment-screen.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/smart_targeting_center_contract_test.gd" 2>&1 | tee /tmp/sfh-targeting-center.log
           grep -q "SMART_TARGETING_CENTER_OK" /tmp/sfh-targeting-center.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-targeting-center.log
