@@ -100,3 +100,27 @@ arsenal_research_complex_rail_rifle_room_reward,research_complex,any,any,room_re
 arsenal_research_complex_rail_rifle_boss,research_complex,any,any,boss,rail_rifle,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
 arsenal_research_complex_arc_spear_room_reward,research_complex,any,any,room_reward,arc_spear,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
 arsenal_research_complex_arc_spear_boss,research_complex,any,any,boss,arc_spear,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+armor_bastion_head_room_reward,ruined_city,any,any,room_reward,bastion_head,2,12,1,1,FALSE,TRUE,수호자 헬멧 지역 파밍 · 임시
+armor_bastion_head_boss,ruined_city,any,any,boss,bastion_head,3,20,1,1,TRUE,TRUE,수호자 헬멧 지역 파밍 · 임시
+armor_bastion_body_room_reward,ruined_city,any,any,room_reward,bastion_body,2,12,1,1,FALSE,TRUE,수호자 전투복 지역 파밍 · 임시
+armor_bastion_body_boss,ruined_city,any,any,boss,bastion_body,3,20,1,1,TRUE,TRUE,수호자 전투복 지역 파밍 · 임시
+armor_bastion_hands_room_reward,ruined_city,any,any,room_reward,bastion_hands,2,12,1,1,FALSE,TRUE,수호자 장갑 지역 파밍 · 임시
+armor_bastion_hands_boss,ruined_city,any,any,boss,bastion_hands,3,20,1,1,TRUE,TRUE,수호자 장갑 지역 파밍 · 임시
+armor_bastion_feet_room_reward,ruined_city,any,any,room_reward,bastion_feet,2,12,1,1,FALSE,TRUE,수호자 전투화 지역 파밍 · 임시
+armor_bastion_feet_boss,ruined_city,any,any,boss,bastion_feet,3,20,1,1,TRUE,TRUE,수호자 전투화 지역 파밍 · 임시
+armor_strider_head_room_reward,industrial_district,any,any,room_reward,strider_head,2,12,1,1,FALSE,TRUE,질주자 헬멧 지역 파밍 · 임시
+armor_strider_head_boss,industrial_district,any,any,boss,strider_head,3,20,1,1,TRUE,TRUE,질주자 헬멧 지역 파밍 · 임시
+armor_strider_body_room_reward,industrial_district,any,any,room_reward,strider_body,2,12,1,1,FALSE,TRUE,질주자 전투복 지역 파밍 · 임시
+armor_strider_body_boss,industrial_district,any,any,boss,strider_body,3,20,1,1,TRUE,TRUE,질주자 전투복 지역 파밍 · 임시
+armor_strider_hands_room_reward,industrial_district,any,any,room_reward,strider_hands,2,12,1,1,FALSE,TRUE,질주자 장갑 지역 파밍 · 임시
+armor_strider_hands_boss,industrial_district,any,any,boss,strider_hands,3,20,1,1,TRUE,TRUE,질주자 장갑 지역 파밍 · 임시
+armor_strider_feet_room_reward,industrial_district,any,any,room_reward,strider_feet,2,12,1,1,FALSE,TRUE,질주자 전투화 지역 파밍 · 임시
+armor_strider_feet_boss,industrial_district,any,any,boss,strider_feet,3,20,1,1,TRUE,TRUE,질주자 전투화 지역 파밍 · 임시
+armor_conduit_head_room_reward,research_complex,any,any,room_reward,conduit_head,2,12,1,1,FALSE,TRUE,축전자 헬멧 지역 파밍 · 임시
+armor_conduit_head_boss,research_complex,any,any,boss,conduit_head,3,20,1,1,TRUE,TRUE,축전자 헬멧 지역 파밍 · 임시
+armor_conduit_body_room_reward,research_complex,any,any,room_reward,conduit_body,2,12,1,1,FALSE,TRUE,축전자 전투복 지역 파밍 · 임시
+armor_conduit_body_boss,research_complex,any,any,boss,conduit_body,3,20,1,1,TRUE,TRUE,축전자 전투복 지역 파밍 · 임시
+armor_conduit_hands_room_reward,research_complex,any,any,room_reward,conduit_hands,2,12,1,1,FALSE,TRUE,축전자 장갑 지역 파밍 · 임시
+armor_conduit_hands_boss,research_complex,any,any,boss,conduit_hands,3,20,1,1,TRUE,TRUE,축전자 장갑 지역 파밍 · 임시
+armor_conduit_feet_room_reward,research_complex,any,any,room_reward,conduit_feet,2,12,1,1,FALSE,TRUE,축전자 전투화 지역 파밍 · 임시
+armor_conduit_feet_boss,research_complex,any,any,boss,conduit_feet,3,20,1,1,TRUE,TRUE,축전자 전투화 지역 파밍 · 임시

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ArmorSetDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/armor_set_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+set_id = &"bastion"
+display_name = "수호자"
+bonuses = Array[Dictionary]([{"required_pieces": 2, "player": {"max_health": {"multiply": 1.12}}, "weapon": {}, "skill": {}, "description": "최대 체력 +12%"}, {"required_pieces": 4, "player": {"defense": {"add": 3.0}}, "weapon": {}, "skill": {}, "description": "고정 피해 감소 방어력 +3"}])

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EquipmentLoadout" load_steps=14 format=3]
+[gd_resource type="Resource" script_class="EquipmentLoadout" load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://game/features/equipment/equipment_loadout.gd" id="1_loadout"]
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/assault_rifle.tres" id="2_main"]
@@ -36,6 +36,18 @@ slot_id = &"feet"
 item_kind = "armor"
 required_armor_slot = &"feet"
 
+[sub_resource type="Resource" id="HeadRule"]
+script = ExtResource("9_rule")
+slot_id = &"head"
+item_kind = "armor"
+required_armor_slot = &"head"
+
+[sub_resource type="Resource" id="HandsRule"]
+script = ExtResource("9_rule")
+slot_id = &"hands"
+item_kind = "armor"
+required_armor_slot = &"hands"
+
 [resource]
 script = ExtResource("1_loadout")
 loadout_id = &"default_operator"
@@ -44,5 +56,5 @@ main_weapon = ExtResource("2_main")
 secondary_weapon = ExtResource("3_secondary")
 skills = [ExtResource("4_rifle_skill"), ExtResource("5_pistol_skill"), ExtResource("6_dagger_skill")]
 armor = [ExtResource("7_vest"), ExtResource("8_boots")]
-slot_rules = [SubResource("MainRule"), SubResource("SecondaryRule"), SubResource("BodyRule"), SubResource("FeetRule")]
-extension_data = {"deployment_cost_policy": &"unassigned", "weapon_slot_policy": &"arsenal_v1"}
+slot_rules = [SubResource("MainRule"), SubResource("SecondaryRule"), SubResource("HeadRule"), SubResource("BodyRule"), SubResource("HandsRule"), SubResource("FeetRule")]
+extension_data = {"deployment_cost_policy": &"unassigned", "weapon_slot_policy": &"arsenal_v1", "armor_slot_policy": &"sets_v1"}

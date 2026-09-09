@@ -10,7 +10,7 @@ func _run() -> void:
 	var parsed := LootTable.parse(file.get_as_text() if file != null else "")
 	var errors: PackedStringArray = parsed.get(&"errors", PackedStringArray())
 	var entries: Array = parsed.get(&"data", [])
-	if not errors.is_empty() or entries.size() != 101:
+	if not errors.is_empty() or entries.size() != 125:
 		_fail("rows=%d errors=%s" % [entries.size(), " / ".join(errors)])
 		return
 	var lifecycle_scene := load("res://game/features/loot_lifecycle/loot_lifecycle_service.tscn") as PackedScene
@@ -102,7 +102,21 @@ func _run() -> void:
 							return _fail("확장 무기 획득 경로 누락 %s %s" % [id, context])
 					if roll.is_empty() or equip_catalog.get_inventory_definition(StringName(roll.item_id)) == null:
 						return _fail("무기 드랍/가방 정의 누락 %s" % context)
-	print("LOOT_TABLE_TEST_OK rows_101 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link skill_definition_link weapon_sources_54 arsenal_sources_216")
+	var armor_checks := 0
+	for region in ["ruined_city", "industrial_district", "research_complex"]:
+		var family: String = {"ruined_city": "bastion", "industrial_district": "strider", "research_complex": "conduit"}[region]
+		for difficulty in ["standard", "veteran", "nightmare"]:
+			for size in ["small", "medium", "large"]:
+				for source in ["room_reward", "boss"]:
+					var context := {&"region_id": region, &"difficulty_id": difficulty, &"map_size": size, &"source_type": source, &"item_type": &"armor", &"boss_available": true}
+					var ids: Array = provider.get_candidates(context).map(func(row): return String(row.item_id))
+					for slot in ["head", "body", "hands", "feet"]:
+						if family + "_" + slot not in ids: return _fail("방어구 지역 파밍 누락 %s" % context)
+						armor_checks += 1
+					for draw in 24:
+						var rolled: Dictionary = provider.roll_drop(context, 90909, draw)
+						if rolled.is_empty() or equip_catalog.get_inventory_definition(StringName(rolled.item_id)) == null: return _fail("방어구 실추첨 정의 누락")
+	print("LOOT_TABLE_TEST_OK rows_125 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link skill_definition_link weapon_sources_54 arsenal_sources_216 armor_sources_%d" % armor_checks)
 	quit(0)
 
 

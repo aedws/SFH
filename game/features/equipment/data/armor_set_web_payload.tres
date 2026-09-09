@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EmbeddedCsvPayload" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/balance_data/embedded_csv_payload.gd" id="1_payload"]
+
+[resource]
+script = ExtResource("1_payload")
+source_path = "res://game/features/equipment/data/armor_set.csv"
+csv_text = "set_id,display_name,required_pieces,target_kind,modifier_id,operation,amount,description,source_status\nbastion,수호자,2,player,max_health,multiply,1.12,최대 체력 +12%,provisional\nbastion,수호자,4,player,defense,add,3,고정 피해 감소 방어력 +3,provisional\nstrider,질주자,2,player,movement_speed,multiply,1.08,이동 속도 +8%,provisional\nstrider,질주자,4,weapon,fire_interval_multiply,multiply,0.9,활성 무기 공격 간격 10% 감소,provisional\nconduit,축전자,2,skill,cooldown_multiply,multiply,0.9,장착 스킬 쿨타임 10% 감소,provisional\nconduit,축전자,4,skill,damage_multiply,multiply,1.2,장착 스킬 피해 +20%,provisional\n"

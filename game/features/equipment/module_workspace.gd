@@ -117,7 +117,8 @@ func refresh() -> void:
 		var id: StringName = descriptor[&"slot_id"]
 		var state = session.equipment.get_equipment_state(id)
 		var category: String = {"weapon":"무기", "armor":"방어구", "character":"캐릭터"}.get(descriptor[&"kind"], descriptor[&"kind"])
-		targets.add_item("%s  /  %s" % [category, state.display_name() if state != null else "미장착"])
+		var slot_name: String = {&"head":"머리", &"body":"몸", &"hands":"손", &"feet":"발"}.get(id, "")
+		targets.add_item("%s %s / %s" % [category, slot_name, state.display_name() if state != null else "미장착"])
 		targets.set_item_metadata(targets.item_count - 1, id)
 		if id == target: targets.select(targets.item_count - 1)
 	var state = _state()
@@ -136,6 +137,7 @@ func refresh() -> void:
 	selected_socket = clampi(selected_socket, 0, maxi(0, state.module_slot_limit() - 1))
 	overview.text = "%s\n\nLv.%d / %d\n%s" % [state.display_name(), state.level, state.maximum_level(), "소켓 개조 가능" if state.level >= state.maximum_level() else "최대 레벨에서 소켓 해금"]
 	effects.text = presenter.applied_effects_text(state)
+	if state.is_armor(): effects.text += "\n" + ArmorSetResolver.describe(session.equipment.get_armor_set_snapshot())
 	capacity.text = "사용 코스트  %d / %d\n장착  %d / %d" % [state.used_module_cost(), state.module_cost_limit(), state.installed_modules.size(), state.module_slot_limit()]
 	bar.max_value = maxi(1, state.module_cost_limit())
 	bar.value = state.used_module_cost()

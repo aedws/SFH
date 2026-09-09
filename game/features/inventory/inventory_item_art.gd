@@ -56,6 +56,16 @@ static func draw_item(canvas: CanvasItem, rect: Rect2, entry: Dictionary) -> voi
 			canvas.draw_line(Vector2(0,-9),Vector2(0,22),shade,3)
 			canvas.draw_line(Vector2(-22,4),Vector2(23,4),shade,3)
 			canvas.draw_rect(Rect2(-7,-9,14,4),ACCENT)
+		&"head":
+			canvas.draw_circle(Vector2.ZERO, 29, shade)
+			canvas.draw_rect(Rect2(-29,-10,58,24), steel)
+			canvas.draw_rect(Rect2(-22,-5,44,9), ACCENT)
+			canvas.draw_rect(Rect2(-15,18,30,10), steel)
+		&"hands":
+			for x in [-30,5]:
+				canvas.draw_rect(Rect2(x,-7,25,32),steel)
+				for finger in range(4): canvas.draw_rect(Rect2(x+finger*6,-24,5,24),shade)
+				canvas.draw_rect(Rect2(x+3,2,19,5),ACCENT)
 		&"feet":
 			for x in [-28,6]:
 				canvas.draw_colored_polygon(PackedVector2Array([Vector2(x,-27),Vector2(x+22,-27),Vector2(x+22,12),Vector2(x+35,21),Vector2(x+35,30),Vector2(x,30)]),steel)

@@ -117,6 +117,7 @@ nav:
           - 방 진입 전투와 봉쇄 보상: features/room-encounters.md
       - 장비와 인벤토리:
           - 장비와 인벤토리: features/equipment.md
+          - 방어구 4부위와 세트 효과: features/armor-sets.md
           - P5-01 캐릭터 선택: features/character-selection.md
           - 캐릭터 장비와 로드아웃: features/character-equipment.md
           - 무기 고유 스킬과 장비 고정 옵션: features/equipment-fixed-identity.md

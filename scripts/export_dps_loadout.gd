@@ -3,7 +3,7 @@ extends RefCounted
 static func build() -> Dictionary:
 	var growth := GrowthBalanceService.new()
 	assert(growth.load_upgrade_csv_text(FileAccess.get_file_as_string("res://game/features/growth_balance/data/upgrade_balance.csv"), "locked_csv"))
-	var result := {"weapons": [], "armor": [], "parts": [], "modules": [], "characters": []}
+	var result := {"weapons": [], "armor": [], "armor_sets": [], "parts": [], "modules": [], "characters": []}
 	for kind in ["weapons", "armor", "parts", "modules"]:
 		for file in DirAccess.get_files_at("res://game/features/equipment/definitions/" + kind):
 			if not file.ends_with(".tres"): continue
@@ -19,6 +19,9 @@ static func build() -> Dictionary:
 				if kind == "weapons": row.merge({"minor_tag": definition.tags.minor_tag, "part_sockets": definition.part_socket_ids})
 				else:
 					row.merge({"slot": definition.slot_id, "stats": _stats(definition.stat_modifiers), "options": []})
+					row["set_id"] = String(definition.armor_set.set_id) if definition.armor_set != null else ""
+					if definition.armor_set != null and not definition.armor_set.snapshot() in result.armor_sets:
+						result.armor_sets.append(definition.armor_set.snapshot())
 					for option in definition.fixed_options: row.options.append(option.snapshot())
 			elif kind == "parts":
 				row.merge({"id": definition.part_id, "socket": definition.socket_id, "minor_tags": definition.compatible_minor_tags, "maximum_level": definition.maximum_upgrade_level, "stats": _stats(definition.stat_modifiers), "features": definition.special_feature_ids})
@@ -66,6 +69,16 @@ static func parity(catalog: Dictionary, root: Node) -> Array:
 			state["id"] = armor.id
 			base.armor.append(state)
 		var inputs := [base]
+		for set_definition in data.armor_sets:
+			for count in [2, 4]:
+				var selected: Dictionary = base.duplicate(true)
+				selected.armor.clear()
+				for armor in data.armor:
+					if armor.set_id != set_definition.id or selected.armor.size() >= count: continue
+					var carrier := _carrier()
+					carrier["id"] = armor.id
+					selected.armor.append(carrier)
+				inputs.append(selected)
 		for part in data.parts:
 			if weapon.minor_tag in part.minor_tags and part.socket in weapon.part_sockets:
 				var input: Dictionary = base.duplicate(true)
@@ -138,7 +151,7 @@ static func _runtime_case(catalog: Dictionary, weapon_id: String, input: Diction
 		if weapon.id == weapon_id: gun.current_balance = weapon.balance.duplicate(true)
 	gun.set_runtime_modifiers(&"equipment_upgrade", equipment.get_active_weapon_upgrade_modifiers())
 	gun.set_runtime_modifiers(&"fixed", equipment.get_active_weapon_fixed_modifiers())
-	var result := {"weaponId": weapon_id, "input": input, "player": player.get_runtime_stats(), "weapon": equipment.get_active_weapon_upgrade_modifiers(), "shot": gun.get_runtime_snapshot(), "costs": costs}
+	var result := {"weaponId": weapon_id, "input": input, "player": player.get_runtime_stats(), "weapon": equipment.get_active_weapon_upgrade_modifiers(), "skill": equipment.get_equipment_skill_modifiers(), "shot": gun.get_runtime_snapshot(), "costs": costs}
 	gun.free()
 	equipment.free()
 	player.free()

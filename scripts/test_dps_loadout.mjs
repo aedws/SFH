@@ -10,11 +10,18 @@ for(const fixture of catalog.loadout.fixtures){
   const resolved=E.resolve(catalog,input);
   for(const [id,value]of Object.entries(fixture.player))near(resolved.loadout.player[id],value,`Godot Player ${fixture.weaponId} ${id}`);
   for(const [id,value]of Object.entries(fixture.weapon))near(resolved.loadout.weapon[id],value,`Godot Equipment ${id}`);
+  for(const [id,value]of Object.entries(fixture.skill||{}))near(resolved.loadout.skill[id],value,`Godot armor skill ${id}`);
   near(resolved.hit/(1+input.crit*(input.critMultiplier-1)),fixture.shot.damage*resolved.distanceFactor,'Godot AutoWeapon damage with impact distance');
   near(resolved.gap,fixture.shot.fire_interval_sec,'Godot fire interval');
   assert.deepEqual(resolved.loadout.costs.map(c=>c.used).sort(),fixture.costs.sort(),'Godot module cost');
 }
 const fresh=()=>E.defaults(catalog,'assault_rifle','magnetic_field');
+const setInput=(id,count)=>{const input=fresh();input.loadout.armor=catalog.loadout.armor.filter(a=>a.set_id===id).slice(0,count).map(a=>({id:a.id,...SFHLoadout.carrier()}));return input;};
+const two=E.resolve(catalog,setInput('conduit',2)),four=E.resolve(catalog,setInput('conduit',4)),none=E.resolve(catalog,fresh());
+near(two.skillCooldown,none.skillCooldown*.9,'two-piece skill cooldown');
+near(two.skillDamage,none.skillDamage,'two-piece no damage bonus');
+near(four.skillDamage,none.skillDamage*1.2,'four-piece skill damage');
+near(E.resolve(catalog,setInput('strider',4)).gap,none.gap*.9,'four-piece weapon rhythm');
 for(const id of ['combat_dagger','greatsword','arc_spear']){
   const input=E.defaults(catalog,id);const range=E.resolve(catalog,input).range;
   input.distancePx=range;assert.ok(E.resolve(catalog,input).hit>0,'Melee uses reach, not projectile travel');
@@ -34,7 +41,7 @@ i.loadout.weapon.modules[1]={...i.loadout.weapon.modules[0],slot:1};assert.throw
 i=fresh();i.loadout.weapon.quality=NaN;assert.throws(()=>E.resolve(catalog,i),/품질/);
 const future=structuredClone(catalog);future.skills.push({...future.skills[0],skill_id:'future_field',display_name:'Future compatible skill'});
 future.loadout.armor.push({...future.loadout.armor[0],id:'future_same_slot'});
-assert.equal(E.defaults(future,'assault_rifle').loadout.armor.length,catalog.loadout.armor.length,'one default per slot despite new armor choices');
+assert.equal(E.defaults(future,'assault_rifle').loadout.armor.length,2,'preserve starter vest/boots despite new armor choices');
 E.resolve(future,E.defaults(future,'assault_rifle'));
 assert.ok(E.skillComparisons(future,fresh()).some(s=>s.id==='future_field'),'new supported-kind skill auto discovery');
 assert.equal(E.skillComparisons(catalog,fresh()).find(s=>s.id==='speed_boost').result.skillDamage,0);

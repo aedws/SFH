@@ -4,13 +4,15 @@
     "game/features/character_selection/data/character_catalog.csv": "f0152c1a3ae4ce6cb9c08674e37034334eab700d152d114114d849d6fe614a00",
     "game/features/combat_skills/data/skill_catalog.csv": "a6c2509e83cb0e2768dd80c362b00f32d3762cf730a6dbfd53879b8e3f63c597",
     "game/features/conditional_ranking/data/season_reward.csv": "1d993aaa4e20c32a8b51a0956e761e190ea94f515457e0b2025c55ed41d037e3",
-    "game/features/equipment/data/equipment_identity.csv": "d1e0b4089238455685bff0aab2d25cd88e5336f1e414be5076126363f91bc85c",
+    "game/features/equipment/data/armor_catalog.csv": "2d7bd017ca6966651803a3db2e392c98a6d5b370f4b4aced4addea7ebf8eea08",
+    "game/features/equipment/data/armor_set.csv": "7dcd5f6a0433ac6bb65a459e264f60823aaf393ad5c7f310acf4413596bf90c5",
+    "game/features/equipment/data/equipment_identity.csv": "d4637b51f990df33d00812a9e90ae7defb1caa565ecc4da56d4c5112fc40c568",
     "game/features/growth_balance/data/run_buff_balance.csv": "bfe7de1f52a923f05e1e9df0209d794680c17c96999a5192809c4e244fd5d12b",
-    "game/features/growth_balance/data/upgrade_balance.csv": "2fd49c8f0cbca6a78f97964ce29aa943c27e7b04fa9338e65119cd8f6e14d707",
+    "game/features/growth_balance/data/upgrade_balance.csv": "8ff1eec17e1473c368eb60b7787656c324ebdab77843d33a969a5d7849ce478b",
     "game/features/loadout_investment/data/skill_investment.csv": "bb276b8da1cef7d97836e08fcefc4f9559f2a5d8aaaa7acb005ed9d804cf3fa5",
     "game/features/loadout_investment/data/weapon_investment.csv": "fb8ab9ea8bafd9b06698392100c32b5b2ab125bfde0b2820fe39cbe3de5a8f48",
     "game/features/loot_lifecycle/data/item_lifecycle.csv": "02805156113001ba85cbbe379be5952b91f85b6420ec7fbed66ca711b92a115e",
-    "game/features/loot_tables/data/loot_table.csv": "1461f002ee8e94d9f4490bed485b0864a800171184a8838b357539ef2bfd395a",
+    "game/features/loot_tables/data/loot_table.csv": "ef9e02b0d8a7b6e32347f55b3d0fd53daf5fedb5b43b09625b36c4bc00861fe4",
     "game/features/map_generation/data/facility.csv": "8f0be134bbfb8d63fa816289512dd2dcb9a9e6eb7ec451ec5002f7c493cb76aa",
     "game/features/p5_hub_progression/data/codex.csv": "269aea6b1329ba644a9867d91b60aabcdcffb1576326a5226acfda71dacbe6a4",
     "game/features/p5_hub_progression/data/operation_preset.csv": "214f73f9a1e1c6be32d48522f16dc49c10b0e93ee4244a5b60c7df2eb15c5e74",
@@ -270,6 +272,515 @@
       }
     },
     {
+      "id": "armor_catalog",
+      "title": "방어구 개별 능력치",
+      "source": "game/features/equipment/data/armor_catalog.csv",
+      "labels": {
+        "0": "전술 방탄복 (CSV 2행)",
+        "1": "기동 전투화 (CSV 3행)",
+        "2": "수호자 헬멧 (CSV 4행)",
+        "3": "수호자 전투복 (CSV 5행)",
+        "4": "수호자 장갑 (CSV 6행)",
+        "5": "수호자 전투화 (CSV 7행)",
+        "6": "질주자 헬멧 (CSV 8행)",
+        "7": "질주자 전투복 (CSV 9행)",
+        "8": "질주자 장갑 (CSV 10행)",
+        "9": "질주자 전투화 (CSV 11행)",
+        "10": "축전자 헬멧 (CSV 12행)",
+        "11": "축전자 전투복 (CSV 13행)",
+        "12": "축전자 장갑 (CSV 14행)",
+        "13": "축전자 전투화 (CSV 15행)"
+      },
+      "column_labels": {
+        "maximum_level": "최대 레벨",
+        "module_slot_limit": "module_slot_limit",
+        "module_cost_limit": "module_cost_limit",
+        "max_health_add": "최대 체력 추가",
+        "defense_add": "방어 추가",
+        "movement_speed_add": "이동 속도 추가 px/초",
+        "fixed_option_value": "고정 옵션 수치 (종류별 단위)"
+      },
+      "columns": {
+        "maximum_level": [
+          {
+            "id": "0",
+            "value": 4.0
+          },
+          {
+            "id": "1",
+            "value": 3.0
+          },
+          {
+            "id": "2",
+            "value": 3.0
+          },
+          {
+            "id": "3",
+            "value": 3.0
+          },
+          {
+            "id": "4",
+            "value": 3.0
+          },
+          {
+            "id": "5",
+            "value": 3.0
+          },
+          {
+            "id": "6",
+            "value": 3.0
+          },
+          {
+            "id": "7",
+            "value": 3.0
+          },
+          {
+            "id": "8",
+            "value": 3.0
+          },
+          {
+            "id": "9",
+            "value": 3.0
+          },
+          {
+            "id": "10",
+            "value": 3.0
+          },
+          {
+            "id": "11",
+            "value": 3.0
+          },
+          {
+            "id": "12",
+            "value": 3.0
+          },
+          {
+            "id": "13",
+            "value": 3.0
+          }
+        ],
+        "module_slot_limit": [
+          {
+            "id": "0",
+            "value": 3.0
+          },
+          {
+            "id": "1",
+            "value": 2.0
+          },
+          {
+            "id": "2",
+            "value": 2.0
+          },
+          {
+            "id": "3",
+            "value": 2.0
+          },
+          {
+            "id": "4",
+            "value": 2.0
+          },
+          {
+            "id": "5",
+            "value": 2.0
+          },
+          {
+            "id": "6",
+            "value": 2.0
+          },
+          {
+            "id": "7",
+            "value": 2.0
+          },
+          {
+            "id": "8",
+            "value": 2.0
+          },
+          {
+            "id": "9",
+            "value": 2.0
+          },
+          {
+            "id": "10",
+            "value": 2.0
+          },
+          {
+            "id": "11",
+            "value": 2.0
+          },
+          {
+            "id": "12",
+            "value": 2.0
+          },
+          {
+            "id": "13",
+            "value": 2.0
+          }
+        ],
+        "module_cost_limit": [
+          {
+            "id": "0",
+            "value": 8.0
+          },
+          {
+            "id": "1",
+            "value": 5.0
+          },
+          {
+            "id": "2",
+            "value": 6.0
+          },
+          {
+            "id": "3",
+            "value": 6.0
+          },
+          {
+            "id": "4",
+            "value": 6.0
+          },
+          {
+            "id": "5",
+            "value": 6.0
+          },
+          {
+            "id": "6",
+            "value": 6.0
+          },
+          {
+            "id": "7",
+            "value": 6.0
+          },
+          {
+            "id": "8",
+            "value": 6.0
+          },
+          {
+            "id": "9",
+            "value": 6.0
+          },
+          {
+            "id": "10",
+            "value": 6.0
+          },
+          {
+            "id": "11",
+            "value": 6.0
+          },
+          {
+            "id": "12",
+            "value": 6.0
+          },
+          {
+            "id": "13",
+            "value": 6.0
+          }
+        ],
+        "max_health_add": [
+          {
+            "id": "0",
+            "value": 25.0
+          },
+          {
+            "id": "1",
+            "value": 0.0
+          },
+          {
+            "id": "2",
+            "value": 8.0
+          },
+          {
+            "id": "3",
+            "value": 20.0
+          },
+          {
+            "id": "4",
+            "value": 5.0
+          },
+          {
+            "id": "5",
+            "value": 5.0
+          },
+          {
+            "id": "6",
+            "value": 5.0
+          },
+          {
+            "id": "7",
+            "value": 10.0
+          },
+          {
+            "id": "8",
+            "value": 4.0
+          },
+          {
+            "id": "9",
+            "value": 4.0
+          },
+          {
+            "id": "10",
+            "value": 6.0
+          },
+          {
+            "id": "11",
+            "value": 14.0
+          },
+          {
+            "id": "12",
+            "value": 4.0
+          },
+          {
+            "id": "13",
+            "value": 4.0
+          }
+        ],
+        "defense_add": [
+          {
+            "id": "0",
+            "value": 3.0
+          },
+          {
+            "id": "1",
+            "value": 0.0
+          },
+          {
+            "id": "2",
+            "value": 1.0
+          },
+          {
+            "id": "3",
+            "value": 3.0
+          },
+          {
+            "id": "4",
+            "value": 1.0
+          },
+          {
+            "id": "5",
+            "value": 1.0
+          },
+          {
+            "id": "6",
+            "value": 0.5
+          },
+          {
+            "id": "7",
+            "value": 1.0
+          },
+          {
+            "id": "8",
+            "value": 0.5
+          },
+          {
+            "id": "9",
+            "value": 0.5
+          },
+          {
+            "id": "10",
+            "value": 0.5
+          },
+          {
+            "id": "11",
+            "value": 1.0
+          },
+          {
+            "id": "12",
+            "value": 0.5
+          },
+          {
+            "id": "13",
+            "value": 0.5
+          }
+        ],
+        "movement_speed_add": [
+          {
+            "id": "0",
+            "value": 0.0
+          },
+          {
+            "id": "1",
+            "value": 20.0
+          },
+          {
+            "id": "2",
+            "value": 0.0
+          },
+          {
+            "id": "3",
+            "value": 0.0
+          },
+          {
+            "id": "4",
+            "value": 0.0
+          },
+          {
+            "id": "5",
+            "value": 0.0
+          },
+          {
+            "id": "6",
+            "value": 2.0
+          },
+          {
+            "id": "7",
+            "value": 3.0
+          },
+          {
+            "id": "8",
+            "value": 2.0
+          },
+          {
+            "id": "9",
+            "value": 6.0
+          },
+          {
+            "id": "10",
+            "value": 0.0
+          },
+          {
+            "id": "11",
+            "value": 0.0
+          },
+          {
+            "id": "12",
+            "value": 0.0
+          },
+          {
+            "id": "13",
+            "value": 4.0
+          }
+        ],
+        "fixed_option_value": [
+          {
+            "id": "0",
+            "value": 10.0
+          },
+          {
+            "id": "1",
+            "value": 12.0
+          },
+          {
+            "id": "2",
+            "value": 0.5
+          },
+          {
+            "id": "3",
+            "value": 0.5
+          },
+          {
+            "id": "4",
+            "value": 0.5
+          },
+          {
+            "id": "5",
+            "value": 0.5
+          },
+          {
+            "id": "6",
+            "value": 3.0
+          },
+          {
+            "id": "7",
+            "value": 3.0
+          },
+          {
+            "id": "8",
+            "value": 3.0
+          },
+          {
+            "id": "9",
+            "value": 3.0
+          },
+          {
+            "id": "10",
+            "value": 3.0
+          },
+          {
+            "id": "11",
+            "value": 3.0
+          },
+          {
+            "id": "12",
+            "value": 3.0
+          },
+          {
+            "id": "13",
+            "value": 3.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "armor_set",
+      "title": "방어구 세트 효과",
+      "source": "game/features/equipment/data/armor_set.csv",
+      "labels": {
+        "0": "수호자 (CSV 2행)",
+        "1": "수호자 (CSV 3행)",
+        "2": "질주자 (CSV 4행)",
+        "3": "질주자 (CSV 5행)",
+        "4": "축전자 (CSV 6행)",
+        "5": "축전자 (CSV 7행)"
+      },
+      "column_labels": {
+        "required_pieces": "세트 필요 부위 수",
+        "amount": "고정 세트 보정 수치"
+      },
+      "columns": {
+        "required_pieces": [
+          {
+            "id": "0",
+            "value": 2.0
+          },
+          {
+            "id": "1",
+            "value": 4.0
+          },
+          {
+            "id": "2",
+            "value": 2.0
+          },
+          {
+            "id": "3",
+            "value": 4.0
+          },
+          {
+            "id": "4",
+            "value": 2.0
+          },
+          {
+            "id": "5",
+            "value": 4.0
+          }
+        ],
+        "amount": [
+          {
+            "id": "0",
+            "value": 1.12
+          },
+          {
+            "id": "1",
+            "value": 3.0
+          },
+          {
+            "id": "2",
+            "value": 1.08
+          },
+          {
+            "id": "3",
+            "value": 0.9
+          },
+          {
+            "id": "4",
+            "value": 0.9
+          },
+          {
+            "id": "5",
+            "value": 1.2
+          }
+        ]
+      }
+    },
+    {
       "id": "equipment_identity",
       "title": "장비 고유 기능·옵션",
       "source": "game/features/equipment/data/equipment_identity.csv",
@@ -283,7 +794,19 @@
         "6": "관통 레일 소총 (CSV 8행)",
         "7": "전격 관통창 (CSV 9행)",
         "8": "전술 방탄복 (CSV 10행)",
-        "9": "기동 전투화 (CSV 11행)"
+        "9": "기동 전투화 (CSV 11행)",
+        "10": "수호자 헬멧 (CSV 12행)",
+        "11": "수호자 전투복 (CSV 13행)",
+        "12": "수호자 장갑 (CSV 14행)",
+        "13": "수호자 전투화 (CSV 15행)",
+        "14": "질주자 헬멧 (CSV 16행)",
+        "15": "질주자 전투복 (CSV 17행)",
+        "16": "질주자 장갑 (CSV 18행)",
+        "17": "질주자 전투화 (CSV 19행)",
+        "18": "축전자 헬멧 (CSV 20행)",
+        "19": "축전자 전투복 (CSV 21행)",
+        "20": "축전자 장갑 (CSV 22행)",
+        "21": "축전자 전투화 (CSV 23행)"
       },
       "column_labels": {
         "innate_trigger_hits": "고유 기능 발동 명중 횟수",
@@ -469,6 +992,54 @@
           {
             "id": "9",
             "value": 12.0
+          },
+          {
+            "id": "10",
+            "value": 0.5
+          },
+          {
+            "id": "11",
+            "value": 0.5
+          },
+          {
+            "id": "12",
+            "value": 0.5
+          },
+          {
+            "id": "13",
+            "value": 0.5
+          },
+          {
+            "id": "14",
+            "value": 3.0
+          },
+          {
+            "id": "15",
+            "value": 3.0
+          },
+          {
+            "id": "16",
+            "value": 3.0
+          },
+          {
+            "id": "17",
+            "value": 3.0
+          },
+          {
+            "id": "18",
+            "value": 3.0
+          },
+          {
+            "id": "19",
+            "value": 3.0
+          },
+          {
+            "id": "20",
+            "value": 3.0
+          },
+          {
+            "id": "21",
+            "value": 3.0
           }
         ]
       }
@@ -748,7 +1319,43 @@
         "21": "복합 장갑판 Lv.1 Lv.1 (CSV 23행)",
         "22": "복합 장갑판 Lv.2 Lv.2 (CSV 24행)",
         "23": "복합 장갑판 Lv.3 Lv.3 (CSV 25행)",
-        "24": "복합 장갑판 Lv.4 Lv.4 (CSV 26행)"
+        "24": "복합 장갑판 Lv.4 Lv.4 (CSV 26행)",
+        "25": "수호자 헬멧 Lv.1 Lv.1 (CSV 27행)",
+        "26": "수호자 헬멧 Lv.2 Lv.2 (CSV 28행)",
+        "27": "수호자 헬멧 Lv.3 Lv.3 (CSV 29행)",
+        "28": "수호자 전투복 Lv.1 Lv.1 (CSV 30행)",
+        "29": "수호자 전투복 Lv.2 Lv.2 (CSV 31행)",
+        "30": "수호자 전투복 Lv.3 Lv.3 (CSV 32행)",
+        "31": "수호자 장갑 Lv.1 Lv.1 (CSV 33행)",
+        "32": "수호자 장갑 Lv.2 Lv.2 (CSV 34행)",
+        "33": "수호자 장갑 Lv.3 Lv.3 (CSV 35행)",
+        "34": "수호자 전투화 Lv.1 Lv.1 (CSV 36행)",
+        "35": "수호자 전투화 Lv.2 Lv.2 (CSV 37행)",
+        "36": "수호자 전투화 Lv.3 Lv.3 (CSV 38행)",
+        "37": "질주자 헬멧 Lv.1 Lv.1 (CSV 39행)",
+        "38": "질주자 헬멧 Lv.2 Lv.2 (CSV 40행)",
+        "39": "질주자 헬멧 Lv.3 Lv.3 (CSV 41행)",
+        "40": "질주자 전투복 Lv.1 Lv.1 (CSV 42행)",
+        "41": "질주자 전투복 Lv.2 Lv.2 (CSV 43행)",
+        "42": "질주자 전투복 Lv.3 Lv.3 (CSV 44행)",
+        "43": "질주자 장갑 Lv.1 Lv.1 (CSV 45행)",
+        "44": "질주자 장갑 Lv.2 Lv.2 (CSV 46행)",
+        "45": "질주자 장갑 Lv.3 Lv.3 (CSV 47행)",
+        "46": "질주자 전투화 Lv.1 Lv.1 (CSV 48행)",
+        "47": "질주자 전투화 Lv.2 Lv.2 (CSV 49행)",
+        "48": "질주자 전투화 Lv.3 Lv.3 (CSV 50행)",
+        "49": "축전자 헬멧 Lv.1 Lv.1 (CSV 51행)",
+        "50": "축전자 헬멧 Lv.2 Lv.2 (CSV 52행)",
+        "51": "축전자 헬멧 Lv.3 Lv.3 (CSV 53행)",
+        "52": "축전자 전투복 Lv.1 Lv.1 (CSV 54행)",
+        "53": "축전자 전투복 Lv.2 Lv.2 (CSV 55행)",
+        "54": "축전자 전투복 Lv.3 Lv.3 (CSV 56행)",
+        "55": "축전자 장갑 Lv.1 Lv.1 (CSV 57행)",
+        "56": "축전자 장갑 Lv.2 Lv.2 (CSV 58행)",
+        "57": "축전자 장갑 Lv.3 Lv.3 (CSV 59행)",
+        "58": "축전자 전투화 Lv.1 Lv.1 (CSV 60행)",
+        "59": "축전자 전투화 Lv.2 Lv.2 (CSV 61행)",
+        "60": "축전자 전투화 Lv.3 Lv.3 (CSV 62행)"
       },
       "column_labels": {
         "level": "레벨",
@@ -864,6 +1471,150 @@
           {
             "id": "24",
             "value": 4.0
+          },
+          {
+            "id": "25",
+            "value": 1.0
+          },
+          {
+            "id": "26",
+            "value": 2.0
+          },
+          {
+            "id": "27",
+            "value": 3.0
+          },
+          {
+            "id": "28",
+            "value": 1.0
+          },
+          {
+            "id": "29",
+            "value": 2.0
+          },
+          {
+            "id": "30",
+            "value": 3.0
+          },
+          {
+            "id": "31",
+            "value": 1.0
+          },
+          {
+            "id": "32",
+            "value": 2.0
+          },
+          {
+            "id": "33",
+            "value": 3.0
+          },
+          {
+            "id": "34",
+            "value": 1.0
+          },
+          {
+            "id": "35",
+            "value": 2.0
+          },
+          {
+            "id": "36",
+            "value": 3.0
+          },
+          {
+            "id": "37",
+            "value": 1.0
+          },
+          {
+            "id": "38",
+            "value": 2.0
+          },
+          {
+            "id": "39",
+            "value": 3.0
+          },
+          {
+            "id": "40",
+            "value": 1.0
+          },
+          {
+            "id": "41",
+            "value": 2.0
+          },
+          {
+            "id": "42",
+            "value": 3.0
+          },
+          {
+            "id": "43",
+            "value": 1.0
+          },
+          {
+            "id": "44",
+            "value": 2.0
+          },
+          {
+            "id": "45",
+            "value": 3.0
+          },
+          {
+            "id": "46",
+            "value": 1.0
+          },
+          {
+            "id": "47",
+            "value": 2.0
+          },
+          {
+            "id": "48",
+            "value": 3.0
+          },
+          {
+            "id": "49",
+            "value": 1.0
+          },
+          {
+            "id": "50",
+            "value": 2.0
+          },
+          {
+            "id": "51",
+            "value": 3.0
+          },
+          {
+            "id": "52",
+            "value": 1.0
+          },
+          {
+            "id": "53",
+            "value": 2.0
+          },
+          {
+            "id": "54",
+            "value": 3.0
+          },
+          {
+            "id": "55",
+            "value": 1.0
+          },
+          {
+            "id": "56",
+            "value": 2.0
+          },
+          {
+            "id": "57",
+            "value": 3.0
+          },
+          {
+            "id": "58",
+            "value": 1.0
+          },
+          {
+            "id": "59",
+            "value": 2.0
+          },
+          {
+            "id": "60",
+            "value": 3.0
           }
         ],
         "maximum_level": [
@@ -966,6 +1717,150 @@
           {
             "id": "24",
             "value": 4.0
+          },
+          {
+            "id": "25",
+            "value": 3.0
+          },
+          {
+            "id": "26",
+            "value": 3.0
+          },
+          {
+            "id": "27",
+            "value": 3.0
+          },
+          {
+            "id": "28",
+            "value": 3.0
+          },
+          {
+            "id": "29",
+            "value": 3.0
+          },
+          {
+            "id": "30",
+            "value": 3.0
+          },
+          {
+            "id": "31",
+            "value": 3.0
+          },
+          {
+            "id": "32",
+            "value": 3.0
+          },
+          {
+            "id": "33",
+            "value": 3.0
+          },
+          {
+            "id": "34",
+            "value": 3.0
+          },
+          {
+            "id": "35",
+            "value": 3.0
+          },
+          {
+            "id": "36",
+            "value": 3.0
+          },
+          {
+            "id": "37",
+            "value": 3.0
+          },
+          {
+            "id": "38",
+            "value": 3.0
+          },
+          {
+            "id": "39",
+            "value": 3.0
+          },
+          {
+            "id": "40",
+            "value": 3.0
+          },
+          {
+            "id": "41",
+            "value": 3.0
+          },
+          {
+            "id": "42",
+            "value": 3.0
+          },
+          {
+            "id": "43",
+            "value": 3.0
+          },
+          {
+            "id": "44",
+            "value": 3.0
+          },
+          {
+            "id": "45",
+            "value": 3.0
+          },
+          {
+            "id": "46",
+            "value": 3.0
+          },
+          {
+            "id": "47",
+            "value": 3.0
+          },
+          {
+            "id": "48",
+            "value": 3.0
+          },
+          {
+            "id": "49",
+            "value": 3.0
+          },
+          {
+            "id": "50",
+            "value": 3.0
+          },
+          {
+            "id": "51",
+            "value": 3.0
+          },
+          {
+            "id": "52",
+            "value": 3.0
+          },
+          {
+            "id": "53",
+            "value": 3.0
+          },
+          {
+            "id": "54",
+            "value": 3.0
+          },
+          {
+            "id": "55",
+            "value": 3.0
+          },
+          {
+            "id": "56",
+            "value": 3.0
+          },
+          {
+            "id": "57",
+            "value": 3.0
+          },
+          {
+            "id": "58",
+            "value": 3.0
+          },
+          {
+            "id": "59",
+            "value": 3.0
+          },
+          {
+            "id": "60",
+            "value": 3.0
           }
         ],
         "module_capacity_cost": [
@@ -1068,6 +1963,150 @@
           {
             "id": "24",
             "value": 1.0
+          },
+          {
+            "id": "25",
+            "value": 0.0
+          },
+          {
+            "id": "26",
+            "value": 0.0
+          },
+          {
+            "id": "27",
+            "value": 0.0
+          },
+          {
+            "id": "28",
+            "value": 0.0
+          },
+          {
+            "id": "29",
+            "value": 0.0
+          },
+          {
+            "id": "30",
+            "value": 0.0
+          },
+          {
+            "id": "31",
+            "value": 0.0
+          },
+          {
+            "id": "32",
+            "value": 0.0
+          },
+          {
+            "id": "33",
+            "value": 0.0
+          },
+          {
+            "id": "34",
+            "value": 0.0
+          },
+          {
+            "id": "35",
+            "value": 0.0
+          },
+          {
+            "id": "36",
+            "value": 0.0
+          },
+          {
+            "id": "37",
+            "value": 0.0
+          },
+          {
+            "id": "38",
+            "value": 0.0
+          },
+          {
+            "id": "39",
+            "value": 0.0
+          },
+          {
+            "id": "40",
+            "value": 0.0
+          },
+          {
+            "id": "41",
+            "value": 0.0
+          },
+          {
+            "id": "42",
+            "value": 0.0
+          },
+          {
+            "id": "43",
+            "value": 0.0
+          },
+          {
+            "id": "44",
+            "value": 0.0
+          },
+          {
+            "id": "45",
+            "value": 0.0
+          },
+          {
+            "id": "46",
+            "value": 0.0
+          },
+          {
+            "id": "47",
+            "value": 0.0
+          },
+          {
+            "id": "48",
+            "value": 0.0
+          },
+          {
+            "id": "49",
+            "value": 0.0
+          },
+          {
+            "id": "50",
+            "value": 0.0
+          },
+          {
+            "id": "51",
+            "value": 0.0
+          },
+          {
+            "id": "52",
+            "value": 0.0
+          },
+          {
+            "id": "53",
+            "value": 0.0
+          },
+          {
+            "id": "54",
+            "value": 0.0
+          },
+          {
+            "id": "55",
+            "value": 0.0
+          },
+          {
+            "id": "56",
+            "value": 0.0
+          },
+          {
+            "id": "57",
+            "value": 0.0
+          },
+          {
+            "id": "58",
+            "value": 0.0
+          },
+          {
+            "id": "59",
+            "value": 0.0
+          },
+          {
+            "id": "60",
+            "value": 0.0
           }
         ],
         "credit_cost": [
@@ -1169,6 +2208,150 @@
           },
           {
             "id": "24",
+            "value": 0.0
+          },
+          {
+            "id": "25",
+            "value": 0.0
+          },
+          {
+            "id": "26",
+            "value": 0.0
+          },
+          {
+            "id": "27",
+            "value": 0.0
+          },
+          {
+            "id": "28",
+            "value": 0.0
+          },
+          {
+            "id": "29",
+            "value": 0.0
+          },
+          {
+            "id": "30",
+            "value": 0.0
+          },
+          {
+            "id": "31",
+            "value": 0.0
+          },
+          {
+            "id": "32",
+            "value": 0.0
+          },
+          {
+            "id": "33",
+            "value": 0.0
+          },
+          {
+            "id": "34",
+            "value": 0.0
+          },
+          {
+            "id": "35",
+            "value": 0.0
+          },
+          {
+            "id": "36",
+            "value": 0.0
+          },
+          {
+            "id": "37",
+            "value": 0.0
+          },
+          {
+            "id": "38",
+            "value": 0.0
+          },
+          {
+            "id": "39",
+            "value": 0.0
+          },
+          {
+            "id": "40",
+            "value": 0.0
+          },
+          {
+            "id": "41",
+            "value": 0.0
+          },
+          {
+            "id": "42",
+            "value": 0.0
+          },
+          {
+            "id": "43",
+            "value": 0.0
+          },
+          {
+            "id": "44",
+            "value": 0.0
+          },
+          {
+            "id": "45",
+            "value": 0.0
+          },
+          {
+            "id": "46",
+            "value": 0.0
+          },
+          {
+            "id": "47",
+            "value": 0.0
+          },
+          {
+            "id": "48",
+            "value": 0.0
+          },
+          {
+            "id": "49",
+            "value": 0.0
+          },
+          {
+            "id": "50",
+            "value": 0.0
+          },
+          {
+            "id": "51",
+            "value": 0.0
+          },
+          {
+            "id": "52",
+            "value": 0.0
+          },
+          {
+            "id": "53",
+            "value": 0.0
+          },
+          {
+            "id": "54",
+            "value": 0.0
+          },
+          {
+            "id": "55",
+            "value": 0.0
+          },
+          {
+            "id": "56",
+            "value": 0.0
+          },
+          {
+            "id": "57",
+            "value": 0.0
+          },
+          {
+            "id": "58",
+            "value": 0.0
+          },
+          {
+            "id": "59",
+            "value": 0.0
+          },
+          {
+            "id": "60",
             "value": 0.0
           }
         ],
@@ -1272,6 +2455,150 @@
           {
             "id": "24",
             "value": 0.0
+          },
+          {
+            "id": "25",
+            "value": 0.0
+          },
+          {
+            "id": "26",
+            "value": 0.0
+          },
+          {
+            "id": "27",
+            "value": 0.0
+          },
+          {
+            "id": "28",
+            "value": 0.0
+          },
+          {
+            "id": "29",
+            "value": 0.0
+          },
+          {
+            "id": "30",
+            "value": 0.0
+          },
+          {
+            "id": "31",
+            "value": 0.0
+          },
+          {
+            "id": "32",
+            "value": 0.0
+          },
+          {
+            "id": "33",
+            "value": 0.0
+          },
+          {
+            "id": "34",
+            "value": 0.0
+          },
+          {
+            "id": "35",
+            "value": 0.0
+          },
+          {
+            "id": "36",
+            "value": 0.0
+          },
+          {
+            "id": "37",
+            "value": 0.0
+          },
+          {
+            "id": "38",
+            "value": 0.0
+          },
+          {
+            "id": "39",
+            "value": 0.0
+          },
+          {
+            "id": "40",
+            "value": 0.0
+          },
+          {
+            "id": "41",
+            "value": 0.0
+          },
+          {
+            "id": "42",
+            "value": 0.0
+          },
+          {
+            "id": "43",
+            "value": 0.0
+          },
+          {
+            "id": "44",
+            "value": 0.0
+          },
+          {
+            "id": "45",
+            "value": 0.0
+          },
+          {
+            "id": "46",
+            "value": 0.0
+          },
+          {
+            "id": "47",
+            "value": 0.0
+          },
+          {
+            "id": "48",
+            "value": 0.0
+          },
+          {
+            "id": "49",
+            "value": 0.0
+          },
+          {
+            "id": "50",
+            "value": 0.0
+          },
+          {
+            "id": "51",
+            "value": 0.0
+          },
+          {
+            "id": "52",
+            "value": 0.0
+          },
+          {
+            "id": "53",
+            "value": 0.0
+          },
+          {
+            "id": "54",
+            "value": 0.0
+          },
+          {
+            "id": "55",
+            "value": 0.0
+          },
+          {
+            "id": "56",
+            "value": 0.0
+          },
+          {
+            "id": "57",
+            "value": 0.0
+          },
+          {
+            "id": "58",
+            "value": 0.0
+          },
+          {
+            "id": "59",
+            "value": 0.0
+          },
+          {
+            "id": "60",
+            "value": 0.0
           }
         ],
         "player_stat_add": [
@@ -1374,6 +2701,150 @@
           {
             "id": "24",
             "value": 3.0
+          },
+          {
+            "id": "25",
+            "value": 0.0
+          },
+          {
+            "id": "26",
+            "value": 3.0
+          },
+          {
+            "id": "27",
+            "value": 6.0
+          },
+          {
+            "id": "28",
+            "value": 0.0
+          },
+          {
+            "id": "29",
+            "value": 3.0
+          },
+          {
+            "id": "30",
+            "value": 6.0
+          },
+          {
+            "id": "31",
+            "value": 0.0
+          },
+          {
+            "id": "32",
+            "value": 3.0
+          },
+          {
+            "id": "33",
+            "value": 6.0
+          },
+          {
+            "id": "34",
+            "value": 0.0
+          },
+          {
+            "id": "35",
+            "value": 3.0
+          },
+          {
+            "id": "36",
+            "value": 6.0
+          },
+          {
+            "id": "37",
+            "value": 0.0
+          },
+          {
+            "id": "38",
+            "value": 3.0
+          },
+          {
+            "id": "39",
+            "value": 6.0
+          },
+          {
+            "id": "40",
+            "value": 0.0
+          },
+          {
+            "id": "41",
+            "value": 3.0
+          },
+          {
+            "id": "42",
+            "value": 6.0
+          },
+          {
+            "id": "43",
+            "value": 0.0
+          },
+          {
+            "id": "44",
+            "value": 3.0
+          },
+          {
+            "id": "45",
+            "value": 6.0
+          },
+          {
+            "id": "46",
+            "value": 0.0
+          },
+          {
+            "id": "47",
+            "value": 3.0
+          },
+          {
+            "id": "48",
+            "value": 6.0
+          },
+          {
+            "id": "49",
+            "value": 0.0
+          },
+          {
+            "id": "50",
+            "value": 3.0
+          },
+          {
+            "id": "51",
+            "value": 6.0
+          },
+          {
+            "id": "52",
+            "value": 0.0
+          },
+          {
+            "id": "53",
+            "value": 3.0
+          },
+          {
+            "id": "54",
+            "value": 6.0
+          },
+          {
+            "id": "55",
+            "value": 0.0
+          },
+          {
+            "id": "56",
+            "value": 3.0
+          },
+          {
+            "id": "57",
+            "value": 6.0
+          },
+          {
+            "id": "58",
+            "value": 0.0
+          },
+          {
+            "id": "59",
+            "value": 3.0
+          },
+          {
+            "id": "60",
+            "value": 6.0
           }
         ],
         "player_stat_multiply": [
@@ -1475,6 +2946,150 @@
           },
           {
             "id": "24",
+            "value": 1.0
+          },
+          {
+            "id": "25",
+            "value": 1.0
+          },
+          {
+            "id": "26",
+            "value": 1.0
+          },
+          {
+            "id": "27",
+            "value": 1.0
+          },
+          {
+            "id": "28",
+            "value": 1.0
+          },
+          {
+            "id": "29",
+            "value": 1.0
+          },
+          {
+            "id": "30",
+            "value": 1.0
+          },
+          {
+            "id": "31",
+            "value": 1.0
+          },
+          {
+            "id": "32",
+            "value": 1.0
+          },
+          {
+            "id": "33",
+            "value": 1.0
+          },
+          {
+            "id": "34",
+            "value": 1.0
+          },
+          {
+            "id": "35",
+            "value": 1.0
+          },
+          {
+            "id": "36",
+            "value": 1.0
+          },
+          {
+            "id": "37",
+            "value": 1.0
+          },
+          {
+            "id": "38",
+            "value": 1.0
+          },
+          {
+            "id": "39",
+            "value": 1.0
+          },
+          {
+            "id": "40",
+            "value": 1.0
+          },
+          {
+            "id": "41",
+            "value": 1.0
+          },
+          {
+            "id": "42",
+            "value": 1.0
+          },
+          {
+            "id": "43",
+            "value": 1.0
+          },
+          {
+            "id": "44",
+            "value": 1.0
+          },
+          {
+            "id": "45",
+            "value": 1.0
+          },
+          {
+            "id": "46",
+            "value": 1.0
+          },
+          {
+            "id": "47",
+            "value": 1.0
+          },
+          {
+            "id": "48",
+            "value": 1.0
+          },
+          {
+            "id": "49",
+            "value": 1.0
+          },
+          {
+            "id": "50",
+            "value": 1.0
+          },
+          {
+            "id": "51",
+            "value": 1.0
+          },
+          {
+            "id": "52",
+            "value": 1.0
+          },
+          {
+            "id": "53",
+            "value": 1.0
+          },
+          {
+            "id": "54",
+            "value": 1.0
+          },
+          {
+            "id": "55",
+            "value": 1.0
+          },
+          {
+            "id": "56",
+            "value": 1.0
+          },
+          {
+            "id": "57",
+            "value": 1.0
+          },
+          {
+            "id": "58",
+            "value": 1.0
+          },
+          {
+            "id": "59",
+            "value": 1.0
+          },
+          {
+            "id": "60",
             "value": 1.0
           }
         ],
@@ -1578,6 +3193,150 @@
           {
             "id": "24",
             "value": 0.0
+          },
+          {
+            "id": "25",
+            "value": 0.0
+          },
+          {
+            "id": "26",
+            "value": 0.0
+          },
+          {
+            "id": "27",
+            "value": 0.0
+          },
+          {
+            "id": "28",
+            "value": 0.0
+          },
+          {
+            "id": "29",
+            "value": 0.0
+          },
+          {
+            "id": "30",
+            "value": 0.0
+          },
+          {
+            "id": "31",
+            "value": 0.0
+          },
+          {
+            "id": "32",
+            "value": 0.0
+          },
+          {
+            "id": "33",
+            "value": 0.0
+          },
+          {
+            "id": "34",
+            "value": 0.0
+          },
+          {
+            "id": "35",
+            "value": 0.0
+          },
+          {
+            "id": "36",
+            "value": 0.0
+          },
+          {
+            "id": "37",
+            "value": 0.0
+          },
+          {
+            "id": "38",
+            "value": 0.0
+          },
+          {
+            "id": "39",
+            "value": 0.0
+          },
+          {
+            "id": "40",
+            "value": 0.0
+          },
+          {
+            "id": "41",
+            "value": 0.0
+          },
+          {
+            "id": "42",
+            "value": 0.0
+          },
+          {
+            "id": "43",
+            "value": 0.0
+          },
+          {
+            "id": "44",
+            "value": 0.0
+          },
+          {
+            "id": "45",
+            "value": 0.0
+          },
+          {
+            "id": "46",
+            "value": 0.0
+          },
+          {
+            "id": "47",
+            "value": 0.0
+          },
+          {
+            "id": "48",
+            "value": 0.0
+          },
+          {
+            "id": "49",
+            "value": 0.0
+          },
+          {
+            "id": "50",
+            "value": 0.0
+          },
+          {
+            "id": "51",
+            "value": 0.0
+          },
+          {
+            "id": "52",
+            "value": 0.0
+          },
+          {
+            "id": "53",
+            "value": 0.0
+          },
+          {
+            "id": "54",
+            "value": 0.0
+          },
+          {
+            "id": "55",
+            "value": 0.0
+          },
+          {
+            "id": "56",
+            "value": 0.0
+          },
+          {
+            "id": "57",
+            "value": 0.0
+          },
+          {
+            "id": "58",
+            "value": 0.0
+          },
+          {
+            "id": "59",
+            "value": 0.0
+          },
+          {
+            "id": "60",
+            "value": 0.0
           }
         ],
         "weapon_damage_multiply": [
@@ -1679,6 +3438,150 @@
           },
           {
             "id": "24",
+            "value": 1.0
+          },
+          {
+            "id": "25",
+            "value": 1.0
+          },
+          {
+            "id": "26",
+            "value": 1.0
+          },
+          {
+            "id": "27",
+            "value": 1.0
+          },
+          {
+            "id": "28",
+            "value": 1.0
+          },
+          {
+            "id": "29",
+            "value": 1.0
+          },
+          {
+            "id": "30",
+            "value": 1.0
+          },
+          {
+            "id": "31",
+            "value": 1.0
+          },
+          {
+            "id": "32",
+            "value": 1.0
+          },
+          {
+            "id": "33",
+            "value": 1.0
+          },
+          {
+            "id": "34",
+            "value": 1.0
+          },
+          {
+            "id": "35",
+            "value": 1.0
+          },
+          {
+            "id": "36",
+            "value": 1.0
+          },
+          {
+            "id": "37",
+            "value": 1.0
+          },
+          {
+            "id": "38",
+            "value": 1.0
+          },
+          {
+            "id": "39",
+            "value": 1.0
+          },
+          {
+            "id": "40",
+            "value": 1.0
+          },
+          {
+            "id": "41",
+            "value": 1.0
+          },
+          {
+            "id": "42",
+            "value": 1.0
+          },
+          {
+            "id": "43",
+            "value": 1.0
+          },
+          {
+            "id": "44",
+            "value": 1.0
+          },
+          {
+            "id": "45",
+            "value": 1.0
+          },
+          {
+            "id": "46",
+            "value": 1.0
+          },
+          {
+            "id": "47",
+            "value": 1.0
+          },
+          {
+            "id": "48",
+            "value": 1.0
+          },
+          {
+            "id": "49",
+            "value": 1.0
+          },
+          {
+            "id": "50",
+            "value": 1.0
+          },
+          {
+            "id": "51",
+            "value": 1.0
+          },
+          {
+            "id": "52",
+            "value": 1.0
+          },
+          {
+            "id": "53",
+            "value": 1.0
+          },
+          {
+            "id": "54",
+            "value": 1.0
+          },
+          {
+            "id": "55",
+            "value": 1.0
+          },
+          {
+            "id": "56",
+            "value": 1.0
+          },
+          {
+            "id": "57",
+            "value": 1.0
+          },
+          {
+            "id": "58",
+            "value": 1.0
+          },
+          {
+            "id": "59",
+            "value": 1.0
+          },
+          {
+            "id": "60",
             "value": 1.0
           }
         ],
@@ -1782,6 +3685,150 @@
           {
             "id": "24",
             "value": 1.0
+          },
+          {
+            "id": "25",
+            "value": 1.0
+          },
+          {
+            "id": "26",
+            "value": 1.0
+          },
+          {
+            "id": "27",
+            "value": 1.0
+          },
+          {
+            "id": "28",
+            "value": 1.0
+          },
+          {
+            "id": "29",
+            "value": 1.0
+          },
+          {
+            "id": "30",
+            "value": 1.0
+          },
+          {
+            "id": "31",
+            "value": 1.0
+          },
+          {
+            "id": "32",
+            "value": 1.0
+          },
+          {
+            "id": "33",
+            "value": 1.0
+          },
+          {
+            "id": "34",
+            "value": 1.0
+          },
+          {
+            "id": "35",
+            "value": 1.0
+          },
+          {
+            "id": "36",
+            "value": 1.0
+          },
+          {
+            "id": "37",
+            "value": 1.0
+          },
+          {
+            "id": "38",
+            "value": 1.0
+          },
+          {
+            "id": "39",
+            "value": 1.0
+          },
+          {
+            "id": "40",
+            "value": 1.0
+          },
+          {
+            "id": "41",
+            "value": 1.0
+          },
+          {
+            "id": "42",
+            "value": 1.0
+          },
+          {
+            "id": "43",
+            "value": 1.0
+          },
+          {
+            "id": "44",
+            "value": 1.0
+          },
+          {
+            "id": "45",
+            "value": 1.0
+          },
+          {
+            "id": "46",
+            "value": 1.0
+          },
+          {
+            "id": "47",
+            "value": 1.0
+          },
+          {
+            "id": "48",
+            "value": 1.0
+          },
+          {
+            "id": "49",
+            "value": 1.0
+          },
+          {
+            "id": "50",
+            "value": 1.0
+          },
+          {
+            "id": "51",
+            "value": 1.0
+          },
+          {
+            "id": "52",
+            "value": 1.0
+          },
+          {
+            "id": "53",
+            "value": 1.0
+          },
+          {
+            "id": "54",
+            "value": 1.0
+          },
+          {
+            "id": "55",
+            "value": 1.0
+          },
+          {
+            "id": "56",
+            "value": 1.0
+          },
+          {
+            "id": "57",
+            "value": 1.0
+          },
+          {
+            "id": "58",
+            "value": 1.0
+          },
+          {
+            "id": "59",
+            "value": 1.0
+          },
+          {
+            "id": "60",
+            "value": 1.0
           }
         ],
         "weapon_target_range_multiply": [
@@ -1883,6 +3930,150 @@
           },
           {
             "id": "24",
+            "value": 1.0
+          },
+          {
+            "id": "25",
+            "value": 1.0
+          },
+          {
+            "id": "26",
+            "value": 1.0
+          },
+          {
+            "id": "27",
+            "value": 1.0
+          },
+          {
+            "id": "28",
+            "value": 1.0
+          },
+          {
+            "id": "29",
+            "value": 1.0
+          },
+          {
+            "id": "30",
+            "value": 1.0
+          },
+          {
+            "id": "31",
+            "value": 1.0
+          },
+          {
+            "id": "32",
+            "value": 1.0
+          },
+          {
+            "id": "33",
+            "value": 1.0
+          },
+          {
+            "id": "34",
+            "value": 1.0
+          },
+          {
+            "id": "35",
+            "value": 1.0
+          },
+          {
+            "id": "36",
+            "value": 1.0
+          },
+          {
+            "id": "37",
+            "value": 1.0
+          },
+          {
+            "id": "38",
+            "value": 1.0
+          },
+          {
+            "id": "39",
+            "value": 1.0
+          },
+          {
+            "id": "40",
+            "value": 1.0
+          },
+          {
+            "id": "41",
+            "value": 1.0
+          },
+          {
+            "id": "42",
+            "value": 1.0
+          },
+          {
+            "id": "43",
+            "value": 1.0
+          },
+          {
+            "id": "44",
+            "value": 1.0
+          },
+          {
+            "id": "45",
+            "value": 1.0
+          },
+          {
+            "id": "46",
+            "value": 1.0
+          },
+          {
+            "id": "47",
+            "value": 1.0
+          },
+          {
+            "id": "48",
+            "value": 1.0
+          },
+          {
+            "id": "49",
+            "value": 1.0
+          },
+          {
+            "id": "50",
+            "value": 1.0
+          },
+          {
+            "id": "51",
+            "value": 1.0
+          },
+          {
+            "id": "52",
+            "value": 1.0
+          },
+          {
+            "id": "53",
+            "value": 1.0
+          },
+          {
+            "id": "54",
+            "value": 1.0
+          },
+          {
+            "id": "55",
+            "value": 1.0
+          },
+          {
+            "id": "56",
+            "value": 1.0
+          },
+          {
+            "id": "57",
+            "value": 1.0
+          },
+          {
+            "id": "58",
+            "value": 1.0
+          },
+          {
+            "id": "59",
+            "value": 1.0
+          },
+          {
+            "id": "60",
             "value": 1.0
           }
         ]
@@ -2359,7 +4550,31 @@
         "97": "arsenal_research_complex_rail_rifle_room_reward (CSV 99행)",
         "98": "arsenal_research_complex_rail_rifle_boss (CSV 100행)",
         "99": "arsenal_research_complex_arc_spear_room_reward (CSV 101행)",
-        "100": "arsenal_research_complex_arc_spear_boss (CSV 102행)"
+        "100": "arsenal_research_complex_arc_spear_boss (CSV 102행)",
+        "101": "armor_bastion_head_room_reward (CSV 103행)",
+        "102": "armor_bastion_head_boss (CSV 104행)",
+        "103": "armor_bastion_body_room_reward (CSV 105행)",
+        "104": "armor_bastion_body_boss (CSV 106행)",
+        "105": "armor_bastion_hands_room_reward (CSV 107행)",
+        "106": "armor_bastion_hands_boss (CSV 108행)",
+        "107": "armor_bastion_feet_room_reward (CSV 109행)",
+        "108": "armor_bastion_feet_boss (CSV 110행)",
+        "109": "armor_strider_head_room_reward (CSV 111행)",
+        "110": "armor_strider_head_boss (CSV 112행)",
+        "111": "armor_strider_body_room_reward (CSV 113행)",
+        "112": "armor_strider_body_boss (CSV 114행)",
+        "113": "armor_strider_hands_room_reward (CSV 115행)",
+        "114": "armor_strider_hands_boss (CSV 116행)",
+        "115": "armor_strider_feet_room_reward (CSV 117행)",
+        "116": "armor_strider_feet_boss (CSV 118행)",
+        "117": "armor_conduit_head_room_reward (CSV 119행)",
+        "118": "armor_conduit_head_boss (CSV 120행)",
+        "119": "armor_conduit_body_room_reward (CSV 121행)",
+        "120": "armor_conduit_body_boss (CSV 122행)",
+        "121": "armor_conduit_hands_room_reward (CSV 123행)",
+        "122": "armor_conduit_hands_boss (CSV 124행)",
+        "123": "armor_conduit_feet_room_reward (CSV 125행)",
+        "124": "armor_conduit_feet_boss (CSV 126행)"
       },
       "column_labels": {
         "grade": "등급",
@@ -2772,6 +4987,102 @@
           {
             "id": "100",
             "value": 3.0
+          },
+          {
+            "id": "101",
+            "value": 2.0
+          },
+          {
+            "id": "102",
+            "value": 3.0
+          },
+          {
+            "id": "103",
+            "value": 2.0
+          },
+          {
+            "id": "104",
+            "value": 3.0
+          },
+          {
+            "id": "105",
+            "value": 2.0
+          },
+          {
+            "id": "106",
+            "value": 3.0
+          },
+          {
+            "id": "107",
+            "value": 2.0
+          },
+          {
+            "id": "108",
+            "value": 3.0
+          },
+          {
+            "id": "109",
+            "value": 2.0
+          },
+          {
+            "id": "110",
+            "value": 3.0
+          },
+          {
+            "id": "111",
+            "value": 2.0
+          },
+          {
+            "id": "112",
+            "value": 3.0
+          },
+          {
+            "id": "113",
+            "value": 2.0
+          },
+          {
+            "id": "114",
+            "value": 3.0
+          },
+          {
+            "id": "115",
+            "value": 2.0
+          },
+          {
+            "id": "116",
+            "value": 3.0
+          },
+          {
+            "id": "117",
+            "value": 2.0
+          },
+          {
+            "id": "118",
+            "value": 3.0
+          },
+          {
+            "id": "119",
+            "value": 2.0
+          },
+          {
+            "id": "120",
+            "value": 3.0
+          },
+          {
+            "id": "121",
+            "value": 2.0
+          },
+          {
+            "id": "122",
+            "value": 3.0
+          },
+          {
+            "id": "123",
+            "value": 2.0
+          },
+          {
+            "id": "124",
+            "value": 3.0
           }
         ],
         "base_weight": [
@@ -3177,6 +5488,102 @@
           },
           {
             "id": "100",
+            "value": 20.0
+          },
+          {
+            "id": "101",
+            "value": 12.0
+          },
+          {
+            "id": "102",
+            "value": 20.0
+          },
+          {
+            "id": "103",
+            "value": 12.0
+          },
+          {
+            "id": "104",
+            "value": 20.0
+          },
+          {
+            "id": "105",
+            "value": 12.0
+          },
+          {
+            "id": "106",
+            "value": 20.0
+          },
+          {
+            "id": "107",
+            "value": 12.0
+          },
+          {
+            "id": "108",
+            "value": 20.0
+          },
+          {
+            "id": "109",
+            "value": 12.0
+          },
+          {
+            "id": "110",
+            "value": 20.0
+          },
+          {
+            "id": "111",
+            "value": 12.0
+          },
+          {
+            "id": "112",
+            "value": 20.0
+          },
+          {
+            "id": "113",
+            "value": 12.0
+          },
+          {
+            "id": "114",
+            "value": 20.0
+          },
+          {
+            "id": "115",
+            "value": 12.0
+          },
+          {
+            "id": "116",
+            "value": 20.0
+          },
+          {
+            "id": "117",
+            "value": 12.0
+          },
+          {
+            "id": "118",
+            "value": 20.0
+          },
+          {
+            "id": "119",
+            "value": 12.0
+          },
+          {
+            "id": "120",
+            "value": 20.0
+          },
+          {
+            "id": "121",
+            "value": 12.0
+          },
+          {
+            "id": "122",
+            "value": 20.0
+          },
+          {
+            "id": "123",
+            "value": 12.0
+          },
+          {
+            "id": "124",
             "value": 20.0
           }
         ],
@@ -3584,6 +5991,102 @@
           {
             "id": "100",
             "value": 1.0
+          },
+          {
+            "id": "101",
+            "value": 1.0
+          },
+          {
+            "id": "102",
+            "value": 1.0
+          },
+          {
+            "id": "103",
+            "value": 1.0
+          },
+          {
+            "id": "104",
+            "value": 1.0
+          },
+          {
+            "id": "105",
+            "value": 1.0
+          },
+          {
+            "id": "106",
+            "value": 1.0
+          },
+          {
+            "id": "107",
+            "value": 1.0
+          },
+          {
+            "id": "108",
+            "value": 1.0
+          },
+          {
+            "id": "109",
+            "value": 1.0
+          },
+          {
+            "id": "110",
+            "value": 1.0
+          },
+          {
+            "id": "111",
+            "value": 1.0
+          },
+          {
+            "id": "112",
+            "value": 1.0
+          },
+          {
+            "id": "113",
+            "value": 1.0
+          },
+          {
+            "id": "114",
+            "value": 1.0
+          },
+          {
+            "id": "115",
+            "value": 1.0
+          },
+          {
+            "id": "116",
+            "value": 1.0
+          },
+          {
+            "id": "117",
+            "value": 1.0
+          },
+          {
+            "id": "118",
+            "value": 1.0
+          },
+          {
+            "id": "119",
+            "value": 1.0
+          },
+          {
+            "id": "120",
+            "value": 1.0
+          },
+          {
+            "id": "121",
+            "value": 1.0
+          },
+          {
+            "id": "122",
+            "value": 1.0
+          },
+          {
+            "id": "123",
+            "value": 1.0
+          },
+          {
+            "id": "124",
+            "value": 1.0
           }
         ],
         "maximum_quantity": [
@@ -3989,6 +6492,102 @@
           },
           {
             "id": "100",
+            "value": 1.0
+          },
+          {
+            "id": "101",
+            "value": 1.0
+          },
+          {
+            "id": "102",
+            "value": 1.0
+          },
+          {
+            "id": "103",
+            "value": 1.0
+          },
+          {
+            "id": "104",
+            "value": 1.0
+          },
+          {
+            "id": "105",
+            "value": 1.0
+          },
+          {
+            "id": "106",
+            "value": 1.0
+          },
+          {
+            "id": "107",
+            "value": 1.0
+          },
+          {
+            "id": "108",
+            "value": 1.0
+          },
+          {
+            "id": "109",
+            "value": 1.0
+          },
+          {
+            "id": "110",
+            "value": 1.0
+          },
+          {
+            "id": "111",
+            "value": 1.0
+          },
+          {
+            "id": "112",
+            "value": 1.0
+          },
+          {
+            "id": "113",
+            "value": 1.0
+          },
+          {
+            "id": "114",
+            "value": 1.0
+          },
+          {
+            "id": "115",
+            "value": 1.0
+          },
+          {
+            "id": "116",
+            "value": 1.0
+          },
+          {
+            "id": "117",
+            "value": 1.0
+          },
+          {
+            "id": "118",
+            "value": 1.0
+          },
+          {
+            "id": "119",
+            "value": 1.0
+          },
+          {
+            "id": "120",
+            "value": 1.0
+          },
+          {
+            "id": "121",
+            "value": 1.0
+          },
+          {
+            "id": "122",
+            "value": 1.0
+          },
+          {
+            "id": "123",
+            "value": 1.0
+          },
+          {
+            "id": "124",
             "value": 1.0
           }
         ]
@@ -5100,5 +7699,5 @@
       }
     }
   ],
-  "version": "2026-09-08.2"
+  "version": "2026-09-09.1"
 }

@@ -549,7 +549,10 @@ func _modified_cooldown(base_value: float, skill_id: StringName = &"") -> float:
 
 func _aggregated_runtime_modifiers(skill_id: StringName = &"") -> Dictionary:
 	var result: Dictionary = {}
-	for source: Dictionary in runtime_modifier_sources.values() + targeted_modifiers.values_for(skill_id):
+	var sources := runtime_modifier_sources.values() + targeted_modifiers.values_for(skill_id)
+	if is_instance_valid(equipment_provider) and equipment_provider.has_method(&"get_equipment_skill_modifiers"):
+		sources.append(equipment_provider.call(&"get_equipment_skill_modifiers"))
+	for source: Dictionary in sources:
 		for modifier_id in source:
 			if String(modifier_id).ends_with("_multiply"):
 				result[modifier_id] = float(result.get(modifier_id, 1.0)) * float(source[modifier_id])

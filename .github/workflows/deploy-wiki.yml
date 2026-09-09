@@ -199,8 +199,12 @@ jobs:
           grep -q "CIRCULAR_COVERAGE_OK" /tmp/sfh-circular-coverage.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-circular-coverage.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loot_table_contract_test.gd" | tee /tmp/sfh-loot-table.log
-          grep -q "LOOT_TABLE_TEST_OK rows_101 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link" /tmp/sfh-loot-table.log
+          grep -q "LOOT_TABLE_TEST_OK rows_125 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link" /tmp/sfh-loot-table.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/armor_set_contract_test.gd" 2>&1 | tee /tmp/sfh-armor-set.log
+          grep -q "ARMOR_SET_OK" /tmp/sfh-armor-set.log
+          if grep -E 'SCRIPT ERROR:|ERROR:' /tmp/sfh-armor-set.log; then exit 1; fi
           grep -q "arsenal_sources_216" /tmp/sfh-loot-table.log
+          grep -q "armor_sources_216" /tmp/sfh-loot-table.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/field_loot_acquisition_contract_test.gd" | tee /tmp/sfh-field-loot.log
           grep -q "FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip skill_swap_slot_binding_restore provisional_policy restore_on_hub viewport_safe modular_boundary" /tmp/sfh-field-loot.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/operation_combination_contract_test.gd" | tee /tmp/sfh-operation-combinations.log
@@ -263,6 +267,8 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/equipment_fixed_identity_contract_test.gd" | tee /tmp/sfh-fixed-identity.log
           grep -q "EQUIPMENT_FIXED_IDENTITY_OK locked_csv weapon_options armor_options assigned_affix persistence same_weapon_same_skill run_level_invariant meta_level_invariant module_source_separate fixed_skill_damage electric_area_on_confirmed_hit radius_filter target_budget impact_profile" /tmp/sfh-fixed-identity.log
           python3 scripts/sync_equipment_identity.py --check
+          python3 scripts/sync_armor_catalog.py --check
+          python3 scripts/test_armor_catalog.py
 
       - name: Verify native progress across separate processes
         run: |

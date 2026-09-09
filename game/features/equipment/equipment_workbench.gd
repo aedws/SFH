@@ -8,6 +8,8 @@ const SLOT_LABELS := {
 	&"secondary": "02  보조 무기",
 	&"body": "03  신체 방어구",
 	&"feet": "04  신발 방어구",
+	&"head": "05  머리 방어구",
+	&"hands": "06  장갑 방어구",
 }
 const WEAPON_SLOTS := [&"main", &"secondary"]
 const MODULE_UI_PRESENTER_SCRIPT := preload(
@@ -72,6 +74,16 @@ func _ready() -> void:
 	for slot_id in slot_buttons:
 		(slot_buttons[slot_id] as Button).pressed.connect(_select_slot.bind(slot_id))
 		(slot_buttons[slot_id] as Button).add_theme_color_override(&"font_pressed_color", Color("f1f7fa"))
+	for slot: StringName in [&"head", &"hands"]:
+		var button := Button.new()
+		button.custom_minimum_size.y = 42
+		button.toggle_mode = true
+		button.add_theme_font_size_override("font_size", 13)
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		%BodySlotButton.get_parent().add_child(button)
+		%BodySlotButton.get_parent().move_child(button, %FeetSlotButton.get_index() + 1)
+		button.pressed.connect(_select_slot.bind(slot))
+		slot_buttons[slot] = button
 	tabs.set_tab_title(0, "장비 장착")
 	tabs.set_tab_title(1, "모듈 · 파츠")
 	tabs.tab_changed.connect(_on_tab_changed)
@@ -296,7 +308,7 @@ func _refresh_slot_rail() -> void:
 		equipped_count,
 		int(summary.get(&"external_armor_level", 1)),
 	]
-	header_summary.text = "장비 %d/4 · 장착 모듈 %d · 선택 슬롯 %s" % [
+	header_summary.text = "장비 %d/6 · 장착 모듈 %d · 선택 슬롯 %s" % [
 		equipped_count,
 		installed_module_count,
 		_slot_display_name(selected_slot_id),
@@ -326,6 +338,7 @@ func _refresh_equipment_detail() -> void:
 	equipment_level_bar.max_value = maxi(1, int(snapshot[&"maximum_level"]))
 	equipment_level_bar.value = int(snapshot[&"level"])
 	equipment_stats.text = _equipment_stats_text(state)
+	if state.is_armor(): equipment_stats.text += "\n" + ArmorSetResolver.describe(equipment_provider.get_armor_set_snapshot())
 	%LevelUpButton.disabled = read_only or int(snapshot[&"level"]) >= int(snapshot[&"maximum_level"])
 	%ModifyButton.disabled = (
 		read_only

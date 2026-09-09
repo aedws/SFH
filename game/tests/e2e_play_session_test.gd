@@ -390,7 +390,7 @@ func _verify_hub_input_session() -> bool:
 	if workbench.visible or not inventory.visible or inventory.current_tab != 2:
 		return _fail("열린 U 화면에서 실제 E 입력이 창을 닫지 않고 모듈·파츠 탭으로 전환하지 못했습니다.")
 	var module_ui = inventory.module_workspace
-	if not module_ui.visible or module_ui.owned.get_child_count() < 1 or module_ui.targets.item_count != 5 or not module_ui.effects.is_visible_in_tree() or not module_ui.assign.disabled:
+	if not module_ui.visible or module_ui.owned.get_child_count() < 1 or module_ui.targets.item_count != 7 or not module_ui.effects.is_visible_in_tree() or not module_ui.assign.disabled:
 		return _fail("E 모듈 화면의 3종 대상·보유 카드·효과·최대 레벨 잠금 표시 실패")
 	if not _judge_ui_state(&"modification_hub", "거점 E 모듈·파츠"):
 		return false

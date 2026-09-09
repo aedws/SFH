@@ -11,6 +11,8 @@ description: 출격 전에 요원과 무기·방어구를 고르고, 가방을 �
 
 ## 1. 처음 읽는 순서
 
+[방어구 4부위·14종과 2/4세트 효과](armor-sets.md): 수호자·질주자·축전자, 지역 파밍과 혼합 장착부터 확인하세요.
+
 1. [요원 선택](character-selection.md)과 [캐릭터 장비](character-equipment.md)에서 착용 대상을 확인합니다.
 2. [무기 고유 스킬과 장비 고정 옵션](equipment-fixed-identity.md)에서 성장해도 바뀌지 않는 장비 정체성을 확인합니다.
 3. [격자 가방](grid-inventory.md)에서 아이템 이동·장착과 편집 후 저장을 확인합니다.

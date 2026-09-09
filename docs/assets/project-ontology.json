@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "476ee56d5a9c4a52989458243b51c1bc84acca40d40a22f6175ef576b09fb665",
+  "source_sha256": "12d593c508364eec82afcd1a573221cf46202186061e6ac5f380f91d515d40d3",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -398,12 +398,12 @@
     "ready": 1,
     "implemented": 38,
     "modules": 60,
-    "documents": 102,
+    "documents": 103,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 476,
+    "relations": 477,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -2868,14 +2868,14 @@
       "label": "장비 규칙",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 25개",
+      "summary": "장비·세팅 · feature · 파일 27개",
       "route": "architecture/code-module-map/?module=equipment",
       "documentation_route": "features/equipment/",
       "source": "game/features/equipment",
       "kind": "implementation",
       "metrics": {
-        "files": 25,
-        "classes": 25,
+        "files": 27,
+        "classes": 27,
         "incoming": 7,
         "outgoing": 2
       }
@@ -3714,13 +3714,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 67개",
+      "summary": "기반·검증 · verification · 파일 68개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 67,
+        "files": 68,
         "classes": 0,
         "incoming": 0,
         "outgoing": 55
@@ -4505,6 +4505,17 @@
       "summary": "요원·무기·방어구·가방을 준비하는 방법",
       "route": "features/equipment/",
       "source": "docs/features/equipment.md",
+      "kind": "evidence"
+    },
+    {
+      "id": "document:features/armor-sets",
+      "type": "document",
+      "label": "방어구 4부위와 세트 효과",
+      "status": "reference",
+      "certainty": "derived",
+      "summary": "14종 방어구와 2/4세트·지역 파밍·성장·기획 조정",
+      "route": "features/armor-sets/",
+      "source": "docs/features/armor-sets.md",
       "kind": "evidence"
     },
     {
@@ -7126,6 +7137,12 @@
     },
     {
       "from": "document:features/equipment",
+      "to": "collection:group:features/equipment",
+      "type": "part_of",
+      "origin": "knowledge_map"
+    },
+    {
+      "from": "document:features/armor-sets",
       "to": "collection:group:features/equipment",
       "type": "part_of",
       "origin": "knowledge_map"

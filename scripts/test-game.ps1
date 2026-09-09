@@ -34,6 +34,11 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+$armorOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/armor_set_contract_test.gd" 2>&1
+$armorStatus = $LASTEXITCODE
+$armorOutput | Write-Output
+if ($armorStatus -ne 0 -or ($armorOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($armorOutput -join "`n") -notmatch 'ARMOR_SET_OK') { throw 'Armor set contract failed.' }
+
 $arsenalOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/weapon_arsenal_contract_test.gd" 2>&1
 $arsenalStatus = $LASTEXITCODE
 $arsenalOutput | Write-Output

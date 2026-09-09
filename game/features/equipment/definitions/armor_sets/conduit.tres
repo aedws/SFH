@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ArmorSetDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/armor_set_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+set_id = &"conduit"
+display_name = "축전자"
+bonuses = Array[Dictionary]([{"required_pieces": 2, "player": {}, "weapon": {}, "skill": {"cooldown_multiply": 0.9}, "description": "장착 스킬 쿨타임 10% 감소"}, {"required_pieces": 4, "player": {}, "weapon": {}, "skill": {"damage_multiply": 1.2}, "description": "장착 스킬 피해 +20%"}])

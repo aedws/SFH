@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="FieldLootEquipCatalog" load_steps=32 format=3]
+[gd_resource type="Resource" script_class="FieldLootEquipCatalog" load_steps=56 format=3]
 
 [ext_resource type="Script" path="res://game/features/field_loot/field_loot_equip_catalog.gd" id="1_catalog"]
 [ext_resource type="Script" path="res://game/features/field_loot/field_loot_equip_entry.gd" id="2_entry"]
@@ -22,6 +22,19 @@
 [ext_resource type="Resource" path="res://game/features/inventory/items/vitality_matrix_item.tres" id="vitality_matrix_item"]
 [ext_resource type="Resource" path="res://game/features/inventory/items/mobility_chip_item.tres" id="mobility_chip_item"]
 [ext_resource type="Resource" path="res://game/features/inventory/items/armor_plate_item.tres" id="armor_plate_item"]
+
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/bastion_head.tres" id="bastion_head"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/bastion_body.tres" id="bastion_body"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/bastion_hands.tres" id="bastion_hands"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/bastion_feet.tres" id="bastion_feet"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/strider_head.tres" id="strider_head"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/strider_body.tres" id="strider_body"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/strider_hands.tres" id="strider_hands"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/strider_feet.tres" id="strider_feet"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/conduit_head.tres" id="conduit_head"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/conduit_body.tres" id="conduit_body"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/conduit_hands.tres" id="conduit_hands"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/conduit_feet.tres" id="conduit_feet"]
 
 [sub_resource type="Resource" id="PulseRifle"]
 script = ExtResource("2_entry")
@@ -101,9 +114,93 @@ target_slot = &"feet"
 definition = ExtResource("runner_boots")
 region_tags = PackedStringArray("global")
 
+[sub_resource type="Resource" id="bastion_head"]
+script = ExtResource("2_entry")
+item_id = &"bastion_head"
+target_slot = &"head"
+definition = ExtResource("bastion_head")
+region_tags = PackedStringArray("ruined_city")
+
+[sub_resource type="Resource" id="bastion_body"]
+script = ExtResource("2_entry")
+item_id = &"bastion_body"
+target_slot = &"body"
+definition = ExtResource("bastion_body")
+region_tags = PackedStringArray("ruined_city")
+
+[sub_resource type="Resource" id="bastion_hands"]
+script = ExtResource("2_entry")
+item_id = &"bastion_hands"
+target_slot = &"hands"
+definition = ExtResource("bastion_hands")
+region_tags = PackedStringArray("ruined_city")
+
+[sub_resource type="Resource" id="bastion_feet"]
+script = ExtResource("2_entry")
+item_id = &"bastion_feet"
+target_slot = &"feet"
+definition = ExtResource("bastion_feet")
+region_tags = PackedStringArray("ruined_city")
+
+[sub_resource type="Resource" id="strider_head"]
+script = ExtResource("2_entry")
+item_id = &"strider_head"
+target_slot = &"head"
+definition = ExtResource("strider_head")
+region_tags = PackedStringArray("industrial_district")
+
+[sub_resource type="Resource" id="strider_body"]
+script = ExtResource("2_entry")
+item_id = &"strider_body"
+target_slot = &"body"
+definition = ExtResource("strider_body")
+region_tags = PackedStringArray("industrial_district")
+
+[sub_resource type="Resource" id="strider_hands"]
+script = ExtResource("2_entry")
+item_id = &"strider_hands"
+target_slot = &"hands"
+definition = ExtResource("strider_hands")
+region_tags = PackedStringArray("industrial_district")
+
+[sub_resource type="Resource" id="strider_feet"]
+script = ExtResource("2_entry")
+item_id = &"strider_feet"
+target_slot = &"feet"
+definition = ExtResource("strider_feet")
+region_tags = PackedStringArray("industrial_district")
+
+[sub_resource type="Resource" id="conduit_head"]
+script = ExtResource("2_entry")
+item_id = &"conduit_head"
+target_slot = &"head"
+definition = ExtResource("conduit_head")
+region_tags = PackedStringArray("research_complex")
+
+[sub_resource type="Resource" id="conduit_body"]
+script = ExtResource("2_entry")
+item_id = &"conduit_body"
+target_slot = &"body"
+definition = ExtResource("conduit_body")
+region_tags = PackedStringArray("research_complex")
+
+[sub_resource type="Resource" id="conduit_hands"]
+script = ExtResource("2_entry")
+item_id = &"conduit_hands"
+target_slot = &"hands"
+definition = ExtResource("conduit_hands")
+region_tags = PackedStringArray("research_complex")
+
+[sub_resource type="Resource" id="conduit_feet"]
+script = ExtResource("2_entry")
+item_id = &"conduit_feet"
+target_slot = &"feet"
+definition = ExtResource("conduit_feet")
+region_tags = PackedStringArray("research_complex")
+
 [resource]
 script = ExtResource("1_catalog")
-entries = Array[FieldLootEquipEntry]([SubResource("PulseRifle"), SubResource("Assault"), SubResource("Pistol"), SubResource("Sword"), SubResource("Dagger"), SubResource("Shotgun"), SubResource("Rail"), SubResource("Spear"), SubResource("Vest"), SubResource("Boots")])
+entries = Array[FieldLootEquipEntry]([SubResource("PulseRifle"), SubResource("Assault"), SubResource("Pistol"), SubResource("Sword"), SubResource("Dagger"), SubResource("Shotgun"), SubResource("Rail"), SubResource("Spear"), SubResource("Vest"), SubResource("Boots"), SubResource("bastion_head"), SubResource("bastion_body"), SubResource("bastion_hands"), SubResource("bastion_feet"), SubResource("strider_head"), SubResource("strider_body"), SubResource("strider_hands"), SubResource("strider_feet"), SubResource("conduit_head"), SubResource("conduit_body"), SubResource("conduit_hands"), SubResource("conduit_feet")])
 skill_entries = Array[FieldLootSkillEntry]([SubResource("ArcDash")])
 replaced_item_destination = "run_storage"
 policy_status = "provisional"

@@ -11,7 +11,7 @@ const SLOT_BUTTON = preload("res://game/features/inventory/inventory_slot_button
 const ITEM_PREVIEW = preload("res://game/features/inventory/inventory_item_preview.gd")
 @export var loadout_column_width: float = 204.0
 @export var inspection_column_width: float = 224.0
-const SLOT_NAMES := {&"main": "메인 무기", &"secondary": "보조 무기", &"body": "신체", &"feet": "신발"}
+const SLOT_NAMES := {&"main": "메인 무기", &"secondary": "보조 무기", &"head": "머리", &"body": "신체", &"hands": "장갑", &"feet": "신발"}
 
 var session: Node
 var inventory_provider: Node
@@ -483,6 +483,7 @@ func _refresh_stats() -> void:
 	if preview.is_empty():
 		for stat in modifiers:
 			stats_label.text += "%s  %+.1f / ×%.2f\n" % [names.get(stat, String(stat)), modifiers[stat].get(&"add", 0.0), modifiers[stat].get(&"multiply", 1.0)]
+	stats_label.text += ArmorSetResolver.describe(session.equipment.get_armor_set_snapshot())
 
 
 func _refresh_modules() -> void:

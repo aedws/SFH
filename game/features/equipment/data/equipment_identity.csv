@@ -9,3 +9,15 @@ weapon,rail_rifle,관통 레일 소총,rail_echo,레일 잔향,2,2,single_target
 weapon,arc_spear,전격 관통창,spear_discharge,창끝 방전,3,1.2,electric_area,96,4,balanced_shaft,균형 창대,damage_multiply,multiply,1.04,fixed_identity,provisional
 armor,tactical_vest,전술 방탄복,,,,,,,,trauma_liner,충격 흡수 내피,max_health,add,10,fixed_identity,provisional
 armor,runner_boots,기동 전투화,,,,,,,,responsive_sole,반응형 전술 밑창,movement_speed,add,12,fixed_identity,provisional
+armor,bastion_head,수호자 헬멧,,,,,,,,bastion_head_lining,강화 내피,defense,add,0.5,fixed_identity,provisional
+armor,bastion_body,수호자 전투복,,,,,,,,bastion_body_lining,강화 내피,defense,add,0.5,fixed_identity,provisional
+armor,bastion_hands,수호자 장갑,,,,,,,,bastion_hands_lining,강화 내피,defense,add,0.5,fixed_identity,provisional
+armor,bastion_feet,수호자 전투화,,,,,,,,bastion_feet_lining,강화 내피,defense,add,0.5,fixed_identity,provisional
+armor,strider_head,질주자 헬멧,,,,,,,,strider_head_lining,기동 섬유,movement_speed,add,3,fixed_identity,provisional
+armor,strider_body,질주자 전투복,,,,,,,,strider_body_lining,기동 섬유,movement_speed,add,3,fixed_identity,provisional
+armor,strider_hands,질주자 장갑,,,,,,,,strider_hands_lining,기동 섬유,movement_speed,add,3,fixed_identity,provisional
+armor,strider_feet,질주자 전투화,,,,,,,,strider_feet_lining,기동 섬유,movement_speed,add,3,fixed_identity,provisional
+armor,conduit_head,축전자 헬멧,,,,,,,,conduit_head_lining,축전 내피,max_health,add,3,fixed_identity,provisional
+armor,conduit_body,축전자 전투복,,,,,,,,conduit_body_lining,축전 내피,max_health,add,3,fixed_identity,provisional
+armor,conduit_hands,축전자 장갑,,,,,,,,conduit_hands_lining,축전 내피,max_health,add,3,fixed_identity,provisional
+armor,conduit_feet,축전자 전투화,,,,,,,,conduit_feet_lining,축전 내피,max_health,add,3,fixed_identity,provisional
