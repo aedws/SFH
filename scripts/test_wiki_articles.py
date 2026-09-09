@@ -186,6 +186,18 @@ for role, text in [("planner", planner_text), ("developer", developer_text)]:
     assert 'javascripts/role-workspace.js' in text and 'stylesheets/role-workspace.css' in text
 assert '&lt;div class="sfh-planner-filters"' not in planner_text, "Request controls must not become code snippets"
 assert 'id="planning-queue"' in planner_text and 'id="proposal-draft"' in planner_text
+decision_start = planner_text.index('id="decisions-needed"')
+decision_start = planner_text.rfind('<section', 0, decision_start)
+decision_end = planner_text.index('</section>', decision_start)
+decision_notice = planner_text[decision_start:decision_end]
+assert decision_start < planner_text.index('class="sfh-workspace-launcher"'), "Decision notice must precede planner tools"
+assert 'aria-labelledby="decisions-needed-title"' in decision_notice
+for phrase in ("DEC-N26-POUCH", "DEC-N26-DEPTH", "DEC-N26-BLOOD", "QA-BAL-01",
+               "미승인 예시", "프로젝트 오너", "개인 메시지", "Notion", "자동 전송", "미정 14건"):
+    assert phrase in decision_notice, f"Planner decision handoff missing: {phrase}"
+assert decision_notice.count('<details') == 5, "Keep decision examples in accessible disclosures"
+assert not re.search(r'<details[^>]*\sopen[\s>]', decision_notice), "Examples should be collapsed initially"
+assert 'href="https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed"' in decision_notice
 assert module_map_position >= 0, "Developer room must embed the live code-module map"
 assert developer_console_position >= 0 and owner_console_position < module_map_position < developer_console_position, (
     "Owner decisions must precede implementation evidence and the developer operating guide"

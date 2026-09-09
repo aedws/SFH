@@ -1,4 +1,9 @@
 /* Role-page navigation only: no auth, calculator or game-state ownership. */
+.md-typeset #decisions-needed { border: 1px solid var(--md-accent-fg-color); border-radius: .35rem; padding: .8rem; margin: .6rem 0 1rem; background: color-mix(in srgb, #02e5e1 4%, var(--md-default-bg-color)); font-size: .75rem; overflow-wrap: anywhere; }
+.md-typeset #decisions-needed h2 { margin-top: 0; font-size: 1.05rem; }
+.md-typeset #decisions-needed > details { box-shadow: none; margin: .5rem 0; }
+.md-typeset #decisions-needed summary { min-height: 44px; line-height: 1.65; padding-block: .55rem; }
+.md-typeset #decisions-needed summary small { display: block; color: var(--md-default-fg-color--light); font-weight: 400; }
 .sfh-workspace { min-width: 0; --workspace-line: color-mix(in srgb, var(--md-default-fg-color) 22%, transparent); }
 .sfh-workspace-launcher { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .65rem; margin: 1rem 0; }
 .md-typeset .sfh-workspace-launcher a { display: flex; flex-direction: column; gap: .25rem; min-width: 0; padding: .85rem; border: 1px solid var(--workspace-line); border-radius: .4rem; background: var(--md-default-bg-color); color: var(--md-default-fg-color); text-decoration: none; overflow-wrap: anywhere; }

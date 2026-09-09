@@ -21,7 +21,25 @@ try {
     const cards=root.locator('.sfh-workspace-launcher a');
     assert.equal(await cards.count(),7);
     const rect=await cards.last().boundingBox();
-    assert.ok(rect.y+rect.height<height,`${role} ${width}: all primary actions in first screen`);
+    if(role==='developer') assert.ok(rect.y+rect.height<height,`${role} ${width}: all primary actions in first screen`);
+    else {
+      const notice=page.locator('#decisions-needed');
+      const noticeRect=await notice.boundingBox();
+      assert.ok(noticeRect.y>=0 && noticeRect.y<height,`planner ${width}: decision notice first`);
+      assert.ok(noticeRect.y<rect.y,`planner ${width}: decisions before tools`);
+      assert.equal(await notice.locator('details[open]').count(),0);
+      assert.equal(await notice.locator('details').count(),5);
+      assert.match(await notice.innerText(),/개인 메시지/);
+      for(const summary of await notice.locator('summary').all()) {
+        await summary.focus(); await page.keyboard.press('Enter');
+        assert.ok(await summary.evaluate(n=>n.parentElement.open));
+        assert.ok((await summary.boundingBox()).height>=44);
+        assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+        await page.keyboard.press('Enter');
+        assert.ok(await summary.evaluate(n=>!n.parentElement.open));
+      }
+      await page.evaluate(()=>window.scrollTo(0,0));
+    }
     assert.equal(await root.locator(':scope > details[open]').count(),role==='planner'?1:0);
     const bounds=async()=>assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${role} ${width}: overflow`);
     await bounds();await page.screenshot({path:`outputs/role-workspace/${role}-${width}.png`});

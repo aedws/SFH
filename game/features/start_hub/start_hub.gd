@@ -45,20 +45,27 @@ func get_snapshot() -> Dictionary:
 	}
 
 
-func request_operation(actor: Node2D) -> bool:
+func can_request_operation(actor: Node2D) -> bool:
 	if not is_instance_valid(actor) or not actor.is_in_group(&"player"):
 		return false
-	# 프롬프트를 보여 준 Area 중첩을 실제 요청에서도 같은 판정으로 사용합니다.
-	if actor != nearby_player and actor.global_position.distance_to(operation_gate.global_position) > interaction_radius:
+	# One public gate for input, navigation hints and programmatic launch requests.
+	return actor == nearby_player or actor.global_position.distance_to(operation_gate.global_position) <= interaction_radius
+
+
+func request_operation(actor: Node2D) -> bool:
+	if not can_request_operation(actor):
 		return false
 	operation_requested.emit()
 	return true
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not is_instance_valid(nearby_player):
+	if not event.is_action_pressed(interaction_action):
 		return
-	if event.is_action_pressed(interaction_action) and request_operation(nearby_player):
+	var actor := nearby_player
+	if not is_instance_valid(actor):
+		actor = get_tree().get_first_node_in_group(&"player") as Node2D
+	if request_operation(actor):
 		get_viewport().set_input_as_handled()
 
 
