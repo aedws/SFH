@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "e6f483930bcc675342ac4d8ded547ff908fb481aa5cd46b4e2a00c1360818fb3",
+  "source_sha256": "3650c65737aee2d62b65fdb004d47816e7487dca932247ca22bbf651ca6db586",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 349,
-    "named_classes": 271,
+    "scripts": 350,
+    "named_classes": 272,
     "relationships": 210,
     "project_inheritance": 13,
     "enabled_toggles": 70
@@ -331,8 +331,8 @@
       "path": "game/features/equipment",
       "wiki_route": "features/equipment/",
       "enabled": true,
-      "file_count": 24,
-      "class_count": 24,
+      "file_count": 25,
+      "class_count": 25,
       "classes": [
         "CharacterEquipmentSystem",
         "CharacterModuleDefinition",
@@ -347,6 +347,7 @@
         "EquipmentModuleUIPresenter",
         "EquipmentPartDefinition",
         "EquipmentSkillDefinition",
+        "EquipmentSlotPolicyMigration",
         "EquipmentSlotRule",
         "EquipmentStatModifier",
         "EquipmentWeaponDefinition",
@@ -1964,6 +1965,15 @@
       "module": "equipment",
       "path": "game/features/equipment/skill_definition.gd",
       "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:EquipmentSlotPolicyMigration",
+      "name": "EquipmentSlotPolicyMigration",
+      "module": "equipment",
+      "path": "game/features/equipment/equipment_slot_policy_migration.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },

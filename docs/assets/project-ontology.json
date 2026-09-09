@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "e41e48a7d15ebd1ee10172fe742b4a034ab343a59e45ba05f94dad90f3084de3",
+  "source_sha256": "476ee56d5a9c4a52989458243b51c1bc84acca40d40a22f6175ef576b09fb665",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -2868,14 +2868,14 @@
       "label": "장비 규칙",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 24개",
+      "summary": "장비·세팅 · feature · 파일 25개",
       "route": "architecture/code-module-map/?module=equipment",
       "documentation_route": "features/equipment/",
       "source": "game/features/equipment",
       "kind": "implementation",
       "metrics": {
-        "files": 24,
-        "classes": 24,
+        "files": 25,
+        "classes": 25,
         "incoming": 7,
         "outgoing": 2
       }

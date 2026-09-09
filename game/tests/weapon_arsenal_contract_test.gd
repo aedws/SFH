@@ -29,6 +29,7 @@ func _run() -> void:
 	var stats := Stats.new()
 	root.add_child(stats)
 	assert(equipment.configure(load("res://game/features/equipment/loadouts/default_loadout.tres"), stats))
+	_check_saved_slot_policy(equipment)
 	var shots := Node2D.new()
 	root.add_child(shots)
 	var weapon: Node2D = load("res://game/features/weapons/auto_weapon.tscn").instantiate()
@@ -132,3 +133,38 @@ func _run() -> void:
 	weapon.free(); equipment.free(); shots.free(); stats.free()
 	print("WEAPON_ARSENAL_OK weapons_8 actual_LMB hits_8 shotgun_5 melee_no_bullets walls caps geometry future_definition optional_balance")
 	quit()
+
+
+func _check_saved_slot_policy(equipment: Node) -> void:
+	var original: Dictionary = equipment.export_runtime_state()
+	var saved: Dictionary = equipment.export_runtime_state()
+	var legacy := saved[&"loadout"] as EquipmentLoadout
+	legacy.extension_data.erase(&"weapon_slot_policy")
+	var rule := legacy.get_slot_rule(&"main")
+	rule.allowed_major_tags.assign([&"ranged"])
+	rule.allowed_middle_tags.assign([&"firearm"])
+	rule.allowed_minor_tags.assign([&"rifle"])
+	saved[&"equipment_states"][&"main"].level = 2
+	saved[&"active_weapon_slot"] = &"secondary"
+	var codec := LoadoutValueCodec.new()
+	var encoded: Variant = codec.encode(saved)
+	assert(codec.error.is_empty())
+	var decoder := LoadoutValueCodec.new()
+	var restored: Dictionary = decoder.decode(encoded)
+	assert(decoder.error.is_empty())
+	assert(equipment.validate_runtime_state(restored).is_empty())
+	assert(equipment.restore_runtime_state(restored))
+	var dagger: Resource = load("res://game/features/equipment/definitions/weapons/combat_dagger.tres")
+	assert(equipment.can_equip_definition(&"main", dagger), "Legacy Windows save accepts melee without resetting gear")
+	assert(equipment.get_equipment_state(&"main").level == 2 and equipment.active_weapon_slot == &"secondary")
+	assert(not restored[&"loadout"].get_slot_rule(&"main").accepts(dagger), "Migration must not mutate snapshot")
+	assert(not equipment.can_equip_definition(&"secondary", dagger), "Secondary pistol policy unchanged")
+	# Explicitly versioned custom restrictions and unrelated loadouts must remain untouched.
+	restored[&"loadout"].extension_data[&"weapon_slot_policy"] = &"arsenal_v1"
+	assert(equipment.restore_runtime_state(restored))
+	assert(not equipment.can_equip_definition(&"main", dagger))
+	restored[&"loadout"].extension_data.erase(&"weapon_slot_policy")
+	restored[&"loadout"].loadout_id = &"custom_operator"
+	assert(equipment.restore_runtime_state(restored))
+	assert(not equipment.can_equip_definition(&"main", dagger))
+	assert(equipment.restore_runtime_state(original))

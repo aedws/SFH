@@ -45,4 +45,4 @@ secondary_weapon = ExtResource("3_secondary")
 skills = [ExtResource("4_rifle_skill"), ExtResource("5_pistol_skill"), ExtResource("6_dagger_skill")]
 armor = [ExtResource("7_vest"), ExtResource("8_boots")]
 slot_rules = [SubResource("MainRule"), SubResource("SecondaryRule"), SubResource("BodyRule"), SubResource("FeetRule")]
-extension_data = {"deployment_cost_policy": &"unassigned"}
+extension_data = {"deployment_cost_policy": &"unassigned", "weapon_slot_policy": &"arsenal_v1"}

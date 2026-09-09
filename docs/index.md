@@ -60,7 +60,7 @@ search:
       <summary><span><small>UPDATE 8</small><b>무기 8종 · 실제 근접 베기와 찌르기</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>단검·대검은 실제 근접 베기, 신규 창은 긴 찌르기로 변경했습니다. 산탄총 5발 분산과 레일 소총 관통으로 총기 5종·근접 3종을 구성합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>근접 무기가 소총 기본값으로 발사되고 기본 주무기 슬롯에 장착되지 않던 제약을 수정했습니다. 근접 판정은 벽·후방·거리·중복 타격을 검사합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>근접 무기가 소총 기본값으로 발사되고 기본 주무기 슬롯에 장착되지 않던 제약을 수정했습니다. 기존 Windows 저장의 기본 슬롯도 장비를 보존하며 갱신합니다. 근접 판정은 벽·후방·거리·중복 타격을 검사합니다.</p></div>
         <div class="sfh-group"><h3>개선 · 1</h3><p>Sheet 무기 8행과 드랍 101행, 가방·로비 장착·작전 유지·DPS 그래프를 연결했습니다. 새 수치는 임시 밸런스이며 장시간 재미 검수와 구분합니다.</p></div>
         <p><a href="features/weapons/#arsenal-20260909">무기별 차이·획득·조정 방법</a> · <a href="quality/e2e-play-session/#arsenal-20260909">검증 범위</a></p>
       </div>
