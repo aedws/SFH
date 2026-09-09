@@ -1268,7 +1268,9 @@ func _toggle_medkit_loadout() -> void:
 		return
 	var profile_snapshot: Dictionary = persistent_profile.call(&"get_snapshot")
 	var current: Array = profile_snapshot.get(&"consumable_loadout", [])
-	var next: Array[StringName] = [] if not current.is_empty() else [&"field_medkit"]
+	var next: Array[StringName] = []
+	if current.is_empty():
+		next.append(&"field_medkit")
 	var applied: bool = hub_economy_system.call(&"set_consumable_loadout", next)
 	status_label.text = "소모품 로드아웃 %s" % (
 		("응급키트 장착" if current.is_empty() else "해제") if applied else "실패"

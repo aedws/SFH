@@ -26,6 +26,26 @@ func _run() -> void:
 	await _tap(KEY_F)
 	_check(prep.visible and paused and not game.run_setup_overlay.visible, "F opens placed preparation station")
 	_check(not game.main_weapon_investment_button.is_visible_in_tree(), "no weapon rental selector")
+	var preparation_profile: Dictionary = game.persistent_profile.get_snapshot()
+	await _click(game.loadout_button)
+	_check(not game.persistent_profile.get_snapshot().consumable_loadout.is_empty(), "owned medkit selected through preparation button")
+	_check("응급키트" in game.loadout_button.text, "owned medkit selection visible")
+	_check(game.persistent_profile.get_snapshot().warehouse == preparation_profile.warehouse and game.persistent_profile.get_snapshot().banked_credits == preparation_profile.banked_credits, "preparation selection does not consume stock or credits")
+	await _click(prep.close_button)
+	_check(not prep.visible and not paused, "prepared kit can return to moving lobby")
+	await _tap(KEY_F)
+	_check(prep.visible and "응급키트" in game.loadout_button.text, "prepared kit retained when station reopens")
+	await _click(game.loadout_button)
+	_check(game.persistent_profile.get_snapshot().consumable_loadout.is_empty(), "owned medkit removed through preparation button")
+	_check(game.persistent_profile.get_snapshot() == preparation_profile, "toggle roundtrip preserves complete profile")
+	# Isolated empty-stock fixture: exercise the same UI rejection without buying or
+	# consuming the player's real inventory. Restore it before the remaining tests.
+	var kit_stock: int = preparation_profile.warehouse.get(&"field_medkit", 0)
+	_check(game.persistent_profile.take_warehouse_item(&"field_medkit", kit_stock), "empty-stock fixture")
+	var empty_profile: Dictionary = game.persistent_profile.get_snapshot()
+	await _click(game.loadout_button)
+	_check(game.persistent_profile.get_snapshot() == empty_profile and "비어 있음" in game.loadout_button.text, "empty-stock click cannot equip or charge")
+	game.persistent_profile.add_warehouse_item(&"field_medkit", kit_stock)
 	var initial_character: StringName = game.character_selection_service.get_snapshot().character_id
 	await _click(game.character_selection_button)
 	var selected_character: Dictionary = game.character_selection_service.get_snapshot()
@@ -121,7 +141,7 @@ func _run() -> void:
 	optional.free()
 	paused = false
 	if failures.is_empty():
-		print("HUB_PREPARATION_OK physical_station shop_lobby readonly_review dirty_save_guard actual_item_instances weapon_armor_modules_parts_levels active_slot bag_preserved no_rental_override non_catalog_weapon return optional viewports_4")
+		print("HUB_PREPARATION_OK physical_station medkit_button_toggle medkit_stock_preserved medkit_reopen empty_stock_rejection shop_lobby readonly_review dirty_save_guard actual_item_instances weapon_armor_modules_parts_levels active_slot bag_preserved no_rental_override non_catalog_weapon return optional viewports_4")
 		quit(0)
 	else:
 		printerr("HUB_PREPARATION_FAILED: %s" % " / ".join(failures))

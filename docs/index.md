@@ -54,9 +54,16 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 2 · IMPROVE 3 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 2 · IMPROVE 3 · CHANGE 1 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>출격 준비 · 보유 응급키트 장착 무반응 수정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>준비실에서 보유 응급키트 버튼을 눌러도 장착되지 않던 배열 타입 오류를 수정했습니다. 장착·해제·준비실 재진입과 빈 재고 거부를 실제 입력 회귀에 추가했습니다.</p></div>
+        <p>키트 회복량·가격·재고·런 유틸리티 정책은 유지합니다. 이번 수정 통과를 10분 플레이 완료로 계산하지 않습니다. <a href="quality/e2e-play-session/#preparation-medkit-20260909">재현·검증·잔여 경로</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>배포 분리 · 소스는 Git, 실행 파일은 Cloudflare</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>자체 러너에서 검증된 위키·Web·Windows 파일을 Cloudflare로 직접 전달합니다. GitHub에는 변경 이력과 검사·복구 기록을 남기고 필수 테스트는 유지합니다.</p></div>
