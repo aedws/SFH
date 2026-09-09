@@ -61,7 +61,7 @@ class ReleaseTests(unittest.TestCase):
         workflow = Path(__file__).resolve().parents[1] / ".github/workflows/deploy-wiki.yml"
         data = yaml.safe_load(workflow.read_text(encoding="utf-8"))
         text = workflow.read_text(encoding="utf-8")
-        self.assertIn("cmp --silent .cloudflare-wiki/index.html /tmp/wiki.html", text)
+        self.assertIn("sfh-build-commit", text)
         self.assertIn('metadata["build_commit"] == os.environ["GAME_BUILD_COMMIT"]', text)
         steps = data["jobs"]["cloudflare-deploy"]["steps"]
         names = [step["name"] for step in steps]
@@ -73,6 +73,21 @@ class ReleaseTests(unittest.TestCase):
         rollback = next(step for step in steps if step["name"].startswith("Restore previous game"))
         self.assertIn("failure()", rollback["if"])
         self.assertIn("steps.game_promotion.outcome == 'success'", rollback["if"])
+
+    def test_wiki_stamp_survives_public_markup_filtering(self):
+        import os
+        import subprocess
+        import sys
+        script = Path(__file__).with_name("prepare_wiki_worker.py")
+        with tempfile.TemporaryDirectory() as directory:
+            index = Path(directory) / "index.html"
+            index.write_text('<html><head></head><body>SFH</body></html>', encoding='utf-8')
+            env = {**os.environ, "GITHUB_SHA": "a" * 40}
+            for _ in range(2):
+                subprocess.run([sys.executable, str(script), directory], env=env, check=True)
+            html = index.read_text(encoding='utf-8')
+            self.assertEqual(html.count('name="sfh-build-commit"'), 1)
+            self.assertIn('content="' + "a" * 40 + '"', html)
 
 
 if __name__ == "__main__":

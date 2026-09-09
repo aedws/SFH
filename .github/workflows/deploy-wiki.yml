@@ -801,7 +801,7 @@ jobs:
           for attempt in $(seq 1 24); do
             if curl --silent --show-error --fail "$CLOUDFLARE_WIKI_URL/" --output /tmp/wiki.html \
               && grep -q 'SFH' /tmp/wiki.html \
-              && cmp --silent .cloudflare-wiki/index.html /tmp/wiki.html \
+              && grep -q "name=\"sfh-build-commit\" content=\"$GITHUB_SHA\"" /tmp/wiki.html \
               && curl --silent --show-error --fail "$CLOUDFLARE_GAME_URL/healthz" --output /tmp/health.json \
               && grep -q "$GAME_BUILD_COMMIT" /tmp/health.json; then
               break
