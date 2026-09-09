@@ -120,9 +120,14 @@ func _connect_street(index: int, road_x: int, plan: Dictionary, floors: Dictiona
 func _connect_rooms(a: int,b: int,plan: Dictionary,floors: Dictionary,spaces: Array[Dictionary],routes: Array[Dictionary],alternate: bool=false) -> void:
 	var start := _center(a,plan)
 	var end := _center(b,plan)
-	var elbow := Vector2i(start.x,end.y) if alternate else Vector2i(end.x,start.y)
-	_carve(start,elbow,5,plan,floors,spaces)
-	_carve(elbow,end,5,plan,floors,spaces)
+	# Diagonal L bends at another building's centre collapse the alternative route.
+	# Route through the inter-plot gap instead; A/C room geometry stays independent.
+	var midpoint := (start+end)/2
+	var first := Vector2i(start.x,midpoint.y) if alternate else Vector2i(midpoint.x,start.y)
+	var second := Vector2i(end.x,midpoint.y) if alternate else Vector2i(midpoint.x,end.y)
+	_carve(start,first,5,plan,floors,spaces)
+	_carve(first,second,5,plan,floors,spaces)
+	_carve(second,end,5,plan,floors,spaces)
 	routes.append({"from":a,"to":b,"kind":"rear" if alternate else "interior","width":5})
 
 func _carve(a: Vector2i,b: Vector2i,width: int,plan: Dictionary,floors: Dictionary,spaces: Array[Dictionary]) -> void:

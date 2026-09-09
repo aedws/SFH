@@ -76,7 +76,7 @@
     const center=i=>{const r=plan.buildings[i].rect;return[r[0]+Math.floor(r[2]/2),r[1]+Math.floor(r[3]/2)];};
     const carve=(a,b)=>plan.passages.push([Math.min(a[0],b[0])-2,Math.min(a[1],b[1])-2,Math.abs(a[0]-b[0])+5,Math.abs(a[1]-b[1])+5]);
     const street=(i,x)=>{const c=center(i);carve(c,[x,c[1]]);routes.push({from:-1,to:i,kind:'front',width:5});};
-    const link=(a,b,alt=false)=>{const s=center(a),e=center(b),p=alt?[s[0],e[1]]:[e[0],s[1]];carve(s,p);carve(p,e);routes.push({from:a,to:b,kind:alt?'rear':'interior',width:5});};
+    const link=(a,b,alt=false)=>{const s=center(a),e=center(b),m=[Math.floor((s[0]+e[0])/2),Math.floor((s[1]+e[1])/2)],p=alt?[s[0],m[1]]:[m[0],s[1]],q=alt?[e[0],m[1]]:[m[0],e[1]];carve(s,p);carve(p,q);carve(q,e);routes.push({from:a,to:b,kind:alt?'rear':'interior',width:5});};
     for(const b of plan.buildings){const key=`${Math.floor(b.plot[0]/2)},${Math.floor(b.plot[1]/2)}`;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(b.index);const shapeSeed=b.required?0:plan.seed;b.shape_variant=(b.index+shapeSeed)%4;b.polygonal=b.index!==0&&!plan.exits.includes(b.index)&&(b.index*7919+shapeSeed)%1000/1000<ratio;}
     for(const [key,members] of groups){const x=Number(key.split(',')[0]);members.sort((a,b)=>{const av=plan.buildings[a].facility_id==='vault',bv=plan.buildings[b].facility_id==='vault';return av===bv?a-b:av?1:-1;});const front=members[0];street(front,xs[x*2]+2);for(let i=1;i<members.length;i++)link(members[i-1],members[i]);if(members.length>2)link(front,members.at(-1),true);for(const i of members)if((i===0||plan.exits.includes(i))&&i!==front)street(i,xs[Math.min(x*2+2,xs.length-1)]+2);}
     plan.compound_count=groups.size;plan.polygon_ratio=ratio;plan.compound_routes=routes;return plan;
