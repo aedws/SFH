@@ -89,7 +89,16 @@ func _run() -> void:
 	if "arc_dash" not in skill_ids:
 		_fail("Skill 탭 기반 현장 스킬이 연구 단지 드랍 후보에 연결되지 않았습니다.")
 		return
-	print("LOOT_TABLE_TEST_OK rows_77 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link skill_definition_link")
+	# Enumerate every launch data combination, not just the default small map.
+	for region in [&"ruined_city", &"industrial_district", &"research_complex"]:
+		for difficulty in [&"standard", &"veteran", &"nightmare"]:
+			for size in [&"small", &"medium", &"large"]:
+				for source in [&"room_reward", &"boss"]:
+					var context := {&"region_id": region, &"difficulty_id": difficulty, &"map_size": size, &"source_type": source, &"item_type": &"weapon", &"boss_available": true}
+					var roll: Dictionary = provider.roll_drop(context, 90909, 0)
+					if roll.is_empty() or equip_catalog.get_inventory_definition(StringName(roll.item_id)) == null:
+						return _fail("무기 드랍/가방 정의 누락 %s" % context)
+	print("LOOT_TABLE_TEST_OK rows_77 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link skill_definition_link weapon_sources_54")
 	quit(0)
 
 

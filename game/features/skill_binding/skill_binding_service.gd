@@ -14,6 +14,10 @@ var skill_to_action: Dictionary = {}
 var action_to_skill: Dictionary = {}
 var configured: bool = false
 var runtime_replacement_count: int = 0
+## Runtime identities inherit a permanent slot owner; temporary skill IDs are
+## never written to the user's bindings file, even when edited from K.
+var runtime_origins: Dictionary = {}
+var runtime_definitions: Dictionary = {}
 
 
 func configure(
@@ -45,6 +49,8 @@ func configure(
 		physical_binding_provider.connect(
 			&"bindings_changed", Callable(self, &"_on_physical_bindings_changed")
 		)
+	runtime_origins.clear()
+	runtime_definitions.clear()
 	_apply_defaults()
 	configured = true
 	runtime_replacement_count = 0
@@ -55,8 +61,10 @@ func configure(
 
 
 func assign_skill(skill_id: StringName, action_id: StringName) -> Dictionary:
-	if not configured or not _has_skill(skill_id) or not _is_allowed_action(action_id):
+	if not configured or not skill_to_action.has(skill_id) or not _is_allowed_action(action_id):
 		return _reject("배치할 수 없는 스킬 또는 슬롯입니다.")
+	var previous_skills := skill_to_action.duplicate()
+	var previous_actions := action_to_skill.duplicate()
 	var source_action: StringName = skill_to_action.get(skill_id, &"")
 	if source_action == action_id:
 		return {&"success": true, &"message": "이미 해당 슬롯에 배치되어 있습니다."}
@@ -70,8 +78,9 @@ func assign_skill(skill_id: StringName, action_id: StringName) -> Dictionary:
 	skill_to_action[skill_id] = action_id
 	action_to_skill[action_id] = skill_id
 	if not _save_bindings():
-		_apply_defaults()
-		return _reject("스킬 배치 저장에 실패해 기본값으로 복구했습니다.")
+		skill_to_action = previous_skills
+		action_to_skill = previous_actions
+		return _reject("스킬 배치 저장에 실패해 변경 전 배치로 복구했습니다.")
 	var snapshot := get_snapshot()
 	bindings_changed.emit(snapshot)
 	return {
@@ -88,8 +97,21 @@ func assign_skill(skill_id: StringName, action_id: StringName) -> Dictionary:
 func reset_defaults(save_after_reset: bool = true) -> bool:
 	if not configured:
 		return false
-	_apply_defaults()
+	var previous_skills := skill_to_action.duplicate()
+	var previous_actions := action_to_skill.duplicate()
+	if runtime_replacement_count == 0:
+		_apply_defaults()
+	else:
+		action_to_skill.clear()
+		var defaults: Dictionary = profile.call(&"get_defaults")
+		for skill_id: StringName in skill_to_action:
+			var action: StringName = defaults.get(runtime_origins.get(skill_id, skill_id), &"")
+			skill_to_action[skill_id] = action
+			action_to_skill[action] = skill_id
 	var saved := not save_after_reset or _save_bindings()
+	if not saved:
+		skill_to_action = previous_skills
+		action_to_skill = previous_actions
 	bindings_changed.emit(get_snapshot())
 	return saved
 
@@ -97,7 +119,8 @@ func reset_defaults(save_after_reset: bool = true) -> bool:
 func replace_runtime_skill(
 	previous_skill_id: StringName,
 	new_skill_id: StringName,
-	action_id: StringName
+	action_id: StringName,
+	definition: Resource = null
 ) -> bool:
 	if (
 		not configured
@@ -105,8 +128,13 @@ func replace_runtime_skill(
 		or new_skill_id.is_empty()
 		or not _is_allowed_action(action_id)
 		or StringName(skill_to_action.get(previous_skill_id, &"")) != action_id
+		or (new_skill_id != previous_skill_id and skill_to_action.has(new_skill_id))
+		or (definition != null and StringName(definition.get("skill_id")) != new_skill_id)
 	):
 		return false
+	runtime_origins[new_skill_id] = runtime_origins.get(previous_skill_id, previous_skill_id)
+	if definition != null:
+		runtime_definitions[new_skill_id] = definition
 	skill_to_action.erase(previous_skill_id)
 	var prior_action: StringName = skill_to_action.get(new_skill_id, &"")
 	if not prior_action.is_empty():
@@ -128,15 +156,23 @@ func restore_runtime_skill(
 ) -> bool:
 	if (
 		not configured
-		or not _has_skill(previous_skill_id)
+		or not skill_to_action.has(current_skill_id)
+		or (previous_skill_id != current_skill_id and skill_to_action.has(previous_skill_id))
+		or (not _has_skill(previous_skill_id) and not runtime_origins.has(previous_skill_id))
 		or not _is_allowed_action(action_id)
 	):
 		return false
+	# A player may have remapped this slot since the swap. Restore identity, not
+	# the stale historical action, or another skill can silently lose its key.
+	action_id = skill_to_action[current_skill_id]
 	skill_to_action.erase(current_skill_id)
 	action_to_skill.erase(action_id)
 	skill_to_action[previous_skill_id] = action_id
 	action_to_skill[action_id] = previous_skill_id
 	runtime_replacement_count = maxi(0, runtime_replacement_count - 1)
+	if runtime_replacement_count == 0:
+		runtime_origins.clear()
+		runtime_definitions.clear()
 	bindings_changed.emit(get_snapshot())
 	return true
 
@@ -158,12 +194,17 @@ func get_entries() -> Array[Dictionary]:
 	var entries: Array[Dictionary] = []
 	if not configured:
 		return entries
-	for skill: Resource in loadout.get("skills"):
-		var skill_id := StringName(skill.get("skill_id"))
+	for skill_id: StringName in skill_to_action:
 		var action_id := action_for_skill(skill_id)
+		var skill: Resource = runtime_definitions.get(skill_id)
+		if skill == null:
+			for base: Resource in loadout.get("skills"):
+				if StringName(base.get("skill_id")) == skill_id:
+					skill = base
+					break
 		entries.append({
 			&"skill_id": skill_id,
-			&"display_name": String(skill.get("display_name")),
+			&"display_name": String(skill.get("display_name")) if skill != null else String(skill_id),
 			&"action_id": action_id,
 			&"action_slot_label": _action_slot_label(action_id),
 			&"binding_text": input_label_for_skill(skill_id),
@@ -235,7 +276,7 @@ func _load_saved_bindings() -> bool:
 func _save_bindings() -> bool:
 	var serialized := {}
 	for skill_id: StringName in skill_to_action:
-		serialized[String(skill_id)] = String(skill_to_action[skill_id])
+		serialized[String(runtime_origins.get(skill_id, skill_id))] = String(skill_to_action[skill_id])
 	var file := FileAccess.open(storage_path, FileAccess.WRITE)
 	if file == null:
 		return false

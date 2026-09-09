@@ -118,7 +118,7 @@ class BindingStub:
 	func input_label_for_skill(skill_id: StringName) -> String:
 		return "3" if action_for_skill(skill_id) == &"combat_skill_3" else "?"
 
-	func replace_runtime_skill(previous_id: StringName, current_id: StringName, action_id: StringName) -> bool:
+	func replace_runtime_skill(previous_id: StringName, current_id: StringName, action_id: StringName, _definition: Resource = null) -> bool:
 		if StringName(bindings.get(previous_id, &"")) != action_id:
 			return false
 		bindings.erase(previous_id)
