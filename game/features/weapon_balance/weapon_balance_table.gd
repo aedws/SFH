@@ -187,10 +187,21 @@ static func _convert_row(row: Dictionary) -> Dictionary:
 		&"projectile_color": Color.from_string(row[&"projectile_color_hex"], Color.WHITE),
 		&"description": String(row[&"description"]),
 		&"distance_damage_curve": String(row.get(&"distance_damage_curve", "0:1;1:1")),
+		&"attack_mode": StringName(row.get(&"attack_mode", "projectile")),
 	}
 
 
 static func _validate_row(row: Dictionary) -> String:
+	for key in [&"damage", &"fire_interval_sec", &"projectile_speed_px_sec", &"target_range_px", &"spread_angle_deg", &"burst_interval_sec", &"critical_chance", &"critical_multiplier", &"pierce_damage_retention", &"projectile_lifetime_sec"]:
+		if not is_finite(float(row[key])): return "수치는 유한한 값이어야 합니다."
+	if row[&"projectiles_per_shot"] > 32 or row[&"burst_count"] > 16 or row[&"pierce_count"] > 32:
+		return "회당 발사체 32/점사 16/추가 대상 32 상한을 초과했습니다."
+	if row[&"projectile_lifetime_sec"] <= 0.0 or row[&"burst_interval_sec"] < 0.0 or row[&"spread_angle_deg"] < 0.0:
+		return "수명은 양수, 점사 간격과 각도는 음수가 아니어야 합니다."
+	if row[&"attack_mode"] not in [&"projectile", &"melee_arc", &"melee_thrust"]:
+		return "지원하지 않는 공격 방식입니다."
+	if row[&"attack_mode"] != &"projectile" and (row[&"projectiles_per_shot"] != 1 or row[&"burst_count"] != 1 or row[&"spread_angle_deg"] <= 0.0 or row[&"spread_angle_deg"] > 180.0):
+		return "근접 공격은 1타/1회와 0 초과 180 이하 공격 각도가 필요합니다."
 	if preload("res://game/features/weapon_balance/weapon_distance_policy.gd").parse(row[&"distance_damage_curve"]).is_empty():
 		return "거리 곡선은 0~1 오름차순 거리:0~3 배율, 양 끝 0/1 포함 2~16점이어야 합니다."
 	if row[&"display_name"].is_empty() or row[&"trait_id"] == &"":

@@ -24,6 +24,8 @@ COLUMNS = [
 ]
 LEGACY_COLUMNS = COLUMNS.copy()
 COLUMNS += ["distance_damage_curve"]
+DISTANCE_COLUMNS = COLUMNS.copy()
+COLUMNS += ["attack_mode"]
 
 
 def validate_distance_curve(value: str) -> list[tuple[float, float]]:
@@ -69,6 +71,7 @@ def _read_transposed_rows(matrix: list[list[str]]) -> list[dict[str, str]]:
 
     maximum_columns = max(len(row) for row in matrix)
     rows_by_variable.setdefault("distance_damage_curve", ["distance_damage_curve", "설명"] + ["0:1;1:1"] * (maximum_columns - 2))
+    rows_by_variable.setdefault("attack_mode", ["attack_mode", "공격 방식"] + ["projectile"] * (maximum_columns - 2))
     runtime_row = rows_by_variable.get("runtime_enabled")
     rows: list[dict[str, str]] = []
     for column_index in range(2, maximum_columns):
@@ -103,13 +106,13 @@ def _normalize_rows(text: str) -> list[dict[str, str]]:
     missing = [column for column in LEGACY_COLUMNS if column not in fieldnames]
     if missing:
         raise ValueError("필수 열이 없습니다: " + ", ".join(missing))
-    if fieldnames not in (COLUMNS, LEGACY_COLUMNS) and "runtime_enabled" not in fieldnames:
+    if fieldnames not in (COLUMNS, DISTANCE_COLUMNS, LEGACY_COLUMNS) and "runtime_enabled" not in fieldnames:
         raise ValueError("CSV 열 순서가 템플릿과 다릅니다: " + ", ".join(fieldnames))
     rows = list(reader)
     if "runtime_enabled" in fieldnames:
         rows = [row for row in rows if _is_enabled(row.get("runtime_enabled", ""))]
     return [
-        {column: row.get(column, "0:1;1:1" if column == "distance_damage_curve" else "").strip() for column in COLUMNS}
+        {column: row.get(column, {"distance_damage_curve": "0:1;1:1", "attack_mode": "projectile"}.get(column, "")).strip() for column in COLUMNS}
         for row in rows
     ]
 
@@ -125,10 +128,22 @@ def validate(text: str) -> list[dict[str, str]]:
             raise ValueError(f"{line_number}행 weapon_id가 비어 있거나 중복입니다.")
         seen.add(weapon_id)
         validate_distance_curve(row["distance_damage_curve"])
+        if row["attack_mode"] not in {"projectile", "melee_arc", "melee_thrust"}:
+            raise ValueError(f"{line_number}행 지원하지 않는 공격 방식입니다.")
+        if row["attack_mode"] != "projectile" and (int(row["projectiles_per_shot"]) != 1 or int(row["burst_count"]) != 1 or not 0 < float(row["spread_angle_deg"]) <= 180):
+            raise ValueError(f"{line_number}행 근접 공격은 1타/1회 및 0~180도 각도가 필요합니다.")
         for column in INTEGER_COLUMNS:
             int(row[column])
         for column in FLOAT_COLUMNS:
-            float(row[column])
+            if not math.isfinite(float(row[column])):
+                raise ValueError(f"{line_number}행 {column} 값은 유한해야 합니다.")
+        for column in ["damage", "fire_interval_sec", "projectile_speed_px_sec", "target_range_px", "projectile_lifetime_sec"]:
+            if float(row[column]) <= 0:
+                raise ValueError(f"{line_number}행 {column} 값은 양수여야 합니다.")
+        if int(row["projectiles_per_shot"]) > 32 or int(row["burst_count"]) > 16 or not 0 <= int(row["pierce_count"]) <= 32:
+            raise ValueError(f"{line_number}행 공격 개수 예산 초과입니다.")
+        if float(row["burst_interval_sec"]) < 0 or float(row["spread_angle_deg"]) < 0 or float(row["critical_multiplier"]) < 1:
+            raise ValueError(f"{line_number}행 간격/각도/치명타 배율 범위가 잘못됐습니다.")
         if int(row["projectiles_per_shot"]) < 1 or int(row["burst_count"]) < 1:
             raise ValueError(f"{line_number}행 발사체 수와 버스트 수는 1 이상이어야 합니다.")
         chance = float(row["critical_chance"])

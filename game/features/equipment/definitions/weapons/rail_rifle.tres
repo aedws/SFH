@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="EquipmentWeaponDefinition" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/weapon_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_tag_profile.gd" id="2"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_innate_skill_definition.gd" id="3"]
+[ext_resource type="Script" path="res://game/features/equipment/equipment_fixed_option.gd" id="4"]
+
+[sub_resource type="Resource" id="Tags"]
+script = ExtResource("2")
+major_tag = &"ranged"
+middle_tag = &"firearm"
+minor_tag = &"rifle"
+major_label = "원거리"
+middle_label = "화기"
+minor_label = "소총"
+
+[sub_resource type="Resource" id="Innate"]
+script = ExtResource("3")
+skill_id = &"rail_echo"
+display_name = "레일 잔향"
+trigger_every_hits = 2
+fixed_damage = 2
+effect_kind = 0
+effect_radius = 0
+maximum_targets = 1
+effect_color = Color(0.737255, 0.639216, 1, 1)
+description = "2회 명중마다 성장 배율과 무관한 고정 피해 2."
+
+[sub_resource type="Resource" id="Option"]
+script = ExtResource("4")
+option_id = &"rail_sight"
+display_name = "레일 조준선"
+target_kind = 1
+modifier_id = &"target_range_multiply"
+operation = 1
+amount = 1.08
+
+[resource]
+script = ExtResource("1")
+weapon_id = &"rail_rifle"
+display_name = "관통 레일 소총"
+tags = SubResource("Tags")
+combat_tags = [&"projectile"]
+grade = 2
+innate_skill = SubResource("Innate")
+fixed_options = [SubResource("Option")]
+maximum_level = 3
+module_slot_limit = 3
+module_cost_limit = 8
+part_socket_ids = [&"optic", &"muzzle", &"magazine"]
+description = "임시 밸런스 · 긴 사거리와 느린 단발 및 최대 4명 관통"

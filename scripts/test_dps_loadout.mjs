@@ -10,11 +10,16 @@ for(const fixture of catalog.loadout.fixtures){
   const resolved=E.resolve(catalog,input);
   for(const [id,value]of Object.entries(fixture.player))near(resolved.loadout.player[id],value,`Godot Player ${fixture.weaponId} ${id}`);
   for(const [id,value]of Object.entries(fixture.weapon))near(resolved.loadout.weapon[id],value,`Godot Equipment ${id}`);
-  near(resolved.hit/(1+input.crit*(input.critMultiplier-1)),fixture.shot.damage,'Godot AutoWeapon damage');
+  near(resolved.hit/(1+input.crit*(input.critMultiplier-1)),fixture.shot.damage*resolved.distanceFactor,'Godot AutoWeapon damage with impact distance');
   near(resolved.gap,fixture.shot.fire_interval_sec,'Godot fire interval');
   assert.deepEqual(resolved.loadout.costs.map(c=>c.used).sort(),fixture.costs.sort(),'Godot module cost');
 }
 const fresh=()=>E.defaults(catalog,'assault_rifle','magnetic_field');
+for(const id of ['combat_dagger','greatsword','arc_spear']){
+  const input=E.defaults(catalog,id);const range=E.resolve(catalog,input).range;
+  input.distancePx=range;assert.ok(E.resolve(catalog,input).hit>0,'Melee uses reach, not projectile travel');
+  input.distancePx=range+1;assert.equal(E.resolve(catalog,input).hit,0,'Melee out of reach');
+}
 let i=fresh();i.loadout.weapon.modules=[{id:'ballistic_core',level:3,quality:1,slot:0}];
 assert.ok(E.resolve(catalog,i).hit>E.resolve(catalog,fresh()).hit);
 const module=i.loadout.weapon.modules[0];i.loadout.character.modules=[module];i.loadout.weapon.modules=[];

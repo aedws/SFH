@@ -14,9 +14,7 @@
 script = ExtResource("9_rule")
 slot_id = &"main"
 item_kind = "weapon"
-allowed_major_tags = [&"ranged"]
-allowed_middle_tags = [&"firearm"]
-allowed_minor_tags = [&"rifle"]
+allowed_major_tags = [&"ranged", &"melee"]
 
 [sub_resource type="Resource" id="SecondaryRule"]
 script = ExtResource("9_rule")

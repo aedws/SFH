@@ -5,6 +5,7 @@ const TIERS := [&"small", &"medium", &"large"]
 const DIFFICULTIES := [&"standard", &"veteran", &"nightmare"]
 const CHARACTERS := [&"vanguard", &"runner", &"bulwark"]
 const REGIONS := [&"ruined_city", &"industrial_district", &"research_complex"]
+const ARSENAL := [&"assault_rifle", &"service_pistol", &"pulse_rifle", &"combat_dagger", &"greatsword", &"breach_shotgun", &"rail_rifle", &"arc_spear"]
 
 
 func _init() -> void:
@@ -55,6 +56,9 @@ func _run() -> void:
 					elif not characters.call(&"select_character", character_id):
 						failure = "요원 선택이 거부됐습니다."
 					else:
+						var selected_weapon: StringName = ARSENAL[verified % ARSENAL.size()]
+						if not game.equipment_system.equip_definition(&"main", load("res://game/features/equipment/definitions/weapons/%s.tres" % selected_weapon)):
+							return _fail("로비 확장 무기 장착 실패 %s" % selected_weapon)
 						var hub = game.get("start_hub")
 						var player = game.get("player") as Node2D
 						if hub == null or player == null:
@@ -102,6 +106,8 @@ func _run() -> void:
 						failure = "선택 요원이 active_contract에 유지되지 않았습니다."
 					elif game.get("operation_tutorial_overlay") == null:
 						failure = "첫 투입 현장 튜토리얼이 설치되지 않았습니다."
+					elif game.equipment_system.get_weapon(&"main").weapon_id != ARSENAL[verified % ARSENAL.size()]:
+						failure = "로비 무기 선택이 작전 진입 중 덮어써졌습니다."
 					else:
 						verified += 1
 						game.call(&"_abandon_run_to_start_hub")

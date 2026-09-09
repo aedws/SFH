@@ -9,6 +9,8 @@ hide:
 
 # 기획자 작업실
 
+**새 무기 시험:** [총기 5종·근접 3종의 차이와 획득 방법](../features/weapons.md#arsenal-20260909). [공용 시트 Weapon](https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/edit#gid=0)에서 단검/대검 활성화와 산탄총·레일 소총·창의 임시값을 조정할 수 있습니다. 각 무기의 거리·리듬·명중 범위가 적절한지 시험한 뒤 Notion에 확정/임시와 판단 이유를 기록해 주세요.
+
 <section class="sfh-workspace-block" markdown="1" id="decisions-needed" aria-labelledby="decisions-needed-title">
 
 ## 지금 결정해 주세요 {#decisions-needed-title}

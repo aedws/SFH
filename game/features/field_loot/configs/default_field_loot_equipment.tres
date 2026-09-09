@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="FieldLootEquipCatalog" load_steps=24 format=3]
+[gd_resource type="Resource" script_class="FieldLootEquipCatalog" load_steps=32 format=3]
 
 [ext_resource type="Script" path="res://game/features/field_loot/field_loot_equip_catalog.gd" id="1_catalog"]
 [ext_resource type="Script" path="res://game/features/field_loot/field_loot_equip_entry.gd" id="2_entry"]
@@ -9,6 +9,10 @@
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/assault_rifle.tres" id="assault_rifle"]
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/service_pistol.tres" id="service_pistol"]
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/greatsword.tres" id="greatsword"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/combat_dagger.tres" id="combat_dagger"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/breach_shotgun.tres" id="breach_shotgun"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/rail_rifle.tres" id="rail_rifle"]
+[ext_resource type="Resource" path="res://game/features/equipment/definitions/weapons/arc_spear.tres" id="arc_spear"]
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/tactical_vest.tres" id="tactical_vest"]
 [ext_resource type="Resource" path="res://game/features/equipment/definitions/armor/runner_boots.tres" id="runner_boots"]
 [ext_resource type="Resource" path="res://game/features/inventory/items/rifle_scope_item.tres" id="rifle_scope_item"]
@@ -62,6 +66,34 @@ target_slot = &"body"
 definition = ExtResource("tactical_vest")
 region_tags = PackedStringArray("global")
 
+[sub_resource type="Resource" id="Dagger"]
+script = ExtResource("2_entry")
+item_id = &"combat_dagger"
+target_slot = &"main"
+definition = ExtResource("combat_dagger")
+region_tags = PackedStringArray("global")
+
+[sub_resource type="Resource" id="Shotgun"]
+script = ExtResource("2_entry")
+item_id = &"breach_shotgun"
+target_slot = &"main"
+definition = ExtResource("breach_shotgun")
+region_tags = PackedStringArray("global")
+
+[sub_resource type="Resource" id="Rail"]
+script = ExtResource("2_entry")
+item_id = &"rail_rifle"
+target_slot = &"main"
+definition = ExtResource("rail_rifle")
+region_tags = PackedStringArray("global")
+
+[sub_resource type="Resource" id="Spear"]
+script = ExtResource("2_entry")
+item_id = &"arc_spear"
+target_slot = &"main"
+definition = ExtResource("arc_spear")
+region_tags = PackedStringArray("global")
+
 [sub_resource type="Resource" id="Boots"]
 script = ExtResource("2_entry")
 item_id = &"runner_boots"
@@ -71,7 +103,7 @@ region_tags = PackedStringArray("global")
 
 [resource]
 script = ExtResource("1_catalog")
-entries = Array[FieldLootEquipEntry]([SubResource("PulseRifle"), SubResource("Assault"), SubResource("Pistol"), SubResource("Sword"), SubResource("Vest"), SubResource("Boots")])
+entries = Array[FieldLootEquipEntry]([SubResource("PulseRifle"), SubResource("Assault"), SubResource("Pistol"), SubResource("Sword"), SubResource("Dagger"), SubResource("Shotgun"), SubResource("Rail"), SubResource("Spear"), SubResource("Vest"), SubResource("Boots")])
 skill_entries = Array[FieldLootSkillEntry]([SubResource("ArcDash")])
 replaced_item_destination = "run_storage"
 policy_status = "provisional"

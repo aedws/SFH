@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="EquipmentWeaponDefinition" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://game/features/equipment/weapon_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_tag_profile.gd" id="2"]
+[ext_resource type="Script" path="res://game/features/equipment/weapon_innate_skill_definition.gd" id="3"]
+[ext_resource type="Script" path="res://game/features/equipment/equipment_fixed_option.gd" id="4"]
+
+[sub_resource type="Resource" id="Tags"]
+script = ExtResource("2")
+major_tag = &"ranged"
+middle_tag = &"firearm"
+minor_tag = &"shotgun"
+major_label = "원거리"
+middle_label = "화기"
+minor_label = "산탄총"
+
+[sub_resource type="Resource" id="Innate"]
+script = ExtResource("3")
+skill_id = &"breach_echo"
+display_name = "돌파 반향"
+trigger_every_hits = 5
+fixed_damage = 1.4
+effect_kind = 0
+effect_radius = 0
+maximum_targets = 1
+effect_color = Color(1, 0.666667, 0.333333, 1)
+description = "5회 명중마다 성장 배율과 무관한 고정 피해 1.4."
+
+[sub_resource type="Resource" id="Option"]
+script = ExtResource("4")
+option_id = &"reinforced_bore"
+display_name = "강화 총열"
+target_kind = 1
+modifier_id = &"damage_multiply"
+operation = 1
+amount = 1.04
+
+[resource]
+script = ExtResource("1")
+weapon_id = &"breach_shotgun"
+display_name = "돌파 산탄총"
+tags = SubResource("Tags")
+combat_tags = [&"projectile"]
+grade = 2
+innate_skill = SubResource("Innate")
+fixed_options = [SubResource("Option")]
+maximum_level = 3
+module_slot_limit = 3
+module_cost_limit = 8
+part_socket_ids = [&"optic", &"muzzle", &"magazine"]
+description = "임시 밸런스 · 5발 부채꼴 산탄과 근거리 집중 화력"

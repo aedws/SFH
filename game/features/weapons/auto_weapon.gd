@@ -288,6 +288,9 @@ func _resolved_targeting_mode() -> StringName:
 
 func _fire_pattern(base_direction: Vector2) -> void:
 	total_trigger_pulls += 1
+	if StringName(current_balance.get(&"attack_mode", &"projectile")) != &"projectile":
+		_fire_melee(base_direction)
+		return
 	var projectile_count := int(current_balance.get(&"projectiles_per_shot", 1))
 	var spread_radians := deg_to_rad(float(current_balance.get(&"spread_angle_deg", 0.0)))
 	for projectile_index in range(projectile_count):
@@ -299,6 +302,23 @@ func _fire_pattern(base_direction: Vector2) -> void:
 				float(projectile_index) / float(projectile_count - 1)
 			)
 		_spawn_projectile(base_direction.rotated(angle_offset))
+
+
+func _fire_melee(direction: Vector2) -> void:
+	if not is_instance_valid(projectile_parent): return
+	var strike := preload("res://game/features/weapons/melee_strike.gd").new()
+	projectile_parent.add_child(strike)
+	strike.global_position = global_position
+	strike.hit_confirmed.connect(_on_projectile_hit_confirmed)
+	var snapshot := get_runtime_snapshot()
+	var damage := float(snapshot[&"damage"]) + floorf(float(current_level - 1) / 3.0)
+	if randf() < float(snapshot.get(&"critical_chance", 0.0)):
+		damage *= float(snapshot.get(&"critical_multiplier", 1.0))
+	strike.execute(direction, damage, snapshot, _target_candidates(), {
+		&"source_weapon_id": active_weapon_id,
+		&"weapon_identity": active_weapon_identity.duplicate(true),
+		&"impact_color": snapshot.get(&"projectile_color", Color("02e5e1")),
+	})
 
 
 func _spawn_projectile(direction: Vector2) -> void:
@@ -454,6 +474,10 @@ func _modifier_total(modifier_id: StringName, default_value: float, additive: bo
 
 
 func _fallback_balance(weapon_id: StringName) -> Dictionary:
+	# Optional balance feature disabled: retain the weapon's real attack, never turn melee into a rifle.
+	var payload: Resource = preload("res://game/features/weapon_balance/data/weapon_balance_payload.tres")
+	var locked: Dictionary = preload("res://game/features/weapon_balance/weapon_balance_table.gd").parse(payload.call(&"get_csv_text"))
+	if locked[&"data"].has(weapon_id): return locked[&"data"][weapon_id].duplicate(true)
 	if weapon_id == &"service_pistol":
 		return {
 			&"display_name": "제식 권총", &"trait_id": &"heavy_piercing", &"damage": 3.2,

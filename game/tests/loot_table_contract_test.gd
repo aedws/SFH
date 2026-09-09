@@ -10,7 +10,7 @@ func _run() -> void:
 	var parsed := LootTable.parse(file.get_as_text() if file != null else "")
 	var errors: PackedStringArray = parsed.get(&"errors", PackedStringArray())
 	var entries: Array = parsed.get(&"data", [])
-	if not errors.is_empty() or entries.size() != 77:
+	if not errors.is_empty() or entries.size() != 101:
 		_fail("rows=%d errors=%s" % [entries.size(), " / ".join(errors)])
 		return
 	var lifecycle_scene := load("res://game/features/loot_lifecycle/loot_lifecycle_service.tscn") as PackedScene
@@ -96,9 +96,13 @@ func _run() -> void:
 				for source in [&"room_reward", &"boss"]:
 					var context := {&"region_id": region, &"difficulty_id": difficulty, &"map_size": size, &"source_type": source, &"item_type": &"weapon", &"boss_available": true}
 					var roll: Dictionary = provider.roll_drop(context, 90909, 0)
+					var candidate_ids: Array = provider.get_candidates(context).map(func(row): return String(row.item_id))
+					for id in ["combat_dagger", "breach_shotgun", "rail_rifle", "arc_spear"]:
+						if id not in candidate_ids or equip_catalog.get_inventory_definition(StringName(id)) == null:
+							return _fail("확장 무기 획득 경로 누락 %s %s" % [id, context])
 					if roll.is_empty() or equip_catalog.get_inventory_definition(StringName(roll.item_id)) == null:
 						return _fail("무기 드랍/가방 정의 누락 %s" % context)
-	print("LOOT_TABLE_TEST_OK rows_77 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link skill_definition_link weapon_sources_54")
+	print("LOOT_TABLE_TEST_OK rows_101 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link skill_definition_link weapon_sources_54 arsenal_sources_216")
 	quit(0)
 
 

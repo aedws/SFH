@@ -49,6 +49,9 @@ func _run() -> void:
 		"res://game/features/equipment/definitions/weapons/combat_dagger.tres",
 		"res://game/features/equipment/definitions/weapons/greatsword.tres",
 		"res://game/features/equipment/definitions/weapons/pulse_rifle.tres",
+		"res://game/features/equipment/definitions/weapons/breach_shotgun.tres",
+		"res://game/features/equipment/definitions/weapons/rail_rifle.tres",
+		"res://game/features/equipment/definitions/weapons/arc_spear.tres",
 	]:
 		var weapon := load(weapon_path) as EquipmentWeaponDefinition
 		var locked_weapon: Dictionary = identity_table.get_record(&"weapon", weapon.weapon_id)
