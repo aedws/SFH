@@ -64,7 +64,7 @@ search:
         <p><a href="/features/tactical-skill-catalog/">전체 목록·시트 조정·검증 범위</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 10</small><b>16:10 장비 화면 · 무기와 방어구 중심 배치</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>개선 · 1</h3><p>PC·브라우저 기준 화면을 1280×800으로 변경했습니다. 파츠 화면은 무기 거치대를 확대하고, 장비 작업대와 모듈 화면은 실물 미리보기·장착 카드·효과를 중심으로 재배치했습니다. 모바일 터치 배율은 유지합니다.</p></div>
