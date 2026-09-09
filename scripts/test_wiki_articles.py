@@ -195,7 +195,11 @@ assert 'aria-labelledby="decisions-needed-title"' in decision_notice
 for phrase in ("DEC-N26-POUCH", "DEC-N26-DEPTH", "DEC-N26-BLOOD", "QA-BAL-01",
                "미승인 예시", "프로젝트 오너", "개인 메시지", "Notion", "자동 전송", "미정 14건"):
     assert phrase in decision_notice, f"Planner decision handoff missing: {phrase}"
-assert decision_notice.count('<details') == 5, "Keep decision examples in accessible disclosures"
+assert decision_notice.count('<details') == 6, "Keep decision examples in accessible disclosures"
+for phrase in ("타겟 갱신 주기", "허수아비 설정", "그래픽/기준 해상도", "상점 리롤 비용", "탈출 증원 배율",
+               "최대 스킬 슬롯", "광역 탐색 반경", "실서버 랭킹/무결성", "룬 환전 가치", "준비 UI",
+               "AP 최대·회복", "탈출 방어 시간", "씬 전환 연출", "손상 장비 페널티"):
+    assert phrase in decision_notice, f"Undecided tracker question missing: {phrase}"
 assert not re.search(r'<details[^>]*\sopen[\s>]', decision_notice), "Examples should be collapsed initially"
 assert 'href="https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed"' in decision_notice
 assert module_map_position >= 0, "Developer room must embed the live code-module map"

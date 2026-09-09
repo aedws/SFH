@@ -28,7 +28,7 @@ try {
       assert.ok(noticeRect.y>=0 && noticeRect.y<height,`planner ${width}: decision notice first`);
       assert.ok(noticeRect.y<rect.y,`planner ${width}: decisions before tools`);
       assert.equal(await notice.locator('details[open]').count(),0);
-      assert.equal(await notice.locator('details').count(),5);
+      assert.equal(await notice.locator('details').count(),6);
       assert.match(await notice.innerText(),/개인 메시지/);
       for(const summary of await notice.locator('summary').all()) {
         await summary.focus(); await page.keyboard.press('Enter');
