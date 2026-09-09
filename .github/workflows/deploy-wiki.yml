@@ -801,6 +801,7 @@ jobs:
           for attempt in $(seq 1 24); do
             if curl --silent --show-error --fail "$CLOUDFLARE_WIKI_URL/" --output /tmp/wiki.html \
               && grep -q 'SFH' /tmp/wiki.html \
+              && cmp --silent .cloudflare-wiki/index.html /tmp/wiki.html \
               && curl --silent --show-error --fail "$CLOUDFLARE_GAME_URL/healthz" --output /tmp/health.json \
               && grep -q "$GAME_BUILD_COMMIT" /tmp/health.json; then
               break
@@ -840,6 +841,7 @@ jobs:
           test "$download_status" = "200"
           curl --silent --show-error --fail "$download_base/$archive.sha256" --output "/tmp/$archive.sha256"
           (cd /tmp && sha256sum --check "$archive.sha256")
+          python3 -c 'import json, os, zipfile; archive="/tmp/SFH-Windows-x64-"+os.environ["RELEASE_VERSION"]+".zip"; metadata=json.loads(zipfile.ZipFile(archive).read("BUILD-METADATA.json")); assert metadata["build_commit"] == os.environ["GAME_BUILD_COMMIT"]; assert metadata["release_version"] == os.environ["RELEASE_VERSION"]'
           echo "CLOUDFLARE_E2E_OK wiki game range download commit=$GAME_BUILD_COMMIT wiki_commit=$GITHUB_SHA"
 
       - name: Restore previous game if published verification fails

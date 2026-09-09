@@ -60,6 +60,9 @@ class ReleaseTests(unittest.TestCase):
         import yaml
         workflow = Path(__file__).resolve().parents[1] / ".github/workflows/deploy-wiki.yml"
         data = yaml.safe_load(workflow.read_text(encoding="utf-8"))
+        text = workflow.read_text(encoding="utf-8")
+        self.assertIn("cmp --silent .cloudflare-wiki/index.html /tmp/wiki.html", text)
+        self.assertIn('metadata["build_commit"] == os.environ["GAME_BUILD_COMMIT"]', text)
         steps = data["jobs"]["cloudflare-deploy"]["steps"]
         names = [step["name"] for step in steps]
         ordered = ["Capture active game rollback identity", "Upload immutable R2 release objects",
