@@ -24,7 +24,7 @@ func _run() -> void:
 		var button: Button = window.slot_buttons[slot]
 		var state: Resource = window.session.equipment.get_equipment_state(slot)
 		if state == null:
-			_check(button.presentation.is_empty() and button.item_label == "비어 있음", "empty slot must not invent an equipped silhouette")
+			_check(button.presentation.is_empty() and button.item_label == "빈 슬롯", "empty slot must not invent an equipped silhouette")
 			_check(not button.slot_label.is_empty(), "empty slot retains localized slot identity")
 		else:
 			_check(not button.presentation.is_empty() and button.presentation.get(&"linked_resource") == state.definition,"equipped silhouette has actual slot definition")
