@@ -545,6 +545,7 @@ jobs:
           node scripts/test_map_model.cjs
           python scripts/build_balance_catalog.py --check
           python scripts/build_effect_toolkit.py --check
+          python scripts/test_effect_toolkit_catalog.py
           node scripts/test_effect_toolkit.mjs
           node scripts/test_balance_workbench.mjs
           node scripts/test_mobile_orientation_policy.mjs

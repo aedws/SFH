@@ -10,6 +10,19 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'docs/assets/effect-toolkit.json'
 
 
+def innate_resource_block(text, path):
+    blocks = re.split(r'(?m)^\[', text)
+    root = next((b for b in blocks if b.startswith('resource]')), '')
+    reference = re.search(r'^innate_skill = SubResource\("([^"\n]+)"\)$', root, re.M)
+    if not reference:
+        raise ValueError(f'Missing inline innate skill reference: {path}')
+    section = f'sub_resource type="Resource" id="{reference[1]}"'
+    block = next((b for b in blocks if b.startswith(section + ']')), None)
+    if block is None:
+        raise ValueError(f'Missing innate skill resource: {path} [{section}]')
+    return section, block
+
+
 def build():
     sources, fields = {}, {}
 
@@ -69,7 +82,7 @@ def build():
                     dict(type='csv',path=path,selector={id_key:row[id_key]},field=key),
                     '해당 정의의 기존 전투/스탯 계약. ID·설명만 바꿔 새 행동을 생성하지 않습니다.',choices)
     table('weapon','game/features/weapon_balance/data/weapon_balance.csv','weapon_id',[
-        ('damage','탄환 기본 피해','피해',0,10000,False,None),('fire_interval_sec','발사 간격','초',.05,60,False,None),
+        ('damage','기본 타격 피해','피해',0,10000,False,None),('fire_interval_sec','공격 간격','초',.05,60,False,None),
         ('target_range_px','탐지 사거리','px',32,3000,False,None),('critical_chance','치명 확률','0~1',0,1,False,None),
         ('critical_multiplier','치명 배율','배',1,10,False,None),('burst_count','점사 발수','발',1,32,True,None),
         ('projectiles_per_shot','발사당 탄환','발',1,32,True,None),('pierce_count','추가 관통 수','명',0,32,True,None)])
@@ -86,11 +99,11 @@ def build():
                      'innate_maximum_targets':'maximum_targets'}
     for csv_key, resource_key in identity_keys.items():
         field = fields['weapon.' + csv_key]
-        field['effect'] = '탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경'
+        field['effect'] = '탄환·근접 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경'
         for target in field['targets']:
             path = f"game/features/equipment/definitions/weapons/{target['id']}.tres"
             text = read(path)
-            block = next(b for b in re.split(r'(?m)^\[',text) if b.startswith('sub_resource type="Resource" id="InnateSkill"]'))
+            section, block = innate_resource_block(text, path)
             match = re.search(r'^'+resource_key+r' = ([\d.]+)$',block,re.M)
             defaults = read('game/features/equipment/weapon_innate_skill_definition.gd')
             if match:
@@ -100,7 +113,7 @@ def build():
                 actual = 0 if default=='EffectKind.SINGLE_TARGET' else float(default)
             expected = ['single_target','electric_area'].index(target['current']) if csv_key=='innate_effect_kind' else target['current']
             assert actual == expected, f'Identity CSV / resource conflict: {path} {csv_key}'
-            binding = dict(type='resource',path=path,section='sub_resource type="Resource" id="InnateSkill"',field=resource_key)
+            binding = dict(type='resource',path=path,section=section,field=resource_key)
             if csv_key=='innate_effect_kind': binding['enum_values'] = {'single_target':0,'electric_area':1}
             target['bindings'].append(binding)
     for identity,name,section,label,unit in [('ballistic_core','탄도 연산 코어','DamageModifier','기본 피해 가산','피해'),
