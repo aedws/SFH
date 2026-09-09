@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "reviewed_at": "2026-09-09",
-  "reviewed_commit": "353aa72146e0f4005af4d289546e215460d89244",
-  "method": "2026-09-09: owner explicitly accepted documenting the unused TileMapLayer replacement and completing that requirement. Accept Node2D ChunkedCellTexture as the approved alternative, not as an actual TileMapLayer implementation. Retain the original Notion title/status and source hashes. 45 supported, 1 partial, 6 missing, 14 undecided; 136.5/170. Released Web/standalone Windows ordinary ten-minute QA and intermittent entry/extraction acceptance remain open. No other policy approval or new gameplay implementation is implied.",
+  "reviewed_commit": "a41f424408163a8411628a9d363d0204d648bd3a",
+  "method": "2026-09-09 20:12 KST: GDD v128/62 blocks and full tracker66 checked live with unchanged hashes. Review a41f424; rerun full game/E2E and modular audits PASS. Keep45 supported/1partial/6missing/14undecided,136.5/170; decision-only exclusion136.5/156. Extra policy-blocked six excluded reference136.5/138 is NOT product completion. Separate QA-LIVE-TRAINING reproduced locked32/8 versus live123/3. Ordinary Web/Windows ten-minute and intermittent extraction acceptance remain open. No gameplay or planning approval changed.",
   "gdd_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
   "tracker_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
   "scoring": {
@@ -22,67 +22,152 @@
   "extensions_scope": "최신 GDD 62블록과 트래커 66행에 세부 규격이 명시되지 않은 기존 구현 묶음. 과거 사용자 요청으로 구현된 범위이며 삭제 대상이나 신규 기획 확정이 아님. 아래 묶음 수는 요구 행 수와 다르며 진행률 분자/분모에 포함하지 않음.",
   "extensions": [
     {
-      "id": "EXT-INVENTORY", "title": "크기가 다른 가방 아이템 이동·R 회전·저장 확인",
+      "id": "EXT-INVENTORY",
+      "title": "크기가 다른 가방 아이템 이동·R 회전·저장 확인",
       "finding": "일반 F 획득 요구와 별개인 공간 배치 규칙. 3×2↔2×3, 충돌 거부, 편집 저장/취소가 있으며 현장 R 장착과 입력 맥락을 분리합니다.",
-      "code": ["game/features/inventory/grid_inventory.gd", "game/features/inventory/inventory_edit_session.gd"],
-      "existing_tests": ["game/tests/basic_loop_smoke_test.gd", "game/tests/support/inventory_editor_contract.gd"],
+      "code": [
+        "game/features/inventory/grid_inventory.gd",
+        "game/features/inventory/inventory_edit_session.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd",
+        "game/tests/support/inventory_editor_contract.gd"
+      ],
       "document": "docs/features/grid-inventory.md"
     },
     {
-      "id": "EXT-MOBILE", "title": "PC/모바일 선택·가로형 터치 조작·HUD 설정",
+      "id": "EXT-MOBILE",
+      "title": "PC/모바일 선택·가로형 터치 조작·HUD 설정",
       "finding": "좌하단 이동, 우하단 공격/스킬, 배율·가로 안내·1회성 도움말을 제공하는 별도 입력/표현 계층입니다. 전 기종 실기기 수락 완료를 뜻하지 않습니다.",
-      "code": ["game/features/mobile_controls/mobile_control_pad.gd", "game/features/mobile_controls/mobile_orientation_policy.gd"],
-      "existing_tests": ["game/tests/mobile_control_entry_contract_test.gd", "game/tests/mobile_hud_elite_contract_test.gd"],
+      "code": [
+        "game/features/mobile_controls/mobile_control_pad.gd",
+        "game/features/mobile_controls/mobile_orientation_policy.gd"
+      ],
+      "existing_tests": [
+        "game/tests/mobile_control_entry_contract_test.gd",
+        "game/tests/mobile_hud_elite_contract_test.gd"
+      ],
       "document": "docs/features/mobile-hud-settings.md"
     },
     {
-      "id": "EXT-VISION", "title": "방·통로 안개·전체 지도·조건부 워프",
-      "finding": "방 공개와 통로 시야를 분리하고 M 확장 지도에서 시작/탈출 지역 또는 클리어한 4방향 방으로 이동합니다. 봉쇄 교전 중 워프는 거부합니다. GDD의 일반 시야 페널티보다 구체적인 탐색 규칙입니다.",
-      "code": ["game/features/fog_of_war/fog_of_war.gd", "game/features/room_navigation/room_warp_system.gd"],
-      "existing_tests": ["game/tests/basic_loop_smoke_test.gd", "game/tests/e2e_play_session_test.gd"],
+      "id": "EXT-VISION",
+      "title": "방·통로 안개·전체 지도·조건부 워프",
+      "finding": "현행은 익스트랙션 구역 단위 전체 공개·탐색 기억과 전체 M 지도·안전 단말 워프입니다. 단말 근접/주변 위협/봉쇄를 검증합니다. 과거 전방 원뿔·모든 클리어방 원격 워프 설명은 기본 정책의 근거가 아닙니다.",
+      "code": [
+        "game/features/fog_of_war/fog_of_war.gd",
+        "game/features/room_navigation/room_warp_system.gd",
+        "game/features/fog_of_war/space_visibility_field.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd",
+        "game/tests/e2e_play_session_test.gd"
+      ],
       "document": "docs/features/fog-of-war.md"
     },
     {
-      "id": "EXT-ROOM", "title": "방 진입 스폰·문 봉쇄·클리어 보상",
-      "finding": "일반 던전 탐험 요구 외에 방별 전투 상태, 한정된 적 수량, 클리어 후 문 개방과 보상 상자 생성 규칙을 구현했습니다. 심층 진입 구조 구현과는 별개입니다.",
-      "code": ["game/features/room_encounters/room_encounter_system.gd", "game/features/room_encounters/room_credit_reward_box.gd"],
-      "existing_tests": ["game/tests/basic_loop_smoke_test.gd", "game/tests/e2e_play_session_test.gd"],
+      "id": "EXT-ROOM",
+      "title": "도시 도로·시설과 선택형 봉쇄 교전·보상",
+      "finding": "도로/건물/가구 배치를 분리하고 일반 교전에서는 후퇴, 금고 단말 F 선택 목표에서는 봉쇄/전멸/보상을 적용합니다. 모든 방의 무조건 봉쇄는 이전 정책입니다. 저항 장비·키카드·심층 수문장 구현은 별도 미완료입니다.",
+      "code": [
+        "game/features/room_encounters/room_encounter_system.gd",
+        "game/features/room_encounters/room_credit_reward_box.gd",
+        "game/features/room_encounters/district_encounter_system.gd",
+        "game/features/map_generation/urban_block_layout.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd",
+        "game/tests/e2e_play_session_test.gd"
+      ],
       "document": "docs/features/room-encounters.md"
     },
     {
-      "id": "EXT-PURSUIT", "title": "진입 비용 50% 회수 시 추격 보스·방향 경고",
+      "id": "EXT-PURSUIT",
+      "title": "진입 비용 50% 회수 시 추격 보스·방향 경고",
       "finding": "현재 설정은 휴대 크레딧 임계 0.5배이며 방 봉쇄와 독립된 추격자입니다. 노션의 보스 계약 선택이나 저항 장비를 보장 드랍하는 심층 수문장과 동일하지 않습니다.",
-      "code": ["game/features/elite_pursuit/elite_pursuit_service.gd", "game/features/elite_pursuit/configs/default_elite_pursuit.tres"],
-      "existing_tests": ["game/tests/support/pursuit_boss_contract.gd", "game/tests/mobile_hud_elite_contract_test.gd"],
+      "code": [
+        "game/features/elite_pursuit/elite_pursuit_service.gd",
+        "game/features/elite_pursuit/configs/default_elite_pursuit.tres"
+      ],
+      "existing_tests": [
+        "game/tests/support/pursuit_boss_contract.gd",
+        "game/tests/mobile_hud_elite_contract_test.gd"
+      ],
       "document": "docs/features/elite-pursuit.md"
     },
     {
-      "id": "EXT-IDENTITY", "title": "무기 고정 고유 스킬·전기 명중 광역·장비 고정 옵션",
-      "finding": "같은 무기는 같은 고유 효과를 갖고 고정 옵션/고유 효과는 내부·외부 레벨 배율과 분리됩니다. 일반 제작 랜덤 옵션 요구와 별개이며 방어구 세트효과 전체 구현을 의미하지 않습니다.",
-      "code": ["game/features/weapons/weapon_innate_skill_system.gd", "game/features/equipment/equipment_fixed_option.gd"],
-      "existing_tests": ["game/tests/equipment_fixed_identity_contract_test.gd"],
+      "id": "EXT-IDENTITY",
+      "title": "무기8종·방어구14종·3세트와 고정 고유 효과",
+      "finding": "총기5·근접3, 방어구4부위14종/3세트의 2·4개 효과를 구현했습니다. 고정 옵션/고유 효과는 내외부 레벨과 분리하고 세트 resolver가 스탯을 전달합니다. 수치는 임시이며 일반 제작 요구와 별도 콘텐츠입니다.",
+      "code": [
+        "game/features/weapons/weapon_innate_skill_system.gd",
+        "game/features/equipment/equipment_fixed_option.gd",
+        "game/features/equipment/armor_set_resolver.gd"
+      ],
+      "existing_tests": [
+        "game/tests/equipment_fixed_identity_contract_test.gd",
+        "game/tests/armor_set_contract_test.gd",
+        "game/tests/weapon_arsenal_contract_test.gd"
+      ],
       "document": "docs/features/equipment-fixed-identity.md"
     },
     {
-      "id": "EXT-GROWTH", "title": "내부 임시 버프·외부 캐릭터/장비 성장",
-      "finding": "런 경험치/임시 강화와 정산 뒤 메타 경험치 성장 경로가 있습니다. GDD의 거점 성장·세션 증폭이라는 큰 개념과 별개인 경험치 변환 세부 규격입니다. 레벨업 HP 회복은 아래 회복 충돌 항목에서도 다룹니다.",
-      "code": ["game/features/experience/progression_system.gd", "game/features/meta_progression/meta_progression_system.gd"],
-      "existing_tests": ["game/tests/basic_loop_smoke_test.gd"],
+      "id": "EXT-GROWTH",
+      "title": "내부 임시 버프·외부 캐릭터/장비 성장",
+      "finding": "런 임시 강화와 정산 뒤 캐릭터/장비 메타 성장 경로를 분리합니다. 현재 표준 HP는 오너 승인에 따라 키트 전용이므로 레벨업 HP 회복은 비활성입니다. GDD의 큰 성장 개념 외 세부 규격을 별도로 보존합니다.",
+      "code": [
+        "game/features/experience/progression_system.gd",
+        "game/features/meta_progression/meta_progression_system.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ],
       "document": "docs/features/growth.md"
     },
     {
-      "id": "EXT-CUSTOMIZATION", "title": "고유 파츠·영구 모듈 코스트·강화·개조",
+      "id": "EXT-CUSTOMIZATION",
+      "title": "고유 파츠·영구 모듈 코스트·강화·개조",
       "finding": "48c12bf: 위아래 무기 카드/그림 주변 파츠, E/I 공통 무기·방어구·캐릭터 모듈 카드와 슬롯별 타입 소켓을 구현했습니다. 최대 레벨 해금·일치 비용 절반 올림·강화 CSV 확장·저장/복원 검증. 캐릭터 외부40 해금은 임시 정책이며 촉매/레벨 초기화는 없음. 최신 노션의 런 전용 룬/코어와 다른 영구 장비 개조이므로 66행 점수에 중복 가산하지 않습니다.",
-      "code": ["game/features/equipment/equipment_system.gd", "game/features/equipment/equipment_module_instance.gd", "game/features/equipment/module_socket_policy.gd", "game/features/equipment/module_workspace.gd", "game/features/equipment/weapon_attachment_rack.gd"],
-      "existing_tests": ["game/tests/basic_loop_smoke_test.gd", "game/tests/module_socket_workspace_test.gd", "game/tests/weapon_attachment_rack_test.gd", "game/tests/e2e_play_session_test.gd"],
+      "code": [
+        "game/features/equipment/equipment_system.gd",
+        "game/features/equipment/equipment_module_instance.gd",
+        "game/features/equipment/module_socket_policy.gd",
+        "game/features/equipment/module_workspace.gd",
+        "game/features/equipment/weapon_attachment_rack.gd"
+      ],
+      "existing_tests": [
+        "game/tests/basic_loop_smoke_test.gd",
+        "game/tests/module_socket_workspace_test.gd",
+        "game/tests/weapon_attachment_rack_test.gd",
+        "game/tests/e2e_play_session_test.gd"
+      ],
       "document": "docs/features/equipment-customization.md"
     },
     {
-      "id": "EXT-FEEDBACK", "title": "타격 방향 충격·처치 링·대시 잔상/속도선",
+      "id": "EXT-FEEDBACK",
+      "title": "타격 방향 충격·처치 링·대시 잔상/속도선",
       "finding": "최신 반응 표현과 유휴 반복 작업 감소를 반영했습니다. 핵앤슬래시 재미라는 의도와 관련되지만 세부 연출 규격은 노션에 없습니다. 평균 FPS 향상이나 사람 재미 수락을 증명한 것은 아닙니다.",
-      "code": ["game/features/hit_feedback/hit_feedback_director.gd", "game/features/player/player_movement_feedback.gd"],
-      "existing_tests": ["game/tests/frame_feedback_contract_test.gd"],
+      "code": [
+        "game/features/hit_feedback/hit_feedback_director.gd",
+        "game/features/player/player_movement_feedback.gd"
+      ],
+      "existing_tests": [
+        "game/tests/frame_feedback_contract_test.gd"
+      ],
       "document": "docs/features/hit-feedback.md"
+    },
+    {
+      "id": "EXT-ACTIVE-SKILLS",
+      "title": "초기 요원·무기 선택, 고정 패시브와 액티브40종",
+      "finding": "3요원·8무기 초기24조합, 고정 계열 특화, 기존4+신규36 액티브를 구현했습니다. 공용3슬롯·신규36종 무료 수치는 임시. Skill/SkillPattern/Character 잠금과 실제 발동 회귀가 있으며 훈련 라이브 값 불일치는 별도 잔여 QA입니다.",
+      "code": [
+        "game/features/character_selection/initial_loadout_panel.gd",
+        "game/features/combat_skills/effects/tactical_pattern_effect.gd",
+        "game/features/combat_skills/skill_balance_snapshot.gd"
+      ],
+      "existing_tests": [
+        "game/tests/tactical_skill_catalog_test.gd"
+      ],
+      "document": "docs/features/tactical-skill-catalog.md"
     }
   ],
   "rows": [
@@ -1093,7 +1178,7 @@
         "game/tests/frame_feedback_contract_test.gd",
         "game/tests/release_boot_contract_test.gd"
       ],
-      "finding": "2026-09-08: 청크 바닥으로 동일 PC 첫 렌더 중앙값 중형197→23ms·대형304→27ms 개선, Windows PCK 대형3회 약26ms. Web 대형 진입·이동·오류0과 PCK 부팅/5FPS 픽셀 게이트 근거가 있습니다. PR191 게임 계약/E2E와 main34234262244 배포 검증 통과. 그러나 배포 Web/독립 Windows EXE 각각10분 일반 플레이, 간헐 탈출F·출격 실패 원인 수락은 남아 partial 유지. 과거 첫 프레임202ms를 현행 측정값으로 쓰지 않으며 소스 자동 입력/시험 HP를 사람 수락으로 대체하지 않습니다.",
+      "finding": "2026-09-09 a41f424: 전체 게임·E2E·40스킬/24초기조합 회귀 재실행 통과. 청크 렌더러 대체 승인은 유지합니다. 그러나 배포 Web/독립 Windows 각각10분 일반 플레이와 간헐 탈출F 수락이 남아 partial 유지. 신규 훈련 라이브 동등성 오류는 별도 QA-LIVE-TRAINING으로 재현·등록했으며 자동 통과를 제품 수락으로 해석하지 않습니다.",
       "next_packet": "N26-08"
     }
   ]

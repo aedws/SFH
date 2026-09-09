@@ -11,6 +11,8 @@ hide:
 
 작업·구조·검증 근거를 골라 확인하세요. 최종 판단은 프로젝트 오너가 합니다.
 
+**최신 전체 검사:** [모듈·E2E 감사와 잔여 작업](../quality/full-system-audit-20260909.md). 자동 회귀 PASS와 별개로 훈련/작전 라이브 스킬 수치 불일치 재현. **아직100% 아님** — [내일 실행 순서](../design/current-milestone-workline.md#next-20260910): 라이브 동등성→모듈 감사 범위→양 플랫폼 정상10분→스킬 체감 검수. 기획 정책 대기는 별도입니다.
+
 현행 추가: [방어구 14종·4부위·세트 계약](../features/armor-sets.md). `ArmorSetDefinition → ArmorSetResolver → EquipmentSystem → Player/Weapon/Skill`로 분리했으며, 시트 임시값·잠금 CSV·게임 정의·DPS 비교를 연결합니다. [검증과 제외 범위](../quality/e2e-play-session.md#armor-20260909).
 
 현행 변경: [무기 8종 공격·드랍·장착 계약](../features/weapons.md#arsenal-20260909). Sheet 임시 수치와 게임 적용은 완료 범위를 구분하며, 신규 공격은 기하 정책/실행/표현으로 분리합니다. [검증 근거](../quality/e2e-play-session.md#arsenal-20260909).

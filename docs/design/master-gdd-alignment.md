@@ -1,6 +1,6 @@
 ---
 title: Master GDD 구현 대조
-description: 2026-09-09 청크 렌더러 대체 승인 80.3% · 일반 플레이 QA와 정책 선행 작업
+description: 2026-09-09 전체 재검사 80.3% · 기획 미정 제외87.5% · 훈련 라이브 오류와 일반 플레이 잔여
 tags:
   - 기획
   - Master GDD
@@ -10,6 +10,14 @@ tags:
 ---
 
 # Master GDD 구현 대조
+
+## 최신 전체 재검사 · 2026-09-09 {#full-20260909}
+
+**아직100%가 아닙니다.** 코드/공개 게임 `a41f424`를 기준으로 전체 게임·E2E·모듈 검사를 다시 실행했고, 공개 GDD62블록·트래커66행의 라이브 해시가 동일함을 확인했습니다. 노션 판정은 **구현45·부분1·미구현6·미정14, 80.3%**를 유지합니다. [검사 결과·재현 오류·내일 순서](../quality/full-system-audit-20260909.md).
+
+기획 미정14행만 제외하면 **87.5% = 136.5/156**입니다. 상세 정책 선택 대기인 파우치2·심층3·혈전1까지 범위에서 제외한 참고값은 **98.9% = 136.5/138**이나, 이 제외는 구현 완료 승격이 아닙니다. 46행의 부분1(양 플랫폼 일반10분 수락)이 남으며, 별도 훈련 라이브 수치 불일치까지 재현되어 제품100%를 선언할 수 없습니다.
+
+신규40스킬/고정 패시브/초기 선택, 무기8종·방어구14종/3세트, 도시 구역·현재 공간 공개를 노션 외 구현10묶음에 현행화했습니다. 이 묶음과 위키 도구를66행 분자에 가산하지 않습니다. 훈련 카탈로그의 피해32·쿨타임8이 작전 라이브123·3과 다른 오류는 QA-LIVE-TRAINING으로 남기고, 기존 잠금값 기반 무료 빌드 교체 요구 전체가 사라졌다고 판정하지 않습니다. 아래 날짜별 과거 수치는 당시 이력입니다.
 
 ## 2026-09-09 · 바닥 렌더러 대체 승인 · 80.3% {#day-close}
 
@@ -87,21 +95,21 @@ tags:
 - [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed): v128, 본문 62블록. 2026-09-06 18:09:49 KST 편집, 2026-09-07 재수집.
 - [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2): 66행 전체 수집, hasMore=false. 결정(미구현) 52 / 미정(검토필요) 14.
 - 스냅샷: `docs/assets/notion-source-snapshot.json`, `docs/assets/notion-tracker-snapshot.json`. 수동 판단표: `docs/assets/notion-code-audit.json`.
-- 재대조 코드 기준: `48c12bf`(2026-09-07 마감). 기존 정책/품질 근거에 파츠·모듈 UI/소켓·CSV 내보내기 회귀와 배포 검증을 추가했습니다. 새로운 66항목 사람 플레이 완료 선언이 아닙니다.
+- 재대조 코드 기준: `a41f424`(2026-09-09 전체 검사). 최신 스킬/장비/공간 확장과 전체 자동 회귀를 반영했습니다. 66항목 사람 플레이 완료 선언은 아닙니다.
 - 이전 2026-09-02 GDD v153은 백업본입니다. **이전 96%를 최신 진행률로 사용하지 않습니다.** 완료 이력은 Git과 일별 업데이트에 보존합니다.
 - GDD 본문과 트래커는 독립 해시로 관리하며 상위 페이지 수정은 본문 변경으로 세지 않습니다. 체크박스·미구현 태그는 실제 코드 부재나 오너 승인을 대신하지 않습니다.
 
-**이번 라이브 확인에서 GDD·트래커 내용 변경은 없었습니다.** GDD `5702a448dd07…`, 트래커 `b1eb9834f867…`가 재수집 결과와 같습니다. 수집 시각은 각 스냅샷에 남깁니다. 확정도 가중 코드 대응도는 **133.5/170 = 78.5%**입니다. 임시 AP·소켓·보유 훈련 및 손상 매물·TileMapLayer·Area2D를 검증한 결과입니다. 노션 상태를 임의로 변경하거나 임시 수치를 기획 최종 확정으로 바꾸지는 않습니다.
+**이번 라이브 확인에서 GDD·트래커 내용 변경은 없었습니다.** GDD `5702a448dd07…`, 트래커 `b1eb9834f867…`가 동일합니다. 저장된 스냅샷 시각과 이번20:12 KST 재확인을 구분합니다. 확정도 가중 코드 대응도는 **136.5/170 = 80.3%**입니다. 청크 렌더러는 승인된 TileMapLayer 대체이며 원문 기술명이나 노션 상태를 고치지 않습니다. 임시 수치 역시 최종 기획 확정이 아닙니다.
 
 ## 세 가지 질문으로 읽기 {#current-classification}
 
 | 질문 | 현재 구분 | 의미와 다음 행동 |
 |---|---|---|
-| 노션에 있고 구현됐나? | 구현 근거 44행 | 기존 38행 + AP·대상별 런 소켓·보유 훈련·손상 매물·TileMapLayer·Area2D 6행. 임시 정책과 행별 검증 범위를 확인 |
-| 노션에 있지만 덜 됐거나 없나? | 부분 1 / 신규 미구현 6 / 충돌 1 / 미정 14행 | 부분의 잔여 조건, 미구현의 선행 결정, 기존 사용자 지시와 충돌을 구분 |
-| 노션에 없지만 구현됐나? | [세부 규격 미명시 9개 기능 묶음](#implemented-outside-notion) | 과거 사용자 요청 기반의 기존 기능. 삭제하거나 노션 확정으로 취급하지 않고 별도 유지. 66행 진행률에 가산하지 않음 |
+| 노션에 있고 구현됐나? | 구현 근거45행 | HP 키트 전용과 승인된 청크 렌더러 대체 포함. 임시 정책·실행 검사·사람 수락을 분리 |
+| 노션에 있지만 덜 됐거나 없나? | 부분1 / 신규 미구현6 / 충돌0 / 미정14행 | 일반 플레이와 선행 정책 대기. 별도 품질 오류는 전체 감사에 등록 |
+| 노션에 없지만 구현됐나? | [세부 규격 미명시10개 기능 묶음](#implemented-outside-notion) | 초기 선택/40스킬·장비 세트·도시/공간 공개까지 현행화. 66행 진행률에 가산하지 않음 |
 
-트래커의 **결정(미구현) 52행**은 현재 코드가 모두 없다는 뜻이 아닙니다. 코드 판정은 `44 + 1 + 6 + 1 = 52`이며 미정 14행은 별도입니다. 확정 요구만 보면 `133.5/156 = 85.6%`, 대표 수치는 미정 포함 **78.5%**입니다. 어느 쪽도 출시 준비율이나 재미 평가 점수가 아닙니다.
+트래커의 **결정(미구현)52행**은 현재 코드가 모두 없다는 뜻이 아닙니다. 코드 판정은 `45 + 1 + 6 = 52`, 미정14행은 별도입니다. 확정 요구만 보면 `136.5/156 = 87.5%`, 미정 포함 **80.3%**입니다. 어느 쪽도 출시 준비율이나 재미 평가 점수가 아닙니다.
 
 ### 기존 부분 대응 7행 · 6행 구현, 1행 검수 잔여
 
@@ -351,7 +359,7 @@ dda00af: 기존 탈출 Area2D에 더해 무기/스킬 후보를 TargetCandidateA
 
 노션: **결정 (미구현)** · 코드: **부분 대응** · 작업: **N26-08**
 
-2026-09-08: 청크 바닥으로 동일 PC 첫 렌더 중앙값 중형197→23ms·대형304→27ms 개선, Windows PCK 대형3회 약26ms. Web 대형 진입·이동·오류0과 PCK 부팅/5FPS 픽셀 게이트 근거가 있습니다. PR191 게임 계약/E2E와 main34234262244 배포 검증 통과. 그러나 배포 Web/독립 Windows EXE 각각10분 일반 플레이, 간헐 탈출F·출격 실패 원인 수락은 남아 partial 유지. 과거 첫 프레임202ms를 현행 측정값으로 쓰지 않으며 소스 자동 입력/시험 HP를 사람 수락으로 대체하지 않습니다.
+2026-09-09 a41f424: 전체 게임·E2E·40스킬/24초기조합 회귀 재실행 통과. 청크 렌더러 대체 승인은 유지합니다. 그러나 배포 Web/독립 Windows 각각10분 일반 플레이와 간헐 탈출F 수락이 남아 partial 유지. 신규 훈련 라이브 동등성 오류는 별도 QA-LIVE-TRAINING으로 재현·등록했으며 자동 통과를 제품 수락으로 해석하지 않습니다.
 
 수락 기준: 2D 뷰포트에서 기본 씬이 60FPS로 구동 확인
 
@@ -1037,7 +1045,7 @@ AP 비용 계약만 있음. HP 지불·타격/처치 흡혈·물약50%를 결합
 
 최신 GDD 62블록과 트래커 66행에 세부 규격이 명시되지 않은 기존 구현 묶음. 과거 사용자 요청으로 구현된 범위이며 삭제 대상이나 신규 기획 확정이 아님. 아래 묶음 수는 요구 행 수와 다르며 진행률 분자/분모에 포함하지 않음.
 
-**9개 게임 기능 묶음**입니다. 위 66개 요구 행과 단위가 다르므로 합쳐서 완료율을 계산하지 않습니다.
+**10개 게임 기능 묶음**입니다. 위 66개 요구 행과 단위가 다르므로 합쳐서 완료율을 계산하지 않습니다.
 
 ### EXT-INVENTORY · [크기가 다른 가방 아이템 이동·R 회전·저장 확인](../features/grid-inventory.md)
 
@@ -1057,17 +1065,17 @@ AP 비용 계약만 있음. HP 지불·타격/처치 흡혈·물약50%를 결합
 
 ### EXT-VISION · [방·통로 안개·전체 지도·조건부 워프](../features/fog-of-war.md)
 
-방 공개와 통로 시야를 분리하고 M 확장 지도에서 시작/탈출 지역 또는 클리어한 4방향 방으로 이동합니다. 봉쇄 교전 중 워프는 거부합니다. GDD의 일반 시야 페널티보다 구체적인 탐색 규칙입니다.
+현행은 익스트랙션 구역 단위 전체 공개·탐색 기억과 전체 M 지도·안전 단말 워프입니다. 단말 근접/주변 위협/봉쇄를 검증합니다. 과거 전방 원뿔·모든 클리어방 원격 워프 설명은 기본 정책의 근거가 아닙니다.
 
-코드 경계: `game/features/fog_of_war/fog_of_war.gd`, `game/features/room_navigation/room_warp_system.gd`
+코드 경계: `game/features/fog_of_war/fog_of_war.gd`, `game/features/room_navigation/room_warp_system.gd`, `game/features/fog_of_war/space_visibility_field.gd`
 
 기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`, `game/tests/e2e_play_session_test.gd`
 
-### EXT-ROOM · [방 진입 스폰·문 봉쇄·클리어 보상](../features/room-encounters.md)
+### EXT-ROOM · [도시 도로·시설과 선택형 봉쇄 교전·보상](../features/room-encounters.md)
 
-일반 던전 탐험 요구 외에 방별 전투 상태, 한정된 적 수량, 클리어 후 문 개방과 보상 상자 생성 규칙을 구현했습니다. 심층 진입 구조 구현과는 별개입니다.
+도로/건물/가구 배치를 분리하고 일반 교전에서는 후퇴, 금고 단말 F 선택 목표에서는 봉쇄/전멸/보상을 적용합니다. 모든 방의 무조건 봉쇄는 이전 정책입니다. 저항 장비·키카드·심층 수문장 구현은 별도 미완료입니다.
 
-코드 경계: `game/features/room_encounters/room_encounter_system.gd`, `game/features/room_encounters/room_credit_reward_box.gd`
+코드 경계: `game/features/room_encounters/room_encounter_system.gd`, `game/features/room_encounters/room_credit_reward_box.gd`, `game/features/room_encounters/district_encounter_system.gd`, `game/features/map_generation/urban_block_layout.gd`
 
 기존 검사 근거: `game/tests/basic_loop_smoke_test.gd`, `game/tests/e2e_play_session_test.gd`
 
@@ -1079,17 +1087,17 @@ AP 비용 계약만 있음. HP 지불·타격/처치 흡혈·물약50%를 결합
 
 기존 검사 근거: `game/tests/support/pursuit_boss_contract.gd`, `game/tests/mobile_hud_elite_contract_test.gd`
 
-### EXT-IDENTITY · [무기 고정 고유 스킬·전기 명중 광역·장비 고정 옵션](../features/equipment-fixed-identity.md)
+### EXT-IDENTITY · [무기8종·방어구14종·3세트와 고정 고유 효과](../features/equipment-fixed-identity.md)
 
-같은 무기는 같은 고유 효과를 갖고 고정 옵션/고유 효과는 내부·외부 레벨 배율과 분리됩니다. 일반 제작 랜덤 옵션 요구와 별개이며 방어구 세트효과 전체 구현을 의미하지 않습니다.
+총기5·근접3, 방어구4부위14종/3세트의 2·4개 효과를 구현했습니다. 고정 옵션/고유 효과는 내외부 레벨과 분리하고 세트 resolver가 스탯을 전달합니다. 수치는 임시이며 일반 제작 요구와 별도 콘텐츠입니다.
 
-코드 경계: `game/features/weapons/weapon_innate_skill_system.gd`, `game/features/equipment/equipment_fixed_option.gd`
+코드 경계: `game/features/weapons/weapon_innate_skill_system.gd`, `game/features/equipment/equipment_fixed_option.gd`, `game/features/equipment/armor_set_resolver.gd`
 
-기존 검사 근거: `game/tests/equipment_fixed_identity_contract_test.gd`
+기존 검사 근거: `game/tests/equipment_fixed_identity_contract_test.gd`, `game/tests/armor_set_contract_test.gd`, `game/tests/weapon_arsenal_contract_test.gd`
 
 ### EXT-GROWTH · [내부 임시 버프·외부 캐릭터/장비 성장](../features/growth.md)
 
-런 경험치/임시 강화와 정산 뒤 메타 경험치 성장 경로가 있습니다. GDD의 거점 성장·세션 증폭이라는 큰 개념과 별개인 경험치 변환 세부 규격입니다. 레벨업 HP 회복은 아래 회복 충돌 항목에서도 다룹니다.
+런 임시 강화와 정산 뒤 캐릭터/장비 메타 성장 경로를 분리합니다. 현재 표준 HP는 오너 승인에 따라 키트 전용이므로 레벨업 HP 회복은 비활성입니다. GDD의 큰 성장 개념 외 세부 규격을 별도로 보존합니다.
 
 코드 경계: `game/features/experience/progression_system.gd`, `game/features/meta_progression/meta_progression_system.gd`
 
@@ -1110,6 +1118,14 @@ AP 비용 계약만 있음. HP 지불·타격/처치 흡혈·물약50%를 결합
 코드 경계: `game/features/hit_feedback/hit_feedback_director.gd`, `game/features/player/player_movement_feedback.gd`
 
 기존 검사 근거: `game/tests/frame_feedback_contract_test.gd`
+
+### EXT-ACTIVE-SKILLS · [초기 요원·무기 선택, 고정 패시브와 액티브40종](../features/tactical-skill-catalog.md)
+
+3요원·8무기 초기24조합, 고정 계열 특화, 기존4+신규36 액티브를 구현했습니다. 공용3슬롯·신규36종 무료 수치는 임시. Skill/SkillPattern/Character 잠금과 실제 발동 회귀가 있으며 훈련 라이브 값 불일치는 별도 잔여 QA입니다.
+
+코드 경계: `game/features/character_selection/initial_loadout_panel.gd`, `game/features/combat_skills/effects/tactical_pattern_effect.gd`, `game/features/combat_skills/skill_balance_snapshot.gd`
+
+기존 검사 근거: `game/tests/tactical_skill_catalog_test.gd`
 
 <!-- notion-audit:end -->
 

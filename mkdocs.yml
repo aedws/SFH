@@ -185,6 +185,7 @@ nav:
           - 검증과 문제 해결: quality/index.md
           - 최소·권장 사양과 성능 예산: performance/minimum-requirements.md
           - 실제 플레이 세션 E2E: quality/e2e-play-session.md
+          - 전체 모듈·E2E 감사와 잔여: quality/full-system-audit-20260909.md
           - 플레이어 인식 단위 E2E 감사: quality/player-perception-audit.md
           - 전체 게임 UI 재편: quality/game-ui-rematch.md
           - 한 판의 다섯 순간 — 재미 제안서: quality/five-moment-fun-proposal.md

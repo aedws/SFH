@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 161 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 162 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -31,7 +31,7 @@ tags:
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-**2026-09-09 대조 코드: `353aa72`.** 공개 GDD·트래커 라이브 해시는 동일합니다. 오너가 첫 GPU 지연 개선을 위한 청크 텍스처 대체를 수락하여 **80.3%**입니다. TileMapLayer 실제 사용으로 오기하지 않으며 일반10분 QA는 부분 대응으로 유지합니다. [출처·계산·승인 근거](design/master-gdd-alignment.md#day-close) · [현재 순서](design/current-milestone-workline.md#next-20260909).
+**2026-09-09 전체 검사 기준: `a41f424`.** 공개 GDD·트래커 라이브 해시는 동일합니다. 전체 게임·E2E·모듈 회귀는 통과했지만 훈련 라이브 수치 불일치를 별도 재현했습니다. **아직100%가 아닙니다.** 청크 렌더러 대체 승인은 유지하고 일반10분 QA는 부분 대응입니다. [출처·계산·검사 결과](quality/full-system-audit-20260909.md) · [내일 순서](design/current-milestone-workline.md#next-20260910).
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
@@ -41,9 +41,11 @@ tags:
 | 기존 규칙과 충돌 | 0 | 0 |
 | 기획 판단 대기 | 14 | 0 |
 
-노션 결정52개×3·미정14개×1로 가중합니다. `(45×3 + 1×0.5×3) ÷ (52×3 + 14) = 136.5/170 = 80.3%`. [노션 외 구현9묶음](design/master-gdd-alignment.md#implemented-outside-notion)·위키 성장 그래프 등은 가산하지 않습니다. 확정 요구만의 참고값은87.5%이며 출시율·사람 수락률이 아닙니다.
+노션 결정52개×3·미정14개×1로 가중합니다. `(45×3 + 1×0.5×3) ÷ (52×3 + 14) = 136.5/170 = 80.3%`. [노션 외 구현10묶음](design/master-gdd-alignment.md#implemented-outside-notion)·위키 도구는 가산하지 않습니다. 미정14행 제외87.5%. 선행 정책 대기6행까지 제외한46행 참고값은98.9%이나, 별도 품질 오류와 일반 플레이 잔여 때문에 제품 완료율로 사용할 수 없습니다.
 
 ## 현재 빌드 상태
+
+**현행 콘텐츠:** 시작3요원·8무기 선택, 고정 패시브, 액티브40종(동시3), 방어구14종/3세트, 16:10 PC 장비 UI를 적용했습니다. 새 수치는 임시입니다. 이번 감사 문서 배포는 이 게임 빌드를 유지하며 QA-LIVE-TRAINING 오류를 고친 것으로 표시하지 않습니다.
 
 **최신 공간 규칙:** 순환 도로·시설별 두 출입구, 일반 교전 후퇴, 금고 F 선택 봉쇄, 두 출구 즉시 현장 방어, 안전 단말 워프, 현재 공간 전체 공개를 적용했습니다. [구역 계약과 임시 시설 수치](features/extraction-district.md) · [입력/GPU 검증과 인간 수락 잔여](quality/e2e-play-session.md#extraction-district). 노션 대응도 계산은 이 오너 승인 변경을 임의 가산하지 않았습니다.
 
@@ -55,6 +57,8 @@ tags:
 
 ## 다음 작업과 판단
 
+**2026-09-10 우선순위:** 훈련/작전 라이브 스냅샷 동등성 수정→암묵 의존성·공개 파서 감사 보강→Web/독립 Windows 정상10분/F 재현→스킬 계열 체감 검수. 파우치2·심층3·혈전1 및 미정14행은 기획자 제안·오너 승인과 구분합니다. [잔여별 완료 조건](quality/full-system-audit-20260909.md).
+
 [오너 판단표](design/master-gdd-alignment.md#owner-conflicts)에서 회복·AP·파우치·심층·혈전·소켓·기술·상태의 8개 결정을 확인합니다. 기존 사용자 지시를 대체하는 규칙은 승인 전에 적용하지 않습니다.
 
 [최신 N26 작업선](design/current-milestone-workline.md#notion-20260907):
@@ -64,9 +68,16 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 5 · IMPROVE 10 · CHANGE 1 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 5 · IMPROVE 11 · CHANGE 1 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>전체 검사 · 완료율과 잔여 작업 구분</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>전체 모듈·게임·E2E를 재검사하고 최신 노션과 대조했습니다. 기준 a41f424, 136.5/170=80.3%, 미정14행 제외87.5%. 자동 회귀는 통과했지만 훈련 라이브 수치 불일치와 일반10분 수락이 남아100%로 표시하지 않습니다.</p></div>
+        <p><a href="/quality/full-system-audit-20260909/">원본·계산·재현 오류·다음 실행 순서</a> · 문서 현행화이며 해당 오류 수정 배포는 아닙니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 11</small><b>첫 출격 요원·무장 선택 · 액티브 40종과 고정 패시브</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>PC/모바일 선택 뒤 요원·초기 무장을 정하고 로비로 들어갑니다. 기존4종에 신규36종을 더했으며 요원별 고정 패시브가 돌파·기동·구역 유지 계열을 특화합니다. 저장 장비와 로비→작전 장착 상태는 보존합니다.</p></div>
