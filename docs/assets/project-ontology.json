@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "f4e02e4e7efd5087990ca07b2bda680eb5ee3693bda66c2f274dba2de79a56f8",
+  "source_sha256": "476ee56d5a9c4a52989458243b51c1bc84acca40d40a22f6175ef576b09fb665",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -2868,14 +2868,14 @@
       "label": "장비 규칙",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 24개",
+      "summary": "장비·세팅 · feature · 파일 25개",
       "route": "architecture/code-module-map/?module=equipment",
       "documentation_route": "features/equipment/",
       "source": "game/features/equipment",
       "kind": "implementation",
       "metrics": {
-        "files": 24,
-        "classes": 24,
+        "files": 25,
+        "classes": 25,
         "incoming": 7,
         "outgoing": 2
       }
@@ -3696,14 +3696,14 @@
       "label": "무기",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 4개",
+      "summary": "장비·세팅 · feature · 파일 6개",
       "route": "architecture/code-module-map/?module=weapons",
       "documentation_route": "features/weapons/",
       "source": "game/features/weapons",
       "kind": "implementation",
       "metrics": {
-        "files": 4,
-        "classes": 4,
+        "files": 6,
+        "classes": 6,
         "incoming": 5,
         "outgoing": 4
       }
@@ -3714,13 +3714,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 66개",
+      "summary": "기반·검증 · verification · 파일 67개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 66,
+        "files": 67,
         "classes": 0,
         "incoming": 0,
         "outgoing": 55

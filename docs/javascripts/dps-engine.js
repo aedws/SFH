@@ -71,7 +71,8 @@
     const range=Math.max(32,weapon.balance.target_range_px*rangeMultiply);
     const points=distanceCurve(input.distanceCurve??weapon.balance.distance_damage_curve??'0:1;1:1');
     const distanceFactor=distanceMultiplier(points,input.distancePx??0,range);
-    const reachable=(input.distancePx??0)<=Math.min(range,weapon.balance.projectile_speed_px_sec*weapon.balance.projectile_lifetime_sec);
+    const melee=['melee_arc','melee_thrust'].includes(weapon.balance.attack_mode);
+    const reachable=(input.distancePx??0)<=(melee?range:Math.min(range,weapon.balance.projectile_speed_px_sec*weapon.balance.projectile_lifetime_sec));
     const hit = ((input.damage+add)*multiply + Math.floor((input.level-1)/3)) * (1+input.crit*(input.critMultiplier-1))*distanceFactor*(reachable?1:0);
     const gap = Math.max(0.02,input.interval*intervalMultiply);
     const burstGap = Math.max(0.02,input.burstInterval*intervalMultiply);

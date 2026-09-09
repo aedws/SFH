@@ -3,6 +3,7 @@ extends Node
 
 const ITEM_QUALITY := preload("res://game/core/item_quality_descriptor.gd")
 const FIXED_OPTION_FACTORY := preload("res://game/features/equipment/equipment_fixed_option_factory.gd")
+const SLOT_POLICY_MIGRATION := preload("res://game/features/equipment/equipment_slot_policy_migration.gd")
 
 signal equipment_changed(summary: Dictionary)
 signal skill_activation_changed(active_skill_ids: PackedStringArray, inactive_skill_ids: PackedStringArray)
@@ -69,7 +70,7 @@ func configure(
 		push_error("방어구 스탯 대상이 apply_equipment_modifiers 계약을 구현하지 않았습니다.")
 		return false
 
-	loadout = new_loadout.duplicate(true) as EquipmentLoadout
+	loadout = SLOT_POLICY_MIGRATION.copy_current(new_loadout)
 	stats_target = new_stats_target
 	weapons_enabled = enable_weapons
 	skills_enabled = enable_skills
@@ -422,7 +423,7 @@ func validate_runtime_state(saved: Dictionary, weapon_paths: Dictionary = {}) ->
 			for message in checked_carrier.validation_errors(): errors.append(message)
 	if saved.is_empty():
 		return errors
-	var saved_loadout := saved.get(&"loadout") as EquipmentLoadout
+	var saved_loadout := SLOT_POLICY_MIGRATION.copy_current(saved.get(&"loadout") as EquipmentLoadout)
 	var saved_states: Dictionary = saved.get(&"equipment_states", {})
 	if saved_loadout == null:
 		errors.append("저장된 장비 로드아웃이 없습니다.")
@@ -463,7 +464,7 @@ func validate_operation_launch(request: Dictionary) -> PackedStringArray:
 func restore_runtime_state(saved: Dictionary) -> bool:
 	if not validate_runtime_state(saved).is_empty():
 		return false
-	var saved_loadout := saved.get(&"loadout") as EquipmentLoadout
+	var saved_loadout := SLOT_POLICY_MIGRATION.copy_current(saved.get(&"loadout") as EquipmentLoadout)
 	var saved_states: Dictionary = saved.get(&"equipment_states", {})
 	if saved_loadout == null:
 		return false

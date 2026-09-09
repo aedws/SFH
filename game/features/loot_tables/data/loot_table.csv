@@ -76,3 +76,27 @@ session_boss_2_0,research_complex,any,any,boss,assault_rifle,3,30,1,1,TRUE,TRUE,
 session_boss_2_1,research_complex,any,any,boss,tactical_vest,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
 session_boss_2_2,research_complex,any,any,boss,ballistic_core_item,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
 session_boss_2_3,research_complex,any,any,boss,rifle_scope_item,3,30,1,1,TRUE,TRUE,보스 처치 전리품 · 장비·모듈·파츠
+arsenal_ruined_city_combat_dagger_room_reward,ruined_city,any,any,room_reward,combat_dagger,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_ruined_city_combat_dagger_boss,ruined_city,any,any,boss,combat_dagger,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_ruined_city_breach_shotgun_room_reward,ruined_city,any,any,room_reward,breach_shotgun,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_ruined_city_breach_shotgun_boss,ruined_city,any,any,boss,breach_shotgun,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_ruined_city_rail_rifle_room_reward,ruined_city,any,any,room_reward,rail_rifle,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_ruined_city_rail_rifle_boss,ruined_city,any,any,boss,rail_rifle,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_ruined_city_arc_spear_room_reward,ruined_city,any,any,room_reward,arc_spear,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_ruined_city_arc_spear_boss,ruined_city,any,any,boss,arc_spear,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_industrial_district_combat_dagger_room_reward,industrial_district,any,any,room_reward,combat_dagger,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_industrial_district_combat_dagger_boss,industrial_district,any,any,boss,combat_dagger,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_industrial_district_breach_shotgun_room_reward,industrial_district,any,any,room_reward,breach_shotgun,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_industrial_district_breach_shotgun_boss,industrial_district,any,any,boss,breach_shotgun,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_industrial_district_rail_rifle_room_reward,industrial_district,any,any,room_reward,rail_rifle,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_industrial_district_rail_rifle_boss,industrial_district,any,any,boss,rail_rifle,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_industrial_district_arc_spear_room_reward,industrial_district,any,any,room_reward,arc_spear,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_industrial_district_arc_spear_boss,industrial_district,any,any,boss,arc_spear,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_research_complex_combat_dagger_room_reward,research_complex,any,any,room_reward,combat_dagger,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_research_complex_combat_dagger_boss,research_complex,any,any,boss,combat_dagger,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_research_complex_breach_shotgun_room_reward,research_complex,any,any,room_reward,breach_shotgun,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_research_complex_breach_shotgun_boss,research_complex,any,any,boss,breach_shotgun,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_research_complex_rail_rifle_room_reward,research_complex,any,any,room_reward,rail_rifle,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_research_complex_rail_rifle_boss,research_complex,any,any,boss,rail_rifle,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_research_complex_arc_spear_room_reward,research_complex,any,any,room_reward,arc_spear,2,12,1,1,FALSE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득
+arsenal_research_complex_arc_spear_boss,research_complex,any,any,boss,arc_spear,3,20,1,1,TRUE,TRUE,오너 요청 무기 다양화 · 임시 드랍 가중치 · 근접/총기 실물 획득

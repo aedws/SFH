@@ -34,6 +34,11 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+$arsenalOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/weapon_arsenal_contract_test.gd" 2>&1
+$arsenalStatus = $LASTEXITCODE
+$arsenalOutput | Write-Output
+if ($arsenalStatus -ne 0 -or ($arsenalOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($arsenalOutput -join "`n") -notmatch 'WEAPON_ARSENAL_OK') { throw 'Weapon arsenal contract failed.' }
+
 $fogOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/roguelike_fog_contract_test.gd" 2>&1
 $fogStatus = $LASTEXITCODE
 $fogOutput | Write-Output

@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "version": "2026-09-08.2",
-  "fingerprint": "f1ca7911c94e1ce6d08affe2012509acd6f80b580d484c88fd743eb898fad7fd",
+  "fingerprint": "72c693dd4a3d796fbccf0cbbae592967437a693611e6657a68b790eefa393731",
   "sources": {
     "game/features/combat_skills/definitions/blink.tres": "f7c9548f0685e1ed90cabb98425799f8d6eed27613779d2dea53bc7712e90d7c",
     "game/features/combat_skills/definitions/arc_dash.tres": "89ae3166549f9bf2ffa602dd5f5b709fd212fdc46deb7566bfea6aae01bfeea8",
     "game/features/combat_skills/definitions/magnetic_field.tres": "06d90c5c850c459a41779fdb255d4fbf5d0e84255e9b8ce3d50e045f6c8727ea",
     "game/features/combat_skills/definitions/speed_boost.tres": "e72f091950495477313d350b5e3c8643def0303968007a730956e9bc326ffeea",
-    "game/features/weapon_balance/data/weapon_balance.csv": "9e0f128d72496c47a2891cec9f1544c894eb72d62abd85c624aa0b166fb73271",
-    "game/features/equipment/data/equipment_identity.csv": "bc0d383b10da0b5588d4e0fa6611591c857b461caada789e7b3435427dfb152d",
+    "game/features/weapon_balance/data/weapon_balance.csv": "d6696115650d5be648b67ee0a197e3a2f0bd0cace67588b503ebd298a6c3ddd4",
+    "game/features/equipment/data/equipment_identity.csv": "d1e0b4089238455685bff0aab2d25cd88e5336f1e414be5076126363f91bc85c",
     "game/features/character_selection/data/character_catalog.csv": "f0152c1a3ae4ce6cb9c08674e37034334eab700d152d114114d849d6fe614a00",
     "game/features/equipment/definitions/weapons/assault_rifle.tres": "fda1cfde4dc258bcabbdaaf70e3e3b346c3629fe8975f04819666443cf1fd5c4",
     "game/features/equipment/weapon_innate_skill_definition.gd": "4e9b6f85e51065feafb46c79837a12ae7330d688cb618b32157ce2cdd6876130",
@@ -16,6 +16,9 @@
     "game/features/equipment/definitions/weapons/combat_dagger.tres": "a22e34dd515abbd2da8f47a17ac92279fc9912be5917cc392ce4621deda1fa08",
     "game/features/equipment/definitions/weapons/greatsword.tres": "5c82786d15f5dee84d016c943cb9d3b9ce51ad916bb1862db7f7058ba9255b7f",
     "game/features/equipment/definitions/weapons/pulse_rifle.tres": "c132fa8c8dec3ef19d538a8a32f0f8a56a5ee14d6f9165f4751966b28ba1f714",
+    "game/features/equipment/definitions/weapons/breach_shotgun.tres": "bb48db43fbb12319e67600ae4ba89dc128d1698f7f069486962630b929c12261",
+    "game/features/equipment/definitions/weapons/rail_rifle.tres": "6d4b7be45a8688d3b6476fdd149c939474d50e9273fbe288327325ede6e69e86",
+    "game/features/equipment/definitions/weapons/arc_spear.tres": "f1641cebb76978561167174189e5521368b112d0328c2e016fea92933d135147",
     "game/features/equipment/definitions/modules/ballistic_core.tres": "2a2e71c39ae36800c943ff533c3b1e6b983333b1b41ce831169bf51dc5942a96",
     "game/features/equipment/definitions/modules/vitality_matrix.tres": "c6955455c65aa97b4ac01d434e09c8f50e8ec13d9deac37ca57e740dbe891185",
     "game/features/equipment/definitions/modules/mobility_chip.tres": "fb585010f1c465e90246182ce6df239b7d53de2a209eaff0ede8bbf58619a9a1",
@@ -615,7 +618,7 @@
     {
       "id": "weapon.damage",
       "kind": "weapon",
-      "label": "탄환 기본 피해",
+      "label": "기본 타격 피해",
       "unit": "피해",
       "minimum": 0,
       "maximum": 10000,
@@ -654,6 +657,36 @@
           ]
         },
         {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "combat_dagger"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "중량 대검",
+          "current": 6.5,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "greatsword"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
           "id": "pulse_rifle",
           "name": "전격 펄스 소총",
           "current": 1.15,
@@ -667,13 +700,58 @@
               "field": "damage"
             }
           ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 1.3,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "breach_shotgun"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 7.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "rail_rifle"
+              },
+              "field": "damage"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 4.8,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "arc_spear"
+              },
+              "field": "damage"
+            }
+          ]
         }
       ]
     },
     {
       "id": "weapon.fire_interval_sec",
       "kind": "weapon",
-      "label": "발사 간격",
+      "label": "공격 간격",
       "unit": "초",
       "minimum": 0.05,
       "maximum": 60,
@@ -712,6 +790,36 @@
           ]
         },
         {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 0.23,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "combat_dagger"
+              },
+              "field": "fire_interval_sec"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "중량 대검",
+          "current": 0.8,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "greatsword"
+              },
+              "field": "fire_interval_sec"
+            }
+          ]
+        },
+        {
           "id": "pulse_rifle",
           "name": "전격 펄스 소총",
           "current": 0.34,
@@ -721,6 +829,51 @@
               "path": "game/features/weapon_balance/data/weapon_balance.csv",
               "selector": {
                 "weapon_id": "pulse_rifle"
+              },
+              "field": "fire_interval_sec"
+            }
+          ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 0.85,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "breach_shotgun"
+              },
+              "field": "fire_interval_sec"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 1.1,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "rail_rifle"
+              },
+              "field": "fire_interval_sec"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 0.58,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "arc_spear"
               },
               "field": "fire_interval_sec"
             }
@@ -770,6 +923,36 @@
           ]
         },
         {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 85.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "combat_dagger"
+              },
+              "field": "target_range_px"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "중량 대검",
+          "current": 145.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "greatsword"
+              },
+              "field": "target_range_px"
+            }
+          ]
+        },
+        {
           "id": "pulse_rifle",
           "name": "전격 펄스 소총",
           "current": 760.0,
@@ -779,6 +962,51 @@
               "path": "game/features/weapon_balance/data/weapon_balance.csv",
               "selector": {
                 "weapon_id": "pulse_rifle"
+              },
+              "field": "target_range_px"
+            }
+          ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 350.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "breach_shotgun"
+              },
+              "field": "target_range_px"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 1000.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "rail_rifle"
+              },
+              "field": "target_range_px"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 185.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "arc_spear"
               },
               "field": "target_range_px"
             }
@@ -828,6 +1056,36 @@
           ]
         },
         {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 0.15,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "combat_dagger"
+              },
+              "field": "critical_chance"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "중량 대검",
+          "current": 0.05,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "greatsword"
+              },
+              "field": "critical_chance"
+            }
+          ]
+        },
+        {
           "id": "pulse_rifle",
           "name": "전격 펄스 소총",
           "current": 0.08,
@@ -837,6 +1095,51 @@
               "path": "game/features/weapon_balance/data/weapon_balance.csv",
               "selector": {
                 "weapon_id": "pulse_rifle"
+              },
+              "field": "critical_chance"
+            }
+          ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 0.06,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "breach_shotgun"
+              },
+              "field": "critical_chance"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 0.15,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "rail_rifle"
+              },
+              "field": "critical_chance"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 0.08,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "arc_spear"
               },
               "field": "critical_chance"
             }
@@ -886,6 +1189,36 @@
           ]
         },
         {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 1.8,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "combat_dagger"
+              },
+              "field": "critical_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "중량 대검",
+          "current": 1.8,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "greatsword"
+              },
+              "field": "critical_multiplier"
+            }
+          ]
+        },
+        {
           "id": "pulse_rifle",
           "name": "전격 펄스 소총",
           "current": 1.65,
@@ -895,6 +1228,51 @@
               "path": "game/features/weapon_balance/data/weapon_balance.csv",
               "selector": {
                 "weapon_id": "pulse_rifle"
+              },
+              "field": "critical_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 1.6,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "breach_shotgun"
+              },
+              "field": "critical_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "rail_rifle"
+              },
+              "field": "critical_multiplier"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 1.8,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "arc_spear"
               },
               "field": "critical_multiplier"
             }
@@ -944,6 +1322,36 @@
           ]
         },
         {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "combat_dagger"
+              },
+              "field": "burst_count"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "중량 대검",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "greatsword"
+              },
+              "field": "burst_count"
+            }
+          ]
+        },
+        {
           "id": "pulse_rifle",
           "name": "전격 펄스 소총",
           "current": 1.0,
@@ -953,6 +1361,51 @@
               "path": "game/features/weapon_balance/data/weapon_balance.csv",
               "selector": {
                 "weapon_id": "pulse_rifle"
+              },
+              "field": "burst_count"
+            }
+          ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "breach_shotgun"
+              },
+              "field": "burst_count"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "rail_rifle"
+              },
+              "field": "burst_count"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "arc_spear"
               },
               "field": "burst_count"
             }
@@ -1002,6 +1455,36 @@
           ]
         },
         {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "combat_dagger"
+              },
+              "field": "projectiles_per_shot"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "중량 대검",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "greatsword"
+              },
+              "field": "projectiles_per_shot"
+            }
+          ]
+        },
+        {
           "id": "pulse_rifle",
           "name": "전격 펄스 소총",
           "current": 1.0,
@@ -1011,6 +1494,51 @@
               "path": "game/features/weapon_balance/data/weapon_balance.csv",
               "selector": {
                 "weapon_id": "pulse_rifle"
+              },
+              "field": "projectiles_per_shot"
+            }
+          ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "breach_shotgun"
+              },
+              "field": "projectiles_per_shot"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "rail_rifle"
+              },
+              "field": "projectiles_per_shot"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "arc_spear"
               },
               "field": "projectiles_per_shot"
             }
@@ -1060,6 +1588,36 @@
           ]
         },
         {
+          "id": "combat_dagger",
+          "name": "전투 단검",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "combat_dagger"
+              },
+              "field": "pierce_count"
+            }
+          ]
+        },
+        {
+          "id": "greatsword",
+          "name": "중량 대검",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "greatsword"
+              },
+              "field": "pierce_count"
+            }
+          ]
+        },
+        {
           "id": "pulse_rifle",
           "name": "전격 펄스 소총",
           "current": 1.0,
@@ -1069,6 +1627,51 @@
               "path": "game/features/weapon_balance/data/weapon_balance.csv",
               "selector": {
                 "weapon_id": "pulse_rifle"
+              },
+              "field": "pierce_count"
+            }
+          ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "breach_shotgun"
+              },
+              "field": "pierce_count"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "rail_rifle"
+              },
+              "field": "pierce_count"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/weapon_balance/data/weapon_balance.csv",
+              "selector": {
+                "weapon_id": "arc_spear"
               },
               "field": "pierce_count"
             }
@@ -1085,7 +1688,7 @@
       "maximum": 100,
       "integer": true,
       "choices": null,
-      "effect": "탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
+      "effect": "탄환·근접 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
       "targets": [
         {
           "id": "assault_rifle",
@@ -1110,7 +1713,7 @@
         },
         {
           "id": "service_pistol",
-          "name": "서비스 권총",
+          "name": "제식 권총",
           "current": 2.0,
           "bindings": [
             {
@@ -1152,7 +1755,7 @@
         },
         {
           "id": "greatsword",
-          "name": "대검",
+          "name": "중량 대검",
           "current": 1.0,
           "bindings": [
             {
@@ -1173,7 +1776,7 @@
         },
         {
           "id": "pulse_rifle",
-          "name": "펄스 소총",
+          "name": "전격 펄스 소총",
           "current": 1.0,
           "bindings": [
             {
@@ -1191,6 +1794,69 @@
               "field": "trigger_every_hits"
             }
           ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 5.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "breach_shotgun"
+              },
+              "field": "innate_trigger_hits"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/breach_shotgun.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "trigger_every_hits"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "rail_rifle"
+              },
+              "field": "innate_trigger_hits"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/rail_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "trigger_every_hits"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 3.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "arc_spear"
+              },
+              "field": "innate_trigger_hits"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/arc_spear.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "trigger_every_hits"
+            }
+          ]
         }
       ]
     },
@@ -1203,7 +1869,7 @@
       "maximum": 10000,
       "integer": false,
       "choices": null,
-      "effect": "탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
+      "effect": "탄환·근접 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
       "targets": [
         {
           "id": "assault_rifle",
@@ -1228,7 +1894,7 @@
         },
         {
           "id": "service_pistol",
-          "name": "서비스 권총",
+          "name": "제식 권총",
           "current": 2.2,
           "bindings": [
             {
@@ -1270,7 +1936,7 @@
         },
         {
           "id": "greatsword",
-          "name": "대검",
+          "name": "중량 대검",
           "current": 2.8,
           "bindings": [
             {
@@ -1291,7 +1957,7 @@
         },
         {
           "id": "pulse_rifle",
-          "name": "펄스 소총",
+          "name": "전격 펄스 소총",
           "current": 1.0,
           "bindings": [
             {
@@ -1306,6 +1972,69 @@
               "type": "resource",
               "path": "game/features/equipment/definitions/weapons/pulse_rifle.tres",
               "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "fixed_damage"
+            }
+          ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 1.4,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "breach_shotgun"
+              },
+              "field": "innate_fixed_damage"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/breach_shotgun.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "fixed_damage"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 2.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "rail_rifle"
+              },
+              "field": "innate_fixed_damage"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/rail_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "fixed_damage"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 1.2,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "arc_spear"
+              },
+              "field": "innate_fixed_damage"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/arc_spear.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
               "field": "fixed_damage"
             }
           ]
@@ -1324,7 +2053,7 @@
         "single_target",
         "electric_area"
       ],
-      "effect": "탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
+      "effect": "탄환·근접 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
       "targets": [
         {
           "id": "assault_rifle",
@@ -1353,7 +2082,7 @@
         },
         {
           "id": "service_pistol",
-          "name": "서비스 권총",
+          "name": "제식 권총",
           "current": "single_target",
           "bindings": [
             {
@@ -1403,7 +2132,7 @@
         },
         {
           "id": "greatsword",
-          "name": "대검",
+          "name": "중량 대검",
           "current": "single_target",
           "bindings": [
             {
@@ -1428,7 +2157,7 @@
         },
         {
           "id": "pulse_rifle",
-          "name": "펄스 소총",
+          "name": "전격 펄스 소총",
           "current": "electric_area",
           "bindings": [
             {
@@ -1450,6 +2179,81 @@
               }
             }
           ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": "single_target",
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "breach_shotgun"
+              },
+              "field": "innate_effect_kind"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/breach_shotgun.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "effect_kind",
+              "enum_values": {
+                "single_target": 0,
+                "electric_area": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": "single_target",
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "rail_rifle"
+              },
+              "field": "innate_effect_kind"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/rail_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "effect_kind",
+              "enum_values": {
+                "single_target": 0,
+                "electric_area": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": "electric_area",
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "arc_spear"
+              },
+              "field": "innate_effect_kind"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/arc_spear.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "effect_kind",
+              "enum_values": {
+                "single_target": 0,
+                "electric_area": 1
+              }
+            }
+          ]
         }
       ]
     },
@@ -1462,7 +2266,7 @@
       "maximum": 1000,
       "integer": false,
       "choices": null,
-      "effect": "탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
+      "effect": "탄환·근접 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
       "targets": [
         {
           "id": "assault_rifle",
@@ -1487,7 +2291,7 @@
         },
         {
           "id": "service_pistol",
-          "name": "서비스 권총",
+          "name": "제식 권총",
           "current": 0.0,
           "bindings": [
             {
@@ -1529,7 +2333,7 @@
         },
         {
           "id": "greatsword",
-          "name": "대검",
+          "name": "중량 대검",
           "current": 0.0,
           "bindings": [
             {
@@ -1550,7 +2354,7 @@
         },
         {
           "id": "pulse_rifle",
-          "name": "펄스 소총",
+          "name": "전격 펄스 소총",
           "current": 144.0,
           "bindings": [
             {
@@ -1568,6 +2372,69 @@
               "field": "effect_radius"
             }
           ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "breach_shotgun"
+              },
+              "field": "innate_effect_radius"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/breach_shotgun.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "effect_radius"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 0.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "rail_rifle"
+              },
+              "field": "innate_effect_radius"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/rail_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "effect_radius"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 96.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "arc_spear"
+              },
+              "field": "innate_effect_radius"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/arc_spear.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "effect_radius"
+            }
+          ]
         }
       ]
     },
@@ -1580,7 +2447,7 @@
       "maximum": 32,
       "integer": true,
       "choices": null,
-      "effect": "탄환 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
+      "effect": "탄환·근접 명중 횟수마다 발동 / 고정 피해는 내·외부 레벨과 독립 / CSV와 런타임 Resource를 함께 변경",
       "targets": [
         {
           "id": "assault_rifle",
@@ -1605,7 +2472,7 @@
         },
         {
           "id": "service_pistol",
-          "name": "서비스 권총",
+          "name": "제식 권총",
           "current": 1.0,
           "bindings": [
             {
@@ -1647,7 +2514,7 @@
         },
         {
           "id": "greatsword",
-          "name": "대검",
+          "name": "중량 대검",
           "current": 1.0,
           "bindings": [
             {
@@ -1668,7 +2535,7 @@
         },
         {
           "id": "pulse_rifle",
-          "name": "펄스 소총",
+          "name": "전격 펄스 소총",
           "current": 8.0,
           "bindings": [
             {
@@ -1683,6 +2550,69 @@
               "type": "resource",
               "path": "game/features/equipment/definitions/weapons/pulse_rifle.tres",
               "section": "sub_resource type=\"Resource\" id=\"InnateSkill\"",
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "breach_shotgun",
+          "name": "돌파 산탄총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "breach_shotgun"
+              },
+              "field": "innate_maximum_targets"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/breach_shotgun.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "rail_rifle",
+          "name": "관통 레일 소총",
+          "current": 1.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "rail_rifle"
+              },
+              "field": "innate_maximum_targets"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/rail_rifle.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
+              "field": "maximum_targets"
+            }
+          ]
+        },
+        {
+          "id": "arc_spear",
+          "name": "전격 관통창",
+          "current": 4.0,
+          "bindings": [
+            {
+              "type": "csv",
+              "path": "game/features/equipment/data/equipment_identity.csv",
+              "selector": {
+                "definition_id": "arc_spear"
+              },
+              "field": "innate_maximum_targets"
+            },
+            {
+              "type": "resource",
+              "path": "game/features/equipment/definitions/weapons/arc_spear.tres",
+              "section": "sub_resource type=\"Resource\" id=\"Innate\"",
               "field": "maximum_targets"
             }
           ]

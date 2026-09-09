@@ -11,6 +11,17 @@ from apply_weapon_distance import prepare
 root = Path(__file__).resolve().parents[1]
 text = (root / 'game/features/weapon_balance/data/weapon_balance.csv').read_text(encoding='utf-8')
 rows = validate(text)
+for patch in [{'attack_mode':'unknown'}, {'damage':'nan'}, {'projectiles_per_shot':'100'}, {'attack_mode':'melee_arc','projectiles_per_shot':'2'}]:
+    malformed = copy.deepcopy(rows)
+    malformed[0].update(patch)
+    sample = io.StringIO()
+    writer = csv.DictWriter(sample, fieldnames=list(rows[0]), lineterminator='\n')
+    writer.writeheader(); writer.writerows(malformed)
+    try:
+        validate(sample.getvalue())
+        raise AssertionError(patch)
+    except ValueError:
+        pass
 for bad in ['', '0:1', '0:1;0:2;1:1', '0:1;1:4', '0:nan;1:1', '0:1;0.9:1', '0:1;;1:1']:
     try:
         validate_distance_curve(bad)

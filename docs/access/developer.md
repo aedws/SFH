@@ -11,6 +11,8 @@ hide:
 
 작업·구조·검증 근거를 골라 확인하세요. 최종 판단은 프로젝트 오너가 합니다.
 
+현행 변경: [무기 8종 공격·드랍·장착 계약](../features/weapons.md#arsenal-20260909). Sheet 임시 수치와 게임 적용은 완료 범위를 구분하며, 신규 공격은 기하 정책/실행/표현으로 분리합니다. [검증 근거](../quality/e2e-play-session.md#arsenal-20260909).
+
 <nav class="sfh-workspace-launcher" aria-label="개발자 작업 바로가기">
   <a href="#map-workbench"><small>공간</small><strong>맵·피스 설계실</strong><span>게임 배치 대조와 오너 판단 초안</span></a>
   <a href="#owner-decision-console"><small>판단</small><strong>작업·오너 판단</strong><span>선행 조건과 판단 대기열</span></a>

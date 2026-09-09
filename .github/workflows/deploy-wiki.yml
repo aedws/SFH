@@ -109,6 +109,10 @@ jobs:
 
       - name: Test game contracts
         run: |
+          godot --headless --path "$GITHUB_WORKSPACE" --script res://game/tests/weapon_arsenal_contract_test.gd > /tmp/sfh-arsenal.log 2>&1
+          cat /tmp/sfh-arsenal.log
+          grep -q 'WEAPON_ARSENAL_OK' /tmp/sfh-arsenal.log
+          ! grep -E 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-arsenal.log
           godot --headless --path "$GITHUB_WORKSPACE" --script res://game/tests/weapon_distance_contract_test.gd > /tmp/sfh-distance.log 2>&1
           cat /tmp/sfh-distance.log
           grep -q 'WEAPON_DISTANCE_OK' /tmp/sfh-distance.log
@@ -195,7 +199,8 @@ jobs:
           grep -q "CIRCULAR_COVERAGE_OK" /tmp/sfh-circular-coverage.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-circular-coverage.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/loot_table_contract_test.gd" | tee /tmp/sfh-loot-table.log
-          grep -q "LOOT_TABLE_TEST_OK rows_77 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link" /tmp/sfh-loot-table.log
+          grep -q "LOOT_TABLE_TEST_OK rows_101 regions_3 deterministic_rolls difficulty_grade_bias player_briefing lifecycle_link weapon_definition_link" /tmp/sfh-loot-table.log
+          grep -q "arsenal_sources_216" /tmp/sfh-loot-table.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/field_loot_acquisition_contract_test.gd" | tee /tmp/sfh-field-loot.log
           grep -q "FIELD_LOOT_ACQUISITION_OK spawn approach compare lifecycle cancel retain reacquire select run_storage immediate_equip skill_swap_slot_binding_restore provisional_policy restore_on_hub viewport_safe modular_boundary" /tmp/sfh-field-loot.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/operation_combination_contract_test.gd" | tee /tmp/sfh-operation-combinations.log
@@ -540,6 +545,7 @@ jobs:
           node scripts/test_map_model.cjs
           python scripts/build_balance_catalog.py --check
           python scripts/build_effect_toolkit.py --check
+          python scripts/test_effect_toolkit_catalog.py
           node scripts/test_effect_toolkit.mjs
           node scripts/test_balance_workbench.mjs
           node scripts/test_mobile_orientation_policy.mjs

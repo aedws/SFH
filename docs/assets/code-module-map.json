@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "5b1b9f71ecbf3e0551e456bb744a71e55058a5d227367f96d89fb98348e3743c",
+  "source_sha256": "3650c65737aee2d62b65fdb004d47816e7487dca932247ca22bbf651ca6db586",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 346,
-    "named_classes": 269,
+    "scripts": 350,
+    "named_classes": 272,
     "relationships": 210,
     "project_inheritance": 13,
     "enabled_toggles": 70
@@ -331,8 +331,8 @@
       "path": "game/features/equipment",
       "wiki_route": "features/equipment/",
       "enabled": true,
-      "file_count": 24,
-      "class_count": 24,
+      "file_count": 25,
+      "class_count": 25,
       "classes": [
         "CharacterEquipmentSystem",
         "CharacterModuleDefinition",
@@ -347,6 +347,7 @@
         "EquipmentModuleUIPresenter",
         "EquipmentPartDefinition",
         "EquipmentSkillDefinition",
+        "EquipmentSlotPolicyMigration",
         "EquipmentSlotRule",
         "EquipmentStatModifier",
         "EquipmentWeaponDefinition",
@@ -1271,11 +1272,13 @@
       "path": "game/features/weapons",
       "wiki_route": "features/weapons/",
       "enabled": true,
-      "file_count": 4,
-      "class_count": 4,
+      "file_count": 6,
+      "class_count": 6,
       "classes": [
         "AutoWeapon",
+        "MeleeStrikePolicy",
         "WeaponInnateSkillSystem",
+        "WeaponMeleeStrike",
         "WeaponProjectile",
         "WeaponShotFX"
       ],
@@ -1291,7 +1294,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 66,
+      "file_count": 67,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1962,6 +1965,15 @@
       "module": "equipment",
       "path": "game/features/equipment/skill_definition.gd",
       "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:EquipmentSlotPolicyMigration",
+      "name": "EquipmentSlotPolicyMigration",
+      "module": "equipment",
+      "path": "game/features/equipment/equipment_slot_policy_migration.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -3694,11 +3706,29 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:MeleeStrikePolicy",
+      "name": "MeleeStrikePolicy",
+      "module": "weapons",
+      "path": "game/features/weapons/melee_strike_policy.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:WeaponInnateSkillSystem",
       "name": "WeaponInnateSkillSystem",
       "module": "weapons",
       "path": "game/features/weapons/weapon_innate_skill_system.gd",
       "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:WeaponMeleeStrike",
+      "name": "WeaponMeleeStrike",
+      "module": "weapons",
+      "path": "game/features/weapons/melee_strike.gd",
+      "extends": "Node2D",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -4692,7 +4722,7 @@
       "from": "verification",
       "to": "equipment",
       "type": "verifies",
-      "evidence_count": 10
+      "evidence_count": 11
     },
     {
       "from": "verification",
@@ -4716,7 +4746,7 @@
       "from": "verification",
       "to": "field_loot",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
@@ -4944,13 +4974,13 @@
       "from": "verification",
       "to": "weapon_balance",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
       "to": "weapons",
       "type": "verifies",
-      "evidence_count": 5
+      "evidence_count": 6
     },
     {
       "from": "weapon_balance",
@@ -4980,7 +5010,7 @@
       "from": "weapons",
       "to": "weapon_balance",
       "type": "references",
-      "evidence_count": 1
+      "evidence_count": 3
     }
   ]
 }

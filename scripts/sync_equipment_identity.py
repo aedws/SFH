@@ -29,8 +29,11 @@ def _rows(text: str, kind: str) -> list[dict[str, str]]:
     source = list(csv.DictReader(io.StringIO(text.lstrip("\ufeff"))))
     result: list[dict[str, str]] = []
     id_column = "weapon_id" if kind == "weapon" else "armor_id"
-    for row in source:
+    for index, row in enumerate(source):
         definition_id = (row.get(id_column) or "").strip()
+        # Shared workbook row 2 is Korean column documentation, not an equipment record.
+        if index == 0 and not definition_id.isascii():
+            continue
         if not definition_id:
             continue
         result.append({

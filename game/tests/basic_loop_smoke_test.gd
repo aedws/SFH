@@ -2272,8 +2272,8 @@ func _verify_equipment_modules() -> bool:
 		var vitality = load("res://game/features/equipment/definitions/modules/vitality_matrix.tres")
 		var mobility = load("res://game/features/equipment/definitions/modules/mobility_chip.tres")
 		var armor_plate = load("res://game/features/equipment/definitions/modules/armor_plate.tres")
-		if equipment.call(&"can_equip_definition", &"main", greatsword):
-			failure_message = "메인 슬롯이 소총 외 소분류 장비를 허용했습니다."
+		if not equipment.call(&"can_equip_definition", &"main", greatsword):
+			failure_message = "주무기 슬롯이 근접 무기 확장을 거부했습니다."
 		elif not equipment.call(&"install_part", &"main", rifle_scope):
 			failure_message = "소총 전용 optic 파츠를 장착하지 못했습니다."
 		elif equipment.call(&"install_part", &"main", pistol_part):
@@ -3919,7 +3919,7 @@ func _process(_delta: float) -> bool:
 		if "2/3" not in equipment_label.text or "DEF 3" not in equipment_label.text:
 			return _fail("장비 HUD에 무기·스킬·방어구 상태가 표시되지 않았습니다.")
 		var balance = game_instance.get("weapon_balance_service")
-		if balance == null or balance.call(&"get_snapshot").size() != 3:
+		if balance == null or balance.call(&"get_snapshot").size() != 8:
 			return _fail("무기 밸런스 모듈이 Game 조립 지점에 설치되지 않았습니다.")
 		if (
 			int((growth_balance.call(&"get_snapshot") as Dictionary).get(&"run_buff_count", 0)) != 5
