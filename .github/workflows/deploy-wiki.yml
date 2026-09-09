@@ -493,6 +493,8 @@ jobs:
             --csv-version-file game/features/balance_data/data_version.txt \
             --csv game/features/map_generation/data/facility.csv \
             --csv game/features/weapon_balance/data/weapon_balance.csv \
+            --csv game/features/equipment/data/armor_catalog.csv \
+            --csv game/features/equipment/data/armor_set.csv \
             --csv game/features/growth_balance/data/run_buff_balance.csv \
             --csv game/features/growth_balance/data/upgrade_balance.csv \
             --csv game/features/loot_lifecycle/data/item_lifecycle.csv \
