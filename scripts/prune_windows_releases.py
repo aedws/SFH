@@ -13,6 +13,9 @@ from pathlib import Path
 WINDOWS_OBJECT = re.compile(
     r"^(?:downloads/([^/]+)/)?SFH-Windows-x64-(v[^/]+)\.zip(?:\.sha256)?$"
 )
+COMMIT_WINDOWS_OBJECT = re.compile(
+    r"^downloads/releases/([0-9a-f]{40})/(v[0-9A-Za-z._-]+)/SFH-Windows-x64-(v[0-9A-Za-z._-]+)\.zip(?:\.sha256)?$"
+)
 
 
 def windows_object_version(value: str) -> str | None:
@@ -115,9 +118,38 @@ def prune_r2(
     return removed
 
 
+def prune_commit_downloads(account_id: str, token: str, bucket: str, keep_commits: list[str],
+                           keep_legacy_version: str | None = None, dry_run: bool = False) -> list[str]:
+    if not keep_commits or any(not re.fullmatch(r"[0-9a-f]{40}", item) for item in keep_commits):
+        raise ValueError("At least one verified commit is required")
+    removed = []
+    for key in list_r2_objects(account_id, token, bucket, "downloads/"):
+        match = COMMIT_WINDOWS_OBJECT.fullmatch(key)
+        legacy = windows_object_version(key) if key.startswith("downloads/") else None
+        if match:
+            commit, directory_version, file_version = match.groups()
+            if commit in keep_commits or directory_version != file_version:
+                continue
+        elif legacy:
+            if legacy == keep_legacy_version:
+                continue
+        else:
+            continue  # Never delete arbitrary R2 data, runtime or auth records.
+        removed.append(key)
+        if not dry_run:
+            url = ("https://api.cloudflare.com/client/v4/accounts/"
+                   f"{urllib.parse.quote(account_id, safe='')}/r2/buckets/"
+                   f"{urllib.parse.quote(bucket, safe='')}/objects/{urllib.parse.quote(key, safe='/')}")
+            if not _request(url, token, method="DELETE").get("success", False):
+                raise RuntimeError(f"R2 delete failed for {key}")
+    return removed
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--keep-version", required=True)
+    parser.add_argument("--keep-version")
+    parser.add_argument("--keep-commit", action="append", default=[])
+    parser.add_argument("--keep-legacy-version")
     parser.add_argument("--local-root", type=Path)
     parser.add_argument("--r2", action="store_true")
     parser.add_argument("--bucket", default="sfh-game-artifacts")
@@ -131,6 +163,8 @@ def main() -> None:
     if bool(args.local_root) == bool(args.r2):
         raise SystemExit("choose exactly one of --local-root or --r2")
     if args.local_root:
+        if not args.keep_version:
+            raise SystemExit("--keep-version is required for local retention")
         removed = [str(path) for path in prune_local(args.local_root, args.keep_version, args.dry_run)]
         scope = str(args.local_root.resolve())
     else:
@@ -138,12 +172,18 @@ def main() -> None:
         token = os.environ.get("CLOUDFLARE_API_TOKEN", "")
         if not account_id or not token:
             raise SystemExit("CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN are required")
-        removed = prune_r2(
-            account_id, token, args.bucket, args.keep_version, args.prefix, args.dry_run
-        )
+        if args.keep_commit:
+            if args.prefix != "downloads/":
+                raise ValueError("Commit retention is limited to downloads/")
+            removed = prune_commit_downloads(account_id, token, args.bucket, args.keep_commit,
+                                              args.keep_legacy_version, args.dry_run)
+        elif args.keep_version:
+            removed = prune_r2(account_id, token, args.bucket, args.keep_version, args.prefix, args.dry_run)
+        else:
+            raise SystemExit("A verified version or commit is required")
         scope = f"r2://{args.bucket}/{args.prefix}"
     print(
-        f"WINDOWS_RETENTION_OK scope={scope} keep={args.keep_version} "
+        f"WINDOWS_RETENTION_OK scope={scope} keep={args.keep_commit or args.keep_version} "
         f"removed={len(removed)} dry_run={str(args.dry_run).lower()}"
     )
     for item in removed:

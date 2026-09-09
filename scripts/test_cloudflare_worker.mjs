@@ -78,6 +78,14 @@ assert.equal(response.status, 200);
 assert.equal(response.headers.get("content-range"), null);
 assert.match(response.headers.get("content-disposition"), /attachment/);
 assert.equal(response.headers.get("x-sfh-surface"), "windows-download");
+assert.equal(response.headers.get("cache-control"), "no-cache");
+
+response = await worker.fetch(
+  new Request("https://sfh-game.example/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip"),
+  { ...env, DOWNLOAD_PREFIX: "downloads/releases/new-commit" },
+);
+assert.equal(response.status, 200);
+assert.equal(bucket.lastKey, "downloads/releases/new-commit/v0.1.0/SFH-Windows-x64-v0.1.0.zip");
 
 response = await worker.fetch(new Request("https://sfh-game.example/healthz"), env);
 assert.equal(response.status, 200);

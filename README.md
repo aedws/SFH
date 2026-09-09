@@ -50,6 +50,8 @@ Godot 4 기반 모듈형 탑다운 익스트랙션 액션입니다.
 
 ### 기본 조작
 
+운영 역할은 **GitHub = 소스·PR·검사/복구 기록**, **자체 러너 = 빌드·검증**, **Cloudflare = 위키·게임·다운로드 제공**으로 분리합니다. 빌드 파일은 GitHub Artifact 저장소를 거치지 않으며 게임 변경은 같은 커밋의 Web·Windows를 검증한 뒤 전환합니다. [배포·재시도·복구 계약](docs/getting-started/source-control-and-cleanup.md#source-only-delivery).
+
 | 입력 | 기능 |
 |---|---|
 | `WASD` | 이동 |

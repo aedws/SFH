@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 152 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 153 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -64,9 +64,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 1 · IMPROVE 3 · CHANGE 1 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 2 · IMPROVE 3 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>배포 분리 · 소스는 Git, 실행 파일은 Cloudflare</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>자체 러너에서 검증된 위키·Web·Windows 파일을 Cloudflare로 직접 전달합니다. GitHub에는 변경 이력과 검사·복구 기록을 남기고 필수 테스트는 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>GitHub 파일 보관 한도로 배포가 막히던 경로를 제거했습니다. Windows 다운로드는 공개 주소를 유지하면서 Web와 같은 커밋으로 전환하고, 직전 정상본을 보존합니다.</p></div>
+        <p><a href="getting-started/source-control-and-cleanup/#source-only-delivery">전달 검증·복구·사용량 경계</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>도시형 맵 · 도로와 건물로 읽는 전장</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>개선 · 2</h3><p>넓은 대로·이면도로를 먼저 놓고 건물 정면과 보도·서비스 마당을 연결했습니다. 차선·주차선·외벽 패널·시설별 바닥·선반과 침상으로 공간을 구분합니다.</p><p>같은 지역의 필수 기준점은 유지하면서 보조 건물과 가구는 시드에 따라 달라집니다. 기획자·개발자 맵 설계실도 같은 도시 골격을 표시합니다.</p></div>
