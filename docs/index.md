@@ -17,7 +17,7 @@ search:
     </div>
     <span class="sfh-kicker">PUBLIC PLAYTEST</span>
     <h1>살아서 싸우고,<br>가져와 성장하세요.</h1>
-    <p>거점에서 장비를 갖추고, 자동 전투와 세 가지 전기 스킬로 방을 확보한 뒤, 얻은 전리품을 가지고 살아서 돌아오는 탑다운 익스트랙션 액션입니다.</p>
+    <p>요원과 무기를 고르고 거점에서 장비를 갖추세요. 40종 액티브 중 세 가지를 운용하며 전투·탐색을 거쳐 전리품을 가지고 살아서 돌아오는 탑다운 익스트랙션 액션입니다.</p>
     <div class="sfh-actions">
       <a class="sfh-button primary sfh-operation-play" data-sfh-surface="gameplay" href="https://sfh-game.vstock-market.workers.dev/" target="_blank" rel="noopener noreferrer">브라우저 플레이 <b>▶</b></a>
       <a class="sfh-button" data-sfh-surface="windows-download" href="https://sfh-game.vstock-market.workers.dev/downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip">Windows 다운로드 <b>↓</b></a>
@@ -54,9 +54,16 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 5 · IMPROVE 10 · CHANGE 1 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 5 · IMPROVE 11 · CHANGE 1 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 12</small><b>전체 검사 · 완료율과 잔여 작업 구분</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>전체 모듈·게임·E2E를 재검사하고 최신 노션과 대조했습니다. 기준 a41f424, 136.5/170=80.3%, 미정14행 제외87.5%. 자동 회귀는 통과했지만 훈련 라이브 수치 불일치와 일반10분 수락이 남아100%로 표시하지 않습니다.</p></div>
+        <p><a href="/quality/full-system-audit-20260909/">원본·계산·재현 오류·다음 실행 순서</a> · 문서 현행화이며 해당 오류 수정 배포는 아닙니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 11</small><b>첫 출격 요원·무장 선택 · 액티브 40종과 고정 패시브</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>PC/모바일 선택 뒤 요원·초기 무장을 정하고 로비로 들어갑니다. 기존4종에 신규36종을 더했으며 요원별 고정 패시브가 돌파·기동·구역 유지 계열을 특화합니다. 저장 장비와 로비→작전 장착 상태는 보존합니다.</p></div>

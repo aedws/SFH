@@ -1,5 +1,5 @@
 {
-  "version": 35,
+  "version": 36,
   "updated": "2026-09-09",
   "root": {
     "id": "sfh",
@@ -157,6 +157,7 @@
             "label": "E2E·UX",
             "description": "기능이 아니라 플레이어 인식으로 검증",
             "documents": [
+              {"label":"전체 모듈·E2E 감사와 잔여","source":"quality/full-system-audit-20260909.md","route":"quality/full-system-audit-20260909/","summary":"100% 여부·기획 판단 제외 분모·재현 오류·내일 실행 순서"},
               {"label": "실제 플레이 세션 E2E", "source": "quality/e2e-play-session.md", "route": "quality/e2e-play-session/", "summary": "실제 입력·화면 상태·복귀 검증"},
               {"label": "플레이어 인식 단위 E2E 감사", "source": "quality/player-perception-audit.md", "route": "quality/player-perception-audit/", "summary": "단서·피드백·결말 이해 판정"},
               {"label": "전체 게임 UI 재편", "source": "quality/game-ui-rematch.md", "route": "quality/game-ui-rematch/", "summary": "전체 화면 판정·제작/도감/설정·전환 오류와 검증 경계"},
