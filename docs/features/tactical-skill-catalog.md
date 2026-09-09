@@ -108,4 +108,3 @@ pwsh -NoProfile -File scripts/test-game.ps1
 ## 참고한 역할 설계
 
 [Warframe Volt](https://www.warframe.com/en/game/warframes/volt)의 전기 연쇄·기동/보호, [Mag](https://www.warframe.com/en/game/warframes/mag)의 구역 제어, [Rhino](https://www.warframe.com/en/game/warframes/rhino)의 돌파·방어·광역 제어를 탑다운 이동/자동 타게팅에 맞춰 재구성했습니다. [퍼스트 디센던트 개발 노트](https://tfd.nexon.com/en/news/3499658)의 캐릭터 강점 유지 방향도 참고했습니다. 명칭·그래픽·설명·수치를 복사하거나 원작 스킬 전체를 재현한 것은 아닙니다. 이펙트는 프로젝트 코드 도형을 사용합니다.
-
