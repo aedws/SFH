@@ -180,6 +180,7 @@ const START_HUB_METHODS := [
 	&"get_room_rect",
 	&"get_snapshot",
 	&"request_operation",
+	&"can_request_operation",
 ]
 const OPERATION_TUTORIAL_METHODS := [
 	&"configure", &"show_first_operation", &"dismiss", &"get_snapshot",
@@ -3666,7 +3667,8 @@ func _update_hub_wayfinding(delta: float) -> void:
 		return
 	hub_wayfinding_refresh_remaining = 0.2
 	var guide: Dictionary = hub_wayfinding_policy.snapshot(
-		player.global_position, start_hub.to_global(start_hub.call(&"get_operation_position"))
+		player.global_position, start_hub.to_global(start_hub.call(&"get_operation_position")),
+		bool(start_hub.call(&"can_request_operation", player))
 	)
 	hub_objective_label.text = String(guide.get(&"text", "동쪽 작전 게이트로 이동하세요."))
 

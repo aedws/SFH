@@ -57,6 +57,38 @@ func _run() -> void:
 	var game = load("res://game/scenes/game.tscn").instantiate()
 	root.add_child(game)
 	for frame in 6: await process_frame
+	# A visible "F" promise must use the same gate as the actual input, not a
+	# separate 150px HUD threshold or an Area-only input shortcut.
+	game.start_hub.position += Vector2(35, 25)
+	var gate_position: Vector2 = game.start_hub.to_global(game.start_hub.get_operation_position())
+	game.player.global_position = gate_position + Vector2(-140, 0)
+	for frame in 5: await physics_frame
+	game._update_hub_wayfinding(1.0)
+	_check(not game.hub_objective_label.text.contains("F로"), "hub outside gate must not promise usable F")
+	await _tap(KEY_F)
+	_check(not game.run_setup_overlay.visible and not paused, "hub outside input does not open briefing")
+	game.player.global_position = gate_position + Vector2(-118, 0)
+	for frame in 5: await physics_frame
+	_check(game.start_hub.nearby_player == null, "hub fixture outside rectangular overlap but inside request radius")
+	game._update_hub_wayfinding(1.0)
+	_check(game.hub_objective_label.text.contains("F로"), "hub radius eligibility shown")
+	await _tap(KEY_F)
+	_check(game.run_setup_overlay.visible and paused, "hub radius single F opens briefing")
+	if game.run_setup_overlay.visible: await _tap(KEY_ESCAPE)
+	game.start_hub.interaction_radius = 160.0
+	game.player.global_position = gate_position + Vector2(-155, 0)
+	for frame in 5: await physics_frame
+	game._update_hub_wayfinding(1.0)
+	_check(game.hub_objective_label.text.contains("F로"), "hub configured radius propagated to HUD")
+	await _tap(KEY_F)
+	_check(game.run_setup_overlay.visible, "hub configured radius propagated to input")
+	if game.run_setup_overlay.visible: await _tap(KEY_ESCAPE)
+	game.player.global_position = gate_position + Vector2(-180, 0)
+	for frame in 5: await physics_frame
+	game._update_hub_wayfinding(1.0)
+	_check(not game.hub_objective_label.text.contains("F로"), "hub exit clears action promise")
+	await _tap(KEY_F)
+	_check(not game.run_setup_overlay.visible and not paused, "hub exit prevents stale interaction")
 	game._open_run_setup()
 	for frame in 4: await process_frame
 	_check(game.operation_setup_presenter.get_snapshot().layout_fits, "first briefing layout fits before any resize")
@@ -75,7 +107,7 @@ func _run() -> void:
 	game.free()
 	for frame in 3: await process_frame
 	if failures.is_empty():
-		print("FUN_QA_AFFORDANCE_OK real_overlap center_gate physical_F pause_resume locked radius_sync tier_text_widths_5")
+		print("FUN_QA_AFFORDANCE_OK real_overlap center_gate physical_F pause_resume locked radius_sync hub_gate_shared_eligibility hub_radius_input hub_transformed hub_exit tier_text_widths_5")
 		quit(0)
 	else:
 		for failure in failures: printerr(failure)

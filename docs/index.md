@@ -54,9 +54,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 2 · IMPROVE 3 · CHANGE 1 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 2 · IMPROVE 4 · CHANGE 1 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 5</small><b>기획 판단 안내 · 거점 게이트 F 판정 통합</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>기획자 작업실 최상단에 필요한 판단·미승인 예시·Notion 작성 후 오너 개인 메시지 안내를 배치했습니다. 접힌 항목으로 내용을 나누고 기존 승인·자동 배포 경계는 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>거점 게이트에서 F 안내를 보고 눌러도 열리지 않던 서로 다른 거리/중첩 판정을 하나의 공개 계약으로 통합했습니다. 경계·반경 변경·위치 변환·이탈 입력 회귀를 추가했습니다.</p></div>
+        <p><a href="access/planner/#decisions-needed">판단 요청</a> · <a href="quality/e2e-play-session/#hub-gate-20260909">배포 재현·검증</a>. 거점 오류 수정과 탈출 F·양 플랫폼 10분 수락은 구분합니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 4</small><b>출격 준비 · 보유 응급키트 장착 무반응 수정</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>준비실에서 보유 응급키트 버튼을 눌러도 장착되지 않던 배열 타입 오류를 수정했습니다. 장착·해제·준비실 재진입과 빈 재고 거부를 실제 입력 회귀에 추가했습니다.</p></div>
