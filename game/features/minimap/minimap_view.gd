@@ -99,7 +99,10 @@ func _build_map_texture(
 		rect=rect.intersection(image_bounds)
 		var kind: StringName=space.get(&"kind",&"")
 		var color := floor_color if kind==&"room" else (street_color if kind==&"street" else yard_color)
-		if rect.has_area(): image.fill_rect(rect,color)
+		if space.has("cells"):
+			for cell: Vector2i in space.cells:
+				if image_bounds.has_point(cell-cell_bounds.position): image.set_pixelv(cell-cell_bounds.position,color)
+		elif rect.has_area(): image.fill_rect(rect,color)
 	for cell_value in obstacle_cells:
 		var cell := Vector2i(cell_value) - cell_bounds.position
 		if image_bounds.has_point(cell):

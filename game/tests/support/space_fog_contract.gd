@@ -10,7 +10,7 @@ static func verify(fog: Node, generator: Node, player: Node2D) -> Dictionary:
 		fog.call(&"_process", 0.2)
 		var rect: Rect2 = room.world_rect
 		for position in [rect.position+Vector2(80,80),rect.end-Vector2(80,80)]:
-			if fog.get_visibility_state(position)!=&"visible": errors.append("현재 방 모서리 미공개")
+			if generator.room_contains_cell(room.room_index,Vector2i((position/generator.cell_size).floor())) and fog.get_visibility_state(position)!=&"visible": errors.append("현재 방의 실제 바닥 미공개")
 		for door: Dictionary in room.doorways:
 			for offset in [-6.0,8.0,-4.0,6.0,40.0]:
 				player.global_position=Vector2(door.position)+Vector2(door.outward)*offset

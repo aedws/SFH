@@ -570,6 +570,7 @@ var current_map_config: Resource
 var selected_map_size: String = "small"
 var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CSV
 var facility_catalog_service: Node
+var difficulty_catalog_service: Node
 var preferred_weapon_slot: StringName = &"main"
 var hub_active_weapon_name: String = ""
 var prepared_equipment_state: Dictionary = {}
@@ -591,6 +592,10 @@ var run_skill_binding_replacements: Array[Dictionary] = []
 
 
 func _ready() -> void:
+	difficulty_catalog_service = preload("res://game/features/operation_contract/difficulty_catalog_service.gd").new()
+	add_child(difficulty_catalog_service)
+	difficulty_catalog_service.catalog_changed.connect(func(_snapshot: Dictionary) -> void:
+		if operation_contract_service != null: operation_contract_service.call(&"set_difficulty_rows",difficulty_catalog_service.call(&"get_rows")))
 	if features != null and features.map_generation_enabled:
 		facility_catalog_service = load("res://game/features/map_generation/facility_catalog_service.gd").new()
 		add_child(facility_catalog_service)
@@ -2271,6 +2276,8 @@ func _assemble_game() -> bool:
 							map_generator.call(&"set_facility_rows", facility_catalog_service.call(&"get_rows"))
 						if map_generator.has_method(&"set_region_context"):
 							map_generator.call(&"set_region_context", active_contract.get(&"region_id", &"ruined_city"))
+						if map_generator.has_method(&"set_operation_context"):
+							map_generator.call(&"set_operation_context",active_contract)
 						map_generator.call(&"generate", current_map_config, features.map_seed)
 						player_spawn_position = map_generator.call(&"get_player_spawn_position")
 					else:
@@ -2928,6 +2935,8 @@ func _select_balance_source_mode(source_mode: int) -> void:
 	selected_balance_source_mode = source_mode
 	if facility_catalog_service != null:
 		facility_catalog_service.call(&"set_source_mode", source_mode)
+	if difficulty_catalog_service != null:
+		difficulty_catalog_service.call(&"set_source_mode",source_mode)
 	if conditional_ranking_system != null:
 		conditional_ranking_system.call(&"set_reward_source_mode", source_mode)
 	locked_balance_button.button_pressed = (

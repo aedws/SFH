@@ -49,6 +49,7 @@ func validation_errors() -> PackedStringArray:
 func matches(context: Dictionary) -> bool:
 	var requested_region := StringName(context.get(&"region_id", &""))
 	var requested_difficulty := StringName(context.get(&"difficulty_id", ANY))
+	requested_difficulty = preload("res://game/features/operation_contract/difficulty_catalog.gd").loot_band(requested_difficulty)
 	var requested_map_size := StringName(context.get(&"map_size", ANY))
 	var requested_source := StringName(context.get(&"source_type", ANY))
 	if region_id != requested_region:

@@ -46,7 +46,7 @@ func _run() -> void:
 	var enemy: Node = load("res://game/features/enemies/enemy.gd").new()
 	catalog["enemy"] = {"hp":enemy.max_health, "armor":enemy.max_armor, "damage":enemy.contact_damage, "interval":enemy.contact_interval}
 	enemy.free()
-	catalog["difficulties"] = load("res://game/features/operation_contract/configs/default_operation_contracts.tres").difficulties
+	catalog["difficulties"] = load("res://game/features/operation_contract/configs/default_operation_contracts.tres").get_difficulties()
 	catalog.loadout["fixtures"] = preload("res://scripts/export_dps_loadout.gd").parity(catalog, root)
 	catalog["distance_fixtures"] = []
 	var distance_policy = preload("res://game/features/weapon_balance/weapon_distance_policy.gd")

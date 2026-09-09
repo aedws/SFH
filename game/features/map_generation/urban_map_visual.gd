@@ -79,6 +79,7 @@ func _draw() -> void:
 			for stripe in range(2,int(v.width)-2,2):
 				draw_rect(Rect2((float(v.at)+stripe)*cell_size,(float(h.at)+2)*cell_size,cell_size,cell_size*2),Color(curb,0.6))
 	for b: Dictionary in plan.buildings:
+		if plan.has("compound_count"): continue # Irregular outlines are rendered from collision strips below.
 		var room := _rect(b.rect)
 		# Wall-base wear and a painted service perimeter give interiors a readable scale.
 		draw_rect(room.grow(-10),Color(0.04,0.08,0.09,0.22),false,20)

@@ -1746,7 +1746,7 @@ func _verify_map_tiers() -> bool:
 				_fail("%s 도시 실내는 무작위 미로 벽 대신 가구 묶음이어야 합니다." % tier_id)
 				return false
 			for room: Dictionary in generator.call(&"get_room_encounter_snapshot"):
-				if room.open_directions.size()<2 or generator.call(&"get_world_path",generator.call(&"get_player_spawn_position"),room.center).is_empty():
+				if room.doorways.is_empty() or generator.call(&"get_world_path",generator.call(&"get_player_spawn_position"),room.center).is_empty():
 					_fail("%s 도시 가구가 시설 출입 경로를 막았습니다." % tier_id)
 					return false
 		elif (

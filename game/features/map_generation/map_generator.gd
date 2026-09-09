@@ -137,7 +137,7 @@ func get_visibility_region(world_position: Vector2) -> Dictionary:
 	var cell := _world_to_cell(world_position)
 	for room_index in range(rooms.size()):
 		var room := rooms[room_index]
-		if room.has_point(cell):
+		if room_contains_cell(room_index, cell):
 			return {
 				&"mode": &"room",
 				&"room_index": room_index,
@@ -159,6 +159,10 @@ func get_visibility_room_rects() -> Array[Rect2]:
 	return result
 
 
+func room_contains_cell(room_index: int, cell: Vector2i) -> bool:
+	return room_index >= 0 and room_index < rooms.size() and rooms[room_index].has_point(cell)
+
+
 func get_room_encounter_snapshot() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for room_index in range(rooms.size()):
@@ -167,6 +171,7 @@ func get_room_encounter_snapshot() -> Array[Dictionary]:
 		var open_directions := _get_open_directions(doorways)
 		result.append({
 			&"room_index": room_index,
+			&"floor_area": room.size.x * room.size.y * cell_size * cell_size,
 			&"world_rect": _room_world_rect(room, false),
 			&"center": _cell_center(_room_center_cell(room)),
 			&"doorways": doorways,
@@ -197,7 +202,7 @@ func get_room_spawn_positions(
 			random.randi_range(room.position.x + 3, room.end.x - 4),
 			random.randi_range(room.position.y + 3, room.end.y - 4)
 		)
-		if used_cells.has(cell) or obstacle_cells.has(cell) or not floor_cells.has(cell):
+		if used_cells.has(cell) or obstacle_cells.has(cell) or not floor_cells.has(cell) or not room_contains_cell(room_index,cell):
 			continue
 		if cell.distance_squared_to(_room_center_cell(room)) < 16:
 			continue
@@ -535,7 +540,7 @@ func _random_wall_loot_point(
 		_:
 			cell = Vector2i(room.end.x - 1, random.randi_range(room.position.y + 3, room.end.y - 4))
 			inward = Vector2.LEFT
-	if used_cells.has(cell) or obstacle_cells.has(cell) or not floor_cells.has(cell):
+	if used_cells.has(cell) or obstacle_cells.has(cell) or not floor_cells.has(cell) or not room_contains_cell(rooms.find(room),cell) or floor_cells.has(cell-Vector2i(inward)):
 		return {}
 	return {
 		&"cell": cell,
@@ -550,7 +555,7 @@ func _random_floor_loot_point(room: Rect2i, used_cells: Dictionary) -> Dictionar
 		random.randi_range(room.position.x + 4, room.end.x - 5),
 		random.randi_range(room.position.y + 4, room.end.y - 5)
 	)
-	if used_cells.has(cell) or obstacle_cells.has(cell) or not floor_cells.has(cell):
+	if used_cells.has(cell) or obstacle_cells.has(cell) or not floor_cells.has(cell) or not room_contains_cell(rooms.find(room),cell):
 		return {}
 	return {
 		&"cell": cell,

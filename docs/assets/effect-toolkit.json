@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2026-09-09.2",
+  "version": "2026-09-09.3",
   "fingerprint": "b888509763e57a05cbbe18b65fd87bce397e22d804a671a5e7727a5241ba4a3b",
   "sources": {
     "game/features/combat_skills/definitions/blink.tres": "f7c9548f0685e1ed90cabb98425799f8d6eed27613779d2dea53bc7712e90d7c",

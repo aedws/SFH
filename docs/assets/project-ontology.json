@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "92ac140e9a10c0f79aa945f278ccec23742527c4da575aaabeb7df270f9bc958",
+  "source_sha256": "6e9ebd7782fc59239a66d529e65a4dc22831884e44bdd1af44e83a5b2e8aa74e",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -580,9 +580,9 @@
       "status": "implemented",
       "certainty": "confirmed",
       "decision_owner": "authority:project-owner",
-      "summary": "2026-09-08 오너가 추천 변경안 구현을 승인했습니다. 순환 도로·시설, 일반 교전 후퇴, 선택형 금고 봉쇄, 즉시 접근 가능한 복수 탈출, 공간 단위 공개로 전환합니다. 기존 전방위 반경 FOV·모든 방 자동 봉쇄·시간/전실 클리어 탈출·어디서나 출구 워프 규칙과 충돌하며 이번 명시 지시가 현행 구현의 기준입니다. Notion의 과거 기획 상태를 자동 수정하지 않습니다.",
-      "acceptance": "세 규모 연결성, 입퇴실 공개/불투명 지형 기억, 일반 교전 후퇴, 금고 F 봉쇄, 두 탈출구 단일 정산, 제한된 워프와 CSV 교체 검증.",
-      "next_action": "시설 위험·배치 가중치는 임시 수치로 유지하고 실제 회수 동선과 플레이 시간으로 조정합니다.",
+      "summary": "2026-09-09 오너가 B 복합 구역을 진행 골격, A 불규칙 건물을 공간 생성, C 다각형 비율을 1~10 난이도 변형으로 채택했습니다. 모든 시설을 도로·마당으로 바로 접근하던 1차 규칙을 대체합니다. 일반 후퇴·선택 금고·두 출구·단일 정산·공간 공개는 유지합니다. 장비 추가비와 난이도 투자비는 분리하며 수치는 임시 CSV입니다. 이전 Notion 기획 상태는 자동 수정하지 않습니다.",
+      "acceptance": "3지역×3규모×10단계 실제 생성, 30개 UI 출격/복귀, 실제 바닥·안개·스폰·포털, 투자 증가·계약 격리, Web 초기 선택, 사람의 입구/퇴로 판독은 별도 수락.",
+      "next_action": "Difficulty 시트의 임시 배수와 정상 체력 플레이의 위험·보상 체감을 비교하고 오너 수락을 받습니다.",
       "relations": [
         {
           "to": "principle:owner-authority",
@@ -2711,15 +2711,15 @@
       "label": "밸런스 데이터",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "데이터 · feature · 파일 2개",
+      "summary": "데이터 · feature · 파일 3개",
       "route": "architecture/code-module-map/?module=balance_data",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/balance_data",
       "kind": "implementation",
       "metrics": {
-        "files": 2,
-        "classes": 2,
-        "incoming": 2,
+        "files": 3,
+        "classes": 3,
+        "incoming": 3,
         "outgoing": 0
       }
     },
@@ -3206,7 +3206,7 @@
         "files": 4,
         "classes": 4,
         "incoming": 3,
-        "outgoing": 1
+        "outgoing": 2
       }
     },
     {
@@ -3215,14 +3215,14 @@
       "label": "맵 생성",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "월드·탐색 · feature · 파일 11개",
+      "summary": "월드·탐색 · feature · 파일 13개",
       "route": "architecture/code-module-map/?module=map_generation",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/map_generation",
       "kind": "implementation",
       "metrics": {
-        "files": 11,
-        "classes": 11,
+        "files": 13,
+        "classes": 13,
         "incoming": 7,
         "outgoing": 1
       }
@@ -3305,16 +3305,16 @@
       "label": "작전 계약",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "작전 흐름 · feature · 파일 2개",
+      "summary": "작전 흐름 · feature · 파일 4개",
       "route": "architecture/code-module-map/?module=operation_contract",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/operation_contract",
       "kind": "implementation",
       "metrics": {
-        "files": 2,
-        "classes": 2,
-        "incoming": 3,
-        "outgoing": 0
+        "files": 4,
+        "classes": 4,
+        "incoming": 4,
+        "outgoing": 1
       }
     },
     {
@@ -3737,13 +3737,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 70개",
+      "summary": "기반·검증 · verification · 파일 71개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 70,
+        "files": 71,
         "classes": 0,
         "incoming": 0,
         "outgoing": 55

@@ -18,6 +18,8 @@
 .sfh-map-canvas .start { fill:#235782; }
 .sfh-map-canvas .exit { fill:#815717; }
 .sfh-map-canvas .selected { stroke:#fff; stroke-width:4; }
+.sfh-map-canvas path.building { stroke:none; }
+.sfh-map-canvas path.selected { filter:drop-shadow(0 0 2px #fff); fill:#40858c; }
 .sfh-map-canvas text { fill:white; font:10px sans-serif; text-anchor:middle; dominant-baseline:middle; pointer-events:none; }
 .sfh-map-workbench p,.sfh-map-workbench small { font-size:.75rem; line-height:1.65; overflow-wrap:anywhere; }
 .sfh-map-invariants { border-left:3px solid var(--map-line); padding-left:.6rem; }
@@ -27,6 +29,6 @@
   .sfh-map-body{grid-template-columns:1fr}
   .sfh-map-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
   .sfh-map-controls>label:nth-child(3){grid-column:1/-1}
-  .sfh-map-controls>button{margin:0;width:100%;min-height:48px}
+  .sfh-map-controls>button{margin:0;width:100%;height:48px;align-self:end}
   .sfh-map-canvas svg{max-height:420px}
 }

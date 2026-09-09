@@ -9,11 +9,12 @@
     function select(label,options){const wrap=node('label',label),s=node('select');s.setAttribute('aria-label',label);for(const [v,t] of options){const o=node('option',t);o.value=v;s.append(o);}wrap.append(s);controls.append(wrap);return s;}
     const region=select('지역',catalog.regions.map(r=>[r.id,r.name]));
     const tier=select('규모',[['small','소형'],['medium','중형'],['large','대형']]);
+    const difficulty=select('위험 단계',(catalog.difficulties||[]).map(r=>[r.difficulty_id,r.display_name]));
     const seedLabel=node('label','시드'),seed=node('input');seed.type='number';seed.min='0';seed.max='2147483646';seed.step='1';seed.value='90808';seedLabel.append(seed);controls.append(seedLabel);
     function button(text,action,parent=controls){const b=node('button',text);b.type='button';b.addEventListener('click',action);parent.append(b);return b;}
     button('다른 시드',()=>{seed.value=String((Number(seed.value)+7919)%2147483647);change();});
     button('현행 피스로 복원',()=>{facilities=structuredClone(catalog.facilities);change();});
-    const legend=node('p','S 시작 · E 탈출 · ◆ 필수 피스 · 숫자 보조 시설 / 짙은 회색: 도로 · 옅은 회색: 보도·서비스 공터 · 건물: 실내');
+    const legend=node('p','S 시작 · E 탈출 · ◆ 필수 피스 · 숫자 보조 시설 / 도로 → 제한된 구역 입구 → 내부 시설. 빈 부지는 우회 통로가 아닙니다.');
     const body=node('div');body.className='sfh-map-body';
     const mapHost=node('div');mapHost.className='sfh-map-canvas';
     const detail=node('section');detail.className='sfh-map-detail';
@@ -37,12 +38,12 @@
     draft.append(output,draftStatus);
     host.append(controls,status,legend,body,invariant,draft,node('p','범위: 실제 게임과 같은 건물·도로·필수 피스 배치. 적·장애물·드랍·전투 난이도는 시뮬레이션하지 않습니다. 시드 0은 미리보기에서 재현 가능하지만 게임에서는 자동 시드입니다.'));
     function change(preferred){output.value='';draftStatus.textContent='설정이 변경되었습니다. 초안을 다시 만드세요.';render(typeof preferred==='string'?preferred:null);}
-    [region,tier,seed].forEach(n=>n.addEventListener('change',change));
+    [region,tier,seed,difficulty].forEach(n=>n.addEventListener('change',change));
     room.addEventListener('change',()=>{selected=Number(room.value);showDetail();highlight();});
     function highlight(){mapHost.querySelectorAll('[data-room]').forEach(n=>n.classList.toggle('selected',Number(n.dataset.room)===selected));}
     function showDetail(){
       const b=plan.buildings[selected],r=facilities.find(r=>r.facility_id===b.facility_id);room.value=String(selected);editor.replaceChildren();
-      info.textContent=`${r.display_name} · ${b.required?'필수 기준점':'보조 배치'} · ${b.rect[2]}×${b.rect[3]}칸 · ${b.axis==='horizontal'?'좌우':'상하'} 출입구. ${r.planner_note}`;
+      info.textContent=`${r.display_name} · ${b.required?'필수 기준점':'보조 배치'} · 경계 ${b.rect[2]}×${b.rect[3]}칸 · ${b.polygonal?'C 다각형':'A 불규칙 건물'} · 입구는 B 구역 연결로 결정. ${r.planner_note}`;
       const box=node('label'),required=node('input');required.type='checkbox';required.checked=r.required_regions==='*'||r.required_regions.split('|').includes(region.value);required.disabled=r.encounter==='objective';box.append(required,document.createTextNode(' 이 지역 필수 피스'));editor.append(box);
       const description=node('small','아래는 선택한 한 건물이 아니라 같은 종류의 피스 규칙을 시험합니다. 시작·탈출·도로·금고 수는 바꾸지 않습니다.');editor.append(description);
       required.addEventListener('change',()=>{
@@ -55,7 +56,8 @@
     }
     function render(preferred=null){
       try{
-        plan=window.SFHMapModel.build(catalog.tiers[tier.value],region.value,Number(seed.value),facilities);
+        const policy=(catalog.difficulties||[]).find(r=>r.difficulty_id===difficulty.value)||{};
+        plan=window.SFHMapModel.build(catalog.tiers[tier.value],region.value,Number(seed.value),facilities,policy.map_geometry);
         selected=Math.min(selected,plan.count-1);
         if(preferred){const target=plan.buildings.find(b=>b.required&&b.facility_id===preferred)||plan.buildings.find(b=>b.facility_id===preferred);if(target)selected=target.index;}
         status.textContent=`${JSON.stringify(facilities)===JSON.stringify(catalog.facilities)?'현행 CSV':'시험 변경 · 미적용'} ${catalog.version} · 시드 ${plan.seed} · ${plan.count}개 건물`;
@@ -66,13 +68,13 @@
         plan.passages.forEach(r=>rect(r,'entrance'));
         room.replaceChildren();
         for(const b of plan.buildings){const r=facilities.find(r=>r.facility_id===b.facility_id),symbol=b.index===0?'S':plan.exits.includes(b.index)?'E':b.required?'◆':String(b.index+1);
-          const shape=rect(b.rect,`building ${b.required?'required':''} ${b.index===0?'start':''} ${plan.exits.includes(b.index)?'exit':''}`);shape.dataset.room=b.index;shape.addEventListener('click',()=>{selected=b.index;showDetail();highlight();});
+          const shape=document.createElementNS(ns,'path');shape.setAttribute('d',window.SFHMapModel.shapePath(b));shape.setAttribute('class',`building ${b.required?'required':''} ${b.index===0?'start':''} ${plan.exits.includes(b.index)?'exit':''}`);svg.append(shape);shape.dataset.room=b.index;shape.addEventListener('click',()=>{selected=b.index;showDetail();highlight();});
           const title=document.createElementNS(ns,'title');title.textContent=`${symbol} ${r.display_name}`;shape.append(title);
           const text=document.createElementNS(ns,'text');text.setAttribute('x',b.rect[0]+b.rect[2]/2);text.setAttribute('y',b.rect[1]+b.rect[3]/2);text.textContent=symbol;svg.append(text);
           const o=node('option',`${symbol} · ${r.display_name} · ${b.required?'필수':'보조'}`);o.value=b.index;room.append(o);
         }
         mapHost.replaceChildren(svg);showDetail();highlight();
-        invariant.textContent=`유지: 시작 1 · 출구 2 · 순환 도로 · 건물당 출입구 2 · 선택 금고 1 / 필수 피스: ${plan.buildings.filter(b=>b.required).map(b=>facilities.find(r=>r.facility_id===b.facility_id).display_name).join(', ')}`;
+        invariant.textContent=`유지: 시작 1 · 출구 2 · 제한 진입 ${plan.compound_count}구역 · 선택 금고 1 · 전방위 도로 진입 폐기 / 투입비 ×${policy.entry_cost_multiplier||1} · C ${Math.round((plan.polygon_ratio||0)*100)}% / 필수 피스: ${plan.buildings.filter(b=>b.required).map(b=>facilities.find(r=>r.facility_id===b.facility_id).display_name).join(', ')}`;
       }catch(e){plan=null;status.textContent=e.message;mapHost.replaceChildren();info.textContent='입력값을 수정하세요.';editor.replaceChildren();invariant.textContent='생성하지 못했습니다.';}
     }
     render();

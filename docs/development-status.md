@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 162 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 163 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -68,9 +68,18 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>12 UPDATE BUNDLES · BUILD 5 · IMPROVE 11 · CHANGE 1 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 6 · IMPROVE 12 · CHANGE 1 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 13</small><b>복합 구역 맵 · 위험 1~10단계</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>B 구역 연결에 A 불규칙 바닥과 C 다각형 위험 변형을 결합했습니다. 모든 건물 주변을 우회하던 도로를 줄이고 내부 시설·후퇴 경로를 구분합니다. 1~10단계 투자·적 배수는 Difficulty 시트와 확정 CSV로 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>실제 바닥을 시야·스폰·보상·지도 판정에 공유하고 출격 검증을 30조합으로 확장했습니다. 위키 설계실도 현재 구역과 위험 단계별 형태를 표시합니다. 수치는 임시이며 자동 검사와 정상 체력 재미 수락은 구분합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>Web 첫 무기 선택이 비어 로비에 진입하지 못하던 리소스 열거를 수정했습니다.</p></div>
+        <p><a href="/features/extraction-district/#compound-20260909">변경 이유·시트 입력·모듈 경계·수락 기준</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 12</small><b>전체 검사 · 완료율과 잔여 작업 구분</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>개선 · 1</h3><p>전체 모듈·게임·E2E를 재검사하고 최신 노션과 대조했습니다. 기준 a41f424, 136.5/170=80.3%, 미정14행 제외87.5%. 자동 회귀는 통과했지만 훈련 라이브 수치 불일치와 일반10분 수락이 남아100%로 표시하지 않습니다.</p></div>
