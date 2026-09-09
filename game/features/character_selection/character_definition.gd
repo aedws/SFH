@@ -12,6 +12,10 @@ extends Resource
 @export_range(0.01, 10.0, 0.01) var movement_speed_multiplier: float = 1.0
 @export var source_status: StringName = &"temporary"
 @export_multiline var planner_note: String
+@export var skill_families := ""
+@export var skill_damage_multiplier := 1.0
+@export var skill_cooldown_multiplier := 1.0
+@export var skill_radius_multiplier := 1.0
 
 
 func validation_errors() -> PackedStringArray:
@@ -24,7 +28,13 @@ func validation_errors() -> PackedStringArray:
 		errors.append("투입 비용과 이동 속도 배율이 올바르지 않습니다.")
 	if source_status not in [&"temporary", &"confirmed"]:
 		errors.append("source_status는 temporary 또는 confirmed여야 합니다.")
+	for value in [skill_damage_multiplier, skill_cooldown_multiplier, skill_radius_multiplier]:
+		if not is_finite(value) or value <= 0 or value > 5: errors.append("패시브 스킬 배율 오류")
 	return errors
+
+func skill_specialization() -> Dictionary:
+	return {&"families": skill_families, &"damage_multiplier": skill_damage_multiplier,
+		&"cooldown_multiplier": skill_cooldown_multiplier, &"radius_multiplier": skill_radius_multiplier}
 
 
 func runtime_modifiers() -> Dictionary:
@@ -45,4 +55,5 @@ func to_snapshot() -> Dictionary:
 		&"passive_name": passive_name, &"passive_description": passive_description,
 		&"runtime_modifiers": runtime_modifiers(), &"source_status": source_status,
 		&"planner_note": planner_note,
+		&"skill_specialization": skill_specialization(),
 	}

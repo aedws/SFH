@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/tactical_pattern_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2")
+shape = "chain"
+radius = 400
+inner_radius = 80
+width = 48
+angle_degrees = 90
+damage = 7
+pulses = 5
+interval = 0.6
+delay = 0
+follow_player = true
+anchor_on_target = false
+maximum_targets = 3
+chain_range = 160
+status_id = "shock"
+status_duration = 2
+consume_status_id = ""
+combo_multiplier = 2
+rotation_per_pulse = 0
+defense_add = 0
+speed_multiplier = 1
+buff_duration = 4
+
+[resource]
+script = ExtResource("1")
+skill_id = &"relay_barrage"
+display_name = "반복 릴레이"
+description = "이동하며 세 대상에게 다섯 번 전격 연결"
+input_action = &"combat_skill_3"
+input_label = "3"
+targeting_mode = "self"
+targeting_range = 400
+required_combat_tags = []
+cooldown_seconds = 12
+energy_cost = 35
+maximum_charges = 1
+charge_recovery_seconds = 12
+effect = SubResource("Effect")

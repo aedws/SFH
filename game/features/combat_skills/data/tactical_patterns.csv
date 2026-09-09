@@ -1,0 +1,37 @@
+skill_id,display_name,slot,shape,radius,inner_radius,width,angle_degrees,damage,pulses,interval,delay,follow_player,anchor_on_target,maximum_targets,chain_range,status_id,status_duration,consume_status_id,combo_multiplier,rotation_per_pulse,defense_add,speed_multiplier,buff_duration,cooldown,energy,description
+arc_link,연쇄 전격,0,chain,520,80,48,90,18,1,0.5,0,FALSE,FALSE,5,170,shock,3,,2,0,0,1,4,7,25,가까운 적 다섯에게 차례로 전격 연결
+relay_stun,정지 릴레이,1,chain,440,80,48,90,5,1,0.5,0,FALSE,FALSE,4,140,stun,2,,2,0,0,1,4,10,25,네 대상을 연결하여 공격과 이동 정지
+overload_link,과부하 연결,0,chain,520,80,48,90,16,1,0.5,0,FALSE,FALSE,6,190,,2,shock,3,0,0,1,4,11,35,감전 표식을 소모하면 연결 피해 세 배
+relay_barrage,반복 릴레이,2,chain,400,80,48,90,7,5,0.6,0,TRUE,FALSE,3,160,shock,2,,2,0,0,1,4,12,35,이동하며 세 대상에게 다섯 번 전격 연결
+plasma_lance,플라스마 창,0,line,700,80,42,90,32,1,0.5,0,FALSE,FALSE,12,150,,2,,2,0,0,1,4,8,25,정면의 좁고 긴 경로를 관통
+cryo_ray,냉각 광선,1,line,550,80,64,90,5,6,0.3,0,FALSE,FALSE,12,150,slow,2,,2,0,0,1,4,10,25,발동 방향 고정 광선으로 반복 둔화
+breach_ray,균열 광선,0,line,600,80,90,90,14,1,0.5,0,FALSE,FALSE,16,150,vulnerable,5,,2,0,0,1,4,9,25,직선의 적에게 받는 피해 증가 표식
+rotating_ray,회전 절단광,2,line,360,80,54,90,9,8,0.25,0,TRUE,FALSE,12,150,,2,,2,45,0,1,4,14,35,플레이어를 중심으로 광선이 한 바퀴 회전
+crossfire,십자 섬광,0,line,500,80,70,90,24,4,0.1,0,FALSE,FALSE,16,150,,2,,2,90,0,1,4,12,30,발동 위치에서 네 방향으로 차례 발사
+charged_rail,축전 레일,0,line,820,80,36,90,85,1,0.5,1.1,FALSE,FALSE,8,150,,2,,2,0,0,1,4,16,40,경로 예고 뒤 좁은 고위력 관통 사격
+fan_cut,부채꼴 참격,0,cone,210,80,48,110,35,1,0.5,0,FALSE,FALSE,12,150,,2,,2,0,0,1,4,6,20,정면 부채꼴 근접 절단
+suppression_fan,제압 부채,1,cone,330,80,48,80,8,1,0.5,0,FALSE,FALSE,18,150,stun,2.5,,2,0,0,1,4,11,30,정면 넓은 구역의 적을 제압
+frost_fan,서리 분사,1,cone,300,80,48,65,6,7,0.3,0,TRUE,FALSE,16,150,slow,2,,2,0,0,1,4,12,30,움직이며 발동 방향에 냉각 분사
+execution_fan,처형 절단,0,cone,240,80,48,95,28,1,0.5,0,FALSE,FALSE,10,150,,2,vulnerable,3,0,0,1,4,12,30,취약 표식을 소모하여 근접 피해 세 배
+spiral_cut,나선 검무,2,cone,200,80,48,80,13,6,0.2,0,TRUE,FALSE,12,150,,2,,2,60,0,1.15,2,12,35,가속과 함께 여섯 방향 회전 참격
+seismic_pulse,지진 파동,1,circle,270,80,48,90,20,1,0.5,0,FALSE,FALSE,24,150,stun,1.5,,2,0,0,1,4,12,30,주변 적에게 충격과 짧은 기절
+thermal_bloom,열화 개화,0,circle,240,80,48,90,70,1,0.5,1.2,FALSE,TRUE,24,150,,2,,2,0,0,1,4,15,40,밀집 지점 예고 뒤 폭발
+static_trap,정전 덫,1,circle,160,80,48,90,10,6,0.7,0.5,FALSE,FALSE,16,150,stun,0.5,,2,0,0,1,4,16,35,발동 위치에 남는 반복 제압 장판
+frost_zone,동결 구역,1,circle,260,80,48,90,4,8,0.5,0,FALSE,TRUE,24,150,slow,1,,2,0,0,1,4,15,30,밀집 지점에 고정 냉각 장판
+corrosion_zone,부식 구역,1,circle,220,80,48,90,5,6,0.6,0,FALSE,TRUE,24,150,vulnerable,3,,2,0,0,1,4,14,35,밀집 지점의 적에게 반복 취약 부여
+storm_mantle,폭풍 외투,2,circle,145,80,48,90,9,10,0.4,0,TRUE,FALSE,12,150,shock,2,,2,0,2,1,4,18,40,짧은 사거리의 이동 전격과 방어 증가
+orbit_guard,궤도 방호,2,ring,185,90,48,90,12,6,0.6,0,TRUE,FALSE,16,150,,2,,2,0,5,1,4,18,35,방어를 높이고 주변 궤도 안의 적 타격
+perimeter_mine,외곽 지뢰,1,ring,320,180,48,90,60,1,0.5,1.5,FALSE,FALSE,24,150,,2,,2,0,0,1,4,15,35,안쪽은 안전하고 외곽 고리만 지연 폭발
+containment_ring,격리 고리,1,ring,300,170,48,90,3,8,0.4,0,FALSE,FALSE,24,150,slow,2,,2,0,0,1,4,14,30,고리를 지나오는 적을 반복 둔화
+resonance_ring,공명 고리,0,ring,340,110,48,90,16,3,0.7,0,TRUE,FALSE,24,150,,2,shock,2.5,0,0,1,4,14,35,감전 표식과 연계하는 세 번의 이동 고리
+mark_target,집중 표식,1,single,650,80,48,90,5,1,0.5,0,FALSE,FALSE,1,150,vulnerable,8,,2,0,0,1,4,7,15,우선 대상 하나의 받는 피해 증가
+ion_strike,이온 저격,0,single,760,80,48,90,80,1,0.5,0.7,FALSE,FALSE,1,150,,2,,2,0,0,1,4,14,35,우선 대상 하나에 지연 고위력 타격
+stasis_lock,정지 구속,1,single,600,80,48,90,6,1,0.5,0,FALSE,FALSE,1,150,stun,5,,2,0,0,1,4,16,30,우선 대상 한 명을 장시간 제압
+focused_barrage,집중 포격,0,single,680,80,48,90,13,6,0.25,0,FALSE,FALSE,1,150,,2,,2,0,0,1,4,12,30,지정한 적이 살아 있는 동안 여섯 발 타격
+shatter,빙결 분쇄,0,circle,250,80,48,90,20,1,0.5,0,FALSE,FALSE,24,150,,2,slow,3,0,0,1,4,10,25,주변 둔화 표식을 소모해 폭발 피해 세 배
+reactive_shell,반응 장갑,2,self,220,80,48,90,0,1,0.5,0,TRUE,FALSE,1,150,,2,,2,0,10,0.85,6,18,30,이동을 조금 늦추고 방어력 대폭 증가
+evasive_drive,회피 구동,2,self,220,80,48,90,0,1,0.5,0,TRUE,FALSE,1,150,,2,,2,0,3,1.45,3,10,25,짧은 가속과 방어 보정으로 탈출 동선 확보
+fortress_pulse,요새 진동,2,circle,180,80,48,90,8,5,1,0,TRUE,FALSE,16,150,slow,1.5,,2,0,7,0.9,5,20,40,단단한 방호 중 주변 적을 주기적으로 둔화
+assault_drive,돌격 구동,2,cone,180,80,48,70,10,8,0.4,0,TRUE,FALSE,10,150,,2,,2,0,0,1.35,3,16,35,가속 중 발동 방향으로 근거리 연속 타격
+null_wave,무력화 파동,1,circle,360,80,48,90,0,1,0.5,0.4,FALSE,FALSE,32,150,vulnerable,6,,2,0,4,1,3,18,30,주변을 취약하게 만들고 잠시 방어 확보
+thunder_finale,뇌전 종막,0,circle,400,80,48,90,22,3,0.8,0.6,FALSE,TRUE,32,150,shock,3,,2,0,0,1,4,24,55,밀집 지점에 예고 후 세 번의 대형 전격

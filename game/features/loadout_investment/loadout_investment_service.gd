@@ -19,6 +19,8 @@ var active_run_id: StringName
 var refresh_remaining := 0.0
 var pending_live_text := {}
 var equipped_weapons_only := false
+var skill_balance_values: Dictionary = {}
+var pattern_request: HTTPRequest
 
 
 func preserve_equipped_weapons() -> void:
@@ -27,6 +29,9 @@ func preserve_equipped_weapons() -> void:
 
 
 func _ready() -> void:
+	pattern_request = HTTPRequest.new()
+	add_child(pattern_request)
+	pattern_request.request_completed.connect(_on_live_request_completed.bind(&"patterns"))
 	weapon_request.request_completed.connect(_on_live_request_completed.bind(&"weapon"))
 	skill_request.request_completed.connect(_on_live_request_completed.bind(&"skill"))
 
@@ -61,8 +66,9 @@ func request_live_catalog() -> bool:
 	var cache := int(Time.get_unix_time_from_system())
 	var weapon_error := weapon_request.request(_cache_url(config.live_weapon_csv_url, cache))
 	var skill_error := skill_request.request(_cache_url(config.live_skill_csv_url, cache))
+	var pattern_error := pattern_request.request(_cache_url(config.live_skill_csv_url.replace("sheet=Skill", "sheet=SkillPattern"), cache))
 	refresh_remaining = config.live_refresh_seconds
-	return weapon_error == OK and skill_error == OK
+	return weapon_error == OK and skill_error == OK and pattern_error == OK
 
 
 func load_catalog_text(weapon_csv: String, skill_csv: String, new_source_label: String) -> bool:
@@ -151,6 +157,8 @@ func get_selection_errors() -> PackedStringArray:
 		var snapshot := entry.to_snapshot(profile, not active_run_id.is_empty())
 		if not bool(snapshot[&"unlocked"]):
 			errors.append("%s 미해금" % entry.display_name)
+		if entry.item_kind == &"skill" and skill_balance_values.has(String(entry.item_id)) and SkillBalanceSnapshot.apply(load(entry.definition_path), skill_balance_values[String(entry.item_id)]) == null:
+			errors.append("%s 실시간 스킬 정의 오류" % entry.display_name)
 	var selected_weapons: Array[Resource] = []
 	# In equipped mode compatibility disables individual skills in combat; it must
 	# not replace the weapon or prevent a valid lobby loadout from entering a raid.
@@ -173,6 +181,7 @@ func get_selection_errors() -> PackedStringArray:
 func get_investment_context() -> Dictionary:
 	var weapon_paths := {}
 	var skill_paths := {}
+	var selected_balance := {}
 	var total := 0
 	var selected_snapshots: Array[Dictionary] = []
 	for entry in _selected_entries():
@@ -184,8 +193,11 @@ func get_investment_context() -> Dictionary:
 			weapon_paths[entry.slot_id] = entry.definition_path
 		else:
 			skill_paths[int(String(entry.slot_id).trim_prefix("skill_"))] = entry.definition_path
+			if skill_balance_values.has(String(entry.item_id)):
+				selected_balance[String(entry.item_id)] = skill_balance_values[String(entry.item_id)].duplicate(true)
 	return {
 		&"additional_entry_cost": total,
+		&"skill_balance_values": selected_balance,
 		&"weapon_paths": weapon_paths, &"skill_paths": skill_paths,
 		&"selected_items": selected_snapshots, &"selection_ready": can_launch(),
 		&"selection_errors": get_selection_errors(), &"source_label": source_label,
@@ -260,6 +272,7 @@ func get_skill_catalog_resources() -> Array[Resource]:
 func _load_locked_csv() -> bool:
 	var weapon_text := _read_csv(config.weapon_csv_path, config.weapon_csv_payload)
 	var skill_text := _read_csv(config.skill_csv_path, config.skill_csv_payload)
+	skill_balance_values.clear()
 	if weapon_text.is_empty() or skill_text.is_empty():
 		catalog_error.emit("확정 Weapon·Skill 투자 CSV를 찾을 수 없습니다.")
 		return false
@@ -367,7 +380,7 @@ func _cache_url(url: String, cache: int) -> String:
 
 
 func _request_in_flight() -> bool:
-	return weapon_request.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED or skill_request.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED
+	return weapon_request.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED or skill_request.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED or (is_instance_valid(pattern_request) and pattern_request.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED)
 
 
 func _on_live_request_completed(_result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, kind: StringName) -> void:
@@ -375,5 +388,12 @@ func _on_live_request_completed(_result: int, response_code: int, _headers: Pack
 		catalog_error.emit("%s 투자 Sheet 요청 실패: HTTP %d" % [kind, response_code])
 		return
 	pending_live_text[kind] = body.get_string_from_utf8()
-	if pending_live_text.has(&"weapon") and pending_live_text.has(&"skill"):
-		load_catalog_text(pending_live_text[&"weapon"], pending_live_text[&"skill"], "Google Sheets 실시간")
+	if pending_live_text.has(&"weapon") and pending_live_text.has(&"skill") and pending_live_text.has(&"patterns"):
+		var parsed := SkillBalanceSnapshot.parse(pending_live_text[&"skill"], pending_live_text[&"patterns"])
+		if parsed.has(&"error"):
+			catalog_error.emit(parsed.error)
+			return
+		var previous := skill_balance_values
+		skill_balance_values = parsed.values
+		if not load_catalog_text(pending_live_text[&"weapon"], pending_live_text[&"skill"], "Google Sheets 실시간"):
+			skill_balance_values = previous

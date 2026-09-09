@@ -3,3 +3,39 @@ blink,점멸,0,direction,,5,20,2,7,2,global,default,TRUE,기본 1번 · 이동 �
 magnetic_field,원형 자기장,1,self,electric,8,35,1,10,3,global,default,TRUE,기본 2번 · 플레이어 추적 지속 범위 피해
 speed_boost,기동 가속,2,self,,12,25,2,14,2,global,default,TRUE,기본 3번 · 이동 속도 증가
 arc_dash,아크 질주,2,direction,electric,7,30,1,9,4,research_complex|industrial_district,field_loot,TRUE,P4-04B 현장 즉시 교체 검증 스킬
+arc_link,연쇄 전격,0,self,,7,25,1,7,3,global,default,TRUE,임시 전술 스킬 · 가까운 적 다섯에게 차례로 전격 연결
+relay_stun,정지 릴레이,1,self,,10,25,1,10,3,global,default,TRUE,임시 전술 스킬 · 네 대상을 연결하여 공격과 이동 정지
+overload_link,과부하 연결,0,self,,11,35,1,11,3,global,default,TRUE,임시 전술 스킬 · 감전 표식을 소모하면 연결 피해 세 배
+relay_barrage,반복 릴레이,2,self,,12,35,1,12,3,global,default,TRUE,임시 전술 스킬 · 이동하며 세 대상에게 다섯 번 전격 연결
+plasma_lance,플라스마 창,0,direction,,8,25,1,8,3,global,default,TRUE,임시 전술 스킬 · 정면의 좁고 긴 경로를 관통
+cryo_ray,냉각 광선,1,direction,,10,25,1,10,3,global,default,TRUE,임시 전술 스킬 · 발동 방향 고정 광선으로 반복 둔화
+breach_ray,균열 광선,0,direction,,9,25,1,9,3,global,default,TRUE,임시 전술 스킬 · 직선의 적에게 받는 피해 증가 표식
+rotating_ray,회전 절단광,2,direction,,14,35,1,14,3,global,default,TRUE,임시 전술 스킬 · 플레이어를 중심으로 광선이 한 바퀴 회전
+crossfire,십자 섬광,0,direction,,12,30,1,12,3,global,default,TRUE,임시 전술 스킬 · 발동 위치에서 네 방향으로 차례 발사
+charged_rail,축전 레일,0,direction,,16,40,1,16,3,global,default,TRUE,임시 전술 스킬 · 경로 예고 뒤 좁은 고위력 관통 사격
+fan_cut,부채꼴 참격,0,direction,,6,20,1,6,3,global,default,TRUE,임시 전술 스킬 · 정면 부채꼴 근접 절단
+suppression_fan,제압 부채,1,direction,,11,30,1,11,3,global,default,TRUE,임시 전술 스킬 · 정면 넓은 구역의 적을 제압
+frost_fan,서리 분사,1,direction,,12,30,1,12,3,global,default,TRUE,임시 전술 스킬 · 움직이며 발동 방향에 냉각 분사
+execution_fan,처형 절단,0,direction,,12,30,1,12,3,global,default,TRUE,임시 전술 스킬 · 취약 표식을 소모하여 근접 피해 세 배
+spiral_cut,나선 검무,2,direction,,12,35,1,12,3,global,default,TRUE,임시 전술 스킬 · 가속과 함께 여섯 방향 회전 참격
+seismic_pulse,지진 파동,1,self,,12,30,1,12,3,global,default,TRUE,임시 전술 스킬 · 주변 적에게 충격과 짧은 기절
+thermal_bloom,열화 개화,0,cluster,,15,40,1,15,3,global,default,TRUE,임시 전술 스킬 · 밀집 지점 예고 뒤 폭발
+static_trap,정전 덫,1,self,,16,35,1,16,3,global,default,TRUE,임시 전술 스킬 · 발동 위치에 남는 반복 제압 장판
+frost_zone,동결 구역,1,cluster,,15,30,1,15,3,global,default,TRUE,임시 전술 스킬 · 밀집 지점에 고정 냉각 장판
+corrosion_zone,부식 구역,1,cluster,,14,35,1,14,3,global,default,TRUE,임시 전술 스킬 · 밀집 지점의 적에게 반복 취약 부여
+storm_mantle,폭풍 외투,2,self,,18,40,1,18,3,global,default,TRUE,임시 전술 스킬 · 짧은 사거리의 이동 전격과 방어 증가
+orbit_guard,궤도 방호,2,self,,18,35,1,18,3,global,default,TRUE,임시 전술 스킬 · 방어를 높이고 주변 궤도 안의 적 타격
+perimeter_mine,외곽 지뢰,1,self,,15,35,1,15,3,global,default,TRUE,임시 전술 스킬 · 안쪽은 안전하고 외곽 고리만 지연 폭발
+containment_ring,격리 고리,1,self,,14,30,1,14,3,global,default,TRUE,임시 전술 스킬 · 고리를 지나오는 적을 반복 둔화
+resonance_ring,공명 고리,0,self,,14,35,1,14,3,global,default,TRUE,임시 전술 스킬 · 감전 표식과 연계하는 세 번의 이동 고리
+mark_target,집중 표식,1,single,,7,15,1,7,3,global,default,TRUE,임시 전술 스킬 · 우선 대상 하나의 받는 피해 증가
+ion_strike,이온 저격,0,single,,14,35,1,14,3,global,default,TRUE,임시 전술 스킬 · 우선 대상 하나에 지연 고위력 타격
+stasis_lock,정지 구속,1,single,,16,30,1,16,3,global,default,TRUE,임시 전술 스킬 · 우선 대상 한 명을 장시간 제압
+focused_barrage,집중 포격,0,single,,12,30,1,12,3,global,default,TRUE,임시 전술 스킬 · 지정한 적이 살아 있는 동안 여섯 발 타격
+shatter,빙결 분쇄,0,self,,10,25,1,10,3,global,default,TRUE,임시 전술 스킬 · 주변 둔화 표식을 소모해 폭발 피해 세 배
+reactive_shell,반응 장갑,2,self,,18,30,1,18,3,global,default,TRUE,임시 전술 스킬 · 이동을 조금 늦추고 방어력 대폭 증가
+evasive_drive,회피 구동,2,self,,10,25,1,10,3,global,default,TRUE,임시 전술 스킬 · 짧은 가속과 방어 보정으로 탈출 동선 확보
+fortress_pulse,요새 진동,2,self,,20,40,1,20,3,global,default,TRUE,임시 전술 스킬 · 단단한 방호 중 주변 적을 주기적으로 둔화
+assault_drive,돌격 구동,2,direction,,16,35,1,16,3,global,default,TRUE,임시 전술 스킬 · 가속 중 발동 방향으로 근거리 연속 타격
+null_wave,무력화 파동,1,self,,18,30,1,18,3,global,default,TRUE,임시 전술 스킬 · 주변을 취약하게 만들고 잠시 방어 확보
+thunder_finale,뇌전 종막,0,cluster,,24,55,1,24,3,global,default,TRUE,임시 전술 스킬 · 밀집 지점에 예고 후 세 번의 대형 전격

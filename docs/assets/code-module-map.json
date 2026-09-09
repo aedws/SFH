@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "4f42077423195201dfeecb5b8d5f0a77bd24f9f678de869c70b8acd99919ddf0",
+  "source_sha256": "f95a3d5bf9bbe268273959c4b4ac625c4db55a4c2ffe7552951e97abef4eca3b",
   "domains": [
     {
       "id": "system",
@@ -63,10 +63,10 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 355,
-    "named_classes": 275,
-    "relationships": 210,
-    "project_inheritance": 13,
+    "scripts": 362,
+    "named_classes": 281,
+    "relationships": 212,
+    "project_inheritance": 14,
     "enabled_toggles": 70
   },
   "modules": [
@@ -155,16 +155,17 @@
       "path": "game/features/character_selection",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 4,
-      "class_count": 4,
+      "file_count": 5,
+      "class_count": 5,
       "classes": [
         "CharacterDefinition",
         "CharacterSelectionConfig",
         "CharacterSelectionService",
-        "CharacterTable"
+        "CharacterTable",
+        "InitialLoadoutPanel"
       ],
-      "incoming_count": 3,
-      "outgoing_count": 0
+      "incoming_count": 4,
+      "outgoing_count": 1
     },
     {
       "id": "combat_resources",
@@ -195,8 +196,8 @@
       "path": "game/features/combat_skills",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 13,
-      "class_count": 13,
+      "file_count": 17,
+      "class_count": 17,
       "classes": [
         "BlinkSkillEffect",
         "CombatSkillDefinition",
@@ -209,7 +210,11 @@
         "MagneticFieldSkillEffect",
         "PathDamagePolicy",
         "PersistentMagneticField",
+        "SkillBalanceSnapshot",
+        "SkillSpecializationPolicy",
         "SpeedBoostSkillEffect",
+        "TacticalPatternEffect",
+        "TacticalPatternRuntime",
         "TimedStatModifier"
       ],
       "incoming_count": 6,
@@ -310,13 +315,14 @@
       "path": "game/features/enemies",
       "wiki_route": "features/enemies/",
       "enabled": true,
-      "file_count": 5,
-      "class_count": 5,
+      "file_count": 6,
+      "class_count": 6,
       "classes": [
         "ArmorComponent",
         "EnemyCharacter",
         "EnemyCrowdConfig",
         "EnemyStatusBars",
+        "EnemyStatusPolicy",
         "HealthComponent"
       ],
       "incoming_count": 4,
@@ -363,7 +369,7 @@
         "WeaponPartsBoard",
         "WeaponTagProfile"
       ],
-      "incoming_count": 7,
+      "incoming_count": 8,
       "outgoing_count": 2
     },
     {
@@ -780,7 +786,7 @@
         "MobileTutorialPopup"
       ],
       "incoming_count": 2,
-      "outgoing_count": 4
+      "outgoing_count": 5
     },
     {
       "id": "movement_hud",
@@ -1297,7 +1303,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 69,
+      "file_count": 70,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1392,6 +1398,15 @@
       "module": "character_selection",
       "path": "game/features/character_selection/character_table.gd",
       "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:InitialLoadoutPanel",
+      "name": "InitialLoadoutPanel",
+      "module": "character_selection",
+      "path": "game/features/character_selection/initial_loadout_panel.gd",
+      "extends": "VBoxContainer",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -1531,6 +1546,24 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:SkillBalanceSnapshot",
+      "name": "SkillBalanceSnapshot",
+      "module": "combat_skills",
+      "path": "game/features/combat_skills/skill_balance_snapshot.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:SkillSpecializationPolicy",
+      "name": "SkillSpecializationPolicy",
+      "module": "combat_skills",
+      "path": "game/features/combat_skills/skill_specialization_policy.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:SpeedBoostSkillEffect",
       "name": "SpeedBoostSkillEffect",
       "module": "combat_skills",
@@ -1538,6 +1571,24 @@
       "extends": "CombatSkillEffect",
       "base_id": "class:CombatSkillEffect",
       "inheritance": "project"
+    },
+    {
+      "id": "class:TacticalPatternEffect",
+      "name": "TacticalPatternEffect",
+      "module": "combat_skills",
+      "path": "game/features/combat_skills/effects/tactical_pattern_effect.gd",
+      "extends": "CombatSkillEffect",
+      "base_id": "class:CombatSkillEffect",
+      "inheritance": "project"
+    },
+    {
+      "id": "class:TacticalPatternRuntime",
+      "name": "TacticalPatternRuntime",
+      "module": "combat_skills",
+      "path": "game/features/combat_skills/effects/tactical_pattern_runtime.gd",
+      "extends": "Node2D",
+      "base_id": "",
+      "inheritance": "engine"
     },
     {
       "id": "class:TimedStatModifier",
@@ -1842,6 +1893,15 @@
       "module": "enemies",
       "path": "game/features/enemies/components/enemy_status_bars.gd",
       "extends": "Node2D",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:EnemyStatusPolicy",
+      "name": "EnemyStatusPolicy",
+      "module": "enemies",
+      "path": "game/features/enemies/enemy_status_policy.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -3783,6 +3843,12 @@
   ],
   "edges": [
     {
+      "from": "character_selection",
+      "to": "equipment",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
       "from": "combat_skills",
       "to": "core",
       "type": "references",
@@ -4176,6 +4242,12 @@
       "from": "minimap",
       "to": "map_generation",
       "type": "requires",
+      "evidence_count": 1
+    },
+    {
+      "from": "mobile_controls",
+      "to": "character_selection",
+      "type": "references",
       "evidence_count": 1
     },
     {
@@ -4704,13 +4776,13 @@
       "from": "verification",
       "to": "combat_resources",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
       "to": "combat_skills",
       "type": "verifies",
-      "evidence_count": 8
+      "evidence_count": 9
     },
     {
       "from": "verification",
@@ -4746,7 +4818,7 @@
       "from": "verification",
       "to": "enemies",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
@@ -4872,7 +4944,7 @@
       "from": "verification",
       "to": "mobile_controls",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",
@@ -4926,7 +4998,7 @@
       "from": "verification",
       "to": "player",
       "type": "verifies",
-      "evidence_count": 9
+      "evidence_count": 10
     },
     {
       "from": "verification",
@@ -4962,7 +5034,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 30
+      "evidence_count": 31
     },
     {
       "from": "verification",
@@ -4986,7 +5058,7 @@
       "from": "verification",
       "to": "smart_targeting",
       "type": "verifies",
-      "evidence_count": 5
+      "evidence_count": 6
     },
     {
       "from": "verification",

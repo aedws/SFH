@@ -87,7 +87,7 @@
 	],
 	"schema": 1,
 	"sources": {
-		"game/features/balance_data/data_version.txt": "b3498a8066eeb65db5d86e8cc6e93c9e6c40327b2e9cbf3026341c963a8cc5a6",
+		"game/features/balance_data/data_version.txt": "5f3e5f534d9c31c584c5436cd221a072db96d21fbbfc1f9a726141987cfbd16e",
 		"game/features/map_generation/configs/large.tres": "eaa1d5d76a32ede0d8cf07170aa5c1635411ffe1951ddeea92fd50fb11916090",
 		"game/features/map_generation/configs/medium.tres": "1294fc7f93fa399c4fb81aaab2c10e8b6855755984a83a5f9502c1dc52ec849f",
 		"game/features/map_generation/configs/small.tres": "83be6272db6de3d3ca57ba41d9902e2bfd001efb4941cce3e573da23fda3f996",
@@ -159,5 +159,5 @@
 			"urban_enabled": true
 		}
 	},
-	"version": "2026-09-09.1"
+	"version": "2026-09-09.2"
 }

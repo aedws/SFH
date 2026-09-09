@@ -19,6 +19,16 @@ var collected_pickups: Dictionary = {&"energy": 0, &"health": 0}
 var random := RandomNumberGenerator.new()
 var recovery_multiplier: float = 1.0
 var regeneration_idle_seconds := 0.0
+var skill_recharge_multipliers: Dictionary = {}
+
+func set_skill_recharge_multipliers(values: Dictionary) -> bool:
+	for value in values.values():
+		if not is_finite(float(value)) or float(value) <= 0: return false
+	skill_recharge_multipliers = values.duplicate(true)
+	return true
+
+func _charge_duration(skill: Resource) -> float:
+	return maxf(0.1, float(skill.charge_recovery_seconds) * float(skill_recharge_multipliers.get(skill.skill_id, 1.0)))
 
 
 func configure(
@@ -45,6 +55,7 @@ func configure(
 	player_target = new_player_target
 	pickup_parent = new_pickup_parent
 	loadout = new_loadout
+	skill_recharge_multipliers.clear()
 	config = new_config
 	current_energy = float(config.get("starting_energy"))
 	regeneration_idle_seconds = 0.0
@@ -91,7 +102,7 @@ func consume_for_skill(slot_index: int) -> bool:
 		regeneration_idle_seconds = 0.0
 	charges[slot_index] -= 1
 	if recharge_remaining[slot_index] <= 0.0:
-		recharge_remaining[slot_index] = float(skill.get("charge_recovery_seconds"))
+		recharge_remaining[slot_index] = _charge_duration(skill)
 	_emit_changed()
 	return true
 
@@ -114,7 +125,7 @@ func advance(delta: float) -> void:
 		if charges[slot_index] >= maximum:
 			recharge_remaining[slot_index] = 0.0
 			continue
-		var recovery_seconds := float(skill.get("charge_recovery_seconds"))
+		var recovery_seconds := _charge_duration(skill)
 		recharge_remaining[slot_index] -= delta
 		while recharge_remaining[slot_index] <= 0.0 and charges[slot_index] < maximum:
 			charges[slot_index] += 1

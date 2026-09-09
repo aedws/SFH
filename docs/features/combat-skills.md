@@ -13,6 +13,8 @@ tags:
 
 # 전투 스킬과 쿨타임 HUD
 
+**2026-09-09 확장:** [초기 요원·무기 선택과 액티브 40종](tactical-skill-catalog.md). 기본 세 슬롯은 유지하고 신규36개를 교체 가능한 공용 카탈로그에 추가했습니다. 요원 고정 패시브와 Skill/SkillPattern/Character 조정 방법은 해당 문서가 현행 기준입니다.
+
 ## 교체 가능한 모듈 계약 · 2026-09-09
 
 스킬은 고정 3개 분기문이 아니라 `CombatSkillDefinition`(ID·수치·태그) + 효과 Resource의 `activate(player, context)`/`get_parameters()` + 공통 실행기 + 별도 키 배치로 구성합니다. 새 정의·효과를 등록해도 공통 실행기에 스킬 ID 분기를 추가하지 않습니다. 실행 계약이 없는 효과와 유한하지 않은 자원·쿨타임 값은 장착/출격 전에 거부합니다.

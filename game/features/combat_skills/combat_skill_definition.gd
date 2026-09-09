@@ -32,6 +32,7 @@ func is_valid() -> bool:
 		and effect != null
 		and effect.has_method(&"activate")
 		and effect.has_method(&"get_parameters")
+		and (not effect.has_method(&"validation_errors") or effect.call(&"validation_errors").is_empty())
 	)
 
 

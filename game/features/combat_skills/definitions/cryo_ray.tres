@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/tactical_pattern_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2")
+shape = "line"
+radius = 550
+inner_radius = 80
+width = 64
+angle_degrees = 90
+damage = 5
+pulses = 6
+interval = 0.3
+delay = 0
+follow_player = false
+anchor_on_target = false
+maximum_targets = 12
+chain_range = 150
+status_id = "slow"
+status_duration = 2
+consume_status_id = ""
+combo_multiplier = 2
+rotation_per_pulse = 0
+defense_add = 0
+speed_multiplier = 1
+buff_duration = 4
+
+[resource]
+script = ExtResource("1")
+skill_id = &"cryo_ray"
+display_name = "냉각 광선"
+description = "발동 방향 고정 광선으로 반복 둔화"
+input_action = &"combat_skill_2"
+input_label = "2"
+targeting_mode = "direction"
+targeting_range = 550
+required_combat_tags = []
+cooldown_seconds = 10
+energy_cost = 25
+maximum_charges = 1
+charge_recovery_seconds = 10
+effect = SubResource("Effect")

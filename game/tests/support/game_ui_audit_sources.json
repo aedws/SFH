@@ -3,6 +3,7 @@
   "scope": "Runtime game UI including optional, empty, blocked and world-space feedback. Not the separate role wiki.",
   "sources": [
     "game/features/boss_warning/boss_warning_hud.gd",
+    "game/features/character_selection/initial_loadout_panel.gd",
     "game/features/combat_skills/combat_skill_hud.gd",
     "game/features/conditional_ranking/season_honor_panel.gd",
     "game/features/conditional_ranking/season_honor_presentation.gd",

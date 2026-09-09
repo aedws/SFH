@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 160 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 161 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -64,9 +64,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 4 · IMPROVE 9 · CHANGE 1 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>11 UPDATE BUNDLES · BUILD 5 · IMPROVE 10 · CHANGE 1 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 11</small><b>첫 출격 요원·무장 선택 · 액티브 40종과 고정 패시브</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>PC/모바일 선택 뒤 요원·초기 무장을 정하고 로비로 들어갑니다. 기존4종에 신규36종을 더했으며 요원별 고정 패시브가 돌파·기동·구역 유지 계열을 특화합니다. 저장 장비와 로비→작전 장착 상태는 보존합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>SkillPattern 시트와 효과 컴파일러, 독립 발동 스냅샷을 연결했습니다. 실제40종 자원·쿨타임과 초기24조합 출격을 검사합니다. 신규 수치는 임시이며 일반10분 플레이 수락과 구분합니다.</p></div>
+        <p><a href="/features/tactical-skill-catalog/">전체 목록·시트 조정·검증 범위</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 10</small><b>16:10 장비 화면 · 무기와 방어구 중심 배치</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>개선 · 1</h3><p>PC·브라우저 기준 화면을 1280×800으로 변경했습니다. 파츠 화면은 무기 거치대를 확대하고, 장비 작업대와 모듈 화면은 실물 미리보기·장착 카드·효과를 중심으로 재배치했습니다. 모바일 터치 배율은 유지합니다.</p></div>

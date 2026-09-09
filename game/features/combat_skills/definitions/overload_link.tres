@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/tactical_pattern_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2")
+shape = "chain"
+radius = 520
+inner_radius = 80
+width = 48
+angle_degrees = 90
+damage = 16
+pulses = 1
+interval = 0.5
+delay = 0
+follow_player = false
+anchor_on_target = false
+maximum_targets = 6
+chain_range = 190
+status_id = ""
+status_duration = 2
+consume_status_id = "shock"
+combo_multiplier = 3
+rotation_per_pulse = 0
+defense_add = 0
+speed_multiplier = 1
+buff_duration = 4
+
+[resource]
+script = ExtResource("1")
+skill_id = &"overload_link"
+display_name = "과부하 연결"
+description = "감전 표식을 소모하면 연결 피해 세 배"
+input_action = &"combat_skill_1"
+input_label = "1"
+targeting_mode = "self"
+targeting_range = 520
+required_combat_tags = []
+cooldown_seconds = 11
+energy_cost = 35
+maximum_charges = 1
+charge_recovery_seconds = 11
+effect = SubResource("Effect")

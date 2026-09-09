@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/tactical_pattern_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2")
+shape = "chain"
+radius = 440
+inner_radius = 80
+width = 48
+angle_degrees = 90
+damage = 5
+pulses = 1
+interval = 0.5
+delay = 0
+follow_player = false
+anchor_on_target = false
+maximum_targets = 4
+chain_range = 140
+status_id = "stun"
+status_duration = 2
+consume_status_id = ""
+combo_multiplier = 2
+rotation_per_pulse = 0
+defense_add = 0
+speed_multiplier = 1
+buff_duration = 4
+
+[resource]
+script = ExtResource("1")
+skill_id = &"relay_stun"
+display_name = "정지 릴레이"
+description = "네 대상을 연결하여 공격과 이동 정지"
+input_action = &"combat_skill_2"
+input_label = "2"
+targeting_mode = "self"
+targeting_range = 440
+required_combat_tags = []
+cooldown_seconds = 10
+energy_cost = 25
+maximum_charges = 1
+charge_recovery_seconds = 10
+effect = SubResource("Effect")

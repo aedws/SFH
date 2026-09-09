@@ -9,6 +9,8 @@ hide:
 
 # 기획자 작업실
 
+**요원·스킬 시험:** [초기 무장과 액티브 40종](../features/tactical-skill-catalog.md). 3요원의 고정 패시브가 돌파/기동/구역 유지로 특화합니다. 신규36종 수치는 임시이며 Skill은 자원, SkillPattern은 효과, Character는 특화를 조정합니다. 공용 액티브와 캐릭터 전용 제한의 차이, 적 제어 강도·상태 연계 보상을 시험한 뒤 Notion에 판단 이유를 남겨 주세요.
+
 **새 무기 시험:** [총기 5종·근접 3종의 차이와 획득 방법](../features/weapons.md#arsenal-20260909). [공용 시트 Weapon](https://docs.google.com/spreadsheets/d/1dtQKVZiMf7VRFWrVnaL3BqzR0g4ZgEG6ueH9RIN3xqM/edit#gid=0)에서 단검/대검 활성화와 산탄총·레일 소총·창의 임시값을 조정할 수 있습니다. 각 무기의 거리·리듬·명중 범위가 적절한지 시험한 뒤 Notion에 확정/임시와 판단 이유를 기록해 주세요.
 
 **방어구 시험:** [수호자·질주자·축전자 3세트](../features/armor-sets.md). 같은 계열을 2개 또는 4개 입으면 추가 효과가 생깁니다. Armor는 개별 장비, ArmorSet은 세트 보너스, Upgrade는 성장, LootTable은 획득 장소입니다. 아래 성장/DPS 도구에서 한 장비의 단계 변화와 세트 조합을 확인한 뒤 Notion에 `확정/임시 · 변경 값 · 이유`를 적어 오너에게 알려 주세요. 현재 수치는 임시입니다.

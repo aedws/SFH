@@ -13,6 +13,8 @@ var choosing := false
 var tutorial: Control
 var orientation_hint: Label
 var orientation_button: Button
+var initial_panel: Control
+var pending_mode: StringName
 const ViewportPolicy := preload("res://game/features/mobile_controls/mobile_viewport_policy.gd")
 const OrientationPolicy := preload("res://game/features/mobile_controls/mobile_orientation_policy.gd")
 const UI = preload("res://game/features/presentation_theme/game_ui.gd")
@@ -128,14 +130,26 @@ func _acknowledge_tutorial() -> void:
 func _finish_selection(mode: StringName) -> void:
 	mode_selected.emit(mode)
 	if launch_game:
+		pending_mode = mode
+		for child in card.get_children(): child.hide()
+		card.show()
+		initial_panel = preload("res://game/features/character_selection/initial_loadout_panel.gd").new()
+		card.add_child(initial_panel)
+		initial_panel.confirmed.connect(_confirm_initial_loadout)
+		_layout.call_deferred()
+
+func _confirm_initial_loadout(selection: Dictionary) -> void:
+	get_window().set_meta(&"sfh_initial_loadout", selection.duplicate(true))
+	if get_window().size_changed.is_connected(_queue_resize):
 		get_window().size_changed.disconnect(_queue_resize)
-		get_window().set_meta(&"sfh_control_entry", true)
-		get_window().content_scale_size = ViewportPolicy.logical_size(get_window().size, mode == &"on")
-		_enter_game()
+	get_window().set_meta(&"sfh_control_entry", true)
+	get_window().content_scale_size = ViewportPolicy.logical_size(get_window().size, pending_mode == &"on")
+	_enter_game()
 
 func _enter_game() -> void:
 	var error := get_tree().change_scene_to_file("res://game/scenes/game.tscn")
 	if error != OK:
 		choosing = false
 		if status != null:
+			status.show()
 			status.text = "로비를 불러오지 못했습니다. 다시 시도해 주세요. (%s)" % error

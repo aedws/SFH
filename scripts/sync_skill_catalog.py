@@ -18,7 +18,7 @@ COLUMNS = [
     "charge_recovery_seconds", "grade", "region_tags", "acquisition_mode",
     "runtime_enabled", "planner_note",
 ]
-TARGETING_MODES = {"direction", "self", "single", "cluster"}
+TARGETING_MODES = {"direction", "self", "single", "cluster", "highest_health", "nearest", "elite", "densest"}
 ACQUISITION_MODES = {"default", "field_loot", "shop", "blueprint"}
 
 

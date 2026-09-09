@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="CombatSkillDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/features/combat_skills/combat_skill_definition.gd" id="1"]
+[ext_resource type="Script" path="res://game/features/combat_skills/effects/tactical_pattern_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="Effect"]
+script = ExtResource("2")
+shape = "line"
+radius = 360
+inner_radius = 80
+width = 54
+angle_degrees = 90
+damage = 9
+pulses = 8
+interval = 0.25
+delay = 0
+follow_player = true
+anchor_on_target = false
+maximum_targets = 12
+chain_range = 150
+status_id = ""
+status_duration = 2
+consume_status_id = ""
+combo_multiplier = 2
+rotation_per_pulse = 45
+defense_add = 0
+speed_multiplier = 1
+buff_duration = 4
+
+[resource]
+script = ExtResource("1")
+skill_id = &"rotating_ray"
+display_name = "회전 절단광"
+description = "플레이어를 중심으로 광선이 한 바퀴 회전"
+input_action = &"combat_skill_3"
+input_label = "3"
+targeting_mode = "direction"
+targeting_range = 360
+required_combat_tags = []
+cooldown_seconds = 14
+energy_cost = 35
+maximum_charges = 1
+charge_recovery_seconds = 14
+effect = SubResource("Effect")

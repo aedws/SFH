@@ -39,6 +39,8 @@ LABELS = {
 }
 
 TITLES.update(armor_catalog='방어구 개별 능력치', armor_set='방어구 세트 효과')
+TITLES.update(tactical_patterns='액티브 36종 · 효과 패턴')
+LABELS.update(radius='반경·길이 px',inner_radius='고리 내부 px',width='직선 폭 px',angle_degrees='부채꼴 각도',pulses='총 타격 횟수',interval='타격 간격 초',delay='첫 타격 지연 초',maximum_targets='최대 대상 수',chain_range='연쇄 연결 거리 px',status_duration='상태 지속 초',combo_multiplier='연계 피해 배율',rotation_per_pulse='타격당 회전 각도',speed_multiplier='이동 배율',buff_duration='자기 강화 지속 초',cooldown='쿨타임 미러 초',energy='AP 미러',skill_damage_multiplier='특화 피해 배율',skill_cooldown_multiplier='특화 쿨타임·충전 배율',skill_radius_multiplier='특화 범위 배율')
 
 def build():
     datasets = []
