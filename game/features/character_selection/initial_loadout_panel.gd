@@ -43,7 +43,8 @@ func _ready() -> void:
 		var main_rule: Resource
 		for rule in equipment_loadout.slot_rules:
 			if rule.slot_id == &"main": main_rule = rule
-		for file in DirAccess.get_files_at("res://game/features/equipment/definitions/weapons"):
+		# Resource names survive export remapping; filesystem names may end in .remap.
+		for file in ResourceLoader.list_directory("res://game/features/equipment/definitions/weapons"):
 			if not file.ends_with(".tres"): continue
 			var weapon: Resource = load("res://game/features/equipment/definitions/weapons/" + file)
 			if weapon != null and weapon.is_valid() and main_rule != null and main_rule.accepts(weapon):

@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_config")
+ten_level_difficulty = true
 boss_guarantee_minimum_cost = 600
 bankruptcy_protection_enabled = true
 free_tier_id = &"small"

@@ -1,0 +1,7 @@
+[remap]
+
+importer="keep"
+
+[deps]
+
+source_file="res://game/features/operation_contract/data/difficulty.csv"

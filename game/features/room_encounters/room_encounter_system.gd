@@ -304,11 +304,11 @@ func _reward_box_count(room: Dictionary) -> int:
 		if _room_is_excluded(candidate):
 			continue
 		var rect: Rect2 = candidate.get(&"world_rect", Rect2())
-		var area := rect.size.x * rect.size.y
+		var area := float(candidate.get(&"floor_area",rect.size.x * rect.size.y))
 		minimum_area = minf(minimum_area, area)
 		maximum_area = maxf(maximum_area, area)
 	var room_rect: Rect2 = room.get(&"world_rect", Rect2())
-	var room_area := room_rect.size.x * room_rect.size.y
+	var room_area := float(room.get(&"floor_area",room_rect.size.x * room_rect.size.y))
 	var area_ratio := (
 		clampf((room_area - minimum_area) / (maximum_area - minimum_area), 0.0, 1.0)
 		if maximum_area > minimum_area else 0.5

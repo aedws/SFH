@@ -15,6 +15,11 @@ var exit_rooms: Array[int] = []
 var urban_visual: Node2D
 var region_id := "ruined_city"
 var regional_plan: Dictionary = {}
+@export var compound_layout_enabled := true
+var operation_geometry: Dictionary = {}
+
+func set_operation_context(contract: Dictionary) -> void:
+	operation_geometry = contract.get(&"map_geometry",{}).duplicate(true)
 
 func set_region_context(region: StringName) -> void:
 	region_id = String(region)
@@ -36,10 +41,27 @@ func _generate_connected_rooms(count: int) -> void:
 		regional_plan = preload("res://game/features/map_generation/regional_district_plan.gd").new().build(config,region_id,used_seed,source)
 		# Invalid future tier capacity must not strand the player during operation entry.
 		district = district_layout.from_regional_plan(regional_plan) if not regional_plan.is_empty() else district_layout.build(tier_config,random,count)
+		if compound_layout_enabled and regional_plan.get("version",0)==2:
+			district = preload("res://game/features/map_generation/compound_district_layout.gd").new().build(regional_plan,operation_geometry)
 	else:
 		district = district_layout.build(tier_config,random,count)
 	rooms.assign(district.rooms)
 	floor_cells = district.floor_cells.duplicate()
+
+func room_contains_cell(room_index: int, cell: Vector2i) -> bool:
+	if district.has("room_cells") and room_index >= 0 and room_index < district.room_cells.size():
+		return district.room_cells[room_index].has(cell)
+	return super.room_contains_cell(room_index,cell)
+
+func _get_room_doorways(room: Rect2i) -> Array[Dictionary]:
+	if not district.has("room_cells"): return super._get_room_doorways(room)
+	var result: Array[Dictionary] = []
+	var membership: Dictionary = district.room_cells[rooms.find(room)]
+	for cell: Vector2i in membership:
+		for outward: Vector2i in CARDINAL_DIRECTIONS:
+			if membership.has(cell+outward) or not floor_cells.has(cell+outward): continue
+			result.append({&"position":_cell_center(cell)+Vector2(outward)*cell_size*0.5,&"size":Vector2(14,cell_size) if outward.x else Vector2(cell_size,14),&"outward":Vector2(outward)})
+	return result
 
 func _assign_landmarks() -> void:
 	if not district_layout_enabled:
@@ -72,10 +94,12 @@ func _assign_landmarks() -> void:
 			for candidate: Dictionary in source:
 				if candidate.facility_id == regional_plan.buildings[index].facility_id: row = candidate; break
 		var inner := 1.0-clampf(Vector2(district.plots[index]).distance_to(center)/maxf(1,center.length()),0,1)
+		if district.has("depths"): inner=clampf(float(district.depths.get(index,0))/3.0,0,1)
 		facility_metadata[index] = row.duplicate(true)
 		facility_metadata[index][&"risk"] = 1.0 + inner * float(row.risk_bonus)
 		facility_metadata[index][&"room_index"] = index
 		facility_metadata[index][&"required_landmark"] = not regional_plan.is_empty() and bool(regional_plan.buildings[index].required)
+		facility_metadata[index][&"route_depth"] = int(district.get("depths",{}).get(index,0))
 
 func get_district_snapshot() -> Dictionary:
 	return {&"enabled":district_layout_enabled,&"facilities":facility_metadata.duplicate(true),&"exit_rooms":exit_rooms.duplicate(),&"street_cycles":int(district.get(&"columns",0))*int(district.get(&"rows",0)),&"early_extraction":district_layout_enabled,&"warp_policy":&"terminal_only"}
@@ -91,6 +115,15 @@ func _generate_obstacles() -> void:
 		for pattern: Array[Vector2i] in interiors.patterns(rooms[index],String(facility_metadata[index].facility_id),clampf(maxf(tier_config.obstacle_density,urban_fixture_density),0,0.12),random):
 			_try_place_obstacle_pattern(pattern,&"utility",rooms[index])
 
+func _cell_is_clear_for_obstacle(cell: Vector2i,room: Rect2i,pattern: Dictionary) -> bool:
+	if district.has("room_cells"):
+		var center := _room_center_cell(room)
+		if abs(cell.x-center.x)<=3 or abs(cell.y-center.y)<=3: return false
+		var index := rooms.find(room)
+		for offset in [Vector2i.ZERO,Vector2i.LEFT,Vector2i.RIGHT,Vector2i.UP,Vector2i.DOWN]:
+			if not room_contains_cell(index,cell+offset): return false
+	return super._cell_is_clear_for_obstacle(cell,room,pattern)
+
 func set_facility_rows(rows_data: Array[Dictionary]) -> void:
 	facility_rows = rows_data.duplicate(true)
 
@@ -98,13 +131,16 @@ func _select_loot_room() -> int:
 	if not district_layout_enabled: return super._select_loot_room()
 	var total := 0.0
 	for index: int in facility_metadata:
-		if index != 0 and index not in exit_rooms: total += float(facility_metadata[index].cache_weight)
+		if index != 0 and index not in exit_rooms: total += _loot_room_weight(index)
 	var choice := random.randf() * total
 	for index: int in facility_metadata:
 		if index == 0 or index in exit_rooms: continue
-		choice -= float(facility_metadata[index].cache_weight)
+		choice -= _loot_room_weight(index)
 		if choice <= 0: return index
 	return 1
+
+func _loot_room_weight(index: int) -> float:
+	return float(facility_metadata[index].cache_weight)*(1+0.25*float(facility_metadata[index].get(&"route_depth",0)))
 
 func get_minimap_snapshot() -> Dictionary:
 	var result := super.get_minimap_snapshot()
@@ -119,6 +155,7 @@ func get_room_encounter_snapshot() -> Array[Dictionary]:
 	for room in result:
 		var index: int = room.room_index
 		room.merge(facility_metadata.get(index,{}),true)
+		if district.has("room_cells"): room[&"floor_area"]=district.room_cells[index].size()*cell_size*cell_size
 		room[&"is_extraction_room"] = index in exit_rooms
 		room[&"district"] = true
 		room[&"warp_terminal"] = index == 0 or (index not in exit_rooms and room.get(&"facility_id", "") in warp_facility_ids)
@@ -163,9 +200,9 @@ func _draw() -> void:
 		var room := _room_world_rect(rooms[index],false)
 		var data: Dictionary = facility_metadata[index]
 		var tint := Color("f0b961") if data.encounter == "objective" else Color("3d8b94")
-		draw_rect(room.grow(-24),Color(tint,0.035))
-		draw_line(room.position+Vector2(64,36),room.position+Vector2(minf(360,room.size.x-64),36),tint,6)
-		draw_string(ThemeDB.fallback_font,room.position+Vector2(64,72),String(data.get("display_name", "시설")),HORIZONTAL_ALIGNMENT_LEFT,400,26,tint)
+		if not district.has("room_cells"): draw_rect(room.grow(-24),Color(tint,0.035))
+		var label_at := _cell_center(_room_center_cell(rooms[index])) + Vector2(-120,-96)
+		draw_string(ThemeDB.fallback_font,label_at,String(data.get("display_name", "시설")),HORIZONTAL_ALIGNMENT_LEFT,400,26,tint)
 		if index == 0 or (index not in exit_rooms and data.facility_id in warp_facility_ids):
 			var point := _cell_center(_room_center_cell(rooms[index]))
 			draw_arc(point,48,0,TAU,24,Color("02e5e1"),3)

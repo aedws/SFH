@@ -164,6 +164,7 @@ jobs:
           python3 scripts/sync_loot_table.py --check
           python3 scripts/sync_season_rewards.py --check
           python3 scripts/sync_facilities.py --check
+          python3 scripts/sync_difficulty.py --check
           python3 scripts/sync_skill_catalog.py --check
           python3 scripts/compile_tactical_skills.py --check
           python3 scripts/test_tactical_compiler.py
@@ -383,6 +384,9 @@ jobs:
           grep -q 'EXTRACTION_DISTRICT_OK' /tmp/sfh-district.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/regional_map_contract_test.gd" 2>&1 | tee /tmp/sfh-regional-map.log
           grep -q 'REGIONAL_MAP_OK' /tmp/sfh-regional-map.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/compound_difficulty_contract_test.gd" 2>&1 | tee /tmp/sfh-compound.log
+          grep -q 'COMPOUND_DIFFICULTY_OK' /tmp/sfh-compound.log
+          ! grep -E 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-compound.log
           if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-regional-map.log; then exit 1; fi
           if grep -Eq 'SCRIPT ERROR|ERROR:' /tmp/sfh-district.log; then exit 1; fi
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/e2e_play_session_test.gd" | tee /tmp/sfh-e2e.log
@@ -399,7 +403,7 @@ jobs:
           grep -q "field_loot_compare_cancel_select" /tmp/sfh-e2e.log
           grep -q "field_loot_immediate_equip_r_restore" /tmp/sfh-e2e.log
           grep -q "field_loot_skill_swap_r_restore" /tmp/sfh-e2e.log
-          grep -q "operation_combinations_9" /tmp/sfh-e2e.log
+          grep -q "operation_combinations_30" /tmp/sfh-e2e.log
           grep -q "responsive_operation_briefing_widths_4" /tmp/sfh-e2e.log
           grep -q "E2E_TUTORIAL_LAYOUT_OK viewports_4 steps_16 visible_panel_bounds remapped_hints" /tmp/sfh-e2e.log
           grep -q "E2E_INVENTORY_EDITOR_OK draft_atomic move_overlap_bounds select_r_rotate_persist_collision_bounds equip_tags modules_unequip full_bag conflict_guard save_discard_cancel viewports_4 tabs_3" /tmp/sfh-e2e.log
@@ -500,6 +504,7 @@ jobs:
             --godot-version-file .godot-version \
             --csv-version-file game/features/balance_data/data_version.txt \
             --csv game/features/map_generation/data/facility.csv \
+            --csv game/features/operation_contract/data/difficulty.csv \
             --csv game/features/weapon_balance/data/weapon_balance.csv \
             --csv game/features/equipment/data/armor_catalog.csv \
             --csv game/features/equipment/data/armor_set.csv \

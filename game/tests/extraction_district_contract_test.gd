@@ -29,7 +29,7 @@ func _run() -> void:
 			map.generate(load("res://game/features/map_generation/configs/%s.tres"%tier),seed_value)
 			_check(map.get_district_snapshot().street_cycles>=9,"loop topology")
 			for room: Dictionary in map.get_room_encounter_snapshot():
-				_check(room.open_directions.size()>=2,"two facility exits %s/%d/%d"%[tier,seed_value,room.room_index])
+				_check(room.doorways.size()>0,"reachable compound facility portal %s/%d/%d"%[tier,seed_value,room.room_index])
 				_check(not map.get_world_path(map.start_position,room.center).is_empty(),"all facilities reachable")
 			_check(map.get_extraction_candidates().size()==2,"two exits")
 			var footprint: Array=map.rooms.duplicate()

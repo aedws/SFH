@@ -1,7 +1,7 @@
 /* Pure regional topology, kept equivalent to RegionalDistrictPlan by Godot fixtures. */
 (function(root){
   'use strict';
-  function build(config, region, seed, facilities) {
+  function build(config, region, seed, facilities, difficulty={}) {
     if (!Number.isInteger(seed) || seed < 0 || seed > 2147483646) throw Error('시드는 0~2147483646 정수입니다.');
     let state=seed%2147483646+1;
     const next=()=>{state=state*16807%2147483647;return (state-1)/2147483646;};
@@ -37,7 +37,9 @@
       buildings.push({index:i,plot,rect:[x,y,...size],axis,facility_id:r.facility_id,required:fixed});
     }
     const plan={version:1,region,seed,count,columns,rows,stride,buildings,streets,passages,start:0,exits};
-    return config.urban_enabled===false?plan:urban(plan,config);
+    if(config.urban_enabled===false)return plan;
+    urban(plan,config);
+    return config.compound_enabled?compound(plan,difficulty):plan;
   }
   function urban(plan,config){
     const o={avenue_width:14,local_width:10,sidewalk_width:3,entrance_width:5,...config.urban};
@@ -63,8 +65,29 @@
   function proposal(catalog, region, tier, seed, facilities, notes, source) {
     const original=new Map(catalog.facilities.map(r=>[r.facility_id,r]));
     const changed=facilities.filter(r=>JSON.stringify(r)!==JSON.stringify(original.get(r.facility_id)));
-    return `[임시 · 오너 판단 요청] 지역 맵 피스 제안\n원본 CSV: ${catalog.version}\n지역: ${region} / 규모: ${tier} / 시드: ${seed}\n상태: 제안 작성, 승인·게임 적용 아님\n근거 Notion: ${source||'작성 필요'}\n목적·기대 경험·확인 기준: ${notes||'작성 필요'}\n불변 조건: 시작 1, 출구 2, 순환 도로, 건물 출입구 2, 선택 금고 1\n변경 피스:\n${changed.length?changed.map(r=>JSON.stringify(r)).join('\n'):'변경 없음 (현행 배치 의견)'}\n적·장애물·전리품 위치는 이 미리보기의 검증 범위가 아닙니다.`;
+    return `[임시 · 오너 판단 요청] 지역 맵 피스 제안\n원본 CSV: ${catalog.version}\n지역: ${region} / 규모: ${tier} / 시드: ${seed}\n상태: 제안 작성, 승인·게임 적용 아님\n근거 Notion: ${source||'작성 필요'}\n목적·기대 경험·확인 기준: ${notes||'작성 필요'}\n불변 조건: 시작 1, 출구 2, 구역 연결 도로, 제한된 구역 입구, 선택 금고 1\n변경 피스:\n${changed.length?changed.map(r=>JSON.stringify(r)).join('\n'):'변경 없음 (현행 배치 의견)'}\n적·장애물·전리품 위치는 이 미리보기의 검증 범위가 아닙니다.`;
   }
-  root.SFHMapModel={build,proposal};
+  function compound(plan,difficulty){
+    const xs=plan.street_axes.filter(a=>a.axis==='vertical').map(a=>a.at),ys=plan.street_axes.filter(a=>a.axis==='horizontal').map(a=>a.at);
+    const retained=(list,index)=>index%2===0||index===list.length-1;
+    plan.streets=plan.streets.filter(r=>{const v=r[3]>r[2],a=v?xs:ys;return retained(a,a.indexOf(v?r[0]:r[1]));});
+    plan.street_axes=plan.street_axes.filter(a=>{const list=a.axis==='vertical'?xs:ys;return retained(list,list.indexOf(a.at));});
+    plan.yards=[];plan.passages=[];const routes=[],groups=new Map(),ratio=Math.max(0,Math.min(1,difficulty.polygon_ratio||0));
+    const center=i=>{const r=plan.buildings[i].rect;return[r[0]+Math.floor(r[2]/2),r[1]+Math.floor(r[3]/2)];};
+    const carve=(a,b)=>plan.passages.push([Math.min(a[0],b[0])-2,Math.min(a[1],b[1])-2,Math.abs(a[0]-b[0])+5,Math.abs(a[1]-b[1])+5]);
+    const street=(i,x)=>{const c=center(i);carve(c,[x,c[1]]);routes.push({from:-1,to:i,kind:'front',width:5});};
+    const link=(a,b,alt=false)=>{const s=center(a),e=center(b),p=alt?[s[0],e[1]]:[e[0],s[1]];carve(s,p);carve(p,e);routes.push({from:a,to:b,kind:alt?'rear':'interior',width:5});};
+    for(const b of plan.buildings){const key=`${Math.floor(b.plot[0]/2)},${Math.floor(b.plot[1]/2)}`;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(b.index);const shapeSeed=b.required?0:plan.seed;b.shape_variant=(b.index+shapeSeed)%4;b.polygonal=b.index!==0&&!plan.exits.includes(b.index)&&(b.index*7919+shapeSeed)%1000/1000<ratio;}
+    for(const [key,members] of groups){const x=Number(key.split(',')[0]);members.sort((a,b)=>{const av=plan.buildings[a].facility_id==='vault',bv=plan.buildings[b].facility_id==='vault';return av===bv?a-b:av?1:-1;});const front=members[0];street(front,xs[x*2]+2);for(let i=1;i<members.length;i++)link(members[i-1],members[i]);if(members.length>2)link(front,members.at(-1),true);for(const i of members)if((i===0||plan.exits.includes(i))&&i!==front)street(i,xs[Math.min(x*2+2,xs.length-1)]+2);}
+    plan.compound_count=groups.size;plan.polygon_ratio=ratio;plan.compound_routes=routes;return plan;
+  }
+  function occupied(b,x,y){
+    const w=b.rect[2],h=b.rect[3],px=x+.5,py=y+.5;
+    if(Math.abs(px-w*.5)<2.5||Math.abs(py-h*.5)<2.5)return true;
+    if(b.polygonal){const p=[[0,h*.18],[w*.23,0],[w*.82,0],[w,h*.24],[w*.92,h],[w*.17,h],[0,h*.76]];let inside=false;for(let i=0,j=p.length-1;i<p.length;j=i++)if((p[i][1]>py)!==(p[j][1]>py)&&px<(p[j][0]-p[i][0])*(py-p[i][1])/(p[j][1]-p[i][1])+p[i][0])inside=!inside;return inside;}
+    switch(b.shape_variant){case 0:return !(px>w*.65&&py<h*.35);case 1:return !(py>h*.66&&(px<w*.25||px>w*.75));case 2:return !(px>w*.3&&px<w*.7&&py<h*.32);case 3:return !(px>w*.62&&px<w*.83&&py>h*.15&&py<h*.37);default:return true;}
+  }
+  function shapePath(b){let d='';for(let y=0;y<b.rect[3];y++){let start=-1;for(let x=0;x<=b.rect[2];x++){const yes=x<b.rect[2]&&occupied(b,x,y);if(yes&&start<0)start=x;if(!yes&&start>=0){d+=`M${b.rect[0]+start} ${b.rect[1]+y}h${x-start}v1h${start-x}z`;start=-1;}}}return d;}
+  root.SFHMapModel={build,proposal,shapePath,occupied};
   if(typeof module!=='undefined')module.exports=root.SFHMapModel;
 })(typeof window==='undefined'?globalThis:window);

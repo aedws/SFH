@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EmbeddedCsvPayload" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/balance_data/embedded_csv_payload.gd" id="1_payload"]
+
+[resource]
+script = ExtResource("1_payload")
+source_path = "res://game/features/operation_contract/data/difficulty.csv"
+csv_text = "level,difficulty_id,display_name,entry_cost_multiplier,health_multiplier,damage_multiplier,armor_multiplier,speed_multiplier,reward_multiplier,high_grade_drop_multiplier,polygon_ratio,loot_band,planner_note\n난이도 1~10,변경 금지 ID,화면 표시,규모·지역 기본 투입비 배수,적 체력 배수,적 공격 배수,적 방어 배수,적 이동속도 배수,보상 배수,고등급 가중치 배수,C 다각형 시설 비율 0~0.6,기존 드랍 호환 단계,기획 메모\n1,standard,위험 단계 1 / 10,1,1,1,1,1,1,1,0,standard,임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함\n2,level_02,위험 단계 2 / 10,1.125,1.087,1.05,1.063,1.02,1.137,1.05,0.067,standard,임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함\n3,level_03,위험 단계 3 / 10,1.25,1.175,1.1,1.125,1.04,1.275,1.1,0.133,standard,임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함\n4,level_04,위험 단계 4 / 10,1.375,1.263,1.15,1.188,1.06,1.413,1.15,0.2,standard,임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함\n5,veteran,위험 단계 5 / 10,1.5,1.35,1.2,1.25,1.08,1.55,1.2,0.267,veteran,임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함\n6,level_06,위험 단계 6 / 10,1.6,1.44,1.26,1.32,1.096,1.69,1.26,0.333,veteran,임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함\n7,level_07,위험 단계 7 / 10,1.7,1.53,1.32,1.39,1.112,1.83,1.32,0.4,veteran,임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함\n8,level_08,위험 단계 8 / 10,1.8,1.62,1.38,1.46,1.128,1.97,1.38,0.467,veteran,임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함\n9,level_09,위험 단계 9 / 10,1.9,1.71,1.44,1.53,1.144,2.11,1.44,0.533,veteran,임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함\n10,nightmare,위험 단계 10 / 10,2,1.8,1.5,1.6,1.16,2.25,1.5,0.6,nightmare,임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함\n"

@@ -12,6 +12,8 @@ tags:
 
 # 랜덤 맵 생성
 
+**현행 9/9:** [B 복합 구역·A 불규칙 공간·C 1~10 위험 단계](extraction-district.md#compound-20260909). 모든 방에 도로가 직접 붙고 주변을 우회하는 이전 도시형 정책을 대체했습니다. 실제 바닥 셀을 방·스폰·보상·시야·미니맵의 기준으로 사용합니다.
+
 ## 바닥 청크 렌더링 · 2026-09-08
 
 `DungeonFloorLayer`가 생성된 바닥 셀을 **셀당1픽셀·기본128×128셀 청크 텍스처**로 그립니다. 9/7의 TileMapLayer 방식에서 발생하던 첫 화면의 대량 타일 갱신·업로드를 제거했습니다. 음수 좌표·다른 셀 크기·재생성·빈 영역 투명도를 지원하며 충돌/내비게이션은 생성하지 않습니다. 벽/기둥 표현, 병합 충돌과 AStar·미니맵·안개용 맵 데이터 계약은 유지합니다. [경계와 검증](../architecture/module-audit.md#first-frame-floor) · [첫 렌더 계측](../performance/minimum-requirements.md#first-frame-20260908).

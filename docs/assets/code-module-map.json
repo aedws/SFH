@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "f95a3d5bf9bbe268273959c4b4ac625c4db55a4c2ffe7552951e97abef4eca3b",
+  "source_sha256": "d43f744e0ad07d99bc8d25b9a9b86965e68b805847d1e07f19dceeb5a7bc2a9d",
   "domains": [
     {
       "id": "system",
@@ -63,10 +63,10 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 362,
-    "named_classes": 281,
-    "relationships": 212,
-    "project_inheritance": 14,
+    "scripts": 368,
+    "named_classes": 286,
+    "relationships": 216,
+    "project_inheritance": 16,
     "enabled_toggles": 70
   },
   "modules": [
@@ -117,13 +117,14 @@
       "path": "game/features/balance_data",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 2,
-      "class_count": 2,
+      "file_count": 3,
+      "class_count": 3,
       "classes": [
         "BalanceCsvRows",
-        "EmbeddedCsvPayload"
+        "EmbeddedCsvPayload",
+        "ValidatedCsvCatalogService"
       ],
-      "incoming_count": 2,
+      "incoming_count": 3,
       "outgoing_count": 0
     },
     {
@@ -704,7 +705,7 @@
         "LootTableProvider"
       ],
       "incoming_count": 3,
-      "outgoing_count": 1
+      "outgoing_count": 2
     },
     {
       "id": "map_generation",
@@ -715,9 +716,11 @@
       "path": "game/features/map_generation",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 11,
-      "class_count": 11,
+      "file_count": 13,
+      "class_count": 13,
       "classes": [
+        "CompoundDistrictLayout",
+        "CompoundSpaceShape",
         "DungeonFloorLayer",
         "ExtractionDistrictLayout",
         "ExtractionDistrictMapGenerator",
@@ -814,14 +817,16 @@
       "path": "game/features/operation_contract",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 2,
-      "class_count": 2,
+      "file_count": 4,
+      "class_count": 4,
       "classes": [
+        "DifficultyCatalogService",
         "OperationContractConfig",
-        "OperationContractService"
+        "OperationContractService",
+        "OperationDifficultyCatalog"
       ],
-      "incoming_count": 3,
-      "outgoing_count": 0
+      "incoming_count": 4,
+      "outgoing_count": 1
     },
     {
       "id": "operation_launch",
@@ -1303,7 +1308,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 70,
+      "file_count": 71,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1326,6 +1331,15 @@
       "module": "balance_data",
       "path": "game/features/balance_data/embedded_csv_payload.gd",
       "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:ValidatedCsvCatalogService",
+      "name": "ValidatedCsvCatalogService",
+      "module": "balance_data",
+      "path": "game/features/balance_data/validated_csv_catalog_service.gd",
+      "extends": "Node",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -2725,6 +2739,24 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:CompoundDistrictLayout",
+      "name": "CompoundDistrictLayout",
+      "module": "map_generation",
+      "path": "game/features/map_generation/compound_district_layout.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:CompoundSpaceShape",
+      "name": "CompoundSpaceShape",
+      "module": "map_generation",
+      "path": "game/features/map_generation/compound_space_shape.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:DungeonFloorLayer",
       "name": "DungeonFloorLayer",
       "module": "map_generation",
@@ -2765,9 +2797,9 @@
       "name": "FacilityCatalogService",
       "module": "map_generation",
       "path": "game/features/map_generation/facility_catalog_service.gd",
-      "extends": "Node",
-      "base_id": "",
-      "inheritance": "engine"
+      "extends": "ValidatedCsvCatalogService",
+      "base_id": "class:ValidatedCsvCatalogService",
+      "inheritance": "project"
     },
     {
       "id": "class:MapTierConfig",
@@ -2896,6 +2928,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:DifficultyCatalogService",
+      "name": "DifficultyCatalogService",
+      "module": "operation_contract",
+      "path": "game/features/operation_contract/difficulty_catalog_service.gd",
+      "extends": "ValidatedCsvCatalogService",
+      "base_id": "class:ValidatedCsvCatalogService",
+      "inheritance": "project"
+    },
+    {
       "id": "class:OperationContractConfig",
       "name": "OperationContractConfig",
       "module": "operation_contract",
@@ -2910,6 +2951,15 @@
       "module": "operation_contract",
       "path": "game/features/operation_contract/operation_contract_service.gd",
       "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:OperationDifficultyCatalog",
+      "name": "OperationDifficultyCatalog",
+      "module": "operation_contract",
+      "path": "game/features/operation_contract/difficulty_catalog.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -4221,10 +4271,22 @@
       "evidence_count": 1
     },
     {
+      "from": "loot_tables",
+      "to": "operation_contract",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "map_generation",
+      "to": "balance_data",
+      "type": "inherits",
+      "evidence_count": 1
+    },
+    {
       "from": "map_generation",
       "to": "balance_data",
       "type": "references",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "meta_progression",
@@ -4285,6 +4347,18 @@
       "to": "run_setup",
       "type": "references",
       "evidence_count": 1
+    },
+    {
+      "from": "operation_contract",
+      "to": "balance_data",
+      "type": "inherits",
+      "evidence_count": 1
+    },
+    {
+      "from": "operation_contract",
+      "to": "balance_data",
+      "type": "references",
+      "evidence_count": 2
     },
     {
       "from": "operation_launch",
@@ -4854,7 +4928,7 @@
       "from": "verification",
       "to": "fog_of_war",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
@@ -4926,7 +5000,7 @@
       "from": "verification",
       "to": "map_generation",
       "type": "verifies",
-      "evidence_count": 10
+      "evidence_count": 11
     },
     {
       "from": "verification",
@@ -4956,7 +5030,7 @@
       "from": "verification",
       "to": "operation_contract",
       "type": "verifies",
-      "evidence_count": 5
+      "evidence_count": 7
     },
     {
       "from": "verification",
@@ -4992,7 +5066,7 @@
       "from": "verification",
       "to": "persistent_profile",
       "type": "verifies",
-      "evidence_count": 11
+      "evidence_count": 12
     },
     {
       "from": "verification",

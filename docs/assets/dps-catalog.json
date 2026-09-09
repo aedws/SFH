@@ -1,8 +1,9 @@
 {
 	"difficulties": [
 		{
+			"boss_guaranteed": false,
 			"difficulty_id": "standard",
-			"display_name": "표준",
+			"display_name": "위험 단계 1 / 10",
 			"enemy_modifiers": {
 				"armor_multiplier": 1.0,
 				"damage_multiplier": 1.0,
@@ -10,11 +11,79 @@
 				"speed_multiplier": 1.0
 			},
 			"entry_cost_multiplier": 1.0,
+			"high_grade_drop_multiplier": 1.0,
+			"level": 1,
+			"loot_band": "standard",
+			"map_geometry": {
+				"polygon_ratio": 0.0
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
 			"reward_multiplier": 1.0
 		},
 		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_02",
+			"display_name": "위험 단계 2 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.063,
+				"damage_multiplier": 1.05,
+				"health_multiplier": 1.087,
+				"speed_multiplier": 1.02
+			},
+			"entry_cost_multiplier": 1.125,
+			"high_grade_drop_multiplier": 1.05,
+			"level": 2,
+			"loot_band": "standard",
+			"map_geometry": {
+				"polygon_ratio": 0.067
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.137
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_03",
+			"display_name": "위험 단계 3 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.125,
+				"damage_multiplier": 1.1,
+				"health_multiplier": 1.175,
+				"speed_multiplier": 1.04
+			},
+			"entry_cost_multiplier": 1.25,
+			"high_grade_drop_multiplier": 1.1,
+			"level": 3,
+			"loot_band": "standard",
+			"map_geometry": {
+				"polygon_ratio": 0.133
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.275
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_04",
+			"display_name": "위험 단계 4 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.188,
+				"damage_multiplier": 1.15,
+				"health_multiplier": 1.263,
+				"speed_multiplier": 1.06
+			},
+			"entry_cost_multiplier": 1.375,
+			"high_grade_drop_multiplier": 1.15,
+			"level": 4,
+			"loot_band": "standard",
+			"map_geometry": {
+				"polygon_ratio": 0.2
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.413
+		},
+		{
+			"boss_guaranteed": false,
 			"difficulty_id": "veteran",
-			"display_name": "베테랑",
+			"display_name": "위험 단계 5 / 10",
 			"enemy_modifiers": {
 				"armor_multiplier": 1.25,
 				"damage_multiplier": 1.2,
@@ -22,12 +91,99 @@
 				"speed_multiplier": 1.08
 			},
 			"entry_cost_multiplier": 1.5,
+			"high_grade_drop_multiplier": 1.2,
+			"level": 5,
+			"loot_band": "veteran",
+			"map_geometry": {
+				"polygon_ratio": 0.267
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
 			"reward_multiplier": 1.55
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_06",
+			"display_name": "위험 단계 6 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.32,
+				"damage_multiplier": 1.26,
+				"health_multiplier": 1.44,
+				"speed_multiplier": 1.096
+			},
+			"entry_cost_multiplier": 1.6,
+			"high_grade_drop_multiplier": 1.26,
+			"level": 6,
+			"loot_band": "veteran",
+			"map_geometry": {
+				"polygon_ratio": 0.333
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.69
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_07",
+			"display_name": "위험 단계 7 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.39,
+				"damage_multiplier": 1.32,
+				"health_multiplier": 1.53,
+				"speed_multiplier": 1.112
+			},
+			"entry_cost_multiplier": 1.7,
+			"high_grade_drop_multiplier": 1.32,
+			"level": 7,
+			"loot_band": "veteran",
+			"map_geometry": {
+				"polygon_ratio": 0.4
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.83
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_08",
+			"display_name": "위험 단계 8 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.46,
+				"damage_multiplier": 1.38,
+				"health_multiplier": 1.62,
+				"speed_multiplier": 1.128
+			},
+			"entry_cost_multiplier": 1.8,
+			"high_grade_drop_multiplier": 1.38,
+			"level": 8,
+			"loot_band": "veteran",
+			"map_geometry": {
+				"polygon_ratio": 0.467
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.97
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_09",
+			"display_name": "위험 단계 9 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.53,
+				"damage_multiplier": 1.44,
+				"health_multiplier": 1.71,
+				"speed_multiplier": 1.144
+			},
+			"entry_cost_multiplier": 1.9,
+			"high_grade_drop_multiplier": 1.44,
+			"level": 9,
+			"loot_band": "veteran",
+			"map_geometry": {
+				"polygon_ratio": 0.533
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 2.11
 		},
 		{
 			"boss_guaranteed": true,
 			"difficulty_id": "nightmare",
-			"display_name": "악몽",
+			"display_name": "위험 단계 10 / 10",
 			"enemy_modifiers": {
 				"armor_multiplier": 1.6,
 				"damage_multiplier": 1.5,
@@ -36,6 +192,12 @@
 			},
 			"entry_cost_multiplier": 2.0,
 			"high_grade_drop_multiplier": 1.5,
+			"level": 10,
+			"loot_band": "nightmare",
+			"map_geometry": {
+				"polygon_ratio": 0.6
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
 			"reward_multiplier": 2.25
 		}
 	],
@@ -36142,7 +36304,7 @@
 		"game/features/character_selection/configs/default_character_selection.tres": "07a0b796e30af178ed3d7700dcae8069773c135f01dfcef2ecc258fb29200047",
 		"game/features/character_selection/data/character_catalog.csv": "6e3c427235d0e55adbe28c8906bd868f0b7d47d6fd061a6fba6b00e4409eb9a9",
 		"game/features/character_selection/data/character_catalog_payload.tres": "4338a1e14a2f051740fa87b598a17b9425257bda2cd712a1ba1ef5ff139b2886",
-		"game/features/character_selection/initial_loadout_panel.gd": "a095389618bbf28c3c83dcfe248570db30392fbb7b0b0ae447de804865198bea",
+		"game/features/character_selection/initial_loadout_panel.gd": "6d6553f25c897ce4d23d8f3710b9b3502c63da5e9be2fd0f51f4ea57fb745445",
 		"game/features/combat_resources/combat_resource_config.gd": "0614e1603532cdbf55184a5cb433df31e28e4447874f569fe59e2dd66591f1e6",
 		"game/features/combat_resources/combat_resource_pickup.gd": "56399eda63c25b74061978c6937e9d9cc6f73493f58ac7df25ee8afefd317fda",
 		"game/features/combat_resources/combat_resource_pickup.tscn": "c21cbfe757e66a1b43448fe37afdb53b132a0a314e9b037b265ca590e6edf348",
@@ -36306,9 +36468,13 @@
 		"game/features/growth_balance/growth_balance_table.gd": "79f78593cc509c6801a3ea0c0159fd170ce8d918f0721ad839ab966fbbdc34b1",
 		"game/features/meta_progression/meta_progression_system.gd": "5034b27242c462b5cc78639a4cc3e3aeef634f81d99064f2576de87a570b02ae",
 		"game/features/meta_progression/meta_progression_system.tscn": "1bc3ccbf60ba5cf049922688857922e1d79d7002729258c88d40d1677db6eead",
-		"game/features/operation_contract/configs/default_operation_contracts.tres": "41e8b7acd0200c0be4bbe51b9eb7f021e8da6a53f711f3e8e8230fad98e97b1a",
-		"game/features/operation_contract/operation_contract_config.gd": "6ebab55e4d3a954e2c48e48bb7768cd95e9eea75f0f6e8104a6d927b4d6b0449",
-		"game/features/operation_contract/operation_contract_service.gd": "9de73e5f35906d49abc46521253504728d66045d5edabb94ef5130a916179b29",
+		"game/features/operation_contract/configs/default_operation_contracts.tres": "6b908ae21d2232d9544396b157b47f1fff4869114aba1c048413152ff981ed2f",
+		"game/features/operation_contract/data/difficulty.csv": "60274ce0ff308324201255e2f8f2a23180f5de7b16f56567d94a2a205a7affc1",
+		"game/features/operation_contract/data/difficulty_payload.tres": "e4911ab4b87b2540d9cec6730b319387e34e33099d4d773e82f4c1f69dfd18e5",
+		"game/features/operation_contract/difficulty_catalog.gd": "5a24d0a57825132604fef5899672925b8a0f042e2badf856943e92d8dc600e41",
+		"game/features/operation_contract/difficulty_catalog_service.gd": "e57a538a518bd91eaba3d7bc0e75169a00e75e9bcca39268916b79b1b3ad8efe",
+		"game/features/operation_contract/operation_contract_config.gd": "e7ad652da07d5bccde41dbb29a4ab27c36300018e788b6d3fab7e1232c06fd15",
+		"game/features/operation_contract/operation_contract_service.gd": "bcc7acb3b8c1ca10189e9f668e5ce0acb5b2ab564ceb0b62966444e3dc421e9e",
 		"game/features/operation_contract/operation_contract_service.tscn": "b41d4296e28b3bab080f2781ad0a1d68e9390030e26cc2381a8bfc2abab14408",
 		"game/features/player/health_recovery_policy.gd": "a33cb00c9ec5a57dc41d9871238c984de0b9f5ad938de42ce3f61396ca7b3da0",
 		"game/features/player/player.gd": "dca6fc4b0537b24b53f063d50f83b99437f687b91637ebbfc1daa3855bd3a9f9",
@@ -36331,7 +36497,7 @@
 		"game/features/weapons/projectile.tscn": "aec697a1e9c9bbee777dc6bff9c87a79d2918e12282e327b4b77dbdae94d1366",
 		"game/features/weapons/weapon_innate_skill_system.gd": "34a490622ae3b45b4785c82fc8cbff3fab6b4a68269a5eb128b0a2720095ae6f",
 		"game/features/weapons/weapon_shot_fx.gd": "07cd1eed7422a9b0885d8be0e95ebb755d06095032a0f6dbdde61ab0f8e2eeb5",
-		"scripts/export_dps_catalog.gd": "8e13806fdad6eac7ff1dc84ad24babb80e637024c3b72c3b16ef2cbec1c53932",
+		"scripts/export_dps_catalog.gd": "d541637f99f40b209d69634de203b8dffc06b49491c7243540cf8bd544a7e211",
 		"scripts/export_dps_loadout.gd": "cabe9403376672d69e68fd3a90a30ec91684ee384ea983c63114fbce43793f6b"
 	},
 	"weapons": [

@@ -20,7 +20,7 @@ func _run() -> void:
 			map.generate(load("res://game/features/map_generation/configs/%s.tres"%tier),90808)
 			var plan: Dictionary=map.get_regional_plan()
 			check(plan.region==region,"region propagated")
-			check(plan.version==2 and plan.yards.size()>=plan.count*3,"street-first city courts")
+			check(plan.version==2 and plan.yards.is_empty() and plan.compound_count>0,"B closed compounds replace all-around yards")
 			check(plan.street_axes.any(func(a): return a.width==14) and plan.street_axes.any(func(a): return a.width==10),"avenues and local streets")
 			var view=preload("res://game/features/minimap/minimap_view.gd").new()
 			root.add_child(view)
@@ -35,18 +35,18 @@ func _run() -> void:
 			for building: Dictionary in plan.buildings:
 				var lot: Array=building.lot
 				var exterior := Vector2i(int(lot[0])+1,int(lot[1])+1)
-				check(map.floor_cells.has(exterior),"walkable sidewalk instead of void moat")
-				check(not map.get_world_path(map.start_position,(Vector2(exterior)+Vector2.ONE*0.5)*map.cell_size).is_empty(),"all exterior courts reachable")
-				var r: Array=building.rect
-				var wall := Vector2i(int(r[0])-1,int(r[1])-1)
-				check(not map.floor_cells.has(wall),"building walls are not cosmetic")
-				check(not map.is_walkable_world_position((Vector2(wall)+Vector2.ONE*0.5)*map.cell_size),"closed building corner collides")
+				check(not map.floor_cells.has(exterior),"unused lot is closed rather than a universal bypass")
+			# A former rectangle corner can now be an intentional connecting passage.
+			# Validate actual generated boundary strips, not obsolete AABB corner assumptions.
+			check(not map.wall_cells.is_empty(),"actual irregular walls exist")
+			for wall: Vector2i in map.wall_cells.keys().slice(0,100):
+				check(not map.is_walkable_world_position((Vector2(wall)+Vector2.ONE*0.5)*map.cell_size),"actual boundary blocks traversal")
 			var expected := {"ruined_city":"transit_square","industrial_district":"warehouse","research_complex":"medical"}
 			check(plan.buildings.any(func(b): return b.required and b.facility_id==expected[region]),"regional anchor required")
 			check(plan.buildings.any(func(b): return b.required and b.facility_id=="workshop"),"safe relay type present")
 			var objectives := 0
 			for room: Dictionary in map.get_room_encounter_snapshot():
-				check(room.open_directions.size()>=2,"two doors")
+				check(room.doorways.size()>0,"actual irregular portal boundary exists")
 				check(not map.get_world_path(map.start_position,room.center).is_empty(),"all actual facilities reachable")
 				objectives += int(room.encounter=="objective")
 			check(objectives==1 and map.get_extraction_candidates().size()==2,"one vault two exits")

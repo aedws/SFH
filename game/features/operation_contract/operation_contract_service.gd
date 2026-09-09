@@ -21,7 +21,7 @@ func configure(profile_provider: Node, contract_config: Resource) -> bool:
 	):
 		return false
 	profile = profile_provider
-	config = contract_config
+	config = contract_config.duplicate(true)
 	contract_changed.emit(get_snapshot())
 	return true
 
@@ -57,7 +57,7 @@ func cycle_region(direction: int = 1) -> Dictionary:
 
 
 func cycle_difficulty(direction: int = 1) -> Dictionary:
-	var entries: Array = config.get("difficulties")
+	var entries: Array = config.call(&"get_difficulties")
 	var current_index := _find_index(entries, &"difficulty_id", selected_difficulty_id)
 	var index := posmod(current_index + signi(direction), entries.size())
 	select_difficulty(StringName(entries[index].get(&"difficulty_id", &"")))
@@ -102,6 +102,9 @@ func quote(
 		&"region_name": region.get(&"display_name", selected_region_id),
 		&"difficulty_id": selected_difficulty_id,
 		&"difficulty_name": difficulty.get(&"display_name", selected_difficulty_id),
+		&"difficulty_level": difficulty.get(&"level",1),
+		&"map_geometry": difficulty.get(&"map_geometry",{}).duplicate(true),
+		&"loot_difficulty_id": difficulty.get(&"loot_band",selected_difficulty_id),
 		&"tier_id": tier_config.get("tier_id"),
 		&"entry_cost": entry_cost,
 		&"base_entry_cost": base_entry_cost,
@@ -153,6 +156,11 @@ func invest(
 
 func clear_active_contract() -> void:
 	active_contract.clear()
+
+func set_difficulty_rows(rows: Array[Dictionary]) -> void:
+	if config == null: return
+	config.call(&"set_difficulty_rows",rows)
+	contract_changed.emit(get_snapshot())
 
 
 func get_snapshot() -> Dictionary:

@@ -109,13 +109,13 @@ func _judge_operation_combination_matrix(
 	evidence: Dictionary,
 	errors: PackedStringArray
 ) -> void:
-	if int(evidence.get(&"tested_combinations", 0)) != 9:
-		errors.append("소·중·대형 × 표준·숙련·악몽 9개 조합을 모두 실행하지 않았습니다.")
-	if int(evidence.get(&"tier_count", 0)) != 3 or int(evidence.get(&"difficulty_count", 0)) != 3:
+	if int(evidence.get(&"tested_combinations", 0)) != 30:
+		errors.append("소·중·대형 × 위험 1~10단계 30개 조합을 모두 실행하지 않았습니다.")
+	if int(evidence.get(&"tier_count", 0)) != 3 or int(evidence.get(&"difficulty_count", 0)) != 10:
 		errors.append("맵 규모 또는 난이도 축이 일부 누락됐습니다.")
 	if int(evidence.get(&"launch_failures", 1)) != 0:
 		errors.append("작전 투입 뒤 전투 대신 거점으로 회귀한 조합이 있습니다.")
-	if int(evidence.get(&"returned_to_hub", 0)) != 9:
+	if int(evidence.get(&"returned_to_hub", 0)) != 30:
 		errors.append("검증한 모든 조합이 명시적 종료 뒤 거점으로 복귀하지 못했습니다.")
 	if not bool(evidence.get(&"used_setup_buttons", false)):
 		errors.append("작전 설정 UI의 난이도·맵·투입 버튼을 거치지 않았습니다.")

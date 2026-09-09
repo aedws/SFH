@@ -1,4 +1,206 @@
 {
+	"difficulties": [
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "standard",
+			"display_name": "위험 단계 1 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.0,
+				"damage_multiplier": 1.0,
+				"health_multiplier": 1.0,
+				"speed_multiplier": 1.0
+			},
+			"entry_cost_multiplier": 1.0,
+			"high_grade_drop_multiplier": 1.0,
+			"level": 1,
+			"loot_band": "standard",
+			"map_geometry": {
+				"polygon_ratio": 0.0
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.0
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_02",
+			"display_name": "위험 단계 2 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.063,
+				"damage_multiplier": 1.05,
+				"health_multiplier": 1.087,
+				"speed_multiplier": 1.02
+			},
+			"entry_cost_multiplier": 1.125,
+			"high_grade_drop_multiplier": 1.05,
+			"level": 2,
+			"loot_band": "standard",
+			"map_geometry": {
+				"polygon_ratio": 0.067
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.137
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_03",
+			"display_name": "위험 단계 3 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.125,
+				"damage_multiplier": 1.1,
+				"health_multiplier": 1.175,
+				"speed_multiplier": 1.04
+			},
+			"entry_cost_multiplier": 1.25,
+			"high_grade_drop_multiplier": 1.1,
+			"level": 3,
+			"loot_band": "standard",
+			"map_geometry": {
+				"polygon_ratio": 0.133
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.275
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_04",
+			"display_name": "위험 단계 4 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.188,
+				"damage_multiplier": 1.15,
+				"health_multiplier": 1.263,
+				"speed_multiplier": 1.06
+			},
+			"entry_cost_multiplier": 1.375,
+			"high_grade_drop_multiplier": 1.15,
+			"level": 4,
+			"loot_band": "standard",
+			"map_geometry": {
+				"polygon_ratio": 0.2
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.413
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "veteran",
+			"display_name": "위험 단계 5 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.25,
+				"damage_multiplier": 1.2,
+				"health_multiplier": 1.35,
+				"speed_multiplier": 1.08
+			},
+			"entry_cost_multiplier": 1.5,
+			"high_grade_drop_multiplier": 1.2,
+			"level": 5,
+			"loot_band": "veteran",
+			"map_geometry": {
+				"polygon_ratio": 0.267
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.55
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_06",
+			"display_name": "위험 단계 6 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.32,
+				"damage_multiplier": 1.26,
+				"health_multiplier": 1.44,
+				"speed_multiplier": 1.096
+			},
+			"entry_cost_multiplier": 1.6,
+			"high_grade_drop_multiplier": 1.26,
+			"level": 6,
+			"loot_band": "veteran",
+			"map_geometry": {
+				"polygon_ratio": 0.333
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.69
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_07",
+			"display_name": "위험 단계 7 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.39,
+				"damage_multiplier": 1.32,
+				"health_multiplier": 1.53,
+				"speed_multiplier": 1.112
+			},
+			"entry_cost_multiplier": 1.7,
+			"high_grade_drop_multiplier": 1.32,
+			"level": 7,
+			"loot_band": "veteran",
+			"map_geometry": {
+				"polygon_ratio": 0.4
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.83
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_08",
+			"display_name": "위험 단계 8 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.46,
+				"damage_multiplier": 1.38,
+				"health_multiplier": 1.62,
+				"speed_multiplier": 1.128
+			},
+			"entry_cost_multiplier": 1.8,
+			"high_grade_drop_multiplier": 1.38,
+			"level": 8,
+			"loot_band": "veteran",
+			"map_geometry": {
+				"polygon_ratio": 0.467
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 1.97
+		},
+		{
+			"boss_guaranteed": false,
+			"difficulty_id": "level_09",
+			"display_name": "위험 단계 9 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.53,
+				"damage_multiplier": 1.44,
+				"health_multiplier": 1.71,
+				"speed_multiplier": 1.144
+			},
+			"entry_cost_multiplier": 1.9,
+			"high_grade_drop_multiplier": 1.44,
+			"level": 9,
+			"loot_band": "veteran",
+			"map_geometry": {
+				"polygon_ratio": 0.533
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 2.11
+		},
+		{
+			"boss_guaranteed": true,
+			"difficulty_id": "nightmare",
+			"display_name": "위험 단계 10 / 10",
+			"enemy_modifiers": {
+				"armor_multiplier": 1.6,
+				"damage_multiplier": 1.5,
+				"health_multiplier": 1.8,
+				"speed_multiplier": 1.16
+			},
+			"entry_cost_multiplier": 2.0,
+			"high_grade_drop_multiplier": 1.5,
+			"level": 10,
+			"loot_band": "nightmare",
+			"map_geometry": {
+				"polygon_ratio": 0.6
+			},
+			"planner_note": "임시 수치 · 오너 B+A+C 채택 · 장비 비용은 난이도에 미포함",
+			"reward_multiplier": 2.25
+		}
+	],
 	"facilities": [
 		{
 			"anchor_zone": "east",
@@ -87,21 +289,25 @@
 	],
 	"schema": 1,
 	"sources": {
-		"game/features/balance_data/data_version.txt": "5f3e5f534d9c31c584c5436cd221a072db96d21fbbfc1f9a726141987cfbd16e",
+		"game/features/balance_data/data_version.txt": "c8ab59f98e3f76d15d72b4fcd512cb3943e41c666ff45047a32eb6377c0c90d8",
+		"game/features/map_generation/compound_district_layout.gd": "7ada1894184c45c0326ecec903736905e1b3356f31fef7273b7b9c9fbfe8a789",
+		"game/features/map_generation/compound_space_shape.gd": "a895795c4913b6c14a679b7ed3b70a83fe3aed3d3e43950c3c443ac7d1d646e2",
 		"game/features/map_generation/configs/large.tres": "eaa1d5d76a32ede0d8cf07170aa5c1635411ffe1951ddeea92fd50fb11916090",
 		"game/features/map_generation/configs/medium.tres": "1294fc7f93fa399c4fb81aaab2c10e8b6855755984a83a5f9502c1dc52ec849f",
 		"game/features/map_generation/configs/small.tres": "83be6272db6de3d3ca57ba41d9902e2bfd001efb4941cce3e573da23fda3f996",
 		"game/features/map_generation/data/facility.csv": "8f0be134bbfb8d63fa816289512dd2dcb9a9e6eb7ec451ec5002f7c493cb76aa",
-		"game/features/map_generation/district_map_generator.gd": "e6876a7e8e31cebd99ec8c451210a6827a9138199f5c875a3663b3890eb019e9",
+		"game/features/map_generation/district_map_generator.gd": "2331aea94ed9237f98383aca2c469c6b908284f5886ee05b67c493043a09f556",
 		"game/features/map_generation/facility_catalog.gd": "ad0017c2e45082abb17daa37db92cfd9bbdd862f2adae69b39e1dff60af09957",
 		"game/features/map_generation/map_generator.tscn": "e589f2e1fe3c54dd26e014a2ef54ef1ecd136ab70d01ddd894388a1ec2951512",
 		"game/features/map_generation/regional_district_plan.gd": "b8c79310dc4318bafd2268959860206122539e90853af2b0fda6ba1989e36717",
 		"game/features/map_generation/urban_block_layout.gd": "2da77c2d50c75ec7a26288f8dd9eb41cf867a5cc1846e67cbc02deb5941e9eee",
-		"game/features/operation_contract/configs/default_operation_contracts.tres": "41e8b7acd0200c0be4bbe51b9eb7f021e8da6a53f711f3e8e8230fad98e97b1a",
-		"scripts/export_map_catalog.gd": "e8c1bcb4ec887906e3e369d30aa7eaee32457151c5a02c863f8a539a58a2c2cd"
+		"game/features/operation_contract/configs/default_operation_contracts.tres": "6b908ae21d2232d9544396b157b47f1fff4869114aba1c048413152ff981ed2f",
+		"game/features/operation_contract/data/difficulty.csv": "60274ce0ff308324201255e2f8f2a23180f5de7b16f56567d94a2a205a7affc1",
+		"scripts/export_map_catalog.gd": "e6315b6a041b23fd61d9e7f54bf3bde6716552237f3160d0515ee18af5e59752"
 	},
 	"tiers": {
 		"large": {
+			"compound_enabled": true,
 			"maximum_rooms": 60,
 			"maximum_size": [
 				68,
@@ -121,6 +327,7 @@
 			"urban_enabled": true
 		},
 		"medium": {
+			"compound_enabled": true,
 			"maximum_rooms": 40,
 			"maximum_size": [
 				60,
@@ -140,6 +347,7 @@
 			"urban_enabled": true
 		},
 		"small": {
+			"compound_enabled": true,
 			"maximum_rooms": 24,
 			"maximum_size": [
 				54,
@@ -159,5 +367,5 @@
 			"urban_enabled": true
 		}
 	},
-	"version": "2026-09-09.2"
+	"version": "2026-09-09.3"
 }

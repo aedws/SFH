@@ -102,7 +102,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_socket_cards module_cost_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_9 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input inventory_select_r_rotation key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_three_states_omnidirectional fog_wall_occlusion fog_exploration_memory skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_socket_cards module_cost_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_30 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input inventory_select_r_rotation key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_three_states_omnidirectional fog_wall_occlusion fog_exploration_memory skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -1653,8 +1653,9 @@ func _verify_operation_combination_matrix(game_scene: PackedScene) -> bool:
 	var returned_to_hub := 0
 	var launch_failures := 0
 	for tier_id in [&"small", &"medium", &"large"]:
-		for difficulty_index in range(3):
-			var difficulty_id: StringName = [&"standard", &"veteran", &"nightmare"][difficulty_index]
+		var difficulty_rows := preload("res://game/features/operation_contract/difficulty_catalog.gd").new().get_rows()
+		for difficulty_index in difficulty_rows.size():
+			var difficulty_id: StringName = difficulty_rows[difficulty_index].difficulty_id
 			var combo_game := game_scene.instantiate()
 			var combo_features: Resource = combo_game.get("features").duplicate(true)
 			var suffix := "combo_%s_%s" % [tier_id, difficulty_id]
@@ -1717,7 +1718,7 @@ func _verify_operation_combination_matrix(game_scene: PackedScene) -> bool:
 	return _judge_gameplay_flow(&"operation_combination_matrix", "작전 규모×난이도 UI 투입 매트릭스", {
 		&"tested_combinations": verified,
 		&"tier_count": 3,
-		&"difficulty_count": 3,
+		&"difficulty_count": 10,
 		&"launch_failures": launch_failures,
 		&"returned_to_hub": returned_to_hub,
 		&"used_setup_buttons": true,

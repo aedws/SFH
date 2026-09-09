@@ -39,8 +39,12 @@ func update(position: Vector2, radius_cells: int, dynamic_blockers: Dictionary) 
 		for x in range(begin.x,end.x+1):
 			var cell := Vector2i(x,y)
 			var center := (Vector2(cell)+Vector2.ONE*0.5)*cell_size
+			if spaces[selected].has("cells"):
+				var mask: Dictionary = spaces[selected].cells
+				if terrain_at(cell)==1 and not mask.has(cell): continue
+				if terrain_at(cell)!=1 and not [Vector2i.LEFT,Vector2i.RIGHT,Vector2i.UP,Vector2i.DOWN].any(func(d):return mask.has(cell+d)): continue
 			# One-cell wall faces around the disclosed room, never another room's floor.
-			if terrain_at(cell)==1 and not rect.has_point(center): continue
+			elif terrain_at(cell)==1 and not rect.has_point(center): continue
 			_reveal(cell)
 	_reveal(origin)
 	updates+=1
@@ -51,12 +55,18 @@ func _select_space(position: Vector2) -> int:
 	# Room commitment only after actually entering; exit slack avoids threshold flicker.
 	if active_space>=0:
 		var previous: Rect2 = spaces[active_space].world_rect
-		if previous.grow(hysteresis_pixels).has_point(position): return active_space
+		if spaces[active_space].has("cells"):
+			if spaces[active_space].cells.has(world_to_cell(position)): return active_space
+		elif previous.grow(hysteresis_pixels).has_point(position): return active_space
 	for index in spaces.size():
-		if spaces[index].kind == &"room" and spaces[index].world_rect.has_point(position): return index
+		if spaces[index].kind == &"room" and _contains(index,position): return index
 	for index in spaces.size():
-		if spaces[index].world_rect.has_point(position): return index
+		if _contains(index,position): return index
 	return -1
+
+func _contains(index: int,position: Vector2) -> bool:
+	if spaces[index].has("cells"): return spaces[index].cells.has(world_to_cell(position))
+	return spaces[index].world_rect.has_point(position)
 
 func current_space() -> Dictionary:
 	return spaces[active_space].duplicate() if active_space>=0 else {}

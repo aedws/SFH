@@ -11,6 +11,16 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-09 · B/A/C 복합 구역과 난이도 {#compound-difficulty}
+
+- `CompoundSpaceShape`: 실제 바닥 셀만 생성. `CompoundDistrictLayout`: 구역 연결·포털 통로·최소 그래프 깊이. 결제·적 생명주기는 소유하지 않음.
+- `OperationDifficultyCatalog`: 10행의 순서·범위·증가성 검증과 Web payload. `ValidatedCsvCatalogService`: Facility/Difficulty의 공통 요청·취소·마지막 정상값 보존. 각 어댑터는 URL과 타입만 지정.
+- `OperationContractService`: 견적에 위험 단계·맵 정책을 복사. 라이브 갱신은 다음 견적만 바꾸며 이미 결제한 계약은 불변.
+- `DistrictMapGenerator`: 공개 `room_contains_cell`과 공간 마스크/포털 스냅샷. 안개·미니맵·보상은 AABB를 실제 방으로 오인하지 않음. 비교용 compound 기능 해제 경로 유지.
+- 90개 생성 조합, 30개 UI 출격·복귀, 기존 교전·탈출 E2E, 초기 Web 선택→실제 게이트→중형 위험10 투입 확인. 정상10분 난이도 체감은 이 자동검사와 별도입니다.
+
+[수치 조정·검증 기준](../features/extraction-district.md#compound-20260909). 새 목록은 기존 공유 시트에만 추가했으며 과금 모델·접근 권한은 변경하지 않았습니다.
+
 ## 2026-09-09 · 전체 재검사 {#full-20260909}
 
 [전체 감사와 잔여 작업](../quality/full-system-audit-20260909.md)이 최신 판정입니다. 기준 `a41f424`: 기능57·클래스281·명시 경로 의존44·순환0·서비스 Scene 내부 접근0·Manifest70. P5 경계와 UI 등록48소스/9진입 검사도 통과했습니다.

@@ -18,6 +18,7 @@ try{
   assert.equal(await host.locator('.building').count(),21);
   const fixed=()=>host.locator('.required').evaluateAll(ns=>ns.map(n=>n.outerHTML.replace(/ selected/g,'')));
   const before=await fixed();await host.getByRole('button',{name:'다른 시드',exact:true}).click();assert.deepEqual(await fixed(),before);
+  const risk=host.getByLabel('위험 단계',{exact:true});assert.equal(await risk.locator('option').count(),10);await risk.selectOption('nightmare');
   await host.getByLabel('지역',{exact:true}).selectOption('research_complex');
   await host.getByLabel('규모',{exact:true}).selectOption('large');assert.equal(await host.locator('.building').count(),52);
   const room=host.getByLabel('공간 선택 (지도 클릭과 동일)');

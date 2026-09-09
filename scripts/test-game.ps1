@@ -27,6 +27,8 @@ if (-not (Test-Path -LiteralPath $csvPolicyPython)) { $csvPolicyPython = 'python
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 # A fresh clone has no imported fonts or global GDScript class cache yet.
+& $csvPolicyPython (Join-Path $PSScriptRoot 'sync_difficulty.py') --check
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $csvPolicyPython (Join-Path $PSScriptRoot 'compile_tactical_skills.py') --check
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $csvPolicyPython (Join-Path $PSScriptRoot 'test_tactical_compiler.py')
@@ -38,6 +40,10 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+$compoundOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/compound_difficulty_contract_test.gd" 2>&1
+$compoundStatus = $LASTEXITCODE
+$compoundOutput | Write-Output
+if ($compoundStatus -ne 0 -or ($compoundOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($compoundOutput -join "`n") -notmatch 'COMPOUND_DIFFICULTY_OK') { throw 'Compound difficulty contract failed.' }
 $tacticalOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/tactical_skill_catalog_test.gd" 2>&1
 $tacticalStatus = $LASTEXITCODE
 $tacticalOutput | Write-Output
