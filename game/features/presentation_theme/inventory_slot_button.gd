@@ -3,7 +3,7 @@ extends Button
 
 signal item_dropped(instance_id: StringName)
 var accepts_item: Callable
-const ART = preload("res://game/features/inventory/inventory_item_art.gd")
+const ART = preload("res://game/features/presentation_theme/inventory_item_art.gd")
 var presentation: Dictionary = {}
 var slot_label := ""
 var item_label := "빈 슬롯"

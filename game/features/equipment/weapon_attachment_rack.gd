@@ -37,7 +37,7 @@ func configure(provider: Node, selected_slot: StringName, selected_socket: Strin
 		selectors[slot] = selector
 		var board = BOARD.new()
 		board.inventory_card_mode = true
-		board.custom_minimum_size = Vector2(280, 174)
+		board.custom_minimum_size = Vector2(280, 208)
 		card.add_child(board)
 		board.configure(provider.get_equipment_state(slot), selected_socket if slot == selected_slot else &"")
 		board.socket_selected.connect(func(socket: StringName): socket_selected.emit(slot, socket))

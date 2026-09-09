@@ -978,6 +978,13 @@ func _verify_visible_tutorial(tutorial: Control, player: Node2D, minimap: Contro
 
 
 func _click_tutorial_button(button: Button) -> void:
+	# Container reflow is deferred after tab/selection changes. Click the settled
+	# visible target, never the previous tab's coordinates or its pressed signal.
+	for frame in 4:
+		await process_frame
+	if not button.is_visible_in_tree() or not root.get_visible_rect().encloses(button.get_global_rect()):
+		_fail("클릭 대상이 화면 밖 또는 숨김 상태: %s" % button.name)
+		return
 	for pressed in [true, false]:
 		var event := InputEventMouseButton.new()
 		event.button_index = MOUSE_BUTTON_LEFT

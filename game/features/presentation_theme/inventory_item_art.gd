@@ -1,6 +1,6 @@
 class_name InventoryItemArt
 extends RefCounted
-## Read-only, code-native item silhouettes. No borrowed textures or gameplay decisions.
+## Shared read-only item silhouettes. No inventory/equipment ownership or decisions.
 
 const ACCENT := Color("02e5e1")
 const LABELS := {&"weapon":"무기", &"armor":"방어구", &"part":"고유 파츠", &"module":"모듈", &"consumable":"소모품"}

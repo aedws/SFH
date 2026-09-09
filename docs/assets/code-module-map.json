@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "0b908f4bb37bec421ef03a9cdccc5751f9ea32a67b16ddd3ce974d8e4ea63b9d",
+  "source_sha256": "4f42077423195201dfeecb5b8d5f0a77bd24f9f678de869c70b8acd99919ddf0",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 353,
-    "named_classes": 274,
+    "scripts": 355,
+    "named_classes": 275,
     "relationships": 210,
     "project_inheritance": 13,
     "enabled_toggles": 70
@@ -331,8 +331,8 @@
       "path": "game/features/equipment",
       "wiki_route": "features/equipment/",
       "enabled": true,
-      "file_count": 27,
-      "class_count": 27,
+      "file_count": 28,
+      "class_count": 28,
       "classes": [
         "ArmorSetDefinition",
         "ArmorSetResolver",
@@ -348,6 +348,7 @@
         "EquipmentModuleInstance",
         "EquipmentModuleUIPresenter",
         "EquipmentPartDefinition",
+        "EquipmentScreenLayout",
         "EquipmentSkillDefinition",
         "EquipmentSlotPolicyMigration",
         "EquipmentSlotRule",
@@ -568,18 +569,15 @@
       "path": "game/features/inventory",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 9,
-      "class_count": 9,
+      "file_count": 6,
+      "class_count": 6,
       "classes": [
         "GridInventory",
         "GridInventoryWindow",
         "InventoryCatalog",
         "InventoryEditSession",
         "InventoryGridView",
-        "InventoryItemArt",
-        "InventoryItemDefinition",
-        "InventoryItemPreview",
-        "InventorySlotButton"
+        "InventoryItemDefinition"
       ],
       "incoming_count": 5,
       "outgoing_count": 2
@@ -994,13 +992,16 @@
       "path": "game/features/presentation_theme",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 4,
-      "class_count": 4,
+      "file_count": 7,
+      "class_count": 7,
       "classes": [
         "CyberpunkOverlay",
         "CyberpunkScreenFX",
         "GameDossier",
-        "GameUI"
+        "GameUI",
+        "InventoryItemArt",
+        "InventoryItemPreview",
+        "InventorySlotButton"
       ],
       "incoming_count": 12,
       "outgoing_count": 0
@@ -1296,7 +1297,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 68,
+      "file_count": 69,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1980,6 +1981,15 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:EquipmentScreenLayout",
+      "name": "EquipmentScreenLayout",
+      "module": "equipment",
+      "path": "game/features/equipment/equipment_screen_layout.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:EquipmentSkillDefinition",
       "name": "EquipmentSkillDefinition",
       "module": "equipment",
@@ -2448,38 +2458,11 @@
       "inheritance": "engine"
     },
     {
-      "id": "class:InventoryItemArt",
-      "name": "InventoryItemArt",
-      "module": "inventory",
-      "path": "game/features/inventory/inventory_item_art.gd",
-      "extends": "RefCounted",
-      "base_id": "",
-      "inheritance": "engine"
-    },
-    {
       "id": "class:InventoryItemDefinition",
       "name": "InventoryItemDefinition",
       "module": "inventory",
       "path": "game/features/inventory/inventory_item_definition.gd",
       "extends": "Resource",
-      "base_id": "",
-      "inheritance": "engine"
-    },
-    {
-      "id": "class:InventoryItemPreview",
-      "name": "InventoryItemPreview",
-      "module": "inventory",
-      "path": "game/features/inventory/inventory_item_preview.gd",
-      "extends": "Control",
-      "base_id": "",
-      "inheritance": "engine"
-    },
-    {
-      "id": "class:InventorySlotButton",
-      "name": "InventorySlotButton",
-      "module": "inventory",
-      "path": "game/features/inventory/inventory_slot_button.gd",
-      "extends": "Button",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -3245,6 +3228,33 @@
       "module": "presentation_theme",
       "path": "game/features/presentation_theme/game_ui.gd",
       "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:InventoryItemArt",
+      "name": "InventoryItemArt",
+      "module": "presentation_theme",
+      "path": "game/features/presentation_theme/inventory_item_art.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:InventoryItemPreview",
+      "name": "InventoryItemPreview",
+      "module": "presentation_theme",
+      "path": "game/features/presentation_theme/inventory_item_preview.gd",
+      "extends": "Control",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:InventorySlotButton",
+      "name": "InventorySlotButton",
+      "module": "presentation_theme",
+      "path": "game/features/presentation_theme/inventory_slot_button.gd",
+      "extends": "Button",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -4082,7 +4092,7 @@
       "from": "inventory",
       "to": "presentation_theme",
       "type": "references",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "key_mapping",
@@ -4862,7 +4872,7 @@
       "from": "verification",
       "to": "mobile_controls",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
@@ -4952,7 +4962,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 29
+      "evidence_count": 30
     },
     {
       "from": "verification",

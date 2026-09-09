@@ -59,6 +59,9 @@ var modification_sort: StringName = &"compatibility"
 var slot_buttons: Dictionary = {}
 var read_only: bool = false
 var module_ui_presenter = MODULE_UI_PRESENTER_SCRIPT.new()
+var equipment_preview: Control
+var screen_scroll: ScrollContainer
+var screen_main: BoxContainer
 
 
 func _ready() -> void:
@@ -74,7 +77,8 @@ func _ready() -> void:
 	for slot_id in slot_buttons:
 		(slot_buttons[slot_id] as Button).pressed.connect(_select_slot.bind(slot_id))
 		(slot_buttons[slot_id] as Button).add_theme_color_override(&"font_pressed_color", Color("f1f7fa"))
-	for slot: StringName in [&"head", &"hands"]:
+	# Insert after feet in reverse order so the visible rail stays 01..06.
+	for slot: StringName in [&"hands", &"head"]:
 		var button := Button.new()
 		button.custom_minimum_size.y = 42
 		button.toggle_mode = true
@@ -109,6 +113,92 @@ func _ready() -> void:
 	ui.action(%LevelUpButton, "training")
 	ui.action(%UpgradeInstalledButton, "craft")
 	ui.action(%UpgradeInstalledPartButton, "craft")
+	_build_game_layout()
+
+
+func _build_game_layout() -> void:
+	# Keep the existing commands; only reparent the visual containers.
+	screen_main = %SlotRail.get_parent()
+	var parent := screen_main.get_parent()
+	var index := screen_main.get_index()
+	screen_scroll = ScrollContainer.new()
+	screen_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	screen_scroll.size_flags_vertical = SIZE_EXPAND_FILL
+	parent.add_child(screen_scroll)
+	parent.move_child(screen_scroll, index)
+	screen_main.reparent(screen_scroll)
+	screen_main.size_flags_horizontal = SIZE_EXPAND_FILL
+	equipment_preview = preload("res://game/features/presentation_theme/inventory_item_preview.gd").new()
+	equipment_preview.custom_minimum_size.y = 154
+	var detail := selected_equipment_meta.get_parent()
+	detail.add_child(equipment_preview)
+	detail.move_child(equipment_preview, selected_equipment_meta.get_index() + 1)
+	for button in slot_buttons.values():
+		button.set_script(preload("res://game/features/presentation_theme/inventory_slot_button.gd"))
+		button.custom_minimum_size = Vector2(0, 70)
+		button.clip_text = true
+	for node in find_children("*", "Label", true, false):
+		node.custom_minimum_size.x = 0
+		node.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		if node.get_parent() is HBoxContainer:
+			node.autowrap_mode = TextServer.AUTOWRAP_OFF
+		node.add_theme_font_size_override("font_size", mini(16, node.get_theme_font_size("font_size")))
+	selected_equipment_name.add_theme_font_size_override("font_size", 22)
+	var title_block := window_title.get_parent()
+	title_block.size_flags_horizontal = SIZE_EXPAND_FILL
+	for label in title_block.get_children():
+		if label is Label:
+			label.autowrap_mode = TextServer.AUTOWRAP_OFF
+			label.clip_text = true
+	for label in status_label.get_parent().get_children():
+		if label is Label:
+			label.autowrap_mode = TextServer.AUTOWRAP_OFF
+			label.clip_text = true
+	status_label.tooltip_text = status_label.text
+	header_summary.hide()
+	for grid in [%LevelUpButton.get_parent(), %ModuleModifyButton.get_parent()]:
+		if grid is GridContainer: grid.columns = 1
+	for button in find_children("*", "Button", true, false):
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.custom_minimum_size.x = 0
+		button.size_flags_horizontal = SIZE_EXPAND_FILL
+	# Primary commands sit above optional stats and upgrade controls, not below
+	# a variable-height description. Long descriptions may scroll independently.
+	unequip_equipment_button.reparent(detail)
+	detail.move_child(unequip_equipment_button, equipment_preview.get_index() + 1)
+	var installed_content := installed_selection_detail.get_parent()
+	uninstall_selected_button.reparent(installed_content)
+	installed_content.move_child(uninstall_selected_button, module_cost_bar.get_index() + 1)
+	for action in [equip_selected_button, install_selected_modification_button]:
+		var content: Node = action.get_parent()
+		content.move_child(action, 1)
+	var close := Button.new()
+	close.text = "닫기 / ESC"
+	close.custom_minimum_size = Vector2(104, 44)
+	close.pressed.connect(close_panel)
+	header_summary.get_parent().add_child(close)
+	resized.connect(_layout_game_screen)
+	screen_scroll.resized.connect(_layout_game_screen)
+	get_viewport().size_changed.connect(_layout_game_screen)
+	_layout_game_screen()
+
+
+func _layout_game_screen() -> void:
+	if screen_main == null: return
+	var width := minf(size.x, get_viewport_rect().size.x - 56)
+	var narrow := width < 1000
+	screen_main.vertical = narrow
+	%SlotRail.custom_minimum_size.x = 0 if narrow else 182
+	for tab in tabs.get_children():
+		if tab is BoxContainer:
+			tab.vertical = narrow
+			for panel in tab.get_children():
+				panel.custom_minimum_size.x = 0 if narrow else 286 if panel.get_index() == 0 else 0
+	var available := maxf(180, width - (88 if narrow else 550))
+	equipment_inventory_grid.columns = clampi(floori(available / 174), 1, 4)
+	modification_inventory_grid.columns = clampi(floori(available / 146), 1, 5)
+	installed_module_grid.columns = 2
+	installed_part_grid.columns = 1
 
 
 func configure(
@@ -265,6 +355,7 @@ func _refresh() -> void:
 	_refresh_installed_customization()
 	_refresh_modification_inventory()
 	_apply_read_only_state()
+	_layout_game_screen()
 
 
 func _apply_read_only_state() -> void:
@@ -298,6 +389,9 @@ func _refresh_slot_rail() -> void:
 			SLOT_LABELS[slot_id],
 			state.display_name() if state != null else "비어 있음",
 		]
+		button.present(SLOT_LABELS[slot_id], state.display_name() if state != null else "빈 슬롯",
+			{&"item_type": &"weapon" if state.is_weapon() else &"armor", &"linked_resource": state.definition} if state != null else {},
+			slot_id == selected_slot_id)
 		if state != null:
 			equipped_count += 1
 			installed_module_count += state.installed_modules.size()
@@ -317,6 +411,8 @@ func _refresh_slot_rail() -> void:
 
 func _refresh_equipment_detail() -> void:
 	var state := _get_state(selected_slot_id)
+	if equipment_preview != null:
+		equipment_preview.present({&"item_type": &"weapon" if state.is_weapon() else &"armor", &"linked_resource": state.definition} if state != null else {})
 	selected_slot_caption.text = "%s / EQUIPPED" % String(SLOT_LABELS[selected_slot_id]).to_upper()
 	if state == null:
 		selected_equipment_name.text = "장착 장비 없음"
@@ -374,6 +470,9 @@ func _refresh_equipment_inventory() -> void:
 			Vector2(190, 78)
 		)
 		card.tooltip_text = String(entry.get(&"description", ""))
+		card.set_script(preload("res://game/features/presentation_theme/inventory_slot_button.gd"))
+		card.custom_minimum_size = Vector2(160, 116)
+		card.present("장착 가능" if compatible else "호환 불가", String(entry.get(&"display_name", "")), entry, selected)
 		card.pressed.connect(_select_inventory_candidate.bind(entry, &"equipment"))
 		equipment_inventory_grid.add_child(card)
 	if candidates.is_empty():
@@ -1113,7 +1212,7 @@ func get_density_snapshot() -> Dictionary:
 		&"slot_button_height": %MainSlotButton.custom_minimum_size.y,
 		&"equipment_columns": equipment_inventory_grid.columns,
 		&"modification_columns": modification_inventory_grid.columns,
-		&"equipment_card_size": Vector2(190, 78),
+		&"equipment_card_size": Vector2(160, 116),
 		&"modification_card_size": Vector2(138, 92),
 		&"module_effect_summary_visible": module_effect_summary.visible,
 		&"module_effect_line_count": module_effect_summary.text.count("\n") + 1,

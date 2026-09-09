@@ -7,8 +7,9 @@ signal external_panel_requested(action: StringName)
 
 const EDIT_SESSION = preload("res://game/features/inventory/inventory_edit_session.gd")
 const GRID_VIEW = preload("res://game/features/inventory/inventory_grid_view.gd")
-const SLOT_BUTTON = preload("res://game/features/inventory/inventory_slot_button.gd")
-const ITEM_PREVIEW = preload("res://game/features/inventory/inventory_item_preview.gd")
+const SLOT_BUTTON = preload("res://game/features/presentation_theme/inventory_slot_button.gd")
+const ITEM_PREVIEW = preload("res://game/features/presentation_theme/inventory_item_preview.gd")
+const SCREEN_LAYOUT = preload("res://game/features/equipment/equipment_screen_layout.gd")
 @export var loadout_column_width: float = 204.0
 @export var inspection_column_width: float = 224.0
 const SLOT_NAMES := {&"main": "메인 무기", &"secondary": "보조 무기", &"head": "머리", &"body": "신체", &"hands": "장갑", &"feet": "신발"}
@@ -67,6 +68,7 @@ func _ready() -> void:
 	session.committed.connect(func(): settings_saved.emit())
 	resized.connect(_layout)
 	bag_scroll.resized.connect(_queue_stable_layout)
+	get_viewport().size_changed.connect(_queue_stable_layout)
 
 
 func configure(bag: Node, gear: Node = null) -> void:
@@ -296,7 +298,7 @@ func _build_ui() -> void:
 	_label(stats_column, "장비 능력치", 13)
 	stats_label = _label(stats_column, "", 14)
 	module_column = _column(columns, 190)
-	_label(module_column, "장착 모듈 · 파츠", 16)
+	_label(module_column, "무기 거치대 / ARMORY", 16)
 	module_list = VBoxContainer.new()
 	module_column.add_child(module_list)
 	var bag_column := _column(columns, 0)
@@ -321,7 +323,7 @@ func _build_ui() -> void:
 	detail_column = _column(columns, inspection_column_width)
 	_label(detail_column, "아이템 검사 / INSPECT", 12)
 	selected_preview = ITEM_PREVIEW.new()
-	selected_preview.custom_minimum_size.y = 118
+	selected_preview.custom_minimum_size.y = 156
 	detail_column.add_child(selected_preview)
 	selected_name = _label(detail_column, "아이템 선택", 18)
 	selected_description = _label(detail_column, "아이템을 선택하면 상세 정보가 표시됩니다.", 13)
@@ -390,7 +392,7 @@ func _refresh_slots() -> void:
 				continue
 			var slot: StringName = descriptor[&"slot_id"]
 			var button = SLOT_BUTTON.new()
-			button.custom_minimum_size = Vector2(88, 106 if kind == "weapon" else 100)
+			button.custom_minimum_size = Vector2(88, 88)
 			button.size_flags_horizontal = SIZE_EXPAND_FILL
 			button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			button.add_theme_font_size_override("font_size", 13)
@@ -520,7 +522,8 @@ func _refresh_modules() -> void:
 	for part in state.installed_parts:
 		if current_tab != 1:
 			_button(module_list, "%s\n파츠 해제" % part.display_name, _remove_modification.bind(&"part", part.part_id))
-	_label(module_list, "가방의 모듈을 선택한 뒤\n장착 버튼을 누르세요.\n코스트·중복·소켓 규칙 적용", 12)
+	if current_tab != 1:
+		_label(module_list, "가방에서 선택 후 장착 · 소켓 규칙 적용", 12)
 
 
 func _select_slot(slot: StringName) -> void:
@@ -641,7 +644,9 @@ func _remove_modification(kind: StringName, id: StringName) -> void:
 func _layout() -> void:
 	if columns == null:
 		return
-	var narrow := size.x < 1000
+	var layout_width := minf(size.x, get_viewport_rect().size.x - 40)
+	var proportions := SCREEN_LAYOUT.inventory(layout_width, current_tab == 1)
+	var narrow: bool = proportions.narrow
 	columns.vertical = narrow
 	var bag_column: Control = bag_scroll.get_parent()
 	if narrow and bag_column.get_index() != 0: columns.move_child(bag_column,0)
@@ -649,14 +654,17 @@ func _layout() -> void:
 		for index in 4:
 			var column: Control = [loadout_column,module_column,bag_column,detail_column][index]
 			if column.get_index() != index: columns.move_child(column,index)
-	loadout_column.custom_minimum_size.x = 0 if narrow else loadout_column_width
+	loadout_column.custom_minimum_size.x = proportions.loadout
 	gear_column.custom_minimum_size.x = 0
 	stats_column.custom_minimum_size.x = 0
-	detail_column.custom_minimum_size.x = 0 if narrow else inspection_column_width
-	module_column.custom_minimum_size.x = 0 if narrow else 350 if current_tab == 1 else 190
+	detail_column.custom_minimum_size.x = proportions.inspect
+	module_column.custom_minimum_size.x = proportions.parts
 	if session.inventory != null:
 		var dimensions: Vector2i = session.inventory.grid_size
-		var available := maxf(240, bag_scroll.size.x - 18)
+		var budget := layout_width - 64
+		if not narrow:
+			budget -= float(proportions.inspect) + (float(proportions.parts) if current_tab == 1 else float(proportions.loadout)) + 24
+		var available := maxf(240, minf(budget, bag_scroll.size.x - 18))
 		grid_view.cell_pixel_size = clampf(floorf(available / maxf(1, dimensions.x)), 20, 52)
 		grid_view.custom_minimum_size = Vector2(dimensions) * grid_view.cell_pixel_size
 		grid_view.queue_redraw()

@@ -1,6 +1,6 @@
 class_name InventoryItemPreview
 extends Control
-const ART = preload("res://game/features/inventory/inventory_item_art.gd")
+const ART = preload("res://game/features/presentation_theme/inventory_item_art.gd")
 var entry: Dictionary = {}
 
 func _ready() -> void:

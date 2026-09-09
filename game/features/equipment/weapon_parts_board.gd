@@ -51,7 +51,7 @@ func _sync_socket_controls() -> void:
 	var sockets: Array[StringName] = equipment_state.definition.part_socket_ids
 	var lower_count := sockets.size() - (1 if &"optic" in sockets else 0)
 	var per_row := maxi(1, floori((maxf(size.x, 280) - 16) / 58.0))
-	custom_minimum_size.y = 174 + maxi(0, ceili(float(lower_count) / per_row) - 1) * 54
+	custom_minimum_size.y = 208 + maxi(0, ceili(float(lower_count) / per_row) - 1) * 54
 	for index in sockets.size():
 		var socket := sockets[index]
 		var button := Button.new()
@@ -115,7 +115,7 @@ func _draw() -> void:
 	draw_string(
 		font, Vector2(10, 18),
 		"G%d  %s" % [weapon.grade, weapon.display_name],
-		HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(0.9, 0.95, 0.97)
+		HORIZONTAL_ALIGNMENT_LEFT, maxf(80, size.x - 130), 13, Color(0.9, 0.95, 0.97)
 	)
 	draw_string(
 		font, Vector2(size.x - 112, 18), weapon.tags.minor_label,
@@ -133,17 +133,15 @@ func _draw() -> void:
 func _draw_background() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0.004, 0.018, 0.024, 0.98), true)
 	draw_rect(Rect2(Vector2.ZERO, size), Color(ACCENT, 0.52), false, 1.0)
-	for x in range(12, int(size.x), 24):
-		draw_line(Vector2(x, 26), Vector2(x, size.y - 8), Color(ACCENT, 0.055), 1.0)
-	for y in range(28, int(size.y), 8):
-		draw_line(Vector2(0, y), Vector2(size.x, y), Color(ACCENT, 0.018), 1.0)
+	# A quiet display plinth keeps the silhouette and sockets legible.
+	draw_line(Vector2(18, size.y * 0.65), Vector2(size.x - 18, size.y * 0.65), Color(ACCENT, 0.14), 1)
 
 
 func _draw_weapon_schematic(minor_tag: StringName) -> void:
 	var center := Vector2(size.x * 0.5, size.y * 0.54)
 	if inventory_card_mode:
-		center.y = 94
-		var scale_factor := minf((size.x - 48.0) / 200.0, 1.8)
+		center.y = 100
+		var scale_factor := minf((size.x - 48.0) / 200.0, 1.45)
 		draw_set_transform(center, 0.0, Vector2(scale_factor, scale_factor))
 		center = Vector2.ZERO
 	var steel := Color(0.28, 0.34, 0.37, 0.9)
@@ -237,7 +235,7 @@ func _draw_socket_card(socket_id: StringName, rect: Rect2) -> void:
 	var anchor := Vector2(rect.get_center().x, rect.position.y)
 	var weapon_anchor := Vector2(size.x * 0.5, size.y * 0.54)
 	if inventory_card_mode:
-		weapon_anchor.y = 94
+		weapon_anchor.y = 100
 		if socket_id == &"muzzle": weapon_anchor.x -= size.x * 0.34
 		if socket_id == &"magazine": weapon_anchor += Vector2(10, 27)
 		if socket_id == &"optic": weapon_anchor.y -= 18

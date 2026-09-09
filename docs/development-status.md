@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 159 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 160 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -64,9 +64,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>9 UPDATE BUNDLES · BUILD 4 · IMPROVE 8 · CHANGE 1 · FIX 6</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>10 UPDATE BUNDLES · BUILD 4 · IMPROVE 9 · CHANGE 1 · FIX 7</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 10</small><b>16:10 장비 화면 · 무기와 방어구 중심 배치</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>PC·브라우저 기준 화면을 1280×800으로 변경했습니다. 파츠 화면은 무기 거치대를 확대하고, 장비 작업대와 모듈 화면은 실물 미리보기·장착 카드·효과를 중심으로 재배치했습니다. 모바일 터치 배율은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>창을 줄인 뒤 이전 가방 폭이 남는 현상과 긴 제목이 패널 높이를 키우는 문제를 수정했습니다. 작은 화면은 내부 스크롤, 파츠 호환·교체·저장 확인은 기존 동작을 유지합니다.</p></div>
+        <p><a href="/quality/game-ui-rematch/#equipment-1610">화면 구성과 검증 범위</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 9</small><b>방어구 14종 · 4부위와 2/4세트 효과</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>수호자·질주자·축전자 12종을 추가했습니다. 머리·몸·손·발에 장착하며 2/4세트와 2+2 혼합으로 생존·기동·스킬 성능을 조정합니다. 기존 방탄복·전투화와 저장 장비는 유지합니다.</p></div>

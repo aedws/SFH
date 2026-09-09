@@ -55,7 +55,7 @@ func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
 	get_window().size_changed.connect(func(): _resize_viewport.call_deferred())
 	original_mouse_emulation = Input.emulate_mouse_from_touch
-	original_scale_size = Vector2i(1280, 720) if get_window().has_meta(&"sfh_control_entry") else get_window().content_scale_size
+	original_scale_size = ViewportPolicy.logical_size(get_window().size, false) if get_window().has_meta(&"sfh_control_entry") else get_window().content_scale_size
 	_apply_layout()
 	visible = false
 

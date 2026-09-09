@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "599b6ad0144989f20f6f71296e79b5ec96912f4a106299a1b1c1180a08c0ea0d",
+  "source_sha256": "0a984fb7f359a6ee3dfb86efcf8c4e3321384e5643a5f242a90bde6e8cdbefdb",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -2868,14 +2868,14 @@
       "label": "장비 규칙",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 27개",
+      "summary": "장비·세팅 · feature · 파일 28개",
       "route": "architecture/code-module-map/?module=equipment",
       "documentation_route": "features/equipment/",
       "source": "game/features/equipment",
       "kind": "implementation",
       "metrics": {
-        "files": 27,
-        "classes": 27,
+        "files": 28,
+        "classes": 28,
         "incoming": 7,
         "outgoing": 2
       }
@@ -3066,14 +3066,14 @@
       "label": "가방 인벤토리",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 9개",
+      "summary": "장비·세팅 · feature · 파일 6개",
       "route": "architecture/code-module-map/?module=inventory",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/inventory",
       "kind": "implementation",
       "metrics": {
-        "files": 9,
-        "classes": 9,
+        "files": 6,
+        "classes": 6,
         "incoming": 5,
         "outgoing": 2
       }
@@ -3444,14 +3444,14 @@
       "label": "화면 테마",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "UI·입력 · feature · 파일 4개",
+      "summary": "UI·입력 · feature · 파일 7개",
       "route": "architecture/code-module-map/?module=presentation_theme",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/presentation_theme",
       "kind": "implementation",
       "metrics": {
-        "files": 4,
-        "classes": 4,
+        "files": 7,
+        "classes": 7,
         "incoming": 12,
         "outgoing": 0
       }
@@ -3714,13 +3714,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 68개",
+      "summary": "기반·검증 · verification · 파일 69개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 68,
+        "files": 69,
         "classes": 0,
         "incoming": 0,
         "outgoing": 55
