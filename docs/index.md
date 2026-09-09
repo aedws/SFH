@@ -54,9 +54,16 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>5 UPDATE BUNDLES · BUILD 2 · IMPROVE 4 · CHANGE 1 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>6 UPDATE BUNDLES · BUILD 2 · IMPROVE 5 · CHANGE 1 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 6</small><b>기획자 안내 · 미정 14건의 판단 질문과 예시</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>최상단 판단 안내에 추가 미정 14건의 선택 질문·미승인 예시를 항목별로 제공했습니다. 같은 요청 ID는 항목 이름까지 전달하고, 임시 구현 유지와 새 승인·서버 운영을 구분합니다.</p></div>
+        <p><a href="access/planner/#decisions-needed">기획자 판단·Notion 전달 안내</a>. 실제 게임 정책이나 수치는 변경하지 않습니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 5</small><b>기획 판단 안내 · 거점 게이트 F 판정 통합</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>개선 · 1</h3><p>기획자 작업실 최상단에 필요한 판단·미승인 예시·Notion 작성 후 오너 개인 메시지 안내를 배치했습니다. 접힌 항목으로 내용을 나누고 기존 승인·자동 배포 경계는 유지합니다.</p></div>
