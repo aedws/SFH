@@ -50,7 +50,7 @@
         let ids=r.required_regions==='*'?catalog.regions.map(x=>x.id):r.required_regions.split('|').filter(x=>x!=='none'&&x!==region.value);
         ids=ids.filter(x=>x!==region.value);if(required.checked)ids.push(region.value);r.required_regions=ids.join('|')||'none';change(r.facility_id);
       });
-      const fields=[['anchor_zone','필수 위치',[['west','서쪽'],['east','동쪽'],['north','북쪽'],['south','남쪽'],['center','중앙']]],['entrance_axis','필수 출입 방향',[['horizontal','좌우'],['vertical','상하']]]];
+      const fields=[['anchor_zone','필수 위치',[['west','서쪽'],['east','동쪽'],['north','북쪽'],['south','남쪽'],['center','중앙']]],['entrance_axis','기반 건물 정면 축',[['horizontal','좌우'],['vertical','상하']]]];
       for(const [key,label,options] of fields){const wrap=node('label',label),s=node('select');s.setAttribute('aria-label',label);for(const [v,t] of options){const o=node('option',t);o.value=v;s.append(o);}s.value=r[key];s.disabled=!required.checked;s.addEventListener('change',()=>{r[key]=s.value;change(r.facility_id);});wrap.append(s);editor.append(wrap);}
       for(const [key,label] of [['shape_x','필수 가로 비율'],['shape_y','필수 세로 비율']]){const wrap=node('label',label),n=node('input');n.type='range';n.min='0';n.max='1';n.step='.05';n.value=r[key];n.disabled=!required.checked;const value=node('output',String(r[key]));n.addEventListener('input',()=>value.textContent=n.value);n.addEventListener('change',()=>{r[key]=Number(n.value);change(r.facility_id);});wrap.append(n,value);editor.append(wrap);}
     }

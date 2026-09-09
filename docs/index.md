@@ -54,9 +54,16 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 6 · IMPROVE 12 · CHANGE 1 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 6 · IMPROVE 13 · CHANGE 1 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 14</small><b>오늘 마감 · 위키 현행성·내일 시작 패킷</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>맵 출입·실제 바닥 시야·10단계 투자 계약을 현행 코드와 맞추고 이전 설명은 이력으로 분리했습니다. 내일 훈련 수치 동등성부터 수정하도록 코드 위치·재현·검사 명령·수락 기준을 연결했습니다. 게임·CSV·기획 점수는 변경하지 않습니다.</p></div>
+        <p><a href="/quality/full-system-audit-20260909/#day-close-20260909">충돌 대조</a> · <a href="/design/current-milestone-workline/#start-packet-20260910">내일 첫 작업 열기</a>. 일반10분·체감 검수는 미완료로 유지합니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 13</small><b>복합 구역 맵 · 위험 1~10단계</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>B 구역 연결에 A 불규칙 바닥과 C 다각형 위험 변형을 결합했습니다. 모든 건물 주변을 우회하던 도로를 줄이고 내부 시설·후퇴 경로를 구분합니다. 1~10단계 투자·적 배수는 Difficulty 시트와 확정 CSV로 분리했습니다.</p></div>

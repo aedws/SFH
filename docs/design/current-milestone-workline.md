@@ -14,18 +14,54 @@ tags:
 
 ## 다음 실행 순서 · 2026-09-10 {#next-20260910}
 
-**아직 전체 완료가 아닙니다.** `a41f424` 전체 모듈·게임·E2E 회귀는 통과했지만 훈련장 라이브 수치 불일치를 별도 재현했습니다. [최신 전체 감사·계산 근거](../quality/full-system-audit-20260909.md)를 현행 기준으로 읽습니다. 아래 이전 날짜의 착수 기록을 완료 선언으로 사용하지 않습니다.
+**내일 첫 작업은 QA-LIVE-TRAINING입니다.** 마감 게임은 `a423dad528e15765f5718864ad10ba7ce2dbd971`, CSV `2026-09-09.3`입니다. B+A+C/위험1~10 배포·원격 게임/E2E·Windows/위키 검증은 통과했지만 훈련 라이브 오류·일반10분·체감 수락은 남습니다. [마감 대조표](../quality/full-system-audit-20260909.md#day-close-20260909)를 먼저 읽고 아래 순서로 시작합니다. 하루에 전부 끝난다는 약속은 아닙니다.
 
 | 순서 | 기획 판단 없이 진행할 작업 | 종료 기준 |
 |---:|---|---|
 | 1 | QA-LIVE-TRAINING · 훈련/작전 스킬 스냅샷 통일 | 피해123·쿨타임3 시험 시 훈련도 같은 값. AP/충전/효과 동등성·퇴장 원복·잘못된 값 거부 회귀 |
-| 2 | QA-MODULE-COVERAGE · 암묵적 클래스 의존성과 공개 파서 계약 | 경로 의존44와 클래스 포함50 간선의 차이를 감사/노드맵에 표시. 미래 클래스·상속·제거 fixture 검증 |
+| 2 | QA-MODULE-COVERAGE · 암묵적 클래스 의존성과 공개 파서 계약 | 새 코드에서 의존성 수를 재측정. 과거44/50을 최신값으로 복사하지 않고 클래스·상속·미래 확장/제거 fixture 검사 |
 | 3 | N26-08B · 배포 Web/독립 Windows 각각 정상10분 | 로비→중형/대형→전투/획득→탈출/사망→복귀. F 경계·포커스·프레임·시드 기록, 치트/시간 가속 제외 |
-| 4 | QA-SKILL-FEEL · 40종 대표 계열 체감 | 실제 범위와 FX, 상태 제어 이유, 자원 부족/쿨타임 안내, 중앙 시야 가림 확인 |
+| 4 | QA-MAP-COMPOUND · B+A+C/1·5·10단계 FUN QA | 입구 발견 시간·내부 파밍/후퇴 선택·모서리 끼임·공간 안개 전환·같은 장비의 체감 위험 기록. 숫자 확정은 오너 판단 |
+| 5 | QA-SKILL-FEEL · 40종 대표 계열 체감 | 7개 효과 계열의 실제 범위/FX·벽 차폐·제어 이유·AP/쿨타임 안내·중앙 시야 가림 확인. 대표 통과를40종 전수 수락으로 확대하지 않음 |
+| 6 | 수정 후 통합 회귀·문서 마감 | 실패 사례 재검사, 배포 동일 버전, 코드/현행 문서/이력/판단 상태 일치. 불명확한 실패·중단은 완료에서 제외 |
 
-기획 미정14행을 제외한 노션 대응도 **87.5%**. 파우치2·심층3·혈전1의 선행 정책 대기까지 제외한 46행 참고값은 **98.9%**이나, 별도 품질 결함과 수락 잔여 때문에 제품 완료율로 사용하지 않습니다. 새 목록이 필요한 구현에만 Sheet를 확장하며 이번 검토에서는 게임 데이터·Sheet를 변경하지 않았습니다.
+기획 대응도 **80.3%**, 미정14행 제외 **87.5%**, 선행 정책6행도 제외한 참고값 **98.9%**는 9/9 20:12 대조 이력입니다. 오늘 후속 맵 구현·문서 정리로 분자를 올리지 않습니다. 새 목록이 필요한 실제 구현에만 Sheet를 확장하며 이번 문서 마감에서는 게임 데이터·Sheet를 변경하지 않습니다.
 
 정책 승인이 오면 N26-04 파우치→N26-05 보호 정산→N26-06 심층→N26-07 혈전을 진행합니다. [기획자가 작성할 판단과 예시](../access/planner.md#decisions-needed). 새 기능을 추가하기보다 위 재현 오류와 검수 잔여를 먼저 종료합니다.
+
+### 바로 시작하는 작업 패킷 {#start-packet-20260910}
+
+1. 이 작업선 → [마감 대조표](../quality/full-system-audit-20260909.md#day-close-20260909) → [훈련 오류 재현](../quality/full-system-audit-20260909.md#qa-live-training)을 읽습니다. 새 오너 지시가 있으면 충돌부터 확인합니다.
+2. `git status --short`로 사용자 변경을 확인하고 깨끗할 때 `main`을 fast-forward합니다. 현재 main에는 마감 게임 이후 문서 커밋이 있을 수 있습니다. 게임 기준으로 강제 되돌리지 않습니다. 기존 미완료 브랜치가 없으면 `codex/qa-live-training`에서 시작합니다.
+3. 먼저 아래 실패 fixture를 추가해 재현하고, 수정→통과를 순서대로 기록합니다. 이번 문서에서 테스트 파일이 이미 생겼거나 오류가 고쳐졌다고 해석하지 않습니다.
+
+| 작업 | 시작 파일/책임 | 반드시 남길 증거 |
+|---|---|---|
+| 1 · 훈련 동등성 | `game/features/loadout_investment/loadout_investment_service.gd`의 `get_skill_catalog_resources()`, `game/features/combat_skills/skill_balance_snapshot.gd`, `game/features/training_ground/training_ground_service.gd` | 현재 제공자는 `load()` 원본 반환. 격리 시험값 피해123/쿨타임3과 AP·충전·패턴 값을 훈련/작전에 비교. 신규 `game/tests/training_live_catalog_contract_test.gd`는 **작성 예정** |
+| 2 · 감사 경계 | `scripts/check_system_modularity.py`, `scripts/generate_code_module_map.py`, `game/features/balance_data/csv_rows.gd` | 클래스/상속 이름 참조, 재정렬·교체·선택 비활성화. `SkillBalanceSnapshot`의 내부 `_parse_csv_line` 의존을 공개 파싱 계약으로 교체 |
+| 3·4 · 실제 플레이 | 배포 Web/Windows, `game/tests/compound_difficulty_contract_test.gd`, `game/tests/e2e_play_session_test.gd` | 플랫폼·빌드/CSV·시드·지역/규모/단계·요원/장비·원래HP·실제 경과시간·처치/드랍/회수·F입력/포커스·프레임·정산. 사망/중단 이유를 숨기지 않음 |
+| 5 · 스킬 체감 | `game/features/combat_skills/`, `game/tests/tactical_skill_catalog_test.gd` | 계열 대표 ID·예고 범위/명중/FX·벽/면역·AP/충전/쿨타임 표시. 버그 수정과 밸런스 제안을 분리 |
+
+**1번 수정의 금지/완료 경계:** 공유 Sheet의 실제 값을 재현용123/3으로 바꾸지 않습니다. 기존 Resource를 직접 수정하지 않고 공통 불변 스냅샷을 제공합니다. 훈련→작전→복귀, 두 번째 입장, 잘못된 라이브 값, 기능 off/잠금 CSV, 런 중 외부 갱신, 원본·저장 데이터 불변을 확인합니다. 로비의 정상 기존 장착/재화를 보존해야 합니다.
+
+**검증 명령 — 내일 해당 변경 후 실행:** 아래는 이번 문서 마감에서 실행한 게임 테스트라는 뜻이 아닙니다.
+
+```powershell
+./scripts/test-game.ps1
+./scripts/test-e2e.ps1
+python scripts/check_system_modularity.py
+python scripts/check_p5_modularity.py
+python scripts/check_game_ui_audit.py
+python scripts/generate_code_module_map.py --check
+python scripts/generate_project_ontology.py --check
+python scripts/sync_difficulty.py --check
+node scripts/test_map_model.cjs
+node scripts/test_dps_loadout.mjs
+```
+
+새 실패 fixture는 기존 게임/CI 검사에 등록합니다. 첫 국소 검사가 실패하면 그 기능의 후속 완료 판정을 멈추고 원인을 수정합니다. 일반10분 검사는 키 유지 가능한 **별도 격리 브라우저**와 독립 Windows 파일에서 정상 시간으로 진행합니다. 논리600초 fixture·지도 대기·무적/HP상향·중도 사망 후 재시작 합산을10분 완주로 계산하지 않습니다. 1/5/10단계 비교 전체를 하루 완료로 약속하지 않습니다.
+
+**배포·마감:** 관련 게임 회귀→위키 검사→명시적 커밋/푸시/PR→필수 검사 통과 후 병합→Web/Windows/위키 버전 확인. CI가 필요할 때만 `./scripts/sfh-runner.ps1 start`, 완료·유휴 확인 후 `./scripts/sfh-runner.ps1 stop`. 자동 기동·과금 정책은 변경하지 않습니다. 위키는 날짜별 하나의 업데이트 묶음 안에 주제를 역순으로 추가하고, 실행하지 않은 수락은 미완료로 남깁니다.
 
 ## 오늘 실행 순서 · 2026-09-09 {#next-20260909}
 
@@ -59,7 +95,7 @@ tags:
 
 N26-02 HP 충돌은 해결했습니다. N26-08B의 첫 렌더 지연은 바닥 텍스처 청크화로 중형197→23ms·대형304→27ms(동일PC 각3회 중앙값)로 줄였습니다. [측정/범위](../performance/minimum-requirements.md#first-frame-20260908). 다음은 배포 Web/Windows 각각10분 일반 입력·간헐 탈출F 검수입니다. 전체 CPU 출격 로딩과 콜드 GPU 캐시 인증은 별도이며 N26-08B는 부분 대응을 유지합니다. 아래 이전 기록의 HP 승인 대기는 이 단락으로 대체하며 파우치·심층·혈전 미구현은 별도 유지합니다.
 
-이 문서의 아래 P1~P10 표는 기존 작업 이력입니다. 최신 우선순위는 이 N26 표가 우선하며, 번호는 Notion 공식 Phase가 아닙니다. 판단 없는 독립 구현을 시작했으며 회복·보존 등 충돌 정책은 유지합니다.
+이 절과 아래 P1~P10 표는 기존 작업 이력입니다. 최신 우선순위는 문서 최상단 **9/10 실행 순서**가 우선하며, 번호는 Notion 공식 Phase가 아닙니다. 회복·보존 등 충돌 정책은 유지합니다.
 
 **이전 재검토 이력(`cd25dfe`):** 손상 매물·당시 TileMapLayer·후보 Area2D, 릴리스 초기화·카메라 이탈·훈련 문구·거점 HUD 오류를 수정했습니다. 현행 바닥은 이후 청크 텍스처로 교체되었으며 상단 마감 판정을 우선합니다. 추가 구현9묶음·개발 기반은 66행 점수에 가산하지 않습니다.
 
