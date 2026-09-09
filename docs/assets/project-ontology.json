@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "6e9ebd7782fc59239a66d529e65a4dc22831884e44bdd1af44e83a5b2e8aa74e",
+  "source_sha256": "ce020c38f9dbc2d76154b34c1ed7b1a3c07d2d613c2b040cb469dfb4c8836e0b",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -1344,9 +1344,9 @@
       "status": "blocked",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "a41f424 전체 게임/E2E/모듈 감사 통과. 별도 훈련 라이브 수치 불일치 재현과 양 플랫폼 일반10분 수락 잔여. 기술 대체 승인 완료.",
+      "summary": "현행 게임 a423dad·CSV2026-09-09.3, 복합 구역/10단계 배포 검증 통과. a41f424 전체 감사의 훈련 라이브 오류·양 플랫폼 일반10분 수락은 잔여. 기술 대체 승인 완료.",
       "acceptance": "AP 자연량·스킬 수·타겟 반경/주기·UI·리롤·손상품·환전·탈출·시즌의 임시/확정 분리 및 Web/Windows E2E",
-      "next_action": "2026-09-10: QA-LIVE-TRAINING 수정/동등성 회귀 → 암묵적 클래스 의존/공개 파서 감사 보강 → 배포 Web·독립 Windows 정상10분/F 경계 → 스킬 계열 체감. 전체 통합 종료는 파우치·심층·혈전의 선행 승인과 구현도 필요.",
+      "next_action": "2026-09-10: QA-LIVE-TRAINING → 클래스/공개 파서 감사 → Web·독립 Windows 정상10분/F → 복합 맵1/5/10 → 스킬 계열 체감 → 수정·재검증. 전체 통합 종료는 파우치·심층·혈전의 선행 승인과 구현도 필요.",
       "route": "design/current-milestone-workline/#next-20260910",
       "relations": [
         {
@@ -1414,7 +1414,7 @@
       "summary": "2026-09-09 a41f424: 플라스마 창 라이브 피해123/쿨타임3은 작전만 반영되고 훈련은32/8 유지. 별도 fixture 재현, 수정 전.",
       "acceptance": "훈련·작전 피해/AP/쿨타임/충전/효과 동등성, 원본 불변, 종료 복원, 잘못된 값 거부.",
       "next_action": "다음 작업1순위: 카탈로그 제공자를 공통 불변 스냅샷 경로로 연결하고 동등성 회귀를 추가. 기획 수치 변경 불필요.",
-      "route": "quality/full-system-audit-20260909/",
+      "route": "design/current-milestone-workline/#start-packet-20260910",
       "relations": [
         {
           "to": "document:quality/full-system-audit-20260909",

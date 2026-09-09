@@ -11,7 +11,7 @@ hide:
 
 작업·구조·검증 근거를 골라 확인하세요. 최종 판단은 프로젝트 오너가 합니다.
 
-**최신 전체 검사:** [모듈·E2E 감사와 잔여 작업](../quality/full-system-audit-20260909.md). 자동 회귀 PASS와 별개로 훈련/작전 라이브 스킬 수치 불일치 재현. **아직100% 아님** — [내일 실행 순서](../design/current-milestone-workline.md#next-20260910): 라이브 동등성→모듈 감사 범위→양 플랫폼 정상10분→스킬 체감 검수. 기획 정책 대기는 별도입니다.
+**오늘 마감 / 내일 시작:** 게임 `a423dad`·CSV `2026-09-09.3`. [충돌 정리와 검사 범위](../quality/full-system-audit-20260909.md#day-close-20260909) · **[첫 작업 패킷 열기](../design/current-milestone-workline.md#start-packet-20260910)**. 훈련 라이브 동등성→모듈 감사→양 플랫폼 정상10분→복합 맵→스킬 체감→수정·재검증 순서입니다. **아직100% 아님**이며 기획 정책 대기는 별도입니다.
 
 현행 추가: [방어구 14종·4부위·세트 계약](../features/armor-sets.md). `ArmorSetDefinition → ArmorSetResolver → EquipmentSystem → Player/Weapon/Skill`로 분리했으며, 시트 임시값·잠금 CSV·게임 정의·DPS 비교를 연결합니다. [검증과 제외 범위](../quality/e2e-play-session.md#armor-20260909).
 
@@ -22,7 +22,7 @@ hide:
   <a href="#owner-decision-console"><small>판단</small><strong>작업·오너 판단</strong><span>선행 조건과 판단 대기열</span></a>
   <a href="#confirmed-balance"><small>밸런스</small><strong>확정안·현행 수치</strong><span>미확정 항목은 현재 CSV로 확인</span></a>
   <a href="#code-module-map"><small>구조</small><strong>코드·모듈 관계</strong><span>구현 연결과 영향 추적</span></a>
-  <a href="../../design/current-milestone-workline/#notion-20260907"><small>실행</small><strong>현재 작업선</strong><span>작업 순서·중단·완료 조건</span></a>
+  <a href="../../design/current-milestone-workline/#start-packet-20260910"><small>실행</small><strong>내일 첫 작업</strong><span>코드 위치·재현·명령·완료 조건</span></a>
   <a href="../../quality/e2e-play-session/"><small>품질</small><strong>플레이 검증</strong><span>회귀 위험과 수락 근거</span></a>
   <a href="#developer-contract"><small>원칙</small><strong>개발·운영 계약</strong><span>모듈 경계와 검증 규칙</span></a>
 </nav>
@@ -36,7 +36,7 @@ hide:
 
 **현행 오너 결정:** [B 진행/A 생성/C 난이도와 검증 계약](../features/extraction-district.md#compound-20260909). 위키 배치도는 새 구역 연결과 실제 바닥 윤곽을 표시합니다. C 비율·적 능력치·투입 배수는 임시 CSV이며 정상 플레이 수락과 구분합니다.
 
-**9/9 도시형 기본 배치:** 도로 골격 → 건물·마당 → 실내 가구 → 정적 표면 렌더를 분리했습니다. [모듈 경계·해제 계약](../architecture/module-audit.md#urban-20260909) · [플레이/성능 검증과 잔여](../quality/e2e-play-session.md#urban-20260909). 아래 미리보기는 가구·드랍·적 위치를 포함하지 않습니다.
+**도시형 기반 위에 복합 구역 적용:** 도로 골격·실내 가구·정적 표면 렌더 분리는 유지하고 전방위 마당은 제거했습니다. [현행 모듈 경계](../architecture/module-audit.md#compound-difficulty) · [검증과 잔여](../quality/e2e-play-session.md#compound-20260909). 아래 미리보기는 가구·드랍·적 위치를 포함하지 않습니다.
 
 맵 설계실은 양 역할 모두 시험할 수 있습니다. 기존 기획 확정 그래프의 읽기 전용 권한은 바꾸지 않습니다. 초안은 오너 판단 요청이며 게임 적용·기획 확정이 아닙니다.
 
@@ -166,7 +166,7 @@ Notion·Sheet 후보
 
 | 우선순위 | 대상 | 현재 상태 | 오너가 확인할 완료 조건 |
 |---:|---|---|---|
-| 1 | N26-08B 탈출 F·진입 실패 재현·배포 동등성 | 내일 첫 실행 | 첫 렌더 개선은 유지, Web/독립 Windows 각각10분 일반 플레이 수락 |
+| 첫 실행 | QA-LIVE-TRAINING → 모듈 감사 → N26-08B → 맵/스킬 체감 | [9/10 시작 패킷](../design/current-milestone-workline.md#start-packet-20260910) | 훈련/작전 값 일치, 경계 회귀, 양 플랫폼 일반10분과 플레이어 체감 수락 |
 | 2 | N26 지정 기술·파우치·심층·혈전 | 선행 결정 대기 | 청크 렌더러 대체 수락·소유권/정산·진입·HP 비용 경계를 오너가 결정. 표준 HP 키트 전용은 이미 승인·구현 |
 | 3→6 | 파우치 → 보존 정산 → 심층3경로 → 혈전 | 승인 후 순차 착수 | 가방/파우치 중복 소유 없음, 중복 정산 차단, 키 소비/보장 드랍, 흡혈 중복·해제 원복 |
 | 검토 | QA-BAL-01 방탄복4단계 보정 공백 | 의도 확인 필요 | 현행 하락을 숨기지 않고 승인값만 Resource/CSV/그래프에 반영 |

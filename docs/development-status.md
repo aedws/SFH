@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 163 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 164 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -31,7 +31,7 @@ tags:
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-**2026-09-09 전체 검사 기준: `a41f424`.** 공개 GDD·트래커 라이브 해시는 동일합니다. 전체 게임·E2E·모듈 회귀는 통과했지만 훈련 라이브 수치 불일치를 별도 재현했습니다. **아직100%가 아닙니다.** 청크 렌더러 대체 승인은 유지하고 일반10분 QA는 부분 대응입니다. [출처·계산·검사 결과](quality/full-system-audit-20260909.md) · [내일 순서](design/current-milestone-workline.md#next-20260910).
+**기획 대응도 기준은 9/9 20:12의 `a41f424`, 마감 게임은 `a423dad`입니다.** 위 숫자는 당시 공개 GDD·트래커 대조 결과이며 이번 문서 마감에서 재산정하거나 새 Notion 조회로 표시하지 않습니다. 후속 B+A+C/10단계 배포와 원격 회귀는 통과했지만 훈련 라이브 수치 오류와 일반10분 수락은 남습니다. **아직100%가 아닙니다.** [마감 대조·근거](quality/full-system-audit-20260909.md#close-20260909) · [내일 바로 시작](design/current-milestone-workline.md#next-20260910).
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
@@ -45,9 +45,9 @@ tags:
 
 ## 현재 빌드 상태
 
-**현행 콘텐츠:** 시작3요원·8무기 선택, 고정 패시브, 액티브40종(동시3), 방어구14종/3세트, 16:10 PC 장비 UI를 적용했습니다. 새 수치는 임시입니다. 이번 감사 문서 배포는 이 게임 빌드를 유지하며 QA-LIVE-TRAINING 오류를 고친 것으로 표시하지 않습니다.
+**현행 콘텐츠:** 시작3요원·8무기 선택, 고정 패시브, 액티브40종(동시3), 방어구14종/3세트, 16:10 PC 장비 UI입니다. 게임 `a423dad`·CSV `2026-09-09.3`의 Web/Windows 배포를 확인했습니다. 새 수치는 임시이며 이번 문서 마감은 게임을 바꾸거나 QA-LIVE-TRAINING을 해결 처리하지 않습니다.
 
-**최신 공간 규칙:** 순환 도로·시설별 두 출입구, 일반 교전 후퇴, 금고 F 선택 봉쇄, 두 출구 즉시 현장 방어, 안전 단말 워프, 현재 공간 전체 공개를 적용했습니다. [구역 계약과 임시 시설 수치](features/extraction-district.md) · [입력/GPU 검증과 인간 수락 잔여](quality/e2e-play-session.md#extraction-district). 노션 대응도 계산은 이 오너 승인 변경을 임의 가산하지 않았습니다.
+**최신 공간 규칙:** B 복합 구역의 제한된 입구·내부 연결에 A 불규칙 바닥과 C 단계별 다각형 변형을 적용합니다. 시설마다 도로 직결/출입구 2개는 폐기한 이전 규칙입니다. 위험 1~10단계는 같은 지역·규모의 기본 투입비와 연동하고 장비 추가비는 분리합니다. 일반 후퇴·금고 F 선택 봉쇄·두 출구 방어·안전 단말 워프·실제 바닥 기반 공간 공개는 유지합니다. [현행 계약](features/extraction-district.md#compound-20260909) · [90생성/30출격·배포 검수](quality/e2e-play-session.md#compound-20260909).
 
 2026-09-08: 표준 HP는 키트 전용이며 KIT 버튼에서 지참 수량을 사용합니다. 자연·HP 드랍·레벨업·버프 회복은 차단하고 AP는 유지합니다. 아래 기존 마일스톤 설명 중 HP 충돌 대기는 이번 승인으로 대체됩니다. N26-08B의 첫 GPU 프레임·배포 양 플랫폼10분 일반 플레이 수락은 계속 진행 중입니다.
 
@@ -57,7 +57,7 @@ tags:
 
 ## 다음 작업과 판단
 
-**2026-09-10 우선순위:** 훈련/작전 라이브 스냅샷 동등성 수정→암묵 의존성·공개 파서 감사 보강→Web/독립 Windows 정상10분/F 재현→스킬 계열 체감 검수. 파우치2·심층3·혈전1 및 미정14행은 기획자 제안·오너 승인과 구분합니다. [잔여별 완료 조건](quality/full-system-audit-20260909.md).
+**2026-09-10 우선순위:** 훈련/작전 라이브 동등성 수정→모듈 감사 보강→양 플랫폼 정상10분/F→B+A+C·1/5/10단계 FUN QA→스킬 계열 체감→회귀·위키 마감. [시작 파일·명령·완료 기준](design/current-milestone-workline.md#next-20260910)을 준비했습니다. 파우치·심층·혈전 및 최종 밸런스는 기획자 제안·오너 승인을 기다리며 임의 변경하지 않습니다.
 
 [오너 판단표](design/master-gdd-alignment.md#owner-conflicts)에서 회복·AP·파우치·심층·혈전·소켓·기술·상태의 8개 결정을 확인합니다. 기존 사용자 지시를 대체하는 규칙은 승인 전에 적용하지 않습니다.
 
@@ -68,9 +68,16 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>13 UPDATE BUNDLES · BUILD 6 · IMPROVE 12 · CHANGE 1 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 6 · IMPROVE 13 · CHANGE 1 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 14</small><b>오늘 마감 · 위키 현행성·내일 시작 패킷</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>맵 출입·실제 바닥 시야·10단계 투자 계약을 현행 코드와 맞추고 이전 설명은 이력으로 분리했습니다. 내일 훈련 수치 동등성부터 수정하도록 코드 위치·재현·검사 명령·수락 기준을 연결했습니다. 게임·CSV·기획 점수는 변경하지 않습니다.</p></div>
+        <p><a href="/quality/full-system-audit-20260909/#day-close-20260909">충돌 대조</a> · <a href="/design/current-milestone-workline/#start-packet-20260910">내일 첫 작업 열기</a>. 일반10분·체감 검수는 미완료로 유지합니다.</p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 13</small><b>복합 구역 맵 · 위험 1~10단계</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>B 구역 연결에 A 불규칙 바닥과 C 다각형 위험 변형을 결합했습니다. 모든 건물 주변을 우회하던 도로를 줄이고 내부 시설·후퇴 경로를 구분합니다. 1~10단계 투자·적 배수는 Difficulty 시트와 확정 CSV로 분리했습니다.</p></div>
