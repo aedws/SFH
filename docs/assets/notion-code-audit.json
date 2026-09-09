@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-09-08",
-  "reviewed_commit": "b3239a90f7d9be9fd62a806c0ab626ce28f948fb",
-  "method": "2026-09-08 day close: live published GDD 62 blocks and complete tracker 66 rows match both stored hashes. Reviewed all audit rows, changes since 21851a1, current settlement/AP/floor/map/encounter boundaries and linked test sources. TileMapLayer completion was stale: current DungeonFloorLayer is Node2D chunk textures, so that row is partial pending explicit technical substitution acceptance. 44 supported, 2 partial, 6 missing, 14 undecided; 135/170. First-render improvement is recorded but released Web/Windows ordinary ten-minute acceptance and intermittent extraction F remain open. PR191 and main34234262244 passed; this audit does not claim a new human play session. Notion statuses and game policy are unchanged; tools/FX/UI outside the tracker are not added to its score.",
+  "reviewed_at": "2026-09-09",
+  "reviewed_commit": "353aa72146e0f4005af4d289546e215460d89244",
+  "method": "2026-09-09: owner explicitly accepted documenting the unused TileMapLayer replacement and completing that requirement. Accept Node2D ChunkedCellTexture as the approved alternative, not as an actual TileMapLayer implementation. Retain the original Notion title/status and source hashes. 45 supported, 1 partial, 6 missing, 14 undecided; 136.5/170. Released Web/standalone Windows ordinary ten-minute QA and intermittent entry/extraction acceptance remain open. No other policy approval or new gameplay implementation is implied.",
   "gdd_sha256": "5702a448dd07e5a463c4c50742975fff0e3954230c9fb6c243ad0a0ca00f2648",
   "tracker_sha256": "b1eb9834f8677be6f76d20dea45be8773a76f2a16839f2ed33275e19d623e39c",
   "scoring": {
@@ -397,7 +397,7 @@
       "title": "TileMapLayer 기반 2D 던전 맵 렌더링 파이프라인",
       "request_id": "PLAN-00-ENV",
       "planner_status": "결정 (미구현)",
-      "assessment": "partial",
+      "assessment": "code_supported",
       "code": [
         "game/features/map_generation/map_generator.gd",
         "game/features/map_generation/dungeon_floor_layer.gd"
@@ -406,7 +406,7 @@
         "game/tests/floor_render_contract_test.gd",
         "game/tests/basic_loop_smoke_test.gd"
       ],
-      "finding": "2026-09-08 마감 정정: 첫 렌더 최적화에서 실제 TileMapLayer를 Node2D 기반 ChunkedCellTexture로 교체했습니다. 지형·좌표·충돌 분리와 바닥 계약은 동작하지만 노션의 지정 노드 요구는 현행 코드에 없습니다. 성능 개선을 취소하지 않고 DEC-N26-TECH에서 대체 구현 수락 또는 지정 노드 재설계를 결정할 때까지 partial로 유지합니다.",
+      "finding": "2026-09-09 오너 대체 승인: '현재 사용하지 않는 타일맵 레이어도 근거가 변경된 이유를 적고 완료 처리'. 첫 GPU 업로드 지연을 줄이기 위해 TileMapLayer 대신 Node2D ChunkedCellTexture를 사용합니다. 동일 PC 각3회 첫 프레임 중앙값 중형197→23ms·대형304→27ms. 좌표/사용 셀 계약, 충돌·길찾기 분리를 유지하며 floor_render_contract_test가 검증합니다. 지정 노드의 실제 사용이 아닌 승인된 대체 구현 완료이며 Notion 원문/상태는 보존합니다. 양 플랫폼 일반10분 QA는 별도 부분 행에 남깁니다.",
       "next_packet": "N26-01"
     },
     {

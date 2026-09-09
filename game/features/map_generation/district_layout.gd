@@ -49,6 +49,7 @@ func from_regional_plan(plan: Dictionary) -> Dictionary:
 	var rooms: Array[Rect2i] = []
 	var plots: Array[Vector2i] = []
 	for rect: Array in plan.streets: _add_space(Rect2i(rect[0],rect[1],rect[2],rect[3]), &"street", floors, spaces)
+	for rect: Array in plan.get("yards",[]): _add_space(Rect2i(rect[0],rect[1],rect[2],rect[3]), &"yard", floors, spaces)
 	for building: Dictionary in plan.buildings:
 		var r: Array = building.rect
 		var room := Rect2i(r[0],r[1],r[2],r[3])

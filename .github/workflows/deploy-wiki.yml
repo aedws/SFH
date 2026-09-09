@@ -9,8 +9,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -23,12 +21,8 @@ jobs:
     runs-on: [self-hosted, Linux, X64, sfh-build]
     permissions:
       contents: write
-      actions: read
-      pull-requests: read
     outputs:
       game: ${{ steps.route.outputs.game }}
-      reuse_run: ${{ steps.route.outputs.reuse_run }}
-      web_run: ${{ steps.route.outputs.web_run }}
       runner: ${{ steps.route.outputs.runner }}
     steps:
       - name: Check out complete history
@@ -59,10 +53,9 @@ jobs:
           git push origin "$PREVIOUS_MAIN_SHA:$backup_ref"
           echo "PRE_MAIN_BACKUP_CREATED branch=$backup_branch commit=$PREVIOUS_MAIN_SHA"
 
-      - name: Classify changes and find verified source artifact
+      - name: Classify changes without GitHub artifact storage
         id: route
         env:
-          GH_TOKEN: ${{ github.token }}
           SFH_SELF_HOSTED_ENABLED: ${{ vars.SFH_SELF_HOSTED_ENABLED }}
           SFH_SELF_HOSTED_READY_UNTIL: ${{ vars.SFH_SELF_HOSTED_READY_UNTIL }}
         run: python3 scripts/ci_budget.py plan
@@ -70,6 +63,7 @@ jobs:
       - name: Check CI routing and wiki inputs before expensive game work
         run: |
           python3 scripts/test_ci_budget.py
+          python3 scripts/test_ci_transfer.py
           python3 scripts/generate_code_module_map.py --check
           python3 scripts/generate_project_ontology.py --check
 
@@ -77,7 +71,7 @@ jobs:
     permissions:
       contents: read
     needs: plan
-    if: needs.plan.outputs.game == 'true' && needs.plan.outputs.reuse_run == ''
+    if: needs.plan.outputs.game == 'true'
     runs-on: ${{ fromJSON(needs.plan.outputs.runner) }}
     timeout-minutes: 15
     container:
@@ -303,23 +297,23 @@ jobs:
       - name: Record source tree and payload hashes
         run: python3 scripts/ci_budget.py attest --directory game-web
 
-      - name: Upload browser game
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: game-web
-          path: game-web
-          if-no-files-found: error
-          retention-days: 1
+      - name: Hand off verified browser game on private runner
+        run: python3 scripts/ci_transfer.py publish --surface game-web --directory game-web
 
       - name: Return container files to the private runner owner
         if: always()
-        run: chown -R "$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+        run: |
+          owner=$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")
+          chown -R "$owner" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+          if [ -d "$GITHUB_WORKSPACE/../.sfh-build-store" ]; then
+            chown -R "$owner" "$GITHUB_WORKSPACE/../.sfh-build-store"
+          fi
 
   e2e:
     permissions:
       contents: read
     needs: plan
-    if: needs.plan.outputs.game == 'true' && needs.plan.outputs.reuse_run == ''
+    if: needs.plan.outputs.game == 'true'
     runs-on: ${{ fromJSON(needs.plan.outputs.runner) }}
     timeout-minutes: 15
     container:
@@ -398,12 +392,17 @@ jobs:
 
       - name: Return container files to the private runner owner
         if: always()
-        run: chown -R "$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+        run: |
+          owner=$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")
+          chown -R "$owner" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+          if [ -d "$GITHUB_WORKSPACE/../.sfh-build-store" ]; then
+            chown -R "$owner" "$GITHUB_WORKSPACE/../.sfh-build-store"
+          fi
 
   package-windows:
     permissions:
       contents: read
-    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.plan.result == 'success' && needs.plan.outputs.game == 'true' && (needs.plan.outputs.reuse_run != '' || (needs.export-game.result == 'success' && needs.e2e.result == 'success')) }}
+    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.plan.result == 'success' && needs.plan.outputs.game == 'true' && needs.export-game.result == 'success' && needs.e2e.result == 'success' }}
     runs-on: ${{ fromJSON(needs.plan.outputs.runner) }}
     timeout-minutes: 15
     outputs:
@@ -491,19 +490,17 @@ jobs:
             --csv game/features/character_selection/data/character_catalog.csv \
             --commit "$GITHUB_SHA"
 
-      - name: Upload Windows release
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: SFH-Windows-x64-${{ steps.release.outputs.version }}
-          path: |
-            dist/SFH-Windows-x64-${{ steps.release.outputs.version }}.zip
-            dist/SFH-Windows-x64-${{ steps.release.outputs.version }}.zip.sha256
-          if-no-files-found: error
-          retention-days: 1
+      - name: Hand off verified Windows release on private runner
+        run: python3 scripts/ci_transfer.py publish --surface windows --directory dist
 
       - name: Return container files to the private runner owner
         if: always()
-        run: chown -R "$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+        run: |
+          owner=$(stat -c '%u:%g' "$GITHUB_WORKSPACE/..")
+          chown -R "$owner" "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+          if [ -d "$GITHUB_WORKSPACE/../.sfh-build-store" ]; then
+            chown -R "$owner" "$GITHUB_WORKSPACE/../.sfh-build-store"
+          fi
 
   build:
     if: ${{ !cancelled() && needs.plan.result == 'success' }}
@@ -517,7 +514,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
-      - name: Require successful relevant checks or verified reuse
+      - name: Require successful relevant checks
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: python3 scripts/ci_budget.py gate
@@ -526,10 +523,6 @@ jobs:
         run: |
           python3 -m venv "$RUNNER_TEMP/wiki-python"
           echo "$RUNNER_TEMP/wiki-python/bin" >> "$GITHUB_PATH"
-
-      - name: Configure GitHub Pages
-        if: vars.SFH_PAGES_FALLBACK != 'disabled'
-        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
 
       - name: Install wiki dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-docs.txt
@@ -554,6 +547,7 @@ jobs:
           python -m py_compile scripts/deploy_cloudflare_assets.py
           python -m py_compile scripts/prune_windows_releases.py
           python scripts/test_windows_release_retention.py
+          python scripts/test_cloudflare_release.py
 
       - name: Build wiki
         shell: pwsh
@@ -588,15 +582,6 @@ jobs:
           ./scripts/check-wiki-planner-requests.ps1 -SiteRoot .wiki-site
           ./scripts/check-wiki-role-auth.ps1 -SiteRoot .wiki-site
 
-      - name: Upload Cloudflare wiki artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: wiki-site
-          path: .wiki-site
-          if-no-files-found: error
-          include-hidden-files: true
-          retention-days: 1
-
       - name: Verify documentation-only Pages artifact
         run: |
           test -s .wiki-site/index.html
@@ -623,17 +608,13 @@ jobs:
           test ! -e .wiki-site/play/index.wasm
           test ! -e .wiki-site/play/index.pck
 
-      - name: Upload GitHub Pages artifact
-        if: vars.SFH_PAGES_FALLBACK != 'disabled'
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
-        with:
-          path: .wiki-site
+      - name: Hand off verified wiki on private runner
+        run: python3 scripts/ci_transfer.py publish --surface wiki-site --directory .wiki-site
 
   cloudflare-deploy:
-    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.build.result == 'success' }}
+    if: ${{ !cancelled() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.build.result == 'success' }}
     runs-on: [self-hosted, Linux, X64, sfh-build]
     permissions:
-      actions: write
       contents: write
     needs:
       - plan
@@ -656,7 +637,6 @@ jobs:
       R2_DOWNLOAD_PREFIX: downloads
       GAME_CHANGED: ${{ needs.plan.outputs.game }}
       GAME_BUILD_COMMIT: ${{ github.sha }}
-      WEB_ARTIFACT_RUN: ${{ needs.plan.outputs.web_run }}
       RELEASE_VERSION: ${{ needs.package-windows.outputs.release-version }}
       WRANGLER_VERSION: 4.127.1
     steps:
@@ -677,34 +657,23 @@ jobs:
         if: steps.cloudflare_config.outputs.ready == 'true'
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
-      - name: Download verified wiki
+      - name: Retrieve and verify wiki from this run
         if: steps.cloudflare_config.outputs.ready == 'true'
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: wiki-site
-          path: .cloudflare-wiki
+        run: python3 scripts/ci_transfer.py retrieve --surface wiki-site --directory .cloudflare-wiki
 
-      - name: Download verified browser game
+      - name: Retrieve and verify browser game from this run
         if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: game-web
-          path: .cloudflare-game
-          run-id: ${{ needs.plan.outputs.web_run }}
-          github-token: ${{ github.token }}
+        run: python3 scripts/ci_transfer.py retrieve --surface game-web --directory .cloudflare-game
 
-      - name: Download verified Windows release
+      - name: Retrieve and verify Windows release from this run
         if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: SFH-Windows-x64-${{ env.RELEASE_VERSION }}
-          path: .cloudflare-windows
+        run: python3 scripts/ci_transfer.py retrieve --surface windows --directory .cloudflare-windows
 
       - name: Verify Web provenance or preserve active game release
         if: steps.cloudflare_config.outputs.ready == 'true'
         run: |
           if [ "$GAME_CHANGED" = "true" ]; then
-            python3 scripts/ci_budget.py verify --directory .cloudflare-game --run-id "$WEB_ARTIFACT_RUN"
+            python3 scripts/ci_budget.py verify --directory .cloudflare-game --run-id "$GITHUB_RUN_ID"
           else
             curl --silent --show-error --fail "$CLOUDFLARE_GAME_URL/healthz" -o /tmp/active-game.json
             python3 -c 'import json, os, re; d=json.load(open("/tmp/active-game.json")); assert re.fullmatch("[0-9a-f]{40}", d["build_commit"]); assert re.fullmatch("[A-Za-z0-9._-]+", d["release_version"]); f=open(os.environ["GITHUB_ENV"], "a"); f.write("GAME_BUILD_COMMIT="+d["build_commit"]+"\nRELEASE_VERSION="+d["release_version"]+"\n")'
@@ -715,6 +684,12 @@ jobs:
         run: |
           npm install --prefix "$RUNNER_TEMP/sfh-wrangler" "wrangler@${WRANGLER_VERSION}"
           echo "$RUNNER_TEMP/sfh-wrangler/node_modules/.bin" >> "$GITHUB_PATH"
+
+      - name: Capture active game rollback identity
+        if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
+        run: |
+          curl --silent --show-error --fail "$CLOUDFLARE_GAME_URL/healthz" -o "$RUNNER_TEMP/sfh-previous-release.json"
+          python3 scripts/release_state.py "$RUNNER_TEMP/sfh-previous-release.json"
 
       - name: Upload immutable R2 release objects
         if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
@@ -798,11 +773,12 @@ jobs:
             | wrangler pages secret put AUTH_PEPPER --project-name=sfh-dev-wiki
 
       - name: Switch game Worker to verified commit
+        id: game_promotion
         if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
         run: |
           wrangler deploy --config cloudflare/wrangler.jsonc \
             --var "RELEASE_PREFIX:game/releases/$GITHUB_SHA" \
-            --var "DOWNLOAD_PREFIX:$R2_DOWNLOAD_PREFIX" \
+            --var "DOWNLOAD_PREFIX:$R2_DOWNLOAD_PREFIX/releases/$GITHUB_SHA" \
             --var "RELEASE_VERSION:$RELEASE_VERSION" \
             --var "BUILD_COMMIT:$GITHUB_SHA"
 
@@ -819,11 +795,13 @@ jobs:
           )
 
       - name: Verify Cloudflare wiki, game, range, and download
+        id: release_e2e
         if: steps.cloudflare_config.outputs.ready == 'true'
         run: |
           for attempt in $(seq 1 24); do
             if curl --silent --show-error --fail "$CLOUDFLARE_WIKI_URL/" --output /tmp/wiki.html \
               && grep -q 'SFH' /tmp/wiki.html \
+              && grep -q "name=\"sfh-build-commit\" content=\"$GITHUB_SHA\"" /tmp/wiki.html \
               && curl --silent --show-error --fail "$CLOUDFLARE_GAME_URL/healthz" --output /tmp/health.json \
               && grep -q "$GAME_BUILD_COMMIT" /tmp/health.json; then
               break
@@ -863,16 +841,33 @@ jobs:
           test "$download_status" = "200"
           curl --silent --show-error --fail "$download_base/$archive.sha256" --output "/tmp/$archive.sha256"
           (cd /tmp && sha256sum --check "$archive.sha256")
+          python3 -c 'import json, os, zipfile; archive="/tmp/SFH-Windows-x64-"+os.environ["RELEASE_VERSION"]+".zip"; metadata=json.loads(zipfile.ZipFile(archive).read("BUILD-METADATA.json")); assert metadata["build_commit"] == os.environ["GAME_BUILD_COMMIT"]; assert metadata["release_version"] == os.environ["RELEASE_VERSION"]'
           echo "CLOUDFLARE_E2E_OK wiki game range download commit=$GAME_BUILD_COMMIT wiki_commit=$GITHUB_SHA"
+
+      - name: Restore previous game if published verification fails
+        if: ${{ failure() && steps.game_promotion.outcome == 'success' && (steps.release_e2e.outcome == 'failure' || steps.release_e2e.outcome == 'skipped') }}
+        run: |
+          wrangler deploy --config cloudflare/wrangler.jsonc \
+            --var "RELEASE_PREFIX:game/releases/$PREVIOUS_GAME_COMMIT" \
+            --var "DOWNLOAD_PREFIX:$PREVIOUS_DOWNLOAD_PREFIX" \
+            --var "RELEASE_VERSION:$PREVIOUS_RELEASE_VERSION" \
+            --var "BUILD_COMMIT:$PREVIOUS_GAME_COMMIT"
+          curl --silent --show-error --fail "$CLOUDFLARE_GAME_URL/healthz" | grep -q "$PREVIOUS_GAME_COMMIT"
+          echo "GAME_ROLLBACK_OK previous=$PREVIOUS_GAME_COMMIT; workflow remains failed"
 
       - name: Remove superseded Windows downloads from R2
         if: steps.cloudflare_config.outputs.ready == 'true' && needs.plan.outputs.game == 'true'
         run: |
+          legacy_args=()
+          if [ "$PREVIOUS_DOWNLOAD_PREFIX" = "downloads" ]; then
+            legacy_args=(--keep-legacy-version "$PREVIOUS_RELEASE_VERSION")
+          fi
           python3 scripts/prune_windows_releases.py \
             --r2 \
             --bucket "$CLOUDFLARE_R2_BUCKET" \
             --prefix "$R2_DOWNLOAD_PREFIX/" \
-            --keep-version "$RELEASE_VERSION"
+            --keep-commit "$GITHUB_SHA" \
+            --keep-commit "$PREVIOUS_GAME_COMMIT" "${legacy_args[@]}"
 
       - name: Create immutable-name verified backup branch
         if: steps.cloudflare_config.outputs.ready == 'true'
@@ -891,43 +886,17 @@ jobs:
           git push origin "$GITHUB_SHA:$backup_ref"
           echo "VERIFIED_MAIN_BACKUP_CREATED branch=$backup_branch commit=$GITHUB_SHA"
 
-      - name: Keep only artifacts from the latest verified main run
-        if: steps.cloudflare_config.outputs.ready == 'true'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          artifact_rows=$(mktemp)
-          trap 'rm -f -- "$artifact_rows"' EXIT
-          gh api --paginate "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100" \
-            --jq '.artifacts[] | [.id, .workflow_run.id, .name] | @tsv' > "$artifact_rows"
-          for required_name in wiki-site; do
-            awk -F '\t' -v run="$GITHUB_RUN_ID" -v name="$required_name" \
-              '$2 == run && $3 == name { found = 1 } END { exit !found }' "$artifact_rows"
-          done
-          deleted=0
-          while IFS=$'\t' read -r artifact_id artifact_run_id artifact_name; do
-            if [ "$artifact_run_id" = "$GITHUB_RUN_ID" ]; then
-              continue
-            fi
-            if [ "$artifact_run_id" = "$WEB_ARTIFACT_RUN" ]; then continue; fi
-            event=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$artifact_run_id" --jq '.event')
-            if [ "$event" != "push" ]; then continue; fi
-            if [ "$GAME_CHANGED" != "true" ] && [ "$artifact_name" != "wiki-site" ]; then continue; fi
-            gh api --method DELETE "repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact_id"
-            deleted=$((deleted + 1))
-          done < "$artifact_rows"
-          echo "ACTIONS_ARTIFACT_RETENTION_OK kept_run=$GITHUB_RUN_ID deleted=$deleted"
-
-  deploy:
-    if: github.event_name != 'pull_request' && vars.SFH_PAGES_FALLBACK != 'disabled'
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  clean-transfer:
+    # No permanent build archive on GitHub or WSL. An interrupted host can leave
+    # this exact run directory behind; rerun ALL jobs, never reuse another run.
+    if: ${{ always() && needs.plan.result == 'success' }}
     runs-on: [self-hosted, Linux, X64, sfh-build]
-    needs: build
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    needs: [plan, export-game, e2e, package-windows, build, cloudflare-deploy]
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Remove only this run's temporary handoff
+        run: python3 scripts/ci_transfer.py clean

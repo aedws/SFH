@@ -1313,6 +1313,28 @@ func _verify_field_loot_acquisition(player: Node2D) -> bool:
 		&"acquired": acquired,
 	}):
 		return false
+	# Acquiring the room reward may immediately focus another random corpse drop.
+	# Test the explicit weapon/skill fixtures away from that pile; do not overwrite
+	# live focus, erase loot, or weaken the visible text and real-key assertions.
+	var isolated_loot_position := false
+	for room: Dictionary in game.get("map_generator").get_room_encounter_snapshot():
+		var candidate_position: Vector2 = room[&"center"]
+		var occupied := false
+		for nearby: Node2D in service.get_active_drops():
+			if nearby.global_position.distance_to(candidate_position) <= float(nearby.get("interaction_radius")) + 48.0:
+				occupied = true
+				break
+		if not occupied:
+			player.global_position = candidate_position
+			isolated_loot_position = true
+			break
+	if not isolated_loot_position:
+		return _fail("현장 장착 E2E의 독립 접근 위치를 찾지 못했습니다.")
+	await physics_frame
+	await process_frame
+	await process_frame
+	if service.get_snapshot().get(&"focused_item_id", &"") != &"":
+		return _fail("기존 전리품 범위를 벗어난 뒤 비교 초점이 해제되지 않았습니다.")
 	var equipment = game.get("equipment_system")
 	var before_weapon: StringName = equipment.call(&"get_summary").get(&"active_weapon_id", &"")
 	var equip_drop: Node2D = service.call(&"spawn_candidate", player.global_position, {
@@ -1323,6 +1345,8 @@ func _verify_field_loot_acquisition(player: Node2D) -> bool:
 		return _fail("P4-04A 현장 무기 후보를 생성하지 못했습니다.")
 	equip_drop.call(&"_process", 0.0)
 	await process_frame
+	if service.get_snapshot().get(&"focused_item_id", &"") != &"pulse_rifle":
+		return _fail("현장 무기 E2E가 생성한 pulse_rifle을 비교하지 않습니다: %s" % service.get_snapshot())
 	if not _judge_player_perception(&"field_loot_immediate_equip", "현장 무기 즉시 장착·기존 장비 처리 이해"):
 		return false
 	var equip_before: Dictionary = service.call(&"get_snapshot")

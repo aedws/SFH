@@ -3,10 +3,28 @@ from tempfile import TemporaryDirectory
 from unittest import TestCase, main
 from unittest.mock import patch
 
-from prune_windows_releases import list_r2_objects, prune_local, prune_r2
+from prune_windows_releases import list_r2_objects, prune_local, prune_r2, prune_commit_downloads
 
 
 class WindowsRetentionTests(TestCase):
+    @patch("prune_windows_releases._request")
+    def test_commit_retention_keeps_current_previous_and_only_exact_windows_files(self, request):
+        def key(commit):
+            return f"downloads/releases/{commit}/v0.1.0/SFH-Windows-x64-v0.1.0.zip"
+        current, previous, old = "a" * 40, "b" * 40, "c" * 40
+        legacy = "downloads/v0.1.0/SFH-Windows-x64-v0.1.0.zip"
+        request.side_effect = [
+            {"success": True, "result": [{"key": value} for value in (
+                key(current), key(previous), key(old), key(old) + ".sha256", legacy,
+                "downloads/releases/custom/backup.zip", "game/releases/anything/index.pck",
+                "users/planner.json")], "result_info": {}},
+            {"success": True}, {"success": True},
+        ]
+        self.assertEqual(prune_commit_downloads("account", "token", "bucket", [current, previous], "v0.1.0"),
+                         [key(old), key(old) + ".sha256"])
+        with self.assertRaises(ValueError):
+            prune_commit_downloads("account", "token", "bucket", [])
+
     def test_only_old_windows_archives_are_deleted(self) -> None:
         with TemporaryDirectory() as directory:
             root = Path(directory)

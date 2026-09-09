@@ -151,20 +151,22 @@ class CodeCrosswalkTests(unittest.TestCase):
     def test_all_rows_and_weighted_result(self):
         audit_check.validate(self.audit, self.gdd, self.tasks)
         numerator, denominator, counts = audit_check.summary(self.audit)
-        # Current chunk renderer differs from specified TileMapLayer; normal-play QA stays partial.
-        self.assertEqual((numerator, denominator, len(self.audit["rows"])), (135, 170, 66))
-        self.assertEqual((counts["code_supported"], counts["partial"]), (44, 2))
+        # Owner accepted the alternative renderer; normal-play QA stays partial.
+        self.assertEqual((numerator, denominator, len(self.audit["rows"])), (136.5, 170, 66))
+        self.assertEqual((counts["code_supported"], counts["partial"]), (45, 1))
         self.assertEqual(counts["decision_pending"], 14)
 
     def test_day_close_technical_gap_and_next_day_links(self):
         root = Path(__file__).resolve().parents[1]
         row = next(r for r in self.audit["rows"] if r["title"].startswith("TileMapLayer"))
-        self.assertEqual(row["assessment"], "partial")
+        self.assertEqual(row["assessment"], "code_supported")
+        self.assertIn("2026-09-09 오너 대체 승인", row["finding"])
+        self.assertEqual(row["planner_status"], "결정 (미구현)")
         self.assertIn("game/features/map_generation/dungeon_floor_layer.gd", row["code"])
         self.assertIn("extends Node2D", (root / row["code"][1]).read_text(encoding="utf-8"))
         document = (root / "docs/design/master-gdd-alignment.md").read_text(encoding="utf-8")
         self.assertEqual(document.count("{#day-close}"), 1)
-        self.assertIn("135/170", document)
+        self.assertIn("136.5/170", document)
         for page in ["docs/access/planner.md", "docs/access/developer.md", "docs/index.md", "docs/development-status.md"]:
             self.assertIn("next-20260909", (root / page).read_text(encoding="utf-8"))
 

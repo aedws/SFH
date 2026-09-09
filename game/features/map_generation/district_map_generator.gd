@@ -9,6 +9,10 @@ var facility_rows: Array[Dictionary] = []
 var facility_metadata: Dictionary = {}
 var exit_rooms: Array[int] = []
 @export var regional_landmarks_enabled := true
+@export var urban_city_enabled := true
+@export_range(0.0,0.12,0.005) var urban_fixture_density := 0.045
+@export var urban_layout: Resource = preload("res://game/features/map_generation/urban_block_layout.gd").new()
+var urban_visual: Node2D
 var region_id := "ruined_city"
 var regional_plan: Dictionary = {}
 
@@ -27,6 +31,8 @@ func _generate_connected_rooms(count: int) -> void:
 		var source := facility_rows
 		if source.is_empty(): source = preload("res://game/features/map_generation/facility_catalog.gd").new().get_rows()
 		var config := {"minimum_rooms":tier_config.minimum_rooms,"maximum_rooms":tier_config.maximum_rooms,"minimum_size":[tier_config.minimum_room_size.x,tier_config.minimum_room_size.y],"maximum_size":[tier_config.maximum_room_size.x,tier_config.maximum_room_size.y]}
+		config["urban_enabled"]=urban_city_enabled
+		config["urban"]=urban_layout.settings()
 		regional_plan = preload("res://game/features/map_generation/regional_district_plan.gd").new().build(config,region_id,used_seed,source)
 		# Invalid future tier capacity must not strand the player during operation entry.
 		district = district_layout.from_regional_plan(regional_plan) if not regional_plan.is_empty() else district_layout.build(tier_config,random,count)
@@ -74,6 +80,17 @@ func _assign_landmarks() -> void:
 func get_district_snapshot() -> Dictionary:
 	return {&"enabled":district_layout_enabled,&"facilities":facility_metadata.duplicate(true),&"exit_rooms":exit_rooms.duplicate(),&"street_cycles":int(district.get(&"columns",0))*int(district.get(&"rows",0)),&"early_extraction":district_layout_enabled,&"warp_policy":&"terminal_only"}
 
+func _generate_obstacles() -> void:
+	if regional_plan.get("version",0)!=2:
+		super._generate_obstacles()
+		return
+	obstacle_cells.clear()
+	var interiors := preload("res://game/features/map_generation/urban_interior_layout.gd").new()
+	for index in rooms.size():
+		if index==0 or index in exit_rooms: continue
+		for pattern: Array[Vector2i] in interiors.patterns(rooms[index],String(facility_metadata[index].facility_id),clampf(maxf(tier_config.obstacle_density,urban_fixture_density),0,0.12),random):
+			_try_place_obstacle_pattern(pattern,&"utility",rooms[index])
+
 func set_facility_rows(rows_data: Array[Dictionary]) -> void:
 	facility_rows = rows_data.duplicate(true)
 
@@ -92,6 +109,8 @@ func _select_loot_room() -> int:
 func get_minimap_snapshot() -> Dictionary:
 	var result := super.get_minimap_snapshot()
 	result[&"extraction_candidates"] = get_extraction_candidates()
+	if regional_plan.get("version",0)==2:
+		result[&"map_spaces"]=district.spaces.duplicate(true)
 	return result
 
 func get_room_encounter_snapshot() -> Array[Dictionary]:
@@ -126,8 +145,19 @@ func get_visibility_spaces() -> Array[Dictionary]:
 		for index in rooms.size(): result.append({&"space_id":index,&"world_rect":_room_world_rect(rooms[index],false),&"kind":&"room",&"room_index":index})
 	return result
 
+func _floor_surface_colors() -> Dictionary:
+	if regional_plan.get("version",0)!=2:
+		if is_instance_valid(urban_visual): urban_visual.hide()
+		return {}
+	if not is_instance_valid(urban_visual):
+		urban_visual=preload("res://game/features/map_generation/urban_map_visual.gd").new()
+		add_child(urban_visual)
+	urban_visual.show()
+	urban_visual.configure(regional_plan,cell_size,_merge_collision_cells(wall_cells),_merge_collision_cells(obstacle_cells))
+	return urban_visual.surface_colors(regional_plan,floor_cells)
+
 func _draw() -> void:
-	super._draw()
+	if regional_plan.get("version",0)!=2: super._draw()
 	if not district_layout_enabled: return
 	for index: int in facility_metadata:
 		var room := _room_world_rect(rooms[index],false)

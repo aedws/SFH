@@ -78,4 +78,5 @@ func build(config: Dictionary, region: String, seed_value: int, facilities: Arra
 			passages.append([cx-1,plot[1]*stride[1],3,y-plot[1]*stride[1]])
 			passages.append([cx-1,y+size[1],3,(plot[1]+1)*stride[1]+8-y-size[1]])
 		buildings.append({"index":index,"plot":plot,"rect":[x,y,size[0],size[1]],"axis":axis,"facility_id":row.facility_id,"required":is_required})
-	return {"version":VERSION,"region":region,"seed":seed_value,"count":count,"columns":columns,"rows":rows,"stride":stride,"buildings":buildings,"streets":streets,"passages":passages,"start":0,"exits":exits}
+	var result := {"version":VERSION,"region":region,"seed":seed_value,"count":count,"columns":columns,"rows":rows,"stride":stride,"buildings":buildings,"streets":streets,"passages":passages,"start":0,"exits":exits}
+	return preload("res://game/features/map_generation/urban_block_layout.gd").new().apply(result,config) if config.get("urban_enabled",true) else result

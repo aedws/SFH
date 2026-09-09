@@ -36,7 +36,29 @@
       else passages.push([cx-1,plot[1]*stride[1],3,y-plot[1]*stride[1]],[cx-1,y+size[1],3,(plot[1]+1)*stride[1]+8-y-size[1]]);
       buildings.push({index:i,plot,rect:[x,y,...size],axis,facility_id:r.facility_id,required:fixed});
     }
-    return {version:1,region,seed,count,columns,rows,stride,buildings,streets,passages,start:0,exits};
+    const plan={version:1,region,seed,count,columns,rows,stride,buildings,streets,passages,start:0,exits};
+    return config.urban_enabled===false?plan:urban(plan,config);
+  }
+  function urban(plan,config){
+    const o={avenue_width:14,local_width:10,sidewalk_width:3,entrance_width:5,...config.urban};
+    const clamp=(v,a,b)=>Math.min(b,Math.max(a,Math.trunc(v)));
+    const main=clamp(o.avenue_width,8,20),local=clamp(o.local_width,6,14),sidewalk=clamp(o.sidewalk_width,2,5),door=clamp(o.entrance_width,3,7);
+    const phase=plan.region==='industrial_district'?1:plan.region==='research_complex'?2:0,xs=[0],ys=[0],xw=[],yw=[];
+    for(let x=0;x<=plan.columns;x++){xw.push(x%3===0?main:local);if(x<plan.columns)xs.push(xs.at(-1)+config.maximum_size[0]+xw.at(-1)+sidewalk*2+8+(x+phase)%3*6);}
+    for(let y=0;y<=plan.rows;y++){yw.push(y%3===0?main:local);if(y<plan.rows)ys.push(ys.at(-1)+config.maximum_size[1]+yw.at(-1)+sidewalk*2+8+(y+phase+1)%3*5);}
+    plan.streets=[];plan.passages=[];plan.yards=[];plan.street_axes=[];
+    for(let y=0;y<=plan.rows;y++){for(let x=0;x<plan.columns;x++)plan.streets.push([xs[x],ys[y],xs[x+1]-xs[x]+xw[x+1],yw[y]]);plan.street_axes.push({axis:'horizontal',at:ys[y],width:yw[y]});}
+    for(let x=0;x<=plan.columns;x++){for(let y=0;y<plan.rows;y++)plan.streets.push([xs[x],ys[y],xw[x],ys[y+1]-ys[y]+yw[y+1]]);plan.street_axes.push({axis:'vertical',at:xs[x],width:xw[x]});}
+    for(const b of plan.buildings){
+      const [px,py]=b.plot,lot=[xs[px]+xw[px],ys[py]+yw[py],xs[px+1],ys[py+1]],w=b.rect[2],h=b.rect[3],horizontal=b.axis==='horizontal';
+      const x=horizontal?lot[0]+sidewalk+2:lot[0]+Math.floor((lot[2]-lot[0]-w)/2),y=horizontal?lot[1]+Math.floor((lot[3]-lot[1]-h)/2):lot[1]+sidewalk+2;
+      b.rect=[x,y,w,h];b.lot=[lot[0],lot[1],lot[2]-lot[0],lot[3]-lot[1]];
+      plan.yards.push(...[[lot[0],lot[1],lot[2]-lot[0],y-lot[1]-1],[lot[0],y+h+1,lot[2]-lot[0],lot[3]-y-h-1],[lot[0],y-1,x-lot[0]-1,h+2],[x+w+1,y-1,lot[2]-x-w-1,h+2]].filter(r=>r[2]>0&&r[3]>0));
+      const cx=x+Math.floor(w/2),cy=y+Math.floor(h/2),half=Math.floor(door/2);
+      if(horizontal)plan.passages.push([lot[0],cy-half,x-lot[0],door],[x+w,cy-half,lot[2]-x-w,door]);
+      else plan.passages.push([cx-half,lot[1],door,y-lot[1]],[cx-half,y+h,door,lot[3]-y-h]);
+    }
+    plan.version=2;plan.urban_settings={avenue_width:main,local_width:local,sidewalk_width:sidewalk,entrance_width:door};plan.extent=[xs.at(-1)+xw.at(-1),ys.at(-1)+yw.at(-1)];return plan;
   }
   function proposal(catalog, region, tier, seed, facilities, notes, source) {
     const original=new Map(catalog.facilities.map(r=>[r.facility_id,r]));

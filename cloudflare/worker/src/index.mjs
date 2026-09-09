@@ -59,7 +59,8 @@ function downloadHeaders(headers, key) {
   headers.set("x-sfh-surface", "windows-download");
   headers.set("x-content-type-options", "nosniff");
   headers.set("content-type", headers.get("content-type") || contentTypeFor(key));
-  headers.set("cache-control", "public, max-age=31536000, immutable");
+  // Public /downloads/<version> is a latest-release alias, not immutable.
+  headers.set("cache-control", "no-cache");
   if (key.endsWith(".zip")) {
     headers.set("content-disposition", `attachment; filename="${key.split("/").at(-1)}"`);
   }
@@ -124,8 +125,10 @@ export default {
     }
 
     const downloadPrefix = `${env.DOWNLOAD_PREFIX || "downloads"}/`;
-    const isDownload = path.startsWith(downloadPrefix);
-    const key = isDownload ? path : `${env.RELEASE_PREFIX}/${path}`;
+    const isDownload = path.startsWith("downloads/");
+    const key = isDownload
+      ? `${downloadPrefix}${path.slice("downloads/".length)}`
+      : `${env.RELEASE_PREFIX}/${path}`;
     const rangeRequested = request.headers.has("range");
     const object = rangeRequested
       ? await env.ASSETS.get(key, { range: request.headers })

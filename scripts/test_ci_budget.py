@@ -1,11 +1,9 @@
 """Behavioral regression gates for CI savings without accepting untested code."""
-import io
 import json
 from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
-import zipfile
 
 import ci_budget as ci
 
@@ -28,8 +26,8 @@ class RoutingTests(unittest.TestCase):
         ci.require_checks(needs(), "pull_request")
         ci.require_checks(needs(windows="success"), "push")
         ci.require_checks(needs(game="false", export="skipped", e2e="skipped"), "push")
-        ci.require_checks(needs(reuse="123", export="skipped", e2e="skipped", windows="success"), "push")
         for state, event in ((needs(export="failure"), "pull_request"),
+                             (needs(reuse="123", export="skipped", e2e="skipped", windows="success"), "push"),
                              (needs(e2e="cancelled"), "pull_request"),
                              (needs(), "push"), (needs(plan="failure"), "pull_request"),
                              (needs(game="unknown"), "push")):
@@ -41,17 +39,6 @@ class RoutingTests(unittest.TestCase):
         for paths in ([], ["game/foo.gd"], [".godot-version"], ["export_presets.cfg"],
                       ["scripts/sync_new_catalog.py"], ["docs/index.md", "new-engine-config"]):
             self.assertFalse(ci.documentation_only(paths), paths)
-
-    def test_only_successful_same_repository_pr_run_is_eligible(self):
-        pr = {"head": {"sha": "a" * 40}}
-        run = {"event": "pull_request", "conclusion": "success", "path": ci.WORKFLOW,
-               "head_sha": "a" * 40, "head_repository": {"full_name": "owner/repo"}}
-        self.assertTrue(ci.candidate_run(run, pr, "owner/repo"))
-        for key, value in (("event", "push"), ("conclusion", "failure"),
-                           ("conclusion", "cancelled"), ("head_sha", "b" * 40),
-                           ("path", ".github/workflows/other.yml"),
-                           ("head_repository", {"full_name": "attacker/repo"})):
-            self.assertFalse(ci.candidate_run(dict(run, **{key: value}), pr, "owner/repo"))
 
     def test_payload_rejects_changed_tree_missing_extra_and_tampered_files(self):
         files = {"index.html": b"html", "index.wasm": b"wasm", "index.pck": b"pack"}
@@ -68,16 +55,7 @@ class RoutingTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             ci.verify_payload(files, "tree", "123")
 
-    def test_zip_traversal_is_rejected_before_use(self):
-        for name in ("../outside", "/absolute", "C:/absolute", "a\\b"):
-            data = io.BytesIO()
-            with zipfile.ZipFile(data, "w") as archive:
-                archive.writestr("x" * len(name), "bad")
-            raw = data.getvalue().replace(b"x" * len(name), name.encode())
-            with self.subTest(name=name), self.assertRaises(ValueError):
-                ci.read_archive(raw)
-
-    def test_api_failure_falls_back_to_full_game_checks(self):
+    def test_game_push_always_uses_full_checks_without_artifact_api(self):
         with tempfile.TemporaryDirectory() as directory:
             event = Path(directory) / "event.json"
             output = Path(directory) / "out"
@@ -85,12 +63,11 @@ class RoutingTests(unittest.TestCase):
             env = {"GITHUB_EVENT_PATH": str(event), "GITHUB_EVENT_NAME": "push",
                    "GITHUB_SHA": "a" * 40, "GITHUB_REPOSITORY": "owner/repo",
                    "GITHUB_RUN_ID": "456", "GITHUB_OUTPUT": str(output)}
-            with patch.dict(ci.os.environ, env), patch.object(ci, "git", side_effect=["tree", "game/new.gd"]), patch.object(ci, "find_reuse", side_effect=OSError):
+            with patch.dict(ci.os.environ, env), patch.object(ci, "git", side_effect=["tree", "game/new.gd"]):
                 ci.plan()
             result = output.read_text()
             self.assertIn("game=true", result)
-            self.assertIn("reuse_run=\n", result)
-            self.assertIn("web_run=456", result)
+            self.assertNotIn("reuse_run", result)
 
     def test_documents_preserve_game_and_never_attempt_reuse(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -100,9 +77,8 @@ class RoutingTests(unittest.TestCase):
             env = {"GITHUB_EVENT_PATH": str(event), "GITHUB_EVENT_NAME": "push",
                    "GITHUB_SHA": "a" * 40, "GITHUB_REPOSITORY": "owner/repo",
                    "GITHUB_RUN_ID": "456", "GITHUB_OUTPUT": str(output)}
-            with patch.dict(ci.os.environ, env), patch.object(ci, "git", side_effect=["tree", "docs/index.md"]), patch.object(ci, "find_reuse") as reuse:
+            with patch.dict(ci.os.environ, env), patch.object(ci, "git", side_effect=["tree", "docs/index.md"]):
                 ci.plan()
-                reuse.assert_not_called()
             self.assertIn("game=false", output.read_text())
 
     def test_runner_is_manual_only_and_never_falls_back_to_hosted(self):

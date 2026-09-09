@@ -62,13 +62,13 @@ tags:
 | 개발 위키 | `sfh-dev-wiki.pages.dev` | Cloudflare Pages `sfh-dev-wiki` | 문서·검색·진행률만 제공 |
 | 브라우저 게임 | `sfh-game.vstock-market.workers.dev` | Worker `sfh-game` | Godot Web 런타임과 보안·Range 헤더 제공 |
 | Windows 다운로드 | 게임 Worker의 `/downloads/<version>/` | 같은 Worker 게이트웨이 | 검증 ZIP·SHA-256만 제공 |
-| 원본 산출물 | 공개 주소 없음 | Private R2 `sfh-game-artifacts` | `game/releases/<commit>/`과 `downloads/<version>/`를 분리 저장 |
+| 원본 산출물 | 공개 주소 없음 | Private R2 `sfh-game-artifacts` | `game/releases/<commit>/`과 `downloads/releases/<commit>/<version>/`를 분리 저장 |
 
 `vstock-market`은 Cloudflare 계정의 공통 workers.dev 접미사입니다. SFH는 별도 Worker `sfh-game`, 별도 Private R2 `sfh-game-artifacts`를 사용하며 기존 VStock 애플리케이션의 Worker·R2 키를 읽거나 덮어쓰지 않습니다.
 
-CI는 Web·Windows·위키를 다시 만들지 않고 앞 단계에서 검증해 업로드한 GitHub Actions 산출물만 내려받습니다. Web 파일은 R2의 `game/releases/<commit>/` 불변 경로에 먼저 저장하고 마지막에 Worker의 활성 커밋만 바꿉니다. Windows 파일은 겹치지 않는 `downloads/<version>/`에 저장합니다. 위키 Pages 산출물에는 게임 WASM·PCK를 결합하지 않습니다. 모든 위키 플레이 버튼은 게임 Worker 절대 주소를 새 탭에서 직접 열며, 기존 `/play/`는 오래된 링크를 위한 302 호환 경로로만 유지합니다.
+GitHub는 소스·PR·검사/복구 기록을 맡고 배포 파일을 보관하지 않습니다. 자체 러너가 같은 main 커밋의 Web·Windows·위키를 생성·검증하며, 배포 작업은 실행/시도별 SHA-256 전달본을 받아 다시 빌드하지 않고 Cloudflare로 직접 보냅니다. Web와 Windows는 R2의 커밋별 경로에 먼저 저장·읽기 검증한 뒤 Worker의 두 활성 경로를 함께 바꿉니다. 공개 `/downloads/<version>/` 주소는 그대로 유지합니다. 위키 Pages에는 게임 WASM·PCK를 결합하지 않습니다. 모든 위키 플레이 버튼은 게임 Worker 절대 주소를 새 탭에서 직접 열며, 기존 `/play/`는 302 호환 경로로만 유지합니다. [전달·실패·복구 계약](source-control-and-cleanup.md#source-only-delivery).
 
-새 Windows ZIP과 체크섬을 게시하고 다운로드 SHA-256 E2E가 성공한 뒤에만 R2의 이전 `SFH-Windows-x64-v*.zip`과 `.sha256`을 제거합니다. 로컬 `dist` 패키징도 현재 버전을 제외한 이전 Windows 다운로드만 지우며, Web 커밋 릴리스·위키·백업 브랜치·실행 원본은 정리 대상이 아닙니다. 따라서 최신 다운로드 한 쌍은 유지되고 배포 실패 때는 기존 파일이 먼저 삭제되지 않습니다.
+새 Windows ZIP과 체크섬의 공개 검수가 성공한 뒤 R2는 현재·직전 정상 커밋의 파일을 보존하고 나머지 정확한 Windows ZIP/체크섬만 정리합니다. 로컬 `dist` 패키징은 최신 버전만 유지합니다. Web 커밋 릴리스·위키·백업 브랜치·사용자 저장은 이 정리 대상이 아닙니다. 배포 실패 전에 기존 정상 파일을 삭제하지 않습니다.
 
 Web 빌드는 게임 코드와 문서가 `main`에 반영될 때 GitHub Actions가 자동 생성하지만 개발 위키 파일과는 별도 산출물로 유지합니다. 게임 내보내기, 위키 빌드, 필수 `HTML·WASM·PCK` 검증 중 하나라도 실패하면 운영 전환을 중단하므로 플레이 버튼은 마지막으로 검증된 Worker 릴리스를 유지합니다. 한글 UI는 프로젝트에 포함된 OFL 1.1 `Nanum Gothic` 전역 폰트를 사용해 운영체제 폰트에 의존하지 않습니다.
 

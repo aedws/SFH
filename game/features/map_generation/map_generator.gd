@@ -73,10 +73,7 @@ func generate(config: MapTierConfig, requested_seed: int = 0) -> void:
 		obstacle_cells.clear()
 		_build_pathfinding_grid()
 	_build_collision_bodies()
-	if not is_instance_valid(floor_layer):
-		floor_layer = preload("res://game/features/map_generation/dungeon_floor_layer.gd").new()
-		add_child(floor_layer)
-	floor_layer.call(&"rebuild", floor_cells, cell_size, floor_color, alternate_floor_color)
+	_rebuild_floor_layer()
 	queue_redraw()
 
 	map_generated.emit(
@@ -86,6 +83,17 @@ func generate(config: MapTierConfig, requested_seed: int = 0) -> void:
 		config.maximum_rooms,
 		used_seed
 	)
+
+
+func _floor_surface_colors() -> Dictionary:
+	return {}
+
+
+func _rebuild_floor_layer() -> void:
+	if not is_instance_valid(floor_layer):
+		floor_layer = preload("res://game/features/map_generation/dungeon_floor_layer.gd").new()
+		add_child(floor_layer)
+	floor_layer.call(&"rebuild", floor_cells, cell_size, floor_color, alternate_floor_color, _floor_surface_colors())
 
 
 func get_player_spawn_position() -> Vector2:

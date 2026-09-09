@@ -120,6 +120,10 @@ SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입
 
 ## 검색 별칭
 
+### 바닥 렌더러 대체 계약
+
+2026-09-09 오너 승인으로 `DungeonFloorLayer`의 Node2D 청크 텍스처를 TileMapLayer 대신 사용합니다. 첫 GPU 업로드 지연 감소가 변경 이유이며 [측정 근거](../performance/minimum-requirements.md#first-frame-20260908)를 보존합니다. `rebuild`, `get_used_cells`, `map_to_local` 계약은 유지하고 충돌/길찾기 데이터는 렌더러에 넣지 않습니다. 교체 시 `floor_render_contract_test`와 첫 렌더 검수를 다시 수행합니다. 기술 대체 승인은 일반 플레이 QA 완료와 분리합니다.
+
 ### 단일 대상 성장 표시 계약
 
 [성장 그래프](../tools/balance-workbench.md#growth)는 `growth-engine.js`가 동일 entity ID의 레벨/강화 단계만 순회하여 기존 DPS·장착 계산기를 호출하고, `growth-lab.js`는 선택·표시·시험 입력을 담당합니다. 캐릭터·무기·방어구 목록을 가로축으로 연결하지 않습니다. 현재 보정이 없거나 하락하는 단계도 그대로 표시하며 값을 보간하지 않습니다. 서버는 동일 순수 모델로 확정안을 재계산하고 게임 반영과 분리합니다.
@@ -131,5 +135,9 @@ SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입
 ### 효과 명세와 게임 실행의 분리
 
 [효과·스탯 툴킷](../tools/effect-toolkit.md)은 코드 추출기 → 순수 검증기 → 역할 UI / CLI 입력으로 분리합니다. EffectSpec은 요청 데이터이고 게임 런타임이 아닙니다. 지원 변수 추가 시 원본 경로·Resource 섹션·값 범위·단위·실행 규칙·테스트를 함께 등록합니다. 새로운 동작은 명시적인 효과 모듈과 게임 검수를 추가해야 하며 설명이나 `candidate` ID만으로 완료 판정하지 않습니다. Resource와 CSV 이중 정의는 함께 갱신하고 계약 테스트로 일치를 확인합니다.
+
+### 소스·검사·산출물 전달 경계
+
+Git은 소스·변경 이유·검사/복구 기록을 소유하며 빌드 바이너리를 전달하지 않습니다. `ci_budget`는 보수적 검사 분류, `ci_transfer`는 동일 러너 실행/시도별 해시 전달, `deploy_cloudflare_assets`는 커밋/ZIP 대조와 R2 후보 업로드·읽기 검증, Worker는 활성 경로 읽기만 담당합니다. 워크플로가 전환·사후 검증·복구·보존 순서를 조립합니다. 문서 변경은 현재 게임 커밋을 유지하며 토큰·로그인·사용자 저장을 전달 payload에 넣지 않습니다. [재시도·확장 계약](../getting-started/source-control-and-cleanup.md#source-only-delivery).
 
 플러그인, 컴포넌트, 기능 토글, 기능 끄기, 모듈 제거, 의존성 분리, 인벤토리 토글, 장비 개조 토글

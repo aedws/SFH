@@ -54,174 +54,30 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-08</b><i class="sfh-latest">최신</i><small>18 UPDATE BUNDLES · BUILD 11 · IMPROVE 21 · CHANGE 4 · FIX 16</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 2 · IMPROVE 3 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 18</small><b>오늘 마감 · 진행률 근거 정정과 내일 작업 순서</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 3</small><b>배포 분리 · 소스는 Git, 실행 파일은 Cloudflare</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>수정 · 1</h3><p>최신 노션 GDD62블록·트래커66행과 현행 코드를 다시 대조했습니다. 지정 기술과 실제 구현의 차이를 정정해 135/170 = 79.4%이며 출시 준비율은 아닙니다.</p></div>
-        <p>원본·확정도 가중 계산과 상세 잔여는 <a href="access/login/?return=%2Fdesign%2Fmaster-gdd-alignment%2F%23day-close">팀 마감 근거</a>, 다음 착수 조건은 <a href="design/current-milestone-workline/#next-20260909">내일 실행 순서</a>에서 확인합니다. 오늘은 신규 게임 구현 없이 마무리합니다.</p>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>자체 러너에서 검증된 위키·Web·Windows 파일을 Cloudflare로 직접 전달합니다. GitHub에는 변경 이력과 검사·복구 기록을 남기고 필수 테스트는 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>GitHub 파일 보관 한도로 배포가 막히던 경로를 제거했습니다. Windows 다운로드는 공개 주소를 유지하면서 Web와 같은 커밋으로 전환하고, 직전 정상본을 보존합니다.</p></div>
+        <p><a href="getting-started/source-control-and-cleanup/#source-only-delivery">전달 검증·복구·사용량 경계</a></p>
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 17</small><b>성장 그래프 · 대상 하나의 단계별 변화</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 2</small><b>도시형 맵 · 도로와 건물로 읽는 전장</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 무기·캐릭터·방어구를 각각 하나씩 선택하여 레벨·강화 단계에 따른 성능, 증가량과 성장률을 확인합니다.</strong></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>실제 장착 계산으로 다른 조건을 고정한 성장 곡선을 제공합니다. 기획 목표값 시험과 개발자 현행 조회를 분리했습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>서로 다른 아이템을 선으로 이어 성장처럼 보이던 목록 그래프를 원본 표로 교체했습니다. 성장 효과 없음과 단계별 하락도 그대로 표시합니다.</p></div>
-        <p><a href="tools/balance-workbench/#growth">성장 계산 조건·원본 주의사항 →</a></p>
+        <div class="sfh-group"><h3>개선 · 2</h3><p>넓은 대로·이면도로를 먼저 놓고 건물 정면과 보도·서비스 마당을 연결했습니다. 차선·주차선·외벽 패널·시설별 바닥·선반과 침상으로 공간을 구분합니다.</p><p>같은 지역의 필수 기준점은 유지하면서 보조 건물과 가구는 시드에 따라 달라집니다. 기획자·개발자 맵 설계실도 같은 도시 골격을 표시합니다.</p></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>도로 배치·가구 배치·표면 표현을 교체 가능한 모듈로 나눴습니다. 기존 전투·후퇴·금고·두 출구·확정 CSV 흐름은 유지합니다.</p></div>
+        <p><a href="features/extraction-district/#urban-20260909">변경과 조정점</a> · <a href="quality/e2e-play-session/#urban-20260909">검증·성능·사람 플레이 잔여</a></p>
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 16</small><b>무기 거리 피해 · 거리 선택에 따라 달라지는 화력</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 1</small><b>바닥 렌더러 대체 승인 · 배포 플레이 검수 착수</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 권총은 근거리, 소총은 중거리 유지, 펄스 소총은 중거리 강화 곡선으로 직격 피해가 달라집니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>발사 순간 곡선·사거리를 고정하고 관통 감쇠와 분리했습니다. 고유 고정 피해는 유지하며 현재 곡선은 임시 정책입니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>기획자 거리 DPS 수정·확정 파일 전달과 개발자 현행 전용 그래프, Weapon 시트 곡선 열, 신규 무기 작성 양식을 추가했습니다.</p></div>
-        <p><a href="features/weapon-distance/">곡선·작성 양식·적용 및 검증 범위 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 15</small><b>성능 실험실 · 장착 조합과 스킬별 그래프 연결</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 파츠·모듈·방어구·캐릭터를 선택하면 실제 장착 규칙으로 피해와 생존 성능을 비교합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>장비 강화·품질·소켓 비용, 스킬별 독립 AP 피해, HP·방어·이동 속도와 피격 생존 그래프를 추가했습니다. 실제 Godot 장착 계산 104조합과 대조했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>개발자 기본 그래프는 유효한 최신 기획 확정안을 우선하고, 없거나 원본이 바뀌면 현행 구현값과 사유를 표시합니다. 확정은 게임 자동 적용과 별개입니다.</p></div>
-        <p><a href="tools/dps-lab/">계산 범위·장착 방법·검수 근거 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 14</small><b>전투 연출 · 달리기, 발사, 전기 스킬을 더 선명하게</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 진행 방향 카메라와 짧은 줌아웃, 방향성 발사 섬광, 지속 중인 전기 효과를 강화했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>독립 발사 FX 모듈을 추가하고 동시 16개·0.12초 상한을 적용했습니다. 기존 CC0 에셋을 재사용합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>점멸 출발·도착, 자기장 고정 외곽, 가속 아크를 보강하고 자기장 내부 채움은 줄였습니다. 카메라는 정지 후 원복합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>스킬 취소·시간 변경과 이펙트 수명을 일치시켰습니다. 보스 전리품보다 먼저 보스를 제거할 수 있던 E2E 순서도 수정했습니다.</p></div>
-        <p><a href="features/hit-feedback/#speed-shot-fx">연출 변경·성능 예산·검수 범위 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 13</small><b>효과 툴킷 · Notion 명세에서 실제 구현 변수까지</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 스킬·무기·캐릭터·모듈 효과를 현행 코드 기준으로 지정하고 명세를 검증합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>35개 변수·92개 대상별 값과 Notion 작성 도구, 읽기 전용 변경 계획 검증기를 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>공유 시트 EffectGuide·EffectSpec을 확장했습니다. 신규 행동은 구현 요청으로 구분하며 기존 게임 밸런스는 유지합니다.</p></div>
-        <p><a href="tools/effect-toolkit/">효과 작성·검증·구현 인계 방법 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 12</small><b>개발자 밸런스 · 확정 전에도 현재 수치 확인</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 기획 확정안이 없으면 빈 화면 대신 현재 CSV 수치와 그래프를 보여줍니다.</strong></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>19개 수치 목록의 변수·원본 표·버전·근거를 조회합니다. 일부 확정된 경우에도 현행 데이터는 별도로 확인하며 게임 수치는 바꾸지 않습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>확정 없음과 연결 오류를 구분하고 모바일 그래프 축 겹침을 줄였습니다. 4해상도 조회·재시도·권한 회귀를 검증합니다.</p></div>
-        <p><a href="tools/balance-workbench/">확정안과 현행 CSV를 구분하는 방법 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 11</small><b>지역 맵 · 기억할 기준점과 피스 설계실</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 같은 지역에서 큰길·필수 건물을 익히고, 주변 시설만 새롭게 탐색합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>기획자·개발자 맵 생성 미리보기와 피스 시험·Notion 초안을 제공합니다. 시험은 승인·게임 적용과 분리합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>지역별 필수 기준점, 고정 도로 골격, 랜덤 보조 시설로 변경했습니다. Facility는 12열·5개 피스로 확장했습니다.</p></div>
-        <p><a href="features/extraction-district/#regional-map">맵 규칙·임시 수치·검증 범위 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 10</small><b>전체 게임 UI · 기능 도구에서 선택과 회수의 화면으로</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 준비실·제작·도감·설정·시즌 화면을 게임 흐름으로 정리하고, 전투 시야를 가리지 않는 HUD는 유지했습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 2</h3><p>제작은 도면 선택→재료·비용 확인→제작 확정, 도감은 수집 대상·지역·진행 카드로 바뀝니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 3</h3><p>준비·장비·설정의 실행 버튼과 그림문자, 현장 전리품 종류·품명, 게임 내 시즌 보관소로 정보 위계를 맞췄습니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 4</h3><p>첫 열림의 창 넘침, 훈련 HUD가 다른 창 위에 남는 겹침, 선택 글자 대비, 모바일 안내와 메뉴 교차를 수정했습니다.</p></div>
-        <p><a href="quality/game-ui-rematch/">전체 화면 판정·검증 범위 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 9</small><b>역할 작업실 · 필요한 작업을 바로 여는 블록 구성</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 긴 설명 대신 역할별 6개 작업 블록에서 시작하고 필요한 도구와 근거만 펼칩니다.</strong></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>기획자는 수치·요청·초안, 개발자는 판단·구조·검증에 바로 접근합니다. 모바일은 보조 설명을 줄이고 핵심 제목·키보드 포커스·초안 상태를 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>접힌 내용의 직접 링크와 문서 변환 중 폼 분리를 검사하고, 기존 확정 그래프·코드 지도·역할 권한을 회귀 검증합니다.</p></div>
-        <p><a href="quality/wiki-responsive-e2e/#role-workspace">작업실 사용·검증 계약 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 8</small><b>기획 수치 실험 · 확정 그래프 역할 분리</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 기획자는 수치와 그래프를 시험하고, 개발자는 기획 확정 시점의 그래프만 읽습니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>DPS·시설·회수·19개 CSV 숫자 열 비교와 Notion 근거를 포함한 불변 기획 확정본 전달을 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>임시 시험·기획 확정·오너 승인·게임 적용을 분리하고 역할·CSRF·원본 갱신·중복 제출을 검사합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>일일 업데이트 합계를 분류 이름으로 계산하고 최신 항목만 펼쳐 현행 문서 형식의 오판독을 수정했습니다.</p></div>
-        <p><a href="tools/balance-workbench/">수치 조정·확정 전달 사용법 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 7</small><b>익스트랙션 구역 · 후퇴와 귀환을 선택하는 공간</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 순환 도로·두 출입구로 우회하고, 일반 교전은 후퇴하며 금고만 선택 봉쇄합니다. 현재 공간 전체를 읽고 두 출구 중 직접 귀환할 길을 고릅니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>시드 구역·Facility 시트 4종·실시간→다음 작전 고정·CSV/Web/Windows 데이터 경로를 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>공간 공개·지형만 기억·문턱 완화, 일반 무리 후퇴/생존, 금고 F 선택과 1~5상자를 구분합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>시간/전체 방 대기 대신 두 출구 현장 방어. 워프는 안전 단말 사이로 제한하며 임시 수치와 기획 사유를 별도 안내합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>워프 카메라·단말 표시·확보 알림·중복 정산을 보강했습니다. 인접 전리품이 ESC 보류 직후 비교창을 다시 열던 문제도 수정했습니다.</p></div>
-        <p><a href="features/extraction-district/">현재 규칙·모듈 계약 →</a> · <a href="access/planner/#extraction-rationale">기획 사유 →</a> · <a href="quality/e2e-play-session/#extraction-district">회귀 근거·인간 플레이 잔여 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 6</small><b>인벤토리 · 아이템 실루엣과 장착 카드</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 큰 단색 텍스트 블록을 아이템 도형 카드로 바꾸고, 장착 장비·가방·선택 미리보기를 분리했습니다.</strong></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>실제 장착 슬롯만 표시하고 작은 화면은 가방을 먼저 배치합니다. 작은 아이템은 아이콘과 상세 보기로 구분하며 이동·R 회전·저장 확인은 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>탭 전환 시 선택 정보와 가방 표시가 같은 데이터를 공유해 표시가 비워질 수 있던 문제를 수정했습니다.</p></div>
-        <p><a href="features/grid-inventory/#item-presentation">화면 구성·모듈 계약 →</a> · <a href="quality/e2e-play-session/#inventory-presentation">4해상도·입력·저장 회귀 검증 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 5</small><b>기획자 DPS 실험실 · 피해와 처치 시간 비교</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 무기·스킬 시험값과 적 체력·방어막을 바꾸면 원본 대비 피해 그래프와 처치 시간이 함께 갱신됩니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>무기 5종·스킬 4종 원본, 점사·치명·지속 피해·AP·충전 계산기를 기획자/개발자 인증 문서로 추가했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>목표 처치 시간, 적 접촉 DPS, 모바일 입력·그래프 수치 표를 제공하고 미확정 대체값·이론 상한·실제 플레이 검수 범위를 구분합니다.</p></div>
-        <p><a href="tools/dps-lab/">DPS 실험실·계산 범위·검증 →</a> · 시험값은 원본 시트와 게임 저장을 변경하지 않습니다.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 4</small><b>로그라이크 시야 · 현재/탐색/미탐색 분리</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 방 전체를 켜는 대신 주변 360도 시야를 사용하고, 지나온 곳은 어두운 지형으로 기억합니다.</strong></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>방·통로 동일 시야, 벽·문 차폐, 전체 미니맵 유지. 계산·월드 연결·기억 렌더를 분리했습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>탐색 기억은 불투명한 간략 지형만 표시해 현재 안 보이는 적·전리품을 숨깁니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>막힌 대각선·얇은 문 뒤 시야 누출을 차단하고 문 개폐·워프·세 규모 생성 맵·GPU 픽셀 검사를 추가했습니다.</p></div>
-        <p><a href="features/fog-of-war/">시야 규칙·모듈 계약 →</a> · <a href="quality/e2e-play-session/#roguelike-fog">렌더 검증·수락 잔여 →</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>보급품 선택 카드 · 회수/분실 정산 화면</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 보급소는 품질과 가격을 보고 선택하고, 작전 종료는 회수/분실을 먼저 확인한 뒤 상세 기록을 펼칩니다.</strong></div>
-        <div class="sfh-group"><h3>개선 · 2</h3><p>상점 품질 카드·잔액 비교, 성공/실패 결과 카드·고정 복귀 버튼으로 정보 위계를 나눴습니다. 청록 테마와 키보드 입력은 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>실물 가방 지급을 창고로 안내하던 오인을 수정하고, 창고 폴백은 품질 효과 미적용으로 구분했습니다.</p></div>
-        <p><a href="quality/player-perception-audit/#game-ui-audit">전체 UI 검토·다음 순서 →</a> · <a href="quality/e2e-play-session/#player-facing-ui">4해상도·실제 입력 검증 →</a> · 로비 준비·도감·제작·시즌 화면은 후속 대상입니다.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>작전 첫 화면 끊김 · 바닥 렌더 준비 축소</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · 출격 직후 바닥 타일을 한꺼번에 준비하며 멈추던 구간을 줄였습니다.</strong></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>맵 바닥을 셀당1픽셀 청크 텍스처로 교체. 같은PC 각3회 첫 렌더 중앙값: 중형197→23ms·대형304→27ms.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>첫 화면의 대량 타일 갱신·업로드 제거. 바닥 무늬·빈 영역·벽/충돌·안개는 유지하고 실제 렌더 픽셀 회귀를 추가했습니다.</p></div>
-        <p><a href="performance/minimum-requirements/#first-frame-20260908">측정 조건·원시 근거 →</a> · <a href="quality/e2e-play-session/#first-frame-render">QA 범위 →</a> · CPU 전체 로딩·콜드 캐시·10분 일반 플레이는 별도 검수.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>소모품 전용 HP · 지참 키트 사용</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-summary"><strong>무엇이 변했나 · HP는 지참 키트로만 회복합니다. 체력 옆 KIT 버튼에서 남은 수량을 보고 사용합니다.</strong></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>회복 원인 정책과 실제 키트 사용·수량 차감을 연결했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>최대 HP·사망·수량 부족은 미소모, 증강의 HP 회복 미적용을 안내합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>오너 승인으로 자연·드랍·레벨업·버프 HP 회복을 중단합니다. AP는 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>부상 중 최대 HP 장비 교체 회복을 차단하고, 키트를 지참해도 브리핑이 소모품 비어 있음으로 표시하던 오인을 수정했습니다.</p></div>
-        <p><a href="features/health-recovery/">사용법 →</a> · <a href="design/master-gdd-alignment/#health-20260908">노션 대조 80.3%·부분 검수 잔여 →</a> · 양 플랫폼10분 일반 플레이·첫 GPU 프레임 수락은 미완료.</p>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>첫 화면 지연을 줄인 청크 텍스처 방식을 지정 타일 레이어 대신 유지하도록 승인했습니다. 기존 개선을 되돌리지 않고 변경 이유와 검증 계약을 남겼습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>배포 중형 작전을 일반 입력으로 검수했습니다. 18처치·드랍 표시·02:45 사망 정산·거점 복귀를 확인했으며, 10분 완주와 탈출 검수는 계속 진행할 항목으로 구분했습니다.</p></div>
+        <p><a href="access/login/?return=%2Fdesign%2Fmaster-gdd-alignment%2F%23day-close">팀 승인·계산 근거</a> · <a href="quality/e2e-play-session/#release-normal-20260909">QA 결과와 미완료 범위</a> · <a href="design/current-milestone-workline/#next-20260909">작업 순서</a></p>
       </div>
     </details>
   </div>

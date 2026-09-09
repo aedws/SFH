@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "4d357eafac688dd4f205da7b267c745296abd200f7e967288ad724210ca64c64",
+  "source_sha256": "db0cbebffc97e2e7d58c10c7008b76dd222f21d6b649c50affff9199d39c1972",
   "domains": [
     {
       "id": "system",
@@ -63,9 +63,9 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 342,
-    "named_classes": 266,
-    "relationships": 209,
+    "scripts": 346,
+    "named_classes": 269,
+    "relationships": 210,
     "project_inheritance": 13,
     "enabled_toggles": 70
   },
@@ -708,8 +708,8 @@
       "path": "game/features/map_generation",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 8,
-      "class_count": 8,
+      "file_count": 11,
+      "class_count": 11,
       "classes": [
         "DungeonFloorLayer",
         "ExtractionDistrictLayout",
@@ -718,7 +718,10 @@
         "FacilityCatalogService",
         "MapTierConfig",
         "RegionalDistrictPlan",
-        "RoguelikeMapGenerator"
+        "RoguelikeMapGenerator",
+        "UrbanBlockLayout",
+        "UrbanInteriorLayout",
+        "UrbanMapVisual"
       ],
       "incoming_count": 7,
       "outgoing_count": 1
@@ -755,7 +758,7 @@
         "TacticalMinimap",
         "TacticalMinimapView"
       ],
-      "incoming_count": 1,
+      "incoming_count": 2,
       "outgoing_count": 1
     },
     {
@@ -1288,11 +1291,11 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 65,
+      "file_count": 66,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
-      "outgoing_count": 54
+      "outgoing_count": 55
     }
   ],
   "classes": [
@@ -2714,6 +2717,33 @@
       "name": "RoguelikeMapGenerator",
       "module": "map_generation",
       "path": "game/features/map_generation/map_generator.gd",
+      "extends": "Node2D",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:UrbanBlockLayout",
+      "name": "UrbanBlockLayout",
+      "module": "map_generation",
+      "path": "game/features/map_generation/urban_block_layout.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:UrbanInteriorLayout",
+      "name": "UrbanInteriorLayout",
+      "module": "map_generation",
+      "path": "game/features/map_generation/urban_interior_layout.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:UrbanMapVisual",
+      "name": "UrbanMapVisual",
+      "module": "map_generation",
+      "path": "game/features/map_generation/urban_map_visual.gd",
       "extends": "Node2D",
       "base_id": "",
       "inheritance": "engine"
@@ -4764,13 +4794,19 @@
       "from": "verification",
       "to": "map_generation",
       "type": "verifies",
-      "evidence_count": 9
+      "evidence_count": 10
     },
     {
       "from": "verification",
       "to": "meta_progression",
       "type": "verifies",
       "evidence_count": 2
+    },
+    {
+      "from": "verification",
+      "to": "minimap",
+      "type": "verifies",
+      "evidence_count": 1
     },
     {
       "from": "verification",

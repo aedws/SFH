@@ -5,6 +5,8 @@ signal warp_requested(room_index: int)
 
 @export var background_color := Color(0.018, 0.03, 0.045, 1.0)
 @export var floor_color := Color(0.18, 0.38, 0.43, 1.0)
+@export var street_color := Color("192c34")
+@export var yard_color := Color("40575b")
 @export var obstacle_color := Color(0.63, 0.43, 0.24, 1.0)
 @export var player_color := Color(0.35, 1.0, 0.72, 1.0)
 @export var extraction_color := Color(1.0, 0.68, 0.22, 1.0)
@@ -20,6 +22,7 @@ var room_definitions: Array[Dictionary] = []
 var warp_targets: Dictionary = {}
 var interactive := false
 var rendered_map_rect := Rect2()
+var map_spaces: Array = []
 
 
 func _ready() -> void:
@@ -35,6 +38,7 @@ func configure(snapshot: Dictionary, actor: Node2D) -> void:
 	extraction_position = snapshot.get(&"extraction_position", Vector2.ZERO) as Vector2
 	extraction_candidates = snapshot.get(&"extraction_candidates", [])
 	room_definitions.assign(snapshot.get(&"rooms", []))
+	map_spaces=snapshot.get(&"map_spaces",[]).duplicate(true)
 	_build_map_texture(
 		snapshot.get(&"floor_cells", PackedVector2Array()) as PackedVector2Array,
 		snapshot.get(&"obstacle_cells", PackedVector2Array()) as PackedVector2Array
@@ -87,6 +91,15 @@ func _build_map_texture(
 		var cell := Vector2i(cell_value) - cell_bounds.position
 		if image_bounds.has_point(cell):
 			image.set_pixelv(cell, floor_color)
+	# Optional provider geometry separates urban buildings from the surrounding paved lots.
+	# Old providers have no spaces and retain the original floor presentation.
+	for space: Dictionary in map_spaces:
+		var rect: Rect2i=space.get(&"cell_rect",Rect2i())
+		rect.position-=cell_bounds.position
+		rect=rect.intersection(image_bounds)
+		var kind: StringName=space.get(&"kind",&"")
+		var color := floor_color if kind==&"room" else (street_color if kind==&"street" else yard_color)
+		if rect.has_area(): image.fill_rect(rect,color)
 	for cell_value in obstacle_cells:
 		var cell := Vector2i(cell_value) - cell_bounds.position
 		if image_bounds.has_point(cell):

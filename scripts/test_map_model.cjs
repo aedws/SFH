@@ -16,4 +16,7 @@ for(const region of catalog.regions)for(const config of Object.values(catalog.ti
 }
 assert.throws(()=>model.build(catalog.tiers.small,'ruined_city',NaN,catalog.facilities));
 assert.throws(()=>model.build(catalog.tiers.small,'ruined_city',1,[]));
+const custom=model.build({...catalog.tiers.small,urban:{avenue_width:999,entrance_width:1}},'ruined_city',1,catalog.facilities);
+assert.deepEqual(custom.urban_settings,{avenue_width:20,local_width:10,sidewalk_width:3,entrance_width:3});
+assert.equal(model.build({...catalog.tiers.small,urban_enabled:false},'ruined_city',1,catalog.facilities).version,1);
 console.log(`MAP_MODEL_OK 27 engine parity fixtures ${count} stable-landmark / varied-filler / reorder cases`);
