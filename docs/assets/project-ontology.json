@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "12d593c508364eec82afcd1a573221cf46202186061e6ac5f380f91d515d40d3",
+  "source_sha256": "7888126857027a4b01e76597f9bb92f8ac610076b4736bf741881ee4a2236dc9",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
