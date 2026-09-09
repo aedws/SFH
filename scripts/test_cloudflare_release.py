@@ -51,7 +51,7 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(rollback_identity({**state, "download_prefix": f"downloads/releases/{commit}"})
                          ["PREVIOUS_DOWNLOAD_PREFIX"], f"downloads/releases/{commit}")
         for key, value in (("build_commit", "HEAD"), ("release_prefix", "other/data"),
-                           ("download_prefix", "auth"), ("service", "other-project"),
+                           ("download_prefix", "unrelated-prefix"), ("service", "other-project"),
                            ("release_version", "v1\nINJECTED=true")):
             with self.subTest(key=key), self.assertRaises(ValueError):
                 rollback_identity({**state, key: value})
