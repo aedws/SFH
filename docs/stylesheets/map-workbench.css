@@ -10,7 +10,9 @@
 .sfh-map-body { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(210px,1fr); gap:1rem; }
 .sfh-map-canvas { align-self:start; background:#071b21; border:1px solid #43868a; padding:.5rem; }
 .sfh-map-canvas svg { width:100%; display:block; max-height:650px; }
-.sfh-map-canvas .road { fill:#286474; }
+.sfh-map-canvas .road { fill:#343e45; stroke:#78847f; stroke-width:.5; }
+.sfh-map-canvas .yard { fill:#68756f; }
+.sfh-map-canvas .entrance { fill:#9caa9f; }
 .sfh-map-canvas .building { fill:#24414d; stroke:#9dbfc6; stroke-width:1; cursor:pointer; }
 .sfh-map-canvas .required { fill:#126c6b; stroke:#02e5e1; stroke-width:2; }
 .sfh-map-canvas .start { fill:#235782; }

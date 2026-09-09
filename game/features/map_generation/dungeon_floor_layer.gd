@@ -8,7 +8,7 @@ var _cells: Dictionary = {}
 var _cell_size := 32.0
 var _render_chunk_cells := 128
 
-func rebuild(cells: Dictionary, world_cell_size: float, primary: Color, alternate: Color) -> void:
+func rebuild(cells: Dictionary, world_cell_size: float, primary: Color, alternate: Color, surface_colors: Dictionary = {}) -> void:
 	_textures.clear()
 	_cells = cells.duplicate()
 	_cell_size = world_cell_size
@@ -23,7 +23,7 @@ func rebuild(cells: Dictionary, world_cell_size: float, primary: Color, alternat
 			image.fill(Color.TRANSPARENT)
 			images[chunk] = image
 		var local := cell - chunk * _render_chunk_cells
-		images[chunk].set_pixel(local.x, local.y, primary if (cell.x + cell.y) % 2 == 0 else alternate)
+		images[chunk].set_pixel(local.x, local.y, surface_colors.get(cell,primary if (cell.x + cell.y) % 2 == 0 else alternate))
 	for chunk: Vector2i in images:
 		_textures[chunk] = ImageTexture.create_from_image(images[chunk])
 	queue_redraw()

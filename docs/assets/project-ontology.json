@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "3597bea092f675aebb6d7e574ab77318a1bf9a6cb468b475db832620a4cf542a",
+  "source_sha256": "eb1f465aea4ac4871a11e135cf521dbb511628f9fb7aac951d5ca130fd171409",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -3192,14 +3192,14 @@
       "label": "맵 생성",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "월드·탐색 · feature · 파일 8개",
+      "summary": "월드·탐색 · feature · 파일 11개",
       "route": "architecture/code-module-map/?module=map_generation",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/map_generation",
       "kind": "implementation",
       "metrics": {
-        "files": 8,
-        "classes": 8,
+        "files": 11,
+        "classes": 11,
         "incoming": 7,
         "outgoing": 1
       }
@@ -3236,7 +3236,7 @@
       "metrics": {
         "files": 2,
         "classes": 2,
-        "incoming": 1,
+        "incoming": 2,
         "outgoing": 1
       }
     },
@@ -3714,16 +3714,16 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 65개",
+      "summary": "기반·검증 · verification · 파일 66개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 65,
+        "files": 66,
         "classes": 0,
         "incoming": 0,
-        "outgoing": 54
+        "outgoing": 55
       }
     },
     {

@@ -92,10 +92,13 @@
 		"game/features/map_generation/configs/medium.tres": "1294fc7f93fa399c4fb81aaab2c10e8b6855755984a83a5f9502c1dc52ec849f",
 		"game/features/map_generation/configs/small.tres": "83be6272db6de3d3ca57ba41d9902e2bfd001efb4941cce3e573da23fda3f996",
 		"game/features/map_generation/data/facility.csv": "8f0be134bbfb8d63fa816289512dd2dcb9a9e6eb7ec451ec5002f7c493cb76aa",
+		"game/features/map_generation/district_map_generator.gd": "e6876a7e8e31cebd99ec8c451210a6827a9138199f5c875a3663b3890eb019e9",
 		"game/features/map_generation/facility_catalog.gd": "ad0017c2e45082abb17daa37db92cfd9bbdd862f2adae69b39e1dff60af09957",
-		"game/features/map_generation/regional_district_plan.gd": "bd919c383592d7dedc754a73f8121d55cd985d1d548ef7ecbe1abe23a836b782",
+		"game/features/map_generation/map_generator.tscn": "e589f2e1fe3c54dd26e014a2ef54ef1ecd136ab70d01ddd894388a1ec2951512",
+		"game/features/map_generation/regional_district_plan.gd": "b8c79310dc4318bafd2268959860206122539e90853af2b0fda6ba1989e36717",
+		"game/features/map_generation/urban_block_layout.gd": "2da77c2d50c75ec7a26288f8dd9eb41cf867a5cc1846e67cbc02deb5941e9eee",
 		"game/features/operation_contract/configs/default_operation_contracts.tres": "41e8b7acd0200c0be4bbe51b9eb7f021e8da6a53f711f3e8e8230fad98e97b1a",
-		"scripts/export_map_catalog.gd": "8e56de6298efc4378abc89325656acc55e2a7860731dfc6d4c3432c1bfe29d98"
+		"scripts/export_map_catalog.gd": "e8c1bcb4ec887906e3e369d30aa7eaee32457151c5a02c863f8a539a58a2c2cd"
 	},
 	"tiers": {
 		"large": {
@@ -108,7 +111,14 @@
 			"minimum_size": [
 				50,
 				30
-			]
+			],
+			"urban": {
+				"avenue_width": 14,
+				"entrance_width": 5,
+				"local_width": 10,
+				"sidewalk_width": 3
+			},
+			"urban_enabled": true
 		},
 		"medium": {
 			"maximum_rooms": 40,
@@ -120,7 +130,14 @@
 			"minimum_size": [
 				46,
 				28
-			]
+			],
+			"urban": {
+				"avenue_width": 14,
+				"entrance_width": 5,
+				"local_width": 10,
+				"sidewalk_width": 3
+			},
+			"urban_enabled": true
 		},
 		"small": {
 			"maximum_rooms": 24,
@@ -132,7 +149,14 @@
 			"minimum_size": [
 				42,
 				25
-			]
+			],
+			"urban": {
+				"avenue_width": 14,
+				"entrance_width": 5,
+				"local_width": 10,
+				"sidewalk_width": 3
+			},
+			"urban_enabled": true
 		}
 	},
 	"version": "2026-09-08.2"

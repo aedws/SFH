@@ -7,6 +7,8 @@ func _run() -> void:
 	var catalog := preload("res://game/features/map_generation/facility_catalog.gd").new()
 	var csv := preload("res://game/features/map_generation/data/facility_payload.tres").csv_text
 	var initial := catalog.get_rows()
+	var custom=preload("res://game/features/map_generation/regional_district_plan.gd").new().build({"minimum_rooms":18,"maximum_rooms":24,"minimum_size":[42,25],"maximum_size":[54,34],"urban":{"avenue_width":999,"entrance_width":1}},"ruined_city",1,initial)
+	check(custom.urban_settings=={"avenue_width":20,"local_width":10,"sidewalk_width":3,"entrance_width":3},"partial city options default and clamp")
 	for invalid in [csv.replace("*,center","none,center"),csv.replace(",horizontal,1",",horizontal,-1"),csv.replace(",east,",",invalid,")]:
 		check(not catalog.load_csv(invalid) and catalog.get_rows()==initial,"invalid rows atomic last-good preservation")
 	for tier in ["small","medium","large"]:
@@ -18,6 +20,27 @@ func _run() -> void:
 			map.generate(load("res://game/features/map_generation/configs/%s.tres"%tier),90808)
 			var plan: Dictionary=map.get_regional_plan()
 			check(plan.region==region,"region propagated")
+			check(plan.version==2 and plan.yards.size()>=plan.count*3,"street-first city courts")
+			check(plan.street_axes.any(func(a): return a.width==14) and plan.street_axes.any(func(a): return a.width==10),"avenues and local streets")
+			var view=preload("res://game/features/minimap/minimap_view.gd").new()
+			root.add_child(view)
+			view.configure(map.get_minimap_snapshot(),null)
+			var mini_image: Image=view.map_texture.get_image()
+			var street_pixel: Vector2i=Vector2i(int(plan.streets[0][0])+3,int(plan.streets[0][1])+3)-view.cell_bounds.position
+			var room_pixel: Vector2i=map.rooms[0].get_center()-view.cell_bounds.position
+			check(mini_image.get_pixelv(street_pixel).is_equal_approx(view.street_color),"minimap streets readable")
+			var actual_color:=mini_image.get_pixelv(room_pixel)
+			check(absf(actual_color.r-view.floor_color.r)<=1.0/255 and absf(actual_color.g-view.floor_color.g)<=1.0/255 and absf(actual_color.b-view.floor_color.b)<=1.0/255,"minimap buildings distinct from streets %s expected %s"%[actual_color,view.floor_color])
+			view.free()
+			for building: Dictionary in plan.buildings:
+				var lot: Array=building.lot
+				var exterior := Vector2i(int(lot[0])+1,int(lot[1])+1)
+				check(map.floor_cells.has(exterior),"walkable sidewalk instead of void moat")
+				check(not map.get_world_path(map.start_position,(Vector2(exterior)+Vector2.ONE*0.5)*map.cell_size).is_empty(),"all exterior courts reachable")
+				var r: Array=building.rect
+				var wall := Vector2i(int(r[0])-1,int(r[1])-1)
+				check(not map.floor_cells.has(wall),"building walls are not cosmetic")
+				check(not map.is_walkable_world_position((Vector2(wall)+Vector2.ONE*0.5)*map.cell_size),"closed building corner collides")
 			var expected := {"ruined_city":"transit_square","industrial_district":"warehouse","research_complex":"medical"}
 			check(plan.buildings.any(func(b): return b.required and b.facility_id==expected[region]),"regional anchor required")
 			check(plan.buildings.any(func(b): return b.required and b.facility_id=="workshop"),"safe relay type present")
@@ -30,6 +53,10 @@ func _run() -> void:
 			var returned: Dictionary=map.get_regional_plan()
 			returned.buildings.clear()
 			check(not map.get_regional_plan().buildings.is_empty(),"public snapshot detached")
+			map.urban_city_enabled=false
+			map.generate(load("res://game/features/map_generation/configs/%s.tres"%tier),90808)
+			check(map.get_regional_plan().version==1 and not map.urban_visual.visible,"city presentation removable")
+			map.urban_city_enabled=true
 			map.regional_landmarks_enabled=false
 			map.generate(load("res://game/features/map_generation/configs/%s.tres"%tier),90808)
 			check(map.get_regional_plan().is_empty() and not map.rooms.is_empty(),"legacy random provider switch")

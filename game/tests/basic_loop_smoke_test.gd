@@ -1740,7 +1740,16 @@ func _verify_map_tiers() -> bool:
 			_fail("%s 맵에 방해물이 생성되지 않았습니다." % tier_id)
 			return false
 		var obstacle_kinds: Array = generator.get("obstacle_cells").values()
-		if (
+		var city_layout: bool=generator.has_method(&"get_regional_plan") and generator.call(&"get_regional_plan").get("version",0)==2
+		if city_layout:
+			if not obstacle_kinds.all(func(kind): return kind==&"utility"):
+				_fail("%s 도시 실내는 무작위 미로 벽 대신 가구 묶음이어야 합니다." % tier_id)
+				return false
+			for room: Dictionary in generator.call(&"get_room_encounter_snapshot"):
+				if room.open_directions.size()<2 or generator.call(&"get_world_path",generator.call(&"get_player_spawn_position"),room.center).is_empty():
+					_fail("%s 도시 가구가 시설 출입 경로를 막았습니다." % tier_id)
+					return false
+		elif (
 			&"wall" not in obstacle_kinds
 			or &"pillar" not in obstacle_kinds
 			or &"utility" not in obstacle_kinds

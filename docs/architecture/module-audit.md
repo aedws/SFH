@@ -11,6 +11,18 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-09 · 도시 블록과 표면 표현 {#urban-20260909}
+
+`RegionalDistrictPlan`의 JSON-safe 결과에 `UrbanBlockLayout`이 도로 폭·비균등 블록·정면 배치·마당을 적용합니다. 위키 JS 미러는 27개 실제 Godot 결과와 비교하며 원본 해시가 바뀌면 실패합니다. 카탈로그는 실제 map scene의 도시 설정을 내보냅니다.
+
+`UrbanInteriorLayout`은 시드·시설·방·밀도로 가구 셀만 반환합니다. provider가 기존 장애물 적합성 검사 후 충돌에 넣습니다. `UrbanMapVisual`은 생성 시 복사된 지형·병합 충돌 사각형으로 정적 장식을 그립니다. 적·아이템·저장·전투 정책을 읽거나 바꾸지 않습니다.
+
+`DungeonFloorLayer.rebuild`의 선택적 **5번째** `surface_colors` 인자로 도시 표면색을 전달합니다. 기존 4인자 호출은 체크무늬 폴백이며 빈 셀은 팔레트가 있어도 투명합니다. 음수 청크·재생성·도시 해제 회귀를 검사합니다. 바닥/충돌/A*는 같은 셀 집합을 사용합니다. 프레임별 맵 재생성이나 장식당 Node를 추가하지 않았습니다.
+
+미니맵은 provider의 선택적 `map_spaces` 복사본(`cell_rect`, `kind`)만 읽어 정적 텍스처의 도로·마당·건물을 구분합니다. 도시 모듈을 직접 참조하지 않고 필드가 없으면 기존 단색 바닥을 유지합니다. 목적지·워프·플레이어 위치 처리에는 관여하지 않습니다.
+
+`urban_city_enabled=false` → 기존 지역 배치, `regional_landmarks_enabled=false` → 이전 구역 랜덤, `district_layout_enabled=false` → 일반 생성기로 돌아갑니다. 새 `Game` 분기나 Sheet 목록은 추가하지 않았습니다. [플레이 계약·조정 범위](../features/extraction-district.md#urban-20260909).
+
 ## 카메라·발사·전기 FX (2026-09-08)
 
 `AutoWeapon`은 발사 성공 사실만 Signal로 공개하고 `WeaponShotFX`는 출력·상한·수명만 소유합니다. ShotFX 노드를 제거해도 무기 발사/피해 계약은 유지됩니다. `PlayerMovementFeedback`은 카메라 position/zoom만, `HitFeedbackDirector`는 offset만 제어합니다. 자기장/가속의 연출은 런타임 효과 소유자 수명에 귀속되며 피해·스탯을 읽거나 변경하지 않습니다. export 변수로 강도·상한을 조정하고 Game 조립부나 새 Sheet 목록을 추가하지 않았습니다. 코드 노드맵을 재생성하고 줌 복원·발사 상한·수명 취소 검수를 추가했습니다.

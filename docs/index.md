@@ -54,9 +54,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 1 · CHANGE 1 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 1 · IMPROVE 3 · CHANGE 1 · FIX 0</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>도시형 맵 · 도로와 건물로 읽는 전장</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 2</h3><p>넓은 대로·이면도로를 먼저 놓고 건물 정면과 보도·서비스 마당을 연결했습니다. 차선·주차선·외벽 패널·시설별 바닥·선반과 침상으로 공간을 구분합니다.</p><p>같은 지역의 필수 기준점은 유지하면서 보조 건물과 가구는 시드에 따라 달라집니다. 기획자·개발자 맵 설계실도 같은 도시 골격을 표시합니다.</p></div>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>도로 배치·가구 배치·표면 표현을 교체 가능한 모듈로 나눴습니다. 기존 전투·후퇴·금고·두 출구·확정 CSV 흐름은 유지합니다.</p></div>
+        <p><a href="features/extraction-district/#urban-20260909">변경과 조정점</a> · <a href="quality/e2e-play-session/#urban-20260909">검증·성능·사람 플레이 잔여</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>바닥 렌더러 대체 승인 · 배포 플레이 검수 착수</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>수정 · 1</h3><p>첫 화면 지연을 줄인 청크 텍스처 방식을 지정 타일 레이어 대신 유지하도록 승인했습니다. 기존 개선을 되돌리지 않고 변경 이유와 검증 계약을 남겼습니다.</p></div>

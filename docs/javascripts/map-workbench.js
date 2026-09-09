@@ -13,7 +13,7 @@
     function button(text,action,parent=controls){const b=node('button',text);b.type='button';b.addEventListener('click',action);parent.append(b);return b;}
     button('다른 시드',()=>{seed.value=String((Number(seed.value)+7919)%2147483647);change();});
     button('현행 피스로 복원',()=>{facilities=structuredClone(catalog.facilities);change();});
-    const legend=node('p','S 시작 · E 탈출 · ◆ 필수 피스 · 숫자 보조 시설 / 선: 도로·출입 연결');
+    const legend=node('p','S 시작 · E 탈출 · ◆ 필수 피스 · 숫자 보조 시설 / 짙은 회색: 도로 · 옅은 회색: 보도·서비스 공터 · 건물: 실내');
     const body=node('div');body.className='sfh-map-body';
     const mapHost=node('div');mapHost.className='sfh-map-canvas';
     const detail=node('section');detail.className='sfh-map-detail';
@@ -59,9 +59,11 @@
         selected=Math.min(selected,plan.count-1);
         if(preferred){const target=plan.buildings.find(b=>b.required&&b.facility_id===preferred)||plan.buildings.find(b=>b.facility_id===preferred);if(target)selected=target.index;}
         status.textContent=`${JSON.stringify(facilities)===JSON.stringify(catalog.facilities)?'현행 CSV':'시험 변경 · 미적용'} ${catalog.version} · 시드 ${plan.seed} · ${plan.count}개 건물`;
-        const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox',`0 0 ${plan.columns*plan.stride[0]+8} ${plan.rows*plan.stride[1]+8}`);svg.setAttribute('role','img');svg.setAttribute('aria-label','지역 건물과 연결 도로. 아래 공간 선택 목록으로 모든 건물을 확인할 수 있습니다.');
+        const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox',`0 0 ${plan.extent?plan.extent[0]:plan.columns*plan.stride[0]+8} ${plan.extent?plan.extent[1]:plan.rows*plan.stride[1]+8}`);svg.setAttribute('role','img');svg.setAttribute('aria-label','지역 건물과 연결 도로. 아래 공간 선택 목록으로 모든 건물을 확인할 수 있습니다.');
         const rect=(bounds,cls)=>{const n=document.createElementNS(ns,'rect');['x','y','width','height'].forEach((k,i)=>n.setAttribute(k,bounds[i]));n.setAttribute('class',cls);svg.append(n);return n;};
-        [...plan.streets,...plan.passages].forEach(r=>rect(r,'road'));
+        (plan.yards||[]).forEach(r=>rect(r,'yard'));
+        plan.streets.forEach(r=>rect(r,'road'));
+        plan.passages.forEach(r=>rect(r,'entrance'));
         room.replaceChildren();
         for(const b of plan.buildings){const r=facilities.find(r=>r.facility_id===b.facility_id),symbol=b.index===0?'S':plan.exits.includes(b.index)?'E':b.required?'◆':String(b.index+1);
           const shape=rect(b.rect,`building ${b.required?'required':''} ${b.index===0?'start':''} ${plan.exits.includes(b.index)?'exit':''}`);shape.dataset.room=b.index;shape.addEventListener('click',()=>{selected=b.index;showDetail();highlight();});
