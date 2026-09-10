@@ -44,6 +44,11 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+# Same provenance gate as CI: presentation source changes also refresh catalog evidence.
+$dpsOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://scripts/export_dps_catalog.gd" -- --check 2>&1
+$dpsStatus = $LASTEXITCODE
+$dpsOutput | Write-Output
+if ($dpsStatus -ne 0 -or ($dpsOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($dpsOutput -join "`n") -notmatch 'DPS_CATALOG_OK') { throw 'DPS catalog provenance differs from runtime.' }
 $compoundOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/compound_difficulty_contract_test.gd" 2>&1
 $compoundStatus = $LASTEXITCODE
 $compoundOutput | Write-Output
