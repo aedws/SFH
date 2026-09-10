@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "ec76c114f6afeb5b6b15b29bd8f5ebb107d29e70870d74f1884f367feb0f9788",
+  "source_sha256": "b4fc335f67152787d38a60a87d7cb539d836398bd0c6e0343880257c2032bb8f",
   "domains": [
     {
       "id": "system",
@@ -4230,7 +4230,7 @@
       "from": "field_loot",
       "to": "equipment",
       "type": "references",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "field_loot",

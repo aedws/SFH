@@ -48,12 +48,15 @@ func compare(candidate: Dictionary) -> Dictionary:
 		var comparison_entry := equip_catalog.get_entry(item_id)
 		var current = equipment_provider.call(&"get_equipment_state", comparison_entry.target_slot)
 		reference_name = String(current.definition.display_name) if current != null and current.definition != null else "없음"
-		reference_grade = int(current.definition.grade) if current != null and current.definition != null else 0
+		# Armor has no definition grade; do not invent one from level or weapon grade.
+		reference_grade = int(current.definition.grade) if current != null and current.definition is EquipmentWeaponDefinition else 0
 	var grade_delta := candidate_grade - reference_grade if reference_grade > 0 else 0
 	var lifecycle := LootLifecyclePresenter.present(definition)
 	var comparison_label := "신규 획득"
 	if reference_grade > 0:
 		comparison_label = "등급 %+d" % grade_delta if grade_delta != 0 else "동급"
+	elif not reference_name.is_empty() and reference_name != "없음":
+		comparison_label = "장착품 비교"
 	elif owned_count > 0:
 		comparison_label = "보유 +%d" % int(candidate.get(&"quantity", 1))
 	var equip_preview := {}

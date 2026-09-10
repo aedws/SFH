@@ -203,6 +203,20 @@ func _run() -> void:
 	assert(gun_preview.comparison_target_name == equipment.states[&"main"].definition.display_name and gun_preview.reference_grade == equipment.states[&"main"].definition.grade, "Exact replacement slot, not active secondary")
 	equipment.states.erase(&"sub")
 	equipment.active_slot = &"main"
+	# Every equipment entry is compared with an occupied replacement slot, including armor
+	# whose definition deliberately has no grade field.
+	var saved_states := equipment.states.duplicate()
+	for entry in equip_catalog.entries:
+		var equipped_state := EquipmentItemState.new()
+		equipped_state.configure(&"comparison_equipped", entry.definition)
+		equipment.states[entry.target_slot] = equipped_state
+		var equipment_preview := comparison.compare({&"item_id": entry.item_id, &"grade": 2})
+		assert(equipment_preview.comparison_target_name == entry.definition.display_name)
+		if entry.definition is EquipmentArmorDefinition:
+			assert(equipment_preview.reference_grade == 0 and equipment_preview.comparison_label == "장착품 비교", "Ungraded armor compares identity without a fabricated grade")
+		comparison_panel.show_comparison(equipment_preview)
+		assert(comparison_panel.comparison_label.text.contains(entry.definition.display_name))
+		equipment.states = saved_states.duplicate()
 	comparison_panel.free()
 	if not table.call(
 		&"configure",
