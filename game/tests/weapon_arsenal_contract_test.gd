@@ -63,6 +63,10 @@ func _run() -> void:
 		await create_timer(0.13).timeout
 		assert(weapon.total_trigger_pulls > before, "LMB trigger %s" % id)
 		assert(target.direct_hits() > 0, "Real collision/sweep %s" % id)
+		if StringName(weapon.current_balance.get(&"attack_mode", &"projectile")) == &"projectile":
+			assert(not weapon.get_node("ShotFX").flashes.is_empty(), "Visible muzzle still present after 0.13 seconds: %s" % id)
+		else:
+			assert(shots.get_children().any(func(node): return node is WeaponMeleeStrike and not node.is_queued_for_deletion()), "Visible melee release after actual contact: %s" % id)
 		assert(weapon.current_balance.attack_mode == table.data[id].attack_mode)
 		if String(table.data[id].attack_mode).begins_with("melee"):
 			assert(shots.get_children().filter(func(n): return n is WeaponProjectile).is_empty(), "Melee must not emit bullets")

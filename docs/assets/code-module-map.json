@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "1cd70113181d97f343f917afc396315be5a0cf3d037a4e4b85298f048f365451",
+  "source_sha256": "6d996e1939488aff24611b18ad52e9ee9c84698f6224d78119708db6576e9580",
   "domains": [
     {
       "id": "system",
@@ -62,10 +62,10 @@
     }
   ],
   "summary": {
-    "modules": 60,
-    "scripts": 373,
-    "named_classes": 288,
-    "relationships": 227,
+    "modules": 61,
+    "scripts": 375,
+    "named_classes": 289,
+    "relationships": 230,
     "project_inheritance": 16,
     "enabled_toggles": 70
   },
@@ -219,7 +219,24 @@
         "TimedStatModifier"
       ],
       "incoming_count": 7,
-      "outgoing_count": 5
+      "outgoing_count": 6
+    },
+    {
+      "id": "combat_vfx",
+      "label": "전투 이펙트 표현",
+      "domain": "combat",
+      "domain_label": "전투",
+      "layer": "feature",
+      "path": "game/features/combat_vfx",
+      "wiki_route": "architecture/module-rules/",
+      "enabled": null,
+      "file_count": 1,
+      "class_count": 1,
+      "classes": [
+        "CombatVfxStyle"
+      ],
+      "incoming_count": 3,
+      "outgoing_count": 0
     },
     {
       "id": "conditional_ranking",
@@ -531,7 +548,7 @@
         "HitReaction2D"
       ],
       "incoming_count": 3,
-      "outgoing_count": 0
+      "outgoing_count": 1
     },
     {
       "id": "hub_economy",
@@ -1299,7 +1316,7 @@
         "WeaponShotFX"
       ],
       "incoming_count": 5,
-      "outgoing_count": 5
+      "outgoing_count": 6
     },
     {
       "id": "verification",
@@ -1310,7 +1327,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 74,
+      "file_count": 75,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1612,6 +1629,15 @@
       "module": "combat_skills",
       "path": "game/features/combat_skills/effects/timed_stat_modifier.gd",
       "extends": "Timer",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:CombatVfxStyle",
+      "name": "CombatVfxStyle",
+      "module": "combat_vfx",
+      "path": "game/features/combat_vfx/combat_vfx_style.gd",
+      "extends": "Resource",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -3926,6 +3952,12 @@
     },
     {
       "from": "combat_skills",
+      "to": "combat_vfx",
+      "type": "references",
+      "evidence_count": 2
+    },
+    {
+      "from": "combat_skills",
       "to": "core",
       "type": "references",
       "evidence_count": 1
@@ -4240,6 +4272,12 @@
       "from": "growth_balance",
       "to": "run_buffs",
       "type": "requires",
+      "evidence_count": 1
+    },
+    {
+      "from": "hit_feedback",
+      "to": "combat_vfx",
+      "type": "references",
       "evidence_count": 1
     },
     {
@@ -4936,7 +4974,7 @@
       "from": "verification",
       "to": "combat_skills",
       "type": "verifies",
-      "evidence_count": 11
+      "evidence_count": 12
     },
     {
       "from": "verification",
@@ -4972,7 +5010,7 @@
       "from": "verification",
       "to": "enemies",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
@@ -5026,7 +5064,7 @@
       "from": "verification",
       "to": "hit_feedback",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",
@@ -5152,7 +5190,7 @@
       "from": "verification",
       "to": "player",
       "type": "verifies",
-      "evidence_count": 10
+      "evidence_count": 11
     },
     {
       "from": "verification",
@@ -5236,13 +5274,19 @@
       "from": "verification",
       "to": "weapons",
       "type": "verifies",
-      "evidence_count": 6
+      "evidence_count": 7
     },
     {
       "from": "weapon_balance",
       "to": "weapons",
       "type": "requires",
       "evidence_count": 1
+    },
+    {
+      "from": "weapons",
+      "to": "combat_vfx",
+      "type": "references",
+      "evidence_count": 3
     },
     {
       "from": "weapons",

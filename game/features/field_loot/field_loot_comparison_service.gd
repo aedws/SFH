@@ -42,6 +42,13 @@ func compare(candidate: Dictionary) -> Dictionary:
 	var owned_count := _owned_count(inventory, item_id)
 	var candidate_grade := maxi(1, int(candidate.get(&"grade", 1)))
 	var reference_grade := _reference_grade(definition.item_type, equipment)
+	var reference_name := String(equipment.get(&"active_weapon_name", "없음")) if definition.item_type == &"weapon" else ""
+	# Compare the actual replacement slot, never an unrelated active gun for currency/runes/armor.
+	if equip_catalog != null and equip_catalog.get_entry(item_id) != null and equipment_provider.has_method(&"get_equipment_state"):
+		var comparison_entry := equip_catalog.get_entry(item_id)
+		var current = equipment_provider.call(&"get_equipment_state", comparison_entry.target_slot)
+		reference_name = String(current.definition.display_name) if current != null and current.definition != null else "없음"
+		reference_grade = int(current.definition.grade) if current != null and current.definition != null else 0
 	var grade_delta := candidate_grade - reference_grade if reference_grade > 0 else 0
 	var lifecycle := LootLifecyclePresenter.present(definition)
 	var comparison_label := "신규 획득"
@@ -82,6 +89,7 @@ func compare(candidate: Dictionary) -> Dictionary:
 		&"grade_delta": grade_delta,
 		&"owned_count": owned_count,
 		&"active_weapon_name": equipment.get(&"active_weapon_name", "없음"),
+		&"comparison_target_name": reference_name,
 		&"comparison_label": comparison_label,
 		&"family_label": lifecycle.get(&"family_label", ""),
 		&"use_label": lifecycle.get(&"use_label", ""),

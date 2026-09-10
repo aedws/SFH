@@ -8,8 +8,8 @@
 script = ExtResource("1_profile")
 audio_profile = ExtResource("2_audio")
 contact_texture = ExtResource("3_spark")
-impact_lifetime_seconds = 0.18
-impact_radius = 26.0
+impact_lifetime_seconds = 0.30
+impact_radius = 34.0
 impact_ray_count = 8
 maximum_active_impacts = 32
 reference_damage = 10.0

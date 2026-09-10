@@ -17,6 +17,9 @@ extends Resource
 @export_range(1.0, 40.0, 1.0) var directional_kick_decay: float = 20.0
 @export var audio_profile: CombatAudioProfile
 @export var contact_texture: Texture2D
+@export var visual_style: CombatVfxStyle = preload("res://game/features/combat_vfx/default_style.tres")
+@export_range(0.04, 0.2, 0.01) var contact_hold_seconds: float = 0.10
+@export_range(8.0, 64.0, 1.0) var minimum_contact_radius: float = 22.0
 
 
 func is_valid() -> bool:
@@ -30,6 +33,7 @@ func is_valid() -> bool:
 		and camera_decay_per_second > 0.0
 		and directional_kick_pixels >= 0.0
 		and directional_kick_decay > 0.0
+		and visual_style != null and contact_hold_seconds > 0 and minimum_contact_radius > 0
 		and (audio_profile == null or audio_profile.is_valid())
 	)
 

@@ -31,7 +31,7 @@ func _run() -> void:
 	check(not fx.is_processing() and fx.flashes.is_empty(), "idle flash has no processing")
 	for i in 100: weapon.projectile_fired.emit(Vector2(i,0), Vector2.RIGHT, Color.CYAN)
 	check(fx.total_events == 100 and fx.flashes.size() == 16, "signal connected and burst budget bounded")
-	fx._process(0.13)
+	fx._process(fx.flash_lifetime + 0.01)
 	check(not fx.is_processing() and fx.flashes.is_empty(), "flashes fully drain")
 	var profile = load("res://game/features/combat_skills/effects/profiles/magnetic_electric.tres").duplicate(true)
 	profile.lifetime_seconds = 5.0
