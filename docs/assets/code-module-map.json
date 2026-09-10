@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "9a160eb8ca58045863cb64ba9cbbf54138d71f593ca596857384f773a763b0e7",
+  "source_sha256": "1cd70113181d97f343f917afc396315be5a0cf3d037a4e4b85298f048f365451",
   "domains": [
     {
       "id": "system",
@@ -63,9 +63,9 @@
   ],
   "summary": {
     "modules": 60,
-    "scripts": 368,
-    "named_classes": 286,
-    "relationships": 216,
+    "scripts": 373,
+    "named_classes": 288,
+    "relationships": 227,
     "project_inheritance": 16,
     "enabled_toggles": 70
   },
@@ -124,7 +124,7 @@
         "EmbeddedCsvPayload",
         "ValidatedCsvCatalogService"
       ],
-      "incoming_count": 3,
+      "incoming_count": 4,
       "outgoing_count": 0
     },
     {
@@ -218,8 +218,8 @@
         "TacticalPatternRuntime",
         "TimedStatModifier"
       ],
-      "incoming_count": 6,
-      "outgoing_count": 4
+      "incoming_count": 7,
+      "outgoing_count": 5
     },
     {
       "id": "conditional_ranking",
@@ -370,7 +370,7 @@
         "WeaponPartsBoard",
         "WeaponTagProfile"
       ],
-      "incoming_count": 8,
+      "incoming_count": 10,
       "outgoing_count": 2
     },
     {
@@ -453,7 +453,7 @@
         "FieldLootSpawnPolicy"
       ],
       "incoming_count": 3,
-      "outgoing_count": 1
+      "outgoing_count": 5
     },
     {
       "id": "fog_of_war",
@@ -521,9 +521,11 @@
       "path": "game/features/hit_feedback",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 3,
-      "class_count": 3,
+      "file_count": 5,
+      "class_count": 5,
       "classes": [
+        "CombatAudioProfile",
+        "CombatFeedbackAudio",
         "HitFeedbackDirector",
         "HitFeedbackProfile",
         "HitReaction2D"
@@ -586,7 +588,7 @@
         "InventoryGridView",
         "InventoryItemDefinition"
       ],
-      "incoming_count": 5,
+      "incoming_count": 7,
       "outgoing_count": 2
     },
     {
@@ -684,7 +686,7 @@
         "LootLifecycleService",
         "LootLifecycleTable"
       ],
-      "incoming_count": 6,
+      "incoming_count": 7,
       "outgoing_count": 1
     },
     {
@@ -1014,7 +1016,7 @@
         "InventoryItemPreview",
         "InventorySlotButton"
       ],
-      "incoming_count": 12,
+      "incoming_count": 14,
       "outgoing_count": 0
     },
     {
@@ -1075,7 +1077,7 @@
         "RunBuffSystem"
       ],
       "incoming_count": 5,
-      "outgoing_count": 0
+      "outgoing_count": 1
     },
     {
       "id": "run_settlement",
@@ -1134,7 +1136,7 @@
         "SessionSocketTable"
       ],
       "incoming_count": 3,
-      "outgoing_count": 3
+      "outgoing_count": 4
     },
     {
       "id": "shop_browser",
@@ -1255,7 +1257,7 @@
         "TrainingTelemetryService"
       ],
       "incoming_count": 3,
-      "outgoing_count": 0
+      "outgoing_count": 1
     },
     {
       "id": "weapon_balance",
@@ -1297,7 +1299,7 @@
         "WeaponShotFX"
       ],
       "incoming_count": 5,
-      "outgoing_count": 4
+      "outgoing_count": 5
     },
     {
       "id": "verification",
@@ -1308,7 +1310,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 71,
+      "file_count": 74,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -2419,6 +2421,24 @@
       "name": "HealthRecoverySystem",
       "module": "health_recovery",
       "path": "game/features/health_recovery/health_recovery_system.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:CombatAudioProfile",
+      "name": "CombatAudioProfile",
+      "module": "hit_feedback",
+      "path": "game/features/hit_feedback/combat_audio_profile.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:CombatFeedbackAudio",
+      "name": "CombatFeedbackAudio",
+      "module": "hit_feedback",
+      "path": "game/features/hit_feedback/combat_feedback_audio.gd",
       "extends": "Node",
       "base_id": "",
       "inheritance": "engine"
@@ -3900,6 +3920,12 @@
     },
     {
       "from": "combat_skills",
+      "to": "balance_data",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "combat_skills",
       "to": "core",
       "type": "references",
       "evidence_count": 1
@@ -4164,6 +4190,30 @@
     },
     {
       "from": "field_loot",
+      "to": "combat_skills",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "field_loot",
+      "to": "equipment",
+      "type": "references",
+      "evidence_count": 3
+    },
+    {
+      "from": "field_loot",
+      "to": "inventory",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "field_loot",
+      "to": "loot_lifecycle",
+      "type": "references",
+      "evidence_count": 4
+    },
+    {
+      "from": "field_loot",
       "to": "presentation_theme",
       "type": "references",
       "evidence_count": 1
@@ -4178,6 +4228,12 @@
       "from": "growth_balance",
       "to": "equipment",
       "type": "requires",
+      "evidence_count": 1
+    },
+    {
+      "from": "growth_balance",
+      "to": "run_buffs",
+      "type": "references",
       "evidence_count": 1
     },
     {
@@ -4202,7 +4258,7 @@
       "from": "inventory",
       "to": "equipment",
       "type": "references",
-      "evidence_count": 1
+      "evidence_count": 3
     },
     {
       "from": "inventory",
@@ -4213,6 +4269,12 @@
     {
       "from": "key_mapping",
       "to": "presentation_theme",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "loadout_investment",
+      "to": "combat_skills",
       "type": "references",
       "evidence_count": 1
     },
@@ -4412,6 +4474,12 @@
       "from": "room_encounters",
       "to": "spawning",
       "type": "requires",
+      "evidence_count": 1
+    },
+    {
+      "from": "run_buffs",
+      "to": "presentation_theme",
+      "type": "references",
       "evidence_count": 1
     },
     {
@@ -4776,6 +4844,12 @@
     },
     {
       "from": "session_sockets",
+      "to": "inventory",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "session_sockets",
       "to": "loot_lifecycle",
       "type": "requires",
       "evidence_count": 1
@@ -4829,6 +4903,12 @@
       "evidence_count": 1
     },
     {
+      "from": "training_ground",
+      "to": "presentation_theme",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
       "from": "verification",
       "to": "balance_data",
       "type": "verifies",
@@ -4844,7 +4924,7 @@
       "from": "verification",
       "to": "character_selection",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
@@ -4856,7 +4936,7 @@
       "from": "verification",
       "to": "combat_skills",
       "type": "verifies",
-      "evidence_count": 9
+      "evidence_count": 11
     },
     {
       "from": "verification",
@@ -4898,7 +4978,7 @@
       "from": "verification",
       "to": "equipment",
       "type": "verifies",
-      "evidence_count": 12
+      "evidence_count": 13
     },
     {
       "from": "verification",
@@ -4922,7 +5002,7 @@
       "from": "verification",
       "to": "field_loot",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "verification",
@@ -4934,7 +5014,7 @@
       "from": "verification",
       "to": "growth_balance",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
@@ -4946,7 +5026,7 @@
       "from": "verification",
       "to": "hit_feedback",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 3
     },
     {
       "from": "verification",
@@ -4958,7 +5038,7 @@
       "from": "verification",
       "to": "inventory",
       "type": "verifies",
-      "evidence_count": 8
+      "evidence_count": 11
     },
     {
       "from": "verification",
@@ -4976,7 +5056,7 @@
       "from": "verification",
       "to": "local_save",
       "type": "verifies",
-      "evidence_count": 5
+      "evidence_count": 7
     },
     {
       "from": "verification",
@@ -5018,7 +5098,7 @@
       "from": "verification",
       "to": "mobile_controls",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "verification",
@@ -5108,7 +5188,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 31
+      "evidence_count": 32
     },
     {
       "from": "verification",
@@ -5174,6 +5254,12 @@
       "from": "weapons",
       "to": "enemies",
       "type": "requires",
+      "evidence_count": 1
+    },
+    {
+      "from": "weapons",
+      "to": "equipment",
+      "type": "references",
       "evidence_count": 1
     },
     {

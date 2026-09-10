@@ -36,6 +36,12 @@ tags:
 
 ## 모듈 계약
 
+### 라이브 수치와 원본 복원 · 2026-09-10 {#live-snapshot-20260910}
+
+훈련 카탈로그가 원본 Resource를 반환해 작전의 라이브 값과 달랐던 오류를 수정했습니다. 공통 `SkillBalanceSnapshot`으로 피해·AP·충전·쿨타임·패턴을 복제하고, 훈련 첫 진입에서 현재 공급자의 마지막 정상값을 고정합니다. 훈련 중 외부 갱신은 현재 실험을 바꾸지 않으며 종료 후 재입장부터 적용합니다. 종료 시 시험 전 스킬·자원·장비로 복원합니다. 실제 Sheet 값을 시험용123/3으로 수정하지 않습니다.
+
+공급자는 `get_skill_catalog_resources()` 공개 계약으로 교체합니다. 현재 슬롯 정의의 갱신은 비활성 세션 경계에서만 `refresh_inactive_definitions()`가 수행하고 실패하면 원상 복구합니다. CSV는 공통 공개 `BalanceCsvRows.parse()`를 사용하며 BOM·따옴표/줄바꿈·중복 열·잘못된 행을 회귀 검사합니다. `TRAINING_LIVE_CATALOG_OK`와 기존 복원/선택 비활성화/실제 훈련 E2E를 함께 통과해야 합니다. [발동·명중 효과음](hit-feedback.md#combat-audio-20260910)도 훈련과 실전에 함께 연결합니다.
+
 2026-09-07 승인 임시 정책: `TrainingGroundConfig.owned_sockets_only=true`가 보유품 시험을 제한하고 `SessionSocketBindingPolicy`가 현재 무기/첫 스킬에 귀속합니다. 개발 샌드박스에서만 정책을 교체할 수 있으며 기본 플레이는 미보유 자산을 생성하지 않습니다. 훈련 UI와 I 가방은 같은 공개 소켓 명령을 사용합니다. 영구 룬 카탈로그나 새 Sheet 목록은 추가하지 않았습니다.
 
 | 모듈 | 한 가지 책임 | 교체 지점 |

@@ -9,6 +9,7 @@ import json
 import re
 from collections import defaultdict
 from pathlib import Path
+from gdscript_dependencies import reference_paths, named_parent, scan
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -196,11 +197,14 @@ def generate() -> dict:
         source_hash.update(rel.encode("utf-8"))
         source_hash.update(b"\0")
         source_hash.update(text_by_path[path].encode("utf-8"))
-        match = CLASS_RE.search(text_by_path[path])
+        match = CLASS_RE.search(scan(text_by_path[path])[0])
         if match:
             class_by_path["res://" + rel] = match.group(1)
 
     classes = []
+    path_by_class = {name: path for path, name in class_by_path.items()}
+    if len(path_by_class) != len(class_by_path):
+        raise ValueError("Duplicate class_name ownership: cannot generate an unambiguous graph")
     module_files: dict[str, list[str]] = defaultdict(list)
     module_classes: dict[str, list[str]] = defaultdict(list)
     raw_edges: dict[tuple[str, str, str], set[str]] = defaultdict(set)
@@ -210,10 +214,11 @@ def generate() -> dict:
         text = text_by_path[path]
         module_id = module_for(path)
         module_files[module_id].append(rel)
-        class_match = CLASS_RE.search(text)
+        class_match = CLASS_RE.search(scan(text)[0])
         extends_match = EXTENDS_RE.search(text)
         class_name = class_match.group(1) if class_match else path.stem
         parent_path = extends_match.group(1) if extends_match else ""
+        parent_path = parent_path or named_parent(text, path_by_class)
         parent_name = extends_match.group(2) if extends_match else ""
         base_id = ""
         if parent_path:
@@ -233,7 +238,7 @@ def generate() -> dict:
             if base_id:
                 raw_edges[(module_id, module_for(ROOT / parent_path.removeprefix("res://")), "inherits")].add(rel)
 
-        for resource_path in RESOURCE_RE.findall(text):
+        for resource_path in reference_paths(text, path_by_class):
             target = ROOT / resource_path.removeprefix("res://")
             if not target.exists() or not str(target).lower().endswith((".gd", ".tscn", ".tres")):
                 continue

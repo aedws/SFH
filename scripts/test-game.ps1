@@ -25,6 +25,10 @@ $csvPolicyPython = Join-Path $repositoryRoot '.venv/Scripts/python.exe'
 if (-not (Test-Path -LiteralPath $csvPolicyPython)) { $csvPolicyPython = 'python' }
 & $csvPolicyPython (Join-Path $PSScriptRoot 'test_balance_csv_imports.py')
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $csvPolicyPython (Join-Path $PSScriptRoot 'test_gdscript_dependencies.py')
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $csvPolicyPython (Join-Path $PSScriptRoot 'test_combat_audio_assets.py')
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 # A fresh clone has no imported fonts or global GDScript class cache yet.
 & $csvPolicyPython (Join-Path $PSScriptRoot 'sync_difficulty.py') --check
@@ -115,6 +119,12 @@ if ($feedbackStatus -ne 0 -or ($feedbackOutput -match 'SCRIPT ERROR:|^ERROR:') -
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/circular_coverage_contract_test.gd"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+foreach ($contractCase in @(@('training_live_catalog_contract_test', 'TRAINING_LIVE_CATALOG_OK'), @('combat_audio_contract_test', 'COMBAT_AUDIO_OK'))) {
+    $contractOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/$($contractCase[0]).gd" 2>&1
+    $contractStatus = $LASTEXITCODE
+    $contractOutput | Write-Output
+    if ($contractStatus -ne 0 -or ($contractOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($contractOutput -join "`n") -notmatch $contractCase[1]) { throw "Contract failed: $($contractCase[0])" }
+}
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/training_loadout_restore_contract_test.gd"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $optionalOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/training_optional_matrix_test.gd" 2>&1

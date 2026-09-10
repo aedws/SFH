@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-09</span><span>SEARCH COMMAND</span><span>12 DAYS · 164 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-10</span><span>SEARCH COMMAND</span><span>13 DAYS · 166 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 최신 기획 기준 코드 대응도
 
@@ -31,7 +31,7 @@ tags:
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
-**기획 대응도 기준은 9/9 20:12의 `a41f424`, 마감 게임은 `a423dad`입니다.** 위 숫자는 당시 공개 GDD·트래커 대조 결과이며 이번 문서 마감에서 재산정하거나 새 Notion 조회로 표시하지 않습니다. 후속 B+A+C/10단계 배포와 원격 회귀는 통과했지만 훈련 라이브 수치 오류와 일반10분 수락은 남습니다. **아직100%가 아닙니다.** [마감 대조·근거](quality/full-system-audit-20260909.md#close-20260909) · [내일 바로 시작](design/current-milestone-workline.md#next-20260910).
+**기획 대응도 기준은 9/9 20:12의 `a41f424`, 당시 마감 게임은 `a423dad`입니다.** 위 숫자는 당시 공개 GDD·트래커 대조 결과이며9/10에 재산정하거나 새 Notion 조회로 표시하지 않습니다. 훈련 라이브 수치는9/10 수정·회귀 완료했으나 일반10분/F·맵/스킬 체감 수락은 남습니다. **아직100%가 아닙니다.** [후속 수정·근거](quality/full-system-audit-20260909.md#followup-20260910) · [다음 실행](design/current-milestone-workline.md#next-20260910).
 
 | 코드 판정 | 항목 수 | 점수 |
 |---|---:|---:|
@@ -45,7 +45,7 @@ tags:
 
 ## 현재 빌드 상태
 
-**현행 콘텐츠:** 시작3요원·8무기 선택, 고정 패시브, 액티브40종(동시3), 방어구14종/3세트, 16:10 PC 장비 UI입니다. 게임 `a423dad`·CSV `2026-09-09.3`의 Web/Windows 배포를 확인했습니다. 새 수치는 임시이며 이번 문서 마감은 게임을 바꾸거나 QA-LIVE-TRAINING을 해결 처리하지 않습니다.
+**현행 콘텐츠:** 시작3요원·8무기 선택, 고정 패시브, 액티브40종(동시3), 방어구14종/3세트, 16:10 PC 장비 UI입니다. 9/10 변경은 훈련 라이브 스냅샷 수정·타격음6종/스킬 표현과 모듈 감사 보완입니다. 기존 CSV `2026-09-09.3`과 임시 수치는 유지합니다. [검증·다음 작업](quality/e2e-play-session.md#training-feedback-20260910). 아래 날짜별 배포 커밋은 당시 이력입니다.
 
 **최신 공간 규칙:** B 복합 구역의 제한된 입구·내부 연결에 A 불규칙 바닥과 C 단계별 다각형 변형을 적용합니다. 시설마다 도로 직결/출입구 2개는 폐기한 이전 규칙입니다. 위험 1~10단계는 같은 지역·규모의 기본 투입비와 연동하고 장비 추가비는 분리합니다. 일반 후퇴·금고 F 선택 봉쇄·두 출구 방어·안전 단말 워프·실제 바닥 기반 공간 공개는 유지합니다. [현행 계약](features/extraction-district.md#compound-20260909) · [90생성/30출격·배포 검수](quality/e2e-play-session.md#compound-20260909).
 
@@ -68,7 +68,28 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 6 · IMPROVE 13 · CHANGE 1 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-10</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 1 · IMPROVE 2 · CHANGE 0 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>모듈 지도 · 클래스 참조까지 같은 기준으로 감사</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>경로만 보던 감사에 클래스·상속 참조를 더하고 위키 노드맵과 분석기를 통일했습니다. 공개 CSV 파서와 확장 회귀를 보완했습니다. 동적 조립 검토와 정상10분 수락은 별도 잔여입니다.</p></div>
+        <p><a href="/architecture/module-audit/#training-feedback-20260910">모듈 경계·검사</a> · <a href="/design/current-milestone-workline/#next-20260910">다음 실행 순서</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
+      <summary><span><small>UPDATE 1</small><b>훈련 수치 일치 · 발사·스킬·명중·처치 피드백</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>상업 이용이 허용된 CC0 효과음6종을 선별해 발사·근접·스킬 발동·체력/장갑 명중·처치에 연결했습니다. 출처·라이선스·해시와 동시8음성 예산을 함께 관리합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>직선 폭·부채꼴 경계·원형/링 맥동·연쇄 타격·접촉 스파크를 보강했습니다. 전체 게임/E2E와 실제 GPU·오디오 믹서 검사는 통과했으며 정상10분 재미 수락과 구분합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>훈련장이 라이브 스킬 대신 원본 수치를 쓰던 문제를 공통 불변 스냅샷으로 수정했습니다. 입장 시 갱신하고 실험 중 고정하며 종료 시 기존 장착·자원을 복원합니다.</p></div>
+        <p><a href="/features/hit-feedback/#combat-audio-20260910">타격 표현·상업 이용 근거</a> · <a href="/quality/e2e-play-session/#training-feedback-20260910">수정 전후·검증 범위</a></p>
+      </div>
+    </details>
+  </div>
+</details>
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-09-09</b><small>14 UPDATE BUNDLES · BUILD 6 · IMPROVE 13 · CHANGE 1 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 14</small><b>오늘 마감 · 위키 현행성·내일 시작 패킷</b></span><em class="sfh-chevron">⌄</em></summary>

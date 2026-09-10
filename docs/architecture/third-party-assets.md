@@ -18,6 +18,8 @@ SFH에 새 외부 에셋을 반입할 때는 원본 배포자가 명시한 라�
 | 자산 | 원작자 | 라이선스 | 상업 이용 | SFH 반입 범위 |
 | --- | --- | --- | --- | --- |
 | Kenney Particle Pack 1.1 | Kenney Vleugels | CC0 1.0 Universal | 허용, 표기 의무 없음 | `spark_01.png`, `spark_04.png` 2개 |
+| Kenney Sci-Fi Sounds | Kenney | CC0 1.0 Universal | 허용, 표기 의무 없음 | 발사·근접·스킬 발동·장갑 명중·처치 OGG 5개 |
+| Kenney Impact Sounds | Kenney | CC0 1.0 Universal | 허용, 표기 의무 없음 | 일반 명중 OGG 1개 |
 | Galmuri 11 | Lee Minseo (`quiple`) | SIL Open Font License 1.1 | 허용, 라이선스 원문 동봉 | 게임 `Galmuri11-Bold.ttf`, 위키 `Galmuri11.woff2` |
 
 Godot용 패키징 원본 식별자는 `Calinou/kenney-particle-pack`이며 반입 기준은 `ab7086639ee73be31abd87feb21bf1402d4e8144`입니다. 원본은 CC0 1.0을 명시하며, 실제 포함된 라이선스 원문은 `game/assets/vfx/kenney_particle_pack/LICENSE.txt`, 파일별 SHA-256과 용도는 같은 폴더의 `SOURCE.md`에 보존합니다.
@@ -25,6 +27,8 @@ Godot용 패키징 원본 식별자는 `Calinou/kenney-particle-pack`이며 반�
 Galmuri의 공식 원본 식별자는 `quiple/galmuri`이며 반입 기준은 `71e1cacf1437a11220307120e63e30bc275312d4`입니다. 라이선스 원문과 게임 파일 해시는 `game/assets/fonts/galmuri/`, 위키 전송본과 라이선스는 `docs/assets/fonts/galmuri/`에 보존합니다. 게임은 TTF만, 위키는 WOFF2만 사용해 불필요한 Godot 임포트와 중복 배포를 피합니다.
 
 ## 반입 규칙
+
+2026-09-10 효과음은 [Sci-Fi Sounds 공식 배포](https://kenney.nl/assets/sci-fi-sounds), [Impact Sounds 공식 배포](https://kenney.nl/assets/impact-sounds)의 실제 ZIP 안 `License.txt`를 확인했습니다. [Kenney 이용 안내](https://kenney.nl/support)와 [CC0 원문](https://creativecommons.org/publicdomain/zero/1.0/)이 상업 이용을 허용합니다. 로고·상표 사용권이나 보증을 포함한다는 뜻은 아닙니다. 원본 소리를 편집하지 않고 필요한 6개만 반입했으며, 팩별 원문과 파일/아카이브 SHA-256은 `game/assets/audio/`의 `LICENSE.txt` 및 `SOURCE.md`에 보존합니다. 게임에서는 음량·피치를 재생 시 적용합니다. CC0에 의무가 없더라도 두 실행 빌드에 출처 원문을 동봉합니다.
 
 1. 상업 이용이 명시된 `CC0`, `MIT`, `OFL` 등 검증 가능한 라이선스를 우선합니다.
 2. 에셋 페이지 설명만 믿지 않고 원문 라이선스 파일까지 확인합니다.

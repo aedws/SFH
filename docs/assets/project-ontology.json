@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "ce020c38f9dbc2d76154b34c1ed7b1a3c07d2d613c2b040cb469dfb4c8836e0b",
+  "source_sha256": "38d84dcfd6a049f491e0e2e749f62b461a22b338dc894410541e4de16bffe04c",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -395,8 +395,8 @@
     "tracked": 54,
     "owner_decisions": 5,
     "blocked": 8,
-    "ready": 2,
-    "implemented": 38,
+    "ready": 1,
+    "implemented": 39,
     "modules": 60,
     "documents": 105,
     "collections": 27,
@@ -1346,7 +1346,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "현행 게임 a423dad·CSV2026-09-09.3, 복합 구역/10단계 배포 검증 통과. a41f424 전체 감사의 훈련 라이브 오류·양 플랫폼 일반10분 수락은 잔여. 기술 대체 승인 완료.",
       "acceptance": "AP 자연량·스킬 수·타겟 반경/주기·UI·리롤·손상품·환전·탈출·시즌의 임시/확정 분리 및 Web/Windows E2E",
-      "next_action": "2026-09-10: QA-LIVE-TRAINING → 클래스/공개 파서 감사 → Web·독립 Windows 정상10분/F → 복합 맵1/5/10 → 스킬 계열 체감 → 수정·재검증. 전체 통합 종료는 파우치·심층·혈전의 선행 승인과 구현도 필요.",
+      "next_action": "2026-09-10: 훈련 동등성 수정·클래스/공개 파서 감사 보완 후 Web·독립 Windows 정상10분/F → 복합 맵1/5/10 → 스킬 계열 체감 → 수정·재검증. Game 조립/초기 선택 책임 검토도 잔여. 전체 통합 종료는 파우치·심층·혈전의 선행 승인과 구현도 필요.",
       "route": "design/current-milestone-workline/#next-20260910",
       "relations": [
         {
@@ -1408,12 +1408,12 @@
       "id": "work:qa-live-training",
       "type": "work_item",
       "label": "QA-LIVE-TRAINING · 훈련/작전 라이브 수치 동등성",
-      "status": "ready",
+      "status": "implemented",
       "certainty": "confirmed",
       "decision_owner": "authority:project-owner",
-      "summary": "2026-09-09 a41f424: 플라스마 창 라이브 피해123/쿨타임3은 작전만 반영되고 훈련은32/8 유지. 별도 fixture 재현, 수정 전.",
+      "summary": "2026-09-10: 공통 스냅샷·훈련 입장 갱신/진행 중 동결/퇴장 원복 수정. 123/3와 AP/충전/효과 회귀 실패→통과, 전체 게임/E2E 통과. 실제 Sheet 수치 변경 없음.",
       "acceptance": "훈련·작전 피해/AP/쿨타임/충전/효과 동등성, 원본 불변, 종료 복원, 잘못된 값 거부.",
-      "next_action": "다음 작업1순위: 카탈로그 제공자를 공통 불변 스냅샷 경로로 연결하고 동등성 회귀를 추가. 기획 수치 변경 불필요.",
+      "next_action": "CI의 TRAINING_LIVE_CATALOG_OK 유지. 다음은 배포 양 플랫폼 정상10분/F 및 맵/스킬 체감 수락. 자동 통과를 정상10분 수락으로 합산하지 않음.",
       "route": "design/current-milestone-workline/#start-packet-20260910",
       "relations": [
         {
@@ -2719,7 +2719,7 @@
       "metrics": {
         "files": 3,
         "classes": 3,
-        "incoming": 3,
+        "incoming": 4,
         "outgoing": 0
       }
     },
@@ -2791,8 +2791,8 @@
       "metrics": {
         "files": 17,
         "classes": 17,
-        "incoming": 6,
-        "outgoing": 4
+        "incoming": 7,
+        "outgoing": 5
       }
     },
     {
@@ -2899,7 +2899,7 @@
       "metrics": {
         "files": 28,
         "classes": 28,
-        "incoming": 8,
+        "incoming": 10,
         "outgoing": 2
       }
     },
@@ -2972,7 +2972,7 @@
         "files": 11,
         "classes": 11,
         "incoming": 3,
-        "outgoing": 1
+        "outgoing": 5
       }
     },
     {
@@ -3035,14 +3035,14 @@
       "label": "타격 피드백",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "전투 · feature · 파일 3개",
+      "summary": "전투 · feature · 파일 5개",
       "route": "architecture/code-module-map/?module=hit_feedback",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/hit_feedback",
       "kind": "implementation",
       "metrics": {
-        "files": 3,
-        "classes": 3,
+        "files": 5,
+        "classes": 5,
         "incoming": 3,
         "outgoing": 0
       }
@@ -3097,7 +3097,7 @@
       "metrics": {
         "files": 6,
         "classes": 6,
-        "incoming": 5,
+        "incoming": 7,
         "outgoing": 2
       }
     },
@@ -3187,7 +3187,7 @@
       "metrics": {
         "files": 5,
         "classes": 5,
-        "incoming": 6,
+        "incoming": 7,
         "outgoing": 1
       }
     },
@@ -3475,7 +3475,7 @@
       "metrics": {
         "files": 7,
         "classes": 7,
-        "incoming": 12,
+        "incoming": 14,
         "outgoing": 0
       }
     },
@@ -3530,7 +3530,7 @@
         "files": 5,
         "classes": 5,
         "incoming": 5,
-        "outgoing": 0
+        "outgoing": 1
       }
     },
     {
@@ -3584,7 +3584,7 @@
         "files": 7,
         "classes": 7,
         "incoming": 3,
-        "outgoing": 3
+        "outgoing": 4
       }
     },
     {
@@ -3692,7 +3692,7 @@
         "files": 13,
         "classes": 13,
         "incoming": 3,
-        "outgoing": 0
+        "outgoing": 1
       }
     },
     {
@@ -3728,7 +3728,7 @@
         "files": 6,
         "classes": 6,
         "incoming": 5,
-        "outgoing": 4
+        "outgoing": 5
       }
     },
     {
@@ -3737,13 +3737,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 71개",
+      "summary": "기반·검증 · verification · 파일 74개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 71,
+        "files": 74,
         "classes": 0,
         "incoming": 0,
         "outgoing": 55

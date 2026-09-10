@@ -4,6 +4,7 @@ extends Node2D
 signal weapon_runtime_changed(snapshot: Dictionary)
 signal attack_feedback(message: String, reason: StringName)
 signal projectile_fired(world_position: Vector2, direction: Vector2, color: Color)
+signal presentation_event(kind: StringName, world_position: Vector2, context: Dictionary)
 
 @export var projectile_scene: PackedScene
 @export var fallback_target_group: StringName = &"enemies"
@@ -288,6 +289,7 @@ func _resolved_targeting_mode() -> StringName:
 
 func _fire_pattern(base_direction: Vector2) -> void:
 	total_trigger_pulls += 1
+	presentation_event.emit(&"shot" if StringName(current_balance.get(&"attack_mode", &"projectile")) == &"projectile" else &"melee", global_position, {})
 	if StringName(current_balance.get(&"attack_mode", &"projectile")) != &"projectile":
 		_fire_melee(base_direction)
 		return

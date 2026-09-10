@@ -26,6 +26,13 @@ var telemetry_service: Node
 var loadout_service
 var combat_skill_provider: Node
 var skill_catalog: Array[Resource] = []
+var skill_catalog_provider: Node
+
+func configure_skill_catalog_provider(provider: Node) -> bool:
+	if _editing_active() or not is_instance_valid(provider) or not provider.has_method(&"get_skill_catalog_resources"):
+		return false
+	skill_catalog_provider = provider
+	return true
 var socket_provider: Node
 
 
@@ -134,8 +141,18 @@ func activate_scenario(scenario_id: StringName) -> Dictionary:
 	if definition == null:
 		return {&"success": false, &"reason": "훈련 시나리오 없음"}
 	reset_pending = false
+	var starting := StringName(reset_service.call(&"get_snapshot").get(&"active_scenario_id", &"")) == &""
+	if starting and is_instance_valid(skill_catalog_provider):
+		var candidates: Array[Resource] = []
+		candidates.assign(skill_catalog_provider.call(&"get_skill_catalog_resources"))
+		if candidates.is_empty(): return {&"success": false, &"reason": "훈련 스킬 수치 검증 실패"}
+		skill_catalog = candidates
 	if loadout_service != null and not bool(loadout_service.call(&"begin_session")):
 		return {&"success": false, &"reason": "훈련 로드아웃 스냅샷 실패"}
+	if starting and is_instance_valid(combat_skill_provider) and combat_skill_provider.has_method(&"refresh_inactive_definitions"):
+		if not combat_skill_provider.call(&"refresh_inactive_definitions", skill_catalog):
+			stop()
+			return {&"success": false, &"reason": "훈련 스킬 적용 실패 · 원본 복원"}
 	var result: Dictionary = reset_service.call(&"activate", definition)
 	if bool(result.get(&"success", false)):
 		if is_instance_valid(combat_skill_provider):

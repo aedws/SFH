@@ -1,6 +1,7 @@
 """Regression: unchecked Notion 'No' must not be interpreted as completion."""
 import hashlib
 import json
+import re
 import unittest
 from copy import deepcopy
 from pathlib import Path
@@ -167,8 +168,14 @@ class CodeCrosswalkTests(unittest.TestCase):
         document = (root / "docs/design/master-gdd-alignment.md").read_text(encoding="utf-8")
         self.assertEqual(document.count("{#day-close}"), 1)
         self.assertIn("136.5/170", document)
+        workline = (root / "docs/design/current-milestone-workline.md").read_text(encoding="utf-8")
+        next_sections = set(re.findall(r"\{#(next-\d{8})\}", workline))
+        self.assertTrue(next_sections, "The workline must provide a dated execution section")
+        latest = max(next_sections)
         for page in ["docs/access/planner.md", "docs/access/developer.md", "docs/index.md", "docs/development-status.md"]:
-            self.assertIn("next-20260909", (root / page).read_text(encoding="utf-8"))
+            links = set(re.findall(r"current-milestone-workline(?:\.md|/)?#(next-\d{8})", (root / page).read_text(encoding="utf-8")))
+            self.assertIn(latest, links, f"{page}: latest workline link must survive daily home compression")
+            self.assertTrue(links <= next_sections, f"{page}: dangling dated execution anchor")
 
     def test_missing_or_duplicate_row_fails(self):
         for duplicate in [False, True]:

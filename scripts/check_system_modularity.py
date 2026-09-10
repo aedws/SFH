@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 from collections import defaultdict
 from pathlib import Path
+from gdscript_dependencies import reference_paths, scan, find_cycle
 
 ROOT = Path(__file__).resolve().parents[1]
 GAME = ROOT / "game"
@@ -22,13 +23,15 @@ dependency_pattern = re.compile(r"res://game/features/([^/]+)/")
 
 for script in GAME.rglob("*.gd"):
     source = text(script)
-    match = re.search(r"^class_name\s+(\w+)", source, re.MULTILINE)
+    match = re.search(r"^class_name\s+(\w+)", scan(source)[0], re.MULTILINE)
     if match:
         class_owners[match.group(1)].append(script.relative_to(ROOT).as_posix())
 
 for name, owners in class_owners.items():
     if len(owners) > 1:
         ERRORS.append(f"Duplicate class_name {name}: {owners}")
+
+class_paths = {name: 'res://' + owners[0] for name, owners in class_owners.items() if len(owners) == 1}
 
 for feature_dir in feature_dirs:
     owned_files = [
@@ -40,43 +43,15 @@ for feature_dir in feature_dirs:
         continue
     for path in owned_files:
         source = text(path)
-        for target in dependency_pattern.findall(source):
+        references = reference_paths(source, class_paths if path.suffix == '.gd' else {})
+        for target in dependency_pattern.findall('\n'.join(references)):
             if target not in feature_ids:
                 ERRORS.append(f"Unknown feature dependency {feature_dir.name} -> {target}: {path}")
             elif target != feature_dir.name:
                 dependency_graph[feature_dir.name].add(target)
 
 
-def find_cycle() -> list[str]:
-    visiting: set[str] = set()
-    visited: set[str] = set()
-    stack: list[str] = []
-
-    def visit(node: str) -> list[str]:
-        if node in visiting:
-            start = stack.index(node)
-            return stack[start:] + [node]
-        if node in visited:
-            return []
-        visiting.add(node)
-        stack.append(node)
-        for target in sorted(dependency_graph[node]):
-            cycle = visit(target)
-            if cycle:
-                return cycle
-        stack.pop()
-        visiting.remove(node)
-        visited.add(node)
-        return []
-
-    for feature_id in sorted(feature_ids):
-        cycle = visit(feature_id)
-        if cycle:
-            return cycle
-    return []
-
-
-cycle = find_cycle()
+cycle = find_cycle(dependency_graph)
 if cycle:
     ERRORS.append(f"Feature dependency cycle: {' -> '.join(cycle)}")
 

@@ -82,7 +82,8 @@ func _pulse() -> void:
 			if spec.consume_status_id != &"" and target.has_method(&"consume_status") and target.call(&"consume_status", spec.consume_status_id, 1):
 				amount *= spec.combo_multiplier
 			target.call(&"take_damage", amount, {&"source_kind": &"tactical_skill", &"source_position": global_position,
-				&"impact_direction": global_position.direction_to(target.global_position), &"impact_strength": 0.7})
+				&"impact_direction": global_position.direction_to(target.global_position), &"impact_strength": 0.7,
+				&"impact_color":spec.color, &"impact_radius_multiplier":1.15, &"camera_trauma_multiplier":0.65 if spec.pulses > 1 else 1.0})
 			if spec.status_id != &"" and target.has_method(&"apply_status") and not target.is_queued_for_deletion():
 				target.call(&"apply_status", spec.status_id, spec.status_duration, 1)
 		beam_points.append(to_local(target.global_position))
@@ -114,16 +115,36 @@ func _exit_tree() -> void:
 func _draw() -> void:
 	if spec == null: return
 	var tint: Color = spec.color
-	tint.a = 0.8 if flash > 0 else 0.18
+	var pulse := clampf(flash / 0.24, 0, 1)
+	tint.a = 0.24 + pulse * 0.65
+	var core := Color(0.85, 1, 1, pulse * 0.9)
+	# Boundaries use the same live radius/width/direction as the damage geometry.
 	match spec.shape:
-		"line": draw_line(Vector2.ZERO, displayed_direction * spec.radius, tint, maxf(2, spec.width * 0.15))
-		"cone": draw_arc(Vector2.ZERO, spec.radius, displayed_direction.angle() - deg_to_rad(spec.angle_degrees * 0.5), displayed_direction.angle() + deg_to_rad(spec.angle_degrees * 0.5), 24, tint, 3)
+		"line":
+			var end: Vector2 = displayed_direction * spec.radius
+			var side: Vector2 = displayed_direction.orthogonal() * spec.width * 0.5
+			draw_colored_polygon(PackedVector2Array([-side, side, end+side, end-side]), Color(tint, 0.035*pulse))
+			draw_polyline(PackedVector2Array([-side, side, end+side, end-side, -side]), tint, 1.5)
+			draw_line(Vector2.ZERO, end, tint, 5.0 + pulse*3.0)
+			draw_line(Vector2.ZERO, end, core, 1.5)
+		"cone":
+			var first := displayed_direction.angle() - deg_to_rad(spec.angle_degrees * 0.5)
+			var last := displayed_direction.angle() + deg_to_rad(spec.angle_degrees * 0.5)
+			draw_arc(Vector2.ZERO, spec.radius, first, last, 24, tint, 2.5)
+			draw_line(Vector2.ZERO, Vector2.from_angle(first)*spec.radius, tint, 1.5)
+			draw_line(Vector2.ZERO, Vector2.from_angle(last)*spec.radius, tint, 1.5)
+			if pulse > 0: draw_arc(Vector2.ZERO, spec.radius*(1.0-0.18*pulse), first, last, 24, core, 2)
 		"chain", "single":
 			var start := Vector2.ZERO
 			for point in beam_points:
-				draw_line(start, point, tint, 3)
-				start = point
+				draw_line(start, point, tint, 5)
+				draw_line(start, point, core, 1.5)
+				draw_arc(point, 8.0+10.0*(1.0-pulse), 0, TAU, 12, tint, 2)
+				if spec.shape == "chain": start = point
 		"self": draw_arc(Vector2.ZERO, 30, 0, TAU, 24, tint, 3)
 		_:
 			draw_arc(Vector2.ZERO, spec.radius, 0, TAU, 48, tint, 2)
 			if spec.shape == "ring": draw_arc(Vector2.ZERO, spec.inner_radius, 0, TAU, 32, tint, 2)
+			if pulse > 0:
+				var inner: float = spec.inner_radius if spec.shape == "ring" else spec.radius * 0.8
+				draw_arc(Vector2.ZERO, lerpf(inner, spec.radius, 1.0-pulse), 0, TAU, 48, core, 1.5)

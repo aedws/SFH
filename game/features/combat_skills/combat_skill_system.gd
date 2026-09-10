@@ -3,6 +3,7 @@ extends Node
 
 signal skill_states_changed(states: Array[Dictionary])
 signal skill_activated(slot_index: int, skill_id: StringName, result: Dictionary)
+signal presentation_event(kind: StringName, world_position: Vector2, context: Dictionary)
 
 @export_range(0.05, 0.5, 0.01) var hud_refresh_interval_seconds: float = 0.1
 
@@ -59,6 +60,29 @@ func export_runtime_state() -> Dictionary:
 		return {}
 	return {&"loadout": loadout.duplicate(true), &"cooldowns": cooldowns.duplicate(),
 		&"resources": resource_provider.call(&"export_runtime_state") if is_instance_valid(resource_provider) and resource_provider.has_method(&"export_runtime_state") else {}}
+
+
+func refresh_inactive_definitions(candidates: Array[Resource]) -> bool:
+	# Same IDs only, at a session boundary. Preserve disabled-by-tag slots too.
+	if activation_enabled or loadout == null: return false
+	var by_id := {}
+	for candidate in candidates:
+		if candidate == null or not candidate.has_method(&"is_valid") or not candidate.call(&"is_valid"): return false
+		var id := StringName(candidate.get("skill_id"))
+		if by_id.has(id): return false
+		by_id[id] = candidate
+	var previous := export_runtime_state()
+	for index in loadout.skills.size():
+		var id := StringName(loadout.skills[index].get("skill_id"))
+		if not by_id.has(id): continue # Optional provider may only offer a subset.
+		loadout.skills[index] = by_id[id].duplicate(true)
+		cooldowns[index] = 0.0
+		if is_instance_valid(resource_provider) and resource_provider.has_method(&"reset_skill_slot") and not resource_provider.call(&"reset_skill_slot", index):
+			restore_runtime_state(previous)
+			return false
+	set_character_specialization(character_specialization)
+	_emit_states()
+	return true
 
 
 func validate_runtime_state(state: Dictionary) -> PackedStringArray:
@@ -217,6 +241,7 @@ func try_activate(slot_index: int) -> bool:
 	):
 		return false
 	cooldowns[slot_index] = _modified_cooldown(float(skill.get("cooldown_seconds")), skill.get("skill_id"))
+	presentation_event.emit(&"cast", player.global_position, {})
 	skill_activated.emit(slot_index, skill.get("skill_id"), result.duplicate(true))
 	_emit_states()
 	return true

@@ -15,6 +15,8 @@ extends Resource
 @export_range(0.1, 30.0, 0.1) var camera_decay_per_second: float = 3.8
 @export_range(0.0, 8.0, 0.1) var directional_kick_pixels: float = 1.8
 @export_range(1.0, 40.0, 1.0) var directional_kick_decay: float = 20.0
+@export var audio_profile: CombatAudioProfile
+@export var contact_texture: Texture2D
 
 
 func is_valid() -> bool:
@@ -28,6 +30,7 @@ func is_valid() -> bool:
 		and camera_decay_per_second > 0.0
 		and directional_kick_pixels >= 0.0
 		and directional_kick_decay > 0.0
+		and (audio_profile == null or audio_profile.is_valid())
 	)
 
 

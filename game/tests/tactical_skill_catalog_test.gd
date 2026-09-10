@@ -33,6 +33,8 @@ func _run() -> void:
 		world.add_child(system)
 		check(system.configure(player, targets, world, kit, true, resources, load("res://game/features/smart_targeting/configs/default_smart_targeting.tres")), "system: "+file)
 		system.set_process(false)
+		var cast_events := [0]
+		system.presentation_event.connect(func(_kind, _position, _context): cast_events[0] += 1)
 		var mobility_policy := {&"families":"mobility|self", &"cooldown_multiplier":0.8}
 		system.set_character_specialization(mobility_policy)
 		var energy: float = resources.current_energy
@@ -42,6 +44,7 @@ func _run() -> void:
 		check(is_equal_approx(system.cooldowns[0], skill.cooldown_seconds * factor), "passive cooldown: "+file)
 		check(is_equal_approx(resources.recharge_remaining[0], skill.charge_recovery_seconds * factor), "passive charge: "+file)
 		check(not system.try_activate(0), "cooldown denial: "+file)
+		check(cast_events[0] == 1, "successful cast only, failed retry silent: "+file)
 		system.cancel_runtime_effects()
 		system.free()
 		resources.free()

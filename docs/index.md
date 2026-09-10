@@ -54,116 +54,22 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-09</b><i class="sfh-latest">최신</i><small>14 UPDATE BUNDLES · BUILD 6 · IMPROVE 13 · CHANGE 1 · FIX 8</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-10</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 1 · IMPROVE 2 · CHANGE 0 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 14</small><b>오늘 마감 · 위키 현행성·내일 시작 패킷</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 2</small><b>모듈 지도 · 클래스 참조까지 같은 기준으로 감사</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>개선 · 1</h3><p>맵 출입·실제 바닥 시야·10단계 투자 계약을 현행 코드와 맞추고 이전 설명은 이력으로 분리했습니다. 내일 훈련 수치 동등성부터 수정하도록 코드 위치·재현·검사 명령·수락 기준을 연결했습니다. 게임·CSV·기획 점수는 변경하지 않습니다.</p></div>
-        <p><a href="/quality/full-system-audit-20260909/#day-close-20260909">충돌 대조</a> · <a href="/design/current-milestone-workline/#start-packet-20260910">내일 첫 작업 열기</a>. 일반10분·체감 검수는 미완료로 유지합니다.</p>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>경로만 보던 감사에 클래스·상속 참조를 더하고 위키 노드맵과 분석기를 통일했습니다. 공개 CSV 파서와 확장 회귀를 보완했습니다. 동적 조립 검토와 정상10분 수락은 별도 잔여입니다.</p></div>
+        <p><a href="/architecture/module-audit/#training-feedback-20260910">모듈 경계·검사</a> · <a href="/design/current-milestone-workline/#next-20260910">다음 실행 순서</a></p>
       </div>
     </details>
     <details class="sfh-bundle">
-      <summary><span><small>UPDATE 13</small><b>복합 구역 맵 · 위험 1~10단계</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 1</small><b>훈련 수치 일치 · 발사·스킬·명중·처치 피드백</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>B 구역 연결에 A 불규칙 바닥과 C 다각형 위험 변형을 결합했습니다. 모든 건물 주변을 우회하던 도로를 줄이고 내부 시설·후퇴 경로를 구분합니다. 1~10단계 투자·적 배수는 Difficulty 시트와 확정 CSV로 분리했습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>실제 바닥을 시야·스폰·보상·지도 판정에 공유하고 출격 검증을 30조합으로 확장했습니다. 위키 설계실도 현재 구역과 위험 단계별 형태를 표시합니다. 수치는 임시이며 자동 검사와 정상 체력 재미 수락은 구분합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>Web 첫 무기 선택이 비어 로비에 진입하지 못하던 리소스 열거를 수정했습니다.</p></div>
-        <p><a href="/features/extraction-district/#compound-20260909">변경 이유·시트 입력·모듈 경계·수락 기준</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 12</small><b>전체 검사 · 완료율과 잔여 작업 구분</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>개선 · 1</h3><p>전체 모듈·게임·E2E를 재검사하고 최신 노션과 대조했습니다. 기준 a41f424, 136.5/170=80.3%, 미정14행 제외87.5%. 자동 회귀는 통과했지만 훈련 라이브 수치 불일치와 일반10분 수락이 남아100%로 표시하지 않습니다.</p></div>
-        <p><a href="/quality/full-system-audit-20260909/">원본·계산·재현 오류·다음 실행 순서</a> · 문서 현행화이며 해당 오류 수정 배포는 아닙니다.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 11</small><b>첫 출격 요원·무장 선택 · 액티브 40종과 고정 패시브</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>PC/모바일 선택 뒤 요원·초기 무장을 정하고 로비로 들어갑니다. 기존4종에 신규36종을 더했으며 요원별 고정 패시브가 돌파·기동·구역 유지 계열을 특화합니다. 저장 장비와 로비→작전 장착 상태는 보존합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>SkillPattern 시트와 효과 컴파일러, 독립 발동 스냅샷을 연결했습니다. 실제40종 자원·쿨타임과 초기24조합 출격을 검사합니다. 신규 수치는 임시이며 일반10분 플레이 수락과 구분합니다.</p></div>
-        <p><a href="/features/tactical-skill-catalog/">전체 목록·시트 조정·검증 범위</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 10</small><b>16:10 장비 화면 · 무기와 방어구 중심 배치</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>개선 · 1</h3><p>PC·브라우저 기준 화면을 1280×800으로 변경했습니다. 파츠 화면은 무기 거치대를 확대하고, 장비 작업대와 모듈 화면은 실물 미리보기·장착 카드·효과를 중심으로 재배치했습니다. 모바일 터치 배율은 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>창을 줄인 뒤 이전 가방 폭이 남는 현상과 긴 제목이 패널 높이를 키우는 문제를 수정했습니다. 작은 화면은 내부 스크롤, 파츠 호환·교체·저장 확인은 기존 동작을 유지합니다.</p></div>
-        <p><a href="/quality/game-ui-rematch/#equipment-1610">화면 구성과 검증 범위</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 9</small><b>방어구 14종 · 4부위와 2/4세트 효과</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>수호자·질주자·축전자 12종을 추가했습니다. 머리·몸·손·발에 장착하며 2/4세트와 2+2 혼합으로 생존·기동·스킬 성능을 조정합니다. 기존 방탄복·전투화와 저장 장비는 유지합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>지역별 방 보상·보스 드랍, 가방 편집·저장·복원, 모듈 화면의 세트 활성 표시, 게임과 같은 DPS·성장 그래프를 연결했습니다. 공유 시트에 ArmorSet 탭과 방어구·성장·드랍 목록을 추가했습니다. 수치는 임시입니다.</p></div>
-        <p><a href="/features/armor-sets/">방어구 세트·조정 방법</a> · <a href="/quality/e2e-play-session/#armor-20260909">검증 범위</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 8</small><b>무기 8종 · 실제 근접 베기와 찌르기</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>단검·대검은 실제 근접 베기, 신규 창은 긴 찌르기로 변경했습니다. 산탄총 5발 분산과 레일 소총 관통으로 총기 5종·근접 3종을 구성합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>근접 무기가 소총 기본값으로 발사되고 기본 주무기 슬롯에 장착되지 않던 제약을 수정했습니다. 기존 Windows 저장의 기본 슬롯도 장비를 보존하며 갱신합니다. 근접 판정은 벽·후방·거리·중복 타격을 검사합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>Sheet 무기 8행과 드랍 101행, 가방·로비 장착·작전 유지·DPS 그래프를 연결했습니다. 새 수치는 임시 밸런스이며 장시간 재미 검수와 구분합니다.</p></div>
-        <p><a href="features/weapons/#arsenal-20260909">무기별 차이·획득·조정 방법</a> · <a href="quality/e2e-play-session/#arsenal-20260909">검증 범위</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 7</small><b>무기 드랍 재검증 · 교체 스킬 키·복원 수정</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>버그픽스 · 2</h3><p>교체 스킬이 사용자 지정 키를 잃던 출격 경로와 K 설정·연속 교체·복귀 시 배치 불일치를 수정했습니다. 임시 스킬 ID는 영구 설정에 남기지 않습니다.</p><p>실행 계약 없는 효과가 유효한 스킬로 인정되던 검증 누락을 막았습니다. 정의·효과를 교체한 시험 스킬도 공통 실행기로 발동합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>무기 방/보스 드랍 54경로와 실제 가방·장착·정산 E2E를 확인하고, 세 규모 보조 출구를 실제 F 입력으로 검사했습니다. 일반 적 무기 드랍 행은 없으며 보상 정책은 유지합니다.</p></div>
-        <p><a href="quality/e2e-play-session/#loot-skill-20260909">감사 결과·수정·남은 일반 플레이 QA</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 6</small><b>기획자 안내 · 미정 14건의 판단 질문과 예시</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>개선 · 1</h3><p>최상단 판단 안내에 추가 미정 14건의 선택 질문·미승인 예시를 항목별로 제공했습니다. 같은 요청 ID는 항목 이름까지 전달하고, 임시 구현 유지와 새 승인·서버 운영을 구분합니다.</p></div>
-        <p><a href="access/planner/#decisions-needed">기획자 판단·Notion 전달 안내</a>. 실제 게임 정책이나 수치는 변경하지 않습니다.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 5</small><b>기획 판단 안내 · 거점 게이트 F 판정 통합</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>개선 · 1</h3><p>기획자 작업실 최상단에 필요한 판단·미승인 예시·Notion 작성 후 오너 개인 메시지 안내를 배치했습니다. 접힌 항목으로 내용을 나누고 기존 승인·자동 배포 경계는 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>거점 게이트에서 F 안내를 보고 눌러도 열리지 않던 서로 다른 거리/중첩 판정을 하나의 공개 계약으로 통합했습니다. 경계·반경 변경·위치 변환·이탈 입력 회귀를 추가했습니다.</p></div>
-        <p><a href="access/planner/#decisions-needed">판단 요청</a> · <a href="quality/e2e-play-session/#hub-gate-20260909">배포 재현·검증</a>. 거점 오류 수정과 탈출 F·양 플랫폼 10분 수락은 구분합니다.</p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 4</small><b>출격 준비 · 보유 응급키트 장착 무반응 수정</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>준비실에서 보유 응급키트 버튼을 눌러도 장착되지 않던 배열 타입 오류를 수정했습니다. 장착·해제·준비실 재진입과 빈 재고 거부를 실제 입력 회귀에 추가했습니다.</p></div>
-        <p>키트 회복량·가격·재고·런 유틸리티 정책은 유지합니다. 이번 수정 통과를 10분 플레이 완료로 계산하지 않습니다. <a href="quality/e2e-play-session/#preparation-medkit-20260909">재현·검증·잔여 경로</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>배포 분리 · 소스는 Git, 실행 파일은 Cloudflare</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>자체 러너에서 검증된 위키·Web·Windows 파일을 Cloudflare로 직접 전달합니다. GitHub에는 변경 이력과 검사·복구 기록을 남기고 필수 테스트는 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>GitHub 파일 보관 한도로 배포가 막히던 경로를 제거했습니다. Windows 다운로드는 공개 주소를 유지하면서 Web와 같은 커밋으로 전환하고, 직전 정상본을 보존합니다.</p></div>
-        <p><a href="getting-started/source-control-and-cleanup/#source-only-delivery">전달 검증·복구·사용량 경계</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>도시형 맵 · 도로와 건물로 읽는 전장</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>개선 · 2</h3><p>넓은 대로·이면도로를 먼저 놓고 건물 정면과 보도·서비스 마당을 연결했습니다. 차선·주차선·외벽 패널·시설별 바닥·선반과 침상으로 공간을 구분합니다.</p><p>같은 지역의 필수 기준점은 유지하면서 보조 건물과 가구는 시드에 따라 달라집니다. 기획자·개발자 맵 설계실도 같은 도시 골격을 표시합니다.</p></div>
-        <div class="sfh-group"><h3>구현 · 1</h3><p>도로 배치·가구 배치·표면 표현을 교체 가능한 모듈로 나눴습니다. 기존 전투·후퇴·금고·두 출구·확정 CSV 흐름은 유지합니다.</p></div>
-        <p><a href="features/extraction-district/#urban-20260909">변경과 조정점</a> · <a href="quality/e2e-play-session/#urban-20260909">검증·성능·사람 플레이 잔여</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>바닥 렌더러 대체 승인 · 배포 플레이 검수 착수</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>수정 · 1</h3><p>첫 화면 지연을 줄인 청크 텍스처 방식을 지정 타일 레이어 대신 유지하도록 승인했습니다. 기존 개선을 되돌리지 않고 변경 이유와 검증 계약을 남겼습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>배포 중형 작전을 일반 입력으로 검수했습니다. 18처치·드랍 표시·02:45 사망 정산·거점 복귀를 확인했으며, 10분 완주와 탈출 검수는 계속 진행할 항목으로 구분했습니다.</p></div>
-        <p><a href="access/login/?return=%2Fdesign%2Fmaster-gdd-alignment%2F%23day-close">팀 승인·계산 근거</a> · <a href="quality/e2e-play-session/#release-normal-20260909">QA 결과와 미완료 범위</a> · <a href="design/current-milestone-workline/#next-20260909">작업 순서</a></p>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>상업 이용이 허용된 CC0 효과음6종을 선별해 발사·근접·스킬 발동·체력/장갑 명중·처치에 연결했습니다. 출처·라이선스·해시와 동시8음성 예산을 함께 관리합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>직선 폭·부채꼴 경계·원형/링 맥동·연쇄 타격·접촉 스파크를 보강했습니다. 전체 게임/E2E와 실제 GPU·오디오 믹서 검사는 통과했으며 정상10분 재미 수락과 구분합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>훈련장이 라이브 스킬 대신 원본 수치를 쓰던 문제를 공통 불변 스냅샷으로 수정했습니다. 입장 시 갱신하고 실험 중 고정하며 종료 시 기존 장착·자원을 복원합니다.</p></div>
+        <p><a href="/features/hit-feedback/#combat-audio-20260910">타격 표현·상업 이용 근거</a> · <a href="/quality/e2e-play-session/#training-feedback-20260910">수정 전후·검증 범위</a></p>
       </div>
     </details>
   </div>

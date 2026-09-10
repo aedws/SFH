@@ -33,6 +33,8 @@ tags:
 
 ## 자동 현행화 계약
 
+2026-09-10부터 정적 감사와 노드맵이 같은 `gdscript_dependencies.py`를 사용합니다. 경로 문자열뿐 아니라 프로젝트 클래스 타입·생성·정적 호출·이름 기반 상속도 포함하고, 주석/설명 문자열의 클래스 이름은 제외합니다. 새 클래스 추가·참조 재정렬·주석·상속·새 순환을7개 fixture로 검사합니다. 이는 보수적 정적 참조 지도이며 런타임 `call()`·Signal 연결과 모든 선택 기능 조합을 자동으로 증명하는 호출 그래프는 아닙니다.
+
 - 갱신: `python scripts/generate_code_module_map.py`
 - 검사: `python scripts/generate_code_module_map.py --check`
 
