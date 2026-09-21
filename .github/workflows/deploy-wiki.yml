@@ -257,6 +257,9 @@ jobs:
           grep -q "P7_WORKSHOP_TRANSACTION_OK quote_no_mutation visible_cost_material_roll atomic_single_commit duplicate_guard invalid_no_mutation actual_affixes_sockets reconnect replaceable_policy provider_failure storage_failure_rollback" /tmp/sfh-p7-workshop.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/training_ground_scenario_contract_test.gd" | tee /tmp/sfh-p8-training-contract.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/training_loadout_restore_contract_test.gd" 2>&1 | tee /tmp/sfh-training-restore.log
+          godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/extraction_decay_contract_test.gd" 2>&1 | tee /tmp/sfh-extraction-decay.log
+          grep -q 'EXTRACTION_DECAY_OK' /tmp/sfh-extraction-decay.log
+          ! grep -E 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-extraction-decay.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/training_live_catalog_contract_test.gd" 2>&1 | tee /tmp/sfh-training-live.log
           grep -q "TRAINING_LIVE_CATALOG_OK" /tmp/sfh-training-live.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-training-live.log

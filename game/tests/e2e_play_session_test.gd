@@ -696,6 +696,8 @@ func _verify_operation_session() -> bool:
 		return _fail("탈출 지점의 실제 F 입력이 카운트다운 방어전을 시작하지 못했습니다: state=%s distance=%.2f paused=%s nearby=%s" % [extraction_state, player.global_position.distance_to(extraction.global_position), paused, is_instance_valid(extraction.nearby_player)])
 	if not _judge_player_perception(&"extraction_start_feedback", "탈출 방어 시작 인지"):
 		return false
+	extraction.call(&"advance", 4.0)
+	extraction_state = extraction.call(&"get_snapshot")
 	var remaining_before := float(extraction_state.get(&"defense_remaining_seconds", 0.0))
 	player.global_position += Vector2(float(extraction.get("interaction_radius")) + 80.0, 0.0)
 	extraction.call(&"advance", 0.5)
@@ -706,6 +708,15 @@ func _verify_operation_session() -> bool:
 		return _fail("탈출 구역 밖에서 카운트다운이 소모됩니다.")
 	if not _judge_player_perception(&"extraction_pause_feedback", "탈출 이탈 일시정지 인지"):
 		return false
+	# Consume the grace then regress, with the world HUD explaining the loss.
+	extraction.call(&"advance", 3.0)
+	extraction_state = extraction.call(&"get_snapshot")
+	if not bool(extraction_state.get(&"exit_decay_active", false)) or float(extraction_state.defense_remaining_seconds) <= remaining_before:
+		return _fail("탈출 이탈 유예 후 방어 잔여 시간이 역행하지 않았습니다.")
+	game.call(&"_update_run_time_hud")
+	if not "역행" in game.get("time_label").text:
+		return _fail("탈출 역행 상태가 HUD에 표시되지 않았습니다.")
+	remaining_before = float(extraction_state.defense_remaining_seconds)
 	player.global_position = extraction.global_position
 	if not extraction.call(&"request_extraction", player):
 		return _fail("탈출 구역 복귀 후 방어전을 재개하지 못했습니다.")

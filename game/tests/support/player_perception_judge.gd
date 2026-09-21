@@ -137,7 +137,7 @@ const CHECKPOINT_RULES := {
 	&"extraction_pause_feedback": {
 		&"unit": &"state_feedback",
 		&"surfaces": [&"combat"],
-		&"phrases": ["탈출 방어 일시정지", "재개"],
+		&"phrases": ["탈출 유예", "구역 복귀", "재개"],
 	},
 	&"extraction_resume_feedback": {
 		&"unit": &"state_feedback",

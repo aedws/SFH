@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "b4fc335f67152787d38a60a87d7cb539d836398bd0c6e0343880257c2032bb8f",
+  "source_sha256": "a88acdd430456de3ae6cbb51db7e92988a37d1a81f9614c87493629c76428b07",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 61,
-    "scripts": 375,
-    "named_classes": 289,
+    "scripts": 377,
+    "named_classes": 290,
     "relationships": 230,
     "project_inheritance": 16,
     "enabled_toggles": 70
@@ -435,10 +435,11 @@
       "path": "game/features/extraction",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 3,
-      "class_count": 3,
+      "file_count": 4,
+      "class_count": 4,
       "classes": [
         "ExtractionDefenseConfig",
+        "ExtractionExitPolicy",
         "ExtractionZone",
         "MultiExtractionZone"
       ],
@@ -1327,7 +1328,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 75,
+      "file_count": 76,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -2249,6 +2250,15 @@
       "name": "ExtractionDefenseConfig",
       "module": "extraction",
       "path": "game/features/extraction/extraction_defense_config.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:ExtractionExitPolicy",
+      "name": "ExtractionExitPolicy",
+      "module": "extraction",
+      "path": "game/features/extraction/extraction_exit_policy.gd",
       "extends": "Resource",
       "base_id": "",
       "inheritance": "engine"
@@ -5034,7 +5044,7 @@
       "from": "verification",
       "to": "extraction",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",

@@ -13,6 +13,7 @@ signal interaction_availability_changed(available: bool, prompt: String)
 @export var fill_color := Color(1.0, 0.48, 0.12, 0.22)
 @export var ring_color := Color(1.0, 0.67, 0.25, 0.95)
 @export_range(0.0, 120.0, 1.0) var defense_duration_seconds: float = 20.0
+@export var exit_policy: ExtractionExitPolicy = preload("res://game/features/extraction/configs/default_exit_policy.tres")
 
 var nearby_player: Node2D
 var locked: bool = false
@@ -20,11 +21,13 @@ var locked_prompt: String = "탈출 신호 대기 중"
 var defense_actor: Node2D
 var defense_remaining_seconds: float = 0.0
 var defense_paused: bool = false
+var outside_seconds: float = 0.0
 var _last_prompt := ""
 var _last_available := false
 
 
 func _ready() -> void:
+	exit_policy = exit_policy.duplicate(true)
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	_sync_shape.call_deferred()
@@ -36,6 +39,13 @@ func configure(world_position: Vector2, new_defense_duration_seconds: float = 20
 	defense_duration_seconds = maxf(0.0, new_defense_duration_seconds)
 	_sync_shape.call_deferred()
 	queue_redraw()
+
+
+func configure_exit_policy(policy: Resource) -> bool:
+	if not policy is ExtractionExitPolicy or not policy.is_valid() or is_instance_valid(defense_actor):
+		return false
+	exit_policy = policy.duplicate(true)
+	return true
 
 
 func _sync_shape() -> void:
@@ -83,6 +93,7 @@ func request_extraction(actor: Node2D) -> bool:
 	if is_instance_valid(defense_actor):
 		if actor == defense_actor and defense_paused:
 			defense_paused = false
+			outside_seconds = 0.0
 			extraction_defense_resumed.emit(defense_remaining_seconds)
 			interaction_availability_changed.emit(true, _interaction_prompt())
 			return true
@@ -90,6 +101,7 @@ func request_extraction(actor: Node2D) -> bool:
 	defense_actor = actor
 	defense_remaining_seconds = defense_duration_seconds
 	defense_paused = false
+	outside_seconds = 0.0
 	extraction_defense_started.emit(actor, defense_duration_seconds)
 	interaction_availability_changed.emit(true, _interaction_prompt())
 	return true
@@ -107,6 +119,11 @@ func get_snapshot() -> Dictionary:
 		&"defense_duration_seconds": defense_duration_seconds,
 		&"defense_remaining_seconds": defense_remaining_seconds,
 		&"defense_paused": defense_paused,
+		&"outside_seconds": outside_seconds,
+		&"exit_grace_remaining": exit_policy.grace_remaining(outside_seconds) if defense_paused else 0.0,
+		&"exit_decay_active": defense_paused and exit_policy.is_decaying(outside_seconds),
+		&"defense_status_label": defense_status_label(),
+		&"defense_hud_label": defense_hud_label(),
 		&"nearby_player_valid": is_instance_valid(nearby_player),
 		&"center_in_range": _inside_zone(nearby_player),
 		&"interaction_radius": interaction_radius,
@@ -118,13 +135,22 @@ func _process(delta: float) -> void:
 
 
 func _advance_defense(delta: float) -> void:
+	if not is_finite(delta) or delta < 0.0:
+		return
 	if not is_instance_valid(defense_actor):
+		defense_paused = false
+		outside_seconds = 0.0
 		return
 	if not _inside_zone(defense_actor):
 		_pause_defense()
+		var previous_outside := outside_seconds
+		outside_seconds += delta
+		defense_remaining_seconds = minf(defense_duration_seconds, defense_remaining_seconds + exit_policy.regression(previous_outside, outside_seconds))
+		queue_redraw()
 		return
 	if defense_paused:
 		defense_paused = false
+		outside_seconds = 0.0
 		extraction_defense_resumed.emit(defense_remaining_seconds)
 		interaction_availability_changed.emit(true, _interaction_prompt())
 	defense_remaining_seconds = maxf(0.0, defense_remaining_seconds - maxf(0.0, delta))
@@ -164,9 +190,15 @@ func _on_body_exited(body: Node2D) -> void:
 
 func _draw() -> void:
 	var active_ring := Color(0.52, 0.58, 0.64, 0.9) if locked else ring_color
+	if defense_paused and exit_policy.is_decaying(outside_seconds):
+		active_ring = Color(1.0, 0.24, 0.2, 0.95)
 	draw_circle(Vector2.ZERO, interaction_radius, Color(active_ring, 0.12))
 	draw_arc(Vector2.ZERO, interaction_radius, 0.0, TAU, 48, active_ring, 3.0)
 	draw_arc(Vector2.ZERO, 31.0, 0.0, TAU, 48, Color(active_ring, 0.6), 2.0)
+	if is_instance_valid(defense_actor) and defense_duration_seconds > 0.0:
+		var progress := clampf(1.0 - defense_remaining_seconds / defense_duration_seconds, 0.0, 1.0)
+		if progress > 0.0:
+			draw_arc(Vector2.ZERO, interaction_radius - 7.0, -PI * 0.5, -PI * 0.5 + TAU * progress, 48, active_ring, 5.0)
 	var arrow := PackedVector2Array([
 		Vector2(-9.0, 8.0),
 		Vector2(0.0, -10.0),
@@ -179,12 +211,35 @@ func _interaction_prompt() -> String:
 	if locked:
 		return locked_prompt
 	if is_instance_valid(defense_actor):
-		if defense_paused:
-			return "탈출 방어 일시정지 · 구역 복귀 시 %.1f초부터 재개" % defense_remaining_seconds
-		return "탈출 방어 중 · %.1f초 · 구역 유지" % defense_remaining_seconds
+		return defense_status_label()
 	if not _inside_zone(nearby_player):
 		return "탈출 구역 안으로 더 이동하세요"
 	return "F · 탈출 방어전 시작"
+
+
+func defense_status_label() -> String:
+	if not is_instance_valid(defense_actor):
+		return ""
+	if defense_paused:
+		if exit_policy.is_decaying(outside_seconds):
+			return "탈출 역행 %.1f초 · 구역으로 복귀!" % defense_remaining_seconds
+		if exit_policy.decay_seconds_per_second <= 0.0:
+			return "탈출 일시정지 %.1f초 · 구역 복귀" % defense_remaining_seconds
+		return "탈출 유예 %.1f초 · 구역 복귀" % exit_policy.grace_remaining(outside_seconds)
+	return "탈출 방어 %.1f초 · 구역 유지" % defense_remaining_seconds
+
+
+func defense_hud_label() -> String:
+	# The mission header shares a line with two clocks; instructions stay in the prompt.
+	if not is_instance_valid(defense_actor):
+		return ""
+	if defense_paused:
+		if exit_policy.is_decaying(outside_seconds):
+			return "역행 %.1f초" % defense_remaining_seconds
+		if exit_policy.decay_seconds_per_second <= 0.0:
+			return "정지 %.1f초" % defense_remaining_seconds
+		return "유예 %.1f초" % exit_policy.grace_remaining(outside_seconds)
+	return "방어 %.1f초" % defense_remaining_seconds
 
 
 func _cancel_defense() -> void:
@@ -193,6 +248,7 @@ func _cancel_defense() -> void:
 	defense_actor = null
 	defense_remaining_seconds = 0.0
 	defense_paused = false
+	outside_seconds = 0.0
 	extraction_defense_cancelled.emit()
 	_refresh_prompt()
 	queue_redraw()

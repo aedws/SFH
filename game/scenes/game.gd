@@ -3310,6 +3310,10 @@ func _install_extraction_zone() -> void:
 		&"configure", map_generator.call(&"get_extraction_position"),
 		_extraction_defense_duration()
 	)
+	if features.extraction_defense_enabled and extraction_zone.has_method(&"configure_exit_policy"):
+		var config: Resource = load(features.extraction_defense_config_path)
+		if not extraction_zone.call(&"configure_exit_policy", config.get("exit_policy")):
+			_report_configuration_error("탈출 이탈 정책을 구성하지 못했습니다.")
 	if extraction_zone.has_method(&"configure_candidates"):
 		extraction_zone.call(&"configure_candidates",map_generator)
 	if map_generator.has_method(&"get_district_snapshot") and bool(map_generator.call(&"get_district_snapshot").get(&"early_extraction",false)):
@@ -3751,9 +3755,7 @@ func _update_run_time_hud() -> void:
 			extraction_zone.call(&"get_snapshot") if extraction_zone != null else {}
 		)
 		if bool(extraction_snapshot.get(&"defense_active", false)):
-			extraction_state = "방어 %.1f초" % float(
-				extraction_snapshot.get(&"defense_remaining_seconds", 0.0)
-			)
+			extraction_state = String(extraction_snapshot.get(&"defense_hud_label", "방어 %.1f초" % float(extraction_snapshot.get(&"defense_remaining_seconds", 0.0))))
 		else:
 			extraction_state = (
 				"탈출 방어 가능"
@@ -4253,8 +4255,9 @@ func _on_extraction_defense_cancelled() -> void:
 	status_label.text = "탈출 방어 중단 · 구역으로 돌아가 F를 누르세요."
 
 
-func _on_extraction_defense_paused(remaining_seconds: float) -> void:
-	status_label.text = "탈출 방어 일시정지 · 구역 복귀 시 %.1f초부터 재개" % remaining_seconds
+func _on_extraction_defense_paused(_remaining_seconds: float) -> void:
+	var snapshot: Dictionary = extraction_zone.call(&"get_snapshot")
+	status_label.text = "%s · 복귀 시 재개" % String(snapshot.get(&"defense_status_label", "탈출 구역 이탈"))
 
 
 func _on_extraction_defense_resumed(remaining_seconds: float) -> void:
