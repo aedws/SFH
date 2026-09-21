@@ -184,6 +184,40 @@ func _run() -> void:
 		&"configure", load("res://game/features/loot_lifecycle/configs/default_loot_lifecycle.tres")
 	):
 		return _fail("생명 주기 제공자를 구성하지 못했습니다.")
+	var comparison := FieldLootComparisonService.new()
+	assert(comparison.configure(lifecycle,equipment,inventory,equip_catalog))
+	var comparison_panel := FieldLootComparisonPanel.new()
+	ui.add_child(comparison_panel)
+	for item_id in [&"credits",&"arc_rune",&"armor_plate_item"]:
+		var preview := comparison.compare({&"item_id":item_id,&"grade":1,&"quantity":1})
+		assert(not preview.is_empty() and preview.comparison_target_name == "", "Non-equipment never compares against the active gun")
+		comparison_panel.show_comparison(preview)
+		assert(not comparison_panel.comparison_label.text.contains("돌격소총"), "Currency/rune/module acquisition has no unrelated gun label")
+	var sub_state := EquipmentItemState.new()
+	var sub_definition: Resource = load("res://game/features/equipment/definitions/weapons/service_pistol.tres").duplicate(true)
+	sub_definition.grade = 4
+	sub_state.configure(&"comparison_sub",sub_definition)
+	equipment.states[&"sub"] = sub_state
+	equipment.active_slot = &"sub"
+	var gun_preview := comparison.compare({&"item_id":&"assault_rifle",&"grade":2})
+	assert(gun_preview.comparison_target_name == equipment.states[&"main"].definition.display_name and gun_preview.reference_grade == equipment.states[&"main"].definition.grade, "Exact replacement slot, not active secondary")
+	equipment.states.erase(&"sub")
+	equipment.active_slot = &"main"
+	# Every equipment entry is compared with an occupied replacement slot, including armor
+	# whose definition deliberately has no grade field.
+	var saved_states := equipment.states.duplicate()
+	for entry in equip_catalog.entries:
+		var equipped_state := EquipmentItemState.new()
+		equipped_state.configure(&"comparison_equipped", entry.definition)
+		equipment.states[entry.target_slot] = equipped_state
+		var equipment_preview := comparison.compare({&"item_id": entry.item_id, &"grade": 2})
+		assert(equipment_preview.comparison_target_name == entry.definition.display_name)
+		if entry.definition is EquipmentArmorDefinition:
+			assert(equipment_preview.reference_grade == 0 and equipment_preview.comparison_label == "장착품 비교", "Ungraded armor compares identity without a fabricated grade")
+		comparison_panel.show_comparison(equipment_preview)
+		assert(comparison_panel.comparison_label.text.contains(entry.definition.display_name))
+		equipment.states = saved_states.duplicate()
+	comparison_panel.free()
 	if not table.call(
 		&"configure",
 		load("res://game/features/loot_tables/configs/default_loot_table.tres"),

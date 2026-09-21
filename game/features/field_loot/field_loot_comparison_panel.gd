@@ -34,10 +34,12 @@ func show_comparison(snapshot: Dictionary) -> void:
 		int(snapshot.get(&"quantity", 1)),
 		int(snapshot.get(&"owned_count", 0)),
 	]
-	comparison_label.text = "비교  %s · 현재 %s" % [
-		String(snapshot.get(&"comparison_label", "신규 획득")),
-		String(snapshot.get(&"active_weapon_name", "없음")),
-	]
+	var reference := String(snapshot.get(&"comparison_target_name", ""))
+	comparison_label.text = (
+		"비교  %s · 장착 대상 %s" % [String(snapshot.get(&"comparison_label", "신규 획득")), reference]
+		if not reference.is_empty() else
+		"획득  %s" % String(snapshot.get(&"comparison_label", "신규 획득"))
+	)
 	lifecycle_label.text = "%s · %s" % [
 		String(snapshot.get(&"family_label", "")),
 		String(snapshot.get(&"use_label", "")),

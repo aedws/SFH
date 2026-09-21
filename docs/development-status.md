@@ -68,9 +68,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-10</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 1 · IMPROVE 2 · CHANGE 0 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-10</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 3 · CHANGE 0 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>공격이 보이도록 · 전투 이펙트 전수검수와 전리품 비교 수정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>총탄 궤적·근접 잔광·접촉 섬광·스킬 전류를 보강하고 밝은 바닥과 축소 화면까지92사례를 검사했습니다. 전투 수치와 카메라 상한은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>실제28처치·회수 검수에서 크레딧과 룬을 현재 총기와 비교하던 표시를 수정했습니다. 장비는 실제 교체 슬롯과 비교합니다. 정상10분 플레이는 계속 검수 대상입니다.</p></div>
+        <p><a href="/features/hit-feedback/#readability-20260910">표현 변경·예산</a> · <a href="/quality/e2e-play-session/#readability-20260910">전수검사·실제 플레이 근거</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>모듈 지도 · 클래스 참조까지 같은 기준으로 감사</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>개선 · 1</h3><p>경로만 보던 감사에 클래스·상속 참조를 더하고 위키 노드맵과 분석기를 통일했습니다. 공개 CSV 파서와 확장 회귀를 보완했습니다. 동적 조립 검토와 정상10분 수락은 별도 잔여입니다.</p></div>

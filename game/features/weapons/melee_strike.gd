@@ -11,14 +11,16 @@ var color := Color("02e5e1")
 var age := 0.0
 var duration := 0.18
 var hit_count := 0
+@export var visual_style: CombatVfxStyle = preload("res://game/features/combat_vfx/default_style.tres")
 
 func execute(direction: Vector2, damage: float, snapshot: Dictionary, candidates: Array, context: Dictionary) -> void:
 	rotation = direction.angle()
+	z_index = visual_style.world_z
 	reach = float(snapshot.get(&"target_range_px", 100.0))
 	arc = float(snapshot.get(&"spread_angle_deg", 90.0))
 	mode = StringName(snapshot.get(&"attack_mode", &"melee_arc"))
 	color = snapshot.get(&"projectile_color", color)
-	duration = clampf(float(snapshot.get(&"projectile_lifetime_sec", 0.18)), 0.08, 0.3)
+	duration = clampf(float(snapshot.get(&"projectile_lifetime_sec", 0.18)), 0.24, 0.34)
 	var points := Distance.parse(String(snapshot.get(&"distance_damage_curve", Distance.NEUTRAL)))
 	var ordered: Array[Node2D] = []
 	var seen := {}
@@ -54,12 +56,12 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var tint := color
-	tint.a = maxf(0.0, 1.0 - age / duration)
+	tint.a = visual_style.envelope(age, duration)
 	if mode == &"melee_thrust":
-		draw_line(Vector2(12, 0), Vector2(reach, 0), tint, 5.0)
+		visual_style.stroke(self, PackedVector2Array([Vector2(12,0),Vector2(reach,0)]), tint, tint.a, 10.0)
 		draw_polyline(PackedVector2Array([Vector2(reach-18, -9), Vector2(reach, 0), Vector2(reach-18, 9)]), tint, 3.0)
 	else:
 		var half_arc := deg_to_rad(arc * 0.5)
-		draw_arc(Vector2.ZERO, reach * 0.9, -half_arc, half_arc, 24, tint, 5.0)
-		tint.a *= 0.3
-		draw_arc(Vector2.ZERO, reach * 0.68, -half_arc, half_arc, 24, tint, 10.0)
+		visual_style.stroke(self, visual_style.arc_points(reach*0.93,-half_arc,half_arc), tint, tint.a, 10.0)
+		var sweep := lerpf(-half_arc,half_arc,clampf(age/duration,0,1))
+		visual_style.stroke(self, PackedVector2Array([Vector2.from_angle(sweep)*reach*0.3,Vector2.from_angle(sweep)*reach*0.93]),tint,tint.a*0.8,6.0)

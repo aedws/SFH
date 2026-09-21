@@ -106,20 +106,21 @@ func _draw() -> void:
 		var lifetime: float = maxf(0.001, float(impact[&"lifetime"]))
 		var ratio: float = 1.0 - float(impact[&"remaining"]) / lifetime
 		var intensity: float = float(impact[&"intensity"])
-		var radius: float = (
+		var radius: float = maxf(float(profile.minimum_contact_radius), (
 			float(profile.impact_radius) * intensity
-			* float(impact.get(&"radius_multiplier", 1.0)) * (0.35 + ratio * 0.85)
-		)
+			* float(impact.get(&"radius_multiplier", 1.0)))) * (0.65 + ratio * 0.65)
 		var color: Color = impact[&"color"]
-		color.a *= 1.0 - ratio
-		var position: Vector2 = impact[&"position"]
-		draw_arc(position, radius, 0.0, TAU, 20, color, 2.0)
+		color.a *= profile.visual_style.envelope(ratio * lifetime, lifetime)
+		var position: Vector2 = to_local(impact[&"position"])
+		profile.visual_style.stroke(self, profile.visual_style.arc_points(radius,0,TAU,position),color,color.a,3.0)
 		# Crisp contact flash, then a distinct expanding kill ring; no global hit-stop.
-		if ratio < 0.28:
-			draw_circle(position, 3.5 + intensity * 2.0, Color(1.0, 1.0, 1.0, 1.0 - ratio / 0.28))
+		var contact_alpha: float = clampf((float(profile.contact_hold_seconds) + 0.06 - ratio*lifetime)/0.06,0,1)
+		if contact_alpha > 0.0:
+			draw_circle(position, 9.0, Color(0.01,0.02,0.035,contact_alpha))
+			draw_circle(position, 5.0 + intensity * 2.0, Color(1.0, 1.0, 1.0, contact_alpha))
 			if profile.contact_texture != null:
-				var size := Vector2.ONE * (18.0 + intensity * 12.0)
-				draw_texture_rect(profile.contact_texture, Rect2(position - size * 0.5, size), false, Color(1,1,1,1.0-ratio/0.28))
+				var size := Vector2.ONE * (44.0 + intensity * 12.0)
+				draw_texture_rect(profile.contact_texture, Rect2(position - size * 0.5, size), false, Color(1,1,1,contact_alpha))
 		if bool(impact.get(&"lethal", false)):
 			draw_arc(position, radius * 1.3, 0.0, TAU, 20, color, 3.0 * (1.0 - ratio))
 		if bool(impact.get(&"electric_area_primary", false)):
@@ -139,7 +140,7 @@ func _draw() -> void:
 			)
 			var inner: Vector2 = position + direction * radius * 0.28
 			var outer: Vector2 = position + direction * radius * (0.72 + 0.2 * (ray_index % 2))
-			draw_line(inner, outer, color, 1.5)
+			profile.visual_style.stroke(self,PackedVector2Array([inner,outer]),color,color.a,3.0)
 
 
 func _on_actor_damaged(

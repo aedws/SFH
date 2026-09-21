@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-09",
-  "source_sha256": "38d84dcfd6a049f491e0e2e749f62b461a22b338dc894410541e4de16bffe04c",
+  "source_sha256": "267f71ff957ae65032063738c862e7e8f3934d261f6bd6a0159f53b246d5820a",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -397,13 +397,13 @@
     "blocked": 8,
     "ready": 1,
     "implemented": 39,
-    "modules": 60,
+    "modules": 61,
     "documents": 105,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 482,
+    "relations": 483,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -2792,7 +2792,25 @@
         "files": 17,
         "classes": 17,
         "incoming": 7,
-        "outgoing": 5
+        "outgoing": 6
+      }
+    },
+    {
+      "id": "module:combat_vfx",
+      "type": "module",
+      "label": "전투 이펙트 표현",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "전투 · feature · 파일 1개",
+      "route": "architecture/code-module-map/?module=combat_vfx",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/combat_vfx",
+      "kind": "implementation",
+      "metrics": {
+        "files": 1,
+        "classes": 1,
+        "incoming": 3,
+        "outgoing": 0
       }
     },
     {
@@ -3044,7 +3062,7 @@
         "files": 5,
         "classes": 5,
         "incoming": 3,
-        "outgoing": 0
+        "outgoing": 1
       }
     },
     {
@@ -3728,7 +3746,7 @@
         "files": 6,
         "classes": 6,
         "incoming": 5,
-        "outgoing": 5
+        "outgoing": 6
       }
     },
     {
@@ -3737,13 +3755,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 74개",
+      "summary": "기반·검증 · verification · 파일 75개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 74,
+        "files": 75,
         "classes": 0,
         "incoming": 0,
         "outgoing": 55
@@ -7476,6 +7494,12 @@
     },
     {
       "from": "module:combat_skills",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:combat_vfx",
       "to": "document:architecture/module-rules",
       "type": "documented_by",
       "origin": "generated"

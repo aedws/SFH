@@ -14,9 +14,11 @@ var selected: Node2D
 var flash := 0.0
 var source_id: StringName
 var beam_points := PackedVector2Array()
+@export var visual_style: CombatVfxStyle = preload("res://game/features/combat_vfx/default_style.tres")
 
 func configure(player: Node2D, definition: Resource, context: Dictionary) -> void:
 	actor = player
+	z_index = visual_style.world_z
 	targets = context.target_container
 	spec = definition.duplicate(true)
 	var modifiers: Dictionary = context.get(&"mechanic_override", {})
@@ -52,7 +54,7 @@ func advance(delta: float) -> void:
 		_pulse()
 		emitted += 1
 		direction = direction.rotated(deg_to_rad(spec.rotation_per_pulse))
-	var end_time: float = spec.delay + (spec.pulses - 1) * spec.interval + 0.24
+	var end_time: float = spec.delay + (spec.pulses - 1) * spec.interval + visual_style.pulse_lifetime
 	if spec.defense_add != 0 or spec.speed_multiplier != 1: end_time = maxf(end_time, spec.buff_duration)
 	if elapsed >= spec.buff_duration and source_id != &"":
 		actor.call(&"remove_runtime_modifier_source", source_id)
@@ -61,7 +63,7 @@ func advance(delta: float) -> void:
 	queue_redraw()
 
 func _pulse() -> void:
-	flash = 0.24
+	flash = visual_style.pulse_lifetime
 	beam_points.clear()
 	var candidates: Array[Node2D] = []
 	for node in targets.get_children():
@@ -115,36 +117,45 @@ func _exit_tree() -> void:
 func _draw() -> void:
 	if spec == null: return
 	var tint: Color = spec.color
-	var pulse := clampf(flash / 0.24, 0, 1)
-	tint.a = 0.24 + pulse * 0.65
-	var core := Color(0.85, 1, 1, pulse * 0.9)
+	var age: float = visual_style.pulse_lifetime - flash
+	var pulse := visual_style.envelope(age)
+	var progress := clampf(age / visual_style.pulse_lifetime,0,1)
+	var outline_alpha := 0.18 + pulse * 0.7
+	# Wind-up stays thin. Actual pulse has a white core, dark separation and moving energy.
+	# Self buffs keep an active tell for their complete lifetime, without faking damage pulses.
+	if spec.shape == "self": pulse = 0.7 + 0.2 * sin(elapsed*4.0)
 	# Boundaries use the same live radius/width/direction as the damage geometry.
 	match spec.shape:
 		"line":
 			var end: Vector2 = displayed_direction * spec.radius
 			var side: Vector2 = displayed_direction.orthogonal() * spec.width * 0.5
-			draw_colored_polygon(PackedVector2Array([-side, side, end+side, end-side]), Color(tint, 0.035*pulse))
-			draw_polyline(PackedVector2Array([-side, side, end+side, end-side, -side]), tint, 1.5)
-			draw_line(Vector2.ZERO, end, tint, 5.0 + pulse*3.0)
-			draw_line(Vector2.ZERO, end, core, 1.5)
+			draw_colored_polygon(PackedVector2Array([-side, side, end+side, end-side]), Color(tint, 0.08*pulse))
+			draw_polyline(PackedVector2Array([-side, side, end+side, end-side, -side]), Color(tint,outline_alpha), 1.5)
+			visual_style.stroke(self, visual_style.bolt(Vector2.ZERO,end,progress),tint,pulse,10.0)
 		"cone":
 			var first := displayed_direction.angle() - deg_to_rad(spec.angle_degrees * 0.5)
 			var last := displayed_direction.angle() + deg_to_rad(spec.angle_degrees * 0.5)
-			draw_arc(Vector2.ZERO, spec.radius, first, last, 24, tint, 2.5)
-			draw_line(Vector2.ZERO, Vector2.from_angle(first)*spec.radius, tint, 1.5)
-			draw_line(Vector2.ZERO, Vector2.from_angle(last)*spec.radius, tint, 1.5)
-			if pulse > 0: draw_arc(Vector2.ZERO, spec.radius*(1.0-0.18*pulse), first, last, 24, core, 2)
+			draw_arc(Vector2.ZERO,spec.radius,first,last,32,Color(tint,outline_alpha),2)
+			for i in 3:
+				var r: float = spec.radius * clampf(0.35 + progress*0.65 - i*0.14,0.1,1.0)
+				visual_style.stroke(self,visual_style.arc_points(r,first,last),tint,pulse*(1.0-i*0.22),6.0)
 		"chain", "single":
 			var start := Vector2.ZERO
 			for point in beam_points:
-				draw_line(start, point, tint, 5)
-				draw_line(start, point, core, 1.5)
-				draw_arc(point, 8.0+10.0*(1.0-pulse), 0, TAU, 12, tint, 2)
+				visual_style.stroke(self,visual_style.bolt(start,point,progress),tint,pulse,8.0)
+				visual_style.stroke(self,visual_style.arc_points(12.0+progress*10.0,0,TAU,point),tint,pulse,3.0)
 				if spec.shape == "chain": start = point
-		"self": draw_arc(Vector2.ZERO, 30, 0, TAU, 24, tint, 3)
+		"self":
+			for i in 3:
+				var first := elapsed*1.7+i*TAU/3.0
+				visual_style.stroke(self,visual_style.arc_points(38.0,first,first+1.3),tint,pulse,6.0)
 		_:
-			draw_arc(Vector2.ZERO, spec.radius, 0, TAU, 48, tint, 2)
-			if spec.shape == "ring": draw_arc(Vector2.ZERO, spec.inner_radius, 0, TAU, 32, tint, 2)
+			draw_arc(Vector2.ZERO,spec.radius,0,TAU,48,Color(tint,outline_alpha),2)
+			if spec.shape == "ring": draw_arc(Vector2.ZERO,spec.inner_radius,0,TAU,32,Color(tint,outline_alpha),2)
 			if pulse > 0:
-				var inner: float = spec.inner_radius if spec.shape == "ring" else spec.radius * 0.8
-				draw_arc(Vector2.ZERO, lerpf(inner, spec.radius, 1.0-pulse), 0, TAU, 48, core, 1.5)
+				var inner: float = spec.inner_radius if spec.shape == "ring" else spec.radius * 0.25
+				var r: float = lerpf(inner,spec.radius,progress)
+				visual_style.stroke(self,visual_style.arc_points(r,0,TAU),tint,pulse,6.0)
+				for i in 6:
+					var d := Vector2.from_angle(i*TAU/6.0)
+					visual_style.stroke(self,visual_style.bolt(d*maxf(inner,r-45.0),d*r,progress),tint,pulse,4.0)

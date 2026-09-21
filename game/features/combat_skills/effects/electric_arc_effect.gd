@@ -13,6 +13,7 @@ var geometry_rebuild_count: int = 0
 var cached_arcs: Array[PackedVector2Array] = []
 var cached_accents: PackedVector2Array = PackedVector2Array()
 var random := RandomNumberGenerator.new()
+@export var visual_style: CombatVfxStyle = preload("res://game/features/combat_vfx/default_style.tres")
 
 
 func configure_radial(
@@ -56,6 +57,7 @@ func _accept_profile(new_profile: Resource) -> bool:
 	):
 		return false
 	profile = new_profile
+	z_index = visual_style.world_z
 	add_to_group(&"combat_skill_electric_effect")
 	random.seed = int(Time.get_ticks_usec()) ^ int(get_instance_id())
 	return true
@@ -176,10 +178,15 @@ func _draw() -> void:
 		for index in 4:
 			var angle := elapsed_seconds * 1.8 + float(index) * TAU / 4.0
 			draw_arc(Vector2.ZERO, maximum_radius * 0.92, angle, angle + 0.38, 8, core_color, 3.0, true)
+		# Interior flow distinguishes an active damaging field from an idle range indicator.
+		for index in 3:
+			var direction := Vector2.from_angle(elapsed_seconds * 1.4 + index * TAU / 3.0)
+			visual_style.stroke(self,visual_style.bolt(direction*maximum_radius*0.22,direction*maximum_radius*0.78,elapsed_seconds),core_color,0.6,4.0)
 	elif String(profile.get("pattern")) == "trail":
 		draw_circle(Vector2.ZERO, 12.0, Color(core_color, 0.7))
 		draw_arc(trail_vector, 24.0, 0.0, TAU, 24, core_color, 3.0, true)
 	for points in cached_arcs:
+		draw_polyline(points, visual_style.shadow_color, glow_width + 4.0, true)
 		draw_polyline(points, glow_color, glow_width, true)
 		draw_polyline(points, core_color, core_width, true)
 	var accent_texture: Texture2D = profile.get("accent_texture")

@@ -186,6 +186,9 @@ jobs:
           ! grep -Eq 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-combat-fx.log
           grep -q "FRAME_FEEDBACK_OK" /tmp/sfh-frame-feedback.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-frame-feedback.log
+          timeout 120s xvfb-run -a godot --path "$GITHUB_WORKSPACE" --audio-driver Dummy --rendering-method gl_compatibility --script "res://game/tests/combat_vfx_readability_test.gd" 2>&1 | tee /tmp/sfh-vfx-readability.log
+          grep -q "VFX_READABILITY_OK" /tmp/sfh-vfx-readability.log
+          ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-vfx-readability.log
           timeout 90 xvfb-run -a godot --path "$GITHUB_WORKSPACE" --audio-driver Dummy --script "res://game/tests/floor_render_contract_test.gd" 2>&1 | tee /tmp/sfh-floor-render.log
           grep -q "FLOOR_RENDER_OK" /tmp/sfh-floor-render.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-floor-render.log

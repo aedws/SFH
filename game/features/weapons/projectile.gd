@@ -17,6 +17,7 @@ const DistancePolicy = preload("res://game/features/weapon_balance/weapon_distan
 var distance_points := PackedVector2Array()
 var launch_origin := Vector2.ZERO
 var launch_range_px := 1.0
+@export var visual_style: CombatVfxStyle = preload("res://game/features/combat_vfx/default_style.tres")
 
 @onready var body_shape: Polygon2D = $Body
 @onready var glow_shape: Polygon2D = get_node_or_null("Glow") as Polygon2D
@@ -24,6 +25,7 @@ var launch_range_px := 1.0
 
 func _ready() -> void:
 	remaining_lifetime = lifetime
+	z_index = visual_style.world_z
 
 
 func launch(
@@ -52,10 +54,19 @@ func launch(
 	launch_range_px = float(hit_context.get(&"launch_range_px", 1.0))
 	distance_points = DistancePolicy.parse(String(hit_context.get(&"distance_damage_curve", DistancePolicy.NEUTRAL)))
 	rotation = direction.angle()
+	queue_redraw()
+
+
+func _draw() -> void:
+	if not is_instance_valid(body_shape): return
+	# Fixed local tracer, no trail nodes or extra collisions; never extends past launch origin.
+	var length := minf(clampf(speed * 0.045, 20.0, 58.0), launch_origin.distance_to(global_position))
+	visual_style.stroke(self, PackedVector2Array([Vector2(-length, 0), Vector2(8, 0)]), body_shape.color, 0.95, 4.5)
 
 
 func _physics_process(delta: float) -> void:
 	global_position += direction * speed * delta
+	queue_redraw()
 	remaining_lifetime -= delta
 	if remaining_lifetime <= 0.0:
 		queue_free()

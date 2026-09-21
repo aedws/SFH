@@ -4,13 +4,14 @@ extends Node2D
 ## Successful projectile spawn signal only. Fixed budget, no damage/aim/camera ownership.
 @export var spark_texture: Texture2D = preload("res://game/assets/vfx/kenney_particle_pack/spark_04.png")
 @export_range(1, 32, 1) var maximum_flashes: int = 16
-@export_range(0.04, 0.25, 0.01) var flash_lifetime: float = 0.12
+@export_range(0.04, 0.25, 0.01) var flash_lifetime: float = 0.18
 @export_range(8.0, 80.0, 1.0) var flash_length: float = 48.0
 var flashes: Array[Dictionary] = []
 var total_events: int = 0
+@export var visual_style: CombatVfxStyle = preload("res://game/features/combat_vfx/default_style.tres")
 
 func _ready() -> void:
-	z_index = 8
+	z_index = visual_style.world_z
 	set_process(false)
 
 func play(world_position: Vector2, direction: Vector2, color: Color) -> void:
@@ -35,11 +36,11 @@ func _draw() -> void:
 		var side := direction.orthogonal()
 		var origin := to_local(flash[&"position"]) + direction * 20.0
 		var color: Color = flash[&"color"]
-		color.a = (1.0 - phase) * 0.85
+		color.a = visual_style.envelope(float(flash[&"age"]), flash_lifetime)
 		var tip := origin + direction * flash_length * (1.0 - phase * 0.45)
-		if phase < 0.55:
+		if phase < 0.8:
 			draw_colored_polygon(PackedVector2Array([origin-direction*6.0, origin+side*9.0, tip, origin-side*9.0]), color)
-			draw_line(origin, tip, Color(0.9, 1.0, 1.0, 1.0-phase), 2.5)
+			visual_style.stroke(self, PackedVector2Array([origin, tip]), color, color.a, 7.0)
 		if spark_texture != null:
 			var size := 34.0 * (1.0 + phase * 0.6)
 			draw_texture_rect(spark_texture, Rect2(origin-Vector2.ONE*size*0.5, Vector2.ONE*size), false, color)
