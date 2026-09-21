@@ -62,7 +62,7 @@ search:
         <div class="sfh-group"><h3>개선 · 1</h3><p>총탄·근접·명중·40스킬의 밝기와 잔광을 보강했습니다. 밝고 어두운 바닥92사례와 전투 회귀를 검사하고 피해 수치·이펙트 수 상한은 유지합니다.</p></div>
         <div class="sfh-group"><h3>버그픽스 · 1</h3><p>크레딧·룬을 총기와 비교하던 표시와 방어구의 무기 전용 등급 필드 접근을 수정했습니다. 실제 교체 슬롯과 비교하며 등급 없는 장비에 등급을 만들지 않습니다.</p></div>
         <div class="sfh-group"><h3>수정 · 1</h3><p>공개 기획 갱신을 확인하고 변경 요구·기존 규칙과의 차이를 팀 문서에 분리했습니다. 신규 기획은 아직 게임에 적용하지 않았고 정상10분 플레이 수락도 미완료입니다.</p></div>
-        <p><a href="/features/hit-feedback/#readability-20260910">표현·예산</a> · <a href="/quality/e2e-play-session/#readability-20260910">검사 범위</a> · <a href="/design/master-gdd-alignment/#source-recheck-20260921">팀 문서 · 원본 재확인</a></p>
+        <p><a href="/features/hit-feedback/#readability-20260910">표현·예산</a> · <a href="/quality/e2e-play-session/#readability-20260910">검사 범위</a> · <a href="/design/master-gdd-alignment/#source-recheck-20260921">팀 문서 · 원본 재확인</a> · <a href="/design/current-milestone-workline/#next-20260910">기존 검수 작업선</a></p>
       </div>
     </details>
   </div>
