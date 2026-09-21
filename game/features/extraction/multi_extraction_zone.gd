@@ -25,6 +25,7 @@ func configure_candidates(provider: Node) -> void:
 		add_child(site)
 		site.set_process(false)
 		site.configure(row.position,defense_duration_seconds)
+		site.configure_exit_policy(exit_policy)
 		alternatives.append(site)
 		site.interaction_availability_changed.connect(func(available,prompt):interaction_availability_changed.emit(available,prompt))
 		site.extraction_completed.connect(func(actor):extraction_completed.emit(actor))
@@ -50,6 +51,13 @@ func request_extraction(actor: Node2D) -> bool:
 		active_site=self
 		for site in alternatives: site.set_locked(true,"다른 탈출 지점에서 방어 중")
 	return accepted
+
+func configure_exit_policy(policy: Resource) -> bool:
+	if bool(get_snapshot().get(&"defense_active", false)) or not super.configure_exit_policy(policy):
+		return false
+	for site in alternatives:
+		site.configure_exit_policy(exit_policy)
+	return true
 
 func set_locked(value: bool, prompt: String = "탈출 신호 대기 중") -> void:
 	super.set_locked(value,prompt)

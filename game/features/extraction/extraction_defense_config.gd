@@ -1,6 +1,8 @@
 class_name ExtractionDefenseConfig
 extends Resource
 
+@export var exit_policy: ExtractionExitPolicy = preload("res://game/features/extraction/configs/default_exit_policy.tres")
+
 @export var tier_base_seconds: Dictionary = {
 	&"small": 15.0, &"medium": 20.0, &"large": 25.0,
 }
@@ -10,11 +12,13 @@ extends Resource
 
 
 func is_valid() -> bool:
+	if exit_policy == null or not exit_policy.is_valid():
+		return false
 	for value in tier_base_seconds.values():
-		if float(value) < 0.0:
+		if not is_finite(float(value)) or float(value) < 0.0:
 			return false
 	for value in difficulty_multipliers.values():
-		if float(value) <= 0.0:
+		if not is_finite(float(value)) or float(value) <= 0.0:
 			return false
 	return not tier_base_seconds.is_empty() and not difficulty_multipliers.is_empty()
 

@@ -564,7 +564,7 @@ func validation_errors() -> PackedStringArray:
 		errors.append("shop_item_delivery는 p5_hub_progression·inventory 모듈이 필요합니다.")
 	if extraction_defense_enabled and not extraction_enabled:
 		errors.append("extraction_defense는 extraction 모듈이 필요합니다.")
-	if extraction_defense_enabled and not _resource_exists(extraction_defense_config_path):
+	if extraction_defense_enabled and not _resource_is_valid(extraction_defense_config_path):
 		errors.append("탈출 방어 설정 Resource 경로가 유효하지 않습니다.")
 	if hub_economy_enabled and not persistent_profile_enabled:
 		errors.append("hub_economy는 persistent_profile 모듈이 필요합니다.")
@@ -626,3 +626,10 @@ func validation_errors() -> PackedStringArray:
 
 func _resource_exists(path: String) -> bool:
 	return not path.is_empty() and ResourceLoader.exists(path)
+
+
+func _resource_is_valid(path: String) -> bool:
+	if not _resource_exists(path):
+		return false
+	var config: Resource = load(path)
+	return config != null and config.has_method(&"is_valid") and bool(config.call(&"is_valid"))

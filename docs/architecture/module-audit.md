@@ -11,6 +11,12 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-21 · 탈출 이탈 정책 {#extraction-decay}
+
+`ExtractionExitPolicy`는 유예/역행 계산만 소유하고 Actor·Scene·정산을 참조하지 않습니다. `ExtractionZone`은 반경·진행 상태, `MultiExtractionZone`은 동일 정책을 적용한 물리 출구와 기존 정산 단일 권한, Game은 검증된 정책 주입과 짧은 HUD 소비만 담당합니다. 정책은 설정 시 깊은 복사, 시작 후 교체 거부이며 새 스킬/요원 ID 분기를 추가하지 않았습니다. 새 목록이 없어 Sheet 구조는 유지합니다.
+
+두 출구, frame slicing, 정책 교체/무효값, 정산1회와 전체 게임/E2E 회귀를 검사합니다. 기본2초/1배를 Resource로 조정하거나 역행0으로 이전 일시정지 정책을 사용할 수 있습니다. 방어 시간 상한·재진입 유예 초기화는 공통 계약으로 문서화했습니다. 정적 감사58기능/290클래스/55의존/순환0·서비스 Scene 내부 접근0, P5 경계·UI48소스/9진입 통과. 노드맵과 객체 연결도 재생성합니다. 동적 기능 조합 전수나 일반10분 사람 수락 완료를 뜻하지 않습니다. [계약](../features/extraction-defense-results.md#decay-20260921) · [검증](../quality/e2e-play-session.md#decay-20260921).
+
 ## 2026-09-10 · 전투 이펙트 공통 표현 {#vfx-readability}
 
 공통 `combat_vfx`는 Resource 기반 대비·스트로크·유지/잔광만 소유합니다. 무기/스킬/명중이 이를 참조하며 역참조·Game ID 분기·피해 수정은 없습니다. 순수 계산에 게임 RNG를 쓰지 않습니다. 정적 감사58기능/289클래스/55의존/순환0, 기본 무기8종/스킬40종 실행과92개 GPU 가독성 사례를 검사합니다. [범위·예산](../features/hit-feedback.md#readability-20260910).

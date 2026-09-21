@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-21",
-  "source_sha256": "92983cba5447642b7c983c97c73969dbac8f5699f825539b0c4812cbccb1ee80",
+  "source_sha256": "01d54f7cd6742c728d0acef49efbaf9d3bb306c58ce374621883c46bb4ca2e96",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -392,18 +392,18 @@
     }
   ],
   "summary": {
-    "tracked": 55,
+    "tracked": 56,
     "owner_decisions": 6,
     "blocked": 8,
     "ready": 1,
-    "implemented": 39,
+    "implemented": 40,
     "modules": 61,
     "documents": 105,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 487,
+    "relations": 491,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -548,6 +548,33 @@
       "kind": "evidence"
     },
     {
+      "id": "work:notion-extraction-decay-20260921",
+      "type": "work_item",
+      "label": "PLAN-06-EXTRACT · 탈출 이탈 유예·역행",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "9/21 새 노션 반영 시작 지시의 첫 패킷. 신규 행 3d85b728-0040-816d-a6bb-f7d7be82e8b6의 2초 유예 후 초당1초 역행을 구현. 구역 밖 무기한 일시정지 규칙을 대체하며30분 마감·가방 축소 승인과 구분.",
+      "acceptance": "두 출구·유예 경계·초기 시간 상한·자동 재진입·외부 F·정산1회·정책 불변·HUD 상태 및 전체 게임/E2E 통과. 일반10분·재미 수락 제외.",
+      "next_action": "신규16행 고유 ID/코드 증거 대조와 중복 분리 후 다음 판단 불필요 패킷 선정. 최신82행 완료율은 재산정 전 공개하지 않음.",
+      "route": "features/extraction-defense-results/#decay-20260921",
+      "relations": [
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:features/extraction-defense-results",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
       "id": "decision:n26-0921-scope",
       "type": "decision",
       "label": "DEC-N26-0921 · 신규 기획 적용 범위",
@@ -555,7 +582,7 @@
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
       "summary": "9/21 공개 GDD v206·101블록/작업표82행 재확인. 기존10분 방향 대비30분 마감, 12x8 가방 대비36~72칸/실시간, 파우치 보존과 룬 자동환전, 특화요원 조건부 수치를 분리 판단. 신규16행 중 미니루프2행은 중복 후보이며 미구현 표기가 코드 부재 증거는 아님.",
-      "next_action": "세션 길이 적용 범위, 기존 저장품 초과분 보존, 파우치/룬 정산 우선순위, 요원 발동/해제·업적 연결을 확정한 뒤82행 코드 대응도를 재산정. 이번 이펙트 마감에서는 게임 정책을 바꾸지 않음.",
+      "next_action": "탈출2초 유예/역행은 첫 반영 완료. 세션 길이 적용 범위, 기존 저장품 초과분 보존, 파우치/룬 정산 우선순위, 요원 발동/해제·업적 연결은 별도 판단 후82행 코드 대응도 재산정.",
       "route": "design/master-gdd-alignment/#source-recheck-20260921",
       "relations": [
         {
@@ -2989,14 +3016,14 @@
       "label": "탈출",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "작전 흐름 · feature · 파일 3개",
+      "summary": "작전 흐름 · feature · 파일 4개",
       "route": "architecture/code-module-map/?module=extraction",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/extraction",
       "kind": "implementation",
       "metrics": {
-        "files": 3,
-        "classes": 3,
+        "files": 4,
+        "classes": 4,
         "incoming": 3,
         "outgoing": 1
       }
@@ -3781,13 +3808,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 75개",
+      "summary": "기반·검증 · verification · 파일 76개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 75,
+        "files": 76,
         "classes": 0,
         "incoming": 0,
         "outgoing": 55
@@ -4950,6 +4977,30 @@
     }
   ],
   "relations": [
+    {
+      "from": "authority:project-owner",
+      "to": "work:notion-extraction-decay-20260921",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:notion-extraction-decay-20260921",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:notion-extraction-decay-20260921",
+      "to": "document:features/extraction-defense-results",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:notion-extraction-decay-20260921",
+      "to": "document:quality/e2e-play-session",
+      "type": "verified_by",
+      "origin": "registry"
+    },
     {
       "from": "authority:project-owner",
       "to": "decision:n26-0921-scope",
