@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EnemyAttackPolicy" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/enemies/enemy_attack_policy.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+windup_seconds = 0.4
+reach = 48.0
+half_width = 10.0

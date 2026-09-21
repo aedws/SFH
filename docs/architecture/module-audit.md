@@ -11,6 +11,12 @@ tags:
 
 # 모듈화 점검 기록
 
+## 2026-09-21 · 적 공격 전조 {#enemy-telegraph}
+
+`EnemyAttackPolicy`(시점/범위)와 `EnemyAttackTelegraph`(고정 공격 상태/같은 도형의 표시)를 Enemy 내부에 분리했습니다. Game 조립부나 스폰/드랍에 적 ID 분기를 추가하지 않습니다. 기존 이동·상태·피해 경로를 사용하며 명시적 기능 off 폴백을 보존합니다. 유효 정책 깊은 복사·활성 중 교체 거부·빗나감 회복·죽은 대상 취소를 계약으로 검증합니다.
+
+정적 감사58기능/292클래스/55의존/순환0·서비스 Scene 내부 접근0, P5 경계·UI48소스/9진입 통과. 노드맵과 개발자 객체 연결을 갱신합니다. 공격 중 도형 갱신 외 상시 Tween/Timer·일회성 노드를 만들지 않으며, 비활성 전조는 재그리기를 요청하지 않습니다. 16행 감사는 원문 기획 상태와 코드 상태를 분리하고15고유 요구로 기록합니다. [공격 계약](../features/enemies.md#telegraph-20260921) · [수락 범위](../quality/e2e-play-session.md#telegraph-20260921).
+
 ## 2026-09-21 · 탈출 이탈 정책 {#extraction-decay}
 
 `ExtractionExitPolicy`는 유예/역행 계산만 소유하고 Actor·Scene·정산을 참조하지 않습니다. `ExtractionZone`은 반경·진행 상태, `MultiExtractionZone`은 동일 정책을 적용한 물리 출구와 기존 정산 단일 권한, Game은 검증된 정책 주입과 짧은 HUD 소비만 담당합니다. 정책은 설정 시 깊은 복사, 시작 후 교체 거부이며 새 스킬/요원 ID 분기를 추가하지 않았습니다. 새 목록이 없어 Sheet 구조는 유지합니다.
