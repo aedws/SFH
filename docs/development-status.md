@@ -17,9 +17,13 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-10</span><span>SEARCH COMMAND</span><span>13 DAYS · 166 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-21</span><span>SEARCH COMMAND</span><span>14 DAYS · 167 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
-## 최신 기획 기준 코드 대응도
+## 9/21 원본 재확인 · 최신 대응도 재산정 대기
+
+공개 GDD v206·101블록/작업표82행을 재조회했습니다. 신규39블록·16행이며 기존66행은 동일합니다. 아래80.3%는 **9/9 이전 범위의 감사 이력**이고 최신82행 진행률이 아닙니다. 신규 미니루프2행 중복 후보와 코드/정책 충돌을 분리한 뒤 재산정합니다. [조회 해시·코드 차이·다음 판단](design/master-gdd-alignment.md#source-recheck-20260921).
+
+## 이전 66행 기준 코드 대응도 (9/9 이력)
 
 <div class="sfh-progress-panel">
   <div class="sfh-progress-heading">
@@ -27,7 +31,7 @@ tags:
     <b>80.3%</b>
   </div>
   <div class="sfh-progress-track" role="progressbar" aria-label="최신 기획 코드 대응도" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80.3"><i style="width: 80.3%"></i></div>
-  <p>최신 GDD v128·62블록과 트래커 66행을 코드·기존 테스트 소스와 대조했습니다. 출시 준비율이나 이번 실제 플레이 통과율이 아닙니다. 기존 96%는 이전 백업 기준의 이력이며 현재 진행률로 사용하지 않습니다.</p>
+  <p>당시 GDD v128·62블록과 트래커66행을 코드·기존 테스트 소스와 대조한 이력입니다. 9/21 신규82행의 진행률·출시 준비율·실제 플레이 통과율이 아닙니다. 기존96%도 이전 백업 기준 이력입니다.</p>
 </div>
 
 원본: [최신 Master GDD](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed) · [기능 구현·상태 트래커](https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2).
@@ -68,7 +72,22 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-10</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 3 · CHANGE 0 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-21</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 1 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>전투 표현 마감 · 전리품 비교 보완 · 기획 원본 재확인</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>총탄·근접·명중·40스킬의 밝기와 잔광을 보강했습니다. 밝고 어두운 바닥92사례와 전투 회귀를 검사하고 피해 수치·이펙트 수 상한은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>크레딧·룬을 총기와 비교하던 표시와 방어구의 무기 전용 등급 필드 접근을 수정했습니다. 실제 교체 슬롯과 비교하며 등급 없는 장비에 등급을 만들지 않습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>공개 기획 갱신을 확인하고 변경 요구·기존 규칙과의 차이를 팀 문서에 분리했습니다. 신규 기획은 아직 게임에 적용하지 않았고 정상10분 플레이 수락도 미완료입니다.</p></div>
+        <p><a href="/features/hit-feedback/#readability-20260910">표현·예산</a> · <a href="/quality/e2e-play-session/#readability-20260910">검사 범위</a> · <a href="/design/master-gdd-alignment/#source-recheck-20260921">팀 문서 · 원본 재확인</a></p>
+      </div>
+    </details>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-09-10</b><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 3 · CHANGE 0 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 3</small><b>공격이 보이도록 · 전투 이펙트 전수검수와 전리품 비교 수정</b></span><em class="sfh-chevron">⌄</em></summary>
