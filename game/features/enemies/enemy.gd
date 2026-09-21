@@ -179,7 +179,7 @@ func _advance_contact_attack(delta: float) -> void:
 	if attack_telegraph == null:
 		_try_contact_damage()
 		return
-	if not damage_enabled or contact_cooldown > 0.0 or health_component.current_value <= 0.0 or not EnemyStatusPolicy.can_attack(active_statuses, boss):
+	if not is_instance_valid(target) or target.is_queued_for_deletion() or not damage_enabled or contact_cooldown > 0.0 or health_component.current_value <= 0.0 or not EnemyStatusPolicy.can_attack(active_statuses, boss):
 		attack_telegraph.cancel()
 		return
 	if attack_telegraph.advance(delta, global_position, target, contact_damage, 0 if ignore_room_barriers else 16):

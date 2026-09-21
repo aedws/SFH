@@ -87,7 +87,8 @@ func run() -> void:
 		check(not attack.advance(delta, Vector2.ZERO, actor, 1.0), "invalid delta ignored")
 	check(attack.elapsed == 0.0 and actor.hits == hits, "invalid time does not advance")
 	actor.free()
-	attack.advance(1.0, Vector2.ZERO, null, 1.0)
+	enemy.contact_cooldown = 0.0
+	enemy._advance_contact_attack(1.0)
 	check(not attack.active, "removed target cancels")
 	actor = Victim.new()
 	root.add_child(actor)
