@@ -54,30 +54,15 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-10</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 3 · CHANGE 0 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-21</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 0 · IMPROVE 1 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 3</small><b>공격이 보이도록 · 전투 이펙트 전수검수와 전리품 비교 수정</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 1</small><b>전투 표현 마감 · 전리품 비교 보완 · 기획 원본 재확인</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>개선 · 1</h3><p>총탄 궤적·근접 잔광·접촉 섬광·스킬 전류를 보강하고 밝은 바닥과 축소 화면까지92사례를 검사했습니다. 전투 수치와 카메라 상한은 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>실제28처치·회수 검수에서 크레딧과 룬을 현재 총기와 비교하던 표시를 수정했습니다. 장비는 실제 교체 슬롯과 비교합니다. 정상10분 플레이는 계속 검수 대상입니다.</p></div>
-        <p><a href="/features/hit-feedback/#readability-20260910">표현 변경·예산</a> · <a href="/quality/e2e-play-session/#readability-20260910">전수검사·실제 플레이 근거</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>모듈 지도 · 클래스 참조까지 같은 기준으로 감사</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>개선 · 1</h3><p>경로만 보던 감사에 클래스·상속 참조를 더하고 위키 노드맵과 분석기를 통일했습니다. 공개 CSV 파서와 확장 회귀를 보완했습니다. 동적 조립 검토와 정상10분 수락은 별도 잔여입니다.</p></div>
-        <p><a href="/architecture/module-audit/#training-feedback-20260910">모듈 경계·검사</a> · <a href="/design/current-milestone-workline/#next-20260910">다음 실행 순서</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>훈련 수치 일치 · 발사·스킬·명중·처치 피드백</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>상업 이용이 허용된 CC0 효과음6종을 선별해 발사·근접·스킬 발동·체력/장갑 명중·처치에 연결했습니다. 출처·라이선스·해시와 동시8음성 예산을 함께 관리합니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>직선 폭·부채꼴 경계·원형/링 맥동·연쇄 타격·접촉 스파크를 보강했습니다. 전체 게임/E2E와 실제 GPU·오디오 믹서 검사는 통과했으며 정상10분 재미 수락과 구분합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>훈련장이 라이브 스킬 대신 원본 수치를 쓰던 문제를 공통 불변 스냅샷으로 수정했습니다. 입장 시 갱신하고 실험 중 고정하며 종료 시 기존 장착·자원을 복원합니다.</p></div>
-        <p><a href="/features/hit-feedback/#combat-audio-20260910">타격 표현·상업 이용 근거</a> · <a href="/quality/e2e-play-session/#training-feedback-20260910">수정 전후·검증 범위</a></p>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>총탄·근접·명중·40스킬의 밝기와 잔광을 보강했습니다. 밝고 어두운 바닥92사례와 전투 회귀를 검사하고 피해 수치·이펙트 수 상한은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>크레딧·룬을 총기와 비교하던 표시와 방어구의 무기 전용 등급 필드 접근을 수정했습니다. 실제 교체 슬롯과 비교하며 등급 없는 장비에 등급을 만들지 않습니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>공개 기획 갱신을 확인하고 변경 요구·기존 규칙과의 차이를 팀 문서에 분리했습니다. 신규 기획은 아직 게임에 적용하지 않았고 정상10분 플레이 수락도 미완료입니다.</p></div>
+        <p><a href="/features/hit-feedback/#readability-20260910">표현·예산</a> · <a href="/quality/e2e-play-session/#readability-20260910">검사 범위</a> · <a href="/design/master-gdd-alignment/#source-recheck-20260921">팀 문서 · 원본 재확인</a> · <a href="/design/current-milestone-workline/#next-20260910">기존 검수 작업선</a></p>
       </div>
     </details>
   </div>

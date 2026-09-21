@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
-  "updated": "2026-09-09",
-  "source_sha256": "267f71ff957ae65032063738c862e7e8f3934d261f6bd6a0159f53b246d5820a",
+  "updated": "2026-09-21",
+  "source_sha256": "92983cba5447642b7c983c97c73969dbac8f5699f825539b0c4812cbccb1ee80",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -392,8 +392,8 @@
     }
   ],
   "summary": {
-    "tracked": 54,
-    "owner_decisions": 5,
+    "tracked": 55,
+    "owner_decisions": 6,
     "blocked": 8,
     "ready": 1,
     "implemented": 39,
@@ -403,7 +403,7 @@
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 483,
+    "relations": 487,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -546,6 +546,32 @@
       "type": "source",
       "certainty": "confirmed",
       "kind": "evidence"
+    },
+    {
+      "id": "decision:n26-0921-scope",
+      "type": "decision",
+      "label": "DEC-N26-0921 · 신규 기획 적용 범위",
+      "status": "needs_decision",
+      "certainty": "provisional",
+      "decision_owner": "authority:project-owner",
+      "summary": "9/21 공개 GDD v206·101블록/작업표82행 재확인. 기존10분 방향 대비30분 마감, 12x8 가방 대비36~72칸/실시간, 파우치 보존과 룬 자동환전, 특화요원 조건부 수치를 분리 판단. 신규16행 중 미니루프2행은 중복 후보이며 미구현 표기가 코드 부재 증거는 아님.",
+      "next_action": "세션 길이 적용 범위, 기존 저장품 초과분 보존, 파우치/룬 정산 우선순위, 요원 발동/해제·업적 연결을 확정한 뒤82행 코드 대응도를 재산정. 이번 이펙트 마감에서는 게임 정책을 바꾸지 않음.",
+      "route": "design/master-gdd-alignment/#source-recheck-20260921",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        }
+      ],
+      "kind": "governance"
     },
     {
       "id": "decision:regional-landmark-map",
@@ -4924,6 +4950,30 @@
     }
   ],
   "relations": [
+    {
+      "from": "authority:project-owner",
+      "to": "decision:n26-0921-scope",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-0921-scope",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-0921-scope",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "decision:n26-0921-scope",
+      "to": "document:design/master-gdd-alignment",
+      "type": "documented_by",
+      "origin": "registry"
+    },
     {
       "from": "authority:project-owner",
       "to": "decision:regional-landmark-map",
