@@ -18,6 +18,7 @@ signal damaged(
 @export_range(0.2, 2.0, 0.05) var repath_interval: float = 0.7
 @export_range(16.0, 320.0, 8.0) var repath_target_distance: float = 96.0
 @export_range(1, 5, 1) var priority_rank: int = 1
+@export var attack_policy: EnemyAttackPolicy = preload("res://game/features/enemies/configs/default_enemy_attack.tres")
 
 @onready var contact_area: Area2D = $ContactArea
 @onready var body_visual: Polygon2D = $Body
@@ -44,6 +45,7 @@ var active_statuses: Dictionary = {}
 var elite_pursuer: bool = false
 var boss: bool = false
 var ignore_room_barriers: bool = false
+var attack_telegraph: EnemyAttackTelegraph
 
 
 func _ready() -> void:
@@ -55,6 +57,12 @@ func _ready() -> void:
 	status_bars.configure(health_component, armor_component)
 	if hit_reaction != null:
 		hit_reaction.configure(self, [body_visual, heading])
+	if attack_policy != null and attack_policy.enabled:
+		attack_telegraph = EnemyAttackTelegraph.new()
+		add_child(attack_telegraph)
+		if not attack_telegraph.configure(attack_policy):
+			push_error("Invalid enemy attack policy")
+			damage_enabled = false
 
 
 func configure(
@@ -151,14 +159,31 @@ func _physics_process(delta: float) -> void:
 				).normalized()
 			)
 		var desired_velocity := direction * move_speed * EnemyStatusPolicy.movement_multiplier(active_statuses, boss)
+		if attack_telegraph != null and attack_telegraph.active:
+			desired_velocity = Vector2.ZERO
 		velocity = (
 			hit_reaction.advance(delta, desired_velocity)
 			if hit_reaction != null else desired_velocity
 		)
-		heading.rotation = direction.angle()
+		heading.rotation = attack_telegraph.direction.angle() if attack_telegraph != null and attack_telegraph.active else direction.angle()
 		move_and_slide()
 
-	_try_contact_damage()
+	_advance_contact_attack(delta)
+
+
+func get_attack_snapshot() -> Dictionary:
+	return attack_telegraph.get_snapshot() if attack_telegraph != null else {&"active": false, &"legacy_contact": true}
+
+
+func _advance_contact_attack(delta: float) -> void:
+	if attack_telegraph == null:
+		_try_contact_damage()
+		return
+	if not damage_enabled or contact_cooldown > 0.0 or health_component.current_value <= 0.0 or not EnemyStatusPolicy.can_attack(active_statuses, boss):
+		attack_telegraph.cancel()
+		return
+	if attack_telegraph.advance(delta, global_position, target, contact_damage, 0 if ignore_room_barriers else 16):
+		contact_cooldown = contact_interval
 
 
 func _update_crowd_steering() -> void:
@@ -272,6 +297,8 @@ func _on_health_value_changed(current: float, _maximum: float) -> void:
 
 
 func _on_health_depleted() -> void:
+	if attack_telegraph != null:
+		attack_telegraph.cancel()
 	defeated.emit(experience_reward, global_position)
 	queue_free()
 

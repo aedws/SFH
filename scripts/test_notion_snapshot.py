@@ -245,5 +245,36 @@ class CodeCrosswalkTests(unittest.TestCase):
                 audit_check.validate(changed, self.gdd, self.tasks)
 
 
+class SeptemberDeltaTests(unittest.TestCase):
+    def test_new_rows_keep_identity_evidence_and_planning_separate(self):
+        root = Path(__file__).resolve().parents[1]
+        assets = root / "docs/assets"
+        delta = json.loads((assets / "notion-delta-audit-20260921.json").read_text(encoding="utf-8"))
+        base = json.loads((assets / "notion-tracker-snapshot.json").read_text(encoding="utf-8"))
+        base_ids = {row["id"] for row in base["rows"]}
+        rows = {row["id"]: row for row in delta["rows"]}
+        self.assertEqual(len(rows), delta["delta_row_count"])
+        self.assertEqual(len(rows), 16)
+        self.assertFalse(base_ids & rows.keys())
+        self.assertEqual(len(base_ids) + len(rows), delta["source"]["tracker_rows"])
+        duplicates = [row for row in rows.values() if row["code_status"] == "duplicate"]
+        self.assertEqual(len(duplicates), 1)
+        self.assertEqual(len(rows) - len(duplicates), delta["unique_requirement_count"])
+        for row in rows.values():
+            self.assertEqual(row["planner_status"], "결정 (미구현)")
+            self.assertIn(row["code_status"], {"implemented", "partial", "unimplemented", "duplicate"})
+            self.assertTrue(row["assessment"] and row["work_order"])
+            for relative in row["evidence"] + row["existing_test_context"] + row.get("verified_by", []):
+                path = (root / relative).resolve()
+                self.assertTrue(path.is_relative_to(root) and path.is_file(), relative)
+            if row["code_status"] == "implemented":
+                self.assertTrue(row.get("verified_by"))
+            if row["code_status"] == "duplicate":
+                original = rows[row["duplicate_of"]]
+                self.assertNotEqual(original["code_status"], "duplicate")
+                self.assertEqual(original["request_id"], row["request_id"])
+                self.assertEqual(original["acceptance"], row["acceptance"])
+
+
 if __name__ == "__main__":
     unittest.main()

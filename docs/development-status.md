@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-21</span><span>SEARCH COMMAND</span><span>14 DAYS · 168 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-21</span><span>SEARCH COMMAND</span><span>14 DAYS · 169 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 9/21 원본 재확인 · 최신 대응도 재산정 대기
 
@@ -72,9 +72,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-21</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 1 · IMPROVE 1 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-21</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 2 · CHANGE 2 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>적의 공격을 보고 회피 · 신규 기획16행 대조와 다음 작업 정리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>개선 · 1</h3><p>적의 즉시 접촉 피해를0.4초 붉은 경고와 좁은 고정 방향 타격으로 바꿨습니다. 옆으로 피하면 빗나가고 기절·넉백·사망은 경고를 취소합니다. 기존 추격 보스의 문 무시는 유지합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>신규 기획16행을 코드·시험 근거에 연결했습니다. 중복1행을 제외하고 코드 구현2·부분8·미구현5이며, 이는 전체82행 완료율이 아닙니다. 다음은 장착 룬 정산 검증·실시간 가방·짧은 루프 계측 순서입니다.</p></div>
+        <p><a href="/features/enemies/#telegraph-20260921">변경된 공격</a> · <a href="/quality/e2e-play-session/#telegraph-20260921">검증·미수락 범위</a> · <a href="/design/current-milestone-workline/#delta-audit-20260921">전체 대조와 작업 순서</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>탈출은 잠깐 벗어나도 유지 · 오래 이탈하면 방어 시간 역행</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>탈출 방어 중 구역을 벗어나면2초 동안 진행을 보존하고 이후 초당1초씩 남은 시간이 늘어납니다. 돌아오면 자동 재개하며 처음 방어 시간보다 늘어나지 않습니다. 두 출구의 유예·역행·정산 회귀를 추가했습니다.</p></div>

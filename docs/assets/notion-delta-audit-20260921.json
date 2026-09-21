@@ -1,0 +1,330 @@
+{
+  "schema_version": 1,
+  "captured_date": "2026-09-21",
+  "scope": "기존66행 이후 추가16행만 대조. 전체82행 완료율 아님.",
+  "source": {
+    "gdd_url": "https://wobbly-pawpaw-1ff.notion.site/3d35b728004081eba698e9a00f6ec0ed",
+    "gdd_blocks": 101,
+    "gdd_sha256": "f957ba4aa02e438cc16d6e826ad02763e78e18deade64b153ab961889be27459",
+    "tracker_url": "https://wobbly-pawpaw-1ff.notion.site/3d35b728004081d88798e99d4a8f05c2",
+    "tracker_rows": 82,
+    "tracker_sha256": "02c4f32d2f5d543be4ae7879d3f9ca3f7b454a400a158cbbb8b544abae507ed7"
+  },
+  "base_row_count": 66,
+  "delta_row_count": 16,
+  "unique_requirement_count": 15,
+  "rows": [
+    {
+      "id": "3d85b728-0040-8125-8cb0-e4c938a3213f",
+      "title": "몬스터 공격 전조(0.3~0.5초 예광선/모션) 및 피격 판정 슬림화 밸런싱",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "잡몹 공격 시 명확한 붉은 예광선 표시 및 보고 피하기 확인",
+      "version": 6,
+      "last_edited_time": 1789160382357,
+      "code_status": "implemented",
+      "work_order": "검증 완료 후 배포",
+      "assessment": "공격 직전 즉시 접촉 피해였음. 0.4초 방향 고정 예고·폭20px 판정·빗나감 회복을 이번 반영.",
+      "evidence": [
+        "game/features/enemies/enemy.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/enemy_attack_telegraph_contract_test.gd"
+      ],
+      "verified_by": [
+        "game/tests/enemy_attack_telegraph_contract_test.gd"
+      ],
+      "human_acceptance": "다수 적·안개·모바일 및 정상 속도10분 회피 체감은 별도 미수락"
+    },
+    {
+      "id": "3d85b728-0040-812f-976a-e6bb0655aed8",
+      "title": "1~2분 단위 상시 순환 프랙탈 루프 (탐색 -> 전투 -> 파밍 -> 결단) 흐름 구현",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "결정 (미구현)",
+      "category": "플레이어루프",
+      "acceptance": "방 클리어 후 3초 내 보상 처리 및 다음 방 이동 루프 검증",
+      "version": 6,
+      "last_edited_time": 1789160393707,
+      "code_status": "partial",
+      "work_order": "3 · 계측부터",
+      "assessment": "탐색·전투·파밍·결단 기반은 존재. 1~2분 반복과 보상 처리3초 사람 수락은 미검증.",
+      "evidence": [
+        "game/features/room_encounters/room_encounter_system.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/e2e_play_session_test.gd"
+      ]
+    },
+    {
+      "id": "3d85b728-0040-815b-8d55-c429bbe54306",
+      "title": "심층 코어 전용 종결 고유 옵션 장비 및 3소켓 완제품 필드 드랍 분리",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "심층 코어 보스 및 특수 금고에서만 종결 고유 장비 드랍 확인",
+      "version": 6,
+      "last_edited_time": 1789160383431,
+      "code_status": "unimplemented",
+      "work_order": "선행 판단/심층 구현 후",
+      "assessment": "심층 전용 공급처·종결 옵션/3소켓 필드 제한 없음. 심층 구역·등급·전용 드랍 ID 필요.",
+      "evidence": [
+        "game/features/field_loot/field_loot_acquisition_service.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/field_loot_acquisition_contract_test.gd"
+      ]
+    },
+    {
+      "id": "3d85b728-0040-8163-a70c-c60682db0fed",
+      "title": "로비 상점 리롤 및 제작소 장비 등급 상한선(Soft Cap: 최대 희귀/기본스탯형) 적용",
+      "request_id": "PLAN-04-SHOP",
+      "planner_status": "결정 (미구현)",
+      "category": "상점/제작소",
+      "acceptance": "상점 및 제작소에서 종결급 고유 옵션 장비 미등장 확인",
+      "version": 6,
+      "last_edited_time": 1789160382868,
+      "code_status": "partial",
+      "work_order": "등급/공급처 결정 후",
+      "assessment": "상점 품질과 제작 옵션은 존재하나 희귀 등급과 동일하지 않음. 희귀 상한 매핑·기존 구매품 보존·허용 옵션 목록 필요.",
+      "evidence": [
+        "game/features/p5_hub_progression/shop_item_quality_policy.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/shop_quality_inventory_contract_test.gd"
+      ]
+    },
+    {
+      "id": "3d85b728-0040-816d-a6bb-f7d7be82e8b6",
+      "title": "탈출 신호기 구역 이탈 시 2초 유예 후 타이머 역행 감쇠(Timer Decay) 구현",
+      "request_id": "PLAN-06-EXTRACT",
+      "planner_status": "결정 (미구현)",
+      "category": "탈출/파산방지",
+      "acceptance": "원 밖 2초 초과 체류 시 초당 1초씩 타이머가 역행 증가하는지 확인",
+      "version": 6,
+      "last_edited_time": 1789160384029,
+      "code_status": "implemented",
+      "work_order": "기존 구현 유지",
+      "assessment": "탈출 이탈2초 유예·초당1초 역행은 PR208에서 구현. 최신 기획표의 미구현 표기와 구분.",
+      "evidence": [
+        "game/features/extraction/extraction_zone.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/extraction_decay_contract_test.gd"
+      ],
+      "verified_by": [
+        "game/tests/extraction_decay_contract_test.gd"
+      ]
+    },
+    {
+      "id": "3d85b728-0040-81c2-9345-d0e5d42618c3",
+      "title": "1~2분 단위 상시 순환 프랙탈 루프 (탐색 ➔ 전투 ➔ 파밍 ➔ 결단) 흐름 구현",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "결정 (미구현)",
+      "category": "플레이어루프",
+      "acceptance": "방 클리어 후 3초 내 보상 처리 및 다음 방 이동 루프 검증",
+      "version": 6,
+      "last_edited_time": 1789160384566,
+      "code_status": "duplicate",
+      "work_order": "중복 제외",
+      "assessment": "문장 화살표만 다른 812f행과 동일. 진행률 분모에 중복 가산하지 않음.",
+      "evidence": [
+        "game/features/room_encounters/room_encounter_system.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/e2e_play_session_test.gd"
+      ],
+      "duplicate_of": "3d85b728-0040-812f-976a-e6bb0655aed8"
+    },
+    {
+      "id": "3d85b728-0040-81e1-b289-f22df21ba732",
+      "title": "인게임 30분 마감 카운트다운 타이머 및 30분 도달 시 붕괴 즉사 판정",
+      "request_id": "PLAN-03-FLOW",
+      "planner_status": "결정 (미구현)",
+      "category": "플레이어루프",
+      "acceptance": "HUD에 30분 타이머 표기 및 0초 도달 시 런 실패 처리 확인",
+      "version": 6,
+      "last_edited_time": 1789160385127,
+      "code_status": "unimplemented",
+      "work_order": "오너 판단",
+      "assessment": "30분 즉사 미구현. 기존 약10분 플레이 목표와 충돌하므로 수락 기준/세이브 손실 규칙 먼저 결정.",
+      "evidence": [
+        "game/scenes/game.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/e2e_play_session_test.gd"
+      ]
+    },
+    {
+      "id": "3d85b728-0040-81e6-9856-e7175ddee00b",
+      "title": "20~30분 [탐욕의 현혹점] 진입 시 맵 오염도 급상승 및 특수 추격자(Hunter) 스폰",
+      "request_id": "PLAN-09-DEPTH",
+      "planner_status": "결정 (미구현)",
+      "category": "플레이어루프",
+      "acceptance": "20분 경과 시 몬스터 흉폭화 및 추격자 몬스터 스폰 작동 확인",
+      "version": 6,
+      "last_edited_time": 1789160385677,
+      "code_status": "unimplemented",
+      "work_order": "오너 판단/심층 선행",
+      "assessment": "기존 투입액50% 추격 보스는 존재하나20분 부패·광폭화·Hunter가 아님. 기존 보스 대체/병존 결정 필요.",
+      "evidence": [
+        "game/features/elite_pursuit/elite_pursuit_service.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/support/pursuit_boss_contract.gd"
+      ]
+    },
+    {
+      "id": "3e25b728-0040-8127-a82f-e84144d4ab27",
+      "title": "PoE 기반 12열 와이드 인벤토리 그리드 시스템 (36칸/48칸/60칸/72칸) 구축",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "가방 등급에 따라 12x3, 12x4, 12x5, 12x6 격자 UI 및 수납 정상 작동 확인",
+      "version": 6,
+      "last_edited_time": 1789949887621,
+      "code_status": "partial",
+      "work_order": "저장품 이관 판단",
+      "assessment": "12x8 가방·크기 조정 기반은 존재. 등급별12x3~6 및 넘친 기존 아이템 이관 규칙 없음.",
+      "evidence": [
+        "game/features/inventory/catalogs/default_inventory.tres"
+      ],
+      "existing_test_context": [
+        "game/tests/e2e_play_session_test.gd"
+      ]
+    },
+    {
+      "id": "3e25b728-0040-8128-8eb2-f9e4a5ef5bb6",
+      "title": "인게임 가방 열람 시 실시간(Real-Time) 흐름 유지 및 Quick Loot(F키) 구현",
+      "request_id": "PLAN-01-CTRL",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "가방 열람 중 게임 시간 지속 및 F키 획득 시 가방 빈칸 자동 정렬 확인",
+      "version": 6,
+      "last_edited_time": 1789949889426,
+      "code_status": "partial",
+      "work_order": "2 · 다음 구현",
+      "assessment": "F 빠른 획득과 빈칸 배치는 존재. 가방은 현재 일시정지. 실시간 편집 중 피격·사망·저장/취소 충돌 보호 후 전환.",
+      "evidence": [
+        "game/features/inventory/inventory_window.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/e2e_play_session_test.gd"
+      ]
+    },
+    {
+      "id": "3e25b728-0040-81aa-9cca-f484b6127a84",
+      "title": "스킬 슬롯당 1~3 소켓 슬롯 시스템 및 4대 메커니즘 룬(형태/원소/트리거/유틸) 장착 구현",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "조작/스킬바인딩",
+      "acceptance": "스킬에 룬 장착 시 투사체 분할, 체인 라이트닝, 시체 폭발 메커니즘 변형 확인",
+      "version": 6,
+      "last_edited_time": 1789949889993,
+      "code_status": "partial",
+      "work_order": "소켓 계약/룬 목록 후",
+      "assessment": "런 소켓·스킬 연결 기반은 있으나 스킬별1~3소켓·4계열 룬 전체는 아님. 글로벌 소켓과 분리·추가 목록 필요.",
+      "evidence": [
+        "game/features/session_sockets/session_socket_service.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/basic_loop_smoke_test.gd"
+      ]
+    },
+    {
+      "id": "3e25b728-0040-81c1-9671-f2846396c4ee",
+      "title": "5대 특화 요원(고스트, 타이탄, 블러드하운드, 데드아이, 스캐빈저) 패시브 및 업적 해금 연동",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "category": "엔진/아키텍처",
+      "acceptance": "각 요원별 고유 패시브 정상 발동 및 지정 플레이 업적 달성 시 해금 확인",
+      "version": 6,
+      "last_edited_time": 1789949891738,
+      "code_status": "unimplemented",
+      "work_order": "요원/업적 매핑 판단",
+      "assessment": "현행3요원은 신규5요원과 다름. 업적→요원 대응·거리 단위·중첩/해제 수치·가방 칸 확장 형태 미정.",
+      "evidence": [
+        "game/features/character_selection/data/character_catalog.csv"
+      ],
+      "existing_test_context": [
+        "game/tests/character_selection_contract_test.gd"
+      ]
+    },
+    {
+      "id": "3e25b728-0040-81cd-9cd3-c7935be600d4",
+      "title": "장착된 룬 탈출 시 가방 속 룬과 동일하게 대량 골드로 자동 환전 정산 구현",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "탈출 정산창에서 소켓에 꽂힌 룬도 골드로 일괄 환전되는지 확인",
+      "version": 6,
+      "last_edited_time": 1789949890573,
+      "code_status": "partial",
+      "work_order": "1 · 다음 회귀 검증",
+      "assessment": "획득 장부와 룬 auto_convert 정책은 소켓/가방 위치와 별개여서 정산 기반 존재. 실제 장착 룬 탈출 전용 중복/사망 회귀는 추가 필요.",
+      "evidence": [
+        "game/features/run_settlement/run_settlement_service.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/run_settlement_contract_test.gd"
+      ]
+    },
+    {
+      "id": "3e25b728-0040-81d1-9163-e2104c652b7c",
+      "title": "1캐릭터 1시그니처 패시브 시스템 및 기본 스타터 요원 [뱅가드: 전술 적응] 구현",
+      "request_id": "PLAN-00-ENV",
+      "planner_status": "결정 (미구현)",
+      "category": "엔진/아키텍처",
+      "acceptance": "뱅가드 선택 시 기본 AP +15% 및 이동 중 AP 자연 회복 +20% 적용 확인",
+      "version": 6,
+      "last_edited_time": 1789949891141,
+      "code_status": "partial",
+      "work_order": "패시브 목록 조정 후",
+      "assessment": "캐릭터 고정 패시브 기반은 존재. 선봉대는 현재 직선/원뿔 피해 보정으로 AP+15%/이동 중 회복+20%와 다름.",
+      "evidence": [
+        "game/features/character_selection/data/character_catalog.csv"
+      ],
+      "existing_test_context": [
+        "game/tests/character_selection_contract_test.gd"
+      ]
+    },
+    {
+      "id": "3e25b728-0040-81d2-92b4-cdfb1fcdbb8f",
+      "title": "아이템 4대 표준 크기(1x1, 1x2, 2x2, 2x3, 2x4) 그리드 판정 및 스택 룰 구현",
+      "request_id": "DATA-01-LOOT",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "아이템별 정확한 격자 면적 차지 및 1x1 아이템 스택(최대 5~10개) 확인",
+      "version": 6,
+      "last_edited_time": 1789949888220,
+      "code_status": "partial",
+      "work_order": "아이템 규격 확정 후",
+      "assessment": "격자/R회전 존재. 원문은4대라 쓰고5규격을 열거. 기존 크기 이관 및 아이템별5~10중첩 수치 필요.",
+      "evidence": [
+        "game/features/inventory/inventory_window.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/e2e_play_session_test.gd"
+      ]
+    },
+    {
+      "id": "3e25b728-0040-81dc-a3c7-eae7c165a7bf",
+      "title": "보안 금고(Secure Pouch) 단계적 확장(초기 2x2 -> 최종 2x4) 및 완제품 무기 수납 불가 필터 구현",
+      "request_id": "DATA-02-POUCH",
+      "planner_status": "결정 (미구현)",
+      "category": "전리품/파밍",
+      "acceptance": "금고에 설계도/룬 수납 가능 및 주무기 완제품(2x3) 수납 차단 확인",
+      "version": 6,
+      "last_edited_time": 1789949888853,
+      "code_status": "unimplemented",
+      "work_order": "오너 판단/이관 선행",
+      "assessment": "안전 파우치 없음. 이전1~4칸과 새2x2~2x4 규격 충돌·금지 태그·사망 보존/탈출 환산 순서 확정 필요.",
+      "evidence": [
+        "game/features/run_settlement/run_settlement_service.gd"
+      ],
+      "existing_test_context": [
+        "game/tests/run_settlement_contract_test.gd"
+      ]
+    }
+  ]
+}

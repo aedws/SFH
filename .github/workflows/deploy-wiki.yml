@@ -260,6 +260,10 @@ jobs:
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/extraction_decay_contract_test.gd" 2>&1 | tee /tmp/sfh-extraction-decay.log
           grep -q 'EXTRACTION_DECAY_OK' /tmp/sfh-extraction-decay.log
           ! grep -E 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-extraction-decay.log
+          timeout 90s xvfb-run -a godot --path "$GITHUB_WORKSPACE" --audio-driver Dummy --script "res://game/tests/enemy_attack_telegraph_contract_test.gd" -- --render 2>&1 | tee /tmp/sfh-enemy-telegraph.log
+          grep -q 'ENEMY_TELEGRAPH_OK' /tmp/sfh-enemy-telegraph.log
+          grep -q 'ENEMY_TELEGRAPH_RENDER' /tmp/sfh-enemy-telegraph.log
+          ! grep -E 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-enemy-telegraph.log
           godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/training_live_catalog_contract_test.gd" 2>&1 | tee /tmp/sfh-training-live.log
           grep -q "TRAINING_LIVE_CATALOG_OK" /tmp/sfh-training-live.log
           ! grep -E "SCRIPT ERROR:|^ERROR:" /tmp/sfh-training-live.log

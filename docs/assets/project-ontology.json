@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-21",
-  "source_sha256": "01d54f7cd6742c728d0acef49efbaf9d3bb306c58ce374621883c46bb4ca2e96",
+  "source_sha256": "285f8bf27b1ca7f2dcc0507bd69c57113bde1f3fb068b96778136c95de0b14de",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -392,18 +392,18 @@
     }
   ],
   "summary": {
-    "tracked": 56,
+    "tracked": 57,
     "owner_decisions": 6,
     "blocked": 8,
     "ready": 1,
-    "implemented": 40,
+    "implemented": 41,
     "modules": 61,
     "documents": 105,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 491,
+    "relations": 495,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -548,6 +548,33 @@
       "kind": "evidence"
     },
     {
+      "id": "work:notion-enemy-telegraph-20260921",
+      "type": "work_item",
+      "label": "PLAN-01-CTRL · 보고 피하는 몬스터 공격",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "신규16행 코드 대조 후 즉시 접촉 피해를0.4초 고정 방향 붉은 전조와 폭20px 타격으로 교체. 정책 Resource와 공격 상태를 분리하고 기존 피해·보스 문 무시를 보존.",
+      "acceptance": "지연/단발/옆 회피/회복/기절/넉백/사망/벽/보스/정책 복사와 렌더 표시 계약. 다수 적·모바일·정상10분 재미 수락은 별도.",
+      "next_action": "장착 룬 탈출 정산 전용 회귀→실시간 가방→짧은 루프 계측. 신규16행은 코드 구현2·부분8·미구현5·중복1이며 최신82행 전체 완료율로 사용하지 않음.",
+      "route": "design/current-milestone-workline/#delta-audit-20260921",
+      "relations": [
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:features/enemies",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
       "id": "work:notion-extraction-decay-20260921",
       "type": "work_item",
       "label": "PLAN-06-EXTRACT · 탈출 이탈 유예·역행",
@@ -556,7 +583,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "9/21 새 노션 반영 시작 지시의 첫 패킷. 신규 행 3d85b728-0040-816d-a6bb-f7d7be82e8b6의 2초 유예 후 초당1초 역행을 구현. 구역 밖 무기한 일시정지 규칙을 대체하며30분 마감·가방 축소 승인과 구분.",
       "acceptance": "두 출구·유예 경계·초기 시간 상한·자동 재진입·외부 F·정산1회·정책 불변·HUD 상태 및 전체 게임/E2E 통과. 일반10분·재미 수락 제외.",
-      "next_action": "신규16행 고유 ID/코드 증거 대조와 중복 분리 후 다음 판단 불필요 패킷 선정. 최신82행 완료율은 재산정 전 공개하지 않음.",
+      "next_action": "신규16행 대조와 공격 전조 반영 완료. 장착 룬 정산 회귀→실시간 가방→짧은 루프 계측을 이어감. 최신82행 완료율은 별도 재산정.",
       "route": "features/extraction-defense-results/#decay-20260921",
       "relations": [
         {
@@ -581,7 +608,7 @@
       "status": "needs_decision",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "9/21 공개 GDD v206·101블록/작업표82행 재확인. 기존10분 방향 대비30분 마감, 12x8 가방 대비36~72칸/실시간, 파우치 보존과 룬 자동환전, 특화요원 조건부 수치를 분리 판단. 신규16행 중 미니루프2행은 중복 후보이며 미구현 표기가 코드 부재 증거는 아님.",
+      "summary": "9/21 공개 GDD v206·101블록/작업표82행 재확인. 기존10분 방향 대비30분 마감, 12x8 가방 대비36~72칸, 파우치 보존과 룬 자동환전, 특화요원 조건부 수치를 분리 판단. 신규16행 코드 대조 완료·미니루프 중복1행 확정, 미구현 기획 표기와 코드 상태 분리.",
       "next_action": "탈출2초 유예/역행은 첫 반영 완료. 세션 길이 적용 범위, 기존 저장품 초과분 보존, 파우치/룬 정산 우선순위, 요원 발동/해제·업적 연결은 별도 판단 후82행 코드 대응도 재산정.",
       "route": "design/master-gdd-alignment/#source-recheck-20260921",
       "relations": [
@@ -2944,14 +2971,14 @@
       "label": "적 유닛",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "전투 · feature · 파일 6개",
+      "summary": "전투 · feature · 파일 8개",
       "route": "architecture/code-module-map/?module=enemies",
       "documentation_route": "features/enemies/",
       "source": "game/features/enemies",
       "kind": "implementation",
       "metrics": {
-        "files": 6,
-        "classes": 6,
+        "files": 8,
+        "classes": 8,
         "incoming": 4,
         "outgoing": 0
       }
@@ -3808,13 +3835,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 76개",
+      "summary": "기반·검증 · verification · 파일 77개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 76,
+        "files": 77,
         "classes": 0,
         "incoming": 0,
         "outgoing": 55
@@ -4977,6 +5004,30 @@
     }
   ],
   "relations": [
+    {
+      "from": "authority:project-owner",
+      "to": "work:notion-enemy-telegraph-20260921",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:notion-enemy-telegraph-20260921",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:notion-enemy-telegraph-20260921",
+      "to": "document:features/enemies",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:notion-enemy-telegraph-20260921",
+      "to": "document:quality/e2e-play-session",
+      "type": "verified_by",
+      "origin": "registry"
+    },
     {
       "from": "authority:project-owner",
       "to": "work:notion-extraction-decay-20260921",

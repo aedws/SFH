@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "a88acdd430456de3ae6cbb51db7e92988a37d1a81f9614c87493629c76428b07",
+  "source_sha256": "0e9c2e2fa7d7c68ef9b6bcfb97303d2f0b18998b43018ad78811c40fc4863aa7",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 61,
-    "scripts": 377,
-    "named_classes": 290,
+    "scripts": 380,
+    "named_classes": 292,
     "relationships": 230,
     "project_inheritance": 16,
     "enabled_toggles": 70
@@ -333,10 +333,12 @@
       "path": "game/features/enemies",
       "wiki_route": "features/enemies/",
       "enabled": true,
-      "file_count": 6,
-      "class_count": 6,
+      "file_count": 8,
+      "class_count": 8,
       "classes": [
         "ArmorComponent",
+        "EnemyAttackPolicy",
+        "EnemyAttackTelegraph",
         "EnemyCharacter",
         "EnemyCrowdConfig",
         "EnemyStatusBars",
@@ -1328,7 +1330,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 76,
+      "file_count": 77,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1909,6 +1911,24 @@
       "module": "enemies",
       "path": "game/features/enemies/components/armor_component.gd",
       "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:EnemyAttackPolicy",
+      "name": "EnemyAttackPolicy",
+      "module": "enemies",
+      "path": "game/features/enemies/enemy_attack_policy.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:EnemyAttackTelegraph",
+      "name": "EnemyAttackTelegraph",
+      "module": "enemies",
+      "path": "game/features/enemies/enemy_attack_telegraph.gd",
+      "extends": "Node2D",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -5020,7 +5040,7 @@
       "from": "verification",
       "to": "enemies",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",
