@@ -128,6 +128,12 @@ SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입
 
 ## 검색 별칭
 
+### 플레이 흐름 계측 경계 · 2026-09-22
+
+`run_flow`의 `RunFlowCollector`는 순수 사건/시각→복사본 보고서만 담당합니다. `RunFlowTelemetry`는 지도 공개 위치 계약·방 전투 신호·전리품 `decision_observed(drop_id, stage, action)` 신호와 런 경계를 연결합니다. Game은 생성/시작/정산/거점 복귀만 조립하며 방 배열, 적, 가방, 프로필을 계측기에서 변경하지 않습니다. 임시 drop 인스턴스 ID는 해당 런에서 같은 아이템 여러 개를 구분할 용도이며 영구 아이템 식별자가 아닙니다.
+
+`FeatureManifest.run_flow_enabled=false`로 끌 수 있고 선택 공급자가 없으면 보고서 `sources`에 미연결을 표시합니다. 기록 파일 실패도 정산을 막지 않습니다. 512건 상한·실제 시계·종료 불변·신호 해제·새 런 초기화 계약을 유지하며 게임 밸런스나 Sheet에 QA 임계값을 복제하지 않습니다. [검사/해석](../quality/e2e-play-session.md#run-flow-20260922).
+
 ### 바닥 렌더러 대체 계약
 
 2026-09-09 오너 승인으로 `DungeonFloorLayer`의 Node2D 청크 텍스처를 TileMapLayer 대신 사용합니다. 첫 GPU 업로드 지연 감소가 변경 이유이며 [측정 근거](../performance/minimum-requirements.md#first-frame-20260908)를 보존합니다. `rebuild`, `get_used_cells`, `map_to_local` 계약은 유지하고 충돌/길찾기 데이터는 렌더러에 넣지 않습니다. 교체 시 `floor_render_contract_test`와 첫 렌더 검수를 다시 수행합니다. 기술 대체 승인은 일반 플레이 QA 완료와 분리합니다.

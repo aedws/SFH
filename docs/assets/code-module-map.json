@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "442752aa4b9afb2b4c412c1cf4b2253dd51c8b0e26c6b29ccf6884b33006b367",
+  "source_sha256": "b41c808237ad29263e4354e005d84926e56d8220d9f3c35c651426e9ab1e2c06",
   "domains": [
     {
       "id": "system",
@@ -62,12 +62,12 @@
     }
   ],
   "summary": {
-    "modules": 61,
-    "scripts": 382,
-    "named_classes": 292,
-    "relationships": 230,
+    "modules": 62,
+    "scripts": 385,
+    "named_classes": 294,
+    "relationships": 232,
     "project_inheritance": 16,
-    "enabled_toggles": 70
+    "enabled_toggles": 71
   },
   "modules": [
     {
@@ -83,7 +83,7 @@
       "class_count": 0,
       "classes": [],
       "incoming_count": 2,
-      "outgoing_count": 55
+      "outgoing_count": 56
     },
     {
       "id": "core",
@@ -1100,6 +1100,24 @@
       "outgoing_count": 1
     },
     {
+      "id": "run_flow",
+      "label": "플레이 흐름 계측",
+      "domain": "system",
+      "domain_label": "기반·검증",
+      "layer": "feature",
+      "path": "game/features/run_flow",
+      "wiki_route": "architecture/module-rules/",
+      "enabled": true,
+      "file_count": 2,
+      "class_count": 2,
+      "classes": [
+        "RunFlowCollector",
+        "RunFlowTelemetry"
+      ],
+      "incoming_count": 2,
+      "outgoing_count": 0
+    },
+    {
       "id": "run_settlement",
       "label": "런 정산",
       "domain": "operation",
@@ -1330,11 +1348,11 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 79,
+      "file_count": 80,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
-      "outgoing_count": 55
+      "outgoing_count": 56
     }
   ],
   "classes": [
@@ -3553,6 +3571,24 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:RunFlowCollector",
+      "name": "RunFlowCollector",
+      "module": "run_flow",
+      "path": "game/features/run_flow/run_flow_collector.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:RunFlowTelemetry",
+      "name": "RunFlowTelemetry",
+      "module": "run_flow",
+      "path": "game/features/run_flow/run_flow_telemetry.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:RunSettlementService",
       "name": "RunSettlementService",
       "module": "run_settlement",
@@ -4846,6 +4882,12 @@
     },
     {
       "from": "scene_assembly",
+      "to": "run_flow",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "scene_assembly",
       "to": "run_settlement",
       "type": "references",
       "evidence_count": 1
@@ -5248,6 +5290,12 @@
     },
     {
       "from": "verification",
+      "to": "run_flow",
+      "type": "verifies",
+      "evidence_count": 1
+    },
+    {
+      "from": "verification",
       "to": "run_settlement",
       "type": "verifies",
       "evidence_count": 1
@@ -5256,7 +5304,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 34
+      "evidence_count": 35
     },
     {
       "from": "verification",

@@ -8,6 +8,8 @@ signal loot_equipped(item_id: StringName, result: Dictionary, snapshot: Dictiona
 signal loot_socketed(item_id: StringName, result: Dictionary, snapshot: Dictionary)
 signal acquisition_cancelled(item_id: StringName)
 signal interaction_availability_changed(available: bool, prompt: String)
+## Drop identity prevents same-item piles and repeat previews from sharing timers.
+signal decision_observed(drop_id: int, stage: StringName, action: StringName)
 
 const DROP_SCRIPT := preload("res://game/features/field_loot/field_loot_drop.gd")
 const PANEL_SCRIPT := preload("res://game/features/field_loot/field_loot_comparison_panel.gd")
@@ -284,6 +286,7 @@ func _finalize_focused_acquisition(mode: StringName, equip_result: Dictionary = 
 		entry[&"session_socket_result"] = last_socket_result.duplicate(true)
 	acquired_items[item_id] = entry
 	var acquired_drop := focused_drop
+	decision_observed.emit(acquired_drop.get_instance_id(), &"resolve", mode)
 	focused_drop = null
 	active_drops.erase(acquired_drop)
 	panel.hide_comparison()
@@ -303,6 +306,7 @@ func cancel_preview() -> bool:
 	var comparison: Dictionary = focused_drop.get("comparison")
 	var item_id := StringName(comparison.get(&"item_id", &""))
 	suppressed_drop = focused_drop
+	decision_observed.emit(focused_drop.get_instance_id(), &"resolve", &"deferred")
 	focused_drop = null
 	panel.hide_comparison()
 	preview_changed.emit(false, {})
@@ -370,6 +374,7 @@ func _on_drop_proximity_changed(drop: Node2D, available: bool) -> void:
 		focused_drop = drop
 		var comparison: Dictionary = drop.get("comparison")
 		panel.show_comparison(comparison)
+		decision_observed.emit(drop.get_instance_id(), &"open", &"")
 		preview_changed.emit(true, comparison.duplicate(true))
 		var session_socket_candidate := _is_session_socket_item(
 			StringName(comparison.get(&"item_id", &""))
@@ -389,6 +394,7 @@ func _on_drop_proximity_changed(drop: Node2D, available: bool) -> void:
 			)
 		)
 	elif focused_drop == drop:
+		decision_observed.emit(drop.get_instance_id(), &"interrupt", &"out_of_range")
 		focused_drop = null
 		panel.hide_comparison()
 		preview_changed.emit(false, {})
