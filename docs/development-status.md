@@ -88,7 +88,7 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
         <p><a href="/quality/e2e-play-session/#run-flow-20260922">기록 해석과 검수 기준</a> · <a href="/design/current-milestone-workline/#next-20260922">다음 작업</a></p>
       </div>
     </details>
-    <details class="sfh-bundle" open>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투는 가방에서도 계속 · 장착 룬 환전 검증</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>작전 중 I/E 가방·모듈 편집과 저장 확인에서 시간·적·피격·쿨타임이 계속됩니다. UI 뒤 이동·공격과 사망 후 미저장 편집 적용은 막고 현재 HP를 표시합니다. 거점 준비는 종전 방식을 유지합니다.</p></div>

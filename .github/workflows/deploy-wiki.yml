@@ -628,8 +628,9 @@ jobs:
           python scripts/check_notion_audit.py
           if ($LASTEXITCODE -ne 0) { throw "Notion/code crosswalk failed." }
           python scripts/test_notion_snapshot.py
-          python scripts/test_run_flow_summary.py
           if ($LASTEXITCODE -ne 0) { throw "Notion source and audit regressions failed." }
+          python scripts/test_run_flow_summary.py
+          if ($LASTEXITCODE -ne 0) { throw "Run flow summary regressions failed." }
           ./scripts/check-code-module-map.ps1
           ./scripts/check-project-ontology.ps1
           python -m mkdocs build --strict
