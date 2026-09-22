@@ -243,9 +243,9 @@ func acquire_items(item_id: StringName, quantity: int) -> Dictionary:
 	return result
 
 
-func socket_owned_item(item_id: StringName, requested_targets: Dictionary = {}) -> Dictionary:
-	var instance_id := inventory_adapter.first_owned(item_id)
-	if instance_id == &"":
+func socket_owned_item(item_id: StringName, requested_targets: Dictionary = {}, requested_instance: StringName = &"") -> Dictionary:
+	var instance_id := requested_instance if requested_instance != &"" else inventory_adapter.first_owned(item_id)
+	if not inventory_adapter.owns_instance(item_id, instance_id):
 		return {&"success": false, &"reason": &"not_owned"}
 	var before: Dictionary = inventory_adapter.bag.call(&"export_runtime_state")
 	var taken: Dictionary = inventory_adapter.bag.call(&"take_item_entry", instance_id)
@@ -274,6 +274,38 @@ func supports_inventory_item(item_id: StringName) -> bool:
 
 func perform_inventory_item_action(item_id: StringName) -> Dictionary:
 	return socket_owned_item(item_id)
+
+
+func get_inventory_action_targets(item_id: StringName) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if config == null or not config.binding_policy.bind_to_target:
+		return result
+	var seen := {}
+	for rule: SessionSocketRule in rules_by_item.get(item_id, []):
+		var kind := rule.effect_target
+		if seen.has(kind): continue
+		seen[kind] = true
+		var candidates: Array = [{&"target_id": &"player", &"display_name": "현재 플레이어"}]
+		if kind == &"weapon": candidates = weapon_target.call(&"get_modifier_targets")
+		elif kind == &"skill": candidates = skill_target.call(&"get_modifier_targets")
+		result.append({&"target_kind": kind,
+			&"display_name": {&"weapon": "적용 무기 · 현재 장비", &"skill": "적용 스킬", &"player": "적용 대상"}[kind],
+			&"candidates": candidates.duplicate(true)})
+	return result
+
+
+func perform_targeted_inventory_item_action(item_id: StringName, targets: Dictionary, instance_id: StringName) -> Dictionary:
+	# Validate again after save/discard: equipment or the live catalog may have changed.
+	var groups := get_inventory_action_targets(item_id)
+	if targets.size() != groups.size():
+		return {&"success": false, &"reason": &"invalid_target"}
+	for group: Dictionary in groups:
+		var requested := StringName(targets.get(group.target_kind, &""))
+		if requested == &"" or config.binding_policy.choose(group.candidates, requested).is_empty():
+			return {&"success": false, &"reason": &"invalid_target"}
+	if not inventory_adapter.owns_instance(item_id, instance_id):
+		return {&"success": false, &"reason": &"not_owned"}
+	return socket_owned_item(item_id, targets, instance_id)
 
 
 func _return_to_bag(slot: Dictionary) -> bool:

@@ -269,6 +269,9 @@ jobs:
           timeout 90s godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/vanguard_resource_contract_test.gd" 2>&1 | tee /tmp/sfh-vanguard.log
           grep -q 'VANGUARD_RESOURCE_OK' /tmp/sfh-vanguard.log
           ! grep -E 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-vanguard.log
+          timeout 90s godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/socket_target_selection_contract_test.gd" 2>&1 | tee /tmp/sfh-socket-target.log
+          grep -q 'SOCKET_TARGET_SELECTION_OK' /tmp/sfh-socket-target.log
+          ! grep -E 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-socket-target.log
           timeout 90s godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/realtime_inventory_contract_test.gd" 2>&1 | tee /tmp/sfh-realtime-inventory.log
           grep -q 'REALTIME_INVENTORY_OK' /tmp/sfh-realtime-inventory.log
           ! grep -E 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-realtime-inventory.log

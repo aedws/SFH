@@ -17,9 +17,11 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-22</span><span>SEARCH COMMAND</span><span>15 DAYS · 173 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-22</span><span>SEARCH COMMAND</span><span>15 DAYS · 174 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 9/22 결정 항목 반영
+
+[런 소켓 대상 선택](features/session-sockets.md#target-selection-20260922)을 보완했습니다. 가방에서 적용 스킬을 고르고 저장 확인 후 대상/실물 아이템을 재검증합니다. 기존 전역 소켓 용량·효과값은 유지하며 스킬별1~3소켓·4계열 룬 전체는 미완료이므로 고유15요구의 구현5·부분5·미구현5는 변하지 않습니다. 공개 GDD101블록/작업표82행 해시도 재조회에서 동일합니다.
 
 후속으로 [플레이 흐름 계측](quality/e2e-play-session.md#run-flow-20260922)을 구현했습니다. 구간별 실제 경과·전리품 판단·후퇴/미완료/누락을 로컬 보고서로 남깁니다.1~2분 순환·보상 전체 처리3초의 사람 수락은 미검증이므로 부분 구현 수를 임의로 줄이지 않습니다.
 
@@ -78,9 +80,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 3 · IMPROVE 2 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 4 · IMPROVE 3 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>코어를 원하는 스킬에 직접 장착</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>가방에서 코어의 적용 스킬을 직접 선택합니다. 첫 스킬 외에도 장착할 수 있으며 취소하면 아이템과 효과는 그대로 유지됩니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>저장 확인 중 대상이 바뀌면 장착을 멈추고 재선택을 안내합니다. 같은 아이템이 여러 개여도 선택한 것만 사용합니다. 기존 소켓 수와 효과값은 유지합니다.</p></div>
+        <p><a href="/features/session-sockets/#target-selection-20260922">대상 선택 사용법</a> · <a href="/quality/e2e-play-session/#socket-target-20260922">검증과 미수락 범위</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>뱅가드 · 이동하며 AP를 더 빠르게 회복</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>선봉대의 임시 피해 보너스를 전술 적응으로 교체했습니다. 기본 AP +15%, 실제 이동 중 자연 회복 +20%로 훈련과 작전에 적용합니다. 요원을 반복 교체해도 AP가 공짜로 채워지지 않습니다.</p></div>
