@@ -11,6 +11,8 @@ hide:
 
 작업·구조·검증 근거를 골라 확인하세요. 최종 판단은 프로젝트 오너가 합니다.
 
+**9/22 후속:** [런 소켓 대상 선택](../features/session-sockets.md#target-selection-20260922)을 선택적 제공자 API로 연결했습니다. 후보 사본→명시적 선택→저장 이후 재검증→선택 인스턴스 소비이며 Game 조립부 변경은 없습니다. 스킬별1~3소켓/4계열 룬은 계속 부분 상태입니다. [전용 회귀·렌더 근거](../quality/e2e-play-session.md#socket-target-20260922).
+
 **9/22 실행 상태:** [전술 적응·자원 수정자 계약](../features/character-selection.md#tactical-adaptation-20260922)과 Sheet/CSV `2026-09-22.1` 반영.  장착 룬 정산 회귀·실시간 가방·[플레이 흐름 계측](../quality/e2e-play-session.md#run-flow-20260922) 반영. **[다음 작업: 정상10분/F와 FUN QA](../design/current-milestone-workline.md#next-20260922)**. 보고서에서 교전·보상 판단·다음 방 이동과 후퇴/미완료를 나눠 확인하세요. 훈련 라이브 동등성 수정은 완료했으며, 양 플랫폼 정상10분·모바일/FUN QA와 기획 충돌 판단은 별도로 남아 있습니다. **아직100% 아님**이며 이전66행 점수를 최신82행 완료율로 사용하지 않습니다.
 
 현행 추가: [방어구 14종·4부위·세트 계약](../features/armor-sets.md). `ArmorSetDefinition → ArmorSetResolver → EquipmentSystem → Player/Weapon/Skill`로 분리했으며, 시트 임시값·잠금 CSV·게임 정의·DPS 비교를 연결합니다. [검증과 제외 범위](../quality/e2e-play-session.md#armor-20260909).

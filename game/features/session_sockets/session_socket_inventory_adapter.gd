@@ -30,3 +30,11 @@ func first_owned(item_id: StringName) -> StringName:
 			if StringName(entry.get(&"item_id", &"")) == item_id:
 				return StringName(entry[&"instance_id"])
 	return &""
+
+
+func owns_instance(item_id: StringName, instance_id: StringName) -> bool:
+	if is_instance_valid(bag) and instance_id != &"":
+		for entry: Dictionary in bag.call(&"get_snapshot").get(&"items", []):
+			if StringName(entry.get(&"instance_id", &"")) == instance_id:
+				return StringName(entry.get(&"item_id", &"")) == item_id
+	return false

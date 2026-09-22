@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-22",
-  "source_sha256": "28c809af93878c31618956f11ff9c731ad1ca28ef2b93fb5c1574b076484c5e1",
+  "source_sha256": "8fad2673f822c89d845094b63f54effb559293683fb20e03018fa7bd5f6ba470",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -392,18 +392,18 @@
     }
   ],
   "summary": {
-    "tracked": 60,
+    "tracked": 61,
     "owner_decisions": 6,
     "blocked": 8,
     "ready": 1,
-    "implemented": 44,
+    "implemented": 45,
     "modules": 62,
     "documents": 105,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 510,
+    "relations": 515,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -546,6 +546,37 @@
       "type": "source",
       "certainty": "confirmed",
       "kind": "evidence"
+    },
+    {
+      "id": "work:socket-target-20260922",
+      "type": "work_item",
+      "label": "DATA-01-LOOT · 런 소켓 적용 대상 선택",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "가방에서 적용 스킬 직접 선택. 선택한 실물만 소비하고 저장 확인 이후 대상 재검증. 기존 총 용량·효과·Sheet·CSV는 유지.",
+      "acceptance": "두 번째/세 번째 실제 쿨타임만 변경, 취소/저장/버리기·동일품 선택·대상 변경·실시간 작전·훈련 원복·1280x800 렌더. 스킬별1~3소켓·4계열 룬 전체의 수락은 아님.",
+      "next_action": "스킬별1/2소켓 대응·고급/심층 추가 조건·룬별 효과 수치 확정. 고유15요구 구현5·부분5·미구현5 유지.",
+      "route": "features/session-sockets/#target-selection-20260922",
+      "relations": [
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:features/session-sockets",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        }
+      ],
+      "kind": "governance"
     },
     {
       "id": "work:vanguard-20260922",
@@ -3276,14 +3307,14 @@
       "label": "가방 인벤토리",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 6개",
+      "summary": "장비·세팅 · feature · 파일 7개",
       "route": "architecture/code-module-map/?module=inventory",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/inventory",
       "kind": "implementation",
       "metrics": {
-        "files": 6,
-        "classes": 6,
+        "files": 7,
+        "classes": 7,
         "incoming": 7,
         "outgoing": 2
       }
@@ -3942,13 +3973,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 81개",
+      "summary": "기반·검증 · verification · 파일 82개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 81,
+        "files": 82,
         "classes": 0,
         "incoming": 0,
         "outgoing": 56
@@ -5111,6 +5142,36 @@
     }
   ],
   "relations": [
+    {
+      "from": "authority:project-owner",
+      "to": "work:socket-target-20260922",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:socket-target-20260922",
+      "to": "source:notion",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:socket-target-20260922",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:socket-target-20260922",
+      "to": "document:features/session-sockets",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:socket-target-20260922",
+      "to": "document:quality/e2e-play-session",
+      "type": "verified_by",
+      "origin": "registry"
+    },
     {
       "from": "authority:project-owner",
       "to": "work:vanguard-20260922",

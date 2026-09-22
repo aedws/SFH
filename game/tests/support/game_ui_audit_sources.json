@@ -1,5 +1,6 @@
 {
   "date": "2026-09-08",
+  "last_incremental_review": "2026-09-22 · inventory target picker; see quality/e2e-play-session#socket-target-20260922",
   "scope": "Runtime game UI including optional, empty, blocked and world-space feedback. Not the separate role wiki.",
   "sources": [
     "game/features/boss_warning/boss_warning_hud.gd",
@@ -18,6 +19,7 @@
     "game/features/hub_preparation/hub_preparation_panel.gd",
     "game/features/hub_preparation/hub_service_station.gd",
     "game/features/inventory/inventory_grid_view.gd",
+    "game/features/inventory/inventory_action_target_picker.gd",
     "game/features/presentation_theme/inventory_item_preview.gd",
     "game/features/presentation_theme/inventory_slot_button.gd",
     "game/features/inventory/inventory_window.gd",

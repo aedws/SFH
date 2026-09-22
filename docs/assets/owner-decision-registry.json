@@ -313,6 +313,24 @@
   ],
   "objects": [
     {
+      "id": "work:socket-target-20260922",
+      "type": "work_item",
+      "label": "DATA-01-LOOT · 런 소켓 적용 대상 선택",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "가방에서 적용 스킬 직접 선택. 선택한 실물만 소비하고 저장 확인 이후 대상 재검증. 기존 총 용량·효과·Sheet·CSV는 유지.",
+      "acceptance": "두 번째/세 번째 실제 쿨타임만 변경, 취소/저장/버리기·동일품 선택·대상 변경·실시간 작전·훈련 원복·1280x800 렌더. 스킬별1~3소켓·4계열 룬 전체의 수락은 아님.",
+      "next_action": "스킬별1/2소켓 대응·고급/심층 추가 조건·룬별 효과 수치 확정. 고유15요구 구현5·부분5·미구현5 유지.",
+      "route": "features/session-sockets/#target-selection-20260922",
+      "relations": [
+        {"to": "source:notion", "type": "informed_by"},
+        {"to": "source:notion-tracker", "type": "informed_by"},
+        {"to": "document:features/session-sockets", "type": "documented_by"},
+        {"to": "document:quality/e2e-play-session", "type": "verified_by"}
+      ]
+    },
+    {
       "id": "work:vanguard-20260922",
       "type": "work_item",
       "label": "PLAN-00-ENV · 뱅가드 전술 적응",

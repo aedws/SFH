@@ -232,12 +232,14 @@
       "last_edited_time": 1789949889993,
       "code_status": "partial",
       "work_order": "소켓 계약/룬 목록 후",
-      "assessment": "런 소켓·스킬 연결 기반은 있으나 스킬별1~3소켓·4계열 룬 전체는 아님. 글로벌 소켓과 분리·추가 목록 필요.",
+      "assessment": "9/22 가방의 적용 스킬 직접 선택·취소/저장·실물 인스턴스·대상 변경 재검증을 보완. 기존 총 용량 유지이며 스킬별1~3소켓·4계열 룬 전체는 아님. 용량 대응·추가 룬 목록 필요.",
       "evidence": [
-        "game/features/session_sockets/session_socket_service.gd"
+        "game/features/session_sockets/session_socket_service.gd",
+        "game/features/inventory/inventory_action_target_picker.gd"
       ],
       "existing_test_context": [
-        "game/tests/basic_loop_smoke_test.gd"
+        "game/tests/basic_loop_smoke_test.gd",
+        "game/tests/socket_target_selection_contract_test.gd"
       ]
     },
     {

@@ -82,6 +82,18 @@ func perform_inventory_item_action(item_id: StringName) -> Dictionary:
 	return socket_provider.call(&"socket_owned_item", item_id)
 
 
+func get_inventory_action_targets(item_id: StringName) -> Array[Dictionary]:
+	if not supports_inventory_item(item_id) or not socket_provider.has_method(&"get_inventory_action_targets"):
+		return []
+	return socket_provider.call(&"get_inventory_action_targets", item_id)
+
+
+func perform_targeted_inventory_item_action(item_id: StringName, targets: Dictionary, instance_id: StringName) -> Dictionary:
+	if not supports_inventory_item(item_id) or not socket_provider.has_method(&"perform_targeted_inventory_item_action"):
+		return {&"success": false, &"reason": &"training_inactive"}
+	return socket_provider.call(&"perform_targeted_inventory_item_action", item_id, targets, instance_id)
+
+
 func _editing_active() -> bool:
 	return loadout_service != null and bool(loadout_service.call(&"get_snapshot").get(&"free_editing", false))
 

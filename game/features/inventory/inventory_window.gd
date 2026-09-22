@@ -58,6 +58,7 @@ var confirm_buttons: Array[Button] = []
 var layout_deferred_pending := false
 var open_layout_ready := false
 var runtime_item_actions: Array[Node] = []
+var runtime_target_picker: InventoryActionTargetPicker
 
 
 func _ready() -> void:
@@ -102,6 +103,9 @@ func _input(event: InputEvent) -> void:
 	if not visible or event.is_echo():
 		return
 	if event.is_action_pressed(&"ui_cancel"):
+		if runtime_target_picker.dismiss_popup():
+			get_viewport().set_input_as_handled()
+			return
 		if confirmation_visible:
 			resolve_exit(&"cancel")
 		else:
@@ -361,6 +365,12 @@ func _build_ui() -> void:
 	detail_column.add_child(selected_preview)
 	selected_name = _label(detail_column, "아이템 선택", 18)
 	selected_description = _label(detail_column, "아이템을 선택하면 상세 정보가 표시됩니다.", 13)
+	runtime_target_picker = InventoryActionTargetPicker.new()
+	detail_column.add_child(runtime_target_picker)
+	runtime_target_picker.hide()
+	runtime_target_picker.selection_changed.connect(func():
+		action_button.disabled = not runtime_target_picker.is_complete()
+		status_label.text = "선택 대상 확인 후 장착하세요." if runtime_target_picker.is_complete() else "적용할 대상을 먼저 선택하세요.")
 	rotate_button = _button(detail_column, "선택 아이템 회전 / R", _rotate_selected_item)
 	action_button = _button(detail_column, "선택 슬롯에 장착", _apply_selection)
 	ui.action(action_button, "gear", true)
@@ -486,6 +496,8 @@ func _refresh() -> void:
 	rotate_button.text = "선택 아이템 회전 / %s" % _action_binding_label(&"equip_field_loot", "R")
 	rotate_button.disabled = selected_entry.is_empty() or not bool(selected_entry.get(&"can_rotate", false))
 	action_button.disabled = selected_entry.is_empty() or (_runtime_action_provider(selected_entry) == null and (session.equipment == null or selected_entry.get(&"item_type") not in [&"weapon", &"armor", &"module", &"part"]))
+	if selected_entry.is_empty(): runtime_target_picker.present([], &"")
+	elif runtime_target_picker.visible: action_button.disabled = not runtime_target_picker.is_complete()
 	unequip_button.disabled = session.equipment == null
 	_layout()
 	if current_tab == 2 and session.equipment != null:
@@ -619,10 +631,16 @@ func _show_selected_entry(entry: Dictionary) -> void:
 	action_button.text = "모듈 / 파츠 장착" if entry[&"item_type"] in [&"module", &"part"] else "선택 슬롯에 장착"
 	action_button.tooltip_text = ""
 	action_button.disabled = session.equipment == null or entry[&"item_type"] not in [&"weapon", &"armor", &"module", &"part"]
-	if _runtime_action_provider(entry) != null:
+	var runtime_provider := _runtime_action_provider(entry)
+	var groups: Array = []
+	if runtime_provider != null:
 		action_button.text = "런 소켓에 즉시 장착"
 		action_button.disabled = false
-		action_button.tooltip_text = "가방 편집을 먼저 저장/취소한 후 즉시 적용합니다. 무기는 현재 무기, 스킬은 첫 장착 스킬에 귀속됩니다."
+		action_button.tooltip_text = "선택한 대상에만 적용합니다. 미저장 편집은 먼저 저장/버리기/계속 편집을 확인합니다."
+		if runtime_provider.has_method(&"get_inventory_action_targets") and runtime_provider.has_method(&"perform_targeted_inventory_item_action"):
+			groups = runtime_provider.call(&"get_inventory_action_targets", StringName(entry.item_id))
+	runtime_target_picker.present(groups, StringName(entry.instance_id))
+	if not groups.is_empty(): action_button.disabled = not runtime_target_picker.is_complete()
 	rotate_button.disabled = not bool(entry.get(&"can_rotate", false))
 
 
@@ -646,14 +664,22 @@ func _apply_selection() -> void:
 	var provider := _runtime_action_provider(selected_entry)
 	if provider != null:
 		var item_id := StringName(selected_entry.get(&"item_id", &""))
+		var instance_id := StringName(selected_entry.get(&"instance_id", &""))
+		var targeted := provider.has_method(&"get_inventory_action_targets") and provider.has_method(&"perform_targeted_inventory_item_action")
+		if targeted and not runtime_target_picker.is_complete():
+			status_label.text = "적용할 대상을 먼저 선택하세요."
+			return
+		var targets := runtime_target_picker.get_selection()
 		request_leave(func():
 			if not is_instance_valid(provider):
 				status_label.text = "사용 가능한 런 소켓이 없습니다."
 				return
-			var result: Dictionary = provider.call(&"perform_inventory_item_action", item_id)
+			var result: Dictionary = provider.call(&"perform_targeted_inventory_item_action", item_id, targets, instance_id) if targeted else provider.call(&"perform_inventory_item_action", item_id)
 			session.begin()
 			_bind_draft()
-			status_label.text = "런 소켓 장착 완료" if result.get(&"success", false) else "장착 불가 · %s" % result.get(&"reason", "")
+			var reason := StringName(result.get(&"reason", &""))
+			var explanation: String = {&"invalid_target": "대상이 변경되었습니다. 아이템과 대상을 다시 선택하세요.", &"not_owned": "선택한 아이템이 없어 장착하지 않았습니다.", &"duplicate_limit": "이미 같은 자산이 장착되어 있습니다.", &"bag_full": "교체품을 돌려받을 가방 공간이 부족합니다."}.get(reason, String(reason))
+			status_label.text = "선택 대상에 런 소켓 장착 완료" if result.get(&"success", false) else "장착 불가 · " + explanation
 		)
 		return
 	var id: StringName = selected_entry[&"instance_id"]
