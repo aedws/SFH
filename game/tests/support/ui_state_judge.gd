@@ -79,7 +79,7 @@ const STATE_RULES := {
 	&"inventory_combat": {
 		&"visible": [&"inventory"],
 		&"hidden": [&"hub_hud", &"run_setup", &"combat_hud", &"game_result", &"key_mapping", &"equipment", &"minimap", &"combat_skills", &"dash_cooldown"],
-		&"paused": true,
+		&"paused": false,
 		&"modal_count": 1,
 		&"inside_viewport": [&"inventory"],
 	},
@@ -94,7 +94,7 @@ const STATE_RULES := {
 	&"modification_combat": {
 		&"visible": [&"inventory"],
 		&"hidden": [&"hub_hud", &"run_setup", &"combat_hud", &"game_result", &"key_mapping", &"equipment", &"minimap", &"combat_skills", &"dash_cooldown"],
-		&"paused": true,
+		&"paused": false,
 		&"modal_count": 1,
 		&"inside_viewport": [&"inventory"],
 	},

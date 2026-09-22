@@ -14,6 +14,7 @@ var loadout
 var resource_provider: Node
 var damage_enabled: bool = true
 var activation_enabled: bool = true
+var ui_input_blocked := false
 var cooldowns: Array[float] = []
 var hud_refresh_accumulator: float = 0.0
 var state_emission_count: int = 0
@@ -25,6 +26,9 @@ var targeted_modifiers := preload("res://game/core/targeted_modifier_store.gd").
 var owned_effects: Array[WeakRef] = []
 var _candidate_area: Area2D
 var character_specialization: Dictionary = {}
+
+func set_ui_input_blocked(blocked: bool) -> void:
+	ui_input_blocked = blocked
 
 func set_character_specialization(policy: Dictionary) -> void:
 	character_specialization = policy.duplicate(true)
@@ -196,7 +200,7 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not activation_enabled or loadout == null:
+	if ui_input_blocked or not activation_enabled or loadout == null:
 		return
 	for index in loadout.skills.size():
 		var action_id := _action_for_skill(loadout.skills[index])
@@ -208,7 +212,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func try_activate(slot_index: int) -> bool:
 	if (
-		not activation_enabled
+		ui_input_blocked or not activation_enabled
 		or loadout == null
 		or slot_index < 0
 		or slot_index >= loadout.skills.size()

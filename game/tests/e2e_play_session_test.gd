@@ -626,7 +626,7 @@ func _verify_operation_session() -> bool:
 
 	await _tap_key(KEY_I)
 	var inventory = game.get("inventory_window") as Control
-	if inventory == null or not inventory.visible or not paused:
+	if inventory == null or not inventory.visible or paused:
 		return _fail("전투 세션에서 실제 I 입력으로 가방을 확인할 수 없습니다.")
 	if not _judge_ui_state(&"inventory_combat", "전투 I 가방"):
 		return false

@@ -13,6 +13,7 @@ var dirty := false
 var conflicted := false
 var applying := false
 var error_message := ""
+var active := false
 
 
 func configure(bag: Node, gear: Node = null) -> void:
@@ -24,6 +25,7 @@ func configure(bag: Node, gear: Node = null) -> void:
 
 
 func begin() -> bool:
+	active = true
 	if inventory != null:
 		inventory.free()
 	if equipment != null:
@@ -185,6 +187,8 @@ func remove_modification(slot_id: StringName, kind: StringName, item_id: StringN
 
 
 func commit() -> bool:
+	if not active:
+		return _reject("종료된 편집은 저장할 수 없습니다.")
 	if conflicted:
 		return _reject("편집 중 원본이 변경됐습니다. 변경 취소 후 다시 열어 주세요.")
 	var draft := _checkpoint()
@@ -213,8 +217,17 @@ func commit() -> bool:
 
 
 func _on_live_changed(_snapshot: Dictionary) -> void:
-	if not applying and inventory != null:
+	if active and not applying and inventory != null:
 		conflicted = true
+		error_message = "원본이 변경됐습니다 · 변경 취소 후 최신 가방을 다시 여세요."
+		changed.emit()
+
+
+func end() -> void:
+	# Retained UI callbacks must never commit a draft after death/settlement.
+	active = false
+	dirty = false
+	conflicted = true
 
 
 func get_item_entry(instance_id: StringName) -> Dictionary:

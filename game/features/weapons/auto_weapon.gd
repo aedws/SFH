@@ -22,6 +22,8 @@ var active_weapon_slot: StringName = &"main"
 var current_level: int = 1
 var cooldown: float = 0.2
 var burst_remaining: int = 0
+var ui_input_blocked := false
+var ui_release_required := false
 var burst_direction := Vector2.RIGHT
 var runtime_modifier_sources: Dictionary = {}
 var targeted_modifiers := preload("res://game/core/targeted_modifier_store.gd").new()
@@ -111,6 +113,7 @@ func set_targeting_policy(new_policy: Resource) -> bool:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if ui_input_blocked: return
 	if (
 		event.is_action_pressed(&"switch_weapon")
 		and not event.is_echo()
@@ -127,6 +130,9 @@ func _process(delta: float) -> void:
 	if visual_was_active: queue_redraw()
 	cooldown -= delta
 	var attack_pressed := Input.is_action_pressed(primary_attack_action)
+	if not attack_pressed: ui_release_required = false
+	if ui_input_blocked or ui_release_required:
+		return
 	if requires_primary_attack and not attack_pressed:
 		burst_remaining = 0
 		primary_attack_was_pressed = false
@@ -161,7 +167,7 @@ func _process(delta: float) -> void:
 
 
 func try_fire_once() -> bool:
-	if cooldown > 0.0:
+	if ui_input_blocked or ui_release_required or cooldown > 0.0:
 		return false
 	var target := _find_nearest_enemy()
 	if target == null:
@@ -173,6 +179,15 @@ func try_fire_once() -> bool:
 	burst_remaining = maxi(0, int(current_balance.get(&"burst_count", 1)) - 1)
 	cooldown = _modified_interval(float(current_balance.get(&"fire_interval_sec", 0.72)))
 	return true
+
+
+func set_ui_input_blocked(blocked: bool) -> void:
+	ui_input_blocked = blocked
+	# A click used to close the UI must not carry over into a shot.
+	ui_release_required = Input.is_action_pressed(primary_attack_action)
+	if blocked:
+		burst_remaining = 0
+		primary_attack_was_pressed = false
 
 
 func apply_level(level: int) -> void:

@@ -124,7 +124,7 @@ if ($feedbackStatus -ne 0 -or ($feedbackOutput -match 'SCRIPT ERROR:|^ERROR:') -
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/circular_coverage_contract_test.gd"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-foreach ($contractCase in @(@('training_live_catalog_contract_test', 'TRAINING_LIVE_CATALOG_OK'), @('combat_audio_contract_test', 'COMBAT_AUDIO_OK'), @('extraction_decay_contract_test', 'EXTRACTION_DECAY_OK'), @('enemy_attack_telegraph_contract_test', 'ENEMY_TELEGRAPH_OK'))) {
+foreach ($contractCase in @(@('training_live_catalog_contract_test', 'TRAINING_LIVE_CATALOG_OK'), @('combat_audio_contract_test', 'COMBAT_AUDIO_OK'), @('extraction_decay_contract_test', 'EXTRACTION_DECAY_OK'), @('enemy_attack_telegraph_contract_test', 'ENEMY_TELEGRAPH_OK'), @('equipped_rune_settlement_contract_test', 'EQUIPPED_RUNE_SETTLEMENT_OK'), @('realtime_inventory_contract_test', 'REALTIME_INVENTORY_OK'))) {
     $contractOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/$($contractCase[0]).gd" 2>&1
     $contractStatus = $LASTEXITCODE
     $contractOutput | Write-Output

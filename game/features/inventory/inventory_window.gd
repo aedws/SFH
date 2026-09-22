@@ -18,6 +18,9 @@ var session: Node
 var inventory_provider: Node
 var equipment_provider: Node
 var paused_before_open := false
+var realtime := false
+var session_ended := false
+var live_health := ""
 var grid_view: Control
 var bag_scroll: ScrollContainer
 var content_scroll: ScrollContainer
@@ -72,6 +75,7 @@ func _ready() -> void:
 
 
 func configure(bag: Node, gear: Node = null) -> void:
+	session_ended = false
 	inventory_provider = bag
 	equipment_provider = gear
 	session.configure(bag, gear)
@@ -159,7 +163,7 @@ func toggle_panel() -> void:
 
 
 func open_panel() -> void:
-	if visible:
+	if visible or session_ended:
 		return
 	for panel in get_tree().get_nodes_in_group(&"game_modal_panel"):
 		if panel != self and panel.has_method(&"close_panel"):
@@ -172,7 +176,8 @@ func open_panel() -> void:
 	_bind_draft()
 	move_to_front()
 	visible = true
-	get_tree().paused = true
+	if not realtime:
+		get_tree().paused = true
 	open_layout_ready = false
 	_layout()
 	_queue_stable_layout()
@@ -217,8 +222,37 @@ func resolve_exit(choice: StringName) -> void:
 
 func _finish_close() -> void:
 	visible = false
-	get_tree().paused = paused_before_open
+	session.end()
+	if not realtime:
+		get_tree().paused = paused_before_open
 	panel_visibility_changed.emit(false)
+
+
+func set_realtime_mode(enabled: bool) -> void:
+	if not visible:
+		realtime = enabled
+
+
+func set_live_health(current: float, maximum: float) -> void:
+	live_health = "HP %d/%d" % [ceili(current), ceili(maximum)]
+	if visible: _refresh_header()
+
+
+func end_runtime_session() -> void:
+	session_ended = true
+	pending_exit = Callable()
+	confirmation_visible = false
+	confirm_overlay.hide()
+	session.end()
+	if visible: _finish_close()
+
+
+func _refresh_header() -> void:
+	var count: int = session.inventory.get_snapshot()[&"items"].size()
+	header_summary.text = "아이템 %d개 · %s" % [count, "미저장 변경 있음" if session.dirty else "저장된 세팅"]
+	if realtime:
+		header_summary.text += " · 전투 진행 중 · " + live_health
+	header_summary.modulate = Color("ffc979") if realtime or session.dirty else Color("a0b9c3")
 
 
 func request_tab(index: int) -> void:
@@ -418,10 +452,9 @@ func _refresh() -> void:
 		var footprint: Vector2i = item[&"grid_size"]
 		used += footprint.x * footprint.y
 	var dimensions: Vector2i = snapshot[&"grid_size"]
-	header_summary.text = "아이템 %d개 · %s" % [snapshot[&"items"].size(), "미저장 변경 있음" if session.dirty else "저장된 세팅"]
+	_refresh_header()
 	capacity_label.text = "공간 사용 %d / %d칸 · 세로 스크롤" % [used, dimensions.x * dimensions.y]
 	capacity_meter.value = 100.0 * used / maxi(1, dimensions.x * dimensions.y)
-	header_summary.modulate = Color("ffc979") if session.dirty else Color("a0b9c3")
 	for i in tabs.size():
 		tabs[i].set_pressed_no_signal(i == current_tab)
 	module_column.visible = current_tab != 0

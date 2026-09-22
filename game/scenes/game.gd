@@ -3080,10 +3080,14 @@ func _install_inventory() -> bool:
 	inventory_window = _instantiate_feature(
 		INVENTORY_WINDOW_SCENE_PATH, ui_layer, &"GridInventoryWindow"
 	)
-	if inventory_window == null or not _supports_panel(inventory_window):
+	if inventory_window == null or not _supports_panel(inventory_window) or not _supports_methods(
+		inventory_window, [&"set_realtime_mode", &"set_live_health", &"end_runtime_session"]
+	):
 		_report_configuration_error("가방 UI 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
 	inventory_window.call(&"configure", inventory_system, equipment_system)
+	inventory_window.call(&"set_realtime_mode", run_started)
+	inventory_window.call(&"set_live_health", player.current_health, player.max_health)
 	inventory_window.connect(&"settings_saved", _on_inventory_settings_saved)
 	inventory_window.connect(&"external_panel_requested", _open_inventory_destination)
 	_connect_modal_panel(inventory_window)
@@ -3205,6 +3209,13 @@ func _connect_modal_panel(panel: Node) -> void:
 
 
 func _on_modal_panel_visibility_changed(is_open: bool) -> void:
+	var any_open := is_open
+	for panel in get_tree().get_nodes_in_group(&"game_modal_panel"):
+		any_open = any_open or panel.visible
+	# Components keep world simulation/cooldowns alive, gating player intent only.
+	for consumer in [player, auto_weapon, combat_skill_system]:
+		if is_instance_valid(consumer) and consumer.has_method(&"set_ui_input_blocked"):
+			consumer.call(&"set_ui_input_blocked", any_open)
 	if is_open:
 		if modal_ui_visibility_snapshot.is_empty():
 			modal_ui_visibility_snapshot = {
@@ -3257,6 +3268,7 @@ func _on_modal_panel_visibility_changed(is_open: bool) -> void:
 	if is_instance_valid(mobile_control_pad):
 		mobile_control_pad.call(&"set_context_enabled", true)
 	modal_ui_visibility_snapshot.clear()
+	_show_next_run_buff_choice.call_deferred()
 
 
 func _install_minimap() -> void:
@@ -4432,6 +4444,8 @@ func _on_room_warp_rejected(_room_index: int, reason: String) -> void:
 
 
 func _on_player_health_changed(current: float, maximum: float) -> void:
+	if is_instance_valid(inventory_window):
+		inventory_window.call(&"set_live_health", current, maximum)
 	health_bar.max_value = maximum
 	health_bar.value = current
 	var ratio := current / maximum if maximum > 0.0 else 0.0
@@ -4485,6 +4499,9 @@ func _on_combat_resource_pickup_collected(resource_id: StringName, amount: float
 func _show_next_run_buff_choice() -> void:
 	if pending_buff_levels.is_empty() or run_ended or run_buff_selector.visible:
 		return
+	# A level earned by an existing field effect must not cover an unsaved editor.
+	for panel in get_tree().get_nodes_in_group(&"game_modal_panel"):
+		if panel.visible: return
 	var run_level: int = pending_buff_levels.pop_front()
 	var choices: Array[Dictionary] = run_buff_system.call(&"prepare_choices", run_level, 3)
 	if choices.is_empty():
@@ -4530,6 +4547,8 @@ func _on_player_died() -> void:
 
 
 func _settle_run_loot(extracted: bool) -> Dictionary:
+	if is_instance_valid(inventory_window):
+		inventory_window.call(&"end_runtime_session")
 	var settlement: Dictionary = {}
 	var acquired_items: Dictionary = {}
 	if is_instance_valid(field_loot_acquisition_service):
