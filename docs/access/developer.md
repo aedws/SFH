@@ -11,7 +11,7 @@ hide:
 
 작업·구조·검증 근거를 골라 확인하세요. 최종 판단은 프로젝트 오너가 합니다.
 
-**오늘 마감 / 내일 시작:** 게임 `a423dad`·CSV `2026-09-09.3`. [충돌 정리와 검사 범위](../quality/full-system-audit-20260909.md#day-close-20260909) · **[첫 작업 패킷 열기](../design/current-milestone-workline.md#start-packet-20260910)**. 훈련 라이브 동등성→모듈 감사→양 플랫폼 정상10분→복합 맵→스킬 체감→수정·재검증 순서입니다. **아직100% 아님**이며 기획 정책 대기는 별도입니다.
+**9/22 실행 상태:** 장착 룬 정산 회귀·실시간 가방 반영. **[다음 작업: 짧은 루프 계측](../design/current-milestone-workline.md#next-20260922)** · [테스트 근거와 사람 수락 잔여](../quality/e2e-play-session.md#decided-20260922). 훈련 라이브 동등성 수정은 완료했으며, 양 플랫폼 정상10분·모바일/FUN QA와 기획 충돌 판단은 별도로 남아 있습니다. **아직100% 아님**이며 이전66행 점수를 최신82행 완료율로 사용하지 않습니다.
 
 현행 추가: [방어구 14종·4부위·세트 계약](../features/armor-sets.md). `ArmorSetDefinition → ArmorSetResolver → EquipmentSystem → Player/Weapon/Skill`로 분리했으며, 시트 임시값·잠금 CSV·게임 정의·DPS 비교를 연결합니다. [검증과 제외 범위](../quality/e2e-play-session.md#armor-20260909).
 
@@ -22,7 +22,7 @@ hide:
   <a href="#owner-decision-console"><small>판단</small><strong>작업·오너 판단</strong><span>선행 조건과 판단 대기열</span></a>
   <a href="#confirmed-balance"><small>밸런스</small><strong>확정안·현행 수치</strong><span>미확정 항목은 현재 CSV로 확인</span></a>
   <a href="#code-module-map"><small>구조</small><strong>코드·모듈 관계</strong><span>구현 연결과 영향 추적</span></a>
-  <a href="../../design/current-milestone-workline/#start-packet-20260910"><small>실행</small><strong>내일 첫 작업</strong><span>코드 위치·재현·명령·완료 조건</span></a>
+  <a href="../../design/current-milestone-workline/#next-20260922"><small>실행</small><strong>다음 작업</strong><span>짧은 루프 계측과 수락 조건</span></a>
   <a href="../../quality/e2e-play-session/"><small>품질</small><strong>플레이 검증</strong><span>회귀 위험과 수락 근거</span></a>
   <a href="#developer-contract"><small>원칙</small><strong>개발·운영 계약</strong><span>모듈 경계와 검증 규칙</span></a>
 </nav>

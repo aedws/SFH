@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-21",
-  "source_sha256": "072d027a630c7ce5da9753bb20d3e9569fc4a625010ce6f6e9f2727687768970",
+  "source_sha256": "52839f6b68f2c17348d1ea03ae461f3714287b6de6f23b904f128ffff1c39a6f",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -392,18 +392,18 @@
     }
   ],
   "summary": {
-    "tracked": 57,
+    "tracked": 58,
     "owner_decisions": 6,
     "blocked": 8,
     "ready": 1,
-    "implemented": 41,
+    "implemented": 42,
     "modules": 61,
     "documents": 105,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 495,
+    "relations": 500,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -548,6 +548,37 @@
       "kind": "evidence"
     },
     {
+      "id": "work:notion-realtime-inventory-20260922",
+      "type": "work_item",
+      "label": "결정 요구 · 실시간 가방과 장착 룬 정산",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "작전 I/E 비정지·입력 차단·HP/피격·저장 충돌·사망 임시 편집 무효화. 기존 장착 룬 환전은 실제 드랍/F/정산 전용 회귀로 검증해 중복 구현하지 않음.",
+      "acceptance": "실제 프레임 시간/적/쿨타임, UI 입력 유출 차단, HP 보존, 새 획득물 보존, 결과 정지와 거점 복원. 룬/코어/유물510C 및 사망0C·반복 지급0C.",
+      "next_action": "짧은 루프 계측→Web/Windows 정상10분·모바일 위험 인지/FUN QA. 신규15고유요구 코드 구현4·부분6·미구현5, 전체82행 완료율과 구분.",
+      "route": "design/current-milestone-workline/#decided-20260922",
+      "relations": [
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:features/grid-inventory",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:features/session-sockets",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
       "id": "work:notion-enemy-telegraph-20260921",
       "type": "work_item",
       "label": "PLAN-01-CTRL · 보고 피하는 몬스터 공격",
@@ -556,7 +587,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "신규16행 코드 대조 후 즉시 접촉 피해를0.4초 고정 방향 붉은 전조와 폭20px 타격으로 교체. 정책 Resource와 공격 상태를 분리하고 기존 피해·보스 문 무시를 보존.",
       "acceptance": "지연/단발/옆 회피/회복/기절/넉백/사망/벽/보스/정책 복사와 렌더 표시 계약. 다수 적·모바일·정상10분 재미 수락은 별도.",
-      "next_action": "장착 룬 탈출 정산 전용 회귀→실시간 가방→짧은 루프 계측. 신규16행은 코드 구현2·부분8·미구현5·중복1이며 최신82행 전체 완료율로 사용하지 않음.",
+      "next_action": "9/22 장착 룬 정산 회귀·실시간 가방 완료. 다음은 짧은 루프 계측. 신규16행은 코드 구현4·부분6·미구현5·중복1이며 최신82행 전체 완료율로 사용하지 않음.",
       "route": "design/current-milestone-workline/#delta-audit-20260921",
       "relations": [
         {
@@ -583,7 +614,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "9/21 새 노션 반영 시작 지시의 첫 패킷. 신규 행 3d85b728-0040-816d-a6bb-f7d7be82e8b6의 2초 유예 후 초당1초 역행을 구현. 구역 밖 무기한 일시정지 규칙을 대체하며30분 마감·가방 축소 승인과 구분.",
       "acceptance": "두 출구·유예 경계·초기 시간 상한·자동 재진입·외부 F·정산1회·정책 불변·HUD 상태 및 전체 게임/E2E 통과. 일반10분·재미 수락 제외.",
-      "next_action": "신규16행 대조와 공격 전조 반영 완료. 장착 룬 정산 회귀→실시간 가방→짧은 루프 계측을 이어감. 최신82행 완료율은 별도 재산정.",
+      "next_action": "신규16행 대조·공격 전조·장착 룬 회귀·실시간 가방 반영 완료. 다음은 짧은 루프 계측. 최신82행 완료율은 별도 재산정.",
       "route": "features/extraction-defense-results/#decay-20260921",
       "relations": [
         {
@@ -3835,13 +3866,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 77개",
+      "summary": "기반·검증 · verification · 파일 79개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 77,
+        "files": 79,
         "classes": 0,
         "incoming": 0,
         "outgoing": 55
@@ -5004,6 +5035,36 @@
     }
   ],
   "relations": [
+    {
+      "from": "authority:project-owner",
+      "to": "work:notion-realtime-inventory-20260922",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:notion-realtime-inventory-20260922",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:notion-realtime-inventory-20260922",
+      "to": "document:features/grid-inventory",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:notion-realtime-inventory-20260922",
+      "to": "document:features/session-sockets",
+      "type": "documented_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:notion-realtime-inventory-20260922",
+      "to": "document:quality/e2e-play-session",
+      "type": "verified_by",
+      "origin": "registry"
+    },
     {
       "from": "authority:project-owner",
       "to": "work:notion-enemy-telegraph-20260921",

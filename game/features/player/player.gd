@@ -59,6 +59,10 @@ func configure_damage(is_enabled: bool) -> void:
 	damage_enabled = is_enabled
 
 
+func set_ui_input_blocked(blocked: bool) -> void:
+	movement.set_ui_input_blocked(blocked)
+
+
 func apply_equipment_modifiers(modifiers: Dictionary) -> void:
 	set_runtime_modifier_source(&"equipment", modifiers)
 

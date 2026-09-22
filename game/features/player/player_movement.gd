@@ -27,9 +27,21 @@ var dash_exit_time_remaining: float = 0.0
 var last_move_direction := Vector2.RIGHT
 var dash_direction := Vector2.RIGHT
 var dash_was_down: bool = false
+var ui_input_blocked := false
+
+
+func set_ui_input_blocked(blocked: bool) -> void:
+	ui_input_blocked = blocked
+	if blocked:
+		dash_time_remaining = 0.0
+		buffered_dash_remaining = 0.0
+		dash_exit_time_remaining = 0.0
 
 
 func get_velocity(current_velocity: Vector2, delta: float) -> Vector2:
+	if ui_input_blocked:
+		dash_was_down = Input.is_action_pressed(&"dash")
+		return step_velocity(Vector2.ZERO, Vector2.ZERO, delta, false)
 	var direction := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	var dash_down := Input.is_action_pressed(&"dash")
 	var dash_pressed := dash_down and not dash_was_down

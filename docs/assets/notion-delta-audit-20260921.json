@@ -202,13 +202,18 @@
       "acceptance": "가방 열람 중 게임 시간 지속 및 F키 획득 시 가방 빈칸 자동 정렬 확인",
       "version": 6,
       "last_edited_time": 1789949889426,
-      "code_status": "partial",
-      "work_order": "2 · 다음 구현",
-      "assessment": "F 빠른 획득과 빈칸 배치는 존재. 가방은 현재 일시정지. 실시간 편집 중 피격·사망·저장/취소 충돌 보호 후 전환.",
+      "code_status": "implemented",
+      "work_order": "완료 · 2026-09-22",
+      "assessment": "작전 I/E 비정지·입력 차단·피격/쿨타임 지속·저장 원자성/원본 충돌/사망 편집 무효화 구현. 거점/U/K 정지는 유지. F 빠른 획득 기존 계약 유지.",
       "evidence": [
         "game/features/inventory/inventory_window.gd"
       ],
       "existing_test_context": [
+        "game/tests/e2e_play_session_test.gd",
+        "game/tests/realtime_inventory_contract_test.gd"
+      ],
+      "verified_by": [
+        "game/tests/realtime_inventory_contract_test.gd",
         "game/tests/e2e_play_session_test.gd"
       ]
     },
@@ -259,14 +264,18 @@
       "acceptance": "탈출 정산창에서 소켓에 꽂힌 룬도 골드로 일괄 환전되는지 확인",
       "version": 6,
       "last_edited_time": 1789949890573,
-      "code_status": "partial",
-      "work_order": "1 · 다음 회귀 검증",
-      "assessment": "획득 장부와 룬 auto_convert 정책은 소켓/가방 위치와 별개여서 정산 기반 존재. 실제 장착 룬 탈출 전용 중복/사망 회귀는 추가 필요.",
+      "code_status": "implemented",
+      "work_order": "전용 회귀 완료 · 2026-09-22",
+      "assessment": "기존 획득 장부의 장착분 환전을 실제 F/가방/소켓 왕복·탈출510C·사망0C·정산 문구·중복 지급 차단으로 검증. 중복 정산 구현은 추가하지 않음.",
       "evidence": [
         "game/features/run_settlement/run_settlement_service.gd"
       ],
       "existing_test_context": [
-        "game/tests/run_settlement_contract_test.gd"
+        "game/tests/run_settlement_contract_test.gd",
+        "game/tests/equipped_rune_settlement_contract_test.gd"
+      ],
+      "verified_by": [
+        "game/tests/equipped_rune_settlement_contract_test.gd"
       ]
     },
     {
@@ -326,5 +335,6 @@
         "game/tests/run_settlement_contract_test.gd"
       ]
     }
-  ]
+  ],
+  "reviewed_date": "2026-09-22"
 }

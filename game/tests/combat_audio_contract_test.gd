@@ -50,7 +50,11 @@ func run() -> void:
 	check(director.total_hits == 0 and director.audio_feedback.accepted == 1, "zero damage silent")
 	actor.damaged.emit(0, 10, Vector2.ZERO, {})
 	check(director.audio_feedback.events.get(&"armor", 0) == 1, "actual armor contact")
-	await create_timer(0.09).timeout
+	# The audio budget uses monotonic wall time, not simulated frame delta.
+	# Headless startup can advance a SceneTreeTimer before that budget expires.
+	var after_budget := Time.get_ticks_usec() + ceili(maxf(profile.global_interval, profile.event_interval) * 1000000.0) + 1000
+	while Time.get_ticks_usec() < after_budget:
+		await process_frame
 	actor.damaged.emit(20, 0, Vector2.ZERO, {&"lethal":true})
 	check(director.audio_feedback.events.get(&"lethal", 0) == 1 and director.total_lethal_hits == 1, "actual lethal contact")
 	stage.queue_free()

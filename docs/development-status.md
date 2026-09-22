@@ -17,7 +17,11 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-21</span><span>SEARCH COMMAND</span><span>14 DAYS · 169 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-22</span><span>SEARCH COMMAND</span><span>15 DAYS · 170 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+
+## 9/22 결정 항목 반영
+
+장착 룬 정산 전용 회귀와 실시간 가방을 반영했습니다. 신규16행 중 중복1행을 제외한15요구는 코드 구현4·부분6·미구현5입니다. 원본 GDD101블록/작업표82행은9/21 해시와 동일하며 기획 상태는 수정하지 않았습니다. 전체82행 진행률이나 정상10분 사람 검수 완료를 뜻하지 않습니다. [변화·검증·다음 작업](design/current-milestone-workline.md#decided-20260922).
 
 ## 9/21 원본 재확인 · 최신 대응도 재산정 대기
 
@@ -72,7 +76,22 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-21</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 2 · CHANGE 2 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 1 · IMPROVE 0 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>전투는 가방에서도 계속 · 장착 룬 환전 검증</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>작전 중 I/E 가방·모듈 편집과 저장 확인에서 시간·적·피격·쿨타임이 계속됩니다. UI 뒤 이동·공격과 사망 후 미저장 편집 적용은 막고 현재 HP를 표시합니다. 거점 준비는 종전 방식을 유지합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>장착 룬도 환전하는 기존 정산을 실제 드랍·F 획득·해제/재장착·탈출·사망·중복 지급 시험으로 확인했습니다. 신규15개 고유 요구의 코드 상태는 구현4·부분6·미구현5이며 전체82행 완료율이 아닙니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>음향 자동 검사의 대기 시간을 실제 음향 제한과 같은 시계로 맞췄습니다. 게임 음향·전투 밸런스는 바꾸지 않았습니다.</p></div>
+        <p><a href="/features/grid-inventory/#realtime-20260922">가방 변화</a> · <a href="/features/session-sockets/#settlement-20260922">장착 룬 정산</a> · <a href="/quality/e2e-play-session/#decided-20260922">검증과 미수락 범위</a> · <a href="/design/current-milestone-workline/#next-20260922">다음 순서</a></p>
+      </div>
+    </details>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-09-21</b><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 2 · CHANGE 2 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 3</small><b>적의 공격을 보고 회피 · 신규 기획16행 대조와 다음 작업 정리</b></span><em class="sfh-chevron">⌄</em></summary>

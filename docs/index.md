@@ -54,30 +54,15 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-21</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 1 · IMPROVE 2 · CHANGE 2 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 1 · IMPROVE 0 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 3</small><b>적의 공격을 보고 회피 · 신규 기획16행 대조와 다음 작업 정리</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 1</small><b>전투는 가방에서도 계속 · 장착 룬 환전 검증</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>개선 · 1</h3><p>적의 즉시 접촉 피해를0.4초 붉은 경고와 좁은 고정 방향 타격으로 바꿨습니다. 옆으로 피하면 빗나가고 기절·넉백·사망은 경고를 취소합니다. 기존 추격 보스의 문 무시는 유지합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>신규 기획16행을 코드·시험 근거에 연결했습니다. 중복1행을 제외하고 코드 구현2·부분8·미구현5이며, 이는 전체82행 완료율이 아닙니다. 다음은 장착 룬 정산 검증·실시간 가방·짧은 루프 계측 순서입니다.</p></div>
-        <p><a href="/features/enemies/#telegraph-20260921">변경된 공격</a> · <a href="/quality/e2e-play-session/#telegraph-20260921">검증·미수락 범위</a> · <a href="/design/current-milestone-workline/#delta-audit-20260921">전체 대조와 작업 순서</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>탈출은 잠깐 벗어나도 유지 · 오래 이탈하면 방어 시간 역행</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>탈출 방어 중 구역을 벗어나면2초 동안 진행을 보존하고 이후 초당1초씩 남은 시간이 늘어납니다. 돌아오면 자동 재개하며 처음 방어 시간보다 늘어나지 않습니다. 두 출구의 유예·역행·정산 회귀를 추가했습니다.</p></div>
-        <p><a href="/features/extraction-defense-results/#decay-20260921">변경된 탈출 규칙</a> · <a href="/quality/e2e-play-session/#decay-20260921">검증 범위</a> · <a href="/design/current-milestone-workline/#notion-implementation-20260921">신규 기획 반영 순서</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>전투 표현 마감 · 전리품 비교 보완 · 기획 원본 재확인</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>개선 · 1</h3><p>총탄·근접·명중·40스킬의 밝기와 잔광을 보강했습니다. 밝고 어두운 바닥92사례와 전투 회귀를 검사하고 피해 수치·이펙트 수 상한은 유지합니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>크레딧·룬을 총기와 비교하던 표시와 방어구의 무기 전용 등급 필드 접근을 수정했습니다. 실제 교체 슬롯과 비교하며 등급 없는 장비에 등급을 만들지 않습니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>공개 기획 갱신을 확인하고 변경 요구·기존 규칙과의 차이를 팀 문서에 분리했습니다. 이 원본 재확인 시점에는 신규 기획 미적용이었으며 이후 첫 반영은 위 UPDATE 2를 참조하세요. 정상10분 플레이 수락은 미완료입니다.</p></div>
-        <p><a href="/features/hit-feedback/#readability-20260910">표현·예산</a> · <a href="/quality/e2e-play-session/#readability-20260910">검사 범위</a> · <a href="/design/master-gdd-alignment/#source-recheck-20260921">팀 문서 · 원본 재확인</a> · <a href="/design/current-milestone-workline/#next-20260910">기존 검수 작업선</a></p>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>작전 중 I/E 가방·모듈 편집과 저장 확인에서 시간·적·피격·쿨타임이 계속됩니다. UI 뒤 이동·공격과 사망 후 미저장 편집 적용은 막고 현재 HP를 표시합니다. 거점 준비는 종전 방식을 유지합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>장착 룬도 환전하는 기존 정산을 실제 드랍·F 획득·해제/재장착·탈출·사망·중복 지급 시험으로 확인했습니다. 신규15개 고유 요구의 코드 상태는 구현4·부분6·미구현5이며 전체82행 완료율이 아닙니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>음향 자동 검사의 대기 시간을 실제 음향 제한과 같은 시계로 맞췄습니다. 게임 음향·전투 밸런스는 바꾸지 않았습니다.</p></div>
+        <p><a href="/features/grid-inventory/#realtime-20260922">가방 변화</a> · <a href="/features/session-sockets/#settlement-20260922">장착 룬 정산</a> · <a href="/quality/e2e-play-session/#decided-20260922">검증과 미수락 범위</a> · <a href="/design/current-milestone-workline/#next-20260922">다음 순서</a></p>
       </div>
     </details>
   </div>
