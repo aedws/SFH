@@ -85,6 +85,7 @@ func _on_encounter(room: int, _count: int) -> void:
 
 
 func _on_clear(room: int) -> void:
+	_observe_room()
 	collector.clear(room, _seconds())
 
 
@@ -93,6 +94,7 @@ func _on_credit(room: int, _amount: int) -> void:
 
 
 func _on_decision(id: int, stage: StringName, action: StringName) -> void:
+	_observe_room()
 	collector.decision(id, stage, action, _seconds())
 
 

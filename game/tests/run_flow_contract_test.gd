@@ -87,6 +87,12 @@ func _run() -> void:
 	check(telemetry.report_saved and source.get_signal_connection_list(&"encounter_started").is_empty(), "save result and source disconnect")
 	check(telemetry.finish("lost") == report, "idempotent finish")
 	telemetry.report_path = ""
+	telemetry.configure("instant_region", actor, source, source, source)
+	source.room = 3
+	source.decision_observed.emit(50, &"open", &"")
+	source.decision_observed.emit(50, &"resolve", &"deferred")
+	check(telemetry.get_snapshot().decisions[0].room == 3, "decision refreshes position before periodic poll")
+	telemetry.finish("extracted")
 	check(telemetry.configure("optional", actor, source, null, null), "missing optional modules tolerated")
 	check(not telemetry.get_snapshot().sources.encounter_started, "missing sources cannot masquerade as coverage")
 	telemetry.finish("returned_to_hub")
