@@ -39,7 +39,7 @@
       skillMultiplier:1, hp:catalog.enemy.hp, armor:catalog.enemy.armor, enemyDamage:catalog.enemy.damage,
       enemyInterval:catalog.enemy.interval, horizon:30, hitRate:1, coverage:1, energy:r.starting,
       maxEnergy:r.maximum, regen:r.regen, regenDelay:r.delay, targetTime:5, innate:true, fixedOptions:true,
-      shock:false, resourceLimits:true, ...(catalog.loadout?{loadout:globalThis.SFHLoadout.defaults(catalog)}:{})};
+      shock:false, moving:false, resourceLimits:true, ...(catalog.loadout?{loadout:globalThis.SFHLoadout.defaults(catalog)}:{})};
   }
   function validate(input) {
     const errors = [];
@@ -49,6 +49,7 @@
     }
     for (const key of ['burst','projectiles','charges','level','horizon']) if (!Number.isInteger(input[key])) errors.push(`${key}: 정수가 필요합니다.`);
     if (input.energy > input.maxEnergy) errors.push('시작 AP는 최대 AP보다 클 수 없습니다.');
+    if(input.moving!==undefined && typeof input.moving!=='boolean')errors.push('이동 조건은 체크박스로 지정하세요.');
     return errors;
   }
   function resolve(catalog, input) {
@@ -81,6 +82,10 @@
     const override = weapon.overrides[input.skillId] || {};
     const p=skill?.parameters||{}, family=p.shape||(p.distance!==undefined||p.speed_multiplier!==undefined?'mobility':'circle');
     const specialization=loadout?.character?.skill_specialization||{};
+    const resourceModifiers=loadout?.character?.resource_modifiers||{};
+    const capacityMultiplier=resourceModifiers.capacity_multiplier??1;
+    const resources={maximum:input.maxEnergy*capacityMultiplier, starting:input.energy*capacityMultiplier,
+      regen:input.regen*(input.moving?(resourceModifiers.moving_regeneration_multiplier??1):1)};
     const specialized=(specialization.families||'').split('|').includes(family);
     const passiveDamage=specialized?(specialization.damage_multiplier??1):1, passiveCooldown=specialized?(specialization.cooldown_multiplier??1):1;
     const skillDamage = input.skillDamage * input.skillMultiplier * passiveDamage * (loadout?.skill.damage_multiply??1) * (skill?.kind === 'field' ? override.tick_damage_multiplier ?? 1 : override.damage_multiplier ?? 1)
@@ -91,14 +96,14 @@
     const innate = input.innate && reachable ? (weapon.innate.fixed_damage || 0) / (weapon.innate.trigger_every_hits || 1) : 0;
     const skillCooldown=Math.max(.05,input.skillCooldown*passiveCooldown*(loadout?.skill.cooldown_multiply??1));
     const skillRecharge=Math.max(.1,input.recharge*passiveCooldown);
-    return {weapon,skill,allowed,hit,gap,burstGap,cycle,skillDamage,skillCooldown,skillRecharge,duration,ticks,perCast,loadout,range,distanceFactor,reachable,
+    return {weapon,skill,allowed,hit,gap,burstGap,cycle,skillDamage,skillCooldown,skillRecharge,duration,ticks,perCast,loadout,range,distanceFactor,reachable,resources,
       sustainedWeapon:(hit+innate)*input.projectiles*input.burst*input.hitRate/cycle,
       activeSkillDps:['field','pattern'].includes(skill?.kind) && allowed ? skillDamage/input.skillTick*input.coverage : 0};
   }
   function simulate(catalog, input) {
     const x = resolve(catalog,input), dt=0.01, budget=input.hp+input.armor;
     if (['field','pattern'].includes(x.skill?.kind) && x.ticks*(1+input.horizon/x.skillCooldown)>200000) throw Error('계산 예산 초과: 지속 시간·관측 시간을 줄이거나 틱 간격을 늘려주세요.');
-    let energy=input.energy, idle=0, charges=input.charges, recharge=0, cooldown=0;
+    let energy=x.resources.starting, idle=0, charges=input.charges, recharge=0, cooldown=0;
     let nextShot=0, burstIndex=0, weaponDamage=0, skillDamage=0, confirmed=0, procs=0, casts=0, ttk=null, active=[];
     const player=x.loadout?.player||catalog.loadout?.player||{max_health:100,defense:0,movement_speed:280};
     const receivedHit=Math.max(1,input.enemyDamage-player.defense);
@@ -107,7 +112,7 @@
     for (let step=0; step<=totalSteps; step++) {
       const time=step*dt;
       if (step>0) {
-        energy=Math.min(input.maxEnergy,energy+Math.max(0,dt-Math.max(0,input.regenDelay-idle))*input.regen);
+        energy=Math.min(x.resources.maximum,energy+Math.max(0,dt-Math.max(0,input.regenDelay-idle))*x.resources.regen);
         idle+=dt; cooldown=Math.max(0,cooldown-dt);
         if (charges<input.charges) {
           recharge-=dt;

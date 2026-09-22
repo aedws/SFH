@@ -14,6 +14,12 @@ tags:
 
 SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입니다. 현재 요구가 동작해도 다음 설정을 추가할 때 중앙 조립부의 분기문을 계속 수정해야 한다면 완료로 보지 않습니다. 변경 지점은 독립 제공자·정책·검증기로 열고, 조립부는 등록과 순서만 담당합니다.
 
+## 요원 AP 수정자 계약 · 2026-09-22
+
+`CharacterDefinition → resource_modifiers 사본 → EnergyModifierPolicy → CombatResourceSystem`으로 데이터·검증·수식·상태를 분리합니다. 조립부는 현재 선택(훈련) 또는 고정된 투입 계약(작전)을 전달할 뿐 캐릭터 ID별 계산을 하지 않습니다. 기본 Resource를 수정하지 않으며, 최대량 변경은 현재 AP를 제한하되 충전하지 않습니다. 새 작전 초기화만 시작 AP를 설정합니다.
+
+이동 공급자의 선택적 공개 함수 `is_moving_for_resource_recovery()`는 실제 충돌 후 속도를 제공합니다. 공급자가 없거나 캐릭터 기능이 꺼져 있으면 기본 배율1/정지로 동작합니다. 자원 모듈이 Player 내부 필드·입력 시스템·Character 서비스를 직접 읽지 않습니다. 자연 회복 배율은 드랍·충전·회복 지연과 분리합니다. [수치/데이터 계약](../features/character-selection.md#tactical-adaptation-20260922) · [전용 회귀](../quality/e2e-play-session.md#vanguard-20260922).
+
 ## 기본 규칙
 
 1. 기능은 `game/features/<기능 이름>/` 아래에 둡니다.

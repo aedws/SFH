@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "cd41a0e4891f4b0816cecc8c0ce04c4384c801024a7a9c7921b1c9c6a7ff0be8",
+  "source_sha256": "8c3cd3f0c02025b50c48524c9622e23aa7cb0fabae2a03180734bbdc1f8363f3",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 62,
-    "scripts": 385,
-    "named_classes": 294,
+    "scripts": 387,
+    "named_classes": 295,
     "relationships": 232,
     "project_inheritance": 16,
     "enabled_toggles": 71
@@ -177,12 +177,13 @@
       "path": "game/features/combat_resources",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 4,
-      "class_count": 4,
+      "file_count": 5,
+      "class_count": 5,
       "classes": [
         "CombatResourceConfig",
         "CombatResourcePickup",
         "CombatResourceSystem",
+        "EnergyModifierPolicy",
         "EnergyRegenerationPolicy"
       ],
       "incoming_count": 3,
@@ -1348,7 +1349,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 80,
+      "file_count": 81,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1488,6 +1489,15 @@
       "module": "combat_resources",
       "path": "game/features/combat_resources/combat_resource_system.gd",
       "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:EnergyModifierPolicy",
+      "name": "EnergyModifierPolicy",
+      "module": "combat_resources",
+      "path": "game/features/combat_resources/energy_modifier_policy.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -5034,19 +5044,19 @@
       "from": "verification",
       "to": "character_selection",
       "type": "verifies",
-      "evidence_count": 2
+      "evidence_count": 3
     },
     {
       "from": "verification",
       "to": "combat_resources",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",
       "to": "combat_skills",
       "type": "verifies",
-      "evidence_count": 12
+      "evidence_count": 13
     },
     {
       "from": "verification",
@@ -5262,7 +5272,7 @@
       "from": "verification",
       "to": "player",
       "type": "verifies",
-      "evidence_count": 11
+      "evidence_count": 12
     },
     {
       "from": "verification",
@@ -5304,7 +5314,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 35
+      "evidence_count": 36
     },
     {
       "from": "verification",

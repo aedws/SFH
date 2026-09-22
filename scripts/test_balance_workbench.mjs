@@ -22,6 +22,8 @@ assert.equal(E.calculate('recovery',catalog,{...recovery,success:0}).points.at(-
 assert.throws(()=>E.calculate('recovery',catalog,{...recovery,success:2}));
 const input=globalThis.SFHDps.defaults(dps,'assault_rifle','magnetic_field');
 assert.ok(E.calculate('combat',dps,input).points.at(-1).value>0);
+assert.ok(E.calculate('combat',dps,{...input,moving:true}).points.at(-1).value>0);
+assert.throws(()=>E.calculate('combat',dps,{...input,moving:'true'}),/체크박스/);
 assert.throws(()=>E.calculate('combat',dps,{...input,horizon:120,skillDuration:120,skillTick:10,skillCooldown:.05,resourceLimits:false}),/예산/);
 
 class Store{

@@ -5,10 +5,10 @@
     ['무기 시험값', [['damage','탄환 기본 피해'],['distancePx','표적 거리 (px)'],['interval','마지막 발사 후 대기 (초)'],['crit','치명 확률 (0~1)'],['critMultiplier','치명 배율']]],
     ['스킬 시험값', [['skillDamage','1회 / 틱 기본 피해'],['skillCooldown','쿨타임 (초)'],['skillDuration','지속 시간 (초)'],['skillTick','틱 간격 (초)'],['skillCost','시전 AP'],['charges','최대 충전 수'],['recharge','충전 회복 (초)']]],
     ['적과 비교 조건', [['hp','적 체력'],['armor','적 방어막 (피해 흡수량)'],['enemyDamage','적 접촉 피해'],['enemyInterval','적 접촉 공격 간격 (초)'],['targetTime','목표 처치 시간 (초)'],['horizon','관측 시간 (초 · 정수)'],['hitRate','탄환 명중 비율 (0~1)'],['coverage','스킬 적중 / 체류 비율 (0~1)']]],
-    ['고급 · 장비와 자원', [['burst','점사 발수'],['burstInterval','점사 내 발사 간격 (초)'],['projectiles','발사당 탄환 수'],['damageAdd','추가 피해 합'],['damageMultiplier','피해 보정 곱'],['intervalMultiplier','발사 간격 보정 곱'],['level','내부 무기 레벨'],['skillMultiplier','스킬 피해 보정 곱'],['energy','시작 AP'],['maxEnergy','최대 AP'],['regen','AP 초당 회복'],['regenDelay','AP 사용 후 회복 지연 (초)']]],
+    ['고급 · 장비와 자원', [['burst','점사 발수'],['burstInterval','점사 내 발사 간격 (초)'],['projectiles','발사당 탄환 수'],['damageAdd','추가 피해 합'],['damageMultiplier','피해 보정 곱'],['intervalMultiplier','발사 간격 보정 곱'],['level','내부 무기 레벨'],['skillMultiplier','스킬 피해 보정 곱'],['energy','기본 시작 AP'],['maxEnergy','기본 최대 AP'],['regen','기본 AP 초당 회복'],['regenDelay','AP 사용 후 회복 지연 (초)']]],
   ];
-  const switches = [['fixedOptions','무기 고정 옵션 적용'],['innate','무기 고유 기능 · 주 대상 피해 포함'],['resourceLimits','AP·충전 제한 적용'],['shock','매 시전 직전 감전 상태가 있다고 가정']];
-  const scenarioKeys=['distancePx','hp','armor','enemyDamage','enemyInterval','targetTime','horizon','hitRate','coverage','energy','maxEnergy','regen','regenDelay','resourceLimits','shock'];
+  const switches = [['fixedOptions','무기 고정 옵션 적용'],['innate','무기 고유 기능 · 주 대상 피해 포함'],['resourceLimits','AP·충전 제한 적용'],['moving','지속 이동 가정 · 이동 중 AP 패시브 적용'],['shock','매 시전 직전 감전 상태가 있다고 가정']];
+  const scenarioKeys=['distancePx','hp','armor','enemyDamage','enemyInterval','targetTime','horizon','hitRate','coverage','energy','maxEnergy','regen','regenDelay','resourceLimits','shock','moving'];
   const f = value => Number(value).toLocaleString('ko-KR',{maximumFractionDigits:2});
   const el = (tag, text, cls) => { const n=document.createElement(tag); if(text!==undefined)n.textContent=text; if(cls)n.className=cls; return n; };
   const option=(value,label)=>{const n=el('option',label);n.value=value;return n;};
@@ -109,6 +109,7 @@
           metric('적 접촉 DPS',f(now.enemyDps),'연속 접촉·플레이어 방어 미적용');
           metric('플레이어 HP / 방어',`${f(now.player.max_health)} / ${f(now.player.defense)}`,`이동 속도 ${f(now.player.movement_speed)} · 피격 1회 ${f(now.receivedHit)}`);
           metric('연속 피격 생존 시간',`${f(now.survivalTime)}초`,'0초부터 피격 · 회피/회복 없이 방어력 차감, 최소 피해 1');
+          metric('패시브 적용 AP',`${f(x.resources.maximum)} / ${f(x.resources.regen)}/s`,`${input.moving?'지속 이동':'정지'} 가정 · 자원 입력값은 패시브 적용 전 기본값`);
           const notices=[];
           if(!x.allowed)notices.push(`스킬 사용 불가: ${x.skill.required_combat_tags.join(', ')} 태그 필요. 스킬 피해 0으로 계산.`);
           if(x.weapon.source_mode==='runtime_fallback')notices.push('이 무기는 확정 무기 CSV 행이 없어 실제 런타임 대체 발사값을 사용합니다. 의도된 무기 밸런스 확정값이 아닙니다.');

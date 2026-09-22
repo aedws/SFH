@@ -11,7 +11,7 @@ hide:
 
 작업·구조·검증 근거를 골라 확인하세요. 최종 판단은 프로젝트 오너가 합니다.
 
-**9/22 실행 상태:** 장착 룬 정산 회귀·실시간 가방·[플레이 흐름 계측](../quality/e2e-play-session.md#run-flow-20260922) 반영. **[다음 작업: 정상10분/F와 FUN QA](../design/current-milestone-workline.md#next-20260922)**. 보고서에서 교전·보상 판단·다음 방 이동과 후퇴/미완료를 나눠 확인하세요. 훈련 라이브 동등성 수정은 완료했으며, 양 플랫폼 정상10분·모바일/FUN QA와 기획 충돌 판단은 별도로 남아 있습니다. **아직100% 아님**이며 이전66행 점수를 최신82행 완료율로 사용하지 않습니다.
+**9/22 실행 상태:** [전술 적응·자원 수정자 계약](../features/character-selection.md#tactical-adaptation-20260922)과 Sheet/CSV `2026-09-22.1` 반영.  장착 룬 정산 회귀·실시간 가방·[플레이 흐름 계측](../quality/e2e-play-session.md#run-flow-20260922) 반영. **[다음 작업: 정상10분/F와 FUN QA](../design/current-milestone-workline.md#next-20260922)**. 보고서에서 교전·보상 판단·다음 방 이동과 후퇴/미완료를 나눠 확인하세요. 훈련 라이브 동등성 수정은 완료했으며, 양 플랫폼 정상10분·모바일/FUN QA와 기획 충돌 판단은 별도로 남아 있습니다. **아직100% 아님**이며 이전66행 점수를 최신82행 완료율로 사용하지 않습니다.
 
 현행 추가: [방어구 14종·4부위·세트 계약](../features/armor-sets.md). `ArmorSetDefinition → ArmorSetResolver → EquipmentSystem → Player/Weapon/Skill`로 분리했으며, 시트 임시값·잠금 CSV·게임 정의·DPS 비교를 연결합니다. [검증과 제외 범위](../quality/e2e-play-session.md#armor-20260909).
 
@@ -22,7 +22,7 @@ hide:
   <a href="#owner-decision-console"><small>판단</small><strong>작업·오너 판단</strong><span>선행 조건과 판단 대기열</span></a>
   <a href="#confirmed-balance"><small>밸런스</small><strong>확정안·현행 수치</strong><span>미확정 항목은 현재 CSV로 확인</span></a>
   <a href="#code-module-map"><small>구조</small><strong>코드·모듈 관계</strong><span>구현 연결과 영향 추적</span></a>
-  <a href="../../design/current-milestone-workline/#next-20260922"><small>실행</small><strong>다음 작업</strong><span>짧은 루프 계측과 수락 조건</span></a>
+  <a href="../../design/current-milestone-workline/#next-20260922"><small>실행</small><strong>다음 작업</strong><span>확정 패시브와 잔여 수락 조건</span></a>
   <a href="../../quality/e2e-play-session/"><small>품질</small><strong>플레이 검증</strong><span>회귀 위험과 수락 근거</span></a>
   <a href="#developer-contract"><small>원칙</small><strong>개발·운영 계약</strong><span>모듈 경계와 검증 규칙</span></a>
 </nav>

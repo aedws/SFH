@@ -20,6 +20,24 @@ var random := RandomNumberGenerator.new()
 var recovery_multiplier: float = 1.0
 var regeneration_idle_seconds := 0.0
 var skill_recharge_multipliers: Dictionary = {}
+var resource_modifiers: Dictionary = {}
+
+
+func set_resource_modifiers(values: Dictionary) -> bool:
+	if not EnergyModifierPolicy.is_valid(values): return false
+	resource_modifiers = values.duplicate(true)
+	# Swapping/reloading a passive preserves absolute AP; it never grants a refill.
+	if config != null: current_energy = minf(current_energy, get_maximum_energy())
+	_emit_changed()
+	return true
+
+
+func get_maximum_energy() -> float:
+	return EnergyModifierPolicy.maximum(float(config.get("maximum_energy")), resource_modifiers) if config != null else 0.0
+
+
+func _is_moving() -> bool:
+	return is_instance_valid(player_target) and player_target.has_method(&"is_moving_for_resource_recovery") and bool(player_target.call(&"is_moving_for_resource_recovery"))
 
 func set_skill_recharge_multipliers(values: Dictionary) -> bool:
 	for value in values.values():
@@ -36,7 +54,8 @@ func configure(
 	new_pickup_parent: Node2D,
 	new_loadout: Resource,
 	new_config: Resource,
-	seed: int = 0
+	seed: int = 0,
+	new_resource_modifiers: Dictionary = {}
 ) -> bool:
 	if (
 		not is_instance_valid(new_player_target)
@@ -50,6 +69,7 @@ func configure(
 		or not new_config.has_method(&"is_valid")
 		or not bool(new_config.call(&"is_valid"))
 		or pickup_scene == null
+		or not EnergyModifierPolicy.is_valid(new_resource_modifiers)
 	):
 		return false
 	player_target = new_player_target
@@ -57,7 +77,8 @@ func configure(
 	loadout = new_loadout
 	skill_recharge_multipliers.clear()
 	config = new_config
-	current_energy = float(config.get("starting_energy"))
+	resource_modifiers = new_resource_modifiers.duplicate(true)
+	current_energy = minf(get_maximum_energy(), EnergyModifierPolicy.maximum(float(config.get("starting_energy")), resource_modifiers))
 	regeneration_idle_seconds = 0.0
 	charges.clear()
 	recharge_remaining.clear()
@@ -115,7 +136,8 @@ func advance(delta: float) -> void:
 	if policy != null:
 		var previous := current_energy
 		var amount := float(policy.call(&"recovered_amount", regeneration_idle_seconds, delta))
-		current_energy = minf(float(config.get("maximum_energy")), current_energy + maxf(0.0, amount))
+		amount *= EnergyModifierPolicy.recovery_multiplier(resource_modifiers, _is_moving())
+		current_energy = minf(get_maximum_energy(), current_energy + maxf(0.0, amount))
 		# Limit presentation notifications to displayed AP changes, not each frame.
 		changed = floori(previous) != floori(current_energy)
 	regeneration_idle_seconds += delta
@@ -142,7 +164,7 @@ func restore_energy(amount: float) -> float:
 	if config == null or not is_finite(amount) or amount <= 0.0:
 		return 0.0
 	var previous := current_energy
-	current_energy = minf(float(config.get("maximum_energy")), current_energy + amount)
+	current_energy = minf(get_maximum_energy(), current_energy + amount)
 	var restored := current_energy - previous
 	if restored > 0.0:
 		_emit_changed()
@@ -176,7 +198,7 @@ func get_skill_resource_snapshot(slot_index: int) -> Dictionary:
 	var skill: Resource = loadout.get("skills")[slot_index]
 	return {
 		&"energy_current": current_energy,
-		&"energy_maximum": float(config.get("maximum_energy")),
+		&"energy_maximum": get_maximum_energy(),
 		&"energy_cost": float(skill.get("energy_cost")),
 		&"current_charges": charges[slot_index],
 		&"maximum_charges": int(skill.get("maximum_charges")),
@@ -216,7 +238,7 @@ func validate_runtime_state(state: Dictionary) -> PackedStringArray:
 func restore_runtime_state(state: Dictionary) -> bool:
 	if not validate_runtime_state(state).is_empty():
 		return false
-	current_energy = clampf(float(state.energy), 0, float(config.get("maximum_energy")))
+	current_energy = clampf(float(state.energy), 0, get_maximum_energy())
 	charges = state.charges.duplicate()
 	recharge_remaining = state.recharge.duplicate()
 	regeneration_idle_seconds = float(state.get(&"regeneration_idle_seconds", 0.0))
@@ -253,7 +275,9 @@ func get_snapshot() -> Dictionary:
 		slots.append(get_skill_resource_snapshot(slot_index))
 	return {
 		&"energy_current": current_energy,
-		&"energy_maximum": float(config.get("maximum_energy")) if config != null else 0.0,
+		&"energy_maximum": get_maximum_energy(),
+		&"resource_modifiers": resource_modifiers.duplicate(true),
+		&"moving_regeneration_active": _is_moving() and not is_equal_approx(EnergyModifierPolicy.recovery_multiplier(resource_modifiers, true), 1.0),
 		&"slots": slots,
 		&"spawned_pickups": spawned_pickups.duplicate(true),
 		&"collected_pickups": collected_pickups.duplicate(true),

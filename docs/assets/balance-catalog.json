@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "sources": {
-    "game/features/character_selection/data/character_catalog.csv": "6e3c427235d0e55adbe28c8906bd868f0b7d47d6fd061a6fba6b00e4409eb9a9",
+    "game/features/character_selection/data/character_catalog.csv": "b518bc20c22b6c261d38308ce27ef860ec05af35529da17b3a92568f99a8c36b",
     "game/features/combat_skills/data/skill_catalog.csv": "6563cd8d578f2554e325f1ef620ab7bdbdb90333a2bf6c1faccafd370663b100",
     "game/features/combat_skills/data/tactical_patterns.csv": "02a386770a9a40fb7acece93e76dcc894ef9cfb03a5be33f748f3a53a5dcf61d",
     "game/features/conditional_ranking/data/season_reward.csv": "1d993aaa4e20c32a8b51a0956e761e190ea94f515457e0b2025c55ed41d037e3",
@@ -42,7 +42,9 @@
         "movement_speed_multiplier": "이동 속도 배수",
         "skill_damage_multiplier": "특화 피해 배율",
         "skill_cooldown_multiplier": "특화 쿨타임·충전 배율",
-        "skill_radius_multiplier": "특화 범위 배율"
+        "skill_radius_multiplier": "특화 범위 배율",
+        "energy_capacity_multiplier": "기본 AP 최대/시작량 배율",
+        "moving_energy_regeneration_multiplier": "이동 중 AP 자연 회복 배율"
       },
       "columns": {
         "entry_cost": [
@@ -104,7 +106,7 @@
         "skill_damage_multiplier": [
           {
             "id": "0",
-            "value": 1.2
+            "value": 1.0
           },
           {
             "id": "1",
@@ -141,6 +143,34 @@
           {
             "id": "2",
             "value": 1.15
+          }
+        ],
+        "energy_capacity_multiplier": [
+          {
+            "id": "0",
+            "value": 1.15
+          },
+          {
+            "id": "1",
+            "value": 1.0
+          },
+          {
+            "id": "2",
+            "value": 1.0
+          }
+        ],
+        "moving_energy_regeneration_multiplier": [
+          {
+            "id": "0",
+            "value": 1.2
+          },
+          {
+            "id": "1",
+            "value": 1.0
+          },
+          {
+            "id": "2",
+            "value": 1.0
           }
         ]
       }
@@ -12074,5 +12104,5 @@
       }
     }
   ],
-  "version": "2026-09-09.3"
+  "version": "2026-09-22.1"
 }

@@ -18,6 +18,7 @@ COLUMNS = [
     "passive_description", "max_health_add", "defense_add",
     "movement_speed_multiplier", "runtime_enabled", "source_status", "planner_note",
     "skill_families", "skill_damage_multiplier", "skill_cooldown_multiplier", "skill_radius_multiplier",
+    "energy_capacity_multiplier", "moving_energy_regeneration_multiplier",
 ]
 
 
@@ -55,7 +56,8 @@ def validate(text: str) -> list[dict[str, str]]:
             raise ValueError(f"{character_id}: 숫자 열 형식이 올바르지 않습니다.") from error
         if entry_cost < 0 or speed <= 0:
             raise ValueError(f"{character_id}: 비용 또는 이동 속도 배율이 올바르지 않습니다.")
-        for key in ('skill_damage_multiplier','skill_cooldown_multiplier','skill_radius_multiplier'):
+        for key in ('skill_damage_multiplier','skill_cooldown_multiplier','skill_radius_multiplier',
+                    'energy_capacity_multiplier', 'moving_energy_regeneration_multiplier'):
             if not math.isfinite(float(row[key])) or not 0 < float(row[key]) <= 5:
                 raise ValueError(f'{character_id}: {key} 특화 배율 오류')
         rows.append(row)

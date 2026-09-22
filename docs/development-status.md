@@ -17,13 +17,13 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-22</span><span>SEARCH COMMAND</span><span>15 DAYS · 171 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-22</span><span>SEARCH COMMAND</span><span>15 DAYS · 173 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 9/22 결정 항목 반영
 
 후속으로 [플레이 흐름 계측](quality/e2e-play-session.md#run-flow-20260922)을 구현했습니다. 구간별 실제 경과·전리품 판단·후퇴/미완료/누락을 로컬 보고서로 남깁니다.1~2분 순환·보상 전체 처리3초의 사람 수락은 미검증이므로 부분 구현 수를 임의로 줄이지 않습니다.
 
-장착 룬 정산 전용 회귀와 실시간 가방을 반영했습니다. 신규16행 중 중복1행을 제외한15요구는 코드 구현4·부분6·미구현5입니다. 원본 GDD101블록/작업표82행은9/21 해시와 동일하며 기획 상태는 수정하지 않았습니다. 전체82행 진행률이나 정상10분 사람 검수 완료를 뜻하지 않습니다. [변화·검증·다음 작업](design/current-milestone-workline.md#decided-20260922).
+장착 룬 정산·실시간 가방에 이어 [전술 적응](features/character-selection.md#tactical-adaptation-20260922)을 구현했습니다. 신규16행 중 중복1행을 제외한15요구는 코드 구현5·부분5·미구현5입니다. 원본 GDD101블록/작업표82행은9/21 해시와 동일하며 기획 상태는 수정하지 않았습니다. 전체82행 진행률이나 정상10분 사람 검수 완료를 뜻하지 않습니다. [변화·검증·다음 작업](design/current-milestone-workline.md#decided-20260922).
 
 ## 9/21 원본 재확인 · 최신 대응도 재산정 대기
 
@@ -55,7 +55,7 @@ tags:
 
 ## 현재 빌드 상태
 
-**현행 콘텐츠:** 시작3요원·8무기 선택, 고정 패시브, 액티브40종(동시3), 방어구14종/3세트, 16:10 PC 장비 UI입니다. 9/10 변경은 훈련 라이브 스냅샷 수정·타격음6종/스킬 표현과 모듈 감사 보완입니다. 기존 CSV `2026-09-09.3`과 임시 수치는 유지합니다. [검증·다음 작업](quality/e2e-play-session.md#training-feedback-20260910). 아래 날짜별 배포 커밋은 당시 이력입니다.
+**현행 콘텐츠:** 시작3요원·8무기 선택, 고정 패시브, 액티브40종(동시3), 방어구14종/3세트, 16:10 PC 장비 UI입니다. 9/22 전술 적응 반영으로 CSV는 `2026-09-22.1`입니다. AP 패시브 배율만 확정값으로 교체했고 기본 AP 정책과 다른 임시 수치는 유지합니다. [검증·다음 작업](quality/e2e-play-session.md#vanguard-20260922). 아래 날짜별 배포 커밋은 당시 이력입니다.
 
 **최신 공간 규칙:** B 복합 구역의 제한된 입구·내부 연결에 A 불규칙 바닥과 C 단계별 다각형 변형을 적용합니다. 시설마다 도로 직결/출입구 2개는 폐기한 이전 규칙입니다. 위험 1~10단계는 같은 지역·규모의 기본 투입비와 연동하고 장비 추가비는 분리합니다. 일반 후퇴·금고 F 선택 봉쇄·두 출구 방어·안전 단말 워프·실제 바닥 기반 공간 공개는 유지합니다. [현행 계약](features/extraction-district.md#compound-20260909) · [90생성/30출격·배포 검수](quality/e2e-play-session.md#compound-20260909).
 
@@ -78,9 +78,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 1 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 3 · IMPROVE 2 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>뱅가드 · 이동하며 AP를 더 빠르게 회복</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>선봉대의 임시 피해 보너스를 전술 적응으로 교체했습니다. 기본 AP +15%, 실제 이동 중 자연 회복 +20%로 훈련과 작전에 적용합니다. 요원을 반복 교체해도 AP가 공짜로 채워지지 않습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>공유 시트·Web 데이터·계산기를 함께 갱신했습니다. 정지/이동 조건을 비교할 수 있으며 기본 AP 수치는 임시, 패시브 배율은 확정으로 구분합니다.</p></div>
+        <p><a href="/features/character-selection/#tactical-adaptation-20260922">패시브와 데이터 계약</a> · <a href="/quality/e2e-play-session/#vanguard-20260922">검증 근거</a> · <a href="/design/current-milestone-workline/#next-20260922">잔여 작업</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>전투·보상·이동이 끊기는 구간을 따로 기록</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>방 방문부터 전투·보상 선택·다음 방 이동까지 구간별 관측을 추가했습니다. 후퇴·보류·사망은 정상 완료와 나눠 기록하며 전투 화면이나 밸런스는 바꾸지 않습니다.</p></div>
