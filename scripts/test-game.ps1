@@ -27,6 +27,8 @@ if (-not (Test-Path -LiteralPath $csvPolicyPython)) { $csvPolicyPython = 'python
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $csvPolicyPython (Join-Path $PSScriptRoot 'test_gdscript_dependencies.py')
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $csvPolicyPython (Join-Path $PSScriptRoot 'check_game_ui_audit.py')
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $csvPolicyPython (Join-Path $PSScriptRoot 'test_combat_audio_assets.py')
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $csvPolicyPython (Join-Path $PSScriptRoot 'test_run_flow_summary.py')
