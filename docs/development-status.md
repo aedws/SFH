@@ -17,9 +17,11 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-22</span><span>SEARCH COMMAND</span><span>15 DAYS · 170 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-22</span><span>SEARCH COMMAND</span><span>15 DAYS · 171 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 9/22 결정 항목 반영
+
+후속으로 [플레이 흐름 계측](quality/e2e-play-session.md#run-flow-20260922)을 구현했습니다. 구간별 실제 경과·전리품 판단·후퇴/미완료/누락을 로컬 보고서로 남깁니다.1~2분 순환·보상 전체 처리3초의 사람 수락은 미검증이므로 부분 구현 수를 임의로 줄이지 않습니다.
 
 장착 룬 정산 전용 회귀와 실시간 가방을 반영했습니다. 신규16행 중 중복1행을 제외한15요구는 코드 구현4·부분6·미구현5입니다. 원본 GDD101블록/작업표82행은9/21 해시와 동일하며 기획 상태는 수정하지 않았습니다. 전체82행 진행률이나 정상10분 사람 검수 완료를 뜻하지 않습니다. [변화·검증·다음 작업](design/current-milestone-workline.md#decided-20260922).
 
@@ -76,9 +78,17 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 1 · IMPROVE 0 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 1 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>전투·보상·이동이 끊기는 구간을 따로 기록</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>방 방문부터 전투·보상 선택·다음 방 이동까지 구간별 관측을 추가했습니다. 후퇴·보류·사망은 정상 완료와 나눠 기록하며 전투 화면이나 밸런스는 바꾸지 않습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>최신 로컬 보고서로 느린 구간을 찾을 수 있습니다. 계측 검증과 실제 재미 수락을 구분하고, 다음은 정상 속도10분/F·중대형·모바일 플레이 확인입니다.</p></div>
+        <p><a href="/quality/e2e-play-session/#run-flow-20260922">기록 해석과 검수 기준</a> · <a href="/design/current-milestone-workline/#next-20260922">다음 작업</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>전투는 가방에서도 계속 · 장착 룬 환전 검증</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>작전 중 I/E 가방·모듈 편집과 저장 확인에서 시간·적·피격·쿨타임이 계속됩니다. UI 뒤 이동·공격과 사망 후 미저장 편집 적용은 막고 현재 HP를 표시합니다. 거점 준비는 종전 방식을 유지합니다.</p></div>

@@ -313,6 +313,23 @@
   ],
   "objects": [
     {
+      "id": "work:run-flow-20260922",
+      "type": "work_item",
+      "label": "PLAN-03-FLOW · 플레이 흐름 계측",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "관측 계층 구현: 방별 방문/전투/클리어/다음 진입, 전리품별 획득/보류/중단. 로컬 최신 보고서와 분석기. 게임 수치/보상/정지 규칙 변경 없음.",
+      "acceptance": "계측 계약 검증과 기획 목표 수락은 별개. 순환1~2분·보상 전체 처리3초는 실제 정상 플레이 미수락으로 요구 상태 partial 유지.",
+      "next_action": "정상10분/F→중·대형 안개·후퇴·다수 적·보상 쌓임→모바일 FUN QA. 보고서와 행동 원인을 함께 보존.",
+      "route": "quality/e2e-play-session/#run-flow-20260922",
+      "relations": [
+        {"to": "source:notion-tracker", "type": "informed_by"},
+        {"to": "document:quality/e2e-play-session", "type": "verified_by"},
+        {"to": "document:architecture/module-rules", "type": "documented_by"}
+      ]
+    },
+    {
       "id": "work:notion-realtime-inventory-20260922",
       "type": "work_item",
       "label": "결정 요구 · 실시간 가방과 장착 룬 정산",
@@ -321,7 +338,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "작전 I/E 비정지·입력 차단·HP/피격·저장 충돌·사망 임시 편집 무효화. 기존 장착 룬 환전은 실제 드랍/F/정산 전용 회귀로 검증해 중복 구현하지 않음.",
       "acceptance": "실제 프레임 시간/적/쿨타임, UI 입력 유출 차단, HP 보존, 새 획득물 보존, 결과 정지와 거점 복원. 룬/코어/유물510C 및 사망0C·반복 지급0C.",
-      "next_action": "짧은 루프 계측→Web/Windows 정상10분·모바일 위험 인지/FUN QA. 신규15고유요구 코드 구현4·부분6·미구현5, 전체82행 완료율과 구분.",
+      "next_action": "짧은 루프 계측 구현 완료. 다음 Web/Windows 정상10분·모바일 위험 인지/FUN QA. 신규15고유요구 코드 구현4·부분6·미구현5, 전체82행 완료율과 구분.",
       "route": "design/current-milestone-workline/#decided-20260922",
       "relations": [
         {"to": "source:notion-tracker", "type": "informed_by"},

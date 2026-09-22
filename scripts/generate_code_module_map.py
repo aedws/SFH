@@ -25,6 +25,7 @@ NEGATED_TOGGLE_RE = re.compile(r"not\s+([a-z0-9_]+)_enabled")
 
 
 MODULE_LABELS = {
+    "run_flow": "플레이 흐름 계측",
     "scene_assembly": "게임 조립",
     "core": "공통 계약",
     "balance_data": "밸런스 데이터",

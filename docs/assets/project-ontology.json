@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-21",
-  "source_sha256": "52839f6b68f2c17348d1ea03ae461f3714287b6de6f23b904f128ffff1c39a6f",
+  "source_sha256": "d1da752817a3bd372123a227f55008659fd288a7dcd4705905cb5d7ae8b4390c",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -392,18 +392,18 @@
     }
   ],
   "summary": {
-    "tracked": 58,
+    "tracked": 59,
     "owner_decisions": 6,
     "blocked": 8,
     "ready": 1,
-    "implemented": 42,
-    "modules": 61,
+    "implemented": 43,
+    "modules": 62,
     "documents": 105,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 500,
+    "relations": 505,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -548,6 +548,33 @@
       "kind": "evidence"
     },
     {
+      "id": "work:run-flow-20260922",
+      "type": "work_item",
+      "label": "PLAN-03-FLOW · 플레이 흐름 계측",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "관측 계층 구현: 방별 방문/전투/클리어/다음 진입, 전리품별 획득/보류/중단. 로컬 최신 보고서와 분석기. 게임 수치/보상/정지 규칙 변경 없음.",
+      "acceptance": "계측 계약 검증과 기획 목표 수락은 별개. 순환1~2분·보상 전체 처리3초는 실제 정상 플레이 미수락으로 요구 상태 partial 유지.",
+      "next_action": "정상10분/F→중·대형 안개·후퇴·다수 적·보상 쌓임→모바일 FUN QA. 보고서와 행동 원인을 함께 보존.",
+      "route": "quality/e2e-play-session/#run-flow-20260922",
+      "relations": [
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        },
+        {
+          "to": "document:architecture/module-rules",
+          "type": "documented_by"
+        }
+      ],
+      "kind": "governance"
+    },
+    {
       "id": "work:notion-realtime-inventory-20260922",
       "type": "work_item",
       "label": "결정 요구 · 실시간 가방과 장착 룬 정산",
@@ -556,7 +583,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "작전 I/E 비정지·입력 차단·HP/피격·저장 충돌·사망 임시 편집 무효화. 기존 장착 룬 환전은 실제 드랍/F/정산 전용 회귀로 검증해 중복 구현하지 않음.",
       "acceptance": "실제 프레임 시간/적/쿨타임, UI 입력 유출 차단, HP 보존, 새 획득물 보존, 결과 정지와 거점 복원. 룬/코어/유물510C 및 사망0C·반복 지급0C.",
-      "next_action": "짧은 루프 계측→Web/Windows 정상10분·모바일 위험 인지/FUN QA. 신규15고유요구 코드 구현4·부분6·미구현5, 전체82행 완료율과 구분.",
+      "next_action": "짧은 루프 계측 구현 완료. 다음 Web/Windows 정상10분·모바일 위험 인지/FUN QA. 신규15고유요구 코드 구현4·부분6·미구현5, 전체82행 완료율과 구분.",
       "route": "design/current-milestone-workline/#decided-20260922",
       "relations": [
         {
@@ -2795,7 +2822,7 @@
         "files": 2,
         "classes": 0,
         "incoming": 2,
-        "outgoing": 55
+        "outgoing": 56
       }
     },
     {
@@ -3663,6 +3690,24 @@
       }
     },
     {
+      "id": "module:run_flow",
+      "type": "module",
+      "label": "플레이 흐름 계측",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "기반·검증 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=run_flow",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/run_flow",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 2,
+        "outgoing": 0
+      }
+    },
+    {
       "id": "module:run_settlement",
       "type": "module",
       "label": "런 정산",
@@ -3866,16 +3911,16 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 79개",
+      "summary": "기반·검증 · verification · 파일 80개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 79,
+        "files": 80,
         "classes": 0,
         "incoming": 0,
-        "outgoing": 55
+        "outgoing": 56
       }
     },
     {
@@ -5035,6 +5080,30 @@
     }
   ],
   "relations": [
+    {
+      "from": "authority:project-owner",
+      "to": "work:run-flow-20260922",
+      "type": "decides",
+      "origin": "registry"
+    },
+    {
+      "from": "work:run-flow-20260922",
+      "to": "source:notion-tracker",
+      "type": "informed_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:run-flow-20260922",
+      "to": "document:quality/e2e-play-session",
+      "type": "verified_by",
+      "origin": "registry"
+    },
+    {
+      "from": "work:run-flow-20260922",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "registry"
+    },
     {
       "from": "authority:project-owner",
       "to": "work:notion-realtime-inventory-20260922",
@@ -7959,6 +8028,12 @@
     },
     {
       "from": "module:run_buffs",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:run_flow",
       "to": "document:architecture/module-rules",
       "type": "documented_by",
       "origin": "generated"

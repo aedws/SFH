@@ -25,6 +25,7 @@ extends Resource
 @export var equipment_customization_enabled: bool = true
 @export var spawning_enabled: bool = true
 @export var room_encounters_enabled: bool = true
+@export var run_flow_enabled: bool = true
 @export var room_warp_enabled: bool = true
 @export var weapons_enabled: bool = true
 @export var combat_skills_enabled: bool = true
@@ -252,6 +253,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"spawning")
 	if room_encounters_enabled:
 		result.append(&"room_encounters")
+	if run_flow_enabled:
+		result.append(&"run_flow")
 	if room_warp_enabled:
 		result.append(&"room_warp")
 	if weapons_enabled:

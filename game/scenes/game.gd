@@ -494,6 +494,7 @@ var credit_ledger
 var loot_spawner
 var enemy_spawner
 var room_encounter_system
+var run_flow_telemetry
 var room_warp_system
 var auto_weapon
 var combat_skill_system
@@ -2136,6 +2137,8 @@ func _tutorial_binding_labels() -> Dictionary:
 
 
 func _return_to_start_hub(route_initial_entry: bool = true) -> void:
+	if is_instance_valid(run_flow_telemetry):
+		run_flow_telemetry.call(&"finish", "returned_to_hub")
 	if is_instance_valid(operation_tutorial_overlay):
 		operation_tutorial_overlay.call(&"dismiss")
 	if field_loot_acquisition_service != null:
@@ -2212,6 +2215,7 @@ func _reset_run_references() -> void:
 	elite_pursuit_service = null
 	boss_warning_hud = null
 	room_encounter_system = null
+	run_flow_telemetry = null
 	room_warp_system = null
 	auto_weapon = null
 	combat_skill_system = null
@@ -2418,6 +2422,14 @@ func _assemble_game() -> bool:
 		return false
 	if features.field_loot_acquisition_enabled and not _install_field_loot_acquisition():
 		return false
+	if features.run_flow_enabled and is_instance_valid(map_generator) and is_instance_valid(player):
+		run_flow_telemetry = _instantiate_feature("res://game/features/run_flow/run_flow_telemetry.tscn", module_container, &"RunFlowTelemetry")
+		if not _supports_methods(run_flow_telemetry, [&"configure", &"finish", &"get_snapshot"]) or not run_flow_telemetry.call(
+			&"configure", String(current_run_id), player, map_generator, room_encounter_system, field_loot_acquisition_service, active_contract
+		):
+			_free_feature_node(run_flow_telemetry)
+			run_flow_telemetry = null
+			push_warning("플레이 흐름 계측 미연결 · 작전 동작은 유지합니다.")
 	combat_hud_presenter.call(
 		&"attach_runtime_layers",
 		combat_skill_hud as Control,
@@ -3820,7 +3832,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _abandon_run_to_start_hub() -> void:
 	if not run_started or run_ended:
 		return
-	_settle_run_loot(false)
+	_settle_run_loot(false, "abandoned")
 	if operation_contract_service != null:
 		operation_contract_service.call(&"clear_active_contract")
 	_return_to_start_hub()
@@ -4532,7 +4544,7 @@ func _on_player_died() -> void:
 			&"elapsed_seconds": elapsed_time,
 			&"kills": defeated_enemies,
 		}, active_contract)
-	var loot_settlement := _settle_run_loot(false)
+	var loot_settlement := _settle_run_loot(false, "death")
 	lose_equipped_loadout_on_return = true
 	_finish_run(
 		"작전 실패",
@@ -4546,7 +4558,9 @@ func _on_player_died() -> void:
 	)
 
 
-func _settle_run_loot(extracted: bool) -> Dictionary:
+func _settle_run_loot(extracted: bool, failure_reason: String = "lost") -> Dictionary:
+	if is_instance_valid(run_flow_telemetry):
+		run_flow_telemetry.call(&"finish", "extracted" if extracted else failure_reason)
 	if is_instance_valid(inventory_window):
 		inventory_window.call(&"end_runtime_session")
 	var settlement: Dictionary = {}
