@@ -340,7 +340,7 @@ const COMBAT_RESOURCE_METHODS := [
 	&"configure", &"can_activate", &"consume_for_skill", &"restore_energy",
 	&"spawn_enemy_drops", &"get_skill_resource_snapshot", &"get_snapshot",
 	&"set_recovery_multiplier", &"capture_skill_slot_state", &"reset_skill_slot",
-	&"restore_skill_slot_state",
+	&"restore_skill_slot_state", &"set_resource_modifiers",
 ]
 const PERSISTENT_PROFILE_METHODS := [
 	&"configure", &"can_spend", &"spend", &"add_credits", &"get_snapshot",
@@ -1339,6 +1339,8 @@ func _on_profile_changed(_snapshot: Dictionary) -> void:
 func _on_contract_changed(_snapshot: Dictionary) -> void:
 	if not run_started and is_instance_valid(training_combat_skill_system) and is_instance_valid(character_selection_service):
 		training_combat_skill_system.call(&"set_character_specialization", character_selection_service.call(&"get_investment_context").get(&"skill_specialization", {}))
+		if is_instance_valid(training_combat_resource_system):
+			training_combat_resource_system.call(&"set_resource_modifiers", character_selection_service.call(&"get_investment_context").get(&"resource_modifiers", {}))
 	_refresh_contract_setup_ui()
 
 
@@ -1875,7 +1877,8 @@ func _install_training_combat_runtime() -> bool:
 		not _supports_methods(training_combat_resource_system, COMBAT_RESOURCE_METHODS)
 		or not training_combat_resource_system.call(
 			&"configure", player, pickups_container, training_loadout,
-			load(features.combat_resource_config_path), features.map_seed
+			load(features.combat_resource_config_path), features.map_seed,
+			character_selection_service.call(&"get_investment_context").get(&"resource_modifiers", {}) if is_instance_valid(character_selection_service) else {}
 		)
 	):
 		_report_configuration_error("훈련 AP·충전 자원 런타임을 구성하지 못했습니다.")
@@ -2647,7 +2650,8 @@ func _install_combat_resources() -> bool:
 		&"configure", player, pickups_container,
 		_get_active_run_skill_loadout(),
 		load(features.combat_resource_config_path),
-		features.map_seed
+		features.map_seed,
+		active_contract.get(&"investment_context", {}).get(&"resource_modifiers", {})
 	):
 		_report_configuration_error("에너지·충전·회복 드랍 정책을 구성하지 못했습니다.")
 		return false

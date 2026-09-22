@@ -54,9 +54,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 1 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 3 · IMPROVE 2 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>뱅가드 · 이동하며 AP를 더 빠르게 회복</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>선봉대의 임시 피해 보너스를 전술 적응으로 교체했습니다. 기본 AP +15%, 실제 이동 중 자연 회복 +20%로 훈련과 작전에 적용합니다. 요원을 반복 교체해도 AP가 공짜로 채워지지 않습니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>공유 시트·Web 데이터·계산기를 함께 갱신했습니다. 정지/이동 조건을 비교할 수 있으며 기본 AP 수치는 임시, 패시브 배율은 확정으로 구분합니다.</p></div>
+        <p><a href="/features/character-selection/#tactical-adaptation-20260922">패시브와 데이터 계약</a> · <a href="/quality/e2e-play-session/#vanguard-20260922">검증 근거</a> · <a href="/design/current-milestone-workline/#next-20260922">잔여 작업</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>전투·보상·이동이 끊기는 구간을 따로 기록</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>방 방문부터 전투·보상 선택·다음 방 이동까지 구간별 관측을 추가했습니다. 후퇴·보류·사망은 정상 완료와 나눠 기록하며 전투 화면이나 밸런스는 바꾸지 않습니다.</p></div>

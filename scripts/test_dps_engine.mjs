@@ -9,7 +9,16 @@ for(const skill of catalog.skills){
   assert.ok(Number.isFinite(E.simulate(catalog,input).skillDamage),skill.skill_id);
 }
 const lanceInput=E.defaults(catalog,'assault_rifle','plasma_lance');
-near(E.resolve(catalog,lanceInput).skillDamage, lanceInput.skillDamage*1.2);
+near(E.resolve(catalog,lanceInput).skillDamage, lanceInput.skillDamage);
+near(E.resolve(catalog,lanceInput).resources.maximum,115);
+near(E.resolve(catalog,lanceInput).resources.regen,10);
+near(E.resolve(catalog,{...lanceInput,moving:true}).resources.regen,12);
+const runnerInput=structuredClone(lanceInput);runnerInput.loadout.characterId='runner';runnerInput.moving=true;
+near(E.resolve(catalog,runnerInput).resources.maximum,100);
+near(E.resolve(catalog,runnerInput).resources.regen,10);
+const resourceOnly={...E.defaults(catalog,'assault_rifle'),energy:0,horizon:2,moving:true};
+near(E.simulate(catalog,resourceOnly).energy,12);
+near(E.simulate(catalog,{...resourceOnly,moving:false}).energy,10);
 let i=E.defaults(catalog,'assault_rifle','magnetic_field');
 let x=E.resolve(catalog,i);
 near(x.cycle,.98); near(x.hit,1.6*1.06*1.0375); near(x.perCast,66); assert.equal(x.ticks,10);

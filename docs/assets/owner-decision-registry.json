@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "updated": "2026-09-21",
+  "updated": "2026-09-22",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -313,6 +313,24 @@
   ],
   "objects": [
     {
+      "id": "work:vanguard-20260922",
+      "type": "work_item",
+      "label": "PLAN-00-ENV · 뱅가드 전술 적응",
+      "status": "implemented",
+      "certainty": "confirmed",
+      "decision_owner": "authority:project-owner",
+      "summary": "확정 AP+15%·실제 이동 중 자연 회복+20%. Character Sheet Q/R·잠금 CSV·Web·훈련/작전·계산기 연결. 기본 AP100/회복10은 임시 정책 유지, 기존 피해 패시브 제거.",
+      "acceptance": "115/10/12, 정지·실제 이동·벽·워프, 반복 교체 무료 충전 차단, 소중대 출격·거점 복귀·선택 기능 해제·HUD 동등성·계산기 회귀. 데이터 2026-09-22.1.",
+      "next_action": "신규15고유요구 코드 구현5·부분5·미구현5. 다음 스킬별 소켓/룬 상세값 대조와 별도 정상10분/F·모바일 FUN QA. 전체82행 완료율 아님.",
+      "route": "features/character-selection/#tactical-adaptation-20260922",
+      "relations": [
+        {"to": "source:notion", "type": "informed_by"},
+        {"to": "source:notion-tracker", "type": "informed_by"},
+        {"to": "document:features/character-selection", "type": "documented_by"},
+        {"to": "document:quality/e2e-play-session", "type": "verified_by"}
+      ]
+    },
+    {
       "id": "work:run-flow-20260922",
       "type": "work_item",
       "label": "PLAN-03-FLOW · 플레이 흐름 계측",
@@ -338,7 +356,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "작전 I/E 비정지·입력 차단·HP/피격·저장 충돌·사망 임시 편집 무효화. 기존 장착 룬 환전은 실제 드랍/F/정산 전용 회귀로 검증해 중복 구현하지 않음.",
       "acceptance": "실제 프레임 시간/적/쿨타임, UI 입력 유출 차단, HP 보존, 새 획득물 보존, 결과 정지와 거점 복원. 룬/코어/유물510C 및 사망0C·반복 지급0C.",
-      "next_action": "짧은 루프 계측 구현 완료. 다음 Web/Windows 정상10분·모바일 위험 인지/FUN QA. 신규15고유요구 코드 구현4·부분6·미구현5, 전체82행 완료율과 구분.",
+      "next_action": "짧은 루프 계측·전술 적응 구현 완료. 다음 Web/Windows 정상10분·모바일 위험 인지/FUN QA. 신규15고유요구 코드 구현5·부분5·미구현5, 전체82행 완료율과 구분.",
       "route": "design/current-milestone-workline/#decided-20260922",
       "relations": [
         {"to": "source:notion-tracker", "type": "informed_by"},
@@ -356,7 +374,7 @@
       "decision_owner": "authority:project-owner",
       "summary": "신규16행 코드 대조 후 즉시 접촉 피해를0.4초 고정 방향 붉은 전조와 폭20px 타격으로 교체. 정책 Resource와 공격 상태를 분리하고 기존 피해·보스 문 무시를 보존.",
       "acceptance": "지연/단발/옆 회피/회복/기절/넉백/사망/벽/보스/정책 복사와 렌더 표시 계약. 다수 적·모바일·정상10분 재미 수락은 별도.",
-      "next_action": "9/22 장착 룬 정산 회귀·실시간 가방 완료. 다음은 짧은 루프 계측. 신규16행은 코드 구현4·부분6·미구현5·중복1이며 최신82행 전체 완료율로 사용하지 않음.",
+      "next_action": "9/22 장착 룬 정산 회귀·실시간 가방·흐름 계측·전술 적응 완료. 신규16행은 코드 구현5·부분5·미구현5·중복1이며 최신82행 전체 완료율로 사용하지 않음. 다음 소켓/룬 세부값 대조와 실제 플레이 수락.",
       "route": "design/current-milestone-workline/#delta-audit-20260921",
       "relations": [
         {"to": "source:notion-tracker", "type": "informed_by"},

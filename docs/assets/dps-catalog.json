@@ -1499,18 +1499,22 @@
 				"character_id": "vanguard",
 				"display_name": "선봉대",
 				"entry_cost": 0,
-				"passive_description": "직선·부채꼴 스킬 피해 +20% · 무료 기본 요원",
-				"passive_id": "standard_frame",
-				"passive_name": "돌파 프레임",
-				"planner_note": "임시 특화 · 정면 돌파",
+				"passive_description": "기본 AP +15% · 이동 중 AP 자연 회복 +20% · 무료 기본 요원",
+				"passive_id": "tactical_adaptation",
+				"passive_name": "전술 적응",
+				"planner_note": "2026-09-22 GDD §13 확정 패시브 적용; 기본 AP/자연 회복량은 임시 정책 유지",
+				"resource_modifiers": {
+					"capacity_multiplier": 1.15,
+					"moving_regeneration_multiplier": 1.2
+				},
 				"runtime_modifiers": {},
 				"skill_specialization": {
 					"cooldown_multiplier": 1.0,
-					"damage_multiplier": 1.2,
-					"families": "line|cone",
+					"damage_multiplier": 1.0,
+					"families": "",
 					"radius_multiplier": 1.0
 				},
-				"source_status": "temporary"
+				"source_status": "confirmed"
 			},
 			{
 				"character_id": "runner",
@@ -1520,6 +1524,10 @@
 				"passive_id": "overclock_stride",
 				"passive_name": "과충전 보폭",
 				"planner_note": "임시 특화 · 이동과 재배치",
+				"resource_modifiers": {
+					"capacity_multiplier": 1.0,
+					"moving_regeneration_multiplier": 1.0
+				},
 				"runtime_modifiers": {
 					"movement_speed": {
 						"add": 0.0,
@@ -1542,6 +1550,10 @@
 				"passive_id": "reinforced_frame",
 				"passive_name": "강화 프레임",
 				"planner_note": "임시 특화 · 구역 유지",
+				"resource_modifiers": {
+					"capacity_multiplier": 1.0,
+					"moving_regeneration_multiplier": 1.0
+				},
 				"runtime_modifiers": {
 					"defense": {
 						"add": 2.0,
@@ -36296,21 +36308,22 @@
 	],
 	"sources": {
 		"game/core/item_quality_descriptor.gd": "25a26723525133b5b2374ba6998de102476fbe521c49669f66dc83cf277c7a2b",
-		"game/features/character_selection/character_definition.gd": "1a11c84ad838164850e77c15501106018aa7d9bdea0433ba11a57bcffb26d952",
+		"game/features/character_selection/character_definition.gd": "a89268f53449c568524c54cc91be2f24a99b3d93d7a0a62f15f1b7c0c8a19632",
 		"game/features/character_selection/character_selection_config.gd": "fb59deabd7dbebfbbc38429b1324500efd8d29777c14cd6a06b244b47baa1f64",
-		"game/features/character_selection/character_selection_service.gd": "f6fcd762f41d53f52479d42414c5dbca0434d3d72080e0aaf580301df2cf9444",
+		"game/features/character_selection/character_selection_service.gd": "a3ad83eb5484f53c055b827d0a34cee36836b059b0ad1bb0f336073da40da37c",
 		"game/features/character_selection/character_selection_service.tscn": "87cda9c5407e11e565c0df8af9ea2f4eed23f366280a7befb75ffded6ad49cc1",
-		"game/features/character_selection/character_table.gd": "97c7c30a24e5d1ae66bfe3f75d3fdaf4cce7db3b1b05bbdf645db3bf64254acc",
+		"game/features/character_selection/character_table.gd": "db102ceba1b512d70db564a53988ed24fa0e1a4300d7bc6d50315d810e079107",
 		"game/features/character_selection/configs/default_character_selection.tres": "07a0b796e30af178ed3d7700dcae8069773c135f01dfcef2ecc258fb29200047",
-		"game/features/character_selection/data/character_catalog.csv": "6e3c427235d0e55adbe28c8906bd868f0b7d47d6fd061a6fba6b00e4409eb9a9",
-		"game/features/character_selection/data/character_catalog_payload.tres": "4338a1e14a2f051740fa87b598a17b9425257bda2cd712a1ba1ef5ff139b2886",
+		"game/features/character_selection/data/character_catalog.csv": "b518bc20c22b6c261d38308ce27ef860ec05af35529da17b3a92568f99a8c36b",
+		"game/features/character_selection/data/character_catalog_payload.tres": "b0709b7def7336911795b7629a7202066c4c802c50e6f77ecf663b4407923a8f",
 		"game/features/character_selection/initial_loadout_panel.gd": "6d6553f25c897ce4d23d8f3710b9b3502c63da5e9be2fd0f51f4ea57fb745445",
 		"game/features/combat_resources/combat_resource_config.gd": "0614e1603532cdbf55184a5cb433df31e28e4447874f569fe59e2dd66591f1e6",
 		"game/features/combat_resources/combat_resource_pickup.gd": "56399eda63c25b74061978c6937e9d9cc6f73493f58ac7df25ee8afefd317fda",
 		"game/features/combat_resources/combat_resource_pickup.tscn": "c21cbfe757e66a1b43448fe37afdb53b132a0a314e9b037b265ca590e6edf348",
-		"game/features/combat_resources/combat_resource_system.gd": "5bba19c684a5da75519b5426a9ea8e3a64bfc0215c57d09b40b9e4f35a7d949b",
+		"game/features/combat_resources/combat_resource_system.gd": "b0d77d8b69a5901a5c878964519562bac397c90a16d1c346478c44e86579fa41",
 		"game/features/combat_resources/combat_resource_system.tscn": "0af9eceef3bdb7c46c88aae9aed4e9b5e069f17c8c1a5800699af9478bcc4b3a",
 		"game/features/combat_resources/configs/default_combat_resources.tres": "1b867b4991bde7d8ea4c7dc1ad9f24258241249345688b2fc7eac1332ecb2fb3",
+		"game/features/combat_resources/energy_modifier_policy.gd": "57d6eb19589033e4a6dda2557697633496a262773e78c5240acea5401d9db2cc",
 		"game/features/combat_resources/energy_regeneration_policy.gd": "656c11b3f14b865c37dea35134a05054bd24cf106be3c6788a9ddefad0c4a869",
 		"game/features/combat_skills/combat_skill_definition.gd": "f4322fcebaba1944997a2c17cdf42a6e62f545897e5dda8e4a0fef0c11b63897",
 		"game/features/combat_skills/combat_skill_effect.gd": "66b3f0c4005311c8b0ec11543efc0944e5beb2b59f09073d1934f81276220749",
@@ -36480,7 +36493,7 @@
 		"game/features/operation_contract/operation_contract_service.gd": "bcc7acb3b8c1ca10189e9f668e5ce0acb5b2ab564ceb0b62966444e3dc421e9e",
 		"game/features/operation_contract/operation_contract_service.tscn": "b41d4296e28b3bab080f2781ad0a1d68e9390030e26cc2381a8bfc2abab14408",
 		"game/features/player/health_recovery_policy.gd": "a33cb00c9ec5a57dc41d9871238c984de0b9f5ad938de42ce3f61396ca7b3da0",
-		"game/features/player/player.gd": "9e1a61cbb83a2ff55228a701b5b22cc5ee6f52423df09b63fc73c87473bcb9f8",
+		"game/features/player/player.gd": "9bd847305513bf241752ac24056b4ff0f5bd0f5201ea9d9064077f379991abee",
 		"game/features/player/player.tscn": "f2657a3db80194586729f45f9e9e0ff8569ddea54297cf2880e186b49339d901",
 		"game/features/player/player_movement.gd": "10b10c4bdbb9c430db6ebe15af235bb62b43f9fb6447b5e690a0bda679106fe7",
 		"game/features/player/player_movement_feedback.gd": "127ebb2922c66f54f5fbb7a0a48aa49cc0e45dee3f81612c0c0a75894636c9ec",

@@ -291,14 +291,21 @@
       "acceptance": "뱅가드 선택 시 기본 AP +15% 및 이동 중 AP 자연 회복 +20% 적용 확인",
       "version": 6,
       "last_edited_time": 1789949891141,
-      "code_status": "partial",
-      "work_order": "패시브 목록 조정 후",
-      "assessment": "캐릭터 고정 패시브 기반은 존재. 선봉대는 현재 직선/원뿔 피해 보정으로 AP+15%/이동 중 회복+20%와 다름.",
+      "code_status": "implemented",
+      "work_order": "2026-09-22 전술 적응 구현·전용 회귀",
+      "assessment": "전술 적응 AP+15%/실제 이동 중 자연 회복+20%를 Character Sheet·잠금 CSV·훈련·투입 계약·DPS 계산기에 연결. 이전 직선/원뿔 피해 보정 제거. 기본 AP 수치는 임시 정책 유지.",
       "evidence": [
-        "game/features/character_selection/data/character_catalog.csv"
+        "game/features/character_selection/data/character_catalog.csv",
+        "game/features/combat_resources/energy_modifier_policy.gd",
+        "game/features/combat_resources/combat_resource_system.gd"
       ],
       "existing_test_context": [
-        "game/tests/character_selection_contract_test.gd"
+        "game/tests/vanguard_resource_contract_test.gd",
+        "scripts/test_dps_engine.mjs"
+      ],
+      "verified_by": [
+        "game/tests/vanguard_resource_contract_test.gd",
+        "scripts/test_dps_engine.mjs"
       ]
     },
     {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "version": "2026-09-09.3",
-  "fingerprint": "b888509763e57a05cbbe18b65fd87bce397e22d804a671a5e7727a5241ba4a3b",
+  "version": "2026-09-22.1",
+  "fingerprint": "820206a532706533bbfc32473a4d381be81d810260c33e0ec924377321e7ac05",
   "sources": {
     "game/features/combat_skills/definitions/blink.tres": "f7c9548f0685e1ed90cabb98425799f8d6eed27613779d2dea53bc7712e90d7c",
     "game/features/combat_skills/definitions/arc_dash.tres": "89ae3166549f9bf2ffa602dd5f5b709fd212fdc46deb7566bfea6aae01bfeea8",
@@ -9,7 +9,7 @@
     "game/features/combat_skills/definitions/speed_boost.tres": "e72f091950495477313d350b5e3c8643def0303968007a730956e9bc326ffeea",
     "game/features/weapon_balance/data/weapon_balance.csv": "d6696115650d5be648b67ee0a197e3a2f0bd0cace67588b503ebd298a6c3ddd4",
     "game/features/equipment/data/equipment_identity.csv": "d4637b51f990df33d00812a9e90ae7defb1caa565ecc4da56d4c5112fc40c568",
-    "game/features/character_selection/data/character_catalog.csv": "6e3c427235d0e55adbe28c8906bd868f0b7d47d6fd061a6fba6b00e4409eb9a9",
+    "game/features/character_selection/data/character_catalog.csv": "b518bc20c22b6c261d38308ce27ef860ec05af35529da17b3a92568f99a8c36b",
     "game/features/combat_skills/data/tactical_patterns.csv": "02a386770a9a40fb7acece93e76dcc894ef9cfb03a5be33f748f3a53a5dcf61d",
     "game/features/equipment/definitions/weapons/assault_rifle.tres": "fda1cfde4dc258bcabbdaaf70e3e3b346c3629fe8975f04819666443cf1fd5c4",
     "game/features/equipment/weapon_innate_skill_definition.gd": "4e9b6f85e51065feafb46c79837a12ae7330d688cb618b32157ce2cdd6876130",
@@ -27,7 +27,7 @@
     "game/features/weapons/weapon_innate_skill_system.gd": "34a490622ae3b45b4785c82fc8cbff3fab6b4a68269a5eb128b0a2720095ae6f",
     "game/features/combat_skills/effects/path_damage_policy.gd": "493d5567a9d1c433707e514b4ee6e35c0fb18f79693b915c6e1e744288a2386e",
     "game/features/combat_skills/effects/persistent_magnetic_field.gd": "513e82af14f6319fa6e1834f3a08ec986b445ff271d02acbbfe8f0d57b937539",
-    "game/features/character_selection/character_definition.gd": "1a11c84ad838164850e77c15501106018aa7d9bdea0433ba11a57bcffb26d952",
+    "game/features/character_selection/character_definition.gd": "a89268f53449c568524c54cc91be2f24a99b3d93d7a0a62f15f1b7c0c8a19632",
     "game/features/equipment/stat_modifier.gd": "4cf7533c8a3ad6d81b1e0f57383dcf3648a5ba61a7c553b0e79f8e2fad13958f"
   },
   "fields": [
@@ -2808,7 +2808,7 @@
         {
           "id": "vanguard",
           "name": "선봉대",
-          "current": 1.2,
+          "current": 1.0,
           "bindings": [
             {
               "type": "csv",

@@ -160,6 +160,11 @@ func get_movement_snapshot() -> Dictionary:
 	return movement.get_movement_snapshot()
 
 
+func is_moving_for_resource_recovery() -> bool:
+	# Actual post-collision locomotion, not a held key against a wall or a warp.
+	return current_health > 0.0 and get_real_velocity().length_squared() > 1.0
+
+
 func get_facing_direction() -> Vector2:
 	return facing_direction
 
