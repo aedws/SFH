@@ -82,6 +82,11 @@ $equipmentScreenStatus = $LASTEXITCODE
 $equipmentScreenOutput | Write-Output
 if ($equipmentScreenStatus -ne 0 -or ($equipmentScreenOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($equipmentScreenOutput -join "`n") -notmatch 'EQUIPMENT_SCREEN_OK') { throw 'Equipment screen contract failed.' }
 
+$mobileEntryOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/mobile_control_entry_contract_test.gd" 2>&1
+$mobileEntryCode = $LASTEXITCODE
+$mobileEntryOutput | Write-Output
+if ($mobileEntryCode -ne 0 -or ($mobileEntryOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($mobileEntryOutput -join "`n") -notmatch 'MOBILE_CONTROL_ENTRY_OK') { throw 'Mobile entry and HUD reserved-region contract failed.' }
+
 $fogOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/roguelike_fog_contract_test.gd" 2>&1
 $fogStatus = $LASTEXITCODE
 $fogOutput | Write-Output

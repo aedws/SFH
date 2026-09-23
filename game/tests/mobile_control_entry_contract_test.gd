@@ -225,15 +225,24 @@ func _mobile_play() -> void:
 	game.operation_tutorial_overlay.dismiss()
 	game.presentation_settings_service.set_mobile_ui_scale(1.5)
 	await _frames(8)
-	for dimensions in [Vector2i(844, 390), Vector2i(390, 844)]:
-		root.size = dimensions
-		await _frames(8)
-		var snapshot: Dictionary = game.combat_hud_presenter.get_snapshot(game.hud_margin)
-		_check(snapshot.layout_mode == &"mobile_touch" and not game.combat_skill_hud.visible and not game.dash_cooldown_hud.visible, "mobile removes duplicate PC HUD")
-		for rect: Rect2 in [snapshot.core_rect, snapshot.telemetry_rect, snapshot.mission_rect]:
-			_check(not rect.intersects(pad.movement_group.get_global_rect()) and not rect.intersects(pad.combat_group.get_global_rect()), "HUD clears both hands %s" % dimensions)
-		_check(root.get_visible_rect().grow(1).encloses(game.minimap.get_global_rect()), "mobile minimap bounds")
-		_check(not snapshot.mission_rect.intersects(game.minimap.get_global_rect()), "mission and minimap do not overlap")
+	for phase in [0, 1200, 1740]:
+		game.advance_run_clock(maxf(0, phase - game.elapsed_time))
+		for dimensions in [Vector2i(844, 390), Vector2i(390, 844)]:
+			root.size = dimensions
+			await _frames(8)
+			var snapshot: Dictionary = game.combat_hud_presenter.get_snapshot(game.hud_margin)
+			_check(snapshot.layout_mode == &"mobile_touch" and not game.combat_skill_hud.visible and not game.dash_cooldown_hud.visible, "mobile removes duplicate PC HUD")
+			for rect: Rect2 in [snapshot.core_rect, snapshot.telemetry_rect, snapshot.mission_rect]:
+				_check(root.get_visible_rect().grow(1).encloses(rect), "mobile HUD bounds")
+				_check(not rect.intersects(pad.movement_group.get_global_rect()) and not rect.intersects(pad.combat_group.get_global_rect()), "HUD clears both hands %s" % dimensions)
+			_check(root.get_visible_rect().grow(1).encloses(game.minimap.get_global_rect()), "mobile minimap bounds")
+			_check(not snapshot.mission_rect.intersects(game.minimap.get_global_rect()), "mission and minimap do not overlap")
+			_check(not snapshot.mission_rect.intersects(snapshot.core_rect), "mission clears vitals")
+			if snapshot.mission_rect.intersects(snapshot.core_rect): print("MOBILE_MISSION_VITALS ", phase, " ", dimensions, " ", snapshot.mission_rect, " ", snapshot.core_rect, " min=", game.combat_hud_presenter.mission_tracker.get_combined_minimum_size())
+			_check(game.time_label.is_visible_in_tree() and "붕괴" in game.time_label.text, "mobile deadline remains visible")
+			if "--render" in OS.get_cmdline_user_args() and phase == 1200:
+				await RenderingServer.frame_post_draw
+				root.get_texture().get_image().save_png("res://build/qa-pressure-mobile-%d.png" % dimensions.x)
 	var energy_before := float(game.combat_skill_system.get_skill_states()[0].energy_current)
 	var skill_id: StringName = game.combat_skill_system.get_skill_states()[0].skill_id
 	game.skill_binding_service.assign_skill(skill_id, &"combat_skill_9")

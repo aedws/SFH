@@ -13,6 +13,7 @@ const PASSIVE_ALPHA := 0.72
 
 var layout_root: Control
 var mission_tracker: PanelContainer
+var mission_header: HBoxContainer
 var core_panel: PanelContainer
 var telemetry_panel: PanelContainer
 var equipment_panel: PanelContainer
@@ -42,6 +43,7 @@ var hub_hint: Label
 var hub_objective: Label
 var hub_objective_text := ""
 var hub_size_refresh_queued := false
+var mission_size_refresh_queued := false
 
 
 func attach_hub(view: Control) -> void:
@@ -79,6 +81,23 @@ func attach_tutorial(overlay: Control) -> void:
 	_sync_tutorial_visibility()
 
 
+func _queue_mission_size_refresh() -> void:
+	if mission_size_refresh_queued:
+		return
+	mission_size_refresh_queued = true
+	_refresh_mission_size.call_deferred()
+
+
+func _refresh_mission_size() -> void:
+	mission_size_refresh_queued = false
+	if not is_instance_valid(mission_tracker):
+		return
+	var height := 94.0 if avoid_mobile_controls else (MISSION_HEIGHT if layout_mode == &"player_orbit" else (104.0 if layout_mode == &"compact_edge" else 92.0))
+	# Autowrapped startup text may briefly grow the panel. Shrink its allocated
+	# rectangle again when the real deadline/status text lowers the minimum.
+	mission_tracker.size.y = maxf(height, mission_tracker.get_combined_minimum_size().y)
+
+
 func _sync_tutorial_visibility() -> void:
 	_set_visible(mission_tracker, tutorial_overlay == null or not tutorial_overlay.is_visible_in_tree())
 
@@ -109,6 +128,7 @@ func install(hud: Control) -> bool:
 	var top_row := content.get_node("TopRow") as HBoxContainer
 	var footer := content.get_node("FooterRow") as HBoxContainer
 	mission_tracker = _build_mission_tracker(top_row, footer)
+	mission_tracker.minimum_size_changed.connect(_queue_mission_size_refresh)
 	layout_root.add_child(mission_tracker)
 
 	telemetry_panel = _build_telemetry_panel(top_row)
@@ -297,6 +317,7 @@ func _build_mission_tracker(top_row: HBoxContainer, footer: HBoxContainer) -> Pa
 	content.add_theme_constant_override("separation", 3)
 	margin.add_child(content)
 	var header := HBoxContainer.new()
+	mission_header = header
 	content.add_child(header)
 	header.add_child(_icon(TacticalHudIcon.Kind.INPUT, "MISSION · 작전 목표", Color("02e5e1"), 0, Vector2(22, 22)))
 	var header_label := Label.new()
@@ -320,6 +341,8 @@ func _build_mission_tracker(top_row: HBoxContainer, footer: HBoxContainer) -> Pa
 	status_label.custom_minimum_size.y = 38.0
 	status_label.add_theme_font_size_override("font_size", 11)
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status_label.max_lines_visible = 2
+	status_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	return panel
 
 
@@ -445,6 +468,8 @@ func _apply_layout_for_width(viewport_width: float) -> void:
 		if hub_objective != null:
 			hub_objective.text = "동쪽 작전 게이트에서 ‘사용’을 누르세요." if avoid_mobile_controls else hub_objective_text
 	# 모바일은 패드 자체에 에너지·스킬/대시 대기를 표시합니다. PC용 중복 HUD를 제거합니다.
+	# Keep the deadline/status rows, but remove the decorative title from the 94px touch region.
+	_set_visible(mission_header, not avoid_mobile_controls)
 	_set_visible(combat_skill_hud, not avoid_mobile_controls)
 	_set_visible(dash_cooldown_hud, not avoid_mobile_controls)
 	if avoid_mobile_controls:
