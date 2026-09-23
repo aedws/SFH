@@ -6,5 +6,5 @@ func mark_transaction_processed(_transaction_id: StringName) -> bool:
 
 
 func apply_economy_transaction(_transaction_id: StringName, _credit_delta: int,
-		_warehouse_deltas: Dictionary, _crafted_item: Dictionary = {}) -> Dictionary:
+		_warehouse_deltas: Dictionary, _crafted_item: Dictionary = {}, _unlock_grants: Array[StringName] = []) -> Dictionary:
 	return {&"success": false, &"reason": "강제 원자 거래 실패"}

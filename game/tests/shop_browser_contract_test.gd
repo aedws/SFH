@@ -87,6 +87,9 @@ func _verify_game_flow() -> void:
 		game.free()
 		return
 	_check(game.start_hub != null and not game.run_started and not paused, "boot hub unchanged")
+	# Purchase delivery needs free cells; keep starter goods in the real hub reserve.
+	for id in game.inventory_system.items.keys():
+		_check(game.inventory_system.store_in_reserve(id), "prepare purchase space")
 	var profile: Node = game.persistent_profile
 	var initial: Dictionary = profile.get_snapshot()
 	var initial_bag: Dictionary = game.inventory_system.get_snapshot()

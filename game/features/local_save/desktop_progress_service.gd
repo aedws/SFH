@@ -192,11 +192,11 @@ func cancel_run() -> void:
 	_write()
 
 
-func finish_run(run_id: StringName, extracted: bool, details: Dictionary) -> bool:
+func finish_run(run_id: StringName, extracted: bool, details: Dictionary, retain_prepared_gear: bool = false) -> bool:
 	if not enabled: return true
 	if is_instance_valid(protection_provider) and not _checkpoint_protection(extracted): return false
 	unbind_run_protection()
-	return _complete(String(run_id), extracted, details)
+	return _complete(String(run_id), extracted, details, retain_prepared_gear)
 
 
 func bind_run_protection(provider: Node) -> bool:
@@ -234,7 +234,7 @@ func _checkpoint_protection(extracted: bool) -> bool:
 	return true
 
 
-func _complete(run_id: String, extracted: bool, details: Dictionary) -> bool:
+func _complete(run_id: String, extracted: bool, details: Dictionary, retain_prepared_gear: bool = false) -> bool:
 	if blocked or run_id.is_empty(): return false
 	for entry in document.history:
 		if entry.get("run_id") == run_id: return true
@@ -246,7 +246,9 @@ func _complete(run_id: String, extracted: bool, details: Dictionary) -> bool:
 	document.total_runs = int(document.total_runs) + 1
 	document.extractions = int(document.extractions) + (1 if extracted else 0)
 	document.pending_run = {}
-	if not extracted and document.loadout != null:
+	# Explicit caller policy preserves the existing manual-abandon loadout behavior.
+	# Death and interrupted startup retain the default loss rule.
+	if not extracted and not retain_prepared_gear and document.loadout != null:
 		var codec := Codec.new()
 		var saved: Variant = codec.decode(document.loadout)
 		if not codec.error.is_empty() or not saved is Dictionary: return _block("저장 복원 실패", codec.error)

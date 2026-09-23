@@ -224,13 +224,26 @@ func _native_game() -> void:
 	root.add_child(game)
 	await frames()
 	check(game.inventory_system.reserve.has(id) and game.inventory_system.reserve[id].runtime_payload.original == 91, "actual scene restart original")
+	check(game.equipment_system.install_module(&"main", &"abandon_test", load("res://game/features/equipment/definitions/modules/ballistic_core.tres")), "native abandon custom loadout fixture")
 	check(game.start_run("small"), "native second launch")
 	await frames()
+	# Launch normalizes the character carrier; compare the committed launch checkpoint.
+	var prepared_gear: Dictionary = Codec.new().decode(game.desktop_progress.document.loadout).gear
 	id = game.inventory_system.add_item(definition)
 	game.inventory_system.transfer_pouch(id, false)
 	game._abandon_run_to_start_hub()
 	await frames()
 	check(game.inventory_system.reserve.has(id) and game.desktop_progress.document.pending_run.is_empty(), "abandon protection and native history finalized")
+	check(game.equipment_system.get_equipment_state(&"main").installed_modules.size() == 1, "manual abandon preserves prior equipment policy")
+	var saved: Dictionary = Codec.new().decode(game.desktop_progress.document.loadout)
+	# Opening hub views lazily creates an empty character carrier from a legacy null.
+	for key in prepared_gear:
+		if key == &"character_module_state" and prepared_gear[key] == null:
+			var carrier: Resource = saved.gear.get(key)
+			check(carrier == null or (carrier.installed_modules.is_empty() and carrier.installed_parts.is_empty()), "empty character carrier normalization")
+		else:
+			check(signature(saved.gear.get(key)) == signature(prepared_gear[key]), "abandon native gear retained " + String(key))
+	check(game.desktop_progress.document.extractions == 0, "abandon has no extraction award")
 	game.free()
 	paused = false
 	native_game = false

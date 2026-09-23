@@ -84,6 +84,18 @@ $inventoryPouchStatus = $LASTEXITCODE
 $inventoryPouchOutput | Write-Output
 if ($inventoryPouchStatus -ne 0 -or ($inventoryPouchOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($inventoryPouchOutput -join "`n") -notmatch 'INVENTORY_POUCH_OK') { throw 'Protected pouch and capacity contract failed.' }
 
+$operationMatrixOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/operation_combination_contract_test.gd" 2>&1
+$operationMatrixStatus = $LASTEXITCODE
+$operationMatrixOutput | Write-Output
+if ($operationMatrixStatus -ne 0 -or ($operationMatrixOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($operationMatrixOutput -join "`n") -notmatch 'OPERATION_COMBINATION_OK') { throw 'Operation setting and return matrix failed.' }
+
+foreach ($economyCase in @(@('p5_hub_progression_contract_test', 'P5_HUB_PROGRESSION_OK'), @('shop_browser_contract_test', 'P7_SHOP_BROWSER_OK'))) {
+    $economyOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/$($economyCase[0]).gd" 2>&1
+    $economyStatus = $LASTEXITCODE
+    $economyOutput | Write-Output
+    if ($economyStatus -ne 0 -or ($economyOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($economyOutput -join "`n") -notmatch $economyCase[1]) { throw "Hub economy contract failed: $($economyCase[0])" }
+}
+
 $inventoryViewOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/inventory_presentation_contract_test.gd" 2>&1
 $inventoryViewStatus = $LASTEXITCODE
 $inventoryViewOutput | Write-Output

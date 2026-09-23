@@ -3902,9 +3902,8 @@ func _abandon_run_to_start_hub() -> void:
 	if not run_started or run_ended:
 		return
 	_settle_run_loot(false, "abandoned")
-	lose_equipped_loadout_on_return = true
 	if desktop_progress != null:
-		desktop_progress.call(&"finish_run", current_run_id, false, {"outcome": "abandoned", "protected_count": last_loot_settlement.get(&"protected_count", 0)})
+		desktop_progress.call(&"finish_run", current_run_id, false, {"outcome": "abandoned", "protected_count": last_loot_settlement.get(&"protected_count", 0)}, true)
 	if operation_contract_service != null:
 		operation_contract_service.call(&"clear_active_contract")
 	_return_to_start_hub()
