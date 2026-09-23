@@ -12,6 +12,8 @@ tags:
 
 # 런 전리품 정산
 
+**9/23 강제 마감:** 30분 붕괴는 기존 사망과 같은 실패 손실 경로를 사용합니다. Game의 공통 실패 조립에서 한 번 정산하고 종료 후 늦은 탈출/사망 신호로 결과를 바꿀 수 없습니다. 아래 파우치와 실물 보존 변경은 승인 후속 작업이며 아직 이 정산에 구현된 것으로 보지 않습니다. [시간 정책](extraction-defense-results.md#pressure-20260923) · [현재 실행 순서](../design/current-milestone-workline.md#next-20260923).
+
 P4-06은 작전 중 `FieldLootAcquisitionService`가 임시 보관한 전리품을 작전 결말에 맞춰 영구 프로필로 옮기는 마지막 Phase 4 단계입니다. 정산 정책은 화면이나 작전 결과 서비스에 넣지 않고 `RunSettlementService` 한 모듈에서 처리합니다.
 
 ## 플레이어가 보는 결과
