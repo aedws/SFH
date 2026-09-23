@@ -6,6 +6,7 @@ signal item_crafted(result: Dictionary)
 var profile: Node
 var config: Resource
 var random := RandomNumberGenerator.new()
+var supply_policy := EquipmentSupplyPolicy.hub_default()
 
 
 func configure(profile_provider: Node, crafting_config: Resource, seed: int = 0) -> bool:
@@ -26,6 +27,10 @@ func quote(blueprint_id: StringName) -> Dictionary:
 	var recipe: Dictionary = config.call(&"get_recipe", blueprint_id) if config != null else {}
 	if recipe.is_empty():
 		return {&"craftable": false, &"reason": "등록되지 않은 도면"}
+	var supply := supply_policy.recipe_preview(recipe)
+	if not supply.valid: return {&"craftable": false, &"reason": supply.reason}
+	if not supply_policy.affixes_allowed(config.get("affixes")):
+		return {&"craftable": false, &"reason": "거점 제작은 기본 수치 옵션만 허용"}
 	var profile_snapshot: Dictionary = profile.call(&"get_snapshot")
 	var required_materials: Dictionary = recipe.get(&"materials", {})
 	var has_materials := true
@@ -39,6 +44,7 @@ func quote(blueprint_id: StringName) -> Dictionary:
 			and profile.call(&"can_spend", int(recipe.get(&"credit_cost", 0)))
 		),
 		&"recipe": recipe,
+		&"supply": supply,
 	}
 
 
@@ -63,7 +69,14 @@ func craft(blueprint_id: StringName) -> Dictionary:
 		&"definition_id": recipe.get(&"result_id", &""),
 		&"display_name": recipe.get(&"display_name", "제작 장비"),
 		&"affixes": rolled_affixes,
+		&"grade": craft_quote.supply.grade,
+		&"supply_source": &"hub",
 	}
+	var sockets: Array[Dictionary] = []
+	for index in random.randi_range(craft_quote.supply.minimum_sockets, craft_quote.supply.maximum_sockets):
+		sockets.append({&"slot_index": index, &"state": &"empty"})
+	item[&"sockets"] = sockets
+	item[&"socket_count"] = sockets.size()
 	profile.call(&"add_crafted_item", item)
 	var result := {&"success": true, &"item": item, &"affix_count": rolled_affixes.size()}
 	item_crafted.emit(result)

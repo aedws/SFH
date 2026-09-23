@@ -10,6 +10,7 @@ class CatalogFixture extends Node:
 		return [{"recipe_id": &"future_recipe", "display_name": "미래 제공자 도면", "status_label": "재제작 가능", "credit_cost": 40}]
 	func quote_workshop_recipe(_id: StringName) -> Dictionary:
 		return {"craftable": credits >= 40, "credit_cost": 40, "credits": credits,
+			"roll_preview": {"supply_policy": "거점 공급 · 최대 G3 · 기본 수치 · 1~2소켓", "minimum_sockets": 1, "maximum_sockets": 2},
 			"reason": "크레딧 부족", "material_preview": [{"item_id": "salvage", "owned": 2, "required": 1, "ready": true}]}
 	func craft_recipe(_id: StringName, _transaction: StringName) -> Dictionary:
 		if fail_save: return {"success": false, "reason": "저장 실패"}
@@ -39,6 +40,7 @@ func _run() -> void:
 		_check(panel.craft_button.disabled and fixture.writes == 0, "browse must not spend")
 		panel.cards.get_child(0).pressed.emit()
 		_check(not panel.craft_button.disabled and fixture.writes == 0 and "고철" in panel.detail.text, "select shows quote only")
+		_check("기본 수치" in panel.detail.text and "소켓 1~2" in panel.detail.text, "effective supply bounds shown")
 		panel.close_panel()
 		_check(not paused, "pause restored")
 		view.free()

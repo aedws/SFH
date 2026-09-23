@@ -273,6 +273,9 @@ jobs:
           timeout 90s godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/inventory_pouch_contract_test.gd" 2>&1 | tee /tmp/sfh-inventory-pouch.log
           ! grep -E 'SCRIPT ERROR:|ERROR:' /tmp/sfh-inventory-pouch.log
           grep -q 'INVENTORY_POUCH_OK' /tmp/sfh-inventory-pouch.log
+          timeout 90s godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/hub_supply_contract_test.gd" 2>&1 | tee /tmp/sfh-hub-supply.log
+          ! grep -E 'SCRIPT ERROR:|ERROR:' /tmp/sfh-hub-supply.log
+          grep -q 'HUB_SUPPLY_OK' /tmp/sfh-hub-supply.log
           timeout 90s godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/run_pressure_contract_test.gd" 2>&1 | tee /tmp/sfh-run-pressure.log
           grep -q 'RUN_PRESSURE_OK' /tmp/sfh-run-pressure.log
           ! grep -E 'SCRIPT ERROR:|^ERROR:' /tmp/sfh-run-pressure.log

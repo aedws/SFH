@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-23",
-  "source_sha256": "b21b9a175867af35daf797514c739125e86044a031d77635504ab6cf6161af59",
+  "source_sha256": "10db18a8717126e11240edf40c92ec4a8d1df4986704e1c3ffc469c8e6ecb3af",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -2893,15 +2893,15 @@
       "label": "공통 계약",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · contract · 파일 7개",
+      "summary": "기반·검증 · contract · 파일 8개",
       "route": "architecture/code-module-map/?module=core",
       "documentation_route": "architecture/module-rules/",
       "source": "game/core",
       "kind": "implementation",
       "metrics": {
-        "files": 7,
-        "classes": 7,
-        "incoming": 11,
+        "files": 8,
+        "classes": 8,
+        "incoming": 13,
         "outgoing": 31
       }
     },
@@ -3046,7 +3046,7 @@
         "files": 2,
         "classes": 2,
         "incoming": 3,
-        "outgoing": 1
+        "outgoing": 2
       }
     },
     {
@@ -3117,7 +3117,7 @@
       "metrics": {
         "files": 28,
         "classes": 28,
-        "incoming": 10,
+        "incoming": 11,
         "outgoing": 2
       }
     },
@@ -3280,7 +3280,7 @@
         "files": 2,
         "classes": 2,
         "incoming": 3,
-        "outgoing": 1
+        "outgoing": 2
       }
     },
     {
@@ -3604,7 +3604,7 @@
         "files": 26,
         "classes": 25,
         "incoming": 3,
-        "outgoing": 2
+        "outgoing": 3
       }
     },
     {
@@ -3991,13 +3991,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 85개",
+      "summary": "기반·검증 · verification · 파일 86개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 85,
+        "files": 86,
         "classes": 0,
         "incoming": 0,
         "outgoing": 57

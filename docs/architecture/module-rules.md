@@ -22,6 +22,8 @@ SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입
 
 ## 기본 규칙
 
+거점 공급은 `EquipmentSupplyPolicy`의 순수 검증과 공통 Resource를 사용합니다. 상점은 후보→견적→실물 정의/지급, 제작은 요청→Roll→저장 직전 결과를 검증합니다. 교체 공급자의 결과도 재검증하며 실패 시 차감 전에 거부합니다. 원본 레시피·보유 장비는 수정하지 않습니다. 기존 무기 고유 스킬과 심층 전용 추가 옵션, 제작 소켓 기록과 스킬 룬 소켓을 구분합니다. [계약](../features/p5-hub-progression.md#supply-20260923).
+
 주머니는 `InventoryPouchPolicy`(종류/배치), `GridInventory`(가방·보관·주머니의 단일 실물 소유권), `InventoryRunProtection`(복귀 상태·정산 장부의 순수 투영), `DesktopProgressService`(마지막 정상 보호 체크포인트)로 분리합니다. UI 초안은 정산 원본이 아닙니다. 성공은 기존 정산만, 실패는 보호 실물만 보관하며 양쪽을 중복 지급하지 않습니다. 소켓 왕복은 원래 ID/페이로드를 유지합니다.
 
 용량은 `InventoryCapacityCatalog`의 검증된 표→`InventoryCapacityService`의 해금 단계 투영으로 적용합니다. 비용·영구 해금 토큰은 `PersistentProfile.apply_economy_transaction` 한 원자적 거래에 기록하고, 재실행은 토큰에 맞춰 무손실 크기를 복원합니다. 실패한 저장/오래된 견적은 결제하지 않습니다. 데이터·결제·실물 이동·표현을 한 UI 콜백에 섞지 않습니다. 미정 가격은 구매 잠금이며 실시간 크기 변경은 거점에 한정합니다. [공개 계약](../features/grid-inventory.md#pouch-20260923).

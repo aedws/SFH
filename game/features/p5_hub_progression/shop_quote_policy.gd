@@ -21,6 +21,10 @@ static func quote(offer: Dictionary, catalog: Array[Dictionary], profile: Dictio
 		&"delivery": delivery_preview.get(&"delivery", "창고 수량 지급"),
 	}
 	if offer.is_empty(): return result
+	var source_error := EquipmentSupplyPolicy.hub_default().source_error(offer)
+	if not source_error.is_empty():
+		result[&"reason"] = source_error
+		return result
 	var price: Variant = offer.get(&"price")
 	var quantity: Variant = offer.get(&"quantity")
 	var multiplier := float(offer.get(&"performance_multiplier", 1.0))
