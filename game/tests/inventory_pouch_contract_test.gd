@@ -234,6 +234,7 @@ func _native_game() -> void:
 	game._abandon_run_to_start_hub()
 	await frames()
 	check(game.inventory_system.reserve.has(id) and game.desktop_progress.document.pending_run.is_empty(), "abandon protection and native history finalized")
+	check("보호품 1개" in game.status_label.text and "준비 장비 유지" in game.status_label.text, "abandon feedback matches protected return")
 	check(game.equipment_system.get_equipment_state(&"main").installed_modules.size() == 1, "manual abandon preserves prior equipment policy")
 	var saved: Dictionary = Codec.new().decode(game.desktop_progress.document.loadout)
 	# Opening hub views lazily creates an empty character carrier from a legacy null.
