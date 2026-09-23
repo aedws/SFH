@@ -3,6 +3,9 @@ import {readFile} from 'node:fs/promises';
 import {balanceApi} from '../cloudflare/wiki-auth/balance-api.js';
 import worker from '../cloudflare/wiki-auth/_worker.js';
 const catalog=JSON.parse(await readFile('docs/assets/balance-catalog.json','utf8'));
+const capacity=catalog.datasets.find(dataset=>dataset.id==='container_capacity');
+assert.equal(capacity?.title,'가방·보호 주머니 확장 단계');
+assert.equal(Object.values(capacity.labels).filter(label=>label.includes('가격 미정/구매 잠금')).length,5,'unapproved capacity prices must not appear as active gameplay prices');
 const dps=JSON.parse(await readFile('docs/assets/dps-catalog.json','utf8'));
 const E=globalThis.SFHBalance;
 for(const dataset of catalog.datasets)for(const [column,values]of Object.entries(dataset.columns)){

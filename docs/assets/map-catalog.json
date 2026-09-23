@@ -289,7 +289,7 @@
 	],
 	"schema": 1,
 	"sources": {
-		"game/features/balance_data/data_version.txt": "bdca52e91f4889e16f0097591b3310c1bfaa9af3e284cd0c2aec42f4d43e60ad",
+		"game/features/balance_data/data_version.txt": "9ab8f53c534779cceda2160e94f5c4b140cb33d38f93b1c9f2418a0bf4ce554a",
 		"game/features/map_generation/compound_district_layout.gd": "fdbb3cdb3d33851f8adf5454032d7fee01ed8058e8e1be2d147a5c2565394454",
 		"game/features/map_generation/compound_space_shape.gd": "a895795c4913b6c14a679b7ed3b70a83fe3aed3d3e43950c3c443ac7d1d646e2",
 		"game/features/map_generation/configs/large.tres": "12bc1eb056bb7c74439ca0203578e8a12e4bed705671c6f72a5602fadc413aa2",
@@ -367,5 +367,5 @@
 			"urban_enabled": true
 		}
 	},
-	"version": "2026-09-22.1"
+	"version": "2026-09-23.1"
 }

@@ -10,6 +10,7 @@
     "game/features/equipment/data/equipment_identity.csv": "d4637b51f990df33d00812a9e90ae7defb1caa565ecc4da56d4c5112fc40c568",
     "game/features/growth_balance/data/run_buff_balance.csv": "bfe7de1f52a923f05e1e9df0209d794680c17c96999a5192809c4e244fd5d12b",
     "game/features/growth_balance/data/upgrade_balance.csv": "8ff1eec17e1473c368eb60b7787656c324ebdab77843d33a969a5d7849ce478b",
+    "game/features/inventory/data/container_capacity.csv": "21c8ef7765a20948d4f5f6f115fe9b09d3fa9e838ccf0a84ceada7fee2f5fe1c",
     "game/features/loadout_investment/data/skill_investment.csv": "d301e949a418268e23f367c1aa6f8eea5926d8e8eb17382ab786aae7b7b6aa80",
     "game/features/loadout_investment/data/weapon_investment.csv": "fb8ab9ea8bafd9b06698392100c32b5b2ab125bfde0b2820fe39cbe3de5a8f48",
     "game/features/loot_lifecycle/data/item_lifecycle.csv": "02805156113001ba85cbbe379be5952b91f85b6420ec7fbed66ca711b92a115e",
@@ -7897,6 +7898,148 @@
       }
     },
     {
+      "id": "container_capacity",
+      "title": "가방·보호 주머니 확장 단계",
+      "source": "game/features/inventory/data/container_capacity.csv",
+      "labels": {
+        "1": "소형 정찰 조끼 · 기본 지급 (CSV 3행)",
+        "2": "표준 전술 배낭 I · 가격 미정/구매 잠금 (CSV 4행)",
+        "3": "표준 전술 배낭 II · 가격 미정/구매 잠금 (CSV 5행)",
+        "4": "대형 원정 배낭 · 가격 미정/구매 잠금 (CSV 6행)",
+        "5": "기본 보호 주머니 · 기본 지급 (CSV 7행)",
+        "6": "확장 보호 주머니 · 가격 미정/구매 잠금 (CSV 8행)",
+        "7": "최대 보호 주머니 · 가격 미정/구매 잠금 (CSV 9행)"
+      },
+      "column_labels": {
+        "stage": "확장 단계",
+        "columns": "가로 칸",
+        "rows": "세로 칸",
+        "credit_cost": "강화 비용 C"
+      },
+      "columns": {
+        "stage": [
+          {
+            "id": "1",
+            "value": 0.0
+          },
+          {
+            "id": "2",
+            "value": 1.0
+          },
+          {
+            "id": "3",
+            "value": 2.0
+          },
+          {
+            "id": "4",
+            "value": 3.0
+          },
+          {
+            "id": "5",
+            "value": 0.0
+          },
+          {
+            "id": "6",
+            "value": 1.0
+          },
+          {
+            "id": "7",
+            "value": 2.0
+          }
+        ],
+        "columns": [
+          {
+            "id": "1",
+            "value": 12.0
+          },
+          {
+            "id": "2",
+            "value": 12.0
+          },
+          {
+            "id": "3",
+            "value": 12.0
+          },
+          {
+            "id": "4",
+            "value": 12.0
+          },
+          {
+            "id": "5",
+            "value": 2.0
+          },
+          {
+            "id": "6",
+            "value": 2.0
+          },
+          {
+            "id": "7",
+            "value": 2.0
+          }
+        ],
+        "rows": [
+          {
+            "id": "1",
+            "value": 3.0
+          },
+          {
+            "id": "2",
+            "value": 4.0
+          },
+          {
+            "id": "3",
+            "value": 5.0
+          },
+          {
+            "id": "4",
+            "value": 6.0
+          },
+          {
+            "id": "5",
+            "value": 2.0
+          },
+          {
+            "id": "6",
+            "value": 3.0
+          },
+          {
+            "id": "7",
+            "value": 4.0
+          }
+        ],
+        "credit_cost": [
+          {
+            "id": "1",
+            "value": 0.0
+          },
+          {
+            "id": "2",
+            "value": 1000.0
+          },
+          {
+            "id": "3",
+            "value": 2500.0
+          },
+          {
+            "id": "4",
+            "value": 5000.0
+          },
+          {
+            "id": "5",
+            "value": 0.0
+          },
+          {
+            "id": "6",
+            "value": 2000.0
+          },
+          {
+            "id": "7",
+            "value": 5000.0
+          }
+        ]
+      }
+    },
+    {
       "id": "skill_investment",
       "title": "스킬 투자",
       "source": "game/features/loadout_investment/data/skill_investment.csv",
@@ -12104,5 +12247,5 @@
       }
     }
   ],
-  "version": "2026-09-22.1"
+  "version": "2026-09-23.1"
 }
