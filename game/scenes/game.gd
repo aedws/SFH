@@ -255,6 +255,7 @@ const FIELD_LOOT_ACQUISITION_METHODS := [
 	&"equip_focused", &"restore_equipment_swaps", &"restore_run_inventory", &"cancel_preview",
 	&"get_active_drops", &"get_panel", &"get_snapshot",
 	&"register_enemy", &"spawn_room_reward",
+	&"prepare_inventory_settlement", &"get_protected_return_state",
 ]
 const SESSION_SOCKET_METHODS := [
 	&"configure", &"request_live_catalog", &"load_csv_text", &"socket_item",
@@ -262,6 +263,7 @@ const SESSION_SOCKET_METHODS := [
 ]
 const RUN_SETTLEMENT_METHODS := [&"configure", &"settle", &"get_snapshot"]
 const INVENTORY_METHODS := [
+	&"get_pouch_snapshot",
 	&"configure",
 	&"add_item",
 	&"add_item_with_payload",
@@ -573,6 +575,7 @@ var selected_map_size: String = "small"
 var selected_balance_source_mode: int = WeaponBalanceConfig.SourceMode.LOCKED_CSV
 var facility_catalog_service: Node
 var difficulty_catalog_service: Node
+var inventory_capacity_service: Node
 var preferred_weapon_slot: StringName = &"main"
 var hub_active_weapon_name: String = ""
 var prepared_equipment_state: Dictionary = {}
@@ -595,6 +598,9 @@ var run_skill_binding_replacements: Array[Dictionary] = []
 
 func _ready() -> void:
 	difficulty_catalog_service = preload("res://game/features/operation_contract/difficulty_catalog_service.gd").new()
+	if features != null and features.inventory_enabled:
+		inventory_capacity_service = load("res://game/features/inventory/inventory_capacity_service.gd").new()
+		add_child(inventory_capacity_service)
 	add_child(difficulty_catalog_service)
 	difficulty_catalog_service.catalog_changed.connect(func(_snapshot: Dictionary) -> void:
 		if operation_contract_service != null: operation_contract_service.call(&"set_difficulty_rows",difficulty_catalog_service.call(&"get_rows")))
@@ -1972,6 +1978,7 @@ func _install_hub_loadout_views() -> bool:
 		return false
 	if desktop_progress != null:
 		desktop_progress.call(&"bind_hub", inventory_system, equipment_system)
+	if inventory_capacity_service != null: inventory_capacity_service.call(&"apply_current")
 	if operation_launch_preflight_service != null:
 		for registration in [
 			[&"equipment", equipment_system],
@@ -2142,6 +2149,8 @@ func _tutorial_binding_labels() -> Dictionary:
 
 
 func _return_to_start_hub(route_initial_entry: bool = true) -> void:
+	if desktop_progress != null:
+		desktop_progress.call(&"unbind_run_protection")
 	if is_instance_valid(run_flow_telemetry):
 		run_flow_telemetry.call(&"finish", "returned_to_hub")
 	if is_instance_valid(operation_tutorial_overlay):
@@ -2150,6 +2159,7 @@ func _return_to_start_hub(route_initial_entry: bool = true) -> void:
 		field_loot_acquisition_service.call(&"restore_equipment_swaps")
 		field_loot_acquisition_service.call(&"restore_run_inventory")
 	if lose_equipped_loadout_on_return:
+		_capture_prepared_loadout(false)
 		prepared_equipment_state.clear()
 		lose_equipped_loadout_on_return = false
 	else:
@@ -2430,6 +2440,10 @@ func _assemble_game() -> bool:
 		return false
 	if features.field_loot_acquisition_enabled and not _install_field_loot_acquisition():
 		return false
+	if desktop_progress != null and is_instance_valid(field_loot_acquisition_service):
+		if not desktop_progress.call(&"bind_run_protection", field_loot_acquisition_service):
+			_report_configuration_error("보호 주머니 저장 연결 실패 · 출격을 중단합니다.")
+			return false
 	if features.run_flow_enabled and is_instance_valid(map_generator) and is_instance_valid(player):
 		run_flow_telemetry = _instantiate_feature("res://game/features/run_flow/run_flow_telemetry.tscn", module_container, &"RunFlowTelemetry")
 		if not _supports_methods(run_flow_telemetry, [&"configure", &"finish", &"get_snapshot"]) or not run_flow_telemetry.call(
@@ -2963,6 +2977,7 @@ func _select_balance_source_mode(source_mode: int) -> void:
 	):
 		return
 	selected_balance_source_mode = source_mode
+	if inventory_capacity_service != null: inventory_capacity_service.call(&"set_source_mode", source_mode)
 	if facility_catalog_service != null:
 		facility_catalog_service.call(&"set_source_mode", source_mode)
 	if difficulty_catalog_service != null:
@@ -3100,6 +3115,10 @@ func _install_inventory() -> bool:
 		return false
 	if inventory_system.has_method(&"set_reserve_access"):
 		inventory_system.call(&"set_reserve_access", not run_started)
+	if inventory_capacity_service != null and not run_started:
+		if not inventory_capacity_service.call(&"bind", inventory_system, persistent_profile, func():
+			return not run_started and not (is_instance_valid(training_ground_service) and bool(training_ground_service.call(&"get_loadout_snapshot").get(&"active", false)))
+		): return false
 	inventory_window = _instantiate_feature(
 		INVENTORY_WINDOW_SCENE_PATH, ui_layer, &"GridInventoryWindow"
 	)
@@ -3109,6 +3128,7 @@ func _install_inventory() -> bool:
 		_report_configuration_error("가방 UI 모듈의 공개 계약이 올바르지 않습니다.")
 		return false
 	inventory_window.call(&"configure", inventory_system, equipment_system)
+	if inventory_capacity_service != null and not run_started: inventory_window.call(&"set_capacity_provider", inventory_capacity_service)
 	inventory_window.call(&"set_realtime_mode", run_started)
 	inventory_window.call(&"set_live_health", player.current_health, player.max_health)
 	inventory_window.connect(&"settings_saved", _on_inventory_settings_saved)
@@ -3882,6 +3902,9 @@ func _abandon_run_to_start_hub() -> void:
 	if not run_started or run_ended:
 		return
 	_settle_run_loot(false, "abandoned")
+	lose_equipped_loadout_on_return = true
+	if desktop_progress != null:
+		desktop_progress.call(&"finish_run", current_run_id, false, {"outcome": "abandoned", "protected_count": last_loot_settlement.get(&"protected_count", 0)})
 	if operation_contract_service != null:
 		operation_contract_service.call(&"clear_active_contract")
 	_return_to_start_hub()
@@ -4623,9 +4646,7 @@ func _settle_run_loot(extracted: bool, failure_reason: String = "lost") -> Dicti
 	var settlement: Dictionary = {}
 	var acquired_items: Dictionary = {}
 	if is_instance_valid(field_loot_acquisition_service):
-		acquired_items = field_loot_acquisition_service.call(&"get_snapshot").get(
-			&"acquired_items", {}
-		)
+		acquired_items = field_loot_acquisition_service.call(&"prepare_inventory_settlement", extracted)
 	if run_settlement_service != null and current_run_id != &"":
 		settlement = run_settlement_service.call(
 			&"settle", current_run_id, acquired_items, extracted
@@ -4634,6 +4655,7 @@ func _settle_run_loot(extracted: bool, failure_reason: String = "lost") -> Dicti
 		settlement[&"p5_progression"] = p5_hub_progression_service.call(
 			&"settle_run", extracted, acquired_items
 		)
+	settlement[&"protected_count"] = inventory_system.call(&"get_pouch_snapshot").entries.size() if not extracted and is_instance_valid(inventory_system) else 0
 	last_loot_settlement = settlement
 	return last_loot_settlement.duplicate(true)
 
@@ -4652,7 +4674,7 @@ func _format_run_loot_settlement(result: Dictionary) -> String:
 	var lost_quantity := 0
 	for quantity in lost.values():
 		lost_quantity += int(quantity)
-	return "\n전리품 · 사망 소실 %d종 · %d개" % [lost.size(), lost_quantity]
+	return "\n전리품 · 사망 소실 %d종 · %d개 · 보호 주머니 %d개 거점 보관" % [lost.size(), lost_quantity, int(result.get(&"protected_count", 0))]
 
 
 func _finish_run(title: String, summary: String, result: Dictionary = {}) -> void:

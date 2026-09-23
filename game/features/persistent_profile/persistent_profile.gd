@@ -184,7 +184,7 @@ func mark_transaction_processed(transaction_id: StringName) -> bool:
 
 
 func apply_economy_transaction(transaction_id: StringName, credit_delta: int,
-		warehouse_deltas: Dictionary, crafted_item: Dictionary = {}) -> Dictionary:
+		warehouse_deltas: Dictionary, crafted_item: Dictionary = {}, unlock_grants: Array[StringName] = []) -> Dictionary:
 	if transaction_id == &"" or has_processed_transaction(transaction_id):
 		return {&"success": false, &"reason": "중복 거래"}
 	var next_credits := banked_credits + credit_delta
@@ -224,6 +224,12 @@ func apply_economy_transaction(transaction_id: StringName, credit_delta: int,
 	var previous_warehouse := warehouse
 	var previous_crafted_items := crafted_items
 	var previous_transactions := processed_transaction_ids
+	var previous_unlocks := unlock_ids.duplicate()
+	var unique_grants := {}
+	for id in unlock_grants:
+		if id == &"" or is_unlocked(id) or unique_grants.has(id): return {&"success": false, &"reason": "이미 해금했거나 잘못된 확장입니다."}
+		unique_grants[id] = true
+	unlock_ids.append_array(unlock_grants)
 	banked_credits = next_credits
 	warehouse = next_warehouse
 	crafted_items = next_crafted_items
@@ -233,6 +239,7 @@ func apply_economy_transaction(transaction_id: StringName, credit_delta: int,
 		warehouse = previous_warehouse
 		crafted_items = previous_crafted_items
 		processed_transaction_ids = previous_transactions
+		unlock_ids = previous_unlocks
 		return {&"success": false, &"reason": "영구 저장 실패"}
 	return {
 		&"success": true,

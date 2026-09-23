@@ -19,6 +19,12 @@ func _run() -> void:
 	game.features = features
 	root.add_child(game)
 	for frame in 6: await process_frame
+	# Leave one small item for draft movement and free pickup space in the base tier.
+	var seeds: Array = game.inventory_system.get_snapshot().items
+	var retained: StringName = &""
+	for entry in seeds:
+		if retained == &"" and entry.grid_size == Vector2i.ONE: retained = entry.instance_id
+		else: game.inventory_system.store_in_reserve(entry.instance_id)
 	game.inventory_window.open_panel()
 	check(paused, "hub preparation still pauses")
 	game.inventory_window.close_panel()

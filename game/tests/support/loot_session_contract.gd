@@ -97,7 +97,8 @@ func verify(tree: SceneTree, game: Node, tap: Callable) -> String:
 	var full_drop: Node2D = loot.spawn_candidate(player.global_position, {&"item_id": &"ballistic_core_item", &"grade": 2, &"quantity": 2, &"source_type": &"room_reward"})
 	await _focus(tree, loot, player, full_drop)
 	await tap.call(KEY_F)
-	if not is_instance_valid(full_drop) or loot.total_acquired != total_before or bag.export_runtime_state() != full_before or "공간 부족" not in loot.panel.controls_label.text:
+	var codec := preload("res://game/features/local_save/loadout_value_codec.gd").new()
+	if not is_instance_valid(full_drop) or loot.total_acquired != total_before or codec.encode(bag.export_runtime_state()) != codec.encode(full_before) or "공간 부족" not in loot.panel.controls_label.text:
 		return "Partial pickup lost/duplicated items or omitted full-bag feedback"
 	loot.cancel_preview()
 	bag.restore_runtime_state(checkpoint)

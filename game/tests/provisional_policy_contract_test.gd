@@ -27,6 +27,7 @@ func _run() -> void:
 	var skills: Node = game.training_combat_skill_system
 	var weapon: Node = game.auto_weapon
 	var bag: Node = game.inventory_system
+	for id in bag.items.keys(): bag.store_in_reserve(id)
 	_check(training.get_loadout_snapshot().socket_catalog.is_empty(), "unowned hidden")
 	game._cycle_hub_training()
 	_check(not training.toggle_training_socket(&"arc_rune").success, "unowned cannot trial")
@@ -87,7 +88,8 @@ func _run() -> void:
 	game.inventory_window.close_panel()
 	_check(game._finish_hub_training(), "training finish")
 	_check(sockets.get_snapshot().installed_count == 0, "trial sockets cleared")
-	_check(bag.export_runtime_state() == original_bag, "trial grants and bag edits restored")
+	var codec := preload("res://game/features/local_save/loadout_value_codec.gd").new()
+	_check(codec.encode(bag.export_runtime_state()) == codec.encode(original_bag), "trial grants and bag edits restored")
 	game.queue_free()
 	for frame in 3: await process_frame
 	if failures.is_empty():

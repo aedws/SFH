@@ -37,6 +37,8 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 # A fresh clone has no imported fonts or global GDScript class cache yet.
 & $csvPolicyPython (Join-Path $PSScriptRoot 'sync_difficulty.py') --check
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $csvPolicyPython (Join-Path $PSScriptRoot 'sync_container_capacity.py') --check
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $csvPolicyPython (Join-Path $PSScriptRoot 'compile_tactical_skills.py') --check
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $csvPolicyPython (Join-Path $PSScriptRoot 'test_tactical_compiler.py')
@@ -76,6 +78,11 @@ $inventoryReserveOutput = & $godotExecutable --headless --path $repositoryRoot -
 $inventoryReserveStatus = $LASTEXITCODE
 $inventoryReserveOutput | Write-Output
 if ($inventoryReserveStatus -ne 0 -or ($inventoryReserveOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($inventoryReserveOutput -join "`n") -notmatch 'INVENTORY_RESERVE_OK') { throw 'Lossless inventory reserve contract failed.' }
+
+$inventoryPouchOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/inventory_pouch_contract_test.gd" 2>&1
+$inventoryPouchStatus = $LASTEXITCODE
+$inventoryPouchOutput | Write-Output
+if ($inventoryPouchStatus -ne 0 -or ($inventoryPouchOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($inventoryPouchOutput -join "`n") -notmatch 'INVENTORY_POUCH_OK') { throw 'Protected pouch and capacity contract failed.' }
 
 $inventoryViewOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/inventory_presentation_contract_test.gd" 2>&1
 $inventoryViewStatus = $LASTEXITCODE

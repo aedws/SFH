@@ -80,6 +80,9 @@ func _run() -> void:
 	var original_bindings: Dictionary = game.skill_binding_service.get_snapshot()
 	_check(service.call(&"get_loadout_snapshot").socket_catalog.is_empty(), "unowned catalog hidden")
 	# Explicit owned fixture, not a grant of every catalog entry to the player.
+	# The 36-cell starter bag is full; use the real hub reserve before adding fixtures.
+	for id in game.inventory_system.items.keys():
+		_check(game.inventory_system.store_in_reserve(id), "prepare owned fixture space")
 	for id in [&"arc_rune", &"capacitor_core"]:
 		var item := InventoryItemDefinition.new()
 		item.item_id = id

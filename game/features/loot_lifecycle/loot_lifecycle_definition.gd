@@ -7,6 +7,7 @@ const SESSION_CONVERTIBLE := &"session_convertible"
 @export var item_id: StringName
 @export var display_name: String
 @export var item_type: StringName
+@export var grid_size := Vector2i.ONE
 @export var loot_family: StringName
 @export var session_behavior: StringName
 @export var extract_result: StringName
@@ -18,6 +19,8 @@ const SESSION_CONVERTIBLE := &"session_convertible"
 
 func validation_errors() -> PackedStringArray:
 	var errors := PackedStringArray()
+	if item_type == &"blueprint" and (grid_size.x < 1 or grid_size.x > 12 or grid_size.y < 1 or grid_size.y > 8):
+		errors.append("도면 가방 크기는 가로 1~12, 세로 1~8 정수여야 합니다.")
 	if item_id == &"" or display_name.strip_edges().is_empty():
 		errors.append("item_id와 표시 이름이 필요합니다.")
 	if death_result not in [&"lost", &"retain"]:

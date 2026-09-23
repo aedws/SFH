@@ -72,6 +72,17 @@ func transfer_reserve(instance_id: StringName, retrieving: bool) -> bool:
 	return _changed()
 
 
+func transfer_pouch(instance_id: StringName, retrieving: bool) -> bool:
+	if not active or conflicted: return _reject("최신 가방을 다시 열어 주세요.")
+	if not inventory.transfer_pouch(instance_id, retrieving): return _reject("이동 불가 · 설계도/룬/코어/유물만 수납 가능 · 빈 공간을 확인하세요.")
+	return _changed()
+
+
+func rotate_pouch_item(instance_id: StringName) -> bool:
+	if not active or conflicted or not inventory.rotate_pouch_item(instance_id): return _reject("주머니 회전 불가 · 경계/겹침을 확인하세요.")
+	return _changed()
+
+
 func equip_item(instance_id: StringName, slot_id: StringName) -> bool:
 	var entry := get_item_entry(instance_id)
 	var definition: Resource = entry.get(&"linked_resource")

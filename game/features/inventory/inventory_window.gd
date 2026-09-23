@@ -66,6 +66,10 @@ var viewing_reserve := false
 var selected_reserve_id: StringName = &""
 var bag_title: Label
 var bag_hint: Label
+var pouch_panel: InventoryPouchPanel
+var header_title: Label
+var capacity_provider: Node
+var upgrade_confirmation: ConfirmationDialog
 
 
 func _ready() -> void:
@@ -91,6 +95,12 @@ func configure(bag: Node, gear: Node = null) -> void:
 	_bind_draft()
 
 
+func set_capacity_provider(provider: Node) -> void:
+	capacity_provider = provider
+	pouch_panel.capacity_provider = provider
+	_refresh()
+
+
 func register_runtime_item_actions(provider: Node) -> bool:
 	if not is_instance_valid(provider) or not provider.has_method(&"supports_inventory_item") or not provider.has_method(&"perform_inventory_item_action"):
 		return false
@@ -108,6 +118,8 @@ func _runtime_action_provider(entry: Dictionary) -> Node:
 
 func _input(event: InputEvent) -> void:
 	if not visible or event.is_echo():
+		return
+	if is_instance_valid(upgrade_confirmation) and upgrade_confirmation.visible:
 		return
 	if event.is_action_pressed(&"ui_cancel"):
 		if runtime_target_picker.dismiss_popup():
@@ -253,6 +265,7 @@ func set_live_health(current: float, maximum: float) -> void:
 
 func end_runtime_session() -> void:
 	session_ended = true
+	if is_instance_valid(upgrade_confirmation): upgrade_confirmation.hide()
 	pending_exit = Callable()
 	confirmation_visible = false
 	confirm_overlay.hide()
@@ -313,7 +326,7 @@ func _build_ui() -> void:
 	margin.add_child(root_box)
 	var header := HBoxContainer.new()
 	root_box.add_child(header)
-	var header_title := _label(header, "가방 인벤토리 / LOADOUT", 20)
+	header_title = _label(header, "가방 인벤토리 / LOADOUT", 20)
 	header_title.autowrap_mode = TextServer.AUTOWRAP_OFF
 	header_title.clip_text = true
 	header_title.size_flags_horizontal = SIZE_EXPAND_FILL
@@ -354,6 +367,16 @@ func _build_ui() -> void:
 	bag_title = _label(bag_column, "회수품 / BACKPACK", 17)
 	bag_hint = _label(bag_column, "드래그 이동 · 선택 후 R 회전", 12)
 	reserve_toggle = _button(bag_column, "거점 실물 보관", _toggle_reserve)
+	pouch_panel = InventoryPouchPanel.new()
+	bag_column.add_child(pouch_panel)
+	pouch_panel.store_requested.connect(func(): session.transfer_pouch(StringName(selected_entry.get(&"instance_id", &"")), false))
+	pouch_panel.retrieve_requested.connect(func(id): session.transfer_pouch(id, true))
+	pouch_panel.rotate_requested.connect(func(id): session.rotate_pouch_item(id))
+	pouch_panel.upgrade_requested.connect(_request_capacity_upgrade)
+	upgrade_confirmation = ConfirmationDialog.new()
+	upgrade_confirmation.title = "거점 수납 확장"
+	upgrade_confirmation.confirmed.connect(_confirm_capacity_upgrade)
+	add_child(upgrade_confirmation)
 	bag_scroll = ScrollContainer.new()
 	bag_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	bag_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_ALWAYS
@@ -517,6 +540,8 @@ func _refresh() -> void:
 	if selected_entry.is_empty(): runtime_target_picker.present([], &"")
 	elif runtime_target_picker.visible: action_button.disabled = not runtime_target_picker.is_complete()
 	_refresh_reserve()
+	pouch_panel.present(session.inventory.get_pouch_snapshot(), selected_entry, not realtime and not viewing_reserve)
+	pouch_panel.visible = not viewing_reserve and current_tab == 0
 	unequip_button.disabled = session.equipment == null
 	_layout()
 	if current_tab == 2 and session.equipment != null:
@@ -636,10 +661,15 @@ func _install_socket_item(id: StringName) -> void:
 
 
 func _on_item_selected(entry: Dictionary) -> void:
+	if entry.is_empty() or not entry.has(&"display_name"):
+		status_label.text = "선택한 물건이 변경됐습니다. 가방에서 다시 선택하세요."
+		return
 	selected_reserve_id = &""
 	selected_entry = entry.duplicate()
 	_show_selected_entry(entry)
 	reserve_button.disabled = not session.inventory.reserve_access_enabled
+	pouch_panel.selected = &""
+	pouch_panel.present(session.inventory.get_pouch_snapshot(), selected_entry, not realtime)
 
 
 func _show_selected_entry(entry: Dictionary) -> void:
@@ -667,6 +697,9 @@ func _show_selected_entry(entry: Dictionary) -> void:
 
 func _rotate_selected_item() -> void:
 	if viewing_reserve: return
+	if pouch_panel.body.visible and pouch_panel.selected != &"":
+		session.rotate_pouch_item(pouch_panel.selected)
+		return
 	if selected_entry.is_empty():
 		status_label.text = "회전할 아이템을 먼저 한 번 선택하세요."
 		return
@@ -798,6 +831,23 @@ func _transfer_reserve() -> void:
 		_refresh()
 
 
+func _request_capacity_upgrade(kind: StringName, quote: Dictionary) -> void:
+	request_leave(func():
+		upgrade_confirmation.set_meta(&"kind", kind)
+		upgrade_confirmation.set_meta(&"quote", quote)
+		upgrade_confirmation.dialog_text = "%s · %d칸\n%d C를 사용해 영구 확장합니다.\n확장 구매는 편집 취소로 되돌리지 않습니다." % [quote.display_name, quote.columns * quote.rows, quote.credit_cost]
+		upgrade_confirmation.popup_centered(Vector2i(340, 180)))
+
+
+func _confirm_capacity_upgrade() -> void:
+	if not is_instance_valid(capacity_provider) or realtime or session_ended: return
+	var result: Dictionary = capacity_provider.call(&"purchase", upgrade_confirmation.get_meta(&"kind"), upgrade_confirmation.get_meta(&"quote"))
+	session.begin()
+	_bind_draft()
+	status_label.text = result.get(&"reason", "확장 결과 확인 필요")
+	if result.get(&"success", false): settings_saved.emit()
+
+
 func _remove_modification(kind: StringName, id: StringName) -> void:
 	session.remove_modification(selected_slot, kind, id)
 
@@ -806,6 +856,7 @@ func _layout() -> void:
 	if columns == null:
 		return
 	var layout_width := minf(size.x, get_viewport_rect().size.x - 40)
+	header_title.text = "가방" if layout_width < 450 else "가방 인벤토리 / LOADOUT"
 	var proportions := SCREEN_LAYOUT.inventory(layout_width, current_tab == 1)
 	var narrow: bool = proportions.narrow
 	columns.vertical = narrow

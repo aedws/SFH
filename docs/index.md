@@ -54,9 +54,19 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-23</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 2 · CHANGE 0 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-23</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 3 · IMPROVE 3 · CHANGE 1 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 3</small><b>작은 가방과 보호 주머니 · 실패해도 지킬 전리품 선택</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>가방36칸과 보호 주머니4칸을 적용했습니다. 도면·룬·코어·유물을 넣고 저장하면 실패 시 원형으로 거점 보관에 돌아옵니다. 성공 시에는 기존 해금·환전 규칙을 따릅니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>기존 초과 저장품은 삭제하지 않고 보관합니다. Windows 보호 체크포인트와 소켓 왕복에서도 실물 ID·부가 데이터를 유지합니다.</p></div>
+        <div class="sfh-group"><h3>수정 · 1</h3><p>가방36/48/60/72칸과 주머니4/6/8칸을 공유 시트·잠금 CSV·Web 데이터로 분리했습니다. 확장 가격 미승인으로 구매는 잠금 상태입니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>사망 복귀에서 보호 가방 상태가 누락되지 않게 했습니다. 미저장 편집·반복 정산·실패한 결제로 아이템이나 재화를 중복 처리하지 않습니다.</p></div>
+        <p><a href="/features/grid-inventory/#pouch-20260923">사용법·가격 판단</a> · <a href="/quality/e2e-play-session/#pouch-20260923">검증과 남은 수락</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 2</small><b>장비를 그대로 보관 · 무손실 가방 이관 기반</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>거점 I에서 실물 보관과 꺼내기를 추가했습니다. 옵션·강화·회전·실물 ID를 유지하고, 저장하지 않은 이동은 취소할 수 있습니다. 전투 중 보관 이동은 차단합니다.</p></div>

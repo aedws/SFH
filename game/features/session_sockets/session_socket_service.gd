@@ -254,6 +254,9 @@ func socket_owned_item(item_id: StringName, requested_targets: Dictionary = {}, 
 	var result := socket_item(item_id, requested_targets)
 	if not result.get(&"success", false):
 		inventory_adapter.bag.call(&"restore_runtime_state", before)
+	else:
+		var slots: Array = equipped.get(result.socket_type, [])
+		if not slots.is_empty(): slots[-1][&"inventory_entry"] = taken
 	return result
 
 
@@ -312,6 +315,9 @@ func _return_to_bag(slot: Dictionary) -> bool:
 	# Legacy isolated consumers without a bag retain the old release-only contract.
 	if not is_instance_valid(inventory_adapter.bag):
 		return true
+	if slot.has(&"inventory_entry"):
+		var entry: Dictionary = slot.inventory_entry
+		return bool(inventory_adapter.bag.call(&"return_item_entry", StringName(entry.instance_id), entry))
 	return inventory_adapter.store(slot.item_id, String(slot.get(&"display_name", slot.item_id)),
 		StringName(slot.get(&"socket_type", &"rune")), String(slot.get(&"description", "")))
 

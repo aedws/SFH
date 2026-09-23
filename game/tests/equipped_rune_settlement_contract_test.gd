@@ -18,6 +18,8 @@ func _run() -> void:
 		game.features = features
 		root.add_child(game)
 		for frame in 6: await process_frame
+		# New base capacity is 36: leave room for this acquisition fixture in the hub.
+		for id in game.inventory_system.items.keys(): game.inventory_system.store_in_reserve(id)
 		check(game.start_run("small"), "operation starts")
 		for frame in 4: await process_frame
 		var loot = game.field_loot_acquisition_service

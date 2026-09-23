@@ -3,6 +3,7 @@ extends Node
 
 signal inventory_changed(snapshot: Dictionary)
 const ReservePolicy = preload("res://game/features/inventory/inventory_reserve_policy.gd")
+const PouchPolicy = preload("res://game/features/inventory/inventory_pouch_policy.gd")
 
 var grid_size := Vector2i.ZERO
 var items: Dictionary = {}
@@ -13,6 +14,8 @@ var runtime_payloads: Dictionary = {}
 var reserve: Dictionary = {}
 var reserve_access_enabled := false
 var restore_capacity := Vector2i.ZERO
+var pouch: Dictionary = {}
+var pouch_size := Vector2i(2, 2)
 var item_definitions_by_resource: Dictionary = {}
 var item_definitions_by_id: Dictionary = {}
 
@@ -29,6 +32,8 @@ func configure(catalog: InventoryCatalog) -> bool:
 	serials.clear()
 	runtime_payloads.clear()
 	reserve.clear()
+	pouch.clear()
+	pouch_size = Vector2i(2, 2)
 	item_definitions_by_resource.clear()
 	item_definitions_by_id.clear()
 	for definition in catalog.items:
@@ -238,6 +243,8 @@ func take_item_entry(instance_id: StringName) -> Dictionary:
 		return {}
 	var definition := items[instance_id] as InventoryItemDefinition
 	var result := {
+		&"instance_id": instance_id,
+		&"position": placements[instance_id],
 		&"definition": definition,
 		&"runtime_payload": (runtime_payloads.get(instance_id, {}) as Dictionary).duplicate(true),
 		&"rotated": bool(rotations.get(instance_id, false)),
@@ -316,6 +323,8 @@ func export_runtime_state() -> Dictionary:
 		&"serials": serials.duplicate(true),
 		&"runtime_payloads": runtime_payloads.duplicate(true),
 		&"reserve": ReservePolicy.copy_value(reserve),
+		&"pouch": ReservePolicy.copy_value(pouch),
+		&"pouch_size": pouch_size,
 	}
 
 
@@ -333,6 +342,7 @@ func validate_runtime_state(saved: Dictionary) -> PackedStringArray:
 	var saved_placements: Dictionary = saved.get(&"placements", {})
 	var saved_rotations: Dictionary = saved.get(&"rotations", {})
 	errors.append_array(ReservePolicy.validation_errors(saved.get(&"reserve", {}), saved_items))
+	if errors.is_empty(): errors.append_array(PouchPolicy.validation_errors(saved.get(&"pouch", {}), saved.get(&"pouch_size", Vector2i(2, 2)), saved_items, saved.get(&"reserve", {})))
 	if saved_size.x <= 0 or saved_size.y <= 0:
 		errors.append("가방 격자 크기가 유효하지 않습니다.")
 		return errors
@@ -400,6 +410,8 @@ func restore_runtime_state(saved: Dictionary) -> bool:
 	serials = (saved.get(&"serials", {}) as Dictionary).duplicate(true)
 	runtime_payloads = (saved.get(&"runtime_payloads", {}) as Dictionary).duplicate(true)
 	reserve = ReservePolicy.copy_value(saved.get(&"reserve", {}))
+	pouch = ReservePolicy.copy_value(saved.get(&"pouch", {}))
+	pouch_size = saved.get(&"pouch_size", Vector2i(2, 2))
 	for instance_id in items:
 		if not runtime_payloads.has(instance_id):
 			runtime_payloads[instance_id] = {}
@@ -409,7 +421,7 @@ func restore_runtime_state(saved: Dictionary) -> bool:
 
 func _next_instance_id(item_id: StringName) -> StringName:
 	var next_serial := int(serials.get(item_id, 0)) + 1
-	while items.has(StringName("%s_%d" % [item_id, next_serial])) or reserve.has(StringName("%s_%d" % [item_id, next_serial])):
+	while items.has(StringName("%s_%d" % [item_id, next_serial])) or reserve.has(StringName("%s_%d" % [item_id, next_serial])) or pouch.has(StringName("%s_%d" % [item_id, next_serial])):
 		next_serial += 1
 	serials[item_id] = next_serial
 	return StringName("%s_%d" % [item_id, next_serial])
@@ -472,6 +484,59 @@ func resize_with_reserve(dimensions: Vector2i) -> bool:
 	if not reserve_access_enabled: return false
 	var next := prepare_capacity_restore(export_runtime_state(), dimensions)
 	return not next.is_empty() and restore_runtime_state(next)
+
+
+func return_item_entry(id: StringName, entry: Dictionary) -> bool:
+	if id == &"" or items.has(id) or reserve.has(id) or pouch.has(id) or not ReservePolicy.validation_errors({id: entry}, {}).is_empty(): return false
+	var footprint := ReservePolicy.size_of(entry)
+	var destination: Vector2i = entry.position
+	if not can_place(footprint, destination): destination = find_first_space(footprint)
+	if destination.x < 0: return false
+	items[id] = entry.definition
+	placements[id] = destination
+	rotations[id] = entry.rotated
+	runtime_payloads[id] = ReservePolicy.copy_value(entry.runtime_payload)
+	inventory_changed.emit(get_snapshot())
+	return true
+
+
+func get_pouch_snapshot() -> Dictionary:
+	var entries: Array[Dictionary] = []
+	for id in pouch:
+		var entry: Dictionary = ReservePolicy.copy_value(pouch[id])
+		entry[&"instance_id"] = id
+		entries.append(entry)
+	return {&"grid_size": pouch_size, &"entries": entries}
+
+
+func transfer_pouch(id: StringName, retrieving: bool) -> bool:
+	if retrieving:
+		if not pouch.has(id): return false
+		var entry: Dictionary = ReservePolicy.copy_value(pouch[id])
+		if find_first_space(ReservePolicy.size_of(entry)).x < 0: return false
+		pouch.erase(id)
+		if return_item_entry(id, entry): return true
+		pouch[id] = entry
+		return false
+	if not items.has(id) or not PouchPolicy.accepts(items[id]): return false
+	var entry := ReservePolicy.record(export_runtime_state(), id)
+	var destination := PouchPolicy.position_for(pouch, ReservePolicy.size_of(entry), pouch_size)
+	if destination.x < 0: return false
+	entry.position = destination
+	pouch[id] = entry
+	for collection in [items, placements, rotations, runtime_payloads]: collection.erase(id)
+	inventory_changed.emit(get_snapshot())
+	return true
+
+
+func rotate_pouch_item(id: StringName) -> bool:
+	if not pouch.has(id): return false
+	var entry: Dictionary = pouch[id].duplicate(true)
+	entry.rotated = not entry.rotated
+	if not PouchPolicy.fits(pouch, Rect2i(entry.position, ReservePolicy.size_of(entry)), pouch_size, id): return false
+	pouch[id] = entry
+	inventory_changed.emit(get_snapshot())
+	return true
 
 
 func _oriented_size(base_size: Vector2i, rotated: bool) -> Vector2i:
