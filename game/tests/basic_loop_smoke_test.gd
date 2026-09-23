@@ -1691,7 +1691,7 @@ func _verify_map_tiers() -> bool:
 			_fail("%s 맵의 방 수가 범위를 벗어났습니다." % tier_id)
 			return false
 		var minimum_room_counts := {"small": 18, "medium": 30, "large": 45}
-		var target_durations := {"small": 540, "medium": 600, "large": 600}
+		var target_durations := {"small": 900, "medium": 1050, "large": 1200}
 		if minimum_rooms < int(minimum_room_counts[tier_id]):
 			_fail("%s 맵 크기가 상향 기준에 미달합니다." % tier_id)
 			return false
@@ -1700,7 +1700,7 @@ func _verify_map_tiers() -> bool:
 			_fail("%s 방 한 칸이 1280×720 화면 기준보다 작습니다." % tier_id)
 			return false
 		if int(config.get("target_run_duration_seconds")) != int(target_durations[tier_id]):
-			_fail("%s 작전 목표 시간이 9~11분 페이싱과 다릅니다." % tier_id)
+			_fail("%s 작전 목표 시간이 15~20분 페이싱과 다릅니다." % tier_id)
 			return false
 		if (
 			int(config.get("extraction_unlock_seconds"))

@@ -26,6 +26,8 @@ extends Resource
 @export var spawning_enabled: bool = true
 @export var room_encounters_enabled: bool = true
 @export var run_flow_enabled: bool = true
+@export var run_pressure_enabled: bool = true
+@export_file("*.tres") var run_pressure_policy_path := "res://game/features/run_pressure/configs/default_run_pressure.tres"
 @export var room_warp_enabled: bool = true
 @export var weapons_enabled: bool = true
 @export var combat_skills_enabled: bool = true
@@ -255,6 +257,8 @@ func enabled_module_ids() -> Array[StringName]:
 		result.append(&"room_encounters")
 	if run_flow_enabled:
 		result.append(&"run_flow")
+	if run_pressure_enabled:
+		result.append(&"run_pressure")
 	if room_warp_enabled:
 		result.append(&"room_warp")
 	if weapons_enabled:
@@ -623,6 +627,10 @@ func validation_errors() -> PackedStringArray:
 		errors.append("elite_pursuit 모듈은 credits 모듈이 필요합니다.")
 	if elite_pursuit_enabled and not _resource_exists(elite_pursuit_config_path):
 		errors.append("엘리트 추격 설정 Resource 경로가 유효하지 않습니다.")
+	if run_pressure_enabled:
+		var policy: Resource = load(run_pressure_policy_path) if _resource_exists(run_pressure_policy_path) else null
+		if policy == null or not policy.has_method(&"is_valid") or not policy.call(&"is_valid"):
+			errors.append("작전 시간·오염 정책이 유효하지 않습니다.")
 
 	return errors
 

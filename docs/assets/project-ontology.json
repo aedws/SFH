@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
-  "updated": "2026-09-22",
-  "source_sha256": "8fad2673f822c89d845094b63f54effb559293683fb20e03018fa7bd5f6ba470",
+  "updated": "2026-09-23",
+  "source_sha256": "566cfb6e31259ec449c42f4536b10d8f60069bc6f208800b33a9fe0f052823ab",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -393,17 +393,17 @@
   ],
   "summary": {
     "tracked": 61,
-    "owner_decisions": 6,
+    "owner_decisions": 2,
     "blocked": 8,
-    "ready": 1,
+    "ready": 5,
     "implemented": 45,
-    "modules": 62,
+    "modules": 63,
     "documents": 105,
     "collections": 27,
     "generated_milestones": 28,
     "sources": 7,
     "actions": 5,
-    "relations": 515,
+    "relations": 516,
     "broken_relations": 0,
     "ownerless_governed_objects": 0,
     "isolated_documents": 0,
@@ -725,12 +725,12 @@
       "id": "decision:n26-0921-scope",
       "type": "decision",
       "label": "DEC-N26-0921 · 신규 기획 적용 범위",
-      "status": "needs_decision",
-      "certainty": "provisional",
+      "status": "ready",
+      "certainty": "confirmed",
       "decision_owner": "authority:project-owner",
-      "summary": "9/21 공개 GDD v206·101블록/작업표82행 재확인. 기존10분 방향 대비30분 마감, 12x8 가방 대비36~72칸, 파우치 보존과 룬 자동환전, 특화요원 조건부 수치를 분리 판단. 신규16행 코드 대조 완료·미니루프 중복1행 확정, 미구현 기획 표기와 코드 상태 분리.",
-      "next_action": "탈출2초 유예/역행은 첫 반영 완료. 세션 길이 적용 범위, 기존 저장품 초과분 보존, 파우치/룬 정산 우선순위, 요원 발동/해제·업적 연결은 별도 판단 후82행 코드 대응도 재산정.",
-      "route": "design/master-gdd-alignment/#source-recheck-20260921",
+      "summary": "2026-09-23 오너가 직전 제안에 진행 시작으로 승인: 권장15~20분/30분 붕괴, 기존50% 추격 보스+20분 Hunter 병존, 최신 가방/파우치 규격·초과 저장품 무손실 이관·사망 원형 보존/성공 기존 정산, 룬/요원/심층 빈 수치는 교체 가능한 임시 정책. 실서비스 계정 서버·과금 변경 제외. 승인과 구현 완료는 별도.",
+      "next_action": "세션 압박 → 실물 옵션 보존 이관/파우치 → 심층 공급처 → 스킬 소켓/룬 → 특화 요원 → 양 플랫폼 실전 수락. 임시 수치와 미구현을 숨기지 않고 단계별 검증·배포한다.",
+      "route": "design/current-milestone-workline/#approved-20260923",
       "relations": [
         {
           "to": "source:notion",
@@ -1100,12 +1100,12 @@
       "id": "decision:n26-pouch",
       "type": "decision",
       "label": "DEC-N26-POUCH · 사망 보존 우선순위",
-      "status": "needs_decision",
-      "certainty": "provisional",
+      "status": "ready",
+      "certainty": "confirmed",
       "decision_owner": "authority:project-owner",
-      "summary": "파우치 허용품·칸수·입출금·중단·사망 후 해금/환전 순서 및 원형 보존 여부 결정.",
-      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
-      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "summary": "9/23 승인: 최신2×2→2×4 파우치, 가방 축소 초과품 무손실 이관, 사망 시 원형 보존·성공 시 기존 정산. 승인만 완료이며 실물 저장/이동/중단 복원 구현은 잔여.",
+      "next_action": "수량형 창고를 실물 메타데이터 보존 이관과 분리하고 중복 환전·저장 취소·재시작을 검증.",
+      "route": "design/current-milestone-workline/#approved-20260923",
       "relations": [
         {
           "to": "source:notion",
@@ -1126,12 +1126,12 @@
       "id": "decision:n26-depth",
       "type": "decision",
       "label": "DEC-N26-DEPTH · 심층 접근·수문장",
-      "status": "needs_decision",
+      "status": "ready",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "입장 자격과 오염 면역 차이, 수문장 보장 드랍 및 키카드 소비·재입장 결정.",
-      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
-      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "summary": "입장 자격과 오염 면역 차이, 수문장 보장 드랍 및 키카드 소비·재입장 결정. 9/23 오너가 미정 세부 수치를 교체 가능한 임시 정책으로 구현하도록 승인. 구현 완료나 최종 밸런스 수락은 아님.",
+      "next_action": "공개 GDD 명시 조건 유지, 빈 수치/대응은 잠정 데이터·독립 정책으로 제시하고 구현/회귀. 실서비스 계정·과금은 제외.",
+      "route": "design/current-milestone-workline/#approved-20260923",
       "relations": [
         {
           "to": "source:notion",
@@ -1152,12 +1152,12 @@
       "id": "decision:n26-blood",
       "type": "decision",
       "label": "DEC-N26-BLOOD · HP 비용·흡혈",
-      "status": "needs_decision",
+      "status": "ready",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "HP 최소치·자해 사망·AP 병행·DOT/다중 타격 흡혈 상한·키트 반감을 결정.",
-      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
-      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "summary": "HP 최소치·자해 사망·AP 병행·DOT/다중 타격 흡혈 상한·키트 반감을 결정. 9/23 오너가 미정 세부 수치를 교체 가능한 임시 정책으로 구현하도록 승인. 구현 완료나 최종 밸런스 수락은 아님.",
+      "next_action": "공개 GDD 명시 조건 유지, 빈 수치/대응은 잠정 데이터·독립 정책으로 제시하고 구현/회귀. 실서비스 계정·과금은 제외.",
+      "route": "design/current-milestone-workline/#approved-20260923",
       "relations": [
         {
           "to": "source:notion",
@@ -2884,7 +2884,7 @@
         "files": 2,
         "classes": 0,
         "incoming": 2,
-        "outgoing": 56
+        "outgoing": 57
       }
     },
     {
@@ -2902,7 +2902,7 @@
         "files": 7,
         "classes": 7,
         "incoming": 11,
-        "outgoing": 30
+        "outgoing": 31
       }
     },
     {
@@ -3770,6 +3770,24 @@
       }
     },
     {
+      "id": "module:run_pressure",
+      "type": "module",
+      "label": "run pressure",
+      "status": "enabled",
+      "certainty": "derived",
+      "summary": "기반·검증 · feature · 파일 2개",
+      "route": "architecture/code-module-map/?module=run_pressure",
+      "documentation_route": "architecture/module-rules/",
+      "source": "game/features/run_pressure",
+      "kind": "implementation",
+      "metrics": {
+        "files": 2,
+        "classes": 2,
+        "incoming": 3,
+        "outgoing": 0
+      }
+    },
+    {
       "id": "module:run_settlement",
       "type": "module",
       "label": "런 정산",
@@ -3973,16 +3991,16 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 82개",
+      "summary": "기반·검증 · verification · 파일 83개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 82,
+        "files": 83,
         "classes": 0,
         "incoming": 0,
-        "outgoing": 56
+        "outgoing": 57
       }
     },
     {
@@ -8156,6 +8174,12 @@
     },
     {
       "from": "module:run_flow",
+      "to": "document:architecture/module-rules",
+      "type": "documented_by",
+      "origin": "generated"
+    },
+    {
+      "from": "module:run_pressure",
       "to": "document:architecture/module-rules",
       "type": "documented_by",
       "origin": "generated"

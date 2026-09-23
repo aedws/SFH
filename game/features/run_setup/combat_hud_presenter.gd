@@ -306,7 +306,9 @@ func _build_mission_tracker(top_row: HBoxContainer, footer: HBoxContainer) -> Pa
 	header_label.add_theme_font_size_override("font_size", 11)
 	header.add_child(header_label)
 	var time_label := top_row.get_node("TimeLabel") as Label
-	time_label.reparent(header)
+	time_label.reparent(content)
+	time_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	time_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	time_label.add_theme_font_size_override("font_size", 10)
 	var map_label := top_row.get_node("MapLabel") as Label
 	map_label.reparent(content)

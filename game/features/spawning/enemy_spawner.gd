@@ -28,6 +28,8 @@ var reinforcement_pause_sources: Dictionary = {}
 var operation_spawn_rules: Dictionary = {}
 var boss_spawned: bool = false
 var random := RandomNumberGenerator.new()
+var pressure_damage_multiplier := 1.0
+var pressure_speed_multiplier := 1.0
 
 
 func _ready() -> void:
@@ -69,6 +71,8 @@ func configure(
 	enemy_stat_multipliers = new_enemy_stat_multipliers.duplicate(true)
 	operation_spawn_rules = new_operation_spawn_rules.duplicate(true)
 	boss_spawned = false
+	pressure_damage_multiplier = 1.0
+	pressure_speed_multiplier = 1.0
 	for enemy in tracked_enemies:
 		if is_instance_valid(enemy):
 			enemy.queue_free()
@@ -201,6 +205,8 @@ func spawn_enemy_at(world_position: Vector2, encounter_id: StringName = &"", spa
 	tracked_enemies.append(enemy)
 	enemy.tree_exited.connect(_on_enemy_tree_exited.bind(enemy), CONNECT_ONE_SHOT)
 	total_spawned += 1
+	if enemy.has_method(&"set_run_pressure"):
+		enemy.call(&"set_run_pressure", pressure_damage_multiplier, pressure_speed_multiplier)
 	enemy_spawned.emit(enemy)
 	return enemy
 
@@ -248,6 +254,18 @@ func spawn_elite_pursuer_at(world_position: Vector2, profile: Dictionary) -> Nod
 	enemy.tree_exited.connect(_on_enemy_tree_exited.bind(enemy), CONNECT_ONE_SHOT)
 	enemy_spawned.emit(enemy)
 	return enemy
+
+
+func set_run_pressure(damage_multiplier: float, speed_multiplier: float) -> bool:
+	if not is_finite(damage_multiplier) or not is_finite(speed_multiplier) or damage_multiplier < 1.0 or speed_multiplier < 1.0:
+		return false
+	pressure_damage_multiplier = damage_multiplier
+	pressure_speed_multiplier = speed_multiplier
+	for enemy in get_active_targets():
+		# Both pursuit roles have explicit player-relative stats; avoid applying twice.
+		if not bool(enemy.get_meta(&"elite_pursuer", false)) and enemy.has_method(&"set_run_pressure"):
+			enemy.call(&"set_run_pressure", damage_multiplier, speed_multiplier)
+	return true
 
 
 func set_reinforcement_paused(source_id: StringName, is_paused: bool) -> void:

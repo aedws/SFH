@@ -108,6 +108,20 @@ func configure(
 		)
 
 
+var pressure_damage_multiplier := 1.0
+var pressure_speed_multiplier := 1.0
+
+
+func set_run_pressure(damage_multiplier: float, speed_multiplier: float) -> bool:
+	if not is_finite(damage_multiplier) or not is_finite(speed_multiplier) or damage_multiplier < 1.0 or speed_multiplier < 1.0:
+		return false
+	contact_damage = contact_damage / pressure_damage_multiplier * damage_multiplier
+	move_speed = move_speed / pressure_speed_multiplier * speed_multiplier
+	pressure_damage_multiplier = damage_multiplier
+	pressure_speed_multiplier = speed_multiplier
+	return true
+
+
 func configure_elite_pursuer(profile: Dictionary) -> void:
 	elite_pursuer = true
 	ignore_room_barriers = bool(profile.get(&"ignore_room_barriers", true))

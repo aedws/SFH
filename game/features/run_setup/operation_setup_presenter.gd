@@ -429,6 +429,12 @@ func update(payload: Dictionary) -> void:
 		int(spawn_data.get(&"minimum_enemies", 0)), int(spawn_data.get(&"maximum_enemies", 0)),
 	]
 	var facility: Dictionary = map_data.get(&"facility", {})
+	var pressure: Dictionary = map_data.get(&"pressure", {})
+	var pressure_text := ""
+	if not pressure.is_empty():
+		pressure_text = "%s\n%d분 오염/Hunter · %d분 붕괴 시 실패" % [
+			pressure.get(&"recommendation", ""), int(float(pressure.get(&"corruption_seconds", 0.0)) / 60.0),
+			int(float(pressure.get(&"collapse_seconds", 0.0)) / 60.0)]
 	if not facility.is_empty():
 		mission_intel.text += "\n시설 · %s" % facility.get(&"source", "확정 CSV")
 		if not String(facility.get(&"error", "")).is_empty():
@@ -438,6 +444,8 @@ func update(payload: Dictionary) -> void:
 		tier_name, int(map_data.get(&"minimum_rooms", 0)), int(map_data.get(&"maximum_rooms", 0)),
 		int(spawn_data.get(&"minimum_enemies", 0)), int(spawn_data.get(&"maximum_enemies", 0)), reward_multiplier,
 	]
+	if not pressure_text.is_empty():
+		selected_tier_detail.text += "\n" + pressure_text
 	var break_even := ceili(float(quote.get(&"entry_cost", 0)) / reward_multiplier)
 	reward_summary.text = "투입 %d C  ·  BEP %d C  ·  회수 ×%.2f  ·  고등급 ×%.2f  ·  %s" % [
 		int(quote.get(&"entry_cost", 0)), break_even, reward_multiplier,
@@ -460,6 +468,9 @@ func update(payload: Dictionary) -> void:
 	selection_summary.text = "현재 계약  %s · %s · %s  |  소모품 %s" % [
 		region_name, difficulty_name, tier_name, _consumable_summary(payload),
 	]
+	# Both selection and final confirmation stay visible in the mobile single column.
+	if not pressure_text.is_empty():
+		risk_summary.text += "\n" + pressure_text
 	season_summary.text = String(payload.get(&"season", {}).get(&"text", ""))
 	season_summary.visible = not season_summary.text.is_empty()
 	season_history_button.visible = season_summary.visible
@@ -508,7 +519,9 @@ func get_snapshot() -> Dictionary:
 		&"layout_fits": (
 			root_panel != null
 			and launch_button != null
-			and panel_rect.encloses(launch_rect)
+			# Hidden confirmation controls keep stale rectangles across viewport changes.
+			# Their geometry is checked when confirmation is actually visible.
+			and (not launch_button.is_visible_in_tree() or panel_rect.encloses(launch_rect))
 			and overlay_rect.encloses(panel_rect)
 			and overflow_nodes.is_empty()
 			and (not left_column.visible or left_column.size.x >= 320.0)

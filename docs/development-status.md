@@ -17,7 +17,13 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-22</span><span>SEARCH COMMAND</span><span>15 DAYS · 174 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-23</span><span>SEARCH COMMAND</span><span>16 DAYS · 175 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+
+## 9/23 승인 정책 첫 반영
+
+권장15~20분·20분 오염/Hunter·30분 붕괴를 구현하고 단일 정산·문 독립 추적·기존50% 보스 병존을 자동 검증했습니다. 추가15고유요구만의 코드 상태는 **구현7·부분5·미구현3**입니다. 전체82행의 새 백분율·장시간 사람 수락 완료는 아닙니다. [동작과 임시 수치](features/extraction-defense-results.md#pressure-20260923) · [검수 경계](quality/e2e-play-session.md#pressure-20260923).
+
+가방/파우치·심층·룬·요원의 미정 세부값은9/23 승인에 따라 교체 가능한 임시 정책으로 진행합니다. 기존 저장품의 옵션·강화·회전은 보존해야 하며 아래 과거 ‘판단 대기’는 현행 대기가 아닙니다. 실서비스 계정·과금은 제외합니다. [현재 실행 순서](design/current-milestone-workline.md#approved-20260923).
 
 ## 9/22 결정 항목 반영
 
@@ -80,7 +86,22 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 4 · IMPROVE 3 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-23</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 1 · IMPROVE 1 · CHANGE 0 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <div class="sfh-day-body">
+    <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 1</small><b>오래 머무를수록 위험 · 20분 Hunter와 30분 붕괴</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>15~20분 생환을 권장합니다. 20분에는 일반 적이 강화되고 문을 무시하는 Hunter가 한 번 등장합니다. 기존 회수액50% 추격 보스도 유지됩니다. 30분까지 탈출하지 못하면 작전이 실패합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>출격 전 시간 규칙을 안내하고 전투 HUD에 붕괴 잔여 시간을 표시합니다. 조기 탈출은 그대로 가능하며 시간·강화 수치는 독립 정책으로 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>작전이 끝난 뒤 늦게 들어온 탈출·사망 신호가 정산 결과를 바꾸지 못하도록 막았습니다. 자동 시간 경계 검사와 정상 속도 장시간 플레이 수락은 구분합니다.</p></div>
+        <p><a href="/features/extraction-defense-results/#pressure-20260923">시간·정산 계약</a> · <a href="/quality/e2e-play-session/#pressure-20260923">검증과 미수락 범위</a> · <a href="/design/current-milestone-workline/#next-20260923">승인된 다음 작업</a></p>
+      </div>
+    </details>
+  </div>
+</details>
+
+<details class="sfh-day">
+  <summary><span class="sfh-day-title"><b>2026-09-22</b><small>4 UPDATE BUNDLES · BUILD 4 · IMPROVE 3 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
       <summary><span><small>UPDATE 4</small><b>코어를 원하는 스킬에 직접 장착</b></span><em class="sfh-chevron">⌄</em></summary>

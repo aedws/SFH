@@ -10,8 +10,8 @@ func judge(flow_id: StringName, evidence: Dictionary) -> Dictionary:
 			_judge_primary_attack(evidence, errors)
 		&"room_encounter_resolution":
 			_judge_room_encounter(evidence, errors)
-		&"ten_minute_session":
-			_judge_ten_minute_session(evidence, errors)
+		&"recommended_session":
+			_judge_recommended_session(evidence, errors)
 		&"operation_combination_matrix":
 			_judge_operation_combination_matrix(evidence, errors)
 		&"run_loot_settlement":
@@ -86,23 +86,24 @@ func _judge_room_encounter(evidence: Dictionary, errors: PackedStringArray) -> v
 		errors.append("방 보상 박스 회수 뒤 휴대 크레딧이 증가하지 않았습니다.")
 
 
-func _judge_ten_minute_session(evidence: Dictionary, errors: PackedStringArray) -> void:
+func _judge_recommended_session(evidence: Dictionary, errors: PackedStringArray) -> void:
 	var before: Dictionary = evidence.get(&"before_unlock", {})
 	var after: Dictionary = evidence.get(&"after_unlock", {})
 	if StringName(after.get(&"tier_id", &"")) not in [&"medium", &"large"]:
-		errors.append("10분 세션 판정 대상이 중형 또는 대형이 아닙니다.")
-	if not is_equal_approx(float(after.get(&"target_seconds", 0.0)), 600.0):
-		errors.append("목표 세션 시간이 10분으로 설정되지 않았습니다.")
+		errors.append("권장 생환 시계 판정 대상이 중형 또는 대형이 아닙니다.")
+	var expected_target := 1050.0 if after.get(&"tier_id") == &"medium" else 1200.0
+	if not is_equal_approx(float(after.get(&"target_seconds", 0.0)), expected_target):
+		errors.append("목표 세션 시간이 승인된 15~20분 범위와 다릅니다.")
 	if float(before.get(&"extraction_unlock_seconds",600)) > 0 and bool(before.get(&"extraction_unlocked", true)):
-		errors.append("10분 도달 전에 탈출이 열렸습니다.")
+		errors.append("정책상 탈출 시각 이전에 잠긴 출구가 열렸습니다.")
 	if not bool(after.get(&"extraction_unlocked", false)):
-		errors.append("10분 도달 뒤 탈출이 열리지 않았습니다.")
-	if float(after.get(&"elapsed_seconds", 0.0)) < 600.0:
-		errors.append("논리 세션 시간이 10분에 도달하지 않았습니다.")
+		errors.append("권장 생환 시점에 탈출이 열리지 않았습니다.")
+	if float(after.get(&"elapsed_seconds", 0.0)) < expected_target:
+		errors.append("논리 세션 시간이 권장 생환 시점에 도달하지 않았습니다.")
 	if not bool(after.get(&"run_started", false)) or bool(after.get(&"run_ended", true)):
-		errors.append("10분 경과 시점에 작전 세션이 유지되지 않습니다.")
-	if "10:00" not in String(after.get(&"hud_text", "")):
-		errors.append("플레이어 HUD가 10분 경과를 표시하지 않습니다.")
+		errors.append("권장 생환 시점에 작전 세션이 유지되지 않습니다.")
+	if "붕괴" not in String(after.get(&"hud_text", "")) or float(after.get(&"pressure", {}).get(&"remaining_seconds", 0.0)) <= 0.0:
+		errors.append("플레이어 HUD가 남은 붕괴 시간을 표시하지 않습니다.")
 
 
 func _judge_operation_combination_matrix(
