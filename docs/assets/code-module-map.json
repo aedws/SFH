@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "c85b55bd1bdb77155df7cb9ca9e40aae5c58d69a59f47ba8b715f3f08f991fcb",
+  "source_sha256": "34efef26cfd2be1c7e0cc2b03a454cba317a7d680112c3acfe5d3d772d888ecb",
   "domains": [
     {
       "id": "system",
@@ -62,12 +62,12 @@
     }
   ],
   "summary": {
-    "modules": 62,
-    "scripts": 389,
-    "named_classes": 296,
-    "relationships": 232,
+    "modules": 63,
+    "scripts": 392,
+    "named_classes": 298,
+    "relationships": 235,
     "project_inheritance": 16,
-    "enabled_toggles": 71
+    "enabled_toggles": 72
   },
   "modules": [
     {
@@ -83,7 +83,7 @@
       "class_count": 0,
       "classes": [],
       "incoming_count": 2,
-      "outgoing_count": 56
+      "outgoing_count": 57
     },
     {
       "id": "core",
@@ -106,7 +106,7 @@
         "TargetedModifierStore"
       ],
       "incoming_count": 11,
-      "outgoing_count": 30
+      "outgoing_count": 31
     },
     {
       "id": "balance_data",
@@ -1120,6 +1120,24 @@
       "outgoing_count": 0
     },
     {
+      "id": "run_pressure",
+      "label": "run pressure",
+      "domain": "system",
+      "domain_label": "기반·검증",
+      "layer": "feature",
+      "path": "game/features/run_pressure",
+      "wiki_route": "architecture/module-rules/",
+      "enabled": true,
+      "file_count": 2,
+      "class_count": 2,
+      "classes": [
+        "RunPressurePolicy",
+        "RunPressureService"
+      ],
+      "incoming_count": 3,
+      "outgoing_count": 0
+    },
+    {
       "id": "run_settlement",
       "label": "런 정산",
       "domain": "operation",
@@ -1350,11 +1368,11 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 82,
+      "file_count": 83,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
-      "outgoing_count": 56
+      "outgoing_count": 57
     }
   ],
   "classes": [
@@ -3609,6 +3627,24 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:RunPressurePolicy",
+      "name": "RunPressurePolicy",
+      "module": "run_pressure",
+      "path": "game/features/run_pressure/run_pressure_policy.gd",
+      "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:RunPressureService",
+      "name": "RunPressureService",
+      "module": "run_pressure",
+      "path": "game/features/run_pressure/run_pressure_service.gd",
+      "extends": "Node",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:RunSettlementService",
       "name": "RunSettlementService",
       "module": "run_settlement",
@@ -4231,6 +4267,12 @@
     {
       "from": "core",
       "to": "run_buffs",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "core",
+      "to": "run_pressure",
       "type": "references",
       "evidence_count": 1
     },
@@ -4908,6 +4950,12 @@
     },
     {
       "from": "scene_assembly",
+      "to": "run_pressure",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "scene_assembly",
       "to": "run_settlement",
       "type": "references",
       "evidence_count": 1
@@ -5282,7 +5330,7 @@
       "from": "verification",
       "to": "player",
       "type": "verifies",
-      "evidence_count": 12
+      "evidence_count": 13
     },
     {
       "from": "verification",
@@ -5300,7 +5348,7 @@
       "from": "verification",
       "to": "room_encounters",
       "type": "verifies",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "verification",
@@ -5316,6 +5364,12 @@
     },
     {
       "from": "verification",
+      "to": "run_pressure",
+      "type": "verifies",
+      "evidence_count": 1
+    },
+    {
+      "from": "verification",
       "to": "run_settlement",
       "type": "verifies",
       "evidence_count": 1
@@ -5324,7 +5378,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 37
+      "evidence_count": 38
     },
     {
       "from": "verification",
@@ -5354,7 +5408,7 @@
       "from": "verification",
       "to": "spawning",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "verification",

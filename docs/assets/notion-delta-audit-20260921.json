@@ -70,7 +70,7 @@
       "version": 6,
       "last_edited_time": 1789160383431,
       "code_status": "unimplemented",
-      "work_order": "선행 판단/심층 구현 후",
+      "work_order": "9/23 정책 승인 · 의존성 순서 구현",
       "assessment": "심층 전용 공급처·종결 옵션/3소켓 필드 제한 없음. 심층 구역·등급·전용 드랍 ID 필요.",
       "evidence": [
         "game/features/field_loot/field_loot_acquisition_service.gd"
@@ -149,15 +149,21 @@
       "acceptance": "HUD에 30분 타이머 표기 및 0초 도달 시 런 실패 처리 확인",
       "version": 6,
       "last_edited_time": 1789160385127,
-      "code_status": "unimplemented",
-      "work_order": "오너 판단",
-      "assessment": "30분 즉사 미구현. 기존 약10분 플레이 목표와 충돌하므로 수락 기준/세이브 손실 규칙 먼저 결정.",
+      "code_status": "implemented",
+      "work_order": "2026-09-23 승인 적용·전용 자동 회귀",
+      "assessment": "권장15~20분·HUD 붕괴 잔여·1800초 강제 실패. 사망 손실 경로 및 종료 후 늦은 탈출/사망 정산 불변.",
       "evidence": [
+        "game/features/run_pressure/run_pressure_service.gd",
+        "game/features/run_pressure/run_pressure_policy.gd",
         "game/scenes/game.gd"
       ],
       "existing_test_context": [
         "game/tests/e2e_play_session_test.gd"
-      ]
+      ],
+      "verified_by": [
+        "game/tests/run_pressure_contract_test.gd"
+      ],
+      "human_acceptance": "시계 전진 자동 검사·Windows GPU HUD 캡처. 정상속도20/30분 양 플랫폼·모바일 FUN QA 미수락."
     },
     {
       "id": "3d85b728-0040-81e6-9856-e7175ddee00b",
@@ -168,15 +174,21 @@
       "acceptance": "20분 경과 시 몬스터 흉폭화 및 추격자 몬스터 스폰 작동 확인",
       "version": 6,
       "last_edited_time": 1789160385677,
-      "code_status": "unimplemented",
-      "work_order": "오너 판단/심층 선행",
-      "assessment": "기존 투입액50% 추격 보스는 존재하나20분 부패·광폭화·Hunter가 아님. 기존 보스 대체/병존 결정 필요.",
+      "code_status": "implemented",
+      "work_order": "2026-09-23 승인 적용·전용 자동 회귀",
+      "assessment": "1200초 일반 적 강화·Hunter 단1회. 기존50% 보스 병존·문/일반 예산 독립·생성 실패만 재시도.",
       "evidence": [
-        "game/features/elite_pursuit/elite_pursuit_service.gd"
+        "game/features/run_pressure/run_pressure_service.gd",
+        "game/features/run_pressure/run_pressure_policy.gd",
+        "game/scenes/game.gd"
       ],
       "existing_test_context": [
         "game/tests/support/pursuit_boss_contract.gd"
-      ]
+      ],
+      "verified_by": [
+        "game/tests/run_pressure_contract_test.gd"
+      ],
+      "human_acceptance": "시계 전진 자동 검사·Windows GPU HUD 캡처. 정상속도20/30분 양 플랫폼·모바일 FUN QA 미수락."
     },
     {
       "id": "3e25b728-0040-8127-a82f-e84144d4ab27",
@@ -188,7 +200,7 @@
       "version": 6,
       "last_edited_time": 1789949887621,
       "code_status": "partial",
-      "work_order": "저장품 이관 판단",
+      "work_order": "9/23 정책 승인 · 의존성 순서 구현",
       "assessment": "12x8 가방·크기 조정 기반은 존재. 등급별12x3~6 및 넘친 기존 아이템 이관 규칙 없음.",
       "evidence": [
         "game/features/inventory/catalogs/default_inventory.tres"
@@ -252,7 +264,7 @@
       "version": 6,
       "last_edited_time": 1789949891738,
       "code_status": "unimplemented",
-      "work_order": "요원/업적 매핑 판단",
+      "work_order": "9/23 정책 승인 · 의존성 순서 구현",
       "assessment": "현행3요원은 신규5요원과 다름. 업적→요원 대응·거리 단위·중첩/해제 수치·가방 칸 확장 형태 미정.",
       "evidence": [
         "game/features/character_selection/data/character_catalog.csv"
@@ -339,7 +351,7 @@
       "version": 6,
       "last_edited_time": 1789949888853,
       "code_status": "unimplemented",
-      "work_order": "오너 판단/이관 선행",
+      "work_order": "9/23 정책 승인 · 의존성 순서 구현",
       "assessment": "안전 파우치 없음. 이전1~4칸과 새2x2~2x4 규격 충돌·금지 태그·사망 보존/탈출 환산 순서 확정 필요.",
       "evidence": [
         "game/features/run_settlement/run_settlement_service.gd"
@@ -349,5 +361,5 @@
       ]
     }
   ],
-  "reviewed_date": "2026-09-22"
+  "reviewed_date": "2026-09-23"
 }

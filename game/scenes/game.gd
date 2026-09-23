@@ -549,6 +549,7 @@ var key_mapping_panel
 var presentation_settings_service
 var mobile_control_pad
 var elite_pursuit_service
+var run_pressure_service: Node
 var boss_warning_hud
 var cyberpunk_overlay
 var operation_tutorial_overlay
@@ -1539,6 +1540,7 @@ func _refresh_contract_setup_ui() -> void:
 				&"facility": facility_catalog_service.call(&"get_snapshot") if facility_catalog_service != null else {},
 				&"display_name": tier_config.get("display_name"),
 				&"target_seconds": tier_config.get("target_run_duration_seconds"),
+				&"pressure": load(features.run_pressure_policy_path).call(&"snapshot", 0.0) if features.run_pressure_enabled else {},
 				&"minimum_rooms": tier_config.get("minimum_rooms"),
 				&"maximum_rooms": tier_config.get("maximum_rooms"),
 			},
@@ -2216,6 +2218,7 @@ func _reset_run_references() -> void:
 	session_socket_hud = null
 	enemy_spawner = null
 	elite_pursuit_service = null
+	run_pressure_service = null
 	boss_warning_hud = null
 	room_encounter_system = null
 	run_flow_telemetry = null
@@ -2416,6 +2419,8 @@ func _assemble_game() -> bool:
 	if features.room_encounters_enabled and not _install_room_encounters():
 		return false
 	if features.elite_pursuit_enabled and not _install_elite_pursuit():
+		return false
+	if features.run_pressure_enabled and not _install_run_pressure():
 		return false
 	if features.room_warp_enabled and not _install_room_warp():
 		return false
@@ -3495,6 +3500,29 @@ func _install_boss_warning() -> bool:
 	return true
 
 
+func _install_run_pressure() -> bool:
+	run_pressure_service = _instantiate_feature(
+		"res://game/features/run_pressure/run_pressure_service.tscn", module_container, &"RunPressure"
+	)
+	var attack := 1.0
+	if is_instance_valid(auto_weapon) and auto_weapon.has_method(&"get_runtime_snapshot"):
+		attack = float(auto_weapon.call(&"get_runtime_snapshot").get(&"damage", 1.0))
+	if not _supports_methods(run_pressure_service, [&"configure", &"advance_to", &"get_snapshot", &"finish"]) or not run_pressure_service.call(
+		&"configure", load(features.run_pressure_policy_path), player, enemy_spawner, map_generator, attack
+	):
+		_report_configuration_error("작전 시간·오염 모듈을 구성하지 못했습니다.")
+		return false
+	run_pressure_service.connect(&"pressure_changed", func(_snapshot: Dictionary):
+		status_label.text = "오염 급상승 · 일반 적 공격력/속도 증가 · 탈출 권장")
+	run_pressure_service.connect(&"hunter_spawned", func():
+		status_label.text = "HUNTER 접근 · 문과 무관하게 추적 · 외곽 보스 방향 확인")
+	run_pressure_service.connect(&"collapse_requested", func():
+		elapsed_time = float(run_pressure_service.call(&"get_snapshot").get(&"elapsed_seconds", elapsed_time))
+		_update_run_time_hud()
+		_fail_run("collapse", "구역 붕괴 · 작전 실패"))
+	return true
+
+
 func _install_elite_pursuit() -> bool:
 	if (
 		credit_ledger == null
@@ -3737,10 +3765,14 @@ func _update_hub_wayfinding(delta: float) -> void:
 
 
 func advance_run_clock(delta: float) -> void:
-	if not run_started or run_ended or get_tree().paused:
+	if not run_started or run_ended or get_tree().paused or not is_finite(delta):
 		return
 
 	elapsed_time += maxf(0.0, delta)
+	if is_instance_valid(run_pressure_service):
+		run_pressure_service.call(&"advance_to", elapsed_time)
+		if run_ended:
+			return
 	if (
 		extraction_zone != null
 		and not extraction_unlocked
@@ -3773,6 +3805,7 @@ func get_run_pacing_snapshot() -> Dictionary:
 		&"run_started": run_started,
 		&"run_ended": run_ended,
 		&"hud_text": time_label.text,
+		&"pressure": run_pressure_service.call(&"get_snapshot") if is_instance_valid(run_pressure_service) else {},
 	}
 
 
@@ -3797,6 +3830,16 @@ func _update_run_time_hud() -> void:
 		_format_time(target_run_duration_seconds),
 		extraction_state,
 	]
+	if is_instance_valid(run_pressure_service):
+		var pressure: Dictionary = run_pressure_service.call(&"get_snapshot")
+		time_label.text = "붕괴 %s · %s" % [
+			_format_time(ceilf(float(pressure.get(&"remaining_seconds", 0.0)))), extraction_state]
+		time_label.tooltip_text = "생존 %s · %s · %s 오염/Hunter · %s 강제 실패" % [
+			_format_time(elapsed_time), pressure.get(&"recommendation", ""),
+			_format_time(float(pressure.get(&"corruption_seconds", 0.0))),
+			_format_time(float(pressure.get(&"collapse_seconds", 0.0)))]
+		var warning := bool(pressure.get(&"urgent", false)) or bool(pressure.get(&"corrupted", false))
+		time_label.add_theme_color_override("font_color", Color("ff668e") if warning else Color("d9f4f3"))
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -4225,6 +4268,8 @@ func _on_growth_balance_updated(_snapshot: Dictionary, _source_label: String) ->
 
 
 func _on_extraction_completed(_actor: Node2D) -> void:
+	if not run_started or run_ended:
+		return
 	var carried_credits := 0
 	if credit_ledger != null:
 		carried_credits = int(credit_ledger.call(&"secure_carried"))
@@ -4538,6 +4583,12 @@ func _on_run_buff_selected(buff_id: StringName) -> void:
 func _on_player_died() -> void:
 	if not features.game_over_enabled:
 		return
+	_fail_run("death", "작전 실패")
+
+
+func _fail_run(reason: String, title: String) -> void:
+	if not run_started or run_ended:
+		return
 
 	var lost_credits := 0
 	if credit_ledger != null:
@@ -4548,10 +4599,10 @@ func _on_player_died() -> void:
 			&"elapsed_seconds": elapsed_time,
 			&"kills": defeated_enemies,
 		}, active_contract)
-	var loot_settlement := _settle_run_loot(false, "death")
+	var loot_settlement := _settle_run_loot(false, reason)
 	lose_equipped_loadout_on_return = true
 	_finish_run(
-		"작전 실패",
+		title,
 		"생존 %s · 처치 %d · 분실 %d 크레딧%s" % [
 			_format_time(elapsed_time),
 			defeated_enemies,
@@ -4605,6 +4656,8 @@ func _format_run_loot_settlement(result: Dictionary) -> String:
 func _finish_run(title: String, summary: String, result: Dictionary = {}) -> void:
 	if run_ended:
 		return
+	if is_instance_valid(run_pressure_service):
+		run_pressure_service.call(&"finish")
 	run_ended = true
 	if run_buff_selector != null and run_buff_selector.visible:
 		run_buff_selector.call(&"close_panel")

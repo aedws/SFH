@@ -54,39 +54,15 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-22</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 4 · IMPROVE 3 · CHANGE 1 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-23</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 1 · IMPROVE 1 · CHANGE 0 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
-      <summary><span><small>UPDATE 4</small><b>코어를 원하는 스킬에 직접 장착</b></span><em class="sfh-chevron">⌄</em></summary>
+      <summary><span><small>UPDATE 1</small><b>오래 머무를수록 위험 · 20분 Hunter와 30분 붕괴</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>가방에서 코어의 적용 스킬을 직접 선택합니다. 첫 스킬 외에도 장착할 수 있으며 취소하면 아이템과 효과는 그대로 유지됩니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>저장 확인 중 대상이 바뀌면 장착을 멈추고 재선택을 안내합니다. 같은 아이템이 여러 개여도 선택한 것만 사용합니다. 기존 소켓 수와 효과값은 유지합니다.</p></div>
-        <p><a href="/features/session-sockets/#target-selection-20260922">대상 선택 사용법</a> · <a href="/quality/e2e-play-session/#socket-target-20260922">검증과 미수락 범위</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 3</small><b>뱅가드 · 이동하며 AP를 더 빠르게 회복</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>선봉대의 임시 피해 보너스를 전술 적응으로 교체했습니다. 기본 AP +15%, 실제 이동 중 자연 회복 +20%로 훈련과 작전에 적용합니다. 요원을 반복 교체해도 AP가 공짜로 채워지지 않습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>공유 시트·Web 데이터·계산기를 함께 갱신했습니다. 정지/이동 조건을 비교할 수 있으며 기본 AP 수치는 임시, 패시브 배율은 확정으로 구분합니다.</p></div>
-        <p><a href="/features/character-selection/#tactical-adaptation-20260922">패시브와 데이터 계약</a> · <a href="/quality/e2e-play-session/#vanguard-20260922">검증 근거</a> · <a href="/design/current-milestone-workline/#next-20260922">잔여 작업</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 2</small><b>전투·보상·이동이 끊기는 구간을 따로 기록</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>방 방문부터 전투·보상 선택·다음 방 이동까지 구간별 관측을 추가했습니다. 후퇴·보류·사망은 정상 완료와 나눠 기록하며 전투 화면이나 밸런스는 바꾸지 않습니다.</p></div>
-        <div class="sfh-group"><h3>개선 · 1</h3><p>최신 로컬 보고서로 느린 구간을 찾을 수 있습니다. 계측 검증과 실제 재미 수락을 구분하고, 다음은 정상 속도10분/F·중대형·모바일 플레이 확인입니다.</p></div>
-        <p><a href="/quality/e2e-play-session/#run-flow-20260922">기록 해석과 검수 기준</a> · <a href="/design/current-milestone-workline/#next-20260922">다음 작업</a></p>
-      </div>
-    </details>
-    <details class="sfh-bundle">
-      <summary><span><small>UPDATE 1</small><b>전투는 가방에서도 계속 · 장착 룬 환전 검증</b></span><em class="sfh-chevron">⌄</em></summary>
-      <div class="sfh-bundle-body">
-        <div class="sfh-group"><h3>구현 · 1</h3><p>작전 중 I/E 가방·모듈 편집과 저장 확인에서 시간·적·피격·쿨타임이 계속됩니다. UI 뒤 이동·공격과 사망 후 미저장 편집 적용은 막고 현재 HP를 표시합니다. 거점 준비는 종전 방식을 유지합니다.</p></div>
-        <div class="sfh-group"><h3>수정 · 1</h3><p>장착 룬도 환전하는 기존 정산을 실제 드랍·F 획득·해제/재장착·탈출·사망·중복 지급 시험으로 확인했습니다. 신규15개 고유 요구의 코드 상태는 구현4·부분6·미구현5이며 전체82행 완료율이 아닙니다.</p></div>
-        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>음향 자동 검사의 대기 시간을 실제 음향 제한과 같은 시계로 맞췄습니다. 게임 음향·전투 밸런스는 바꾸지 않았습니다.</p></div>
-        <p><a href="/features/grid-inventory/#realtime-20260922">가방 변화</a> · <a href="/features/session-sockets/#settlement-20260922">장착 룬 정산</a> · <a href="/quality/e2e-play-session/#decided-20260922">검증과 미수락 범위</a> · <a href="/design/current-milestone-workline/#next-20260922">다음 순서</a></p>
+        <div class="sfh-group"><h3>구현 · 1</h3><p>15~20분 생환을 권장합니다. 20분에는 일반 적이 강화되고 문을 무시하는 Hunter가 한 번 등장합니다. 기존 회수액50% 추격 보스도 유지됩니다. 30분까지 탈출하지 못하면 작전이 실패합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>출격 전 시간 규칙을 안내하고 전투 HUD에 붕괴 잔여 시간을 표시합니다. 조기 탈출은 그대로 가능하며 시간·강화 수치는 독립 정책으로 분리했습니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>작전이 끝난 뒤 늦게 들어온 탈출·사망 신호가 정산 결과를 바꾸지 못하도록 막았습니다. 자동 시간 경계 검사와 정상 속도 장시간 플레이 수락은 구분합니다.</p></div>
+        <p><a href="/features/extraction-defense-results/#pressure-20260923">시간·정산 계약</a> · <a href="/quality/e2e-play-session/#pressure-20260923">검증과 미수락 범위</a> · <a href="/design/current-milestone-workline/#next-20260923">승인된 다음 작업</a></p>
       </div>
     </details>
   </div>

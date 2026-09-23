@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "updated": "2026-09-22",
+  "updated": "2026-09-23",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -324,10 +324,22 @@
       "next_action": "스킬별1/2소켓 대응·고급/심층 추가 조건·룬별 효과 수치 확정. 고유15요구 구현5·부분5·미구현5 유지.",
       "route": "features/session-sockets/#target-selection-20260922",
       "relations": [
-        {"to": "source:notion", "type": "informed_by"},
-        {"to": "source:notion-tracker", "type": "informed_by"},
-        {"to": "document:features/session-sockets", "type": "documented_by"},
-        {"to": "document:quality/e2e-play-session", "type": "verified_by"}
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:features/session-sockets",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        }
       ]
     },
     {
@@ -342,10 +354,22 @@
       "next_action": "신규15고유요구 코드 구현5·부분5·미구현5. 다음 스킬별 소켓/룬 상세값 대조와 별도 정상10분/F·모바일 FUN QA. 전체82행 완료율 아님.",
       "route": "features/character-selection/#tactical-adaptation-20260922",
       "relations": [
-        {"to": "source:notion", "type": "informed_by"},
-        {"to": "source:notion-tracker", "type": "informed_by"},
-        {"to": "document:features/character-selection", "type": "documented_by"},
-        {"to": "document:quality/e2e-play-session", "type": "verified_by"}
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:features/character-selection",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        }
       ]
     },
     {
@@ -360,9 +384,18 @@
       "next_action": "정상10분/F→중·대형 안개·후퇴·다수 적·보상 쌓임→모바일 FUN QA. 보고서와 행동 원인을 함께 보존.",
       "route": "quality/e2e-play-session/#run-flow-20260922",
       "relations": [
-        {"to": "source:notion-tracker", "type": "informed_by"},
-        {"to": "document:quality/e2e-play-session", "type": "verified_by"},
-        {"to": "document:architecture/module-rules", "type": "documented_by"}
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        },
+        {
+          "to": "document:architecture/module-rules",
+          "type": "documented_by"
+        }
       ]
     },
     {
@@ -377,10 +410,22 @@
       "next_action": "짧은 루프 계측·전술 적응 구현 완료. 다음 Web/Windows 정상10분·모바일 위험 인지/FUN QA. 신규15고유요구 코드 구현5·부분5·미구현5, 전체82행 완료율과 구분.",
       "route": "design/current-milestone-workline/#decided-20260922",
       "relations": [
-        {"to": "source:notion-tracker", "type": "informed_by"},
-        {"to": "document:features/grid-inventory", "type": "documented_by"},
-        {"to": "document:features/session-sockets", "type": "documented_by"},
-        {"to": "document:quality/e2e-play-session", "type": "verified_by"}
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:features/grid-inventory",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:features/session-sockets",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        }
       ]
     },
     {
@@ -395,9 +440,18 @@
       "next_action": "9/22 장착 룬 정산 회귀·실시간 가방·흐름 계측·전술 적응 완료. 신규16행은 코드 구현5·부분5·미구현5·중복1이며 최신82행 전체 완료율로 사용하지 않음. 다음 소켓/룬 세부값 대조와 실제 플레이 수락.",
       "route": "design/current-milestone-workline/#delta-audit-20260921",
       "relations": [
-        {"to": "source:notion-tracker", "type": "informed_by"},
-        {"to": "document:features/enemies", "type": "documented_by"},
-        {"to": "document:quality/e2e-play-session", "type": "verified_by"}
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:features/enemies",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        }
       ]
     },
     {
@@ -412,25 +466,43 @@
       "next_action": "신규16행 대조·공격 전조·장착 룬 회귀·실시간 가방 반영 완료. 다음은 짧은 루프 계측. 최신82행 완료율은 별도 재산정.",
       "route": "features/extraction-defense-results/#decay-20260921",
       "relations": [
-        {"to": "source:notion-tracker", "type": "informed_by"},
-        {"to": "document:features/extraction-defense-results", "type": "documented_by"},
-        {"to": "document:quality/e2e-play-session", "type": "verified_by"}
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:features/extraction-defense-results",
+          "type": "documented_by"
+        },
+        {
+          "to": "document:quality/e2e-play-session",
+          "type": "verified_by"
+        }
       ]
     },
     {
       "id": "decision:n26-0921-scope",
       "type": "decision",
       "label": "DEC-N26-0921 · 신규 기획 적용 범위",
-      "status": "needs_decision",
-      "certainty": "provisional",
+      "status": "ready",
+      "certainty": "confirmed",
       "decision_owner": "authority:project-owner",
-      "summary": "9/21 공개 GDD v206·101블록/작업표82행 재확인. 기존10분 방향 대비30분 마감, 12x8 가방 대비36~72칸, 파우치 보존과 룬 자동환전, 특화요원 조건부 수치를 분리 판단. 신규16행 코드 대조 완료·미니루프 중복1행 확정, 미구현 기획 표기와 코드 상태 분리.",
-      "next_action": "탈출2초 유예/역행은 첫 반영 완료. 세션 길이 적용 범위, 기존 저장품 초과분 보존, 파우치/룬 정산 우선순위, 요원 발동/해제·업적 연결은 별도 판단 후82행 코드 대응도 재산정.",
-      "route": "design/master-gdd-alignment/#source-recheck-20260921",
+      "summary": "2026-09-23 오너가 직전 제안에 진행 시작으로 승인: 권장15~20분/30분 붕괴, 기존50% 추격 보스+20분 Hunter 병존, 최신 가방/파우치 규격·초과 저장품 무손실 이관·사망 원형 보존/성공 기존 정산, 룬/요원/심층 빈 수치는 교체 가능한 임시 정책. 실서비스 계정 서버·과금 변경 제외. 승인과 구현 완료는 별도.",
+      "next_action": "세션 압박 → 실물 옵션 보존 이관/파우치 → 심층 공급처 → 스킬 소켓/룬 → 특화 요원 → 양 플랫폼 실전 수락. 임시 수치와 미구현을 숨기지 않고 단계별 검증·배포한다.",
+      "route": "design/current-milestone-workline/#approved-20260923",
       "relations": [
-        {"to": "source:notion", "type": "informed_by"},
-        {"to": "source:notion-tracker", "type": "informed_by"},
-        {"to": "document:design/master-gdd-alignment", "type": "documented_by"}
+        {
+          "to": "source:notion",
+          "type": "informed_by"
+        },
+        {
+          "to": "source:notion-tracker",
+          "type": "informed_by"
+        },
+        {
+          "to": "document:design/master-gdd-alignment",
+          "type": "documented_by"
+        }
       ]
     },
     {
@@ -775,12 +847,12 @@
       "id": "decision:n26-pouch",
       "type": "decision",
       "label": "DEC-N26-POUCH · 사망 보존 우선순위",
-      "status": "needs_decision",
-      "certainty": "provisional",
+      "status": "ready",
+      "certainty": "confirmed",
       "decision_owner": "authority:project-owner",
-      "summary": "파우치 허용품·칸수·입출금·중단·사망 후 해금/환전 순서 및 원형 보존 여부 결정.",
-      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
-      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "summary": "9/23 승인: 최신2×2→2×4 파우치, 가방 축소 초과품 무손실 이관, 사망 시 원형 보존·성공 시 기존 정산. 승인만 완료이며 실물 저장/이동/중단 복원 구현은 잔여.",
+      "next_action": "수량형 창고를 실물 메타데이터 보존 이관과 분리하고 중복 환전·저장 취소·재시작을 검증.",
+      "route": "design/current-milestone-workline/#approved-20260923",
       "relations": [
         {
           "to": "source:notion",
@@ -800,12 +872,12 @@
       "id": "decision:n26-depth",
       "type": "decision",
       "label": "DEC-N26-DEPTH · 심층 접근·수문장",
-      "status": "needs_decision",
+      "status": "ready",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "입장 자격과 오염 면역 차이, 수문장 보장 드랍 및 키카드 소비·재입장 결정.",
-      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
-      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "summary": "입장 자격과 오염 면역 차이, 수문장 보장 드랍 및 키카드 소비·재입장 결정. 9/23 오너가 미정 세부 수치를 교체 가능한 임시 정책으로 구현하도록 승인. 구현 완료나 최종 밸런스 수락은 아님.",
+      "next_action": "공개 GDD 명시 조건 유지, 빈 수치/대응은 잠정 데이터·독립 정책으로 제시하고 구현/회귀. 실서비스 계정·과금은 제외.",
+      "route": "design/current-milestone-workline/#approved-20260923",
       "relations": [
         {
           "to": "source:notion",
@@ -825,12 +897,12 @@
       "id": "decision:n26-blood",
       "type": "decision",
       "label": "DEC-N26-BLOOD · HP 비용·흡혈",
-      "status": "needs_decision",
+      "status": "ready",
       "certainty": "provisional",
       "decision_owner": "authority:project-owner",
-      "summary": "HP 최소치·자해 사망·AP 병행·DOT/다중 타격 흡혈 상한·키트 반감을 결정.",
-      "next_action": "Master GDD 대조표에서 유지/변경/보류와 수락 기준을 오너가 선택합니다. 이번에는 게임 정책을 변경하지 않습니다.",
-      "route": "design/master-gdd-alignment/#owner-conflicts",
+      "summary": "HP 최소치·자해 사망·AP 병행·DOT/다중 타격 흡혈 상한·키트 반감을 결정. 9/23 오너가 미정 세부 수치를 교체 가능한 임시 정책으로 구현하도록 승인. 구현 완료나 최종 밸런스 수락은 아님.",
+      "next_action": "공개 GDD 명시 조건 유지, 빈 수치/대응은 잠정 데이터·독립 정책으로 제시하고 구현/회귀. 실서비스 계정·과금은 제외.",
+      "route": "design/current-milestone-workline/#approved-20260923",
       "relations": [
         {
           "to": "source:notion",

@@ -82,6 +82,11 @@ $equipmentScreenStatus = $LASTEXITCODE
 $equipmentScreenOutput | Write-Output
 if ($equipmentScreenStatus -ne 0 -or ($equipmentScreenOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($equipmentScreenOutput -join "`n") -notmatch 'EQUIPMENT_SCREEN_OK') { throw 'Equipment screen contract failed.' }
 
+$mobileEntryOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/mobile_control_entry_contract_test.gd" 2>&1
+$mobileEntryCode = $LASTEXITCODE
+$mobileEntryOutput | Write-Output
+if ($mobileEntryCode -ne 0 -or ($mobileEntryOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($mobileEntryOutput -join "`n") -notmatch 'MOBILE_CONTROL_ENTRY_OK') { throw 'Mobile entry and HUD reserved-region contract failed.' }
+
 $fogOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/roguelike_fog_contract_test.gd" 2>&1
 $fogStatus = $LASTEXITCODE
 $fogOutput | Write-Output
@@ -128,7 +133,7 @@ if ($feedbackStatus -ne 0 -or ($feedbackOutput -match 'SCRIPT ERROR:|^ERROR:') -
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/circular_coverage_contract_test.gd"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-foreach ($contractCase in @(@('socket_target_selection_contract_test', 'SOCKET_TARGET_SELECTION_OK'), @('vanguard_resource_contract_test', 'VANGUARD_RESOURCE_OK'), @('run_flow_contract_test', 'RUN_FLOW_OK'), @('training_live_catalog_contract_test', 'TRAINING_LIVE_CATALOG_OK'), @('combat_audio_contract_test', 'COMBAT_AUDIO_OK'), @('extraction_decay_contract_test', 'EXTRACTION_DECAY_OK'), @('enemy_attack_telegraph_contract_test', 'ENEMY_TELEGRAPH_OK'), @('equipped_rune_settlement_contract_test', 'EQUIPPED_RUNE_SETTLEMENT_OK'), @('realtime_inventory_contract_test', 'REALTIME_INVENTORY_OK'))) {
+foreach ($contractCase in @(@('run_pressure_contract_test', 'RUN_PRESSURE_OK'), @('socket_target_selection_contract_test', 'SOCKET_TARGET_SELECTION_OK'), @('vanguard_resource_contract_test', 'VANGUARD_RESOURCE_OK'), @('run_flow_contract_test', 'RUN_FLOW_OK'), @('training_live_catalog_contract_test', 'TRAINING_LIVE_CATALOG_OK'), @('combat_audio_contract_test', 'COMBAT_AUDIO_OK'), @('extraction_decay_contract_test', 'EXTRACTION_DECAY_OK'), @('enemy_attack_telegraph_contract_test', 'ENEMY_TELEGRAPH_OK'), @('equipped_rune_settlement_contract_test', 'EQUIPPED_RUNE_SETTLEMENT_OK'), @('realtime_inventory_contract_test', 'REALTIME_INVENTORY_OK'))) {
     $contractOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/$($contractCase[0]).gd" 2>&1
     $contractStatus = $LASTEXITCODE
     $contractOutput | Write-Output

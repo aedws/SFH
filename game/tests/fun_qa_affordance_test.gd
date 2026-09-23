@@ -97,7 +97,20 @@ func _run() -> void:
 		root.size = dimensions
 		for frame in 6: await process_frame
 		_check(game.operation_setup_presenter.get_snapshot().layout_fits, "briefing fits at %d" % dimensions.x)
+		if not game.operation_setup_presenter.get_snapshot().layout_fits:
+			print("BRIEFING_LAYOUT_FAILURE ", dimensions, " ", game.operation_setup_presenter.get_snapshot())
 		_check(game.operation_setup_presenter.selected_tier_detail.text.contains("동시 적"), "selected detail is visible without hover")
+		_check(game.operation_setup_presenter.selected_tier_detail.text.contains("붕괴 시 실패"), "deadline visible in selection on every width")
+		game.operation_setup_presenter.step_relative(1)
+		game.operation_setup_presenter.step_relative(1)
+		for frame in 6: await process_frame
+		_check(game.operation_setup_presenter.risk_summary.is_visible_in_tree() and game.operation_setup_presenter.risk_summary.text.contains("붕괴 시 실패"), "deadline visible before final launch")
+		_check(game.operation_setup_presenter.get_snapshot().layout_fits, "final briefing fits at %d" % dimensions.x)
+		if "--render" in OS.get_cmdline_user_args() and dimensions.x in [844, 640]:
+			await RenderingServer.frame_post_draw
+			root.get_texture().get_image().save_png("res://build/qa-pressure-brief-%d.png" % dimensions.x)
+		game.operation_setup_presenter.reset_steps()
+		for frame in 6: await process_frame
 		for button in game.operation_setup_presenter.tier_buttons.values():
 			var font: Font = button.get_theme_font("font")
 			var available: float = button.size.x - button.get_theme_stylebox("normal").get_minimum_size().x

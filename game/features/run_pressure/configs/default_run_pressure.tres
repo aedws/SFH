@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="RunPressurePolicy" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/features/run_pressure/run_pressure_policy.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+recommended_start_seconds = 900.0
+corruption_seconds = 1200.0
+collapse_seconds = 1800.0
+warning_seconds = 60.0
+enemy_damage_multiplier = 1.35
+enemy_speed_multiplier = 1.15
+hunter_speed_multiplier = 1.08
+hunter_attack_multiplier = 1.12
+hunter_health = 120.0
+hunter_armor = 20.0
+hunter_spawn_distance = 640.0
+spawn_retry_seconds = 1.0

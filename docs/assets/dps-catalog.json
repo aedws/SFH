@@ -36396,7 +36396,7 @@
 		"game/features/enemies/components/health_component.gd": "41ac67a20b188fc5ae8518459df0f50baa3725c50efd4786736508342566bfe9",
 		"game/features/enemies/configs/default_enemy_attack.tres": "3b626459a96ce187f188fc029c11cfe98134dc567da08902fa5f0fa6b5d65a2b",
 		"game/features/enemies/configs/default_enemy_crowd.tres": "8d319a56ca67046d895dfcfe38f27ff46656903a0bf02992fa5c080154684fa1",
-		"game/features/enemies/enemy.gd": "70c3a1007f189e9e1f889aa06b8705035d8917d48b5ee94e2d979d50b6cd2a20",
+		"game/features/enemies/enemy.gd": "ef8069d1bfdfd2a4b2f1c727d46a6c5aa6d2ed5163936795a4c4d1736ed6700b",
 		"game/features/enemies/enemy.tscn": "5bb503fc7385cbc48c38c485f8f75f5310569c7fee9dbb6a1664f5a9c598c6ab",
 		"game/features/enemies/enemy_attack_policy.gd": "2c6e40e05e00e2c68855cca8459b70a64c6ac33640c4e75dc35165613e07b5dc",
 		"game/features/enemies/enemy_attack_telegraph.gd": "833e73e7a0f295f8db50c1493689eaee672d5e5b63b335d90ff3c2e0af780222",

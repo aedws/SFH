@@ -91,7 +91,7 @@ func _run() -> void:
 		return
 	if not await _verify_operation_combination_matrix(game_scene):
 		return
-	if not await _verify_ten_minute_sessions(game_scene):
+	if not await _verify_recommended_sessions(game_scene):
 		return
 	if not await _verify_failure_and_return_session():
 		return
@@ -102,7 +102,7 @@ func _run() -> void:
 	print("E2E_PLAYER_PERCEPTION_OK checkpoints_%d units_%d orientation choice decision glance action_feedback resource_feedback state_feedback consequence continuity" % [
 		judged_perception_checkpoints.size(), judged_perception_units.size(),
 	])
-	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_socket_cards module_cost_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_30 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input inventory_select_r_rotation key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_600s fog_room_corridor_transition fog_three_states_omnidirectional fog_wall_occlusion fog_exploration_memory skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
+	print("E2E_PLAY_SESSION_OK hit_feedback player_hit_camera_trauma module_reference_ui module_socket_cards module_cost_sort run_augment_cards_3 run_augment_key_selection ui_state_contracts_%d player_perception_contracts_%d gameplay_flows_%d viewport_bounds modal_exclusivity hud_non_overlap operation_briefing responsive_operation_briefing_widths_4 selected_then_launch operation_combinations_30 loot_table_targeting field_loot_compare_cancel_select field_loot_immediate_equip_r_restore field_loot_skill_swap_r_restore session_socket_f_apply_hud_unsocket session_socket_hidden_when_empty tactical_hud mission_tracker bottom_combat_cluster horizontal_skill_edge_cluster central_combat_safe_zone glance_hud hub_real_input inventory_select_r_rotation key_mapping_k_esc mobile_keypad_settings movable_player_status key_label_format u_e_action_split operation_setup combat_hud physical_lmb_attack hit_kill_drop room_entry_lock_clear_credit_boxes elite_credit_threshold_pursuit early_extraction minimap_expanded_warp medium_large_recommended_1050_1200s fog_room_corridor_transition fog_three_states_omnidirectional fog_wall_occlusion fog_exploration_memory skill_action_feedback dash_action_feedback movement_motion_feedback loot_feedback extraction_pause_resume ranking_submission_visible_retry run_loot_success_duplicate_guard settlement_return run_loot_death_loss death_return" % [
 		judged_ui_states.size(), judged_perception_checkpoints.size(), judged_gameplay_flows.size(),
 	])
 	_cleanup_test_profile()
@@ -1616,7 +1616,7 @@ func _find_doorway_corridor_position(room: Dictionary) -> Vector2:
 	) * 8.0
 
 
-func _verify_ten_minute_sessions(game_scene: PackedScene) -> bool:
+func _verify_recommended_sessions(game_scene: PackedScene) -> bool:
 	for tier_id in [&"medium", &"large"]:
 		var tier_game := game_scene.instantiate()
 		var tier_features: Resource = tier_game.get("features").duplicate(true)
@@ -1633,7 +1633,7 @@ func _verify_ten_minute_sessions(game_scene: PackedScene) -> bool:
 		if not tier_game.call(&"start_run", String(tier_id)):
 			root.remove_child(tier_game)
 			tier_game.free()
-			return _fail("%s 10분 E2E 세션을 시작하지 못했습니다." % tier_id)
+			return _fail("%s 권장 생환 시계 E2E 세션을 시작하지 못했습니다." % tier_id)
 		await process_frame
 		var initial: Dictionary = tier_game.call(&"get_run_pacing_snapshot")
 		var until_before_unlock := maxf(
@@ -1646,7 +1646,7 @@ func _verify_ten_minute_sessions(game_scene: PackedScene) -> bool:
 		var before_unlock: Dictionary = tier_game.call(&"get_run_pacing_snapshot")
 		tier_game.call(&"advance_run_clock", 1.1)
 		var after_unlock: Dictionary = tier_game.call(&"get_run_pacing_snapshot")
-		var valid := _judge_gameplay_flow(&"ten_minute_session", "%s 10분 세션" % tier_id, {
+		var valid := _judge_gameplay_flow(&"recommended_session", "%s 권장 생환 시계" % tier_id, {
 			&"before_unlock": before_unlock,
 			&"after_unlock": after_unlock,
 		})

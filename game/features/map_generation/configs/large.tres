@@ -12,5 +12,5 @@ maximum_rooms = 60
 minimum_room_size = Vector2i(50, 30)
 maximum_room_size = Vector2i(68, 42)
 obstacle_density = 0.014
-target_run_duration_seconds = 600
-extraction_unlock_seconds = 600
+target_run_duration_seconds = 1200
+extraction_unlock_seconds = 1200
