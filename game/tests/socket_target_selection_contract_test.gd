@@ -4,6 +4,9 @@ const GAME = preload("res://game/scenes/game.tscn")
 var failures := PackedStringArray()
 var isolation: RefCounted
 
+func bag_signature(value: Dictionary) -> String:
+	return JSON.stringify(preload("res://game/features/local_save/loadout_value_codec.gd").new().encode(value))
+
 
 func _init() -> void:
 	isolation = preload("res://game/tests/support/save_test_isolation.gd").new()
@@ -16,6 +19,7 @@ func _run() -> void:
 	var game = GAME.instantiate()
 	root.add_child(game)
 	for frame in 5: await process_frame
+	for id in game.inventory_system.items.keys(): game.inventory_system.store_in_reserve(id)
 	var original_bag: Dictionary = game.inventory_system.export_runtime_state()
 	game._cycle_hub_training()
 	var training: Node = game.training_ground_service
@@ -40,7 +44,7 @@ func _run() -> void:
 	_check(window.runtime_target_picker.visible and window.action_button.disabled, "multiple skill targets require explicit choice")
 	var before: Dictionary = bag.export_runtime_state()
 	window._apply_selection()
-	_check(bag.export_runtime_state() == before and sockets.get_snapshot().installed_count == 0, "missing selection cannot consume")
+	_check(bag_signature(bag.export_runtime_state()) == bag_signature(before) and sockets.get_snapshot().installed_count == 0, "missing selection cannot consume")
 	var picker: OptionButton = window.runtime_target_picker.choices[&"skill"]
 	picker.select(2)
 	picker.item_selected.emit(2)
@@ -57,7 +61,7 @@ func _run() -> void:
 	window.action_button.pressed.emit()
 	_check(window.confirmation_visible, "draft confirmation before runtime action")
 	window.resolve_exit(&"cancel")
-	_check(bag.export_runtime_state() == before and sockets.get_snapshot().installed_count == 0, "cancel preserves bag and sockets")
+	_check(bag_signature(bag.export_runtime_state()) == bag_signature(before) and sockets.get_snapshot().installed_count == 0, "cancel preserves bag and sockets")
 	_check(window.runtime_target_picker.get_selection().get(&"skill") == chosen, "cancel keeps explicit selection")
 	window.action_button.pressed.emit()
 	window.resolve_exit(&"discard")
@@ -74,7 +78,7 @@ func _run() -> void:
 	_check(not training.perform_targeted_inventory_item_action(&"capacitor_core", {&"skill": &"removed_skill"}, first_id).success, "stale skill rejected")
 	_check(not training.perform_targeted_inventory_item_action(&"capacitor_core", {}, first_id).success, "missing kind has no default fallback")
 	_check(not training.perform_targeted_inventory_item_action(&"capacitor_core", {&"skill": chosen}, &"missing_instance").success, "missing selected item cannot consume identical item")
-	_check(bag.export_runtime_state() == before and sockets.export_runtime_state() == released, "failed commands preserve both providers")
+	_check(bag_signature(bag.export_runtime_state()) == bag_signature(before) and sockets.export_runtime_state() == released, "failed commands preserve both providers")
 	# A Q/equipment switch while confirmation is open invalidates the captured weapon.
 	var rune := core.duplicate()
 	rune.item_id = &"arc_rune"
@@ -97,7 +101,7 @@ func _run() -> void:
 	_check(sockets.load_csv_text(csv.replace("replace_oldest,skill,cooldown_multiply", "replace_oldest,weapon,cooldown_multiply"), "test live"), "uninstalled catalog can change")
 	before = bag.export_runtime_state()
 	_check(not training.perform_targeted_inventory_item_action(&"capacitor_core", {&"skill": chosen}, first_id).success, "changed effect kind rejected")
-	_check(bag.export_runtime_state() == before, "catalog change cannot spend core")
+	_check(bag_signature(bag.export_runtime_state()) == bag_signature(before), "catalog change cannot spend core")
 	_check(sockets.load_csv_text(csv, "locked restored"), "restore catalog")
 	# Responsive picker, detached selection, and close ordering are view contracts.
 	window._on_item_selected(window.session.get_item_entry(first_id))
@@ -119,7 +123,7 @@ func _run() -> void:
 	_check(sockets.get_snapshot().slots[&"core"][0].bindings[&"skill"].target_id == third, "third skill selectable after release")
 	window.close_panel()
 	_check(game._finish_hub_training(), "training exits")
-	_check(bag.export_runtime_state() == original_bag and sockets.get_snapshot().installed_count == 0, "training restores entry state")
+	_check(bag_signature(bag.export_runtime_state()) == bag_signature(original_bag) and sockets.get_snapshot().installed_count == 0, "training restores entry state")
 	_check(not training.perform_targeted_inventory_item_action(&"capacitor_core", {&"skill": chosen}, first_id).success, "inactive training rejects command")
 	_check(game.start_run("small"), "normal operation launch")
 	for frame in 5: await process_frame

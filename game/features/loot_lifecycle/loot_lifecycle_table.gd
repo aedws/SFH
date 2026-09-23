@@ -29,6 +29,11 @@ static func parse(csv_text: String) -> Dictionary:
 		definition.item_id = StringName(row[&"item_id"])
 		definition.display_name = row[&"display_name"]
 		definition.item_type = StringName(row[&"item_type"])
+		if definition.item_type == &"blueprint":
+			if not String(row[&"grid_width"]).is_valid_int() or not String(row[&"grid_height"]).is_valid_int():
+				errors.append("%s: 도면 가방 크기는 정수여야 합니다." % definition.item_id)
+				continue
+			definition.grid_size = Vector2i(int(row[&"grid_width"]), int(row[&"grid_height"]))
 		definition.loot_family = StringName(row[&"loot_family"])
 		definition.session_behavior = StringName(row[&"session_behavior"])
 		definition.extract_result = StringName(row[&"extract_result"])

@@ -1,13 +1,13 @@
 {
-  "version": 64,
+  "version": 65,
   "updated": "2026-09-23",
   "title": "기획자 검색 허브",
   "description": "기획 우선순위와 이 브라우저의 실제 검색 선택을 합산해 즉시 순위를 갱신합니다.",
   "rankings": [
     {
       "query": "거점 실물 보관 가방 축소 이관 옵션 강화 회전 꺼내기 파우치",
-      "label": "실물 보관 · 무손실 가방 이관",
-      "description": "거점 저장·취소·꺼내기, 개별 장비 정보 보존과 다음 가방/파우치 범위",
+      "label": "가방·보호 주머니·실물 보관",
+      "description": "36칸 무손실 이관, 주머니 저장·사망 보존·탈출 정산, 확장 가격 미정과 ContainerCapacity 시트",
       "category": "기획",
       "priority": 129
     },

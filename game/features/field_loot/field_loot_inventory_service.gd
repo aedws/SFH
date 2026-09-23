@@ -7,19 +7,32 @@ var catalog: FieldLootEquipCatalog
 var bag_before: Dictionary = {}
 var gear_before: Dictionary = {}
 var restored := false
+var return_state: Dictionary = {}
+var lifecycle: Node
 
 
-func configure(inventory: Node, equipment: Node, definitions: FieldLootEquipCatalog) -> void:
+func configure(inventory: Node, equipment: Node, definitions: FieldLootEquipCatalog, lifecycle_provider: Node = null) -> void:
 	bag = inventory
 	gear = equipment
 	catalog = definitions
+	lifecycle = lifecycle_provider
 	bag_before = bag.call(&"export_runtime_state") if bag.has_method(&"export_runtime_state") else {}
 	gear_before = gear.call(&"export_runtime_state") if gear.has_method(&"export_runtime_state") else {}
 	restored = false
+	return_state = {}
 
 
 func acquire(item_id: StringName, quantity: int) -> Dictionary:
 	var item := catalog.get_inventory_definition(item_id) if catalog != null else null
+	if item == null and is_instance_valid(lifecycle):
+		var source: Resource = lifecycle.call(&"get_definition", item_id)
+		if source != null and StringName(source.get("item_type")) == &"blueprint":
+			item = InventoryItemDefinition.new()
+			item.item_id = item_id
+			item.display_name = source.display_name
+			item.item_type = &"blueprint"
+			item.grid_size = source.grid_size
+			item.description = source.description
 	if item == null:
 		return {&"success": true, &"stored_in_bag": false}
 	if quantity < 1 or not bag.has_method(&"add_item"):
@@ -39,7 +52,16 @@ func restore_run_baseline() -> void:
 	if restored:
 		return
 	if not bag_before.is_empty():
-		bag.call(&"restore_runtime_state", bag_before)
+		bag.call(&"restore_runtime_state", return_state if not return_state.is_empty() else bag_before)
 	if not gear_before.is_empty():
 		gear.call(&"restore_runtime_state", gear_before)
 	restored = true
+
+
+func get_return_state(extracted: bool) -> Dictionary:
+	return InventoryRunProtection.returning(bag_before, bag.call(&"export_runtime_state"), extracted)
+
+
+func prepare_settlement(acquired: Dictionary, extracted: bool) -> Dictionary:
+	if return_state.is_empty(): return_state = get_return_state(extracted)
+	return InventoryRunProtection.settlement_items(acquired, bag_before, bag.call(&"export_runtime_state"), extracted)

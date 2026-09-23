@@ -10,6 +10,7 @@ signal acquisition_cancelled(item_id: StringName)
 signal interaction_availability_changed(available: bool, prompt: String)
 ## Drop identity prevents same-item piles and repeat previews from sharing timers.
 signal decision_observed(drop_id: int, stage: StringName, action: StringName)
+signal protected_inventory_changed
 
 const DROP_SCRIPT := preload("res://game/features/field_loot/field_loot_drop.gd")
 const PANEL_SCRIPT := preload("res://game/features/field_loot/field_loot_comparison_panel.gd")
@@ -45,6 +46,7 @@ var last_acquisition_result: Dictionary = {}
 var suppressed_drop: Node2D
 var credit_provider: Node
 var immediate_equip_enabled := true
+var observed_inventory: Node
 
 
 func configure(
@@ -126,7 +128,12 @@ func configure(
 	total_cancelled = 0
 	last_equip_result.clear()
 	last_socket_result.clear()
-	inventory_service.configure(inventory_provider, equipment_provider, equip_catalog)
+	inventory_service.configure(inventory_provider, equipment_provider, equip_catalog, lifecycle_provider)
+	if is_instance_valid(observed_inventory) and observed_inventory.is_connected(&"inventory_changed", _inventory_changed):
+		observed_inventory.disconnect(&"inventory_changed", _inventory_changed)
+	observed_inventory = inventory_provider
+	if is_instance_valid(observed_inventory) and observed_inventory.has_signal(&"inventory_changed"):
+		observed_inventory.connect(&"inventory_changed", _inventory_changed)
 	cleared_rooms.clear()
 	registered_enemies.clear()
 	enemy_roll = 0
@@ -254,6 +261,18 @@ func restore_equipment_swaps() -> int:
 
 func restore_run_inventory() -> void:
 	inventory_service.restore_run_baseline()
+
+
+func get_protected_return_state(extracted: bool = false) -> Dictionary:
+	return inventory_service.get_return_state(extracted)
+
+
+func _inventory_changed(_snapshot: Dictionary) -> void:
+	protected_inventory_changed.emit()
+
+
+func prepare_inventory_settlement(extracted: bool) -> Dictionary:
+	return inventory_service.prepare_settlement(acquired_items, extracted)
 
 
 func _finalize_focused_acquisition(mode: StringName, equip_result: Dictionary = {}) -> bool:

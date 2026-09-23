@@ -3,6 +3,9 @@ var failures: Array[String] = []
 var capture_dir := ""
 var isolation := preload("res://game/tests/support/save_test_isolation.gd").new()
 
+func bag_signature(value: Dictionary) -> String:
+	return JSON.stringify(preload("res://game/features/local_save/loadout_value_codec.gd").new().encode(value))
+
 func _initialize() -> void:
 	node_added.connect(isolation.isolate)
 	for argument in OS.get_cmdline_user_args():
@@ -16,6 +19,9 @@ func _run() -> void:
 	root.add_child(game)
 	await _frames()
 	var window: Control = game.inventory_window
+	# Keep two example items and free legal movement space within the new 12x3 bag.
+	var seed_ids: Array = game.inventory_system.items.keys()
+	for id in seed_ids.slice(2): game.inventory_system.store_in_reserve(id)
 	window.open_panel()
 	await _frames()
 	var before: Dictionary = game.inventory_system.export_runtime_state()
@@ -48,7 +54,7 @@ func _run() -> void:
 		await _frames()
 		_check(window.selected_preview.entry.get(&"instance_id") == entries[0].get(&"instance_id") and not entries[0].is_empty(),"preview matches selected actual item")
 		await _capture("inventory-%dx%d" % [dimensions.x,dimensions.y])
-	_check(game.inventory_system.export_runtime_state() == before,"presenter never changes real bag")
+	_check(bag_signature(game.inventory_system.export_runtime_state()) == bag_signature(before),"presenter never changes real bag")
 	root.size = Vector2i(1280,720)
 	window.content_scroll.scroll_vertical = 0
 	await _frames()
@@ -61,16 +67,16 @@ func _run() -> void:
 	grid.grab_focus()
 	await _tap(KEY_RIGHT)
 	_check(window.selected_preview.entry.instance_id == entries[1].instance_id,"keyboard grid selection updates preview")
-	var destination := Vector2i(7,5)
+	var destination := Vector2i(7,0)
 	_check(grid.request_move(entries[1].instance_id,destination),"item movement still routes through draft")
-	_check(window.session.dirty and game.inventory_system.export_runtime_state()==before,"move is not auto-saved")
+	_check(window.session.dirty and bag_signature(game.inventory_system.export_runtime_state())==bag_signature(before),"move is not auto-saved")
 	window.close_panel()
 	_check(window.confirmation_visible,"closing a dirty inventory requires confirmation")
 	window.resolve_exit(&"cancel")
 	_check(window.visible and window.session.dirty,"cancel keeps editing")
 	window.close_panel()
 	window.resolve_exit(&"discard")
-	_check(not window.visible and game.inventory_system.export_runtime_state()==before,"discard preserves real state")
+	_check(not window.visible and bag_signature(game.inventory_system.export_runtime_state())==bag_signature(before),"discard preserves real state")
 	game.free()
 	for failure in failures: push_error(failure)
 	if failures.is_empty(): print("INVENTORY_PRESENTATION_OK viewports_4 tabs_3 silhouettes_real_slots hover keyboard preview draft_save_guard immutable_source")

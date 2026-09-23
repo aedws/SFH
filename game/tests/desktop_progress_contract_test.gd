@@ -33,6 +33,11 @@ func _run() -> void:
 	var bag: Node = game.inventory_system
 	var gear: Node = game.equipment_system
 	var profile: Node = game.persistent_profile
+	if phase == "write":
+		# Persist a supported upgraded tier across two independent process runs.
+		profile.unlock(&"container_backpack_3")
+		game.inventory_capacity_service.apply_current()
+		for entry in bag.get_reserve_entries(): bag.retrieve_from_reserve(entry.instance_id)
 	# Same safe mode as the downloaded executable; other tests retain their legacy paths.
 	profile.configure(features.persistent_profile_storage_path, true, true)
 	if phase == "write":
@@ -56,7 +61,7 @@ func _run() -> void:
 			if entry.item_id == &"rifle_scope_item":
 				_check(editor.install_item(entry.instance_id, &"main"), "install part")
 			if entry.item_id == &"field_medkit":
-				_check(editor.move_item(entry.instance_id, Vector2i(8, 6)), "move bag item")
+				_check(editor.move_item(entry.instance_id, Vector2i(8, 4)), "move bag item")
 			if not rotated_item and bool(entry.get(&"can_rotate", false)) and editor.inventory.items.has(entry.instance_id):
 				var base_size: Vector2i = entry.grid_size
 				var rotated_size := Vector2i(base_size.y, base_size.x)
@@ -92,7 +97,7 @@ func _run() -> void:
 		draft_editor.begin()
 		for entry in draft_editor.inventory.get_snapshot().items:
 			if entry.item_id == &"field_medkit":
-				_check(draft_editor.move_item(entry.instance_id, Vector2i(9, 5)), "uncommitted draft move")
+				_check(draft_editor.move_item(entry.instance_id, Vector2i(9, 3)), "uncommitted draft move")
 		_check(service.flush(), "save live state, not draft")
 		draft_editor.free()
 		profile.add_credits(137)
@@ -132,7 +137,7 @@ func _run() -> void:
 		var moved := false
 		var restored_rotation := false
 		for entry in bag.get_snapshot().items:
-			if entry.item_id == &"field_medkit": moved = entry.position == Vector2i(8, 6)
+			if entry.item_id == &"field_medkit": moved = entry.position == Vector2i(8, 4)
 			if bool(entry.get(&"rotated", false)):
 				var base_size: Vector2i = entry.get(&"base_grid_size", Vector2i.ZERO)
 				restored_rotation = entry.grid_size == Vector2i(base_size.y, base_size.x)

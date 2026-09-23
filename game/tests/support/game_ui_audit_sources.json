@@ -1,6 +1,6 @@
 {
   "date": "2026-09-08",
-  "last_incremental_review": "2026-09-23 · inventory reserve; see quality/e2e-play-session#reserve-20260923; prior target picker evidence retained",
+  "last_incremental_review": "2026-09-23 · inventory capacity and pouch; see quality/e2e-play-session#pouch-20260923; reserve and target picker evidence retained",
   "scope": "Runtime game UI including optional, empty, blocked and world-space feedback. Not the separate role wiki.",
   "sources": [
     "game/features/boss_warning/boss_warning_hud.gd",
@@ -23,6 +23,7 @@
     "game/features/presentation_theme/inventory_item_preview.gd",
     "game/features/presentation_theme/inventory_slot_button.gd",
     "game/features/inventory/inventory_window.gd",
+    "game/features/inventory/inventory_pouch_panel.gd",
     "game/features/key_mapping/key_mapping_panel.gd",
     "game/features/local_save/save_status_label.gd",
     "game/features/map_generation/district_map_generator.gd",

@@ -222,6 +222,11 @@ func _init() -> void:
 	):
 		_fail("첫 실행이 이동 가능한 시작 거점으로 진입하지 않았습니다.")
 		return
+	# This session tests socket return and drops, so prepare carry space in the hub.
+	for id in game_instance.inventory_system.items.keys():
+		if not game_instance.inventory_system.store_in_reserve(id):
+			_fail("작전 검증 전 가방 여유 공간을 확보하지 못했습니다.")
+			return
 	game_instance.call(&"start_run", "small")
 	if not await _verify_session_socket_runtime(game_instance):
 		return
@@ -1113,6 +1118,10 @@ func _hub_loadout_editing_failure(hub_game: Node) -> String:
 		return "거점에서 고유 파츠를 해제해 가방으로 반환하지 못했습니다."
 
 	(workbench.get("tabs") as TabContainer).current_tab = 0
+	# Unequip needs real free cells in the 36-cell bag; retain all items in hub reserve.
+	for id in inventory.items.keys():
+		if not inventory.store_in_reserve(id):
+			return "방어구 해제 전 거점 보관으로 공간을 확보하지 못했습니다."
 	workbench.call(&"_select_slot", &"body")
 	workbench.call(&"_unequip_selected_equipment")
 	if equipment.call(&"get_equipment_state", &"body") != null:

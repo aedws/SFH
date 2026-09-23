@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "9c5f94d49ff6d18a2354e5de832d30d926a7a97b5599889225d4ed121ed17d79",
+  "source_sha256": "5b3b8ccb85f15bab3fa6e6158ddee3b7eafb95d3777f19880d94f6c020277fc6",
   "domains": [
     {
       "id": "system",
@@ -63,10 +63,10 @@
   ],
   "summary": {
     "modules": 63,
-    "scripts": 394,
-    "named_classes": 299,
-    "relationships": 235,
-    "project_inheritance": 16,
+    "scripts": 400,
+    "named_classes": 304,
+    "relationships": 237,
+    "project_inheritance": 17,
     "enabled_toggles": 72
   },
   "modules": [
@@ -124,7 +124,7 @@
         "EmbeddedCsvPayload",
         "ValidatedCsvCatalogService"
       ],
-      "incoming_count": 4,
+      "incoming_count": 5,
       "outgoing_count": 0
     },
     {
@@ -599,20 +599,25 @@
       "path": "game/features/inventory",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 8,
-      "class_count": 8,
+      "file_count": 13,
+      "class_count": 13,
       "classes": [
         "GridInventory",
         "GridInventoryWindow",
         "InventoryActionTargetPicker",
+        "InventoryCapacityCatalog",
+        "InventoryCapacityService",
         "InventoryCatalog",
         "InventoryEditSession",
         "InventoryGridView",
         "InventoryItemDefinition",
-        "InventoryReservePolicy"
+        "InventoryPouchPanel",
+        "InventoryPouchPolicy",
+        "InventoryReservePolicy",
+        "InventoryRunProtection"
       ],
       "incoming_count": 7,
-      "outgoing_count": 2
+      "outgoing_count": 3
     },
     {
       "id": "key_mapping",
@@ -1369,7 +1374,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 84,
+      "file_count": 85,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -2638,6 +2643,24 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:InventoryCapacityCatalog",
+      "name": "InventoryCapacityCatalog",
+      "module": "inventory",
+      "path": "game/features/inventory/inventory_capacity_catalog.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:InventoryCapacityService",
+      "name": "InventoryCapacityService",
+      "module": "inventory",
+      "path": "game/features/inventory/inventory_capacity_service.gd",
+      "extends": "ValidatedCsvCatalogService",
+      "base_id": "class:ValidatedCsvCatalogService",
+      "inheritance": "project"
+    },
+    {
       "id": "class:InventoryCatalog",
       "name": "InventoryCatalog",
       "module": "inventory",
@@ -2674,10 +2697,37 @@
       "inheritance": "engine"
     },
     {
+      "id": "class:InventoryPouchPanel",
+      "name": "InventoryPouchPanel",
+      "module": "inventory",
+      "path": "game/features/inventory/inventory_pouch_panel.gd",
+      "extends": "VBoxContainer",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:InventoryPouchPolicy",
+      "name": "InventoryPouchPolicy",
+      "module": "inventory",
+      "path": "game/features/inventory/inventory_pouch_policy.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
       "id": "class:InventoryReservePolicy",
       "name": "InventoryReservePolicy",
       "module": "inventory",
       "path": "game/features/inventory/inventory_reserve_policy.gd",
+      "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:InventoryRunProtection",
+      "name": "InventoryRunProtection",
+      "module": "inventory",
+      "path": "game/features/inventory/inventory_run_protection.gd",
       "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
@@ -4374,7 +4424,7 @@
       "from": "field_loot",
       "to": "inventory",
       "type": "references",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "field_loot",
@@ -4432,9 +4482,21 @@
     },
     {
       "from": "inventory",
+      "to": "balance_data",
+      "type": "inherits",
+      "evidence_count": 1
+    },
+    {
+      "from": "inventory",
+      "to": "balance_data",
+      "type": "references",
+      "evidence_count": 2
+    },
+    {
+      "from": "inventory",
       "to": "equipment",
       "type": "references",
-      "evidence_count": 3
+      "evidence_count": 4
     },
     {
       "from": "inventory",
@@ -5166,7 +5228,7 @@
       "from": "verification",
       "to": "equipment",
       "type": "verifies",
-      "evidence_count": 14
+      "evidence_count": 15
     },
     {
       "from": "verification",
@@ -5190,7 +5252,7 @@
       "from": "verification",
       "to": "field_loot",
       "type": "verifies",
-      "evidence_count": 5
+      "evidence_count": 6
     },
     {
       "from": "verification",
@@ -5226,7 +5288,7 @@
       "from": "verification",
       "to": "inventory",
       "type": "verifies",
-      "evidence_count": 14
+      "evidence_count": 15
     },
     {
       "from": "verification",
@@ -5244,7 +5306,7 @@
       "from": "verification",
       "to": "local_save",
       "type": "verifies",
-      "evidence_count": 8
+      "evidence_count": 14
     },
     {
       "from": "verification",
@@ -5256,7 +5318,7 @@
       "from": "verification",
       "to": "loot_lifecycle",
       "type": "verifies",
-      "evidence_count": 4
+      "evidence_count": 5
     },
     {
       "from": "verification",
@@ -5334,7 +5396,7 @@
       "from": "verification",
       "to": "persistent_profile",
       "type": "verifies",
-      "evidence_count": 12
+      "evidence_count": 13
     },
     {
       "from": "verification",
@@ -5388,7 +5450,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 39
+      "evidence_count": 40
     },
     {
       "from": "verification",

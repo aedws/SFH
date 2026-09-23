@@ -22,7 +22,11 @@ SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입
 
 ## 기본 규칙
 
-실물 보관은 `InventoryReservePolicy`(복사·공간 계획·보관 기록 검증), `GridInventory`(가방+보관 상태 원본), `InventoryEditSession`(초안/취소/거점 접근), `DesktopProgressService`(동일 파일 체크포인트)로 분리합니다. 수량 창고로 변환하거나 별도 파일 두 개를 순차 갱신하지 않습니다. 보관 실물은 활성 가방과 ID가 중복될 수 없고, 일련번호가 오래되어도 새 지급이 원본을 덮어쓰지 않습니다. 저장 크기 변경은 `prepare_saved_state`로 검증된 계획을 먼저 만들며 Game은 거점 접근 여부만 전달합니다. 기본 규격 변경과 파우치는 아직 별도 단계입니다. [공개 계약](../features/grid-inventory.md#reserve-20260923).
+주머니는 `InventoryPouchPolicy`(종류/배치), `GridInventory`(가방·보관·주머니의 단일 실물 소유권), `InventoryRunProtection`(복귀 상태·정산 장부의 순수 투영), `DesktopProgressService`(마지막 정상 보호 체크포인트)로 분리합니다. UI 초안은 정산 원본이 아닙니다. 성공은 기존 정산만, 실패는 보호 실물만 보관하며 양쪽을 중복 지급하지 않습니다. 소켓 왕복은 원래 ID/페이로드를 유지합니다.
+
+용량은 `InventoryCapacityCatalog`의 검증된 표→`InventoryCapacityService`의 해금 단계 투영으로 적용합니다. 비용·영구 해금 토큰은 `PersistentProfile.apply_economy_transaction` 한 원자적 거래에 기록하고, 재실행은 토큰에 맞춰 무손실 크기를 복원합니다. 실패한 저장/오래된 견적은 결제하지 않습니다. 데이터·결제·실물 이동·표현을 한 UI 콜백에 섞지 않습니다. 미정 가격은 구매 잠금이며 실시간 크기 변경은 거점에 한정합니다. [공개 계약](../features/grid-inventory.md#pouch-20260923).
+
+실물 보관은 `InventoryReservePolicy`(복사·공간 계획·보관 기록 검증), `GridInventory`(가방+보관 상태 원본), `InventoryEditSession`(초안/취소/거점 접근), `DesktopProgressService`(동일 파일 체크포인트)로 분리합니다. 수량 창고로 변환하거나 별도 파일 두 개를 순차 갱신하지 않습니다. 보관 실물은 활성 가방과 ID가 중복될 수 없고, 일련번호가 오래되어도 새 지급이 원본을 덮어쓰지 않습니다. 저장 크기 변경은 `prepare_saved_state`로 검증된 계획을 먼저 만듭니다. 용량·주머니 정책은 위 제공자에 연결하며 거점 보관에 섞지 않습니다. [공개 계약](../features/grid-inventory.md#reserve-20260923).
 
 인벤토리 런 자산 대상 선택은 선택적 제공자 계약으로 확장합니다. `InventoryActionTargetPicker`는 후보 사본과 선택 ID만 다루며, 공급자가 저장 확인 이후 대상과 실물 인스턴스를 재검증합니다. UI는 소켓 수·효과·현재 장비의 내부 필드를 읽지 않습니다. 두 선택 API를 제공하지 않는 기존 공급자는 원래 단일 동작을 유지합니다. [공개 계약](../features/session-sockets.md#target-selection-20260922).
 

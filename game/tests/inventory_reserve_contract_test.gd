@@ -141,6 +141,7 @@ func _ui() -> void:
 	await frames()
 	var window: Control = game.inventory_window
 	var bag: Node = game.inventory_system
+	var initial_reserve := signature(bag.reserve)
 	window.open_panel()
 	await frames()
 	var id: StringName = bag.items.keys()[0]
@@ -150,7 +151,7 @@ func _ui() -> void:
 	window.close_panel()
 	check(window.confirmation_visible, "deposit requires confirmation")
 	window.resolve_exit(&"discard")
-	check(bag.items.has(id) and bag.reserve.is_empty(), "discard does not move real item")
+	check(bag.items.has(id) and signature(bag.reserve) == initial_reserve, "discard does not move real item")
 	window.open_panel()
 	window._on_item_selected(window.session.get_item_entry(id))
 	await click(window.reserve_button)
@@ -168,11 +169,16 @@ func _ui() -> void:
 		if "--render" in OS.get_cmdline_user_args() and DisplayServer.get_name() != "headless":
 			await RenderingServer.frame_post_draw
 			root.get_texture().get_image().save_png("res://build/qa-reserve-%dx%d.png" % [dimensions.x, dimensions.y])
-	await click(window.reserve_list.get_child(0).get_child(1))
+	var take_row: Control
+	for row in window.reserve_list.get_children():
+		if row.get_child(0).tooltip_text.begins_with(String(id) + "\n"): take_row = row
+	check(take_row != null, "selected original reserve row exists")
+	if take_row != null: await click(take_row.get_child(1))
 	window.close_panel()
 	window.resolve_exit(&"save")
-	check(bag.items.has(id) and bag.reserve.is_empty(), "UI retrieve same ID")
+	check(bag.items.has(id) and signature(bag.reserve) == initial_reserve, "UI retrieve same ID")
 	bag.store_in_reserve(id)
+	var saved_reserve_id := id
 	var reserved_payload := signature(bag.reserve[id])
 	check(game.start_run("small"), "reserve aware state launch")
 	await frames()
@@ -185,7 +191,7 @@ func _ui() -> void:
 	game._on_player_died()
 	game._return_to_start_hub()
 	await frames()
-	check(game.inventory_system.reserve.size() == 1 and signature(game.inventory_system.reserve.values()[0]) == reserved_payload, "death and hub return preserve reserved original")
+	check(game.inventory_system.reserve.has(saved_reserve_id) and signature(game.inventory_system.reserve[saved_reserve_id]) == reserved_payload, "death and hub return preserve reserved original")
 	game.free()
 	paused = false
 

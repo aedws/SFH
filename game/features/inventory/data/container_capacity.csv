@@ -1,0 +1,9 @@
+container_id,stage,display_name,columns,rows,credit_cost,upgrade_enabled,policy_status,planner_note
+수납 구획 ID,단계 0부터,표시 이름,가로 칸,세로 칸,이 단계 확장 비용 C,거점 구매 가능,정책 상태,기획 근거와 조정 안내
+backpack,0,소형 정찰 조끼,12,3,0,false,confirmed,기본 제공 36칸 · 기존 초과 실물은 거점 보관
+backpack,1,표준 전술 배낭 I,12,4,1000,false,pending,48칸 확정 · 가격 후보는 오너 승인 전 구매 잠금
+backpack,2,표준 전술 배낭 II,12,5,2500,false,pending,60칸 확정 · 가격 후보는 오너 승인 전 구매 잠금
+backpack,3,대형 원정 배낭,12,6,5000,false,pending,72칸 확정 · 가격 후보는 오너 승인 전 구매 잠금
+pouch,0,기본 보호 주머니,2,2,0,false,confirmed,설계도 룬 코어 유물 전용 · 사망 원형 보존
+pouch,1,확장 보호 주머니,2,3,2000,false,pending,6칸 중간 단계 임시 · 가격 후보는 오너 승인 전 구매 잠금
+pouch,2,최대 보호 주머니,2,4,5000,false,pending,8칸 최종 확정 · 가격 후보는 오너 승인 전 구매 잠금

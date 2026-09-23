@@ -72,6 +72,12 @@ func _run() -> void:
 		return
 
 	var hub_contract := preload("res://game/tests/support/hub_inventory_transition_contract.gd").new()
+	# This broad equipment/loot fixture carries all examples: use an explicitly unlocked
+	# supported 72-cell tier. Base 36-cell pickup/full/rotation is covered by pouch contracts.
+	game.persistent_profile.unlock(&"container_backpack_3")
+	game.inventory_capacity_service.apply_current()
+	for entry in game.inventory_system.get_reserve_entries():
+		game.inventory_system.retrieve_from_reserve(entry.instance_id)
 	var hub_error: String = await hub_contract.verify(self, game, _tap_key, _click_tutorial_button)
 	if not hub_error.is_empty():
 		_fail(hub_error)
@@ -114,11 +120,17 @@ func _verify_inventory_edit_inputs() -> bool:
 	await _tap_key(KEY_I)
 	var window = game.inventory_window
 	var original: Dictionary = game.inventory_system.export_runtime_state()
-	var entry: Dictionary = window.session.inventory.get_snapshot()[&"items"][0]
-	var id: StringName = entry[&"instance_id"]
-	var destination := _dual_orientation_inventory_position(window.session.inventory, entry)
+	var entry: Dictionary = {}
+	var destination := Vector2i(-1, -1)
+	for candidate: Dictionary in window.session.inventory.get_snapshot()[&"items"]:
+		if not candidate.get(&"can_rotate", false): continue
+		destination = _dual_orientation_inventory_position(window.session.inventory, candidate)
+		if destination.x >= 0:
+			entry = candidate
+			break
 	if destination.x < 0:
 		return _fail("실제 입력 회전을 검증할 빈 가방 위치가 없습니다.")
+	var id: StringName = entry[&"instance_id"]
 	var grid: Control = window.grid_view
 	for _frame in 8:
 		await process_frame

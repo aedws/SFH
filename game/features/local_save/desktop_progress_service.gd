@@ -21,6 +21,7 @@ var delay := 0.0
 var storage_providers: Array[Node] = []
 var result_details := {}
 var temporary_loadout := false
+var protection_provider: Node
 
 
 func begin_temporary_loadout() -> bool:
@@ -162,6 +163,7 @@ func _on_weapon_changed(_slot: StringName, _weapon: Resource) -> void:
 func flush() -> bool:
 	if not enabled: return true
 	if blocked: return false
+	if is_instance_valid(protection_provider) and not _checkpoint_protection(false): return false
 	if not temporary_loadout and is_instance_valid(bag) and is_instance_valid(gear):
 		var saved := {&"bag": bag.call(&"export_runtime_state"), &"gear": gear.call(&"export_runtime_state")}
 		if not bag.call(&"validate_runtime_state", saved.bag).is_empty() or not gear.call(&"validate_runtime_state", saved.gear).is_empty():
@@ -184,17 +186,55 @@ func begin_run(run_id: StringName, contract: Dictionary) -> bool:
 
 
 func cancel_run() -> void:
+	unbind_run_protection()
 	if not enabled or blocked: return
 	document.pending_run = {}
 	_write()
 
 
-func finish_run(run_id: StringName, extracted: bool, details: Dictionary) -> bool:
+func finish_run(run_id: StringName, extracted: bool, details: Dictionary, retain_prepared_gear: bool = false) -> bool:
 	if not enabled: return true
-	return _complete(String(run_id), extracted, details)
+	if is_instance_valid(protection_provider) and not _checkpoint_protection(extracted): return false
+	unbind_run_protection()
+	return _complete(String(run_id), extracted, details, retain_prepared_gear)
 
 
-func _complete(run_id: String, extracted: bool, details: Dictionary) -> bool:
+func bind_run_protection(provider: Node) -> bool:
+	unbind_run_protection()
+	if not enabled: return true
+	if not is_instance_valid(provider) or not provider.has_method(&"get_protected_return_state") or not provider.has_signal(&"protected_inventory_changed"): return false
+	protection_provider = provider
+	provider.connect(&"protected_inventory_changed", _on_protection_changed)
+	_on_protection_changed()
+	return flush()
+
+
+func unbind_run_protection() -> void:
+	if is_instance_valid(protection_provider) and protection_provider.is_connected(&"protected_inventory_changed", _on_protection_changed):
+		protection_provider.disconnect(&"protected_inventory_changed", _on_protection_changed)
+	protection_provider = null
+
+
+func _on_protection_changed() -> void:
+	_on_changed({}) # Deferred checkpoint observes completed transactions, not a socket's intermediate take.
+
+
+func _checkpoint_protection(extracted: bool) -> bool:
+	if document.loadout == null: return _block("보호 저장 실패", "거점 원본 세팅이 없습니다.")
+	var codec := Codec.new()
+	var saved: Variant = codec.decode(document.loadout)
+	if not codec.error.is_empty() or not saved is Dictionary: return _block("보호 저장 실패", codec.error)
+	var returning: Dictionary = protection_provider.call(&"get_protected_return_state", extracted)
+	if returning.is_empty(): return _block("보호 저장 실패", "실물 복귀 상태를 만들 수 없습니다.")
+	saved[&"bag"] = returning
+	codec = Codec.new()
+	var encoded: Variant = codec.encode(saved)
+	if not codec.error.is_empty(): return _block("보호 저장 실패", codec.error)
+	document.loadout = encoded
+	return true
+
+
+func _complete(run_id: String, extracted: bool, details: Dictionary, retain_prepared_gear: bool = false) -> bool:
 	if blocked or run_id.is_empty(): return false
 	for entry in document.history:
 		if entry.get("run_id") == run_id: return true
@@ -206,7 +246,9 @@ func _complete(run_id: String, extracted: bool, details: Dictionary) -> bool:
 	document.total_runs = int(document.total_runs) + 1
 	document.extractions = int(document.extractions) + (1 if extracted else 0)
 	document.pending_run = {}
-	if not extracted and document.loadout != null:
+	# Explicit caller policy preserves the existing manual-abandon loadout behavior.
+	# Death and interrupted startup retain the default loss rule.
+	if not extracted and not retain_prepared_gear and document.loadout != null:
 		var codec := Codec.new()
 		var saved: Variant = codec.decode(document.loadout)
 		if not codec.error.is_empty() or not saved is Dictionary: return _block("저장 복원 실패", codec.error)
