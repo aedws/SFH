@@ -2,6 +2,7 @@ class_name GridInventory
 extends Node
 
 signal inventory_changed(snapshot: Dictionary)
+const ReservePolicy = preload("res://game/features/inventory/inventory_reserve_policy.gd")
 
 var grid_size := Vector2i.ZERO
 var items: Dictionary = {}
@@ -9,6 +10,9 @@ var placements: Dictionary = {}
 var rotations: Dictionary = {}
 var serials: Dictionary = {}
 var runtime_payloads: Dictionary = {}
+var reserve: Dictionary = {}
+var reserve_access_enabled := false
+var restore_capacity := Vector2i.ZERO
 var item_definitions_by_resource: Dictionary = {}
 var item_definitions_by_id: Dictionary = {}
 
@@ -18,11 +22,13 @@ func configure(catalog: InventoryCatalog) -> bool:
 		push_error("유효한 InventoryCatalog가 필요합니다.")
 		return false
 	grid_size = catalog.grid_size
+	restore_capacity = catalog.restore_capacity
 	items.clear()
 	placements.clear()
 	rotations.clear()
 	serials.clear()
 	runtime_payloads.clear()
+	reserve.clear()
 	item_definitions_by_resource.clear()
 	item_definitions_by_id.clear()
 	for definition in catalog.items:
@@ -33,6 +39,9 @@ func configure(catalog: InventoryCatalog) -> bool:
 		if add_item(definition) == &"":
 			push_error("인벤토리에 초기 아이템을 배치하지 못했습니다: %s" % definition.display_name)
 			return false
+	if restore_capacity != Vector2i.ZERO:
+		var migrated := prepare_capacity_restore(export_runtime_state(), restore_capacity)
+		if migrated.is_empty() or not restore_runtime_state(migrated): return false
 	inventory_changed.emit(get_snapshot())
 	return true
 
@@ -306,6 +315,7 @@ func export_runtime_state() -> Dictionary:
 		&"rotations": rotations.duplicate(true),
 		&"serials": serials.duplicate(true),
 		&"runtime_payloads": runtime_payloads.duplicate(true),
+		&"reserve": ReservePolicy.copy_value(reserve),
 	}
 
 
@@ -313,10 +323,16 @@ func validate_runtime_state(saved: Dictionary) -> PackedStringArray:
 	var errors := PackedStringArray()
 	if saved.is_empty():
 		return errors
+	if not saved.get(&"grid_size") is Vector2i:
+		return PackedStringArray(["가방 격자 크기 형식 오류"])
+	for key in [&"items", &"placements", &"rotations", &"serials", &"runtime_payloads"]:
+		if not saved.get(key, {}) is Dictionary:
+			return PackedStringArray(["가방 저장 구획 형식 오류: %s" % key])
 	var saved_size: Vector2i = saved.get(&"grid_size", Vector2i.ZERO)
 	var saved_items: Dictionary = saved.get(&"items", {})
 	var saved_placements: Dictionary = saved.get(&"placements", {})
 	var saved_rotations: Dictionary = saved.get(&"rotations", {})
+	errors.append_array(ReservePolicy.validation_errors(saved.get(&"reserve", {}), saved_items))
 	if saved_size.x <= 0 or saved_size.y <= 0:
 		errors.append("가방 격자 크기가 유효하지 않습니다.")
 		return errors
@@ -329,9 +345,15 @@ func validate_runtime_state(saved: Dictionary) -> PackedStringArray:
 	var occupied: Array[Rect2i] = []
 	var bounds := Rect2i(Vector2i.ZERO, saved_size)
 	for instance_id in saved_items:
-		var definition := saved_items[instance_id] as InventoryItemDefinition
+		if not (instance_id is String or instance_id is StringName) or String(instance_id).is_empty():
+			errors.append("가방 실물 ID 형식 오류")
+			continue
+		var definition: InventoryItemDefinition = saved_items[instance_id] if saved_items[instance_id] is InventoryItemDefinition else null
 		if definition == null or not definition.is_valid() or not saved_placements.has(instance_id):
 			errors.append("가방 아이템 정의 또는 위치가 유효하지 않습니다: %s" % instance_id)
+			continue
+		if not saved_placements[instance_id] is Vector2i or not saved.get(&"runtime_payloads", {}).get(instance_id, {}) is Dictionary:
+			errors.append("가방 실물 위치/상태 형식 오류")
 			continue
 		if saved_rotations.has(instance_id) and typeof(saved_rotations[instance_id]) != TYPE_BOOL:
 			errors.append("가방 아이템 회전 정보가 유효하지 않습니다: %s" % instance_id)
@@ -347,6 +369,12 @@ func validate_runtime_state(saved: Dictionary) -> PackedStringArray:
 				errors.append("가방 아이템 배치가 서로 겹칩니다: %s" % instance_id)
 				break
 		occupied.append(rect)
+	for id in saved.get(&"runtime_payloads", {}):
+		if not saved_items.has(id): errors.append("가방 실물 없는 상태 데이터")
+	for id in saved.get(&"serials", {}):
+		var value: Variant = saved.serials[id]
+		if not (id is String or id is StringName) or not value is int or value < 0:
+			errors.append("가방 실물 번호 형식 오류")
 	return errors
 
 
@@ -371,6 +399,7 @@ func restore_runtime_state(saved: Dictionary) -> bool:
 		rotations[instance_id] = bool(saved_rotations.get(instance_id, false))
 	serials = (saved.get(&"serials", {}) as Dictionary).duplicate(true)
 	runtime_payloads = (saved.get(&"runtime_payloads", {}) as Dictionary).duplicate(true)
+	reserve = ReservePolicy.copy_value(saved.get(&"reserve", {}))
 	for instance_id in items:
 		if not runtime_payloads.has(instance_id):
 			runtime_payloads[instance_id] = {}
@@ -380,8 +409,69 @@ func restore_runtime_state(saved: Dictionary) -> bool:
 
 func _next_instance_id(item_id: StringName) -> StringName:
 	var next_serial := int(serials.get(item_id, 0)) + 1
+	while items.has(StringName("%s_%d" % [item_id, next_serial])) or reserve.has(StringName("%s_%d" % [item_id, next_serial])):
+		next_serial += 1
 	serials[item_id] = next_serial
 	return StringName("%s_%d" % [item_id, next_serial])
+
+
+func set_reserve_access(enabled: bool) -> void:
+	if reserve_access_enabled == enabled: return
+	reserve_access_enabled = enabled
+	inventory_changed.emit(get_snapshot())
+
+
+func get_reserve_entries() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for id in reserve:
+		var entry: Dictionary = ReservePolicy.copy_value(reserve[id])
+		entry[&"instance_id"] = id
+		result.append(entry)
+	return result
+
+
+func get_reserve_count() -> int:
+	return reserve.size()
+
+
+func store_in_reserve(id: StringName) -> bool:
+	if not reserve_access_enabled or not items.has(id) or reserve.has(id): return false
+	reserve[id] = ReservePolicy.record(export_runtime_state(), id)
+	for collection in [items, placements, rotations, runtime_payloads]: collection.erase(id)
+	inventory_changed.emit(get_snapshot())
+	return true
+
+
+func retrieve_from_reserve(id: StringName) -> bool:
+	if not reserve_access_enabled or not reserve.has(id) or items.has(id): return false
+	var entry: Dictionary = ReservePolicy.copy_value(reserve[id])
+	var footprint := ReservePolicy.size_of(entry)
+	var destination: Vector2i = entry.position
+	if not can_place(footprint, destination): destination = find_first_space(footprint)
+	if destination.x < 0: return false
+	items[id] = entry.definition
+	placements[id] = destination
+	rotations[id] = entry.rotated
+	runtime_payloads[id] = entry.runtime_payload
+	reserve.erase(id)
+	inventory_changed.emit(get_snapshot())
+	return true
+
+
+func prepare_capacity_restore(saved: Dictionary, dimensions: Vector2i) -> Dictionary:
+	if saved.is_empty() or not validate_runtime_state(saved).is_empty(): return {}
+	return ReservePolicy.resize(saved, dimensions)
+
+
+func prepare_saved_state(saved: Dictionary) -> Dictionary:
+	if saved.is_empty() or not validate_runtime_state(saved).is_empty(): return {}
+	return ReservePolicy.copy_value(saved) if restore_capacity == Vector2i.ZERO else prepare_capacity_restore(saved, restore_capacity)
+
+
+func resize_with_reserve(dimensions: Vector2i) -> bool:
+	if not reserve_access_enabled: return false
+	var next := prepare_capacity_restore(export_runtime_state(), dimensions)
+	return not next.is_empty() and restore_runtime_state(next)
 
 
 func _oriented_size(base_size: Vector2i, rotated: bool) -> Vector2i:

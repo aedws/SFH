@@ -3098,6 +3098,8 @@ func _install_inventory() -> bool:
 	):
 		_report_configuration_error("상점 실물 아이템 지급 모듈을 가방에 연결하지 못했습니다.")
 		return false
+	if inventory_system.has_method(&"set_reserve_access"):
+		inventory_system.call(&"set_reserve_access", not run_started)
 	inventory_window = _instantiate_feature(
 		INVENTORY_WINDOW_SCENE_PATH, ui_layer, &"GridInventoryWindow"
 	)

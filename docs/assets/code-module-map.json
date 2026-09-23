@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "34efef26cfd2be1c7e0cc2b03a454cba317a7d680112c3acfe5d3d772d888ecb",
+  "source_sha256": "9c5f94d49ff6d18a2354e5de832d30d926a7a97b5599889225d4ed121ed17d79",
   "domains": [
     {
       "id": "system",
@@ -63,8 +63,8 @@
   ],
   "summary": {
     "modules": 63,
-    "scripts": 392,
-    "named_classes": 298,
+    "scripts": 394,
+    "named_classes": 299,
     "relationships": 235,
     "project_inheritance": 16,
     "enabled_toggles": 72
@@ -599,8 +599,8 @@
       "path": "game/features/inventory",
       "wiki_route": "architecture/module-rules/",
       "enabled": true,
-      "file_count": 7,
-      "class_count": 7,
+      "file_count": 8,
+      "class_count": 8,
       "classes": [
         "GridInventory",
         "GridInventoryWindow",
@@ -608,7 +608,8 @@
         "InventoryCatalog",
         "InventoryEditSession",
         "InventoryGridView",
-        "InventoryItemDefinition"
+        "InventoryItemDefinition",
+        "InventoryReservePolicy"
       ],
       "incoming_count": 7,
       "outgoing_count": 2
@@ -1368,7 +1369,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 83,
+      "file_count": 84,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -2669,6 +2670,15 @@
       "module": "inventory",
       "path": "game/features/inventory/inventory_item_definition.gd",
       "extends": "Resource",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:InventoryReservePolicy",
+      "name": "InventoryReservePolicy",
+      "module": "inventory",
+      "path": "game/features/inventory/inventory_reserve_policy.gd",
+      "extends": "RefCounted",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -5126,7 +5136,7 @@
       "from": "verification",
       "to": "core",
       "type": "verifies",
-      "evidence_count": 9
+      "evidence_count": 10
     },
     {
       "from": "verification",
@@ -5156,7 +5166,7 @@
       "from": "verification",
       "to": "equipment",
       "type": "verifies",
-      "evidence_count": 13
+      "evidence_count": 14
     },
     {
       "from": "verification",
@@ -5216,7 +5226,7 @@
       "from": "verification",
       "to": "inventory",
       "type": "verifies",
-      "evidence_count": 13
+      "evidence_count": 14
     },
     {
       "from": "verification",
@@ -5234,7 +5244,7 @@
       "from": "verification",
       "to": "local_save",
       "type": "verifies",
-      "evidence_count": 7
+      "evidence_count": 8
     },
     {
       "from": "verification",
@@ -5378,7 +5388,7 @@
       "from": "verification",
       "to": "scene_assembly",
       "type": "verifies",
-      "evidence_count": 38
+      "evidence_count": 39
     },
     {
       "from": "verification",

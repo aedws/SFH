@@ -22,6 +22,8 @@ SFH의 완료 기준은 **기능과 확장성을 동시에 만족하는 것**입
 
 ## 기본 규칙
 
+실물 보관은 `InventoryReservePolicy`(복사·공간 계획·보관 기록 검증), `GridInventory`(가방+보관 상태 원본), `InventoryEditSession`(초안/취소/거점 접근), `DesktopProgressService`(동일 파일 체크포인트)로 분리합니다. 수량 창고로 변환하거나 별도 파일 두 개를 순차 갱신하지 않습니다. 보관 실물은 활성 가방과 ID가 중복될 수 없고, 일련번호가 오래되어도 새 지급이 원본을 덮어쓰지 않습니다. 저장 크기 변경은 `prepare_saved_state`로 검증된 계획을 먼저 만들며 Game은 거점 접근 여부만 전달합니다. 기본 규격 변경과 파우치는 아직 별도 단계입니다. [공개 계약](../features/grid-inventory.md#reserve-20260923).
+
 인벤토리 런 자산 대상 선택은 선택적 제공자 계약으로 확장합니다. `InventoryActionTargetPicker`는 후보 사본과 선택 ID만 다루며, 공급자가 저장 확인 이후 대상과 실물 인스턴스를 재검증합니다. UI는 소켓 수·효과·현재 장비의 내부 필드를 읽지 않습니다. 두 선택 API를 제공하지 않는 기존 공급자는 원래 단일 동작을 유지합니다. [공개 계약](../features/session-sockets.md#target-selection-20260922).
 
 1. 기능은 `game/features/<기능 이름>/` 아래에 둡니다.

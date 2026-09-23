@@ -54,9 +54,17 @@ search:
 
 <div class="sfh-notes sfh-public-release">
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-23</b><i class="sfh-latest">최신</i><small>1 UPDATE BUNDLES · BUILD 1 · IMPROVE 1 · CHANGE 0 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-23</b><i class="sfh-latest">최신</i><small>2 UPDATE BUNDLES · BUILD 2 · IMPROVE 2 · CHANGE 0 · FIX 1</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 2</small><b>장비를 그대로 보관 · 무손실 가방 이관 기반</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>거점 I에서 실물 보관과 꺼내기를 추가했습니다. 옵션·강화·회전·실물 ID를 유지하고, 저장하지 않은 이동은 취소할 수 있습니다. 전투 중 보관 이동은 차단합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>가방 축소 초과분을 수량 창고로 바꾸지 않고 같은 저장 문서에서 보존합니다. 기본96칸은 유지하며, 등급별36~72칸 적용과 보안 파우치는 다음 단계입니다.</p></div>
+        <p><a href="/features/grid-inventory/#reserve-20260923">보관 사용법·미구현 경계</a> · <a href="/quality/e2e-play-session/#reserve-20260923">저장·취소·재시작 검증</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 1</small><b>오래 머무를수록 위험 · 20분 Hunter와 30분 붕괴</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>15~20분 생환을 권장합니다. 20분에는 일반 적이 강화되고 문을 무시하는 Hunter가 한 번 등장합니다. 기존 회수액50% 추격 보스도 유지됩니다. 30분까지 탈출하지 못하면 작전이 실패합니다.</p></div>

@@ -90,6 +90,7 @@ func bind_hub(inventory: Node, equipment: Node) -> bool:
 				return _block("저장 연결 실패", "가방·장비 공개 계약이 필요합니다.")
 	if not inventory.has_signal(&"inventory_changed") or not equipment.has_signal(&"customization_changed") or not equipment.has_signal(&"active_weapon_changed"):
 		return _block("저장 연결 실패", "가방·장비 변경 Signal이 필요합니다.")
+	var migrated_capacity := false
 	if not restored and document.loadout != null:
 		var codec := Codec.new()
 		var saved: Variant = codec.decode(document.loadout)
@@ -97,6 +98,11 @@ func bind_hub(inventory: Node, equipment: Node) -> bool:
 			return _block("세팅 복원 실패 · 원본 보존", codec.error)
 		if not saved.get(&"bag") is Dictionary or not saved.get(&"gear") is Dictionary:
 			return _block("세팅 복원 실패 · 원본 보존", "가방·장비 저장 구획 오류")
+		if inventory.has_method(&"prepare_saved_state"):
+			var prepared: Dictionary = inventory.call(&"prepare_saved_state", saved.bag)
+			if prepared.is_empty(): return _block("가방 이관 실패 · 원본 보존", "원본 가방을 검증하지 못했습니다.")
+			migrated_capacity = prepared.get(&"grid_size") != saved.bag.get(&"grid_size")
+			saved.bag = prepared
 		if not inventory.call(&"validate_runtime_state", saved.bag).is_empty() or not equipment.call(&"validate_runtime_state", saved.gear).is_empty():
 			return _block("세팅 규칙 불일치 · 원본 보존", "현재 빌드에서 읽을 수 없는 장비/가방 데이터입니다.")
 		var before_bag: Dictionary = inventory.call(&"export_runtime_state")
@@ -113,6 +119,9 @@ func bind_hub(inventory: Node, equipment: Node) -> bool:
 	bag.connect(&"inventory_changed", _on_changed)
 	gear.connect(&"customization_changed", _on_changed)
 	gear.connect(&"active_weapon_changed", _on_weapon_changed)
+	if migrated_capacity:
+		dirty = true
+		if not flush(): return false
 	storage_changed.emit(get_snapshot())
 	return true
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "updated": "2026-09-23",
-  "source_sha256": "a41b5942e31e77f97b92dda310e5613a56ba210f741d259d72d29021a155befc",
+  "source_sha256": "48a2ecf490e9e1e081cb5844b2a268d249745128ef2ffb3d46ea6cd123c5d57d",
   "authority": {
     "id": "authority:project-owner",
     "label": "프로젝트 오너",
@@ -3307,14 +3307,14 @@
       "label": "가방 인벤토리",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "장비·세팅 · feature · 파일 7개",
+      "summary": "장비·세팅 · feature · 파일 8개",
       "route": "architecture/code-module-map/?module=inventory",
       "documentation_route": "architecture/module-rules/",
       "source": "game/features/inventory",
       "kind": "implementation",
       "metrics": {
-        "files": 7,
-        "classes": 7,
+        "files": 8,
+        "classes": 8,
         "incoming": 7,
         "outgoing": 2
       }
@@ -3991,13 +3991,13 @@
       "label": "자동 검증",
       "status": "enabled",
       "certainty": "derived",
-      "summary": "기반·검증 · verification · 파일 83개",
+      "summary": "기반·검증 · verification · 파일 84개",
       "route": "architecture/code-module-map/?module=verification",
       "documentation_route": "quality/e2e-play-session/",
       "source": "game/tests",
       "kind": "implementation",
       "metrics": {
-        "files": 83,
+        "files": 84,
         "classes": 0,
         "incoming": 0,
         "outgoing": 57

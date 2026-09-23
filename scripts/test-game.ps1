@@ -72,6 +72,11 @@ $arsenalStatus = $LASTEXITCODE
 $arsenalOutput | Write-Output
 if ($arsenalStatus -ne 0 -or ($arsenalOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($arsenalOutput -join "`n") -notmatch 'WEAPON_ARSENAL_OK') { throw 'Weapon arsenal contract failed.' }
 
+$inventoryReserveOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/inventory_reserve_contract_test.gd" 2>&1
+$inventoryReserveStatus = $LASTEXITCODE
+$inventoryReserveOutput | Write-Output
+if ($inventoryReserveStatus -ne 0 -or ($inventoryReserveOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($inventoryReserveOutput -join "`n") -notmatch 'INVENTORY_RESERVE_OK') { throw 'Lossless inventory reserve contract failed.' }
+
 $inventoryViewOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/inventory_presentation_contract_test.gd" 2>&1
 $inventoryViewStatus = $LASTEXITCODE
 $inventoryViewOutput | Write-Output
