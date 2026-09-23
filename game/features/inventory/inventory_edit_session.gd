@@ -34,6 +34,7 @@ func begin() -> bool:
 	add_child(inventory)
 	if not inventory.restore_runtime_state(live_inventory.export_runtime_state()):
 		return false
+	inventory.set_reserve_access(live_inventory.reserve_access_enabled)
 	equipment = live_equipment.create_edit_copy(self) if live_equipment != null else null
 	if equipment != null:
 		add_child(equipment)
@@ -60,6 +61,14 @@ func rotate_item(instance_id: StringName) -> bool:
 		return _reject("회전 불가 · 가로와 세로 크기가 같은 아이템입니다.")
 	if not inventory.rotate_item(instance_id):
 		return _reject("회전 불가 · 다른 아이템과 겹치거나 가방 밖입니다.")
+	return _changed()
+
+
+func transfer_reserve(instance_id: StringName, retrieving: bool) -> bool:
+	if not active or conflicted or not live_inventory.reserve_access_enabled:
+		return _reject("실물 보관은 거점에서만 가능합니다. 최신 가방을 다시 열어 주세요.")
+	var ok: bool = inventory.retrieve_from_reserve(instance_id) if retrieving else inventory.store_in_reserve(instance_id)
+	if not ok: return _reject("이동 불가 · 빈 공간과 선택한 실물을 확인하세요. 원본은 보존됩니다.")
 	return _changed()
 
 

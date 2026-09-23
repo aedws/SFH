@@ -59,6 +59,13 @@ var layout_deferred_pending := false
 var open_layout_ready := false
 var runtime_item_actions: Array[Node] = []
 var runtime_target_picker: InventoryActionTargetPicker
+var reserve_toggle: Button
+var reserve_button: Button
+var reserve_list: VBoxContainer
+var viewing_reserve := false
+var selected_reserve_id: StringName = &""
+var bag_title: Label
+var bag_hint: Label
 
 
 func _ready() -> void:
@@ -176,6 +183,8 @@ func open_panel() -> void:
 	if not session.begin():
 		return
 	current_tab = 0
+	viewing_reserve = false
+	selected_reserve_id = &""
 	selected_entry.clear()
 	_bind_draft()
 	move_to_front()
@@ -253,7 +262,7 @@ func end_runtime_session() -> void:
 
 func _refresh_header() -> void:
 	var count: int = session.inventory.get_snapshot()[&"items"].size()
-	header_summary.text = "아이템 %d개 · %s" % [count, "미저장 변경 있음" if session.dirty else "저장된 세팅"]
+	header_summary.text = "가방 %d개 · 보관 %d개 · %s" % [count, session.inventory.get_reserve_count(), "미저장 변경 있음" if session.dirty else "저장된 세팅"]
 	if realtime:
 		header_summary.text += " · 전투 진행 중 · " + live_health
 	header_summary.modulate = Color("ffc979") if realtime or session.dirty else Color("a0b9c3")
@@ -284,6 +293,7 @@ func _bind_draft() -> void:
 	grid_view.move_handler = session.move_item
 	grid_view.selected_instance_id = &""
 	selected_entry.clear()
+	selected_reserve_id = &""
 	selected_name.text = "아이템 선택"
 	selected_preview.present({})
 	selected_socket = &""
@@ -341,8 +351,9 @@ func _build_ui() -> void:
 	module_column.add_child(module_list)
 	var bag_column := _column(columns, 0)
 	bag_column.size_flags_horizontal = SIZE_EXPAND_FILL
-	_label(bag_column, "회수품 / BACKPACK", 17)
-	_label(bag_column, "드래그 이동 · 선택 후 R 회전", 12)
+	bag_title = _label(bag_column, "회수품 / BACKPACK", 17)
+	bag_hint = _label(bag_column, "드래그 이동 · 선택 후 R 회전", 12)
+	reserve_toggle = _button(bag_column, "거점 실물 보관", _toggle_reserve)
 	bag_scroll = ScrollContainer.new()
 	bag_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	bag_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_ALWAYS
@@ -351,7 +362,13 @@ func _build_ui() -> void:
 	bag_column.add_child(bag_scroll)
 	grid_view = GRID_VIEW.new()
 	grid_view.cell_pixel_size = 30.0
-	bag_scroll.add_child(grid_view)
+	var storage_content := VBoxContainer.new()
+	storage_content.size_flags_horizontal = SIZE_EXPAND_FILL
+	bag_scroll.add_child(storage_content)
+	storage_content.add_child(grid_view)
+	reserve_list = VBoxContainer.new()
+	storage_content.add_child(reserve_list)
+	reserve_list.hide()
 	grid_view.item_selected.connect(_on_item_selected)
 	capacity_label = _label(bag_column, "공간 사용", 12)
 	capacity_meter = ProgressBar.new()
@@ -372,6 +389,7 @@ func _build_ui() -> void:
 		action_button.disabled = not runtime_target_picker.is_complete()
 		status_label.text = "선택 대상 확인 후 장착하세요." if runtime_target_picker.is_complete() else "적용할 대상을 먼저 선택하세요.")
 	rotate_button = _button(detail_column, "선택 아이템 회전 / R", _rotate_selected_item)
+	reserve_button = _button(detail_column, "거점에 보관", _transfer_reserve)
 	action_button = _button(detail_column, "선택 슬롯에 장착", _apply_selection)
 	ui.action(action_button, "gear", true)
 	unequip_button = _button(detail_column, "선택 장비 해제", _unequip_selection)
@@ -498,6 +516,7 @@ func _refresh() -> void:
 	action_button.disabled = selected_entry.is_empty() or (_runtime_action_provider(selected_entry) == null and (session.equipment == null or selected_entry.get(&"item_type") not in [&"weapon", &"armor", &"module", &"part"]))
 	if selected_entry.is_empty(): runtime_target_picker.present([], &"")
 	elif runtime_target_picker.visible: action_button.disabled = not runtime_target_picker.is_complete()
+	_refresh_reserve()
 	unequip_button.disabled = session.equipment == null
 	_layout()
 	if current_tab == 2 and session.equipment != null:
@@ -617,8 +636,10 @@ func _install_socket_item(id: StringName) -> void:
 
 
 func _on_item_selected(entry: Dictionary) -> void:
+	selected_reserve_id = &""
 	selected_entry = entry.duplicate()
 	_show_selected_entry(entry)
+	reserve_button.disabled = not session.inventory.reserve_access_enabled
 
 
 func _show_selected_entry(entry: Dictionary) -> void:
@@ -645,6 +666,7 @@ func _show_selected_entry(entry: Dictionary) -> void:
 
 
 func _rotate_selected_item() -> void:
+	if viewing_reserve: return
 	if selected_entry.is_empty():
 		status_label.text = "회전할 아이템을 먼저 한 번 선택하세요."
 		return
@@ -659,6 +681,7 @@ func _rotate_selected_item() -> void:
 
 
 func _apply_selection() -> void:
+	if viewing_reserve: return
 	if selected_entry.is_empty():
 		return
 	var provider := _runtime_action_provider(selected_entry)
@@ -694,6 +717,85 @@ func _apply_selection() -> void:
 
 func _unequip_selection() -> void:
 	session.unequip_item(selected_slot)
+
+
+func _toggle_reserve() -> void:
+	if realtime or not session.inventory.reserve_access_enabled: return
+	viewing_reserve = not viewing_reserve
+	selected_reserve_id = &""
+	selected_entry.clear()
+	selected_preview.present({})
+	selected_name.text = "보관 실물 선택" if viewing_reserve else "아이템 선택"
+	selected_description.text = "옵션·강화·회전 유지 · 저장해야 이동이 확정됩니다." if viewing_reserve else "가방에서 아이템을 선택하세요."
+	_refresh()
+
+
+func _refresh_reserve() -> void:
+	var allowed: bool = not realtime and session.inventory.reserve_access_enabled
+	var count: int = session.inventory.get_reserve_count()
+	var entries: Array = session.inventory.get_reserve_entries() if viewing_reserve else []
+	bag_title.text = "거점 보관 / RESERVE" if viewing_reserve else "회수품 / BACKPACK"
+	bag_hint.text = "출격에 가져가지 않음 · 꺼내기 후 저장" if viewing_reserve else "드래그 이동 · 선택 후 R 회전"
+	capacity_meter.visible = not viewing_reserve
+	if viewing_reserve: capacity_label.text = "보관 실물 %d개 · 원래 옵션과 강화 상태 유지" % entries.size()
+	reserve_toggle.text = "작전 가방으로 돌아가기" if viewing_reserve else "거점 실물 보관 · %d개" % count
+	reserve_toggle.disabled = not allowed
+	reserve_toggle.tooltip_text = "거점에서만 이동 가능 · 품목별 수량 창고와 별도 · 파우치가 아닙니다."
+	reserve_button.text = "가방으로 꺼내기" if viewing_reserve else "거점에 보관"
+	reserve_button.disabled = not allowed or (selected_reserve_id == &"" if viewing_reserve else selected_entry.is_empty())
+	grid_view.visible = not viewing_reserve
+	reserve_list.visible = viewing_reserve
+	for child in reserve_list.get_children():
+		reserve_list.remove_child(child)
+		child.queue_free()
+	if not viewing_reserve: return
+	rotate_button.disabled = true
+	action_button.disabled = true
+	runtime_target_picker.hide()
+	if entries.is_empty(): _label(reserve_list, "보관 중인 실물이 없습니다.\n가방에서 선택 후 ‘거점에 보관’을 누르세요.", 14)
+	for entry in entries:
+		var definition: Resource = entry.definition
+		var row := HBoxContainer.new()
+		reserve_list.add_child(row)
+		var button := _button(row, "%s · %d×%d · %s" % [definition.display_name, definition.grid_size.x, definition.grid_size.y, "회전 보존" if entry.rotated else "기본 방향"], _select_reserve.bind(entry.instance_id))
+		button.size_flags_horizontal = SIZE_EXPAND_FILL
+		button.tooltip_text = "%s\n%s" % [entry.instance_id, definition.description]
+		button.toggle_mode = true
+		button.set_pressed_no_signal(entry.instance_id == selected_reserve_id)
+		var take := _button(row, "꺼내기", _retrieve_reserve_row.bind(entry.instance_id))
+		take.custom_minimum_size.x = 64
+		take.tooltip_text = "가방으로 이동할 초안 생성 · 닫기에서 저장/취소"
+		take.disabled = not allowed
+
+
+func _retrieve_reserve_row(id: StringName) -> void:
+	if not viewing_reserve: return
+	_select_reserve(id)
+	_transfer_reserve()
+
+
+func _select_reserve(id: StringName) -> void:
+	selected_reserve_id = id
+	selected_entry.clear()
+	for entry in session.inventory.get_reserve_entries():
+		if entry.instance_id != id: continue
+		var definition: Resource = entry.definition
+		selected_preview.present({&"item_type": definition.item_type, &"linked_resource": definition.linked_resource, &"display_name": definition.display_name, &"runtime_payload": entry.runtime_payload})
+		selected_name.text = definition.display_name
+		selected_description.text = "%s\n\n실물 ID · %s\n옵션·강화·회전 그대로 꺼냅니다." % [definition.description, id]
+	_refresh_reserve()
+
+
+func _transfer_reserve() -> void:
+	if realtime: return
+	var id: StringName = selected_reserve_id if viewing_reserve else selected_entry.get(&"instance_id", &"")
+	if session.transfer_reserve(id, viewing_reserve):
+		selected_reserve_id = &""
+		selected_entry.clear()
+		selected_preview.present({})
+		selected_name.text = "이동 예정 · 미저장"
+		selected_description.text = "닫기에서 저장/취소를 선택하세요."
+		_refresh()
 
 
 func _remove_modification(kind: StringName, id: StringName) -> void:

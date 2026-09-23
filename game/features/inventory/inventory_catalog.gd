@@ -2,6 +2,8 @@ class_name InventoryCatalog
 extends Resource
 
 @export var grid_size := Vector2i(12, 8)
+## Zero preserves saved capacity. Enable explicitly when a capacity rollout is approved.
+@export var restore_capacity := Vector2i.ZERO
 @export var items: Array[InventoryItemDefinition] = []
 
 
@@ -9,6 +11,8 @@ func validation_errors() -> PackedStringArray:
 	var errors := PackedStringArray()
 	if grid_size.x <= 0 or grid_size.y <= 0:
 		errors.append("인벤토리 격자 크기는 양수여야 합니다.")
+	if restore_capacity != Vector2i.ZERO and (restore_capacity.x <= 0 or restore_capacity.y <= 0):
+		errors.append("저장 가방 이관 규격이 유효하지 않습니다.")
 	var item_ids: Dictionary = {}
 	for item in items:
 		if item == null or not item.is_valid():

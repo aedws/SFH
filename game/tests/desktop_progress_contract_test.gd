@@ -82,6 +82,8 @@ func _run() -> void:
 			_check(gear.upgrade_module(&"main", state.installed_modules[0].instance_id), "upgrade module")
 		_check(gear.upgrade_part(&"main", &"rifle_scope"), "upgrade part")
 		_check(gear.set_active_weapon_slot(&"secondary"), "secondary weapon")
+		var reserve_id := StringName(bag.add_catalog_item(&"ballistic_core_item", {&"upgrade_level": 6, &"reserve_proof": &"two-process"}))
+		_check(reserve_id != &"" and bag.store_in_reserve(reserve_id), "real hub reserve checkpoint")
 		_check(service.flush(), "hub save: %s" % service.get_snapshot())
 		# Uncommitted editor changes must not leak into automatic checkpoints.
 		var draft_editor: Node = load("res://game/features/inventory/inventory_edit_session.gd").new()
@@ -136,6 +138,8 @@ func _run() -> void:
 				restored_rotation = entry.grid_size == Vector2i(base_size.y, base_size.x)
 		_check(moved, "bag position persisted")
 		_check(restored_rotation, "bag rotation persisted")
+		var reserve_entries: Array = bag.get_reserve_entries()
+		_check(reserve_entries.size() == 1 and reserve_entries[0].runtime_payload.get(&"reserve_proof") == &"two-process" and reserve_entries[0].runtime_payload.get(&"upgrade_level") == 6, "reserve instance persisted across process restart")
 		_check(profile.get_snapshot().banked_credits == 5137, "banked credits persisted")
 		for item_id in [&"assault_rifle", &"tactical_vest", &"ballistic_core", &"rifle_scope"]:
 			_check(profile.has_warehouse_item(item_id, 2), "warehouse item: %s" % item_id)
@@ -163,6 +167,7 @@ func _run() -> void:
 		var saved: Dictionary = codec.decode(Store.new().read(features.desktop_progress_storage_path).data.loadout)
 		_check(saved.gear.is_empty(), "interrupted equipped gear lost, no free recovery")
 		_check(saved.bag.items.size() > 0, "hub bag retained; no transient loot copied")
+		_check(saved.bag.get(&"reserve", {}).size() == 1, "interrupted operation preserves hub reserve")
 	game.free()
 	await process_frame
 	_finish()
