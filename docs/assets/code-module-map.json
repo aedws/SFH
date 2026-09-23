@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "88c98968364b0459b2b8e004488f21f7dcde8487782859f38405d009beaf60fb",
+  "source_sha256": "cf00fc6412d1818b961dd34a29f267288928592b4c66d4390dcb293688284236",
   "domains": [
     {
       "id": "system",
@@ -5226,7 +5226,7 @@
       "from": "verification",
       "to": "core",
       "type": "verifies",
-      "evidence_count": 11
+      "evidence_count": 12
     },
     {
       "from": "verification",
@@ -5412,7 +5412,7 @@
       "from": "verification",
       "to": "p5_hub_progression",
       "type": "verifies",
-      "evidence_count": 9
+      "evidence_count": 10
     },
     {
       "from": "verification",

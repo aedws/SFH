@@ -24,6 +24,12 @@ func _run() -> void:
 			raw_tables += 1
 	_check(raw_tables >= 18, "all gameplay CSV tables survive export")
 	print("RELEASE_RAW_CSV_OK ", raw_tables)
+	var workshop: Resource = load("res://game/features/p5_hub_progression/configs/default_workshop_roll_policy.tres").duplicate(true)
+	_check(workshop.get_supply_policy() is EquipmentSupplyPolicy, "exported workshop retains explicit supply policy")
+	if workshop.get_supply_policy() is EquipmentSupplyPolicy:
+		_check(workshop.get_supply_policy().is_valid(), "exported supply policy valid")
+		_check(workshop.describe({&"result_id": &"release_probe", &"minimum_sockets": 0, &"maximum_sockets": 1}).get(&"minimum_sockets") == 1,
+			"exported crafting applies hub socket floor")
 	var config: Resource = SOCKETS.duplicate(true)
 	_check(config.binding_policy != null, "exported duplicate retains binding policy")
 	_check(config.validation_errors().is_empty(), "exported socket config is valid")

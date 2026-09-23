@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="WorkshopRollPolicy" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="WorkshopRollPolicy" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://game/features/p5_hub_progression/workshop_roll_policy.gd" id="1_policy"]
+[ext_resource type="Resource" path="res://game/core/configs/default_equipment_supply.tres" id="2_supply"]
 
 [resource]
 script = ExtResource("1_policy")
+supply_policy = ExtResource("2_supply")
 instance_prefix = "p7_crafted"
 seed_stride = 7049
 maximum_socket_limit = 8
