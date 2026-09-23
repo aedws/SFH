@@ -26,7 +26,7 @@ jobs:
       runner: ${{ steps.route.outputs.runner }}
     steps:
       - name: Check out complete history
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Snapshot the commit that main replaced
@@ -79,7 +79,7 @@ jobs:
       options: --ulimit core=0
     steps:
       - name: Check out repository
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Configure Godot export templates
         run: |
@@ -389,7 +389,7 @@ jobs:
       options: --ulimit core=0
     steps:
       - name: Check out repository
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Configure Godot export templates
         run: |
@@ -487,7 +487,7 @@ jobs:
       options: --ulimit core=0
     steps:
       - name: Check out repository
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Configure Godot export templates
         run: |
@@ -588,7 +588,7 @@ jobs:
       - package-windows
     steps:
       - name: Check out repository
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Require successful relevant checks
         env:
@@ -734,7 +734,7 @@ jobs:
 
       - name: Check out repository
         if: steps.cloudflare_config.outputs.ready == 'true'
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Retrieve and verify wiki from this run
         if: steps.cloudflare_config.outputs.ready == 'true'
@@ -976,6 +976,6 @@ jobs:
     needs: [plan, export-game, e2e, package-windows, build, cloudflare-deploy]
     steps:
       - name: Check out repository
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Remove only this run's temporary handoff
         run: python3 scripts/ci_transfer.py clean
