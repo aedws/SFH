@@ -269,7 +269,7 @@ jobs:
           timeout 90s godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/inventory_reserve_contract_test.gd" 2>&1 | tee /tmp/sfh-inventory-reserve.log
           ! grep -E 'SCRIPT ERROR:|ERROR:' /tmp/sfh-inventory-reserve.log
           grep -q 'INVENTORY_RESERVE_OK' /tmp/sfh-inventory-reserve.log
-          python scripts/sync_container_capacity.py --check
+          python3 scripts/sync_container_capacity.py --check
           timeout 90s godot --headless --path "$GITHUB_WORKSPACE" --script "res://game/tests/inventory_pouch_contract_test.gd" 2>&1 | tee /tmp/sfh-inventory-pouch.log
           ! grep -E 'SCRIPT ERROR:|ERROR:' /tmp/sfh-inventory-pouch.log
           grep -q 'INVENTORY_POUCH_OK' /tmp/sfh-inventory-pouch.log
