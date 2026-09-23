@@ -26,6 +26,8 @@ func quote(offer_id: StringName) -> Dictionary:
 	var offer: Dictionary = config.call(&"get_offer", offer_id) if config != null else {}
 	if offer.is_empty():
 		return {&"available": false, &"reason": "존재하지 않는 상점 항목"}
+	var supply_error := EquipmentSupplyPolicy.hub_default().source_error(offer)
+	if not supply_error.is_empty(): return {&"available": false, &"reason": supply_error}
 	var unlock_required := StringName(offer.get(&"required_unlock_id", &""))
 	var registration_required := StringName(offer.get(&"required_offer_registration", &""))
 	var available := (

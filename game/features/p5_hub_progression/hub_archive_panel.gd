@@ -89,6 +89,10 @@ func _refresh_quote() -> void:
 		var label: String = {"scrap": "고철", "salvage": "고철", "field_medkit": "응급키트"}.get(id, id)
 		lines.append("%s  %d / %d  %s" % [label, int(material.get(&"owned", 0)), int(material.get(&"required", 0)), "충족" if material.get(&"ready", false) else "부족"])
 	lines.append("옵션과 소켓은 제작 시 결정 · 결과는 영구 제작 기록에 보관")
+	var preview: Dictionary = quote.get(&"roll_preview", {})
+	if not preview.is_empty():
+		lines.append(String(preview.get(&"supply_policy", "")))
+		lines.append("이 도면의 소켓 %d~%d · 기존 보유 장비는 변경하지 않음" % [int(preview.get(&"minimum_sockets", 0)), int(preview.get(&"maximum_sockets", 0))])
 	var ready := bool(quote.get(&"craftable", false))
 	if not ready: lines.append(String(quote.get(&"reason", "제작 불가")))
 	detail.text = "\n".join(lines)

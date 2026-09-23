@@ -16,6 +16,7 @@ var quality_catalog: Resource
 var rotation_policy: Resource
 var rotation_state = ROTATION_STATE.new()
 var reroll_transaction = REROLL_TRANSACTION.new()
+var supply_policy := EquipmentSupplyPolicy.hub_default()
 
 var rotation_index: int:
 	get:
@@ -66,7 +67,7 @@ func refresh(paid: bool = false, transaction_id: StringName = &"",
 		previous_ids.append(StringName(offer.get(&"offer_id", &"")))
 	var next_revision: int = int(rotation_state.rotation_index) + 1
 	var proposal: Dictionary = rotation_policy.call(
-		&"build_rotation", offers, quality_catalog.call(&"get_quality_ids"), slot_count,
+		&"build_rotation", _eligible_offers(), quality_catalog.call(&"get_quality_ids"), slot_count,
 		base_seed, next_revision, previous_ids
 	)
 	if not bool(proposal.get(&"success", false)):
@@ -201,10 +202,13 @@ func purchase(offer_id: StringName, transaction_id: StringName, expected_rotatio
 
 func get_snapshot() -> Dictionary:
 	var quotes: Array[Dictionary] = []
+	var visible_offers: Array[Dictionary] = []
 	for offer in rotation_state.offers:
+		if not _supply_allowed(offer): continue
+		visible_offers.append(offer.duplicate(true))
 		quotes.append(quote(StringName(offer.get(&"offer_id", &""))))
 	var state_snapshot: Dictionary = rotation_state.call(&"get_snapshot")
-	return {&"rotation_index": rotation_index, &"offers": rotation_state.offers.duplicate(true),
+	return {&"rotation_index": rotation_index, &"offers": visible_offers,
 		&"reroll_price": _current_reroll_price(), &"quality_count": _quality_count(), &"quotes": quotes,
 		&"credits": int(profile.call(&"get_snapshot").get(&"banked_credits", 0)),
 		&"reroll_quote": quote_reroll(),
@@ -212,10 +216,23 @@ func get_snapshot() -> Dictionary:
 		&"last_refresh_reason": state_snapshot.get(&"last_refresh_reason", &"initial"),
 		&"last_changed_count": state_snapshot.get(&"last_changed_count", 0)}
 
+func _eligible_offers() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for offer in offers:
+		if _supply_allowed(offer): result.append(offer)
+	return result
+
+func _supply_allowed(offer: Dictionary) -> bool:
+	if not supply_policy.source_error(offer).is_empty(): return false
+	if delivery_provider != null:
+		return not bool(delivery_provider.call(&"preview", offer).get(&"supply_blocked", false))
+	return true
+
 
 func _quality_count() -> int:
 	var ids := {}
 	for row in rotation_state.offers:
+		if not _supply_allowed(row): continue
 		ids[row.get(&"quality", &"")] = true
 	return ids.size()
 

@@ -4,11 +4,17 @@ extends RefCounted
 var profile: Node
 var roll_policy: Resource
 var session_seed := 70404
+var supply_policy := EquipmentSupplyPolicy.hub_default()
 
 
 func configure(profile_provider: Node, workshop_roll_policy: Resource, seed: int) -> bool:
 	profile = profile_provider
 	roll_policy = workshop_roll_policy
+	supply_policy = EquipmentSupplyPolicy.hub_default()
+	if roll_policy != null and roll_policy.has_method(&"get_supply_policy"):
+		var supplied: Resource = roll_policy.call(&"get_supply_policy")
+		if not supplied is EquipmentSupplyPolicy or not supplied.is_valid(): return false
+		supply_policy = supplied.duplicate(true)
 	session_seed = seed if seed != 0 else 70404
 	return (
 		is_instance_valid(profile)
@@ -41,11 +47,14 @@ func quote(recipe: Dictionary, materials: Dictionary, registration_ready: bool) 
 	if not registration_ready:
 		reason = "영구 등록 도면 필요"
 	elif credit_cost < 0 or not bool(roll_preview.get(&"valid", false)) or not _valid_materials(materials):
-		reason = "제작 데이터 오류"
+		reason = String(roll_preview.get(&"reason", "제작 데이터 오류"))
+		if reason.is_empty(): reason = "제작 데이터 오류"
 	elif int(snapshot.get(&"banked_credits", 0)) < credit_cost:
 		reason = "크레딧 부족"
 	elif not materials_ready:
 		reason = "재료 부족"
+	var source_check := supply_policy.recipe_preview(recipe)
+	if not source_check.valid: reason = source_check.reason
 	return {
 		&"craftable": reason.is_empty(),
 		&"reason": reason,
@@ -70,6 +79,8 @@ func execute(recipe: Dictionary, materials: Dictionary, registration_ready: bool
 	var item: Dictionary = roll_policy.call(&"roll", recipe, recipe_id, transaction_id, session_seed)
 	if item.is_empty():
 		return {&"success": false, &"reason": "옵션 생성 실패", &"quote": draft}
+	var supply_error := supply_policy.crafted_error(item)
+	if not supply_error.is_empty(): return {&"success": false, &"reason": supply_error, &"quote": draft}
 	var warehouse_deltas := {}
 	for item_id in materials:
 		warehouse_deltas[StringName(item_id)] = -int(materials[item_id])

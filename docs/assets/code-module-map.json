@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "source_sha256": "5b3b8ccb85f15bab3fa6e6158ddee3b7eafb95d3777f19880d94f6c020277fc6",
+  "source_sha256": "88c98968364b0459b2b8e004488f21f7dcde8487782859f38405d009beaf60fb",
   "domains": [
     {
       "id": "system",
@@ -63,9 +63,9 @@
   ],
   "summary": {
     "modules": 63,
-    "scripts": 400,
-    "named_classes": 304,
-    "relationships": 237,
+    "scripts": 402,
+    "named_classes": 305,
+    "relationships": 240,
     "project_inheritance": 17,
     "enabled_toggles": 72
   },
@@ -94,18 +94,19 @@
       "path": "game/core",
       "wiki_route": "architecture/module-rules/",
       "enabled": null,
-      "file_count": 7,
-      "class_count": 7,
+      "file_count": 8,
+      "class_count": 8,
       "classes": [
         "ArenaGrid",
         "AtomicJsonStore",
         "CatalogCsvTable",
+        "EquipmentSupplyPolicy",
         "FeatureManifest",
         "ItemQualityDescriptor",
         "RunCombatMetrics",
         "TargetedModifierStore"
       ],
-      "incoming_count": 11,
+      "incoming_count": 13,
       "outgoing_count": 31
     },
     {
@@ -288,7 +289,7 @@
         "CraftingSystem"
       ],
       "incoming_count": 3,
-      "outgoing_count": 1
+      "outgoing_count": 2
     },
     {
       "id": "credits",
@@ -390,7 +391,7 @@
         "WeaponPartsBoard",
         "WeaponTagProfile"
       ],
-      "incoming_count": 10,
+      "incoming_count": 11,
       "outgoing_count": 2
     },
     {
@@ -570,7 +571,7 @@
         "HubEconomySystem"
       ],
       "incoming_count": 3,
-      "outgoing_count": 1
+      "outgoing_count": 2
     },
     {
       "id": "hub_preparation",
@@ -950,7 +951,7 @@
         "WorkshopUnlockService"
       ],
       "incoming_count": 3,
-      "outgoing_count": 2
+      "outgoing_count": 3
     },
     {
       "id": "penalty_modifiers",
@@ -1374,7 +1375,7 @@
       "path": "game/tests",
       "wiki_route": "quality/e2e-play-session/",
       "enabled": null,
-      "file_count": 85,
+      "file_count": 86,
       "class_count": 0,
       "classes": [],
       "incoming_count": 0,
@@ -1874,6 +1875,15 @@
       "module": "core",
       "path": "game/core/catalog_csv_table.gd",
       "extends": "RefCounted",
+      "base_id": "",
+      "inheritance": "engine"
+    },
+    {
+      "id": "class:EquipmentSupplyPolicy",
+      "name": "EquipmentSupplyPolicy",
+      "module": "core",
+      "path": "game/core/equipment_supply_policy.gd",
+      "extends": "Resource",
       "base_id": "",
       "inheritance": "engine"
     },
@@ -4368,6 +4378,12 @@
     },
     {
       "from": "crafting",
+      "to": "core",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "crafting",
       "to": "persistent_profile",
       "type": "requires",
       "evidence_count": 1
@@ -4465,6 +4481,12 @@
     {
       "from": "hit_feedback",
       "to": "combat_vfx",
+      "type": "references",
+      "evidence_count": 1
+    },
+    {
+      "from": "hub_economy",
+      "to": "core",
       "type": "references",
       "evidence_count": 1
     },
@@ -4676,7 +4698,13 @@
       "from": "p5_hub_progression",
       "to": "core",
       "type": "references",
-      "evidence_count": 2
+      "evidence_count": 7
+    },
+    {
+      "from": "p5_hub_progression",
+      "to": "equipment",
+      "type": "references",
+      "evidence_count": 1
     },
     {
       "from": "p5_hub_progression",
@@ -5198,13 +5226,13 @@
       "from": "verification",
       "to": "core",
       "type": "verifies",
-      "evidence_count": 10
+      "evidence_count": 11
     },
     {
       "from": "verification",
       "to": "crafting",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
@@ -5282,13 +5310,13 @@
       "from": "verification",
       "to": "hub_economy",
       "type": "verifies",
-      "evidence_count": 1
+      "evidence_count": 2
     },
     {
       "from": "verification",
       "to": "inventory",
       "type": "verifies",
-      "evidence_count": 15
+      "evidence_count": 16
     },
     {
       "from": "verification",
@@ -5384,7 +5412,7 @@
       "from": "verification",
       "to": "p5_hub_progression",
       "type": "verifies",
-      "evidence_count": 8
+      "evidence_count": 9
     },
     {
       "from": "verification",
@@ -5396,7 +5424,7 @@
       "from": "verification",
       "to": "persistent_profile",
       "type": "verifies",
-      "evidence_count": 13
+      "evidence_count": 14
     },
     {
       "from": "verification",

@@ -38,7 +38,7 @@ func _run() -> void:
 		_check(
 			int(roll_preview.get(&"minimum_affixes", -1)) == 1
 			and int(roll_preview.get(&"maximum_affixes", -1)) == 2
-			and int(roll_preview.get(&"minimum_sockets", -1)) == 0
+			and int(roll_preview.get(&"minimum_sockets", -1)) == 1
 			and int(roll_preview.get(&"maximum_sockets", -1)) == 1,
 			"옵션 소켓 범위 선공개"
 		)

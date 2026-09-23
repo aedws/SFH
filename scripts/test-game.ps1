@@ -84,6 +84,11 @@ $inventoryPouchStatus = $LASTEXITCODE
 $inventoryPouchOutput | Write-Output
 if ($inventoryPouchStatus -ne 0 -or ($inventoryPouchOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($inventoryPouchOutput -join "`n") -notmatch 'INVENTORY_POUCH_OK') { throw 'Protected pouch and capacity contract failed.' }
 
+$supplyOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/hub_supply_contract_test.gd" 2>&1
+$supplyStatus = $LASTEXITCODE
+$supplyOutput | Write-Output
+if ($supplyStatus -ne 0 -or ($supplyOutput -join "`n") -match 'SCRIPT ERROR:|ERROR:' -or ($supplyOutput -join "`n") -notmatch 'HUB_SUPPLY_OK') { throw 'Hub supply cap contract failed.' }
+
 $operationMatrixOutput = & $godotExecutable --headless --path $repositoryRoot --script "res://game/tests/operation_combination_contract_test.gd" 2>&1
 $operationMatrixStatus = $LASTEXITCODE
 $operationMatrixOutput | Write-Output

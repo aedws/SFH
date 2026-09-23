@@ -17,7 +17,7 @@ tags:
   <p>공동 작업자가 코드 저장소를 열지 않아도 날짜별 핵심 변경, 상세 구현과 검증 상태를 확인할 수 있습니다.</p>
 </div>
 
-<div class="sfh-release-stats"><span>최신 2026-09-23</span><span>SEARCH COMMAND</span><span>16 DAYS · 176 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
+<div class="sfh-release-stats"><span>최신 2026-09-23</span><span>SEARCH COMMAND</span><span>16 DAYS · 179 TOPICS</span><span>CLOUDFLARE LIVE</span></div>
 
 ## 9/23 승인 정책 첫 반영
 
@@ -86,9 +86,18 @@ P1~P10은 기존 이력을 보존하며 최신 우선순위는 N26 기준입니�
 <div class="sfh-notes">
 
 <details class="sfh-day">
-  <summary><span class="sfh-day-title"><b>2026-09-23</b><i class="sfh-latest">최신</i><small>3 UPDATE BUNDLES · BUILD 3 · IMPROVE 3 · CHANGE 1 · FIX 2</small></span><em class="sfh-chevron">⌃</em></summary>
+  <summary><span class="sfh-day-title"><b>2026-09-23</b><i class="sfh-latest">최신</i><small>4 UPDATE BUNDLES · BUILD 4 · IMPROVE 4 · CHANGE 1 · FIX 3</small></span><em class="sfh-chevron">⌃</em></summary>
   <div class="sfh-day-body">
     <details class="sfh-bundle" open>
+      <summary><span><small>UPDATE 4</small><b>거점 공급 상한 · 종결 장비는 심층에서</b></span><em class="sfh-chevron">⌄</em></summary>
+      <div class="sfh-bundle-body">
+        <div class="sfh-group"><h3>구현 · 1</h3><p>거점 공급 등급과 기본 수치 옵션·제작1~2소켓 제한을 공통 정책으로 추가했습니다. 기존 보유 장비와 무기 고정 고유 스킬은 유지합니다.</p></div>
+        <div class="sfh-group"><h3>개선 · 1</h3><p>제작 화면에서 정책 적용 후 소켓 범위를 안내하고, 공급 제한 품목은 회전 상점에서 제외합니다.</p></div>
+        <div class="sfh-group"><h3>버그픽스 · 1</h3><p>교체한 제작 공급자가 상한을 벗어난 결과를 돌려줘도 차감·저장 전에 거부합니다. 심층3경로 구현과 장시간 재미 수락은 아직 남아 있습니다.</p></div>
+        <p><a href="/features/p5-hub-progression/#supply-20260923">정책·임시값·후속</a> · <a href="/quality/e2e-play-session/#supply-20260923">검증 범위</a></p>
+      </div>
+    </details>
+    <details class="sfh-bundle">
       <summary><span><small>UPDATE 3</small><b>작은 가방과 보호 주머니 · 실패해도 지킬 전리품 선택</b></span><em class="sfh-chevron">⌄</em></summary>
       <div class="sfh-bundle-body">
         <div class="sfh-group"><h3>구현 · 1</h3><p>가방36칸과 보호 주머니4칸을 적용했습니다. 도면·룬·코어·유물을 넣고 저장하면 실패 시 원형으로 거점 보관에 돌아옵니다. 성공 시에는 기존 해금·환전 규칙을 따릅니다.</p></div>

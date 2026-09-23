@@ -5,6 +5,10 @@ extends Resource
 @export_range(1, 1000000, 1) var seed_stride := 7049
 @export_range(0, 16, 1) var maximum_socket_limit := 8
 @export var affix_pool: Array[Dictionary] = []
+@export var supply_policy: EquipmentSupplyPolicy = EquipmentSupplyPolicy.hub_default()
+
+func get_supply_policy() -> EquipmentSupplyPolicy:
+	return supply_policy
 
 
 func is_valid() -> bool:
@@ -26,12 +30,15 @@ func is_valid() -> bool:
 
 
 func describe(recipe: Dictionary) -> Dictionary:
+	var supply := supply_policy.recipe_preview(recipe) if supply_policy != null else {&"valid": false}
 	var minimum_affixes := int(recipe.get(&"minimum_affixes", 0))
 	var maximum_affixes := int(recipe.get(&"maximum_affixes", minimum_affixes))
 	var minimum_sockets := int(recipe.get(&"minimum_sockets", 0))
 	var maximum_sockets := int(recipe.get(&"maximum_sockets", minimum_sockets))
 	var valid := (
 		is_valid()
+		and bool(supply.get(&"valid", false))
+		and supply_policy.affixes_allowed(affix_pool)
 		and StringName(recipe.get(&"result_id", &"")) != &""
 		and minimum_affixes >= 0
 		and maximum_affixes >= minimum_affixes
@@ -44,8 +51,11 @@ func describe(recipe: Dictionary) -> Dictionary:
 		&"valid": valid,
 		&"minimum_affixes": minimum_affixes,
 		&"maximum_affixes": maximum_affixes,
-		&"minimum_sockets": minimum_sockets,
-		&"maximum_sockets": maximum_sockets,
+		&"minimum_sockets": supply.get(&"minimum_sockets", minimum_sockets),
+		&"maximum_sockets": supply.get(&"maximum_sockets", maximum_sockets),
+		&"grade": supply.get(&"grade", 1),
+		&"supply_policy": supply.get(&"supply_policy", ""),
+		&"reason": supply.get(&"reason", "공급 정책 오류"),
 		&"affix_pool_size": affix_pool.size(),
 		&"source_status": String(recipe.get(&"source_status", "provisional")),
 	}
@@ -70,6 +80,8 @@ func roll(recipe: Dictionary, recipe_id: StringName, transaction_id: StringName,
 		sockets.append({&"slot_index": index, &"state": &"empty"})
 	return {
 		&"instance_id": StringName("%s_%d" % [instance_prefix, stable_hash]),
+		&"grade": preview.get(&"grade", 1),
+		&"supply_source": &"hub",
 		&"definition_id": StringName(recipe.get(&"result_id", &"")),
 		&"display_name": String(recipe.get(&"display_name", "제작 장비")),
 		&"recipe_id": recipe_id,

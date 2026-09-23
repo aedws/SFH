@@ -8,6 +8,7 @@ const QUALITY_POLICY := preload(
 
 var inventory: Node
 var quality_catalog: Resource
+var supply_policy := EquipmentSupplyPolicy.hub_default()
 
 
 func get_delivery_contract() -> Dictionary:
@@ -43,6 +44,17 @@ func preview(offer: Dictionary) -> Dictionary:
 	var definition: Resource = inventory.call(&"get_item_definition", target_id)
 	if definition == null:
 		return {&"can_deliver": false, &"reason": "가방 카탈로그에 없는 아이템"}
+	var source_error := supply_policy.source_error(offer)
+	if not source_error.is_empty(): return {&"can_deliver": false, &"reason": source_error, &"supply_blocked": true}
+	var linked: Resource = definition.get("linked_resource")
+	if linked is EquipmentWeaponDefinition or linked is EquipmentArmorDefinition:
+		var metadata: Dictionary = linked.get("extension_data").duplicate(true)
+		if linked is EquipmentWeaponDefinition: metadata[&"grade"] = linked.grade
+		source_error = supply_policy.source_error(metadata)
+		if source_error.is_empty():
+			var payload := QUALITY_POLICY.build_payload(offer, &"preview", quality_catalog)
+			source_error = "품질 데이터 오류" if payload.is_empty() else supply_policy.quality_error(payload)
+	if not source_error.is_empty(): return {&"can_deliver": false, &"reason": source_error, &"supply_blocked": true}
 	var owned := 0
 	for entry: Dictionary in inventory.call(&"get_snapshot").get(&"items", []):
 		if StringName(entry.get(&"item_id", &"")) == target_id:
